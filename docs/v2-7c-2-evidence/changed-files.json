@@ -1,8 +1,8 @@
 {
   "taskEntry": "519088738ce4ea5d0162ba81d54e4db5282f31fd",
   "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
-  "throughEvidenceHead": "2cdd8a9962359c9648eb0e997ef2223668dc1b04",
-  "note": "Task-entry to evidence snapshot plus pending continuity/evaluation metadata; independent review and final cleanup records may follow. Source paths are separately frozen in source-provenance.json.",
+  "throughEvidenceHead": "ce6e03af9319cd90469f297986f7964345005647",
+  "note": "Task entry to final review/cleanup/acceptance snapshot including pending closeout files. Later commit records this metadata; no application/test/tool changes follow the frozen implementation.",
   "files": [
     {
       "status": "M",
@@ -42,6 +42,10 @@
     },
     {
       "status": "M",
+      "path": "docs/BLOCKED.md"
+    },
+    {
+      "status": "M",
       "path": "docs/CONTINUATION.md"
     },
     {
@@ -71,6 +75,14 @@
     {
       "status": "M",
       "path": "docs/development-state.schema.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/reviews/V2-7C-2-bf1bd8f.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/reviews/V2-7C-2-bf1bd8f.md"
     },
     {
       "status": "A",
@@ -234,6 +246,10 @@
     },
     {
       "status": "A",
+      "path": "docs/v2-7c-2-evidence/closeout.json"
+    },
+    {
+      "status": "A",
       "path": "docs/v2-7c-2-evidence/completed-chat.png"
     },
     {
@@ -274,6 +290,14 @@
     },
     {
       "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/accepted-governance.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/accepted-protocol.log"
+    },
+    {
+      "status": "A",
       "path": "docs/v2-7c-2-evidence/logs/benchmark-50.log"
     },
     {
@@ -299,6 +323,342 @@
     {
       "status": "A",
       "path": "docs/v2-7c-2-evidence/logs/hosted-import.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/benchmark-results.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/benchmark.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/contact-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/contact-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/contact-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/contact-4.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/contact-5.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/contact-6.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/contact-7.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/contact-8.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/contact-9.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/focused-sqlite.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh-contact-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh-contact-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh-contact-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh-contact-4.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh-images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-delete-generated-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-delete-generated.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-delete-pending.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-delete-saved-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-desktop.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-development.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-empty.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-generated-error.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-narrow-dark.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-narrow-dialog.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-no-matches.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-saved-error.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-signed-out.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/hosted/completed-chat.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/hosted/postgres-double-click.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-delete-generated-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-delete-generated.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-delete-pending.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-delete-saved-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-desktop.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-development.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-empty.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-generated-error.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-narrow-dark.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-narrow-dialog.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-no-matches.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-saved-error.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-signed-out.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/discovery.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-content.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-desktop.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-development.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-font-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-font-http-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-font-http-recovered.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-font-static-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-font-static-recovered.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-loading.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-narrow-dark.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-network-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-restored.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-session-cross-tab.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-session-pending.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-session-settled.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-timeout.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/governance.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/hosted.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/image-hash-audit.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/inventory-audit.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/native-check.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/native-check.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/native-inspection.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/native/slide-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/native/slide-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/native/slide-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/native/thumbs/slide-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/native/thumbs/slide-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/native/thumbs/slide-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/postgres-catalog.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/postgres-cover-http.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/postgres-covers.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/postgres-http.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/protocol.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/reproduction.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/runs.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-7c-2-evidence/logs/independent/typecheck.log"
     },
     {
       "status": "A",

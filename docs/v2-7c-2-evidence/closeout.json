@@ -1,0 +1,26 @@
+{
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "reviewRecord": "docs/reviews/V2-7C-2-bf1bd8f.json",
+  "governance": {
+    "command": "LC_ALL=C.UTF-8 node --test --test-reporter=./tools/validated-tap.mjs test/dev-protocol.test.js",
+    "tests": {
+      "total": 22,
+      "pass": 22,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "exitCode": 0,
+    "log": "docs/v2-7c-2-evidence/logs/accepted-governance.tap",
+    "note": "Metadata closeout repeat; not added to distinct regression cases."
+  },
+  "protocol": {
+    "command": "npm run dev:protocol",
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 0,
+    "log": "docs/v2-7c-2-evidence/logs/accepted-protocol.log"
+  },
+  "runtimeSourceDeltaAfterFreeze": "",
+  "atUtc": "2026-10-18T07:11:12.660913+00:00"
+}

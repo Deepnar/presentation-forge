@@ -201,8 +201,12 @@ a recorded validation followup, not a proven product regression; the owned
 review service has been removed after checks. Review status/baseline are indexed
 in development-state.json. V2-7C-1 covers are independently accepted at `f79ae07`;
 all required validation executed and its isolated service was removed after
-review. See [the evaluation](V2-7C-1-EVAL.md) and current state. No constraint
-or green test authorizes starting a different milestone.
+review. See [the evaluation](V2-7C-1-EVAL.md). C2 discovery is independently
+accepted at `bf1bd8f`; its validation and review executed with the owned service.
+After the interrupted session's host restart, the auto-remove/tmpfs container
+was already absent; cleanup observations and the unavailable pre-removal database
+count are explicit in [the C2 evaluation](V2-7C-2-EVAL.md). Current state indexes
+acceptance. No constraint or green test authorizes another milestone.
 
 Two are worth naming because they look like engineering and are not:
 

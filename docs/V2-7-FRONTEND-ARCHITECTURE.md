@@ -1,7 +1,8 @@
 # V2-7 Frontend Architecture — unified workspace
 
-Updated: 2026-10-17. Accepted source and review are indexed in development-state.json.
-V2-7C-2 discovery is implemented pending validation/review. Parent V2-7 remains
+Updated: 2026-10-18. Accepted source and review are indexed in development-state.json.
+V2-7C-2 discovery is independently accepted at `bf1bd8f`; see
+[decision](reviews/V2-7C-2-bf1bd8f.json). Parent V2-7 remains
 in progress.
 
 ## 1. Product model: Workspace → Project → Editor
@@ -271,4 +272,4 @@ Token storage events, focus/visibility checks, a one-second same-document check
 and action capture invalidate a stale account view into focused Reload recovery.
 No previews from a new token are silently loaded into an old account's list.
 Implementation and exact validation/review status live in V2-7C-1-EVAL.md and
-state; later list consolidation can reuse the same revision-scoped resource.
+state; C2 list consolidation reuses the same revision-scoped resource.

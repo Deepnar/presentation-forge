@@ -38,9 +38,11 @@ because old eval wording predates review.
 slice. Human direction selected one mixed grid containing distinct saved editable
 presentations and generated decks/reports, with search/type filters and one
 sidebar destination; the contract is [in the roadmap](ROADMAP.md#v2-7c-2-plan).
-The accepted baseline remains C1 source `f79ae07`; implementation `bf1bd8f` is
-fully validated with retained final evidence, pending a separate ACCEPT/HOLD. Later checkout
-commits can contain documentation/evidence only; inspect the diff and state.
+Exact source `bf1bd8f` is independently accepted in
+[the separate decision](reviews/V2-7C-2-bf1bd8f.json), dated 2026-10-18. The state
+file now indexes that accepted baseline. Later checkout commits contain evidence
+and documentation only; inspect the diff and state. No next implementation is
+authorized; agree the next surface direction under the roadmap workspace followups.
 
 The complete inventory has 205 entry files: 176 bulk, 25 serial browser/build
 owners and four PostgreSQL files. The focused catalog gate repeats 17 units,
@@ -50,7 +52,7 @@ and state for final status; never substitute C1 results for newer source.
 
 Discovery retains both canonical APIs, owner policies, report-only access, saved
 covers and explicit conversion receipts. It never merges/imports on reads. Stop
-after C2 independent review/handoff. Toolbar polish and agent runtime require
+at the completed C2 review/handoff. Toolbar polish and agent runtime require
 their own approved contracts; a next candidate is not coding authorization.
 Preserve the separate BYOK locale and B2 restore-timeout records.
 

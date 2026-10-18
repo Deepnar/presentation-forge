@@ -7708,18 +7708,19 @@ scale); charts structurally exact without axes (V2-4C).
 <a id="workspace-followups"></a>
 
 - [ ] Workspace followups after the generation handoff — saved first-slide
-  covers are independently accepted in [V2-7C-1](#v2-7c-1-plan). Next is
-  consolidation of V1/V2 project lists, followed by removing or relocating
-  fixture/developer controls from the production editor toolbar. Agree each
-  surface direction before implementation; AI editing remains V2-8. Covers reuse
-  the existing grid and revision-scoped scene resource, without a new asset store.
+  covers and unified discovery are independently accepted in
+  [V2-7C-1](#v2-7c-1-plan) and [V2-7C-2](#v2-7c-2-plan). The remaining immediate
+  slice is removing or relocating fixture/developer controls from the production
+  editor toolbar. Agree its surface direction and bounded contract before
+  implementation; it is not yet authorized. AI editing remains V2-8. Discovery
+  reuses the revision-scoped scene resource without a new asset store.
 
 <a id="v2-7c-2-plan"></a>
 
-- [ ] V2-7C-2 project-list consolidation — **approved 2026-10-17**. The current sidebar's Projects tab lists legacy
-  generated decks/reports, while Presentations lists saved editable projects.
-  One discovery destination should make both accessible without confusing an
-  original generated project with its independently editable saved copy.
+- [x] V2-7C-2 project-list consolidation — **independently accepted 2026-10-18**.
+  Before this slice, Projects listed legacy generated decks/reports while
+  Presentations listed saved editable projects. One Projects destination now
+  discovers both, with distinct original/copy entries, search and type filters.
 
   - **Baseline/task entry:** independently accepted source
     `f79ae07d6ad1696da3106a2a1148ae0ce7f58f51`,
@@ -7777,12 +7778,35 @@ scale); charts structurally exact without axes (V2-4C).
     required. Push scoped work to `origin/v2`; preserve unrelated files. Stop
     after this slice's review/handoff without starting toolbar or agent work.
 
+  **Completion.** Exact source `bf1bd8f7dbce827be04ed530b2e7330b385e8baa`,
+  [separate ACCEPT](reviews/V2-7C-2-bf1bd8f.json),
+  [evaluation](V2-7C-2-EVAL.md). All approved entry/navigation/search/lifecycle and
+  copy-scoped deletion behavior is implemented. Selected 205-file matrix 2320 plus
+  distinct hosted 1 pass, zero final skips/cancellations/required unexecuted cases;
+  independent 109/109, build/typecheck/50 cells and actual native checks pass.
+  106 finalized images and seven native pages inspected; reviewer also inspected
+  44 fresh browser captures and three fresh native pages. The original B2 timeout
+  remains failed and unexplained despite its unchanged passing retry. BYOK locale,
+  Fit and canonical capture timing remain in their existing entries. No next
+  toolbar/agent feature, deployment or migration was started.
+
+  > **Learned.** A unified list is a source-qualified read projection, not durable
+  > lineage: colliding titles and identifiers must keep both documents visible.
+  > Independent source failures and account/query lifetimes need their own fences.
+  > Modal containment, errors and invoker restoration share one lifecycle; actual
+  > StrictMode exposed cleanup ordering that production alone did not reveal.
+  > Existing fixture servers must isolate every newly visible canonical source.
+  > Look-ahead: V2-8/V2-10 can reuse canonical IDs, commands, receipts and this typed
+  > projection without undoing a document merge. Later unchecked workspace work
+  > now starts with toolbar direction, with discovery preserved as built.
+
 <a id="v2-7c-1-plan"></a>
 
 - [x] V2-7C-1 saved-project first-slide covers — **independently accepted on 2026-10-17**.
   Human direction selected real first-slide previews above the existing card
   title/actions in the current Projects grid. This is the first bounded workspace
-  polish slice; list consolidation and toolbar changes remain separate below.
+  polish slice; list consolidation is now accepted in C2; toolbar direction remains
+  in the workspace followups entry.
 
   - **Baseline/task entry:** accepted source
     `03cc89ef233db5469066599391cbaac68c2fc646`, separate

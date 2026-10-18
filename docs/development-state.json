@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
+    "sha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-7C-1-f79ae07.json"
+    "source": "docs/reviews/V2-7C-2-bf1bd8f.json"
   },
   "implementationHead": {
     "sha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
-    "note": "Frozen C2 source; complete final-source validation and visual evidence retained. Subsequent commits contain evidence/docs only; independent review pending."
+    "note": "Exact C2 source independently accepted in V2-7C-2-bf1bd8f; later commits contain evidence/documentation only. No further feature implementation authorized."
   },
   "activeMilestone": {
     "id": "V2-7C-2",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-7C-2-EVAL.md",
     "architectureDoc": "docs/V2-7-FRONTEND-ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-7C-2-bf1bd8f.json",
+    "accepted": true
   },
   "validation": [
     {
@@ -37,7 +37,7 @@
       "id": "serial-browser",
       "status": "passed",
       "evidence": "docs/v2-7c-2-evidence/serial-browser.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "reason": "Complete selected same-source file inventory; original B2 timeout and unchanged full-file retry retained separately in serial-recovery.json."
     },
     {
       "id": "postgres-contract",
@@ -103,5 +103,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }
