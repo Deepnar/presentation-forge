@@ -1,0 +1,31 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "command": "node --test --test-reporter=./tools/validated-tap.mjs test/dev-protocol.test.js",
+  "log": "docs/v2-8a-evidence/logs/post-acceptance-governance.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 24,
+    "pass": 24,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "note": "Post-acceptance metadata verification only; repeated governance cases are excluded from distinct matrix/independent totals.",
+  "imageManifestAudit": [
+    {
+      "manifest": "docs/v2-8a-evidence/images.json",
+      "matched": 91
+    },
+    {
+      "manifest": "docs/v2-7c-3-evidence/images.json",
+      "matched": 123
+    },
+    {
+      "manifest": "docs/v2-7c-2-evidence/images.json",
+      "matched": 106
+    }
+  ],
+  "freshIndependentArchiveHashesMatched": 2,
+  "originalIgnoredArchivesAvailable": false,
+  "cleanup": "docs/v2-8a-evidence/cleanup.json"
+}
