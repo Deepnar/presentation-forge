@@ -1,0 +1,49 @@
+{
+  "project": "p-f2a75abcf4966a228b027ead",
+  "revisions": [
+    {
+      "projectId": "p-f2a75abcf4966a228b027ead",
+      "revision": 2,
+      "createdAt": "2026-10-18T07:45:55.307Z",
+      "kind": "save",
+      "saveOrigin": "unknown",
+      "actor": null,
+      "agentId": null,
+      "envelopeIds": [],
+      "summary": "saved rev 2 · 13 slides",
+      "sceneCount": 13,
+      "title": "Project 10/18/2026, 1:15:54 PM",
+      "restoredFrom": null,
+      "recoverable": true
+    },
+    {
+      "projectId": "p-f2a75abcf4966a228b027ead",
+      "revision": 1,
+      "createdAt": "2026-10-18T07:45:54.872Z",
+      "kind": "save",
+      "saveOrigin": "unknown",
+      "actor": null,
+      "agentId": null,
+      "envelopeIds": [],
+      "summary": "saved rev 1 · 12 slides",
+      "sceneCount": 12,
+      "title": "Project 10/18/2026, 1:15:54 PM",
+      "restoredFrom": null,
+      "recoverable": true
+    },
+    {
+      "projectId": "p-f2a75abcf4966a228b027ead",
+      "revision": 0,
+      "createdAt": "2026-10-18T07:45:54.429Z",
+      "kind": "create",
+      "actor": null,
+      "agentId": null,
+      "envelopeIds": [],
+      "summary": "created with 12 slides",
+      "sceneCount": 12,
+      "title": "Project 10/18/2026, 1:15:54 PM",
+      "restoredFrom": null,
+      "recoverable": true
+    }
+  ]
+}

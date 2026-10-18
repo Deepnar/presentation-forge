@@ -1,0 +1,23 @@
+[
+  {
+    "source": "out/v2-7c-3-validation/browser/narrow-light.json",
+    "path": "docs/v2-7c-3-evidence/measurements/postgres-toolbar/v2-7c-3-validation--narrow-light.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "PostgreSQL saved-project cases; standalone local SQLite",
+    "sha256": "24da8004e8dfcf152e1510979089737812a75bd2046a21b42f0a757b1f562f25"
+  },
+  {
+    "source": "out/v2-7c-3-validation/browser/narrow-dark.json",
+    "path": "docs/v2-7c-3-evidence/measurements/postgres-toolbar/v2-7c-3-validation--narrow-dark.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "PostgreSQL saved-project cases; standalone local SQLite",
+    "sha256": "24da8004e8dfcf152e1510979089737812a75bd2046a21b42f0a757b1f562f25"
+  },
+  {
+    "source": "out/v2-7c-3-validation/browser/canvas.json",
+    "path": "docs/v2-7c-3-evidence/measurements/postgres-toolbar/v2-7c-3-validation--canvas.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "PostgreSQL saved-project cases; standalone local SQLite",
+    "sha256": "c3c3a1754434014d56b14fa0278d3120074e1ad6e0a8438aea9612a92363b963"
+  }
+]

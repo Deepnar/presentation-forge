@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: a freeform slide requires non-empty html
+ok 1 - a freeform slide requires non-empty html
+  ---
+  duration_ms: 106.423886
+  type: 'test'
+  ...
+# Subtest: html is forbidden on non-freeform slides
+ok 2 - html is forbidden on non-freeform slides
+  ---
+  duration_ms: 0.309646
+  type: 'test'
+  ...
+# Subtest: a deck mixing native and freeform slides validates
+ok 3 - a deck mixing native and freeform slides validates
+  ---
+  duration_ms: 0.165504
+  type: 'test'
+  ...
+# Subtest: oversized html fails with a clear cap message
+ok 4 - oversized html fails with a clear cap message
+  ---
+  duration_ms: 0.717366
+  type: 'test'
+  ...
+# Subtest: the catalog and ops schema expose freeform's html field
+ok 5 - the catalog and ops schema expose freeform's html field
+  ---
+  duration_ms: 3.604044
+  type: 'test'
+  ...
+# Subtest: a script tag in freeform html never executes (sandbox)
+ok 6 - a script tag in freeform html never executes (sandbox)
+  ---
+  duration_ms: 549.962106
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 764.119571
+# forge-test-file "test/freeform.test.js"

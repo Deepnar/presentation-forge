@@ -1,0 +1,13 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+  "command": "Complete serial owners; PostgreSQL toolbar/catalog/covers; hosted import; seven native rasters; inspect123 final images and verify hashes",
+  "log": "docs/v2-7c-3-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": "docs/v2-7c-3-evidence/images.json",
+  "imageCount": 123,
+  "nativeRasters": 7,
+  "limitations": "Inherited Fit, C1 rail transition, B2 chat and C2 interim search capture limits retained explicitly in visual review."
+}

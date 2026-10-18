@@ -1,0 +1,51 @@
+[
+  {
+    "source": "out/v2-7c-1-validation/browser/covers-font-static.json",
+    "path": "docs/v2-7c-3-evidence/measurements/postgres-covers/v2-7c-1-validation--covers-font-static.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "PostgreSQL",
+    "sha256": "7fdc4725994aa065b932e4cb0af5d0a9ce8ffeef1fc74166422de4b1be9b7218"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/covers-font-http.json",
+    "path": "docs/v2-7c-3-evidence/measurements/postgres-covers/v2-7c-1-validation--covers-font-http.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "PostgreSQL",
+    "sha256": "25dca8f450847b68eed4f40818021437bd9ee707e949c297c0b4ea30678458dc"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/retry-font.json",
+    "path": "docs/v2-7c-3-evidence/measurements/postgres-covers/v2-7c-1-validation--retry-font.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "PostgreSQL",
+    "sha256": "07f7942154acf8940282ce0e682e254e6694996f8a59c8c7821ae8a999fd5571"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/retry-network.json",
+    "path": "docs/v2-7c-3-evidence/measurements/postgres-covers/v2-7c-1-validation--retry-network.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "PostgreSQL",
+    "sha256": "07f7942154acf8940282ce0e682e254e6694996f8a59c8c7821ae8a999fd5571"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/many-projects.json",
+    "path": "docs/v2-7c-3-evidence/measurements/postgres-covers/v2-7c-1-validation--many-projects.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "PostgreSQL",
+    "sha256": "dd7e6f7d770dabaa9e4fdef1d9d27f640d035e4f71b799a20b693d5f35d471fb"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/first-visible.json",
+    "path": "docs/v2-7c-3-evidence/measurements/postgres-covers/v2-7c-1-validation--first-visible.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "PostgreSQL",
+    "sha256": "77c77a9fd0edb9f78840157433ddf7805f3c43177d21090d05bab878afac7cf6"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/narrow.json",
+    "path": "docs/v2-7c-3-evidence/measurements/postgres-covers/v2-7c-1-validation--narrow.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "PostgreSQL",
+    "sha256": "c168bf8f8bacf1c209ac80810d82551f3bd68c7def80a971b3dabe475fd56602"
+  }
+]

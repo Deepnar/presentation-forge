@@ -1,0 +1,30 @@
+[
+  {
+    "source": "docs/v2-6b-evidence/history-restore.json",
+    "path": "docs/v2-7c-3-evidence/measurements/persistence/v2-6b-evidence--history-restore.json",
+    "backend": "SQLite",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "sha256": "c9d4f3a71ba983f3b929d9b554b79fe096cb5297a7834f60e159d6963dd11b13"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-revisions.json",
+    "path": "docs/v2-7c-3-evidence/measurements/persistence/v2-6b-evidence--history-revisions.json",
+    "backend": "SQLite",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "sha256": "e4862897ba463e94b8eeb08be40a14877a73600b78863207e207420917d18f8a"
+  },
+  {
+    "source": "docs/v2-6c-evidence/hosted-conflict.json",
+    "path": "docs/v2-7c-3-evidence/measurements/persistence/v2-6c-evidence--hosted-conflict.json",
+    "backend": "PostgreSQL",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "sha256": "95c14432831a62331dcfe0427811446681db280f53369d66b5d8428031a6d63d"
+  },
+  {
+    "source": "docs/v2-6c-evidence/hosted-flow.json",
+    "path": "docs/v2-7c-3-evidence/measurements/persistence/v2-6c-evidence--hosted-flow.json",
+    "backend": "PostgreSQL",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "sha256": "80769dfe902124c2fff5480dffc5c095a1b5df5c4aed771efc9f87067fb4bff8"
+  }
+]

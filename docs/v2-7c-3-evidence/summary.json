@@ -1,0 +1,64 @@
+{
+  "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+  "inventoryFiles": 206,
+  "uniqueTests": {
+    "total": 2330,
+    "pass": 2330,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "supplementalHosted": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "focusedRepeated": {
+    "total": 37,
+    "pass": 37,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "postgresRepeated": {
+    "toolbar": {
+      "total": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "catalog": {
+      "total": 16,
+      "pass": 16,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "http": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "covers": {
+      "total": 12,
+      "pass": 12,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "cover-http": {
+      "total": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "unexecuted": 0,
+  "note": "The supplemental hosted double-click/CLI/export case is distinct. Focused checks, repeated PostgreSQL browser cases, earlier attempts, locale probe and independent reruns are not added again to unique matrix totals."
+}

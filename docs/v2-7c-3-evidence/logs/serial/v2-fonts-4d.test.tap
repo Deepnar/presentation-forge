@@ -1,0 +1,67 @@
+TAP version 13
+# Subtest: v2-4d font inventory
+    # Subtest: every V2 theme family is covered
+    ok 1 - every V2 theme family is covered
+      ---
+      duration_ms: 7.792643
+      type: 'test'
+      ...
+    # Subtest: every weight in committed scenes is covered
+    ok 2 - every weight in committed scenes is covered
+      ---
+      duration_ms: 1.934949
+      type: 'test'
+      ...
+    # Subtest: every manifest entry resolves to a real package file
+    ok 3 - every manifest entry resolves to a real package file
+      ---
+      duration_ms: 0.583079
+      type: 'test'
+      ...
+    # Subtest: production build ships every static face
+    ok 4 - production build ships every static face
+      ---
+      duration_ms: 505.06363
+      type: 'test'
+      ...
+    1..4
+ok 1 - v2-4d font inventory
+  ---
+  duration_ms: 516.309818
+  type: 'suite'
+  ...
+# Subtest: v2-4d projection uses scene families
+    # Subtest: display faces project verbatim
+    ok 1 - display faces project verbatim
+      ---
+      duration_ms: 1.485184
+      type: 'test'
+      ...
+    # Subtest: weights and italics project without CSS knowledge
+    ok 2 - weights and italics project without CSS knowledge
+      ---
+      duration_ms: 0.175707
+      type: 'test'
+      ...
+    # Subtest: readiness degrades honestly without a font API
+    ok 3 - readiness degrades honestly without a font API
+      ---
+      duration_ms: 0.85688
+      type: 'test'
+      ...
+    1..3
+ok 2 - v2-4d projection uses scene families
+  ---
+  duration_ms: 2.719874
+  type: 'suite'
+  ...
+1..2
+# tests 7
+# suites 2
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 596.559391
+# forge-test-file "test/v2-fonts-4d.test.js"

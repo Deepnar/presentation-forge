@@ -1,0 +1,23 @@
+[
+  {
+    "source": "out/v2-7c-3-validation/sqlite-toolbar-measurements/narrow-light.json",
+    "path": "docs/v2-7c-3-evidence/measurements/sqlite-toolbar/v2-7c-3-validation--narrow-light.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "SQLite production projects and standalone local Live",
+    "sha256": "dae16608f92439f017a0862c7364a0edfb3029f6fd5a03142fe12d2239a593a8"
+  },
+  {
+    "source": "out/v2-7c-3-validation/sqlite-toolbar-measurements/narrow-dark.json",
+    "path": "docs/v2-7c-3-evidence/measurements/sqlite-toolbar/v2-7c-3-validation--narrow-dark.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "SQLite production projects and standalone local Live",
+    "sha256": "dae16608f92439f017a0862c7364a0edfb3029f6fd5a03142fe12d2239a593a8"
+  },
+  {
+    "source": "out/v2-7c-3-validation/sqlite-toolbar-measurements/canvas.json",
+    "path": "docs/v2-7c-3-evidence/measurements/sqlite-toolbar/v2-7c-3-validation--canvas.json",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "backend": "SQLite production projects and standalone local Live",
+    "sha256": "00c87d262e63d3b981819f8ef1593aaf33cc49327c95d7740ce7e07ba1aa0692"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+  "backend": "PostgreSQL projects; legacy filesystem catalog",
+  "command": "LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> FORGE_CATALOG_TEST_BACKEND=postgres timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-project-catalog-chrome-7c.test.js",
+  "log": "docs/v2-7c-3-evidence/logs/postgres-catalog-final.tap",
+  "tests": {
+    "total": 16,
+    "pass": 16,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "exitCode": 0,
+  "note": "Repeated coverage excluded from distinct matrix totals."
+}

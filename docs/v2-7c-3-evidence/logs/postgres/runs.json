@@ -1,0 +1,110 @@
+[
+  {
+    "name": "v2-projects-6c-postgres.test",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-projects-6c-postgres.test.js"
+    ],
+    "files": [
+      "test/v2-projects-6c-postgres.test.js"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "v2-projects-6c-concurrency.test",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-projects-6c-concurrency.test.js"
+    ],
+    "files": [
+      "test/v2-projects-6c-concurrency.test.js"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "v2-projects-6c-faults.test",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-projects-6c-faults.test.js"
+    ],
+    "files": [
+      "test/v2-projects-6c-faults.test.js"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "v2-import-postgres-7b.test",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-import-postgres-7b.test.js"
+    ],
+    "files": [
+      "test/v2-import-postgres-7b.test.js"
+    ],
+    "exitCode": 0
+  }
+]

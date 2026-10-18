@@ -41,7 +41,7 @@ for (const [name, source, selected] of [
     const destination = `${root}/native/${name}-${index + 1}.png`;
     await copyFile(rendered.pages[index], destination); rasters.push(destination);
   }
-  records.push({ source, sha256: createHash('sha256').update(bytes).digest('hex'), bytes: bytes.length, slideCount: slides.length, chartParts: chartFiles.length, nativeTable, nativeAssertions: 'passed', rasters });
+  records.push({ source, backend: 'SQLite; authenticated current serial B1/B2 browser exports', sha256: createHash('sha256').update(bytes).digest('hex'), bytes: bytes.length, slideCount: slides.length, chartParts: chartFiles.length, nativeTable, nativeAssertions: 'passed', rasters });
 }
 await writeFile(`${root}/export-inspection.json`, `${JSON.stringify({ implementationSha: JSON.parse(await readFile(`${root}/validation-plan.json`, 'utf8')).implementationSha, renderer: 'Actual authenticated exports; src/preview.js via LibreOffice/Poppler', records, limitation: 'LibreOffice rasters do not establish interactive Microsoft PowerPoint behavior.' }, null, 2)}\n`);
 console.log('Native OOXML checks and five selected slide rasters produced; visual inspection is separate.');
