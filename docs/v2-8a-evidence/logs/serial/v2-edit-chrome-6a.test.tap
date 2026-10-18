@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: v2-6a projects in real chrome
+    # Subtest: saves the current deck and reports a confirmed saved state
+    ok 1 - saves the current deck and reports a confirmed saved state
+      ---
+      duration_ms: 1948.054604
+      type: 'test'
+      ...
+    # Subtest: recovers the saved project after refresh with identical ids
+    ok 2 - recovers the saved project after refresh with identical ids
+      ---
+      duration_ms: 4414.568114
+      type: 'test'
+      ...
+    # Subtest: edits the reopened project and saves again
+    ok 3 - edits the reopened project and saves again
+      ---
+      duration_ms: 5893.787017
+      type: 'test'
+      ...
+    # Subtest: lists, renames, and deletes behind confirmation
+    ok 4 - lists, renames, and deletes behind confirmation
+      ---
+      duration_ms: 2806.319033
+      type: 'test'
+      ...
+    # Subtest: keeps both editors' work safe on a stale save
+    ok 5 - keeps both editors' work safe on a stale save
+      ---
+      duration_ms: 8358.310573
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-6a projects in real chrome
+  ---
+  duration_ms: 23684.021276
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25011.589707
+# forge-test-file "test/v2-edit-chrome-6a.test.js"

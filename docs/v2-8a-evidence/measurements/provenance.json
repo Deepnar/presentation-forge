@@ -1,0 +1,163 @@
+[
+  {
+    "source": "docs/v2-7a-evidence/canvas-chart.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7a-evidence--canvas-chart.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "26b388fc3ec5804b5d26b07f27ebf567d6d77f2dc6ee50a27cea3aabb8d2d0c4"
+  },
+  {
+    "source": "docs/v2-7a-evidence/canvas-table.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7a-evidence--canvas-table.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "2406cb6c159a47840c1f0469d22ac6a4beef81a2d3a31a1d96bc0bb4f7dc7f7e"
+  },
+  {
+    "source": "docs/v2-7a-evidence/large-deck.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7a-evidence--large-deck.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "d4b16ef2d199f7d04a5baf52fb0baa64a0eb85ef7c51604cd31d8bef4d726a90"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/boundary-60.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7b-1-validation--boundary-60.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "90eeaa89ae0bc3c238ac26f84e6c382118b8f0257cdac54f2b8af01440820c0f"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/narrow.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7b-1-validation--narrow.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "26f46ea702b95c16aaca1d281b769855aa85633c768095621cf7bf793bc64760"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/canvas-table.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7b-1-validation--canvas-table.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "80eb10c53aebb9b2a8516d3491d34c7efe8dfb34648938778f361d338856ac6a"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/canvas-chart.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7b-1-validation--canvas-chart.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "ebde0e49dc9ca7b74226fa7e0d9e2aaaf64df243c104540ad1843fb7b555a1f8"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/boundary-60.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7b-2-validation--boundary-60.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "3e1cd4210471a75ae5283115a6c6ad62a5e516e587b1d9d3b2621acefb477856"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/save-states.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7b-2-validation--save-states.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "0fa6aa1ca35c5ad65840b8d183573bbc117d42108808be911ee41787e14cec3a"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/refusal-narrow.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7b-2-validation--refusal-narrow.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "45ec228c98632572dde6cdce92cff4b4f06d7d1813706a07527e3025a451e6bd"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/cold-warm.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7b-2-validation--cold-warm.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "6bee6866dfa99a5c548b4c1ceeb48d9e302ebbc96d0ff5ee3027911acaee3764"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/covers-font-static.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-1-validation--covers-font-static.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "d9fd34df0144720dda2621f8de45094e6debe93605a83b3efd64e4a2aed223d3"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/covers-font-http.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-1-validation--covers-font-http.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "25dca8f450847b68eed4f40818021437bd9ee707e949c297c0b4ea30678458dc"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/retry-font.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-1-validation--retry-font.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "07f7942154acf8940282ce0e682e254e6694996f8a59c8c7821ae8a999fd5571"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/retry-network.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-1-validation--retry-network.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "d27fe32bb39ef145726244dee5df6d0f319c026b014daa97c8640b3a43f1c805"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/many-projects.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-1-validation--many-projects.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "ae9646d159e5b9d5743ea69b396678ed89f1f2837b2b4fe2b067233ac527c62b"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/first-visible.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-1-validation--first-visible.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "8006a322b3466b8dd19373d67a5ce421efde7501ee1300a96c4f3eb789428846"
+  },
+  {
+    "source": "out/v2-7c-1-validation/browser/narrow.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-1-validation--narrow.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "227134a0d904cf844a46ae8aa677157c250c491515f1ef3b8ac8ca251c2b50c7"
+  },
+  {
+    "source": "out/v2-7c-2-validation/browser/discovery.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-2-validation--discovery.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "b85f316d7d39d0ee83716fa5d1bde9c671c3d0c0b50d81117c4da703ac6e82b8"
+  },
+  {
+    "source": "out/v2-7c-2-validation/browser/narrow.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-2-validation--narrow.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "567287d70d6c131b1043cc31a95ea66768d46befba3b901c7bb7cfc729c7231a"
+  },
+  {
+    "source": "out/v2-7c-3-validation/browser/narrow-light.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-3-validation--narrow-light.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "dae16608f92439f017a0862c7364a0edfb3029f6fd5a03142fe12d2239a593a8"
+  },
+  {
+    "source": "out/v2-7c-3-validation/browser/narrow-dark.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-3-validation--narrow-dark.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "dae16608f92439f017a0862c7364a0edfb3029f6fd5a03142fe12d2239a593a8"
+  },
+  {
+    "source": "out/v2-7c-3-validation/browser/canvas.json",
+    "path": "docs/v2-8a-evidence/measurements/v2-7c-3-validation--canvas.json",
+    "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "backend": "SQLite production projects or standalone fixture",
+    "sha256": "00c87d262e63d3b981819f8ef1593aaf33cc49327c95d7740ce7e07ba1aa0692"
+  }
+]

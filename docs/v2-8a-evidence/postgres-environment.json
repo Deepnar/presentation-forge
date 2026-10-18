@@ -1,5 +1,5 @@
 {
-  "implementationSha": "f5591f7174006d4282cde56532e280e1184f6951",
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
   "containerId": "ade3aa49ba1a06239abe86e33034981fa0d424437edbd82e81e81104e73ca419",
   "name": "/forge_v28a_validation_pg",
   "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
@@ -13,5 +13,9 @@
   },
   "autoRemove": true,
   "readiness": "/var/run/postgresql:5432 - accepting connections",
-  "ownership": "Created exclusively for V2-8A validation and review; unrelated services untouched."
+  "ownership": "Created exclusively for V2-8A validation and review; unrelated services untouched.",
+  "provisionedForSha": "f5591f7174006d4282cde56532e280e1184f6951",
+  "reuse": "Same exclusively owned ephemeral service retained across the test-only refreeze; no unrelated DB used.",
+  "nodeVersion": "v24.16.0",
+  "serverVersion": "15.18"
 }

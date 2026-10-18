@@ -1,0 +1,34 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "inventoryFiles": 209,
+  "uniqueTests": {
+    "total": 2393,
+    "pass": 2393,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "supplementalHeadless": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "focusedRepeated": {
+    "total": 59,
+    "pass": 59,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "unexecuted": 0,
+  "note": "Focused/preliminary/review executions are not added again to unique matrix totals. One headless case is distinct; locale standing failure remains separate."
+}

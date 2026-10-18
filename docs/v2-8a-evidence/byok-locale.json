@@ -1,0 +1,14 @@
+{
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "command": "LC_ALL=en_IN.UTF-8 node --test test/byok-budget.test.js",
+  "log": "docs/v2-8a-evidence/logs/byok-locale.tap",
+  "tests": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "exitCode": 1,
+  "classification": "Standing locale expectation failure; separate from required C.UTF-8 inventory."
+}

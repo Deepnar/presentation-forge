@@ -30,5 +30,7 @@
       "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=4350806\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=4213271\n"
     },
     "memory": "               total        used        free      shared  buff/cache   available\nMem:           63716       32940        6479        2246       27559       30775\nSwap:          63715        2745       60970\n"
-  }
+  },
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "nodeVersion": "v24.16.0"
 }

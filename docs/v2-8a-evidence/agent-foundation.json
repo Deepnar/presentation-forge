@@ -1,0 +1,19 @@
+{
+  "id": "agent-foundation",
+  "kind": "tests",
+  "implementationSha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "command": "LC_ALL=C.UTF-8 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-tools-8a.test.js test/v2-context-8a.test.js",
+  "log": "docs/v2-8a-evidence/logs/agent-foundation.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 59,
+    "pass": 59,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-tools-8a.test.js",
+    "test/v2-context-8a.test.js"
+  ]
+}
