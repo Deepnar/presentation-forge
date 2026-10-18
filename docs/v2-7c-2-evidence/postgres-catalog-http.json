@@ -1,6 +1,6 @@
 {
   "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
-  "backend": "PostgreSQL",
+  "backend": "Seven hosted PostgreSQL15.18 cases; one separate local SQLite anonymous-policy case",
   "command": "LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> FORGE_CATALOG_TEST_BACKEND=postgres timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-project-catalog-http-7c.test.js",
   "log": "docs/v2-7c-2-evidence/logs/postgres-http-final.tap",
   "tests": {
@@ -11,5 +11,5 @@
     "cancelled": 0
   },
   "exitCode": 0,
-  "note": "Repeated actual catalog HTTP cases on isolated PostgreSQL; excluded from distinct totals."
+  "note": "Eight repeated actual catalog HTTP cases. The final case deliberately creates a local SQLite fixture; no unavailable backend is counted as passing. Excluded from distinct totals."
 }

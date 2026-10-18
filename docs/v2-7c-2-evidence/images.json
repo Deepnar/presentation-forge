@@ -933,7 +933,7 @@
       "sha256": "bdae197071e3f226f6d652a6f4d71ed3ac5a6e15c92342bbadd31095b561cf47",
       "width": 1467,
       "height": 825,
-      "backend": "Native authenticated export; exact source/backend in export-inspection.json",
+      "backend": "SQLite authenticated embedded-shell export; exact source/backend in shell-export-inspection.json",
       "source": "docs/v2-7c-2-evidence/native/shell-chart.png",
       "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa"
     },
@@ -942,7 +942,7 @@
       "sha256": "64f377da7127d2ac26b63fb346d861e67966524c4c6703f741296f613a832f27",
       "width": 1467,
       "height": 825,
-      "backend": "Native authenticated export; exact source/backend in export-inspection.json",
+      "backend": "SQLite authenticated embedded-shell export; exact source/backend in shell-export-inspection.json",
       "source": "docs/v2-7c-2-evidence/native/shell-table.png",
       "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa"
     },

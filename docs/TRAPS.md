@@ -1782,6 +1782,9 @@ An ancestor finishing its transform can also change a fixed dialog's containing
 block after apparently stable frames. Wait for that animation to finish before
 measuring pointer coordinates; trace actual event targets and request attempts
 when distinguishing a missed click from a failed product action.
+An absent loading label before a debounce fires does not prove query completion.
+Wait for the exact query response and its settled UI before recording empty-result
+evidence; otherwise a passing assertion can still capture an in-flight search.
 
 **Focus restoration and containment share one lifetime.** StrictMode's synthetic
 cleanup leaves the dialog DOM connected. Restoring its invoker before removing a
