@@ -23,8 +23,26 @@ async function wait(page, expression, timeout = 30000) {
   throw new Error(`timed out: ${expression}; ${await page.evaluate("document.body.innerText.slice(-1600)").catch(() => "no context")}`);
 }
 async function click(page, selector) {
-  await wait(page, `(() => {const n=document.querySelector(${JSON.stringify(selector)});if(!n)return false;n.scrollIntoView({block:'nearest'});const r=n.getBoundingClientRect(),hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);return !n.disabled && (hit===n || n.contains(hit))})()`);
-  const point = await page.evaluate(`(() => {const n=document.querySelector(${JSON.stringify(selector)});if(!n)return null;n.scrollIntoView({block:'nearest'});const r=n.getBoundingClientRect();return [r.x+r.width/2,r.y+r.height/2]})()`);
+  await wait(page, "document.getAnimations().filter(a=>['view-in','fade-in'].some(name=>a.effect?.target?.classList?.contains(name))).every(a=>a.playState!=='running')", 6000);
+  await wait(page, `document.querySelector(${JSON.stringify(selector)}) && !document.querySelector(${JSON.stringify(selector)}).disabled`);
+  // A source retry changes the rail width while smooth scrolling can still run.
+  // A trusted press/release must address the same settled, unobscured control.
+  await page.evaluate(`window.__handoffClickReady={done:false,point:null};void (async () => {
+    const n=document.querySelector(${JSON.stringify(selector)});if(!n)return null;
+    await document.fonts.ready;n.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});
+    let previous=null,stable=0;const end=performance.now()+5000;
+    while(performance.now()<end){
+      await new Promise(requestAnimationFrame);
+      if(!n.isConnected||n.disabled)return null;
+      const r=n.getBoundingClientRect(),box=[r.x,r.y,r.width,r.height];
+      const hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);
+      const visible=r.width>0&&r.height>0&&r.x+r.width/2>=0&&r.x+r.width/2<innerWidth&&r.y+r.height/2>=0&&r.y+r.height/2<innerHeight&&(hit===n||n.contains(hit));
+      stable=visible&&previous&&box.every((v,i)=>Math.abs(v-previous[i])<.05)?stable+1:0;
+      if(stable>=3){window.__handoffClickReady.point=[r.x+r.width/2,r.y+r.height/2];break;}previous=box;
+    }
+  })().finally(()=>{window.__handoffClickReady.done=true})`);
+  await wait(page, 'window.__handoffClickReady?.done===true');
+  const point = await page.evaluate('window.__handoffClickReady.point');
   assert.ok(point, selector); await page.click(...point);
 }
 async function ready(page, id) { return wait(page, `${SAVE}==='saved' && ${PROJECT}?.id${id ? `===${JSON.stringify(id)}` : ""}`); }
