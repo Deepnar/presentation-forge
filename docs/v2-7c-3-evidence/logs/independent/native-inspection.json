@@ -1,0 +1,57 @@
+{
+  "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+  "records": [
+    {
+      "name": "shell-chart",
+      "source": "out/v2-7c-3-independent/shell-chart.pptx",
+      "freshness": "fresh independent complete 7A authenticated SQLite export",
+      "sha256": "f33859c5f50fe7b38b440ebe952cea9ebe8647ac7c4749aefa2fa10523c9f438",
+      "slideCount": 1,
+      "assertions": "passed",
+      "renderedPages": [
+        "/home/deepnar/Programs/presentations/docs/v2-7c-3-evidence/logs/independent/native/shell-chart/slide-1.png"
+      ]
+    },
+    {
+      "name": "shell-table",
+      "source": "out/v2-7c-3-independent/shell-table.pptx",
+      "freshness": "fresh independent complete 7A authenticated SQLite export",
+      "sha256": "f201288bfb002edfb56ea4d615342275844544eac8665795921cc6fd91174825",
+      "slideCount": 1,
+      "assertions": "passed",
+      "renderedPages": [
+        "/home/deepnar/Programs/presentations/docs/v2-7c-3-evidence/logs/independent/native/shell-table/slide-1.png"
+      ]
+    },
+    {
+      "name": "toolbar-shapes",
+      "source": "out/v2-7c-3-independent/postgres-toolbar-shapes.pptx",
+      "freshness": "fresh independent complete toolbar authenticated PostgreSQL export",
+      "sha256": "2970ffaf539991d432a6507137a95d9c7bc43da95d1c63e921bafdfc263fbbd5",
+      "slideCount": 3,
+      "assertions": "passed",
+      "renderedPages": [
+        "/home/deepnar/Programs/presentations/docs/v2-7c-3-evidence/logs/independent/native/toolbar-shapes/slide-1.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7c-3-evidence/logs/independent/native/toolbar-shapes/slide-2.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7c-3-evidence/logs/independent/native/toolbar-shapes/slide-3.png"
+      ]
+    },
+    {
+      "name": "handoff",
+      "source": "out/v2-7c-3-validation/browser/handoff.pptx",
+      "freshness": "inspected implementer final-source authenticated SQLite export; exact recorded hash",
+      "sha256": "3c352679d0add0b33535e86170ad837404fbe4cbc22a1db22987d33f47cde73b",
+      "slideCount": 3,
+      "assertions": "passed",
+      "renderedPages": [
+        "/home/deepnar/Programs/presentations/docs/v2-7c-3-evidence/logs/independent/native/handoff/slide-1.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7c-3-evidence/logs/independent/native/handoff/slide-2.png",
+        "/home/deepnar/Programs/presentations/docs/v2-7c-3-evidence/logs/independent/native/handoff/slide-3.png"
+      ]
+    }
+  ],
+  "pagesRasterized": 8,
+  "inspectedVisually": true,
+  "limitation": "Native PowerPoint interaction is not established by LibreOffice/Poppler rendering.",
+  "visualFinding": "All eight raster pages inspected at full resolution. Edited native chart/table text and decimal values remain readable. The manual insertion exercise retains separate native text/rect/roundRect/ellipse objects with their existing overlapping default insertion placements; no automatic composition claim."
+}

@@ -1,0 +1,208 @@
+[
+  {
+    "name": "focused",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "checkoutHead": "98ed6f0d86f7dab1275154d1229a6bfac30f62b1",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-editor-toolbar-chrome-7c.test.js",
+      "test/v2-edit-chrome-7a.test.js"
+    ],
+    "environment": {
+      "LC_ALL": "C.UTF-8",
+      "TEST_PG_URL": "owned localhost:5544"
+    },
+    "exitCode": 0,
+    "durationSeconds": 184.789829
+  },
+  {
+    "name": "governance",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "checkoutHead": "98ed6f0d86f7dab1275154d1229a6bfac30f62b1",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "test/dev-protocol.test.js"
+    ],
+    "environment": {
+      "LC_ALL": "C.UTF-8",
+      "TEST_PG_URL": "owned localhost:5544"
+    },
+    "exitCode": 0,
+    "durationSeconds": 0.853353
+  },
+  {
+    "name": "postgres-toolbar",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "checkoutHead": "98ed6f0d86f7dab1275154d1229a6bfac30f62b1",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-editor-toolbar-chrome-7c.test.js"
+    ],
+    "environment": {
+      "LC_ALL": "C.UTF-8",
+      "TEST_PG_URL": "owned localhost:5544",
+      "FORGE_TOOLBAR_TEST_BACKEND": "postgres"
+    },
+    "exitCode": 0,
+    "durationSeconds": 41.552079
+  },
+  {
+    "name": "production-build",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "checkoutHead": "98ed6f0d86f7dab1275154d1229a6bfac30f62b1",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node_modules/.bin/vite",
+      "build",
+      "--config",
+      "app/web/vite.config.js"
+    ],
+    "environment": {
+      "LC_ALL": "C.UTF-8",
+      "TEST_PG_URL": "owned localhost:5544"
+    },
+    "exitCode": 0,
+    "durationSeconds": 0.458187
+  },
+  {
+    "name": "typecheck",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "checkoutHead": "98ed6f0d86f7dab1275154d1229a6bfac30f62b1",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "environment": {
+      "LC_ALL": "C.UTF-8",
+      "TEST_PG_URL": "owned localhost:5544"
+    },
+    "exitCode": 0,
+    "durationSeconds": 0.964298
+  },
+  {
+    "name": "protocol",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "checkoutHead": "98ed6f0d86f7dab1275154d1229a6bfac30f62b1",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "npm",
+      "run",
+      "dev:protocol"
+    ],
+    "environment": {
+      "LC_ALL": "C.UTF-8",
+      "TEST_PG_URL": "owned localhost:5544"
+    },
+    "exitCode": 0,
+    "durationSeconds": 0.168204
+  },
+  {
+    "name": "benchmark",
+    "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+    "checkoutHead": "98ed6f0d86f7dab1275154d1229a6bfac30f62b1",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "tools/v2-benchmark.mjs",
+      "--out",
+      "out/v2-7c-3-independent/benchmark",
+      "--raster",
+      "none"
+    ],
+    "environment": {
+      "LC_ALL": "C.UTF-8",
+      "TEST_PG_URL": "owned localhost:5544"
+    },
+    "exitCode": 0,
+    "durationSeconds": 4.651756
+  }
+]

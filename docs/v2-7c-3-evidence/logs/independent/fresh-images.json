@@ -1,0 +1,118 @@
+[
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/editor-desktop.png",
+    "sha256": "66d87a461c89ee6a5b014b4a9651d16cbe48cccbd46cfd8208dd0389dee35d23"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/standalone-live.png",
+    "sha256": "1704701176bcc7412c68650f23f912bd91994447e73c25a7880ca0ff29cd3383"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/standalone-projects.png",
+    "sha256": "1f88bb1762a7dd87d7b4fe65227e6b1411e486be8cdbbd8e17b0ad0d4419943b"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/editor-chart.png",
+    "sha256": "2a5278fef08bb80c8886e2dc723c5457bd995d2281e8d87d986f762c8c8914df"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/editor-table.png",
+    "sha256": "c6500b216000e8ab1f015ebea6954dd23d3c6876cf7741885777ba9e99fe9cb3"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/editor-readonly.png",
+    "sha256": "38899725b0e0eea147f2c7ad4f70ad3bbf43fdb5c7b8461df70f08d67354b48a"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/editor-narrow-light.png",
+    "sha256": "b7b1c9001cccd3d60f9861abe793ae7392cfc1f5d734c24b2d0fbff1248cbdba"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/editor-narrow-dark.png",
+    "sha256": "3d40113f2f2cb79302af90b7a4951c180fed9bb77466f6003b83ea2e194c254e"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/editor-blank-history.png",
+    "sha256": "3aeaa568006329b331e65930b4dbbd55939b4677c4e9d8432bb8835bb750245c"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/postgres-toolbar/editor-desktop.png",
+    "sha256": "bb43a3c990a499d9827ae9c763447364028bc08d08d9f6f30c90cc521ff60cae"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/postgres-toolbar/standalone-live.png",
+    "sha256": "d15335fc59dbf366d4bee8d5d2010f124a29af7bd25b0bb993c34168a578f8a0"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/postgres-toolbar/standalone-projects.png",
+    "sha256": "1f88bb1762a7dd87d7b4fe65227e6b1411e486be8cdbbd8e17b0ad0d4419943b"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/postgres-toolbar/editor-chart.png",
+    "sha256": "052614d015a10664144858cc3a72820dc29fa3fae8ae61e3abc9ee0b25af838d"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/postgres-toolbar/editor-table.png",
+    "sha256": "3d22c41bb70819a350a68b244f01742179fc222ef2885eaa6e2e911cd4a61d2d"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/postgres-toolbar/editor-readonly.png",
+    "sha256": "38899725b0e0eea147f2c7ad4f70ad3bbf43fdb5c7b8461df70f08d67354b48a"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/postgres-toolbar/editor-narrow-light.png",
+    "sha256": "b7b1c9001cccd3d60f9861abe793ae7392cfc1f5d734c24b2d0fbff1248cbdba"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/postgres-toolbar/editor-narrow-dark.png",
+    "sha256": "3d40113f2f2cb79302af90b7a4951c180fed9bb77466f6003b83ea2e194c254e"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/postgres-toolbar/editor-blank-history.png",
+    "sha256": "6394f84f4bc048e29670482facf1823638c9eddad3d9301d97f039e7a6f75667"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/dashboard-empty.png",
+    "sha256": "7a53aefd13c041d0ed0bf882528b2c72f2c7186baa1c013df431acb78e3b8a43"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/dashboard-hosted-anon.png",
+    "sha256": "8c98aef9c624a7bf2a9a230424bf56dfb6831aa38711a232ad71f92bfb6a2c7a"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/dashboard.png",
+    "sha256": "a80390110bce1bbbf43e87427e2d64e8fe9ac8eba4ee5a0d8bda74cc8e222053"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/editor-blank.png",
+    "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/editor-chart.png",
+    "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/editor-history.png",
+    "sha256": "9af3cf6664688153b30d073bb78dd8a3aa41839fd9758b1f805e5bae3b8ed6c6"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/editor-narrow-projects.png",
+    "sha256": "7dd0ff903bf11538c56178bff860f1efa213973113f8a65e69d098d6bce60e22"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/editor-narrow.png",
+    "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/editor-readonly.png",
+    "sha256": "44796071cf8b6926f30af3b3d9981b9dd9eff5739c3f232903e0b087d2d6d95d"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/editor-shell.png",
+    "sha256": "75bbdee2eccb680b5e482e00e344765b53359995d36a58652bc45717868c5dab"
+  },
+  {
+    "path": "docs/v2-7c-3-evidence/logs/independent/fresh/focused/shell/editor-table.png",
+    "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9"
+  }
+]

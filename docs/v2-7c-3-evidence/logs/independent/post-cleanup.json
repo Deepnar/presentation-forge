@@ -1,0 +1,8 @@
+{
+  "ownedContainer": "3abaddfa8f3b9a1fd67a3817df5dd1153042d0ead37a9423422b6e013d6a8436",
+  "containerAbsent": true,
+  "localhost5544Closed": true,
+  "reviewerAction": "Read-only post-cleanup probes; service stopped by implementer after validation slot release",
+  "preRemovalDatabaseCount": null,
+  "limitation": "Implementer reports query ran but output was not retained during automatic removal; no zero-database claim."
+}

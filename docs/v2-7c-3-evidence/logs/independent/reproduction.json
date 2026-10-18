@@ -1,0 +1,50 @@
+{
+  "implementationSha": "484875ff5c826a34028889ed2fc6118bfdc407ad",
+  "reviewedEvidenceCommit": "98ed6f0d86f7dab1275154d1229a6bfac30f62b1",
+  "reviewerContext": "/root/catalog_review",
+  "testResults": [
+    {
+      "name": "focused",
+      "total": 37,
+      "pass": 37,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "governance",
+      "total": 23,
+      "pass": 23,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "postgres-toolbar",
+      "total": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  ],
+  "primaryExecutedTotals": {
+    "total": 69,
+    "pass": 69,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "nativeCommand": {
+    "command": "LC_ALL=C.UTF-8 nice -n10 ionice -c2 -n7 timeout --signal=TERM --kill-after=10s 5m node docs/v2-7c-3-evidence/logs/independent/native-check.mjs",
+    "exitCode": 0,
+    "rasterPagesInspected": 8,
+    "freshExportSources": "Two independent complete7A SQLite shell exports and one independent toolbar PostgreSQL export",
+    "inspectedExportSource": "Recorded final-source B2 SQLite export; SHA256 checked against implementer record"
+  },
+  "finalizedEvidenceFilesRestored": 391,
+  "finalizedImagesRehashed": 123,
+  "freshBrowserImagesInspected": 29,
+  "completeMatrixIndependentlyDuplicated": false,
+  "runtimeDeltaAfterFrozenSource": ""
+}
