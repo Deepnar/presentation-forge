@@ -1,0 +1,65 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "acceptedBaselineCompared": "f79ae07d6ad1696da3106a2a1148ae0ce7f58f51",
+  "reviewedEvidenceCommit": "c6fb05196a88bafebec78c9d3fba31ed330b5c3e",
+  "reviewer": "V2-7C-2 independent acceptance reviewer",
+  "context": "/root/catalog_review",
+  "date": "2026-10-18",
+  "evidence": "docs/reviews/V2-7C-2-bf1bd8f.md",
+  "independentEvidence": "docs/v2-7c-2-evidence/logs/independent/reproduction.json",
+  "independentPrimaryExecutions": {
+    "total": 109,
+    "pass": 109,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "focusedSqlite": 41,
+    "governance": 22,
+    "postgresCatalogChrome": 16,
+    "catalogHttpBackendRepeat": 8,
+    "postgresCoverChrome": 12,
+    "postgresCoverHttp": 9,
+    "hostedPostgres": 1
+  },
+  "inspectedImplementerMatrix": {
+    "files": 205,
+    "total": 2320,
+    "pass": 2320,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "requiredUnexecuted": 0,
+    "distinctSupplementalHostedPass": 1,
+    "completeMatrixIndependentlyDuplicated": false
+  },
+  "commands": {
+    "typecheck": "passed independently",
+    "protocol": "passed independently; zero errors/warnings",
+    "benchmark50": "passed independently; all findings zero and five invariance checks agree; raster none",
+    "productionBuild": "passed during complete browser setup; separate standalone implementer build inspected",
+    "native": "fresh PostgreSQL cover/edit/restore/source-deletion/authenticated native text/chart/table export passes; three pages rasterized and inspected"
+  },
+  "visuals": {
+    "finalizedImagesHashedAndInspected": 106,
+    "freshBrowserCapturesInspected": 44,
+    "freshNativePagesInspected": 3,
+    "finalizedEvidenceFilesRestored": 789,
+    "finalizedImageHashesRechecked": true
+  },
+  "residuals": [
+    "Recurring unchanged B2 restore timeout remains unresolved: original 10-pass/1-timeout file and complete unchanged 11-pass retry retain distinct provenance",
+    "Separate BYOK locale probe remains 9 pass/1 standing failure; inspected, not independently rerun",
+    "C1 narrow capture can precede rail settlement; fresh C2 settled controls and screenshots are unobscured",
+    "Intermediate no-match captures are distinguished from the additional exact-query settled capture",
+    "Catalog HTTP backend repeat includes seven hosted PostgreSQL cases and one separate local SQLite anonymous-policy case",
+    "Existing Fit, narrow inspector overlay, toolbar/table scrolling and conditional font/content limitations remain",
+    "Two generic shell-native image provenance labels resolve through shell-export-inspection.json",
+    "No exhaustive accessibility, interactive Microsoft PowerPoint, live Auto writing-quality or deployment claim",
+    "Review interruption occurred after completed execution; retained results and restored hashes revalidated after restart without rerunning or restarting services"
+  ],
+  "implementationTestsStateEdited": false,
+  "heavySlotReleased": true,
+  "ownedPostgresStoppedByReviewer": false
+}

@@ -1,0 +1,81 @@
+{
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "reviewedEvidenceCommit": "c6fb05196a88bafebec78c9d3fba31ed330b5c3e",
+  "reviewerContext": "/root/catalog_review",
+  "runs": "docs/v2-7c-2-evidence/logs/independent/runs.json",
+  "testResults": [
+    {
+      "name": "focused-sqlite",
+      "total": 41,
+      "pass": 41,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "governance",
+      "total": 22,
+      "pass": 22,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "postgres-catalog",
+      "total": 16,
+      "pass": 16,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "postgres-http",
+      "total": 8,
+      "pass": 8,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "postgres-covers",
+      "total": 12,
+      "pass": 12,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "postgres-cover-http",
+      "total": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    {
+      "name": "hosted",
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  ],
+  "primaryExecutedTotals": {
+    "total": 109,
+    "pass": 109,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "nativeCommand": {
+    "command": "LC_ALL=C.UTF-8 TEST_PG_URL=<owned localhost:5544> nice -n10 ionice -c2 -n7 timeout --signal=TERM --kill-after=10s 5m node docs/v2-7c-2-evidence/logs/independent/native-check.mjs",
+    "exitCode": 0,
+    "backend": "PostgreSQL 15.18; unique disposable database, removed after command",
+    "pagesRasterizedAndInspected": 3
+  },
+  "finalizedEvidenceFilesRestored": 789,
+  "finalizedImagesRehashed": 106,
+  "standaloneFullMatrixIndependentlyReexecuted": false,
+  "runtimeDeltaAfterFrozenSource": ""
+}

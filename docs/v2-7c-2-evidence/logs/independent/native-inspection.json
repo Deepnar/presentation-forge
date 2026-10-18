@@ -1,0 +1,23 @@
+{
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "backend": "PostgreSQL 15.18; unique disposable review database",
+  "checks": [
+    "canonical cover equality",
+    "foreign cover refused",
+    "saved edit cover revision",
+    "stale cover refused",
+    "catalog reads preserve source bytes",
+    "restore-as-new revision",
+    "original deletion retains saved document",
+    "authenticated native text/chart/table export after source deletion"
+  ],
+  "sourceSha256": "927c201ec5e75f738ac14049e50511e7fc14a8a2401e1a8b0b2f21ce8836f6e8",
+  "exportSha256": "436f7fed400c4377e1750f49379256676ca674569a71d2432e04a905c31dde1f",
+  "pages": 3,
+  "chartValues": [
+    1.25,
+    12.5
+  ],
+  "inspectedVisually": true,
+  "visualFinding": "All three exported pages inspected at full resolution; readable native text/chart/table, no observed clipping or overlap."
+}

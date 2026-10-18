@@ -1,0 +1,261 @@
+TAP version 13
+# Subtest: saved and generated identities remain distinct even with identical names and ids
+ok 1 - saved and generated identities remain distinct even with identical names and ids
+  ---
+  duration_ms: 2.245362
+  type: 'test'
+  ...
+# Subtest: the mixed catalog sorts source timestamps deterministically without changing metadata
+ok 2 - the mixed catalog sorts source timestamps deterministically without changing metadata
+  ---
+  duration_ms: 0.254308
+  type: 'test'
+  ...
+# Subtest: source-qualified duplicates never hide an independently saved copy
+ok 3 - source-qualified duplicates never hide an independently saved copy
+  ---
+  duration_ms: 0.145464
+  type: 'test'
+  ...
+# Subtest: filters preserve report-only and combined-artifact generated entries
+ok 4 - filters preserve report-only and combined-artifact generated entries
+  ---
+  duration_ms: 0.262059
+  type: 'test'
+  ...
+# Subtest: title/id/theme matches and content hits share one catalog without trusting foreign hits
+ok 5 - title/id/theme matches and content hits share one catalog without trusting foreign hits
+  ---
+  duration_ms: 0.213766
+  type: 'test'
+  ...
+# Subtest: two independent reads publish useful results before the other source finishes
+ok 6 - two independent reads publish useful results before the other source finishes
+  ---
+  duration_ms: 11.597523
+  type: 'test'
+  ...
+# Subtest: a failing source does not erase the healthy list and retries only its own source
+ok 7 - a failing source does not erase the healthy list and retries only its own source
+  ---
+  duration_ms: 11.225446
+  type: 'test'
+  ...
+# Subtest: a newer refresh aborts and cannot be replaced by an older response
+ok 8 - a newer refresh aborts and cannot be replaced by an older response
+  ---
+  duration_ms: 15.476975
+  type: 'test'
+  ...
+# Subtest: a stalled source times out, aborts and leaves the other source usable
+ok 9 - a stalled source times out, aborts and leaves the other source usable
+  ---
+  duration_ms: 15.188226
+  type: 'test'
+  ...
+# Subtest: debounce issues only the current normalized search query
+ok 10 - debounce issues only the current normalized search query
+  ---
+  duration_ms: 5.926506
+  type: 'test'
+  ...
+# Subtest: a late older content search cannot overwrite the current query
+ok 11 - a late older content search cannot overwrite the current query
+  ---
+  duration_ms: 16.057631
+  type: 'test'
+  ...
+# Subtest: clearing the query removes content hits immediately and cancels delayed work
+ok 12 - clearing the query removes content hits immediately and cancels delayed work
+  ---
+  duration_ms: 25.683515
+  type: 'test'
+  ...
+# Subtest: failed content search is explicit and can retry the current query
+ok 13 - failed content search is explicit and can retry the current query
+  ---
+  duration_ms: 9.712348
+  type: 'test'
+  ...
+# Subtest: malformed source and search responses are never reported as ready empty lists
+ok 14 - malformed source and search responses are never reported as ready empty lists
+  ---
+  duration_ms: 4.618219
+  type: 'test'
+  ...
+# Subtest: invalid identities are refused before a card can build an unintended route
+ok 15 - invalid identities are refused before a card can build an unintended route
+  ---
+  duration_ms: 5.748926
+  type: 'test'
+  ...
+# Subtest: disposal aborts both sources and prevents any late publication or new work
+ok 16 - disposal aborts both sources and prevents any late publication or new work
+  ---
+  duration_ms: 10.548185
+  type: 'test'
+  ...
+# Subtest: session expiry cannot publish an old-account response or schedule a new read
+ok 17 - session expiry cannot publish an old-account response or schedule a new read
+  ---
+  duration_ms: 10.727604
+  type: 'test'
+  ...
+# catalog browser backend: sqlite; actual production server/CSP
+# Subtest: one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+ok 18 - one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+  ---
+  duration_ms: 3633.916777
+  type: 'test'
+  ...
+# Subtest: report-only sources open the report, retain companion routes and return to Projects
+ok 19 - report-only sources open the report, retain companion routes and return to Projects
+  ---
+  duration_ms: 4437.156485
+  type: 'test'
+  ...
+# Subtest: title, generated content and type filters give honest results and can clear an empty search
+ok 20 - title, generated content and type filters give honest results and can clear an empty search
+  ---
+  duration_ms: 2214.680428
+  type: 'test'
+  ...
+# Subtest: partial source failures retain the healthy kind and retry only the failed catalog
+ok 21 - partial source failures retain the healthy kind and retry only the failed catalog
+  ---
+  duration_ms: 3994.984251
+  type: 'test'
+  ...
+# Subtest: stale content responses cannot overwrite newer queries or survive query clearing
+ok 22 - stale content responses cannot overwrite newer queries or survive query clearing
+  ---
+  duration_ms: 2376.108659
+  type: 'test'
+  ...
+# Subtest: generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+ok 23 - generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+  ---
+  duration_ms: 3113.245886
+  type: 'test'
+  ...
+# Subtest: saved deletion retains the generated original and its existing destination
+ok 24 - saved deletion retains the generated original and its existing destination
+  ---
+  duration_ms: 2601.315926
+  type: 'test'
+  ...
+# Subtest: account changes clear settled cards, cancel pending search and block a stale destructive action
+ok 25 - account changes clear settled cards, cancel pending search and block a stale destructive action
+  ---
+  duration_ms: 2460.066548
+  type: 'test'
+  ...
+# Subtest: keyboard project search respects pending text navigation guards and restores focus on entry
+ok 26 - keyboard project search respects pending text navigation guards and restores focus on entry
+  ---
+  duration_ms: 2473.623821
+  type: 'test'
+  ...
+# Subtest: settled narrow dark cards, filter controls and deletion dialog remain unobscured
+ok 27 - settled narrow dark cards, filter controls and deletion dialog remain unobscured
+  ---
+  duration_ms: 3104.578184
+  type: 'test'
+  ...
+# Subtest: empty and signed-out hosted catalogs show truthful recovery without false empty success
+ok 28 - empty and signed-out hosted catalogs show truthful recovery without false empty success
+  ---
+  duration_ms: 3017.56066
+  type: 'test'
+  ...
+# Subtest: content-search failure preserves title matches and has an independent retry
+ok 29 - content-search failure preserves title matches and has an independent retry
+  ---
+  duration_ms: 2406.617719
+  type: 'test'
+  ...
+# Subtest: leaving discovery aborts pending search and remounting starts a fresh lifetime
+ok 30 - leaving discovery aborts pending search and remounting starts a fresh lifetime
+  ---
+  duration_ms: 2477.17544
+  type: 'test'
+  ...
+# Subtest: pending deletion keeps focus inside the busy dialog and suppresses navigation shortcuts
+ok 31 - pending deletion keeps focus inside the busy dialog and suppresses navigation shortcuts
+  ---
+  duration_ms: 2248.009548
+  type: 'test'
+  ...
+# Subtest: failed deletions show a focused visible error within the selected-copy dialog and retry safely
+ok 32 - failed deletions show a focused visible error within the selected-copy dialog and retry safely
+  ---
+  duration_ms: 5257.497644
+  type: 'test'
+  ...
+# Subtest: development StrictMode discovery and modal cancellation restore the real invoker
+ok 33 - development StrictMode discovery and modal cancellation restore the real invoker
+  ---
+  duration_ms: 2061.155201
+  type: 'test'
+  ...
+# catalog HTTP backend: sqlite
+# Subtest: canonical metadata exposes generated originals, saved copies and report-only sources
+ok 34 - canonical metadata exposes generated originals, saved copies and report-only sources
+  ---
+  duration_ms: 655.825115
+  type: 'test'
+  ...
+# Subtest: discovery and content search neither convert nor change scenes, revisions or history
+ok 35 - discovery and content search neither convert nor change scenes, revisions or history
+  ---
+  duration_ms: 19.983645
+  type: 'test'
+  ...
+# Subtest: both hosted catalogs and search refuse signed-out access
+ok 36 - both hosted catalogs and search refuse signed-out access
+  ---
+  duration_ms: 3.128988
+  type: 'test'
+  ...
+# Subtest: owner-scoped catalogs and content hits never disclose foreign or ownerless sources
+ok 37 - owner-scoped catalogs and content hits never disclose foreign or ownerless sources
+  ---
+  duration_ms: 25.753936
+  type: 'test'
+  ...
+# Subtest: deleting a saved copy retains the generated original and report
+ok 38 - deleting a saved copy retains the generated original and report
+  ---
+  duration_ms: 5.969322
+  type: 'test'
+  ...
+# Subtest: deleting a generated original retains its independent saved editable copy
+ok 39 - deleting a generated original retains its independent saved editable copy
+  ---
+  duration_ms: 25.864271
+  type: 'test'
+  ...
+# Subtest: admin discovery retains the existing cross-owner policy in both canonical reads
+ok 40 - admin discovery retains the existing cross-owner policy in both canonical reads
+  ---
+  duration_ms: 41.279057
+  type: 'test'
+  ...
+# Subtest: local anonymous saved projects retain their existing policy without exposing legacy ownerless data
+ok 41 - local anonymous saved projects retain their existing policy without exposing legacy ownerless data
+  ---
+  duration_ms: 529.72541
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 49991.632664
+# forge-test-file "test/v2-project-catalog-7c.test.js"
+# forge-test-file "test/v2-project-catalog-chrome-7c.test.js"
+# forge-test-file "test/v2-project-catalog-http-7c.test.js"

@@ -1,0 +1,63 @@
+{
+  "implementationSha": "bf1bd8f7dbce827be04ed530b2e7330b385e8baa",
+  "inventoryFiles": 205,
+  "groups": [
+    {
+      "id": "non-browser-bulk",
+      "files": 176,
+      "counts": {
+        "total": 2079,
+        "pass": 2079,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "serial-browser",
+      "files": 25,
+      "counts": {
+        "total": 199,
+        "pass": 199,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "postgres-contract",
+      "files": 2,
+      "counts": {
+        "total": 23,
+        "pass": 23,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "cross-process-faults",
+      "files": 2,
+      "counts": {
+        "total": 19,
+        "pass": 19,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "project-catalog",
+      "files": 3,
+      "counts": {
+        "total": 41,
+        "pass": 41,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    }
+  ],
+  "postFreezeRuntimeDelta": "",
+  "finalizedImagesHashed": 106
+}

@@ -1,0 +1,178 @@
+[
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-desktop.png",
+    "sha256": "98c643c34232d5074ac7f5e46fe8933f3452e1d1aa3706ab88d3872e4236f45c"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-no-matches.png",
+    "sha256": "7d2711b9d4e90d5449d4004e2cd70c1b1188bb337f53540fe418c9737a2bcf95"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-saved-error.png",
+    "sha256": "4633744b2ec03eda0df5c2ff0a33525d326b8e02e138bb8a3a065606c43885ef"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-generated-error.png",
+    "sha256": "16637168faa0e4ad71c95519c7486aa178905d1c9ca7216789ac218e9a2631d3"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-delete-generated.png",
+    "sha256": "1774d71b1da9016de1a662d8d01923e7dafad51ae2fd61891e7a4c267a3d6c2c"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-narrow-dark.png",
+    "sha256": "7c87e822d878434685246ed6696a724766cbc2c5a45084010e321939e73c63b1"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-narrow-dialog.png",
+    "sha256": "db9f860c6a1ae9df3a6f016626bad4a454fe6db9ba238cda6daa07f6d4e623e6"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-empty.png",
+    "sha256": "863bd631d28cf36d4e21e65663234abca26300bee3a3e8acb6b0a77c8144c3b8"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-signed-out.png",
+    "sha256": "dd32972d287918e9888fd937b6fb1dcdd1e39fd2126272761d33bfec8f22292a"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-delete-pending.png",
+    "sha256": "49d1304ec5857863b89b56f3bf6912abb0e1dc47f8a7bc664fe282328fe781dc"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-delete-generated-failure.png",
+    "sha256": "f4cf862683fe5e9d70c61132649f3e577379fb93c29333f5f73b80848f2fef6b"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-delete-saved-failure.png",
+    "sha256": "f70fee79da207fa3f9136c404eb87c077e29ed3053c42757412de32b83547d42"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/focused-sqlite/catalog-development.png",
+    "sha256": "793887f5bcd398d74d842a188c36d3c307d32f3fadcb2037a04e9d4135df0bc6"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-desktop.png",
+    "sha256": "59ecb41ec7c7e10549be6431b858f54aaa97ee2869896858f1a33ab28e2d5e98"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-no-matches.png",
+    "sha256": "8aa43aa8659a1327c2659fd85e926c5cecb620d00b1f9a7c6a2c3e254009e920"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-saved-error.png",
+    "sha256": "734a1bd3a302f99e20aa7f03cde21f4de269820c68b8a7710dea755f87e53ad5"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-generated-error.png",
+    "sha256": "a3b1a34deb06dbc2b5f286e1515e14df40e921363da28fc83bb7c3820a4a026d"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-delete-generated.png",
+    "sha256": "6dd4c5685d0fb09ac53f81df84cf3d82e7b42f1b0c17a2f93e52626607d7574d"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-narrow-dark.png",
+    "sha256": "e50d3a742be89da9a4e4bcd480c62c80def0593f462d7eec0e9ce5d7f97387e5"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-narrow-dialog.png",
+    "sha256": "b9633b125e067900f6d2f38cd9c4e9e3f3e773ebb4652bab6278847a1843923a"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-empty.png",
+    "sha256": "3315b178e4eca70cd04255b3bcb0bf529c43156b19a4faad541ed57a63524935"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-signed-out.png",
+    "sha256": "f0d23b870bd3508ce19c454ed60f99e906fe504cce66c7b4e9bab1fda92debe3"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-delete-pending.png",
+    "sha256": "a544fb3567c16fe13ede495d0ecd07bcd02c4ccdb87e9e2d1e8ad361036057f1"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-delete-generated-failure.png",
+    "sha256": "a7bce4f19a9d744e48f48bd5c8ab12d3e2284f4e0b75254bee383acaf6907535"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-delete-saved-failure.png",
+    "sha256": "41203a2190657a1365dda1a77ab995315c153b29adfefbdab283c468bc29d2a4"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-catalog/catalog-development.png",
+    "sha256": "44140ed9c96929c0783a82d2ef00db1b177d63221dc8bb2c42b9f2b4619d007c"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-content.png",
+    "sha256": "d5c69c8be273fa611d8ca0788e08763aab0442b4ca33c89fad565224899f0d8c"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-desktop.png",
+    "sha256": "674c672af9d048efcce49663230e7689b5dbbda4d2f83b0566ab0fb78f89da69"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-development.png",
+    "sha256": "fd8efa6cbc5a4f3fb580c22f4a17cbae1bc779618c2a47037f517cf34748b79e"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-font-failure.png",
+    "sha256": "f6d4ce5c1f02e8e6abc096e224e81e260ebea689e31ae7410e1a1dfb6e1be473"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-font-http-failure.png",
+    "sha256": "7f2a153448d56dc2be8a3dea8fcae31dcad1dd49eeac96199dff1f61ce268d5e"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-font-http-recovered.png",
+    "sha256": "bc0b85cb0b4767018b9cc8600fb945e10be29cd5a642d319e2fca4ad10703614"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-font-static-failure.png",
+    "sha256": "ec74ac33fbffe95d8988e9e4c6748e630868e09494a8b7b39e0cd5bccc04e87a"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-font-static-recovered.png",
+    "sha256": "ff0fe58187dac6d569455b30b6de1deaed2ac6bb5b09c6b1153da767e11ec0b8"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-loading.png",
+    "sha256": "9ac1bbc7fdd13a5e54d171c6e83b95f399124b8a81d378df716a38d843441715"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-narrow-dark.png",
+    "sha256": "915609852c5d6b28615a776ac3308772dad5aadfd45549f400cb5abbfaa4c147"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-network-failure.png",
+    "sha256": "b5d6c3dc8a8f51156f22b4adaad2de34b6090f317422bfcf481eb7f52c013498"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-restored.png",
+    "sha256": "84f3695015410ca0759211be571f7bc8f3f5a5e5a160e9435dfb4ddaab81195f"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-session-cross-tab.png",
+    "sha256": "26740a47caa76a4fd2d78f21751d9ffab44a57373edd072c8d8dbb4ceedd4e29"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-session-pending.png",
+    "sha256": "0fdfdc6f82cba0ed55507215011f27a1eb8f201399a7311b339c257112fc9b89"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-session-settled.png",
+    "sha256": "8ba996c50f2de46a0d5579a7caf7962665fe1bd46d31d86355c2931c0938fc6d"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/postgres-covers/covers-timeout.png",
+    "sha256": "ce9178549b3b43eb30ef8429b95f07e148bfdab9300f6fc4796dac39761a4263"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/hosted/postgres-double-click.png",
+    "sha256": "3552c15f58a13bfb1801f59c40239862c4293b51f0c689eaeb2e843ad0613d8d"
+  },
+  {
+    "path": "docs/v2-7c-2-evidence/logs/independent/fresh/hosted/completed-chat.png",
+    "sha256": "91489c8c3399154f80e11687a05a7ab0094e0fc9ac606b13c4c30f01233c3305"
+  }
+]
