@@ -8117,6 +8117,99 @@ runs end to end on Vercel.
 *Depends on: V2-5 (commands), V2-6 (project state). The product payoff;
 needs direction on scope before building.*
 
+<a id="v2-8a-scope-proposal"></a>
+
+- [ ] **V2-8A tool/context foundation — approved2026-10-18, implementation starting.**
+  The human selected **Tool/context foundation first** on2026-10-18 after the
+  continuation request. Accepted
+  baseline `484875ff5c826a34028889ed2fc6118bfdc407ad`
+  ([C3 decision](reviews/V2-7C-3-484875f.json)); planning checkout
+  `7f3b276eba6ea709b8002002e742fb3f3c1d13bd`, branch `v2`.
+
+  **Approved direction: validated tool/context foundation first.** Deliver a
+  complete headless boundary that a later runtime and Assistant panel can reuse,
+  with real behavior rather than empty provider interfaces. Typed, AJV-validated
+  tool requests/results/errors; bounded project/slide/selection reads; narrow
+  semantic text/chart/table data edits mapped to canonical revisioned command
+  batches through an injected authoritative document executor. The model-facing
+  projection excludes resolved geometry, theme tokens, credentials and unrelated
+  deck content. Trusted application code retains actual IDs/ownership/revisions;
+  caller authority is not a model-supplied field. Selection and explicit target
+  handling, stale/unknown/locked/cross-owner refusals and exact preservation are
+  exercised with the actual engine, including atomic failure and undo/redo.
+  Instruction composition includes core policy plus only applicable skill/context,
+  with deterministic budgets and explicit truncation/refusal behavior. A bounded
+  scripted caller proves the seam without pretending to be live model quality.
+  No dispatcher bypasses the existing engine or establishes a second document.
+
+  **Unselected alternatives:** existing-project
+  Assistant editing first (a visible vertical slice including the required safe
+  tool/runtime primitives), or topic-to-deck generation first (provider/search/
+  research/compiler orchestration before existing-project assistance). These are
+  alternatives were presented before the human selected foundation first; they
+  are not part of the current implementation authorization. A UI-first choice needs the concrete Assistant
+  interaction contract agreed before changing that surface.
+
+  **Look-ahead:** subsequent bounded slices supply durable run ownership,
+  cancellation/restart/idempotency and budgets; tested provider capability adapters;
+  visible Assistant integration; Forge web/paper/project search and source-aware
+  generation. The two materially different adapters and common search required by
+  parent V2-8 remain full-milestone gates. V2-9/10 consume the same tool/context/
+  source boundaries; V2-11 can adapt tools without a second agent; V2-12 supplies
+  provider UX. Existing Express/Vite, AJV/Node24 and ProjectStore seams remain;
+  no framework adoption, schema/store migration or infrastructure purchase is
+  selected by this proposal. Preserve current Auto reference/local-support policy.
+
+  **Foundation-first invariants/non-goals:** no model-authored coordinates,
+  colours/fonts or raw scene/command escape hatch; same engine revision/ownership/
+  tombstone/chrome rules; durable and engine revisions remain distinct. No new
+  Assistant UI, live provider adoption, durable run store, search deployment,
+  unattended mutation, agent delegation, new generation/composition, imports,
+  persistent undo, Fit/capture/locale fix, legacy removal, paid infrastructure,
+  production migration or deployment. No claim of complete V2-8 or live quality.
+
+  **Concrete implementation/evidence:** strict Node-native TypeScript in tools,
+  agent and skill packages, AJV schemas/generated types for external requests,
+  and dependency/typecheck boundary coverage. Reads page project/slide metadata
+  and selection; content projections allowlist text/chart/table fields and refuse
+  oversized results explicitly. Mutations change existing text runs (retaining all
+  run/paragraph styling), chart data or table rows only. Trusted caller binds the
+  live engine, owner/actor, readable slides, editable targets, selection and limits;
+  those grants never come from model arguments. Atomic edit batches reject duplicate
+  target updates, invalid indices, hidden/locked/ancestor-locked targets and stale
+  revisions before execution; engine refusal remains final authority. No project
+  persistence or run store is added, so no durable save or cross-process execution
+  claim is made. The same live engine supports interactive undo/redo. Input/output
+  and instruction budgets fail closed; caller data is cloned at entry and raw
+  exceptions/credentials are never echoed. Use a scripted headless evidence driver
+  for representative edits/exports and exact before/after preservation.
+  Focused tests are test/v2-tools-8a.test.js and test/v2-context-8a.test.js;
+  the complete206-file prior inventory plus these2 bulk files is required, including
+  all26 serial owners and4 PostgreSQL contract/process/fault files. Build/typecheck/
+  canonical50cells and inspected representative SVG/native exports remain required.
+  Existing serial Chrome evidence supplies unchanged-UI regression verification.
+  Record exact source, backend, counts, earlier failures and unexecuted cases. Behavioral tool/schema/budget/context/policy tests plus real-engine
+  preservation/undo/redo/atomic-refusal tests; assert credentials/tokens/geometry
+  never appear in model input and irrelevant slides are omitted. Exercise the
+  headless entry point on representative text/chart/table scenes, including
+  conflicting revisions, malformed input and locked/detached/customized scenes.
+  Keep complete regression inventory and shared-resource isolation appropriate
+  to the approved scope, strict typecheck, build and50-cell benchmark; compare
+  representative SVG/native exports for exact content and untouched geometry.
+  Common correctness/security/data/ownership/undo/native/backward-compatibility/
+  evidence gates apply; provider quality, new browser UX and deployment gates do
+  not become executed claims in the headless scope. Full milestone browser/durable/
+  two-provider/search validation remains mandatory in its later approved slices.
+  PostgreSQL absence means unexecuted applicable checks, never a pass. BYOK locale,
+  old B2 restore timeout, Fit and capture timing retain their separate entries.
+
+  **Review/stop:** one separate high-effort review supplies exact-source ACCEPT/
+  HOLD; no self-acceptance. Focused commits and evidence to `origin/v2`; preserve
+  unrelated work and quiet-window constraints. Stop after the approved slice's
+  review/handoff; later slices need their own direction/authorization. This
+  approval authorizes only this foundation slice. C3 remains the accepted baseline
+  until a separate V2-8A decision. Do not start the next runtime/UI slice.
+
 `ModelProvider` with capability negotiation (tool calling, structured
 output, vision, reasoning, context, files, streaming) and a separate
 `SearchProvider` with SearXNG as the default implementation —

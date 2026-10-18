@@ -18,6 +18,8 @@ Pre-removal DBcount unavailable because query output was not retained during the
 post-stop verification race; never infer0. Cleanup evidence is committed. No other
 service/database touched. Original3 untracked paths remain preserved.
 
-C3 stop point reached. No next feature is started or authorized by acceptance.
-Continue with repository recovery and bounded planning from ROADMAP.md, obtaining
-required direction before implementation. Future work lives only in that roadmap.
+C3 stop point reached. The latest continuation request authorizes next-slice
+planning; [the V2-8A scope proposal](ROADMAP.md#v2-8a-scope-proposal) is recorded,
+with its required human direction pending. No V2-8 implementation has started;
+active accepted milestone/validation remain C3. Next-candidate status is not coding
+authorization. Future work lives only in ROADMAP.md.

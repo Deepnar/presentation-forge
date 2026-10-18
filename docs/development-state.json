@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8 agent runtime scope direction",
+    "id": "V2-8A scope direction",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#12-v21--agent-native-re-architecture-program"
+    "roadmapRef": "docs/ROADMAP.md#v2-8a-scope-proposal"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
