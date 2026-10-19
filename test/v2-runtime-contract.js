@@ -687,4 +687,77 @@ export function runtimeContract(label, setup) {
       assert.equal((await store.getProject(binding)).doc.revision, 1);
     },
   );
+  check(
+    "schema-valid contradictory receipts and counters fail closed",
+    async (t, { runtime, binding, store }) => {
+      const run = await runtime.start(
+        binding,
+        spec({
+          requestId: "inconsistent",
+          steps: [edit([textEdit("first")]), edit([textEdit("second")])],
+        }),
+      );
+      const claim = await runtime.claim(binding, run.id, "worker");
+      await runtime.advance(binding, run.id, claim.lease);
+      await runtime.advance(binding, run.id, claim.lease);
+      let original, receipts;
+      await store.withRuntimeTransaction(binding, async (tx) => {
+        original = (
+          await tx.query("SELECT payload FROM v2_agent_runs WHERE id=?", [
+            run.id,
+          ])
+        )[0].payload;
+        receipts = (
+          await tx.query(
+            "SELECT payload FROM v2_agent_receipts WHERE run_id=? ORDER BY step",
+            [run.id],
+          )
+        ).map((r) => r.payload);
+      });
+      for (const mutate of [
+        (record, rs) => (rs[0].projectRevision = 100),
+        (record, rs) => (rs[0].tool = "get_project"),
+        (record, rs) => (rs[0].engineRevision = 0),
+        (record, rs) => (record.failures = 1),
+        (record, rs) => (rs[0].runRevision = rs[1].runRevision),
+        (record, rs) => {
+          record.status = "running";
+          record.lease = {
+            workerId: "worker",
+            fence: record.fence,
+            until: Date.now() + 10000,
+          };
+        },
+      ]) {
+        const record = JSON.parse(original),
+          rs = receipts.map((r) => JSON.parse(r));
+        mutate(record, rs);
+        await store.withRuntimeTransaction(binding, async (tx) => {
+          await tx.query("UPDATE v2_agent_runs SET payload=? WHERE id=?", [
+            JSON.stringify(record),
+            run.id,
+          ]);
+          for (let i = 0; i < rs.length; i++)
+            await tx.query(
+              "UPDATE v2_agent_receipts SET payload=? WHERE run_id=? AND step=?",
+              [JSON.stringify(rs[i]), run.id, i],
+            );
+        });
+        await assert.rejects(runtime.inspect(binding, run.id), {
+          code: "invalid-document",
+        });
+        await store.withRuntimeTransaction(binding, async (tx) => {
+          await tx.query("UPDATE v2_agent_runs SET payload=? WHERE id=?", [
+            original,
+            run.id,
+          ]);
+          for (let i = 0; i < receipts.length; i++)
+            await tx.query(
+              "UPDATE v2_agent_receipts SET payload=? WHERE run_id=? AND step=?",
+              [receipts[i], run.id, i],
+            );
+        });
+      }
+    },
+  );
 }

@@ -173,12 +173,25 @@ export function createRuntime(backend: RuntimeBackend) {
         [id],
       )
     ).map((row) => parseReceipt(JSON.parse(String(row.payload))));
-    if (
-      receipts.length !== run.cursor ||
-      receipts.some((r, i) => r.step !== i || r.runRevision > run.revision) ||
-      (receipts.at(-1)?.projectRevision ?? run.plan.projectRevision) !==
-        run.projectRevision
-    )
+    if (receipts.length !== run.cursor) invalidRun();
+    let projectRevision = run.plan.projectRevision,
+      previousRunRevision = 0,
+      failures = 0;
+    for (const [i, receipt] of receipts.entries()) {
+      projectRevision += Number(receipt.changed);
+      if (
+        receipt.step !== i ||
+        receipt.tool !== run.plan.steps[i].tool ||
+        receipt.projectRevision !== projectRevision ||
+        receipt.engineRevision !== Number(receipt.changed) ||
+        receipt.runRevision <= previousRunRevision ||
+        receipt.runRevision > run.revision
+      )
+        invalidRun();
+      previousRunRevision = receipt.runRevision;
+      if (!receipt.ok) failures++;
+    }
+    if (projectRevision !== run.projectRevision || failures !== run.failures)
       invalidRun();
     return run;
   }

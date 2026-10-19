@@ -84,7 +84,9 @@ export function parseRun(input: unknown): RunRecord {
   parsePlan(run.plan);
   if (
     run.cursor > run.plan.steps.length ||
-    run.attempts < run.cursor ||
+    run.attempts < run.cursor + Number(run.pendingAttempt !== null) ||
+    (!terminal(run) && run.cursor >= run.plan.steps.length) ||
+    (!terminal(run) && run.failures >= run.plan.maxFailures) ||
     run.attempts > run.plan.maxSteps ||
     run.failures > run.cursor ||
     (run.pendingAttempt !== null && run.pendingAttempt !== run.attempts) ||
