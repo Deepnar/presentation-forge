@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RunReceipt",
+  "type": "object",
+  "properties": {
+    "step": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 63
+    },
+    "tool": {
+      "enum": [
+        "get_project",
+        "get_slide",
+        "get_selected_elements",
+        "edit_content"
+      ]
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "forbidden",
+        "invalid-input",
+        "budget-exceeded",
+        "unknown-slide",
+        "unknown-element",
+        "not-editable",
+        "locked",
+        "stale-revision",
+        "duplicate-id",
+        "invalid-edit",
+        "engine-refused",
+        "unavailable"
+      ]
+    },
+    "changed": {
+      "type": "boolean"
+    },
+    "projectRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "engineRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "runRevision": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "step",
+    "tool",
+    "ok",
+    "code",
+    "changed",
+    "projectRevision",
+    "engineRevision",
+    "runRevision"
+  ],
+  "additionalProperties": false
+}

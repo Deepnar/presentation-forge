@@ -1,0 +1,553 @@
+{
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "projectId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "owner": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "plan": {
+      "$ref": "#/definitions/plan"
+    },
+    "projectRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "cursor": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 64
+    },
+    "attempts": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 64
+    },
+    "failures": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 64
+    },
+    "pendingAttempt": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "maximum": 64
+    },
+    "status": {
+      "enum": [
+        "queued",
+        "running",
+        "succeeded",
+        "cancelled",
+        "failed",
+        "expired"
+      ]
+    },
+    "code": {
+      "enum": [
+        null,
+        "cancelled",
+        "deadline",
+        "step-budget",
+        "failure-budget",
+        "tool-refused",
+        "stale-project"
+      ]
+    },
+    "fence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "lease": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "workerId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "fence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "until": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "workerId",
+            "fence",
+            "until"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "createdAt": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "updatedAt": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    }
+  },
+  "required": [
+    "version",
+    "id",
+    "projectId",
+    "owner",
+    "digest",
+    "plan",
+    "projectRevision",
+    "cursor",
+    "attempts",
+    "failures",
+    "pendingAttempt",
+    "status",
+    "code",
+    "fence",
+    "lease",
+    "revision",
+    "createdAt",
+    "updatedAt"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RunRecord",
+  "definitions": {
+    "plan": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "projectRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "inspect",
+                "edit"
+              ]
+            },
+            "readableSlides": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "maxItems": 120,
+              "uniqueItems": true
+            },
+            "editableTargets": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "slideId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "elementId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                },
+                "required": [
+                  "slideId",
+                  "elementId"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 256,
+              "uniqueItems": true
+            },
+            "selection": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "slideId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "elementId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                },
+                "required": [
+                  "slideId",
+                  "elementId"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 32,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "mode",
+            "readableSlides",
+            "editableTargets",
+            "selection"
+          ],
+          "additionalProperties": false
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "tool": {
+                    "const": "get_project"
+                  },
+                  "args": {
+                    "type": "object",
+                    "properties": {
+                      "offset": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000000
+                      },
+                      "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 20
+                      }
+                    },
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "tool",
+                  "args"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "tool": {
+                    "const": "get_slide"
+                  },
+                  "args": {
+                    "type": "object",
+                    "properties": {
+                      "slideId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "offset": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000000
+                      },
+                      "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 20
+                      }
+                    },
+                    "required": [
+                      "slideId"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "tool",
+                  "args"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "tool": {
+                    "const": "get_selected_elements"
+                  },
+                  "args": {
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "tool",
+                  "args"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "tool": {
+                    "const": "edit_content"
+                  },
+                  "args": {
+                    "type": "object",
+                    "properties": {
+                      "baseRevision": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "edits": {
+                        "type": "array",
+                        "items": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "const": "text"
+                                },
+                                "slideId": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128
+                                },
+                                "elementId": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128
+                                },
+                                "paragraphIndex": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 1000000
+                                },
+                                "runIndex": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 1000000
+                                },
+                                "text": {
+                                  "type": "string",
+                                  "maxLength": 16000
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "slideId",
+                                "elementId",
+                                "paragraphIndex",
+                                "runIndex",
+                                "text"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "const": "chart"
+                                },
+                                "slideId": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128
+                                },
+                                "elementId": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128
+                                },
+                                "categories": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 16000
+                                  },
+                                  "minItems": 1,
+                                  "maxItems": 120
+                                },
+                                "series": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "name": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 256
+                                      },
+                                      "values": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "number"
+                                        },
+                                        "minItems": 1,
+                                        "maxItems": 120
+                                      }
+                                    },
+                                    "required": [
+                                      "name",
+                                      "values"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "minItems": 1,
+                                  "maxItems": 20
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "slideId",
+                                "elementId",
+                                "categories",
+                                "series"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "const": "table"
+                                },
+                                "slideId": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128
+                                },
+                                "elementId": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128
+                                },
+                                "rows": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "maxLength": 16000
+                                    },
+                                    "minItems": 1,
+                                    "maxItems": 20
+                                  },
+                                  "minItems": 1,
+                                  "maxItems": 120
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "slideId",
+                                "elementId",
+                                "rows"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 32
+                      }
+                    },
+                    "required": [
+                      "baseRevision",
+                      "edits"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "tool",
+                  "args"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "maxSteps": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "maxFailures": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "deadlineAt": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "requestId",
+        "projectRevision",
+        "scope",
+        "steps",
+        "maxSteps",
+        "maxFailures",
+        "deadlineAt"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

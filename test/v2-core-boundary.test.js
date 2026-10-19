@@ -28,7 +28,7 @@ const RELATIVE_SCOPE = {
 
 // Bare specifiers allowed per package. Everything else fails.
 const BARE_ALLOW = {
-  tools: ["ajv"], agent: [], skill: [],
+  tools: ["ajv"], agent: ["ajv"], skill: [],
   model: ["ajv"],
   core: [],
   compiler: [],
@@ -52,6 +52,11 @@ const NODE_ALLOW = {
 // Per-file exceptions inside otherwise-restricted packages. Each entry
 // names the exact file and why it exists.
 const FILE_ALLOW = [
+  {
+    file: "packages/agent/run-state.ts",
+    bare: ["node:fs/promises"],
+    why: "Node-only durable record schema validation; runtime remains backend-injected",
+  },
   {
     file: "packages/renderer-pptx/node.ts",
     bare: ["node:fs/promises", "node:path"],
