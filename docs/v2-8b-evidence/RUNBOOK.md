@@ -1,3 +1,14 @@
+# Active refrozen run
+
+The independent HOLD at501f2f8 required a test-only remount readiness correction.
+Active source is1fb39ff; active evidence uses the fresh `final/` namespace. Run
+`python3 -u docs/v2-8b-evidence/final/run-validation.py` after creating its snapshot
+at `out/v2-8b-final-validation/backup`. That snapshot includes every existing
+`docs/v2-*-evidence` file (including this slice and ignored archives), and final
+image collection excludes its own subtree. The original501f2f8 evidence, four
+archives and99 image hashes remain unchanged. The root validation plan indexes
+the active source; validation-plan-501f2f8.json preserves the earlier source.
+
 # Durable runtime validation reproduction
 
 Freeze exact implementation SHA and inventory before execution. Required files are

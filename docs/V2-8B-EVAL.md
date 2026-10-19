@@ -1,6 +1,7 @@
 # V2-8B durable run core evaluation
 
-Implementation and required validation complete; independent review pending. Accepted baseline remains
+Runtime implementation is complete; final validation of the scoped remount test
+correction is in progress after independent HOLD. Accepted baseline remains
 `d4f446c7b2fcae851c37d1a46288cf91317c38b4`; task-entry checkout
 `fa1ba84378af33fe3a1654d4bd177523e1dbf080`, branch `v2`, push `origin/v2`.
 The human selected the recommended scope on 2026-10-19. The approved contract and
@@ -83,7 +84,7 @@ The final coordinator uses separate process sessions, watchdogs and visible prog
 heartbeats. Rising shared I/O pressure pauses it before heavy bulk/browser work;
 no unrelated process is stopped. Missing or interrupted execution stays explicit.
 
-## Final implementer results
+## First complete source501f2f8 implementer results
 
 Frozen code501f2f864bc1004c026c4e8ef53f4e907491e428; Node24.16.0, owned isolated
 PostgreSQL15.18 and temporary SQLite WAL stores. All212 required files executed.
@@ -121,3 +122,22 @@ The implementer recommends acceptance of the bounded headless core, subject to t
 separate exact-source decision. Assistant UI, providers/search/generation, external
 network exactly-once effects, production schema application and deployment were not
 implemented or claimed. All standing limitations above remain separate.
+
+## Independent HOLD and remount correction
+
+[Independent review501f2f8](reviews/V2-8B-501f2f8.md) ran232 primary tests:231pass/
+1fail,0skip/cancel. The full7A repeat was27/28, timing out waiting for the editor
+after activating Delete. An unchanged filtered diagnostic passed1/1, which did not
+explain the original untraced sequence. A controlled actual generated-source response
+then reproduced0/1: Open moved32px upward when loading status disappeared; trusted
+pointer down/up/click at the old coordinates hit Delete. Controlled cause is proven;
+no claim is made to reconstruct the original untraced events. Build/type/benchmark/
+new native evidence were unexecuted in that halted independent attempt.
+
+Scoped correction source1fb39ff waits for actual saved/generated loading statuses,
+mount motion, fonts and a stable unobscured Open target before each remount click.
+All3loops, one mounted save machine and exactly1durable commit assertions remain.
+No runtime or product UI code changed. The inherited catalog loading layout shift
+is [separate roadmap work](ROADMAP.md#catalog-loading-layout-stability). Fresh
+complete execution and final independent review use `v2-8b-evidence/final/`; earlier
+501f2f8 artifacts and hashes remain intact. The accepted baseline stays V2-8A.

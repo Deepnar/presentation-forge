@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8A-d4f446c.json"
   },
   "implementationHead": {
-    "sha": "501f2f864bc1004c026c4e8ef53f4e907491e428",
-    "note": "Frozen V2-8B runtime implementation and regression tests. Documentation/evidence follow separately; independent review pending."
+    "sha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+    "note": "Runtime unchanged from501f2f8; exact source includes the scoped7A remount readiness correction following independent HOLD. Fresh full validation is pending."
   },
   "activeMilestone": {
     "id": "V2-8B",
     "roadmapRef": "docs/ROADMAP.md#v2-8b-scope-proposal",
     "evalDoc": "docs/V2-8B-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "validated",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "durable-runtime",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/durable-runtime.json",
-      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/non-browser-bulk.json",
-      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/serial-browser.json",
-      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/postgres-contract.json",
-      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/cross-process-faults.json",
-      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/production-build.json",
-      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/typecheck.json",
-      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/benchmark-50.json",
-      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/frontend-visual.json",
-      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
     }
   ],
   "knownBlockers": [],
