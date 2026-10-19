@@ -118,6 +118,14 @@ export function parseProviderExchange(profile: ProviderProfile, prepared: Prepar
         if (!integer(u.prompt_tokens, 0, 100000000) || !integer(u.completion_tokens, 0, 100000000) ||
             u.total_tokens !== undefined && u.total_tokens !== u.prompt_tokens + u.completion_tokens) throw new Error();
         usage = { inputTokens: u.prompt_tokens, outputTokens: u.completion_tokens };
+        if (u.prompt_tokens_details != null) {
+          const details = u.prompt_tokens_details;
+          if (typeof details !== 'object' || Array.isArray(details)) throw new Error();
+          for (const [from, to] of [['cached_tokens', 'cacheReadInputTokens'], ['cache_write_tokens', 'cacheWriteInputTokens']] as const) {
+            if (details[from] != null) { if (!integer(details[from], 0, u.prompt_tokens)) throw new Error(); usage[to] = details[from]; }
+          }
+          if ((usage.cacheReadInputTokens ?? 0) + (usage.cacheWriteInputTokens ?? 0) > usage.inputTokens) throw new Error();
+        }
       }
     } else {
       if (raw.type !== 'message' || !Array.isArray(raw.content) || raw.content.length > 32) return providerFailure('invalid-response');
@@ -135,8 +143,11 @@ export function parseProviderExchange(profile: ProviderProfile, prepared: Prepar
         if (!integer(u.input_tokens, 0, 100000000) || !integer(u.output_tokens, 0, 100000000)) throw new Error();
         usage = { inputTokens: u.input_tokens, outputTokens: u.output_tokens };
         for (const [from, to] of [['cache_read_input_tokens', 'cacheReadInputTokens'], ['cache_creation_input_tokens', 'cacheWriteInputTokens']] as const) {
-          if (u[from] !== undefined) { if (!integer(u[from], 0, 100000000)) throw new Error(); usage[to] = u[from]; }
+          if (u[from] != null) { if (!integer(u[from], 0, 100000000)) throw new Error(); usage[to] = u[from]; }
         }
+        // Anthropic excludes cache reads/writes from input_tokens; Chat Completions includes them.
+        usage.inputTokens += (usage.cacheReadInputTokens ?? 0) + (usage.cacheWriteInputTokens ?? 0);
+        if (!integer(usage.inputTokens, 0, 100000000)) throw new Error();
       }
     }
     if (text.length > 32000 || calls.length > 8 || new Set(calls.map(c => c.id)).size !== calls.length ||

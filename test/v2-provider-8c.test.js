@@ -10,7 +10,7 @@ for (const family of ['openai-compatible','anthropic']) {
     const { provider, seen } = await endpoint(t,family), { context: ctx, document } = await context();
     const result = await provider.exchange(ctx);
     assert.equal(result.ok,true); assert.deepEqual(JSON.parse(JSON.stringify(result.calls[0].request)),edit());
-    assert.equal(result.model,'fixture-resolved-model'); assert.equal(result.usage.inputTokens,42);
+    assert.equal(result.model,'fixture-resolved-model'); assert.equal(result.usage.inputTokens,family==='anthropic'?49:42);
     assert.equal(document.status().revision,0,'exchange is a proposal, never an edit');
     assert.equal(seen.length,1); const sent = seen[0];
     assert.equal(sent.url,family === 'anthropic' ? '/v1/messages' : '/v1/chat/completions');
@@ -102,4 +102,17 @@ for(const family of ['openai-compatible','anthropic']) test(`${family}: altered 
   assert.equal((await provider.exchange(forged)).code,'invalid-request','altered catalog refused before HTTP');assert.equal(seen.length,0);
   const prep={context:forged,outputTokens:2048,wire:{}};
   assert.equal(parseProviderExchange(provider.profile,prep,wire(family,[{tool:'edit_content',args:{...edit().args,x:4,fontFamily:'Invented',owner:'other'}}])).code,'invalid-response','canonical request remains enforced independently of catalog schema');
+});
+
+for(const family of ['openai-compatible','anthropic']) test(`${family}: normalized usage includes cached input exactly once`,async t=>{
+  const {provider}=await endpoint(t,family),{context:ctx}=await context();const prep=prepareExchange(provider.profile,ctx);const raw=wire(family);
+  if(family==='openai-compatible')raw.usage.prompt_tokens_details={cached_tokens:3,cache_write_tokens:4};
+  const result=parseProviderExchange(provider.profile,prep,raw);assert.equal(result.ok,true);assert.equal(result.usage.inputTokens,family==='anthropic'?49:42);assert.equal(result.usage.cacheReadInputTokens,3);assert.equal(result.usage.cacheWriteInputTokens,4);
+});
+
+for(const family of ['openai-compatible','anthropic']) test(`${family}: cache counters reject invalid accounting and preserve unavailable breakdowns`,async t=>{
+  const {provider}=await endpoint(t,family),{context:ctx}=await context();const prep=prepareExchange(provider.profile,ctx);
+  for(const count of [-1,'3',100000001]){const raw=wire(family);if(family==='anthropic')raw.usage.cache_read_input_tokens=count;else raw.usage.prompt_tokens_details={cached_tokens:count};assert.equal(parseProviderExchange(provider.profile,prep,raw).code,'invalid-response');}
+  const missing=wire(family);if(family==='anthropic'){delete missing.usage.cache_read_input_tokens;missing.usage.cache_creation_input_tokens=null;}else missing.usage.prompt_tokens_details=null;
+  const result=parseProviderExchange(provider.profile,prep,missing);assert.equal(result.ok,true);assert.equal(result.usage.inputTokens,42);assert.ok(!('cacheReadInputTokens' in result.usage));assert.ok(!('cacheWriteInputTokens' in result.usage));
 });
