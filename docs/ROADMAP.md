@@ -8480,6 +8480,11 @@ needs direction on scope before building.*
   migrations or deployment. Unsupported features are explicit capabilities, not
   placeholder success. Keep Auto quality/local-support policy unchanged.
 
+  **Early review correction:** context-supplied schemas alone were insufficient:
+  a permissive replacement admitted noncanonical proposals. Fail-first cases on
+  both families now require refusal; shared canonical tool validation and canonical
+  catalog comparisons prevent layout/authority fields before any durable edit.
+
   **Gates/stop:** correctness, ownership/data integrity, canonical edit preservation,
   native/regression/compatibility/documentation gates apply; unchanged browser UI
   supplies interaction/accessibility/responsive regression evidence. Live-provider

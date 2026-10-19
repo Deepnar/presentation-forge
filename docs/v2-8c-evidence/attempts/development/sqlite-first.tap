@@ -1,0 +1,18 @@
+✔ SQLite/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history (83.262985ms)
+✔ SQLite/openai-compatible: a human save during HTTP prevents stale plan execution (28.819038ms)
+✔ SQLite/openai-compatible: protected content remains protected after a valid proposal (27.164452ms)
+✔ SQLite/openai-compatible: a normalized response grants no foreign-owner authority (22.229898ms)
+✔ SQLite/openai-compatible: inspection scope cannot receive an edit proposal (15.74675ms)
+✔ SQLite/anthropic: HTTP proposal commits canonically, reopens and restores exact history (25.219129ms)
+✔ SQLite/anthropic: a human save during HTTP prevents stale plan execution (20.796203ms)
+✔ SQLite/anthropic: protected content remains protected after a valid proposal (21.334029ms)
+✔ SQLite/anthropic: a normalized response grants no foreign-owner authority (19.147827ms)
+✔ SQLite/anthropic: inspection scope cannot receive an edit proposal (14.621603ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 469.307643

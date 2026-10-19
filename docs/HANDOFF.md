@@ -1,43 +1,35 @@
-# Handoff — V2-8B independently accepted
+# Handoff — V2-8C provider exchanges, final validation pending
 
-2026-10-19, branch `v2`, push destination `origin/v2`. The authorized durable run
-core is complete and independently accepted at
-`1fb39ff75cd473ecaf2884232d5d7465d50a9af2`; task-entry accepted baseline was V2-8A
-`d4f446c7b2fcae851c37d1a46288cf91317c38b4`. Later commits contain docs/evidence only.
-[Decision/report](reviews/V2-8B-1fb39ff.md), [evaluation](V2-8B-EVAL.md),
-[scope/completion](ROADMAP.md#v2-8b-scope-proposal) and development-state.json agree.
+2026-10-19, branch v2, push origin/v2. Accepted baseline remains V2-8B
+`1fb39ff75cd473ecaf2884232d5d7465d50a9af2`. Current frozen source is
+`52821fb26b796889da3154998480d2ed7d725bd9`; later commits are evidence/docs only. The continuation starts the
+next bounded headless dependency under the standing recommended-choice instruction.
+[Contract](ROADMAP.md#v2-8c-provider-boundary), [evaluation](V2-8C-EVAL.md),
+state and the as-built agent architecture define scope. No self-acceptance.
 
-The core provides persisted scoped semantic plans, database-clock leases/fencing,
-durable attempt budgets, cancellation, atomic project/history/receipt checkpoints,
-real crash recovery and trusted headless control/worker CLI on both existing store
-backends. Canonical edits and exact human preservation remain authoritative.
-Checkpoint consistency and pooled-listener defects were fixed. Test-only remount
-readiness resolved the later HOLD; inherited catalog loading geometry remains
-separate roadmap work. No provider, Assistant UI or public transport was added.
+Both real HTTP wire adapters, explicit capabilities, bounded timeout/body/cancel,
+normalized semantic proposals and canonical tool validation are implemented. The
+read-only reviewer found a permissive-catalog gap; fail-first2/2 reproduced it and
+shared canonical validation fixed it. Corrected provider/foundation/boundary127/127
+passed twice. Final215-file execution, four persisted provider/native cases, image
+inspection and separate exact-source review remain pending. Live provider endpoints
+and hosted content quality are unexecuted; no live credentials were read.
 
-The complete 212-file matrix passed 2,462/2,462 plus 2 distinct persisted export
-cases, with zero required fail/skip/cancel/unexecuted. Focus 69 repeats and the
-separate en_IN locale probe (9 pass/1 standing fail) are not added to distinct
-counts. Build/typecheck/50 cells passed; all 99 fresh images inspected. Independent
-current-source execution passed 65/65 plus build/type/protocol/50 cells. Prior 204
-independent checks on unchanged runtime source501f2f8 remain explicitly historical,
-with 34 overlap. See the evaluation for full attempt chronology and limitations.
+One owned ephemeral PostgreSQL container is available on127.0.0.1:5544, exact ID
+`c0d62e38c39d0cc0362e6dce1076188d7bbb13488b6986e2910d94ff63bafdd5`, name
+forge-v28c-validation. Do not reuse/stop unrelated services. Wait for a quiet window
+before heavy checks. Before run-validation.py, back up every docs/v2-*-evidence file,
+including this slice and ignored original archives, under out/v2-8c-validation/backup.
+The runner collects fresh output, restores snapshot bytes and checks all hashes.
+Run browser/build/native files strictly serially with watchdogs and progress.
 
-Final implementer evidence is in v2-8b-evidence/final; independent-final has the
-fresh reviewer traces/exports. Historical HOLD evidence remains intact. Reviewer
-restored 16 paths and verified all 3,193 backed-up hashes, including 28 archives.
-Root historical/final packets each retain all 99 image hashes and four original
-PPTX hashes. No missing original bytes were reconstructed.
+Root owns execution; /root/catalog_review has performed a read-only audit only.
+After full evidence is committed/pushed, give that same high-effort reviewer the
+exclusive slot for final checks and exact-source ACCEPT/HOLD. Preserve every current
+archive before independent generators. Later cleanup must save/fsync zero remaining
+project databases before stopping the exact owned container and checking removal.
 
-The exact owned PostgreSQL container was stopped after saving/fsyncing a zero
-project-database observation; auto-removal and closed localhost5544 were verified
-in v2-8b-evidence/final/cleanup.json. No owned service remains. Unrelated services
-were untouched. Future PostgreSQL checks need a new isolated owned service and
-are unexecuted while absent; historical passes are not future execution.
-
-The approved slice stops here. [Remaining V2-8 work](ROADMAP.md#v2-8-remaining) and
-all later scope live only in the roadmap; acceptance grants planning, not another
-feature, deployment, paid infrastructure or production schema migration.
-Preserve original untracked `.agents/`,
-`PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`.
+Stop after this slice's review/cleanup/handoff; no provider loop, Assistant surface,
+search, credential-store change, new public auth/HTTP, deployment or production
+migration follows automatically. Future work lives only in the roadmap. Preserve
+original untracked .agents/ and both PRESENTATION_FORGE_V2_* markdown files.

@@ -1,5 +1,5 @@
 {
-  "implementationSha": "405a062a9c1bbc9e2358457913f87907cf6b1bb7",
+  "implementationSha": "52821fb26b796889da3154998480d2ed7d725bd9",
   "inventoryIncludesWorkingTreeGovernanceTests": false,
   "inventoryMethod": "All212 accepted files plus three provider files:183 bulk,26 serial owners,6 PostgreSQL files =215 distinct files.",
   "bulk": [

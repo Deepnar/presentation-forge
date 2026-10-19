@@ -145,3 +145,30 @@ No live provider, Assistant UI, public run route, search, new composition, persi
 undo, framework adoption, production migration or deployment is part of this slice.
 Exact source1fb39ff is [independently accepted](reviews/V2-8B-1fb39ff.md).
 Validation, retained limitations and cleanup are indexed by state/[evaluation](V2-8B-EVAL.md).
+
+
+## V2-8C provider exchange boundary (implementation under review)
+
+`packages/agent/provider.ts` defines the typed ModelProvider, explicit capability
+profile, bounded request preparation and normalized response/tool validation.
+`src/agent/model-provider.js` owns injected credentials and Node fetch, separately
+from deterministic context, commands and project transactions. OpenAI-compatible
+Chat Completions and Anthropic Messages use different system/tool/auth/usage wire
+mappings and return one provider-neutral proposal. The caller supplies configured
+model/capabilities; there is no model-name inference or app/default routing change.
+
+Requests consume composeInstructions output and its scoped tool catalog. Policy
+and semantic context remain distinct from credentials, authority and scene layout.
+Responses are bounded JSON, with explicit truncation/refusal/text/tool outcomes;
+all tool IDs/names/arguments and edit base revisions validate before proposals
+return. The actual command engine/runtime still enforces scope, locks, ownership
+and stale durable revisions. Provider calls do not run inside project transactions.
+Transport limits cover headers/body and cancellation, reject credential-bearing
+URLs/redirects, never automatically retry and return sanitized diagnostics.
+
+Only text/client-tool exchange is implemented. Structured output, reasoning,
+vision, files and streaming are explicit unsupported features; there is no live
+provider loop, conversation persistence, Assistant UI, public transport, new key
+storage, search or provider qualification claim. Protocol fixtures exercise actual
+HTTP and canonical persistence on both backends. Current review/evidence is in
+[the evaluation](V2-8C-EVAL.md) and development-state.json.

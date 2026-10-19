@@ -55,6 +55,13 @@ untouched. No new feature, infrastructure, migration or deployment is authorized
 by acceptance. Use the [active runbook](v2-8b-evidence/RUNBOOK.md) when reproducing; earlier
 reports are historical evidence, not execution of a later source.
 
+The current continuation starts [V2-8C provider exchanges](ROADMAP.md#v2-8c-provider-boundary)
+after accepted V2-8B. Exact current source and pending validation are indexed by
+state/[evaluation](V2-8C-EVAL.md). Use v2-8c-evidence/run-validation.py with an
+all-evidence snapshot at out/v2-8c-validation/backup and an owned isolated PG service.
+Provider fixtures prove protocol/command plumbing, not live model quality or the
+parent two-provider/common-search gate. No Assistant/new UI is part of this slice.
+
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
 uses TEST_PG_URL or the isolated default on port 5544; other projects' databases

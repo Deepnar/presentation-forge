@@ -1,0 +1,12 @@
+{
+  "id": "c0d62e38c39d0cc0362e6dce1076188d7bbb13488b6986e2910d94ff63bafdd5",
+  "name": "forge-v28c-validation",
+  "port": 5544,
+  "createdAtUtc": "2026-10-19T17:35:41.064993+00:00",
+  "image": "postgres:15-alpine",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "autoRemove": true,
+  "cpus": 1.0,
+  "memoryBytes": 536870912,
+  "version": "15.18"
+}

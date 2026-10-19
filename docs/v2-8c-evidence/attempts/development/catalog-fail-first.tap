@@ -1,0 +1,52 @@
+✖ openai-compatible: altered catalogs and noncanonical complete requests refuse (55.430946ms)
+✖ anthropic: altered catalogs and noncanonical complete requests refuse (18.976353ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 258.007525
+
+✖ failing tests:
+
+test at test/v2-provider-8c.test.js:100:56
+✖ openai-compatible: altered catalogs and noncanonical complete requests refuse (55.430946ms)
+  AssertionError [ERR_ASSERTION]: altered catalog refused before HTTP
+  + actual - expected
+  
+  + undefined
+  - 'invalid-request'
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-8c.test.js:102:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'invalid-request',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/v2-provider-8c.test.js:100:56
+✖ anthropic: altered catalogs and noncanonical complete requests refuse (18.976353ms)
+  AssertionError [ERR_ASSERTION]: altered catalog refused before HTTP
+  + actual - expected
+  
+  + undefined
+  - 'invalid-request'
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-8c.test.js:102:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'invalid-request',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

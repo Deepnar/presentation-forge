@@ -1,0 +1,45 @@
+✔ openai-compatible: actual HTTP preserves scoped instructions and distinct wire format (73.766947ms)
+✔ openai-compatible: capability negotiation refuses before network without downgrade (2.443278ms)
+✔ openai-compatible: invalid options and executable accessors never execute (1.057877ms)
+✔ openai-compatible: context budget counts wire schemas and controls (1.079203ms)
+✔ openai-compatible: cancellation before dispatch and during headers is bounded (4.86219ms)
+✔ openai-compatible: cancellation while reading a body aborts the request (24.776743ms)
+✔ openai-compatible: timeout covers a stalled body without retries (41.842539ms)
+✔ openai-compatible: status401 is sanitized and never retried (3.4168ms)
+✔ openai-compatible: status403 is sanitized and never retried (2.245839ms)
+✔ openai-compatible: status429 is sanitized and never retried (2.121972ms)
+✔ openai-compatible: status500 is sanitized and never retried (1.882143ms)
+✔ openai-compatible: status302 is sanitized and never retried (2.027005ms)
+✔ openai-compatible: oversized chunked response refuses (2.33873ms)
+✔ openai-compatible: oversized declared response refuses (1.982458ms)
+✔ openai-compatible: malformed JSON/UTF8 refuses as invalid response (1.818008ms)
+✔ openai-compatible: malformed JSON/UTF8 refuses as invalid response (1.731114ms)
+✔ openai-compatible: malformed and unsafe tool proposals refuse atomically (71.880645ms)
+✔ openai-compatible: text, refusal and missing usage are truthful outcomes (30.452254ms)
+✔ anthropic: actual HTTP preserves scoped instructions and distinct wire format (17.935195ms)
+✔ anthropic: capability negotiation refuses before network without downgrade (1.109875ms)
+✔ anthropic: invalid options and executable accessors never execute (0.536846ms)
+✔ anthropic: context budget counts wire schemas and controls (0.672091ms)
+✔ anthropic: cancellation before dispatch and during headers is bounded (2.136248ms)
+✔ anthropic: cancellation while reading a body aborts the request (22.097067ms)
+✔ anthropic: timeout covers a stalled body without retries (41.093545ms)
+✔ anthropic: status401 is sanitized and never retried (2.011932ms)
+✔ anthropic: status403 is sanitized and never retried (1.325288ms)
+✔ anthropic: status429 is sanitized and never retried (1.428507ms)
+✔ anthropic: status500 is sanitized and never retried (1.320201ms)
+✔ anthropic: status302 is sanitized and never retried (1.425293ms)
+✔ anthropic: oversized chunked response refuses (1.435931ms)
+✔ anthropic: oversized declared response refuses (1.426458ms)
+✔ anthropic: malformed JSON/UTF8 refuses as invalid response (1.531095ms)
+✔ anthropic: malformed JSON/UTF8 refuses as invalid response (1.715111ms)
+✔ anthropic: malformed and unsafe tool proposals refuse atomically (61.068623ms)
+✔ anthropic: text, refusal and missing usage are truthful outcomes (29.544716ms)
+✔ transport configuration is immutable, explicit and cannot embed URL credentials (0.715826ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 640.094271

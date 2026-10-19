@@ -2639,3 +2639,14 @@ execution. The [as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8b-durable-run-
 describes distinct revisions, exact ownership, recovery and limits. Source1fb39ff
 is independently accepted; exact review/validation remain indexed in
 development-state.json.
+
+
+### V2-8C provider exchange boundary
+
+The typed provider profile/preparation/parser in packages/agent is separate from
+credential-owning HTTP transport in src/agent/model-provider.js. Distinct Chat
+Completions and Anthropic Messages protocols produce validated semantic proposals;
+canonical tools and durable project transactions retain editing authority. See
+[the as-built exchange contract](V2-8-AGENT-ARCHITECTURE.md#v2-8c-provider-exchange-boundary-implementation-under-review)
+and [current evidence/review status](V2-8C-EVAL.md). No Assistant or provider loop
+is introduced by this boundary.

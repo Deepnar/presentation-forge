@@ -1,0 +1,33 @@
+✔ repository state, document references and real Git ancestry validate (43.624878ms)
+✔ missing required role document fails closed (21.893209ms)
+✔ malformed state JSON returns diagnostics instead of crashing (1.32651ms)
+✔ unknown review state, malformed SHA and extra properties are rejected (9.130175ms)
+✔ known pending validation cannot disappear or be duplicated (25.146204ms)
+✔ unaccepted implementation cannot replace the accepted baseline (16.45208ms)
+✔ passed validation needs existing matching evidence and its output log (55.736167ms)
+✔ stale evidence from another implementation SHA is refused (18.424586ms)
+✔ self-reported totals must match the retained test output (15.140686ms)
+✔ nonzero, cancelled, skipped and inconsistent totals never become passes (62.694189ms)
+✔ existing output cannot substitute for actual visual inspection or 50 benchmark cells (43.296478ms)
+✔ renaming a reviewer cannot substitute for a separate decision record (29.409569ms)
+✔ legitimate recorded acceptance can advance the baseline after completed validation (70.069818ms)
+✔ document paths, anchors and symlinks cannot leave the repository or point nowhere (44.908436ms)
+✔ Git verification rejects well-shaped nonexistent commits (9.973323ms)
+✔ a passing subset cannot substitute for the full required file scope (14.775328ms)
+✔ name-filtered runs and implausibly small suite counts fail closed (28.823774ms)
+✔ the TAP inventory records entry files without imported contract helpers (73.356026ms)
+✔ new milestone keeps its own focused gate and rejects old evidence inventory (52.465791ms)
+✔ browser handoff requires its own complete focused evidence (56.549948ms)
+✔ project covers require their own unit, HTTP and complete Chrome evidence (55.525964ms)
+✔ project discovery requires its own complete unit, HTTP and Chrome evidence (53.199097ms)
+✔ production toolbar evidence includes its complete Chrome file and full shell regression (54.588674ms)
+✔ agent foundation requires complete tool and context behavioral evidence (56.105496ms)
+✔ provider boundary requires both protocol and durable backend files (55.579035ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1032.928378

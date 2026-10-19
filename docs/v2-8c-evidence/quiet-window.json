@@ -1,0 +1,14 @@
+{
+  "implementationSha": "52821fb26b796889da3154998480d2ed7d725bd9",
+  "atUtc": "2026-10-19T17:41:09.102974+00:00",
+  "cpuBusyPercent": 0.9102192800993003,
+  "pressure": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=34914450\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=265708\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=252897\n",
+    "io": "some avg10=0.00 avg60=0.94 avg300=2.81 total=917710638\nfull avg10=0.00 avg60=0.92 avg300=2.76 total=900178479\n"
+  },
+  "availableMemory": "MemAvailable:   47901236 kB",
+  "backedUpFiles": 3171,
+  "originalPptxArchives": 32,
+  "includesIgnoredAndCurrentSliceArchives": true
+}
