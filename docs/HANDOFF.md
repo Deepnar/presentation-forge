@@ -1,31 +1,34 @@
-# Handoff — V2-8B final validation running
+# Handoff — V2-8B corrected-source review pending
 
 2026-10-19, branch v2. Accepted baseline remains
 `d4f446c7b2fcae851c37d1a46288cf91317c38b4`, independently accepted V2-8A.
-The human selected the recommended durable-core direction. Current frozen code is
-`501f2f864bc1004c026c4e8ef53f4e907491e428`; later commits are docs/evidence only.
-See [the approved contract](ROADMAP.md#v2-8b-scope-proposal),
-[evaluation](V2-8B-EVAL.md) and [runbook](v2-8b-evidence/RUNBOOK.md).
+The human selected the recommended durable run core. Current exact source is
+`1fb39ff75cd473ecaf2884232d5d7465d50a9af2`; later commits are docs/evidence only.
+See [approved scope](ROADMAP.md#v2-8b-scope-proposal), [evaluation](V2-8B-EVAL.md)
+and [runbook](v2-8b-evidence/RUNBOOK.md).
 
-The separate high-effort reviewer found and confirmed the correction for
-schema-valid contradictory checkpoints; no acceptance has been issued. Full final
-212-file matrix2462/2462 plus2distinct persisted native cases passed,0fail/skip/
-cancel/unexecuted. Focus69 repeats are separate; en_IN locale remains9pass/1standing
-fail. Build/typecheck/50cells pass; all99 final images inspected. Full evidence is
-committed under v2-8b-evidence; historical2575-file restoration matches every hash.
-Root heavy execution has finished; the reviewer may now take the exclusive slot
-for independent checks. Preserve every original new native archive and prior
-evidence before rerunning generators. Later docs/evidence contain no code delta.
+Independent review of501f2f8 issued HOLD after full7A27/28 and a controlled actual
+source-response reproduction of32px card-action movement. The scoped remount
+readiness correction preserves original assertions and leaves the inherited UI
+layout shift as separate roadmap work. Fresh final-source212-file matrix2462/2462
+and2distinct persisted export cases passed. Focus69 repeats are separate; en_IN
+probe remains9pass/1standingfail. Build/type/50cells passed; all99 fresh images
+inspected. Final evidence is under v2-8b-evidence/final.2871 backed-up evidence
+files including ignored/current-slice archives were restored with matching hashes.
 
-Owned PostgreSQL15.18 on127.0.0.1:5544 has exact ephemeral container ID
+Root heavy execution has finished. A separate high-effort reviewer may take the
+exclusive slot after explicit dispatch for full7A, controlled helper readiness,
+remaining build/type/benchmark/native checks and exact-source ACCEPT/HOLD. Use a
+fresh independent-final namespace. Preserve all existing original evidence bytes
+including the new four final PPTX archives and do not mix source501f2f8 evidence
+with execution of1fb39ff. Root will not modify tracked files during review backup.
+
+Owned PostgreSQL15.18 on127.0.0.1:5544 remains available; exact ephemeral ID is
 `f5f8a8156dcd03607a6c2daf6129f46fe0f4e0b90dff31c91a02c5448034bd89`.
-Do not stop or reuse unrelated services. Preserve the saved0-database observation
-before eventual owned-service removal. Earlier evidence (2575 files including ignored
-artifacts) is backed up under `out/v2-8b-validation/backup`; the coordinator collects
-fresh evidence then restores/verifies those original bytes. Never stage mutated
-historical evidence or overwrite new original archives during independent reruns.
+Do not stop/reuse unrelated services. After review, save/fsync a zero project-DB
+observation before stopping this exact container, then verify removal/port closure.
 
-No Assistant/provider/publicHTTP/production work is authorized. Preserve the original
-untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`. The sole future-work registry is
-the roadmap. Stop after exact-source independent review and handoff/owned cleanup.
+No provider/Assistant/publicHTTP/production work is authorized. Preserve original
+untracked .agents/ and both PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md and
+PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md. Stop after this scoped review,
+handoff and owned-service cleanup. Future work lives only in the roadmap.

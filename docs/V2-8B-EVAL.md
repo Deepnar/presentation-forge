@@ -1,7 +1,7 @@
 # V2-8B durable run core evaluation
 
-Runtime implementation is complete; final validation of the scoped remount test
-correction is in progress after independent HOLD. Accepted baseline remains
+Runtime implementation and fresh validation of the scoped remount correction are
+complete; separate exact-source acceptance is pending after the earlier HOLD. Accepted baseline remains
 `d4f446c7b2fcae851c37d1a46288cf91317c38b4`; task-entry checkout
 `fa1ba84378af33fe3a1654d4bd177523e1dbf080`, branch `v2`, push `origin/v2`.
 The human selected the recommended scope on 2026-10-19. The approved contract and
@@ -56,7 +56,7 @@ review supplies ACCEPT/HOLD; the implementer does not accept. Stop after this sl
 
 ## Validation status and known limitations
 
-All required final-source checks passed; independent acceptance remains pending.
+All required checks of corrected source1fb39ff passed; independent acceptance remains pending.
 No V2-8A result is execution of this source. Standing BYOK locale, old B2 restore timeout, Fit/narrow/capture,
 mixed-run SVG fidelity and original ignored-PPTX provenance limitations retain their
 [existing records](V2-8A-EVAL.md). No provider or hosted-content quality claim.
@@ -76,13 +76,13 @@ A shared fail-first test reproduced this as a missing rejection. Correction sour
 `501f2f864bc1004c026c4e8ef53f4e907491e428` reconciles every receipt with the plan,
 changed-driven saved/engine revisions, monotonic run revisions and failure totals,
 and rejects impossible active cursors/reservations. All69 runtime tests passed
-on both real backends; the reviewer confirmed the correction read-only. Full final
-matrix execution is refrozen to that source. The baseline remains V2-8A, and
-independent behavioral review/acceptance remains pending.
+on both real backends; the reviewer confirmed the correction read-only. That source completed the first full matrix below and later received HOLD for
+remount click readiness. The baseline remains V2-8A pending corrected-source review.
 
 The final coordinator uses separate process sessions, watchdogs and visible progress
-heartbeats. Rising shared I/O pressure pauses it before heavy bulk/browser work;
-no unrelated process is stopped. Missing or interrupted execution stays explicit.
+heartbeats. A quiet window was sampled before execution; CPU/memory/I/O pressure
+was observed during the run. No unrelated process was stopped. Missing or
+interrupted execution stays explicit.
 
 ## First complete source501f2f8 implementer results
 
@@ -90,7 +90,8 @@ Frozen code501f2f864bc1004c026c4e8ef53f4e907491e428; Node24.16.0, owned isolated
 PostgreSQL15.18 and temporary SQLite WAL stores. All212 required files executed.
 The [full matrix](v2-8b-evidence/full-matrix.json), [per-job commands/logs](v2-8b-evidence/logs/coordinator.json),
 [performance](v2-8b-evidence/performance.json) and [visual review](v2-8b-evidence/VISUAL-REVIEW.md)
-identify exact provenance. No runtime/test/tool delta follows the frozen source.
+identify exact provenance. These results predate the later remount test correction;
+they are not counted as execution of1fb39ff.
 
 | Check | Pass | Fail | Skip | Cancelled | Unexecuted |
 |---|---:|---:|---:|---:|---:|
@@ -141,3 +142,49 @@ No runtime or product UI code changed. The inherited catalog loading layout shif
 is [separate roadmap work](ROADMAP.md#catalog-loading-layout-stability). Fresh
 complete execution and final independent review use `v2-8b-evidence/final/`; earlier
 501f2f8 artifacts and hashes remain intact. The accepted baseline stays V2-8A.
+
+## Corrected source1fb39ff complete implementer results
+
+Exact source `1fb39ff75cd473ecaf2884232d5d7465d50a9af2`; later commits contain
+reports/evidence only. Node24.16.0, temporary SQLite WAL stores and the same owned
+isolated PostgreSQL15.18 on127.0.0.1:5544. A quiet window sampled4.96% CPU busy,
+zero CPU/memory PSI and zero I/O avg10, with49.6GB available memory. No overlapping
+browser/build/native jobs or unrelated service/database use occurred.
+
+The [fresh matrix](v2-8b-evidence/final/full-matrix.json),
+[exact commands and watchdog exits](v2-8b-evidence/final/logs/coordinator.json),
+[performance](v2-8b-evidence/final/performance.json) and
+[visual review](v2-8b-evidence/final/VISUAL-REVIEW.md) retain complete results.
+
+| Check | Pass | Fail | Skip | Cancelled | Unexecuted |
+|---|---:|---:|---:|---:|---:|
+|181-file non-browser bulk|2178|0|0|0|0|
+|26 serial browser/build owners|208|0|0|0|0|
+|Existing PG backend/import contracts|23|0|0|0|0|
+|Existing PG cross-process/faults|19|0|0|0|0|
+|New PG runtime contracts/process cases|34|0|0|0|0|
+|**Complete212-file matrix**|**2462**|**0**|**0**|**0**|**0**|
+|Distinct persisted native evidence cases|2|0|0|0|0|
+|Focused runtime repeat, excluded from distinct totals|69|0|0|0|0|
+|Separate standing en_IN BYOK probe|9|1|0|0|0|
+
+Required distinct total2464/2464; including the separate69-case focused repeat and
+10-case locale probe,2543 executions yield2542pass/1standingfail,0skip/cancelled.
+Full7A is28/28 with all3remount loops and original single-machine/revision1 checks.
+Build/typecheck pass; canonical benchmark50/50 cells. No assertions were weakened.
+All99 fresh images were inspected:76browser,15native,8SVG. The2871 snapshot files,
+including ignored and current-slice archives, were restored with matching hashes.
+Fresh four original PPTX archives are force-tracked separately from earlier exports.
+
+Local SQLite/PG claim1.41/3.17ms; atomic commit11.93/9.44ms; trace1285bytes each.
+Actual killed-worker checkpoint recovery is226–230ms SQLite and261–278ms PG,
+excluding lease wait.120slides/120thumbnails opened in1532ms. Maximum measured
+canvas delta across7A/B1/C3 is0.102898px;7A alone0.018990px, below1px gates.
+These local samples do not establish production percentiles. Native exports
+preserve real runs/charts/tables and unrelated scenes; SVG mixed runs still flatten.
+
+Recommendation: accept the bounded durable core if independent corrected-source
+review confirms the evidence and remount correction. Accepted baseline remains
+V2-8A until that separate decision. The inherited32px catalog loading reflow,
+locale/Fit/capture/timeout/SVG and historical original-PPTX limits remain separate.
+No provider, Assistant UI, production migration or deployment was added.

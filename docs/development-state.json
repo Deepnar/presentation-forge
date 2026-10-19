@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
-    "note": "Runtime unchanged from501f2f8; exact source includes the scoped7A remount readiness correction following independent HOLD. Fresh full validation is pending."
+    "note": "Runtime unchanged from501f2f8; exact source includes scoped7A remount readiness correction after HOLD. Complete fresh validation and99-image inspection passed; independent acceptance pending."
   },
   "activeMilestone": {
     "id": "V2-8B",
     "roadmapRef": "docs/ROADMAP.md#v2-8b-scope-proposal",
     "evalDoc": "docs/V2-8B-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "durable-runtime",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/final/durable-runtime.json",
+      "reason": "69/69 focused SQLite/PostgreSQL contracts and real-process cases passed; repeated cases separate from distinct totals."
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/final/non-browser-bulk.json",
+      "reason": "181files,2178/2178 passed,0fail/skip/cancel/unexecuted."
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/final/serial-browser.json",
+      "reason": "26 bounded serial files,208/208 passed including full7A28/28 and unchanged remount assertions."
     },
     {
       "id": "postgres-contract",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/final/postgres-contract.json",
+      "reason": "Isolated PostgreSQL15.18 backend/import23/23 passed; new runtime34/34 also ran in the full matrix."
     },
     {
       "id": "cross-process-faults",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/final/cross-process-faults.json",
+      "reason": "Existing isolated PostgreSQL cross-process/fault19/19 passed; new actual runtime death/recovery covered separately."
     },
     {
       "id": "production-build",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/final/production-build.json",
+      "reason": "Production Vite build exited0 after all browser jobs."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/final/typecheck.json",
+      "reason": "Strict typecheck exited0."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/final/benchmark-50.json",
+      "reason": "Canonical benchmark completed50/50 cells, raster-none; native visuals checked separately."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Refrozen after scoped remount readiness correction; current final-source check pending. Prior501f2f8 evidence retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/final/frontend-visual.json",
+      "reason": "All99 hashed final-source PNGs inspected; OOXML/native preservation and controlled canvas bounds checked. Inherited limits retained."
     }
   ],
   "knownBlockers": [],
