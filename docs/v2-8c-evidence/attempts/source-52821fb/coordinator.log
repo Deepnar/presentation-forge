@@ -1,0 +1,9 @@
+focused START
+focused EXIT 0 {'total': 62, 'pass': 62, 'fail': 0, 'skip': 0, 'cancelled': 0}
+bulk START
+bulk EXIT 0 {'total': 2231, 'pass': 2231, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-7a.test START
+v2-edit-chrome-7a.test RUNNING 30 seconds
+v2-edit-chrome-7a.test RUNNING 60 seconds
+v2-edit-chrome-7a.test RUNNING 90 seconds
+v2-edit-chrome-7a.test RUNNING 120 seconds

@@ -8485,6 +8485,11 @@ needs direction on scope before building.*
   both families now require refusal; shared canonical tool validation and canonical
   catalog comparisons prevent layout/authority fields before any durable edit.
 
+  **Usage correction:** raw input counters have different cache semantics across
+  APIs. Normalize cache-inclusive totals exactly once, retain optional breakdowns
+  and reject invalid counters. Preserve the cancelled first-source attempt and
+  fail-first evidence; refreeze and rerun every final-source gate.
+
   **Gates/stop:** correctness, ownership/data integrity, canonical edit preservation,
   native/regression/compatibility/documentation gates apply; unchanged browser UI
   supplies interaction/accessibility/responsive regression evidence. Live-provider

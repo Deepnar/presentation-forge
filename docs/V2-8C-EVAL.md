@@ -1,6 +1,6 @@
 # V2-8C provider exchange boundary evaluation
 
-Implementation is complete and frozen at `52821fb26b796889da3154998480d2ed7d725bd9`. Final validation and
+Implementation is complete and frozen at `e41d509c20fca21a70b9a0c587ccb83684aee7e6`. Final validation and
 independent review are pending. The task entered from accepted baseline
 `1fb39ff75cd473ecaf2884232d5d7465d50a9af2`, entry checkout
 `405a062a9c1bbc9e2358457913f87907cf6b1bb7`, branch `v2`, push `origin/v2`.
@@ -61,3 +61,27 @@ validatedToolRequest primitive as the actual tool session; supplied JSON Schema
 is never compiled by the provider parser. Runtime authority remains unchanged.
 The corrected provider/foundation/boundary set passed127/127 twice; final-source
 repeats and the complete inventory remain separate. See attempts/development/.
+
+## Cancelled first source and usage correction
+
+Source52821fb passed focused62 and bulk2231. The implementer explicitly cancelled
+its active7A job before correcting a discovered usage-normalization defect; that
+file emitted suite bodies but no complete totals/watchdog success and is not a
+passing gate. One file is cancelled, with complete leaf totals unavailable. The
+remaining25 serial and6 full-matrix PostgreSQL jobs, build/type/benchmark/native
+were unexecuted in that attempt (the focused provider PG cases had executed).
+Raw output, current shell captures and interruption status are retained in
+attempts/source-52821fb. All3171 snapshot files, including32original archives, were
+restored with matching hashes before correction. No unexecuted/cancelled check is
+reclassified as passing.
+
+The initial test expected both APIs' raw input counter to mean the same thing.
+[Anthropic cache accounting](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)
+requires adding reported cache reads/writes to uncached input; the
+[Chat Completions prompt breakdown](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/list)
+is already included in the prompt total. A new fail-first selected run failed2/2
+(42excluded). Normalized inputTokens now includes reported cached input exactly
+once; optional cache breakdowns are preserved, unavailable breakdowns stay absent,
+and invalid counters refuse. This changes no caching request or credential policy.
+The corrected provider focus passed66/66 and typecheck passed. The entire final
+inventory is refrozen and will run afresh; prior results remain prior-source.

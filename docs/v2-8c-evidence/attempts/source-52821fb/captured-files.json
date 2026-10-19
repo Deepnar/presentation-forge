@@ -1,0 +1,58 @@
+[
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/canvas-chart.json",
+    "sha256": "931ecd22bf06b5e24e5b8f2a788480df22f3e0ddb0bb664962b53ea0d93635b6"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/canvas-table.json",
+    "sha256": "4aecce40fb70f1a091605ea15db05b4e66cc5ef256a512f65b8d63ef5cde5846"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/dashboard-empty.png",
+    "sha256": "9206fa80136fc3904abb2a8327c8d089e6d3b950ff38ec98307389ee345b80c1"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/dashboard-hosted-anon.png",
+    "sha256": "cd5ccf8c53cb7f5f85e3303df5c4162e5ec144a9cd0d85502a837f123a5c5916"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/dashboard.png",
+    "sha256": "0a29db0a38ac1fcee0fc1d8975386e5c42472d5f84ccbeeee7314e1c9c1d4c75"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-blank.png",
+    "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-chart.png",
+    "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-history.png",
+    "sha256": "54ef90ff80c1face712304a8a378110d997fafcd9febe38496bb59e33960f056"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-narrow-projects.png",
+    "sha256": "8609e6de319c35485aef211d3dd7fc92100357378f14442ff53ad2ad10a9207b"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-narrow.png",
+    "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-readonly.png",
+    "sha256": "c9f7548027ee90671b013fea12086786a5070f704c919a85e0c67e0509578a61"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-shell.png",
+    "sha256": "1c599d7721e97a22baa11b67d12e3fef9429b173e3d3fd55602e9e03151d1767"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-table.png",
+    "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9"
+  },
+  {
+    "file": "docs/v2-8c-evidence/attempts/source-52821fb/shell/large-deck.json",
+    "sha256": "4fb2be10060facfbba244fd82c57587f81aad38a667b35b9c4ce4b249761e12b"
+  }
+]

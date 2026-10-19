@@ -172,3 +172,9 @@ provider loop, conversation persistence, Assistant UI, public transport, new key
 storage, search or provider qualification claim. Protocol fixtures exercise actual
 HTTP and canonical persistence on both backends. Current review/evidence is in
 [the evaluation](V2-8C-EVAL.md) and development-state.json.
+
+Normalized usage inputTokens includes reported cached input once. Anthropic's
+uncached/cache-read/cache-write fields are summed; Chat Completions prompt_tokens
+is already inclusive and its cache details remain breakdowns. Missing usage stays
+null and unavailable cache breakdowns are omitted. Invalid counters refuse; the
+transport does not enable or configure prompt caching.

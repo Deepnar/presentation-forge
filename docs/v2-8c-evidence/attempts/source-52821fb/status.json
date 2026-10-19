@@ -1,0 +1,14 @@
+{
+  "implementationSha": "52821fb26b796889da3154998480d2ed7d725bd9",
+  "focusedPass": 62,
+  "bulkPass": 2231,
+  "cancelledFiles": 1,
+  "cancelledFile": "test/v2-edit-chrome-7a.test.js",
+  "completeChromeLeafTotalsUnavailable": true,
+  "reason": "Explicit cancellation before usage-normalization correction; partial Chrome output is not a passing gate",
+  "remainingSerialFilesUnexecuted": 25,
+  "postgresFilesUnexecuted": 6,
+  "buildTypeBenchmarkNativeUnexecuted": true,
+  "restoredFiles": 3171,
+  "allRestoredHashesMatch": true
+}

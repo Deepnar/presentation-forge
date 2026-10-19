@@ -2,7 +2,7 @@
 
 2026-10-19, branch v2, push origin/v2. Accepted baseline remains V2-8B
 `1fb39ff75cd473ecaf2884232d5d7465d50a9af2`. Current frozen source is
-`52821fb26b796889da3154998480d2ed7d725bd9`; later commits are evidence/docs only. The continuation starts the
+`e41d509c20fca21a70b9a0c587ccb83684aee7e6`; later commits are evidence/docs only. The continuation starts the
 next bounded headless dependency under the standing recommended-choice instruction.
 [Contract](ROADMAP.md#v2-8c-provider-boundary), [evaluation](V2-8C-EVAL.md),
 state and the as-built agent architecture define scope. No self-acceptance.
@@ -11,7 +11,10 @@ Both real HTTP wire adapters, explicit capabilities, bounded timeout/body/cancel
 normalized semantic proposals and canonical tool validation are implemented. The
 read-only reviewer found a permissive-catalog gap; fail-first2/2 reproduced it and
 shared canonical validation fixed it. Corrected provider/foundation/boundary127/127
-passed twice. Final215-file execution, four persisted provider/native cases, image
+passed twice. A later cache-accounting defect received fail-first coverage and
+normalization correction; the provider focus66/66 and typecheck passed. The first
+52821fb full attempt was explicitly cancelled during7A after focused62/bulk2231;
+outputs and3171-file hash restoration remain in attempts/source-52821fb. Final215-file execution, four persisted provider/native cases, image
 inspection and separate exact-source review remain pending. Live provider endpoints
 and hosted content quality are unexecuted; no live credentials were read.
 

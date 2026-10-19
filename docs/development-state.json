@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-8B-1fb39ff.json"
   },
   "implementationHead": {
-    "sha": "52821fb26b796889da3154998480d2ed7d725bd9",
-    "note": "Provider exchange implementation and tests frozen after canonical-schema review correction; final complete validation and independent acceptance pending."
+    "sha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+    "note": "Refrozen after canonical tool validation and cache-inclusive usage normalization. Prior partial52821fb attempt is retained; full current-source validation and independent review pending."
   },
   "activeMilestone": {
     "id": "V2-8C",
