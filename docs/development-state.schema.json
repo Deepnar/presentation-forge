@@ -135,7 +135,8 @@
               "project-catalog",
               "editor-toolbar",
               "agent-foundation",
-              "durable-runtime"
+              "durable-runtime",
+              "model-provider"
             ]
           },
           "status": {

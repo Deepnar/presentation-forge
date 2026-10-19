@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-8B-1fb39ff.json"
   },
   "implementationHead": {
-    "sha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
-    "note": "Independently accepted durable run core and scoped7A remount readiness correction; later commits contain documentation/evidence only."
+    "sha": "405a062a9c1bbc9e2358457913f87907cf6b1bb7",
+    "note": "Task-entry snapshot before provider implementation. No code result is claimed."
   },
   "activeMilestone": {
-    "id": "V2-8B",
-    "roadmapRef": "docs/ROADMAP.md#v2-8b-scope-proposal",
-    "evalDoc": "docs/V2-8B-EVAL.md",
+    "id": "V2-8C",
+    "roadmapRef": "docs/ROADMAP.md#v2-8c-provider-boundary",
+    "evalDoc": "docs/V2-8C-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "not-started",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8B-1fb39ff.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "durable-runtime",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/final/durable-runtime.json",
-      "reason": "69/69 focused SQLite/PostgreSQL contracts and real-process cases passed; repeated cases separate from distinct totals."
+      "id": "model-provider",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/final/non-browser-bulk.json",
-      "reason": "181files,2178/2178 passed,0fail/skip/cancel/unexecuted."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/final/serial-browser.json",
-      "reason": "26 bounded serial files,208/208 passed including full7A28/28 and unchanged remount assertions."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/final/postgres-contract.json",
-      "reason": "Isolated PostgreSQL15.18 backend/import23/23 passed; new runtime34/34 also ran in the full matrix."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/final/cross-process-faults.json",
-      "reason": "Existing isolated PostgreSQL cross-process/fault19/19 passed; new actual runtime death/recovery covered separately."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/final/production-build.json",
-      "reason": "Production Vite build exited0 after all browser jobs."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/final/typecheck.json",
-      "reason": "Strict typecheck exited0."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/final/benchmark-50.json",
-      "reason": "Canonical benchmark completed50/50 cells, raster-none; native visuals checked separately."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8b-evidence/final/frontend-visual.json",
-      "reason": "All99 hashed final-source PNGs inspected; OOXML/native preservation and controlled canvas bounds checked. Inherited limits retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
     }
   ],
   "knownBlockers": [],
@@ -84,7 +84,7 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8 provider and Assistant scope",
+    "id": "V2-8 conversational provider runtime and Assistant scope",
     "authorized": false,
     "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
   },

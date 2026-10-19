@@ -8429,6 +8429,67 @@ needs direction on scope before building.*
   > promise, new framework or production deployment is implied. Remaining Fit,
   > capture, catalog loading geometry, locale and SVG work stays separately scoped.
 
+<a id="v2-8c-provider-boundary"></a>
+
+- [ ] **V2-8C provider exchange boundary — authorized continuation, 2026-10-19.**
+  Accepted baseline `1fb39ff75cd473ecaf2884232d5d7465d50a9af2`; entry checkout
+  `405a062a9c1bbc9e2358457913f87907cf6b1bb7`, branch `v2`, push `origin/v2`.
+  The continuation request starts the next dependency; the standing direction is
+  to use the recommended choice without repeating the scope question. Deliver
+  the headless provider boundary before a new Assistant interaction surface.
+
+  **Bounded contract:** a typed provider-neutral exchange interface, explicit
+  capability negotiation and real HTTP adapters for OpenAI-compatible Chat
+  Completions and Anthropic Messages. Use the existing Node fetch/AJV stack,
+  configured models and injected operator credentials; no framework, SDK, Gateway,
+  model default, account setting or deployment adoption. Consume the accepted
+  bounded instruction/context/tool catalog, normalize text/tool calls/refusals and
+  usage, and validate every tool name/argument against that scoped catalog before
+  returning a proposal. Actual edits still use canonical tools and revision checks.
+  Unknown tools, schema/layout/authority escape fields, duplicate IDs, malformed or
+  truncated output and unsupported capabilities refuse without a document effect.
+  No implicit capability inference from model names and no silent downgrade.
+
+  Bound requests, responses and time; cancellation covers headers/body; avoid
+  automatic retries, redirect credential forwarding, raw error-body disclosure and
+  provider-owned search. Keep network work outside project transactions. New
+  adapters are internal operator-configured primitives, without new user credential
+  storage, public transport or automatic app wiring. A provider result is a proposal,
+  never a grant, saved revision or claim of completed editing.
+
+  **Evidence/acceptance:** protocol fixtures must exercise actual HTTP on both
+  materially different wire formats, auth/header and system/tool placement, usage,
+  terminal reasons, malformed tools, cancellation, oversized bodies, status errors
+  and timeout. Provider-produced semantic batches must pass through the real durable
+  runtime on SQLite and isolated PostgreSQL, preserve human styling/geometry and
+  unrelated scenes, refuse stale/protected/foreign-owner targets and export genuine
+  persisted text/chart/table output. Existing tools/context/runtime tests remain.
+  Full inventory expands 212 files with three provider files; browser/build owners
+  remain serial. Run non-browser bulk, PostgreSQL contracts/process faults, build,
+  typecheck and 50 cells; inspect screenshots/native rasters and exact bounds.
+  Live commercial endpoints and hosted content quality are explicitly unexecuted
+  without suitable credentials; fixture protocol evidence cannot advertise live
+  provider qualification or satisfy the parent two-provider/common-search gate.
+
+  **Look-ahead/non-goals:** later Assistant and conversational runtime integration
+  reuse normalized exchanges and the existing durable core. This slice supplies a
+  complete exchange boundary; it does not persist model transcripts, implement an
+  autonomous multi-turn/provider loop, streaming/vision/files/reasoning or structured
+  output modes, source search, new generation, UI, provider settings, persistent
+  undo, legacy removal, Fit/catalog/SVG/locale fixes, infrastructure, production
+  migrations or deployment. Unsupported features are explicit capabilities, not
+  placeholder success. Keep Auto quality/local-support policy unchanged.
+
+  **Gates/stop:** correctness, ownership/data integrity, canonical edit preservation,
+  native/regression/compatibility/documentation gates apply; unchanged browser UI
+  supplies interaction/accessibility/responsive regression evidence. Live-provider
+  qualification, new UI and deployment gates are outside this bounded contract.
+  Preserve standing locale/timeout/Fit/capture/SVG/archive-provenance limits.
+  Wait for a quiet machine before expensive validation, preserve all evidence and
+  original untracked work, require one separate high-effort exact-source reviewer,
+  and stop after this slice's review/handoff/owned cleanup. No next feature follows
+  automatically. [Evaluation](V2-8C-EVAL.md) indexes implementation and results.
+
 <a id="v2-8-remaining"></a>
 
 The accepted foundation supplies real scoped content tools, schemas, instruction
