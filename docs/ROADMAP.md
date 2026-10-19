@@ -7979,6 +7979,22 @@ scale); charts structurally exact without axes (V2-4C).
   > authority or renderer fork needs removal. The parent followup now starts
   > with consolidation; Fit, toolbar, prior restore timeout and AI remain separate.
 
+<a id="catalog-loading-layout-stability"></a>
+
+### [ ] Catalog source-loading layout stability
+
+The saved-project grid can be interactive while generated-deck/report discovery
+is still pending. A controlled V2-8B review trace shows that removal of the loading
+status row moves Open upward32px, allowing a previously measured point to hit
+Delete instead. This is inherited catalog geometry, unchanged by the durable core;
+its confirmation dialog prevents immediate deletion. Agree a bounded frontend
+polish contract for keeping card actions stable as source loading settles, while
+retaining truthful partial/error states. The V2-8B correction waits for settled
+reads/stable hit targets in the remount test; it does not fix this product layout.
+Evidence: [controlled trace](v2-8b-evidence/independent/remount-controlled-images/trace.json)
+and [HOLD review](reviews/V2-8B-501f2f8.md). The original untraced sequence remains
+unexplained beyond its observed wrong Delete action; controlled evidence is distinct.
+
 <a id="viewer-fit-content-box"></a>
 
 - [ ] Viewer Fit content-box accounting — the scroller's 24px padding on
@@ -8364,6 +8380,16 @@ needs direction on scope before building.*
   counters. Strengthen cross-record plan/tool/revision/failure consistency and
   active-cursor validation, with fail-first shared SQLite/PostgreSQL corruption
   cases. This is a bounded correctness correction within the approved contract.
+
+  **Independent remount correction (2026-10-19):** source501f2f8 received HOLD
+  after an independent full7A repeat27/28. A controlled real generated-source
+  response reproduced32px status-row reflow between Open measurement and trusted
+  dispatch, activating Delete. Correct only the remount test readiness (settled
+  source reads, fonts/mount motion and stable visible target), preserving all3
+  loops and single-save-machine/revision1 assertions. Refreeze and rerun the full
+  required matrix. The inherited UI issue is [separate](#catalog-loading-layout-stability),
+  not additional runtime scope. Retain both the original untraced failure and
+  controlled evidence, without claiming exact original-cause proof.
 
   **Review/stop:** after the human selected this direction, freeze the implementation
   contract and required check mapping before coding; keep the accepted V2-8A
