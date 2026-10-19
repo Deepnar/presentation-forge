@@ -2,5 +2,5 @@
   "name": "@forge/agent",
   "version": "0.1.0",
   "type": "module",
-  "description": "Bounded model instruction/context composition; no model runtime."
+  "description": "Bounded context and backend-injected durable semantic run execution."
 }
