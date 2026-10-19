@@ -134,7 +134,8 @@
               "project-covers",
               "project-catalog",
               "editor-toolbar",
-              "agent-foundation"
+              "agent-foundation",
+              "durable-runtime"
             ]
           },
           "status": {

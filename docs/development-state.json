@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-8A-d4f446c.json"
   },
   "implementationHead": {
-    "sha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
-    "note": "Exact V2-8A source independently accepted in reviews/V2-8A-d4f446c.json. Later commits contain evidence/review/cleanup/continuity only; no runtime/test/tool delta."
+    "sha": "fa1ba84378af33fe3a1654d4bd177523e1dbf080",
+    "note": "V2-8B task-entry source; implementation in progress. Freeze the completed source before validation. Accepted runtime prerequisite remains d4f446c."
   },
   "activeMilestone": {
-    "id": "V2-8A",
-    "roadmapRef": "docs/ROADMAP.md#v2-8a-scope-proposal",
-    "evalDoc": "docs/V2-8A-EVAL.md",
+    "id": "V2-8B",
+    "roadmapRef": "docs/ROADMAP.md#v2-8b-scope-proposal",
+    "evalDoc": "docs/V2-8B-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8A-d4f446c.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "agent-foundation",
-      "status": "passed",
-      "evidence": "docs/v2-8a-evidence/agent-foundation.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "id": "durable-runtime",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8a-evidence/non-browser-bulk.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8a-evidence/serial-browser.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8a-evidence/postgres-contract.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8a-evidence/cross-process-faults.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8a-evidence/production-build.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8a-evidence/typecheck.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8a-evidence/benchmark-50.json",
-      "reason": "Executed on the frozen implementation; exact output and file inventory retained."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8a-evidence/frontend-visual.json",
-      "reason": "All91 final images inspected; exact hashes/source/backend retained. Known renderer/capture limitations explicit."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
     }
   ],
   "knownBlockers": [],
@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8B durable run core proposal",
+    "id": "V2-8 provider and Assistant scope",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#v2-8b-scope-proposal"
+    "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
@@ -103,5 +103,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-18"
+  "updated": "2026-10-19"
 }

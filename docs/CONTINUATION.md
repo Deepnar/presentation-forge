@@ -41,10 +41,9 @@ headless case, independent148/148 and all command/visual evidence. The owned ser
 was removed after a saved0-database observation;5544closed. Its absence does not
 invalidate historical execution or supply a pass for a future run.
 
-The accepted foundation stop point is reached. A continuation request prepared
-[the V2-8B proposal](ROADMAP.md#v2-8b-scope-proposal); direction is pending.
-Next-candidate status authorizes planning only; agree its bounded direction before
-implementation.
+The human selected the recommended [V2-8B durable run core](ROADMAP.md#v2-8b-scope-proposal)
+on 2026-10-19. Its [evaluation](V2-8B-EVAL.md) freezes the implementation/check
+contract. The accepted baseline stays V2-8A until separate exact-source review.
 Preserve known Fit/timeout/capture/locale/mixed-runSVG limits and the explicit
 2ignored-original-PPTX provenance limitation. All original3untracked paths stay
 untouched. No new feature, infrastructure, migration or deployment is authorized

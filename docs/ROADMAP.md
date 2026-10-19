@@ -8272,15 +8272,15 @@ needs direction on scope before building.*
 
 <a id="v2-8b-scope-proposal"></a>
 
-- [ ] **V2-8B durable run core — proposed on 2026-10-18; direction pending.**
+- [ ] **V2-8B durable run core — approved on 2026-10-19; implementation in progress.**
   Continuation resumes from accepted implementation
   `d4f446c7b2fcae851c37d1a46288cf91317c38b4`
   ([independent decision](reviews/V2-8A-d4f446c.json)), planning checkout
   `c8d6fafca67836369c6e8cf4a4b88d1391a1405a`, branch `v2`.
-  The continuation request authorizes preparation of this contract; the prior
-  foundation approval did not select the next runtime or Assistant scope.
+  The human selected the recommended durable-core direction on 2026-10-19.
+  This contract is approved for implementation, verification and independent review.
 
-  **Recommended direction:** complete the server-owned durable run core before
+  **Approved direction:** complete the server-owned durable run core before
   adding live providers or the Assistant surface. A headless scripted caller
   exercises real scoped tools and saved projects through start, claim, bounded
   execution, cancellation, process death and recovery. Runs survive client
@@ -8365,6 +8365,8 @@ needs direction on scope before building.*
   Commit focused scoped changes to `origin/v2`, preserve unrelated untracked work,
   and stop after review/handoff/owned-service cleanup. No following provider/UI
   slice is authorized by this proposal or its eventual correctness acceptance.
+
+<a id="v2-8-remaining"></a>
 
 The accepted foundation supplies real scoped content tools, schemas, instruction
 sections and bounded context. The remaining parent milestone integrates these
