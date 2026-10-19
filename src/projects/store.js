@@ -705,3 +705,80 @@ export function restoreRevision(args) {
 }
 
 export function closeProjectStore() { closeDb(); }
+
+// A host-only transaction seam; callbacks must contain local validation, never I/O
+// to providers. Project/history and runtime effects share this one commit boundary.
+export async function withRuntimeTransaction({ owner = null, id }, job) {
+  if (!validProjectId(id))
+    throw Object.assign(new Error("Invalid project"), { code: "invalid-id" });
+  return serializeWrite(async () => {
+    const { RUN_DDL } = await import("../agent/schema.js");
+    const { runtimeDocument } = await import("./runtime-document.js");
+    const db = ensureSchema();
+    db.exec(RUN_DDL);
+    db.exec("BEGIN IMMEDIATE");
+    try {
+      let doc = readAccessibleProject(db, id, owner, false);
+      if (!(await validateProjectDocument(doc)).ok)
+        throw Object.assign(new Error("Invalid project"), {
+          code: "invalid-document",
+        });
+      let guard = null;
+      const tx = {
+        beforeCommit(check) {
+          guard = check;
+        },
+        doc: structuredClone(doc),
+        async query(sql, params = []) {
+          const statement = db.prepare(sql);
+          return statement.columns().length
+            ? statement.all(...params)
+            : (statement.run(...params), []);
+        },
+        async now() {
+          return Math.floor(
+            db.prepare("SELECT unixepoch('subsec') * 1000 AS ms").get().ms,
+          );
+        },
+        async saveScenes(scenes, provenance) {
+          const next = await runtimeDocument(doc, scenes, provenance);
+          if (!next.changed) return doc.revision;
+          ensureBaselineRow(db, id, doc);
+          const r = db
+            .prepare(
+              "UPDATE v2_projects SET payload=?, revision=?, updated_at=? WHERE id=? AND revision=?",
+            )
+            .run(
+              JSON.stringify(next.doc),
+              next.doc.revision,
+              next.doc.updatedAt,
+              id,
+              doc.revision,
+            );
+          if (r.changes !== 1)
+            throw Object.assign(new Error("Runtime project changed"), {
+              code: "invalid-document",
+            });
+          insertRevisionRow(db, {
+            projectId: id,
+            doc: next.doc,
+            kind: "save",
+            provenance: next.provenance,
+          });
+          pruneHistory(db, id);
+          doc = next.doc;
+          return doc.revision;
+        },
+      };
+      const result = await job(tx);
+      if (guard) await guard();
+      db.exec("COMMIT");
+      return result;
+    } catch (error) {
+      try {
+        db.exec("ROLLBACK");
+      } catch {}
+      throw storageFailure(error);
+    }
+  });
+}

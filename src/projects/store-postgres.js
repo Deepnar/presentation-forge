@@ -106,7 +106,7 @@ function storageUnavailable(err) {
   // untouched; only raw driver failures become storage-unavailable.
   // pg driver codes ('23505', 'ECONNREFUSED', …) are never in this
   // set, so they can never leak through as domain codes.
-  if (err && (err.code === "store-misconfigured" || err.code === "invalid-id" || err.code === "invalid-document" || err.code === "not-found" || err.code === "revision-pruned" || err.code === "import-source-changed" || err.code === "import-target-deleted")) return err;
+  if (err && (err.code === "runtime-fenced" || err.code === "store-misconfigured" || err.code === "invalid-id" || err.code === "invalid-document" || err.code === "not-found" || err.code === "revision-pruned" || err.code === "import-source-changed" || err.code === "import-target-deleted")) return err;
   const e = new Error(`storage unavailable: ${err?.message ?? String(err)}`);
   e.code = "storage-unavailable";
   return e;
@@ -161,7 +161,8 @@ async function ensureSchemaPool(p) {
   if (ensuredPools.has(p)) return ensuredPools.get(p);
   const ready = (async () => {
     const client = await p.connect();
-    client.on("error", () => { /* initialization query reports the failure */ });
+    const onError = () => { /* initialization query reports the failure */ };
+    client.on("error", onError);
     try {
       await client.query("BEGIN");
       // DDL has its own short transaction. The shared lock also covers cold
@@ -172,7 +173,7 @@ async function ensureSchemaPool(p) {
     } catch (error) {
       try { await client.query("ROLLBACK"); } catch { /* connection may be gone */ }
       throw error;
-    } finally { client.release(); }
+    } finally { client.removeListener("error", onError); client.release(); }
   })();
   ensuredPools.set(p, ready);
   try { await ready; } catch (error) { ensuredPools.delete(p); throw error; }
@@ -185,7 +186,8 @@ async function withTxn(fn) {
   // checked-out client; without a listener that event crashes the
   // process. The failure itself still rejects the pending query and
   // is mapped below — this only keeps the crash from doubling it.
-  client.on("error", () => { /* mapped at the pending query */ });
+  const onError = () => { /* mapped at the pending query */ };
+  client.on("error", onError);
   try {
     await client.query("BEGIN");
     try {
@@ -199,6 +201,7 @@ async function withTxn(fn) {
       throw err;
     }
   } finally {
+    client.removeListener("error", onError);
     client.release();
   }
 }
@@ -699,5 +702,100 @@ export async function restoreRevision({ owner = null, id, admin = false, targetR
   } catch (err) {
     if (err && (err.code === "not-found" || err.code === "invalid-document" || err.code === "invalid-id" || err.code === "revision-pruned" || err.code === "store-misconfigured")) throw err;
     throw storageUnavailable(err);
+  }
+}
+
+const runtimeEnsured = new WeakMap();
+async function ensureRuntimeSchema(p) {
+  if (!runtimeEnsured.has(p)) {
+    const ready = (async () => {
+      const { RUN_DDL } = await import("../agent/schema.js");
+      await ensureSchemaPool(p);
+      await withTxn(async (client) => {
+        await client.query("SELECT pg_advisory_xact_lock(21441, 8)");
+        await client.query(RUN_DDL);
+      });
+    })();
+    runtimeEnsured.set(p, ready);
+    ready.catch(() => runtimeEnsured.delete(p));
+  }
+  return runtimeEnsured.get(p);
+}
+
+export async function withRuntimeTransaction({ owner = null, id }, job) {
+  if (!validProjectId(id))
+    throw Object.assign(new Error("Invalid project"), { code: "invalid-id" });
+  const { runtimeDocument } = await import("./runtime-document.js");
+  try {
+    await ensureRuntimeSchema(await pool());
+    return await withTxn(async (client) => {
+      const row = (
+        await client.query("SELECT * FROM v2_projects WHERE id=$1 FOR UPDATE", [
+          id,
+        ])
+      ).rows[0];
+      let doc = readAccessibleProjectRow(row, id, owner, false);
+      if (!(await validateProjectDocument(doc)).ok)
+        throw Object.assign(new Error("Invalid project"), {
+          code: "invalid-document",
+        });
+      let guard = null;
+      const result = await job({
+        beforeCommit(check) {
+          guard = check;
+        },
+        doc: structuredClone(doc),
+        async query(sql, params = []) {
+          let i = 0;
+          return (
+            await client.query(
+              sql.replace(/\?/g, () => `$${++i}`),
+              params,
+            )
+          ).rows;
+        },
+        async now() {
+          return Number(
+            (
+              await client.query(
+                "SELECT floor(extract(epoch FROM clock_timestamp()) * 1000) AS ms",
+              )
+            ).rows[0].ms,
+          );
+        },
+        async saveScenes(scenes, provenance) {
+          const next = await runtimeDocument(doc, scenes, provenance);
+          if (!next.changed) return doc.revision;
+          await ensureBaselineRow(client, id, doc);
+          const r = await client.query(
+            "UPDATE v2_projects SET payload=$1, revision=$2, updated_at=$3 WHERE id=$4 AND revision=$5",
+            [
+              JSON.stringify(next.doc),
+              next.doc.revision,
+              next.doc.updatedAt,
+              id,
+              doc.revision,
+            ],
+          );
+          if (r.rowCount !== 1)
+            throw Object.assign(new Error("Runtime project changed"), {
+              code: "invalid-document",
+            });
+          await insertRevisionRow(client, {
+            projectId: id,
+            doc: next.doc,
+            kind: "save",
+            provenance: next.provenance,
+          });
+          await pruneHistory(client, id);
+          doc = next.doc;
+          return doc.revision;
+        },
+      });
+      if (guard) await guard();
+      return result;
+    });
+  } catch (error) {
+    throw storageUnavailable(error);
   }
 }
