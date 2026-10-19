@@ -9,6 +9,17 @@ import { cloneJson, type Json } from './json.ts';
 const schema = JSON.parse(await readFile(new URL('./request.schema.json', import.meta.url), 'utf8'));
 const validateResult = new Ajv({ strict: false }).compile<WireToolResult>(JSON.parse(await readFile(new URL('./result.schema.json', import.meta.url), 'utf8')));
 const validate = new Ajv({ strict: false, allErrors: false }).compile(schema);
+
+export function validatedToolRequest(input: unknown, maxChars = 65536): ToolRequest | null {
+  try {
+    const copy = cloneJson(input, maxChars);
+    return validate(copy) ? copy as ToolRequest : null;
+  } catch { return null; }
+}
+
+export function semanticToolCatalog(): { name: string; inputSchema: Json }[] {
+  return schema.oneOf.map((branch: { properties: { tool: { const: string }; args: unknown } }) => ({ name: branch.properties.tool.const, inputSchema: cloneJson(branch.properties.args) }));
+}
 const MESSAGES = {
   forbidden: 'This project is not available to this caller.',
   'invalid-input': 'Provide a valid content-tool request within its input limits.',
@@ -104,14 +115,13 @@ export function createToolSession(binding: ToolBinding): ToolSession {
     revision: () => authorized ? document.status().revision : null,
     catalog() {
       if (!authorized) return [];
-      return schema.oneOf.filter((branch: { properties: { tool: { const: string } } }) => branch.properties.tool.const !== 'edit_content' || (mode === 'edit' && editable.size > 0)).map((branch: { properties: { tool: { const: string }; args: unknown } }) => ({ name: branch.properties.tool.const, inputSchema: cloneJson(branch.properties.args) }));
+      return semanticToolCatalog().filter(t => t.name !== 'edit_content' || (mode === 'edit' && editable.size > 0));
     },
     async execute(input: unknown, callId?: string): Promise<ToolResult> {
       if (!authorized) return failure('forbidden');
       if (++calls > maxCalls) return failure('budget-exceeded');
-      let request: ToolRequest;
-      try { const copy = cloneJson(input, inputChars); if (!validate(copy)) return failure('invalid-input'); request = copy as ToolRequest; }
-      catch { return failure('invalid-input'); }
+      const request = validatedToolRequest(input, inputChars);
+      if (!request) return failure('invalid-input');
       try {
         const { scenes, revision } = document.snapshot();
         let result: ToolSuccess;
