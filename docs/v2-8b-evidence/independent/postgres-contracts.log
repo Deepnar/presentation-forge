@@ -1,0 +1,53 @@
+✔ cold cross-process creation races initialize safely and commit one project/history/receipt (544.830939ms)
+✔ same-process concurrent imports return one current project without extra history (234.844168ms)
+✔ changed sources, deleted targets and owner mismatches refuse without overwrites (29.781155ms)
+✔ a history trigger fault rolls back reservation and project; retry can create (33.041952ms)
+✔ a lost response and pool restart replay the committed current project (26.667434ms)
+✔ a terminated backend during history insertion rolls back every creation row (64.265258ms)
+▶ v2-6c contract over postgres
+  ✔ adapter answers before the shared suite runs (9.376246ms)
+✔ v2-6c contract over postgres (25.955577ms)
+▶ [postgres] CRUD and summaries
+  ✔ creates, loads, lists without scene bytes, renames, deletes (69.331434ms)
+  ✔ no-op saves and renames advance nothing and record nothing (9.555864ms)
+✔ [postgres] CRUD and summaries (79.071892ms)
+▶ [postgres] schema validation
+  ✔ refuses malformed ids, titles, scenes, and provenance (7.842827ms)
+✔ [postgres] schema validation (7.966736ms)
+▶ [postgres] owner isolation
+  ✔ exact-match reads, lists, writes, and history without leaks (23.930041ms)
+✔ [postgres] owner isolation (24.07824ms)
+▶ [postgres] revision conflicts
+  ✔ same-base saves serialize to one winner and one stale (12.948365ms)
+  ✔ save versus rename on one base keeps exactly one winner (7.82205ms)
+  ✔ concurrent same-base renames yield one winner and one stale (8.224751ms)
+✔ [postgres] revision conflicts (29.225337ms)
+▶ [postgres] atomic history
+  ✔ every committed revision has a validated history row; failures add none (11.660853ms)
+✔ [postgres] atomic history (11.744844ms)
+▶ [postgres] retention
+  ✔ stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable (74.069515ms)
+✔ [postgres] retention (74.18666ms)
+▶ [postgres] restore
+  ✔ restores as a new revision, preserves rows, refuses stale (12.315903ms)
+  ✔ restore versus restore on one base keeps one winner (8.724134ms)
+✔ [postgres] restore (21.187924ms)
+▶ [postgres] migration and corruption
+  ✔ history-less projects gain exactly one baseline without rewrites (7.879669ms)
+  ✔ future schema versions refuse; corrupt rows refuse with current intact (8.457756ms)
+✔ [postgres] migration and corruption (16.461277ms)
+▶ [postgres] round-trip and export
+  ✔ mixed decks survive byte-identical with identity intact (4.87579ms)
+  ✔ stored and restored documents export native and order-exact (31.652813ms)
+✔ [postgres] round-trip and export (36.659839ms)
+▶ [postgres] deletion
+  ✔ delete removes the project and its history together (4.914608ms)
+✔ [postgres] deletion (4.987029ms)
+ℹ tests 23
+ℹ suites 11
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1483.167088

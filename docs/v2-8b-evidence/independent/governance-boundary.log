@@ -1,0 +1,48 @@
+✔ repository state, document references and real Git ancestry validate (42.787324ms)
+✔ missing required role document fails closed (18.386491ms)
+✔ malformed state JSON returns diagnostics instead of crashing (1.130266ms)
+✔ unknown review state, malformed SHA and extra properties are rejected (7.478599ms)
+✔ known pending validation cannot disappear or be duplicated (19.219066ms)
+✔ unaccepted implementation cannot replace the accepted baseline (13.031961ms)
+✔ passed validation needs existing matching evidence and its output log (43.038084ms)
+✔ stale evidence from another implementation SHA is refused (11.184608ms)
+✔ self-reported totals must match the retained test output (14.307959ms)
+✔ nonzero, cancelled, skipped and inconsistent totals never become passes (45.584683ms)
+✔ existing output cannot substitute for actual visual inspection or 50 benchmark cells (33.916188ms)
+✔ renaming a reviewer cannot substitute for a separate decision record (24.54675ms)
+✔ legitimate recorded acceptance can advance the baseline after completed validation (56.525771ms)
+✔ document paths, anchors and symlinks cannot leave the repository or point nowhere (34.100154ms)
+✔ Git verification rejects well-shaped nonexistent commits (9.549782ms)
+✔ a passing subset cannot substitute for the full required file scope (10.882118ms)
+✔ name-filtered runs and implausibly small suite counts fail closed (20.343525ms)
+✔ the TAP inventory records entry files without imported contract helpers (62.25854ms)
+✔ new milestone keeps its own focused gate and rejects old evidence inventory (42.57341ms)
+✔ browser handoff requires its own complete focused evidence (44.680578ms)
+✔ project covers require their own unit, HTTP and complete Chrome evidence (45.105292ms)
+✔ project discovery requires its own complete unit, HTTP and Chrome evidence (38.026131ms)
+✔ production toolbar evidence includes its complete Chrome file and full shell regression (39.400863ms)
+✔ agent foundation requires complete tool and context behavioral evidence (38.35061ms)
+▶ v2 core boundary
+  ✔ detects static, re-export, and literal dynamic imports (3.580461ms)
+  ✔ fails closed on require() and non-literal dynamic import (0.418903ms)
+  ✔ enforces package directions on synthetic edges (0.196998ms)
+  ✔ confines node builtins to the named renderer adapter (0.107264ms)
+  ✔ allows jszip only in renderer-docx (0.100915ms)
+  ✔ repository packages contain zero boundary violations (134.698383ms)
+✔ v2 core boundary (139.753413ms)
+▶ v2 generated type usability
+  ✔ plain arrays assign to id lists (0.447479ms)
+  ✔ export artifacts carry export fields as plain optionals (0.096676ms)
+  ✔ domain objects construct without casts (0.132389ms)
+✔ v2 generated type usability (1.353781ms)
+▶ v2 generated types drift
+  ✔ checked-in generated types match the schemas byte-for-byte (121.341486ms)
+✔ v2 generated types drift (121.958219ms)
+ℹ tests 34
+ℹ suites 3
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1319.935648

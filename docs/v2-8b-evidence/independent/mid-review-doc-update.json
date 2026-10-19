@@ -1,0 +1,5 @@
+{
+  "commit": "1138362d74c0f109b0d196d0b2fbe7d812e527eb",
+  "preservedNewRunbook": "docs/v2-8b-evidence/RUNBOOK.md",
+  "reason": "Implementer notified reviewer of docs-only correction after initial snapshot; new bytes replace backed-up snapshot, no source change."
+}

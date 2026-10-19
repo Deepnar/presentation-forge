@@ -1,0 +1,23 @@
+▶ v2-7a editor shell
+  ✖ remounts cleanly with single-commit semantics (92215.104857ms)
+✖ v2-7a editor shell (92708.627453ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 94778.874575
+
+✖ failing tests:
+
+test at docs/v2-8b-evidence/independent/remount-controlled.mjs:723:3
+✖ remounts cleanly with single-commit semantics (92215.104857ms)
+  Error: wait timed out: ((document.querySelector('[data-save-state]')?.dataset?.saveState ?? null) === 'saved' && JSON.parse; {"url":"http://127.0.0.1:5263/#/projects","body":"Forge\nChats\nNew chat\nYour chats will appear here.\nProjects\nThemes\nSettings\nAdmin\nS\nSeven\nPrivacy\n·\nTerms\n·\nReport an issue\nProjects\n\nSaved presentations, generated decks and reports. Open a project or create a new presentation.\n\nRefresh\nCreate presentation\nSearch projects\nProject type\nAll projects\nSaved presentations\nGenerated decks & reports\nReports\n\n1 project\n\nFirst slide preview\n\nSaved presentation\nClean Deck\n1 slide · rev 0 · just now\nOpen\nHistory\nRename\nExport\nDelete…\nDelete “Clean Deck”?\nDeletes this saved presentation and its saved versions. Generated originals remain separate. This cannot be undone.\nCancel\nDelete"}
+      at waitFor (file:///home/deepnar/Programs/presentations/docs/v2-8b-evidence/independent/remount-controlled.mjs:167:13)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/docs/v2-8b-evidence/independent/remount-controlled.mjs:743:9)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Promise.all (index 7)
+      at async Suite.run (node:internal/test_runner/test:1771:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)

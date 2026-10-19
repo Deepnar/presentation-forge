@@ -1,0 +1,23 @@
+{
+  "cpuBusyPercent": 0.744,
+  "pressure": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=6160607\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2323\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=2300\n",
+    "io": "some avg10=0.00 avg60=0.00 avg300=0.55 total=111632107\nfull avg10=0.00 avg60=0.00 avg300=0.53 total=107848896\n"
+  },
+  "meminfo": "MemTotal:       65245268 kB\nMemFree:        13249100 kB\nMemAvailable:   49879032 kB\nBuffers:            7824 kB\nCached:         31827108 kB\nSwapCached:           48 kB\nActive:         10562856 kB\nInactive:       29190180 kB\nActive(anon):   10561612 kB\nInactive(anon):     2996 kB\nActive(file):       1244 kB\nInactive(file): 29187184 kB\nUnevictable:     2118788 kB\nMlocked:           40132 kB\nSwapTotal:      65245180 kB\nSwapFree:       65243764 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:              2872 kB\nWriteback:             0 kB\nAnonPages:       9562104 kB\nMapped:          8474424 kB\nShmem:           2331844 kB\nKReclaimable:    8169064 kB\nSlab:            8759908 kB\nSReclaimable:    8169064 kB\nSUnreclaim:       590844 kB\nKernelStack:       36320 kB\nPageTables:       132936 kB\nSecPageTables:      2360 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    97867812 kB\nCommitted_AS:   33006952 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      477856 kB\nVmallocChunk:          0 kB\nPercpu:            24096 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   2478080 kB\nShmemHugePages:  1607680 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:              0 kB\nCmaFree:               0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nGPUActive:             0 kB\nGPUReclaim:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1668864 kB\nDirectMap2M:    31293440 kB\nDirectMap1G:    35651584 kB\n",
+  "topProcesses": [
+    "    PID %CPU %MEM COMMAND",
+    "   5341 16.5  0.1 RDD Process",
+    "  11217 14.3  1.2 Isolated Web Co",
+    "  19756  9.9 11.1 llama-server",
+    "   5199  8.5  1.1 zen-bin",
+    "   4547  7.5  0.3 Hyprland",
+    "   6086  5.3  1.0 claude-desktop",
+    "   5951  3.6  0.3 claude-desktop",
+    "   8470  2.5  1.2 ChatGPT",
+    "   8156  2.0  0.8 ChatGPT",
+    " 106267  1.9  0.0 python",
+    "   5875  1.5  0.6 claude-desktop"
+  ]
+}

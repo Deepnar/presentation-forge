@@ -1,0 +1,11 @@
+▶ v2-7a editor shell
+  ✔ remounts cleanly with single-commit semantics (6220.340072ms)
+✔ v2-7a editor shell (6716.368562ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8789.034371

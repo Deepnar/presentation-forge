@@ -1,0 +1,85 @@
+{
+  "decision": "HOLD",
+  "kind": "independent-review",
+  "implementationSha": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+  "acceptedBaselineCompared": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "reviewedEvidenceCommit": "4e2131668a55d483c07e229fa75e2d86a803e607",
+  "laterDocsOnlyCommit": "1138362",
+  "reviewer": "V2-8B independent durable-core reviewer",
+  "context": "/root/catalog_review",
+  "date": "2026-10-19",
+  "evidence": "docs/reviews/V2-8B-501f2f8.md",
+  "independentEvidence": "docs/v2-8b-evidence/independent/runs.json",
+  "scope": "Approved durable run core only",
+  "blockingFinding": {
+    "priority": 2,
+    "file": "test/v2-edit-chrome-7a.test.js",
+    "line": 736,
+    "summary": "Remount loop dispatches stale Open point while actual catalog source completion shifts card actions32px, allowing trusted Delete activation.",
+    "originalCompleteBrowserRepeat": {
+      "pass": 27,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "controlledProof": "docs/v2-8b-evidence/independent/remount-controlled-images/trace.json",
+    "originalEventSequenceUntraced": true,
+    "narrowCorrection": "Wait both catalog reads and stable unobscured intended target on every remount; preserve all3loops/single-machine/revision1 assertions; refreeze and validate."
+  },
+  "independentPrimaryExecutions": {
+    "total": 232,
+    "pass": 231,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "runtime": 69,
+    "foundation": 59,
+    "governanceBoundaryDriftUsage": 34,
+    "oldPostgresFourFiles": 42,
+    "shellBrowser": 28
+  },
+  "diagnostics": {
+    "selectedExecutions": 2,
+    "pass": 1,
+    "fail": 1,
+    "excludedPerFilteredExecution": 27,
+    "notSubstitutedForFullRun": true
+  },
+  "unexecutedIndependently": [
+    "production-build",
+    "typecheck",
+    "protocol",
+    "benchmark50",
+    "persisted-native2cases"
+  ],
+  "inspectedImplementerEvidence": {
+    "files": 212,
+    "total": 2462,
+    "pass": 2462,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "distinctPersistedNativePass": 2,
+    "repeatedFocusedExcluded": 69,
+    "standingLocale": {
+      "pass": 9,
+      "fail": 1
+    },
+    "imagesHashedAndInspected": 99,
+    "rootNativeArchiveHashesMatched": 4
+  },
+  "preservation": {
+    "backupFilesVerified": 2938,
+    "includesPptxArchives": 22,
+    "changedPathsRestored": 16,
+    "newerRunbookPreserved": true,
+    "originalUntrackedPreserved": true,
+    "noByteReconstruction": true
+  },
+  "earlierCheckpointIntegrityFinding": "Resolved and independently exercised on both backends",
+  "runtimeProductRegressionEstablished": false,
+  "implementationTestsStateEdited": false,
+  "heavySlotReleased": true,
+  "ownedPostgresStoppedByReviewer": false,
+  "nextScopeAuthorized": false
+}

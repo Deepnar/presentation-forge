@@ -1,0 +1,21 @@
+{
+  "Id": "f5f8a8156dcd03607a6c2daf6129f46fe0f4e0b90dff31c91a02c5448034bd89",
+  "Name": "/forge-v28b-validation",
+  "Created": "2026-10-19T12:24:51.980290675Z",
+  "running": true,
+  "autoRemove": true,
+  "ports": {
+    "5432/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "5544"
+      }
+    ]
+  },
+  "cpuLimit": 1000000000,
+  "memory": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=192m"
+  },
+  "serverVersion": "15.18"
+}

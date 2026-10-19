@@ -1,0 +1,52 @@
+▶ v2-7a workspace dashboard
+  ✔ shows the empty state first, then real projects (2595.281095ms)
+  ✔ creates a blank presentation that opens in the editor (2472.437762ms)
+  ✔ creates from a layout with editable content (2417.881894ms)
+  ✔ renames from the top bar and returns to the dashboard (2888.5305ms)
+  ✔ deletes with confirmation from the dashboard (2389.755469ms)
+✔ v2-7a workspace dashboard (13335.552367ms)
+▶ v2-7a navigation and guards
+  ✔ back/forward and refresh keep the project (3619.016757ms)
+  ✔ unsaved changes guard the trip back with save and discard paths (1996.484292ms)
+  ✔ switching projects from the dialog respects unsaved work (2427.929273ms)
+✔ v2-7a navigation and guards (8043.745715ms)
+▶ v2-7a editor shell
+  ✔ edits text, autosaves, and shows history access (6628.226065ms)
+  ✔ restores an older revision and exports native PowerPoint (5038.796569ms)
+  ✔ conflicts across sessions refuse instead of overwriting (7678.741081ms)
+  ✔ locks, hides, multi-selects, and undoes (15747.893066ms)
+  ✔ presents, assists honestly, and reads without editing (2158.828831ms)
+  ✔ survives narrow viewports with usable rails (4267.433337ms)
+  ✔ opens a large deck with a full filmstrip (2059.720889ms)
+  ✖ remounts cleanly with single-commit semantics (93364.614024ms)
+  ✔ keyboard regions, shortcuts, dialogs, and focus return (2103.952062ms)
+  ✔ hosted anonymous users get a sign-in state, not an error (2255.101428ms)
+  ✔ failed saves remain guarded after Done, sidebar navigation, and browser Back (5361.300914ms)
+  ✔ save and leave waits for the in-flight request and the newest engine revision (4027.91574ms)
+  ✔ committing a pending text draft still guards and saves the new revision (4520.959266ms)
+  ✔ discard suppresses newer autosaves while history departure is delayed (7543.279931ms)
+  ✔ Done preserves failed edits for a later save and leave (4028.781314ms)
+  ✔ cancelling Save and switch prevents a delayed request from navigating (4558.055647ms)
+  ✔ a failed discard-and-reload keeps the original document saveable (6036.61918ms)
+  ✔ unbound standalone edits remain guarded through Done and re-entering Edit (2402.790548ms)
+  ✔ edits native chart data in the shell without moving the canvas (3728.852176ms)
+  ✔ edits native table data in the shell without moving the canvas (3645.858305ms)
+✖ v2-7a editor shell (187158.959972ms)
+ℹ tests 28
+ℹ suites 3
+ℹ pass 27
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 210633.379997
+
+✖ failing tests:
+
+test at test/v2-edit-chrome-7a.test.js:721:3
+✖ remounts cleanly with single-commit semantics (93364.614024ms)
+  Error: wait timed out: ((document.querySelector('[data-save-state]')?.dataset?.saveState ?? null) === 'saved' && JSON.parse; {"url":"http://127.0.0.1:5263/#/projects","body":"History\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nRestore Deck\n1 slide · rev 2 · just now\nOpen\nHistory\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nShell Deck\n1 slide · rev 2 · just now\nOpen\nHistory\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nSwitch B\n1 slide · rev 0 · just now\nOpen\nHistory\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nSwitch A\n1 slide · rev 0 · just now\nOpen\nHistory\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nGuard Deck\n1 slide · rev 1 · just now\nOpen\nHistory\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nNav Deck\n1 slide · rev 0 · just now\nOpen\nHistory\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nRenamed Top\n1 slide · rev 1 · just now\nOpen\nHistory\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nTitle slide presentation\n1 slide · rev 0 · 1 min ago\nOpen\nHistory\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nUntitled presentation\n1 slide · rev 0 · 1 min ago\nOpen\nHistory\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nBeta Deck\n1 slide · rev 0 · 1 min ago\nOpen\nHistory\nRename\nExport\nDelete…\nFirst slide\n\nFirst slide preview loads when visible\n\nSaved presentation\nAlpha Deck\n1 slide · rev 0 · 1 min ago\nOpen\nHistory\nRename\nExport\nDelete…\nDelete “Clean Deck”?\nDeletes this saved presentation and its saved versions. Generated originals remain separate. This cannot be undone.\nCancel\nDelete"}
+      at waitFor (file:///home/deepnar/Programs/presentations/test/v2-edit-chrome-7a.test.js:167:13)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-edit-chrome-7a.test.js:738:9)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:897:7)

@@ -1,0 +1,35 @@
+▶ v2-6c two processes, one postgres
+  ✔ same-base saves across instances yield one 200 and one 409 (171.101346ms)
+  ✔ save versus rename across instances keeps one winner (13.997877ms)
+  ✔ save versus restore across instances keeps one winner (17.91804ms)
+  ✔ restore versus restore across instances keeps one winner (24.104103ms)
+  ✔ rename versus rename across instances keeps one winner (9.419063ms)
+  ✔ delete during a concurrent save leaves exactly one consistent outcome (6.641852ms)
+  ✔ history initialization racing with saves yields one baseline (19.538727ms)
+  ✔ concurrent mixed mutations keep prune accounting exact (13.593263ms)
+  ✔ same owner email works across instances; cross-owner denied (17.086736ms)
+  ✔ rapid creates mint distinct ids across instances (33.813035ms)
+✔ v2-6c two processes, one postgres (915.372683ms)
+▶ v2-6c two processes, one sqlite file
+  ✔ same-base saves across sqlite processes yield one 200 and one 409 (95.959584ms)
+✔ v2-6c two processes, one sqlite file (1371.54915ms)
+▶ v2-6c transaction faults
+  ✔ terminated backend mid-transaction rolls back with nothing saved (183.684297ms)
+  ✔ history-insert failure rolls back the project write (16.254964ms)
+  ✔ prune failure rolls back the whole save (70.202843ms)
+  ✔ unreachable database reports storage-unavailable and never saved (1.92785ms)
+  ✔ pool exhaustion fails loudly instead of hanging or half-writing (5529.109891ms)
+  ✔ killed writer processes leave consistent history (2018.138937ms)
+✔ v2-6c transaction faults (7836.892514ms)
+▶ v2-6c misconfiguration over HTTP
+  ✔ postgres selected without a URL answers 503 honestly, never sqlite (269.213064ms)
+  ✔ aborted HTTP saves leave consistent history (2621.526443ms)
+✔ v2-6c misconfiguration over HTTP (3690.884483ms)
+ℹ tests 19
+ℹ suites 4
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14897.356923

@@ -1,0 +1,408 @@
+{
+  "hash": "#/project/p-2a840b4dc2fcfab513b8f390",
+  "events": [
+    {
+      "type": "pointerdown",
+      "at": 520.6000000000931,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "target": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "button": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "pointerup",
+      "at": 522,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "target": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "button": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "click",
+      "at": 522,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "target": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "button": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "measure-open",
+      "at": 929.8000000002794,
+      "id": "p-2a840b4dc2fcfab513b8f390",
+      "rect": [
+        329,
+        562.0931396484375,
+        50.890625,
+        28
+      ],
+      "point": [
+        354.4453125,
+        576.0931396484375
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "at": 933.2000000001863,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "target": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "button": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "buttons": [
+        {
+          "id": "p-2a840b4dc2fcfab513b8f390",
+          "rect": [
+            329,
+            561.938232421875,
+            50.890625,
+            28
+          ],
+          "text": "First slide previewSaved presentationClean Deck1 slide · rev 0 · just nowOpenHistoryRenameExportDele"
+        }
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerup",
+      "at": 935,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "target": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "button": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "buttons": [
+        {
+          "id": "p-2a840b4dc2fcfab513b8f390",
+          "rect": [
+            329,
+            561.938232421875,
+            50.890625,
+            28
+          ],
+          "text": "First slide previewSaved presentationClean Deck1 slide · rev 0 · just nowOpenHistoryRenameExportDele"
+        }
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "click",
+      "at": 935,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "target": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "button": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "buttons": [
+        {
+          "id": "p-2a840b4dc2fcfab513b8f390",
+          "rect": [
+            329,
+            561.938232421875,
+            50.890625,
+            28
+          ],
+          "text": "First slide previewSaved presentationClean Deck1 slide · rev 0 · just nowOpenHistoryRenameExportDele"
+        }
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "at": 1351.7000000001863,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "target": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "button": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "pointerup",
+      "at": 1353.1000000000931,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "target": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "button": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "click",
+      "at": 1353.1000000000931,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "target": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "button": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "measure-open",
+      "at": 1760.3000000002794,
+      "id": "p-2a840b4dc2fcfab513b8f390",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "point": [
+        354.4453125,
+        575.65625
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "at": 1762.4000000003725,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "target": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "button": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "buttons": [
+        {
+          "id": "p-2a840b4dc2fcfab513b8f390",
+          "rect": [
+            329,
+            561.65625,
+            50.890625,
+            28
+          ],
+          "text": "First slide previewSaved presentationClean Deck1 slide · rev 0 · just nowOpenHistoryRenameExportDele"
+        }
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerup",
+      "at": 1764.7000000001863,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "target": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "button": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "buttons": [
+        {
+          "id": "p-2a840b4dc2fcfab513b8f390",
+          "rect": [
+            329,
+            561.65625,
+            50.890625,
+            28
+          ],
+          "text": "First slide previewSaved presentationClean Deck1 slide · rev 0 · just nowOpenHistoryRenameExportDele"
+        }
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "click",
+      "at": 1764.7000000001863,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "target": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "button": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "buttons": [
+        {
+          "id": "p-2a840b4dc2fcfab513b8f390",
+          "rect": [
+            329,
+            561.65625,
+            50.890625,
+            28
+          ],
+          "text": "First slide previewSaved presentationClean Deck1 slide · rev 0 · just nowOpenHistoryRenameExportDele"
+        }
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "at": 2178.7000000001863,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "target": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "button": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "pointerup",
+      "at": 2180.100000000093,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "target": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "button": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "click",
+      "at": 2180.100000000093,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "target": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "button": "<button type=\"button\" aria-label=\"Back to workspace\" title=\"Back to presentations\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">← Workspace</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "measure-open",
+      "at": 2587.3000000002794,
+      "id": "p-2a840b4dc2fcfab513b8f390",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "point": [
+        354.4453125,
+        575.65625
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "at": 2589.7000000001863,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "target": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "button": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "buttons": [
+        {
+          "id": "p-2a840b4dc2fcfab513b8f390",
+          "rect": [
+            329,
+            561.65625,
+            50.890625,
+            28
+          ],
+          "text": "First slide previewSaved presentationClean Deck1 slide · rev 0 · just nowOpenHistoryRenameExportDele"
+        }
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerup",
+      "at": 2591.600000000093,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "target": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "button": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "buttons": [
+        {
+          "id": "p-2a840b4dc2fcfab513b8f390",
+          "rect": [
+            329,
+            561.65625,
+            50.890625,
+            28
+          ],
+          "text": "First slide previewSaved presentationClean Deck1 slide · rev 0 · just nowOpenHistoryRenameExportDele"
+        }
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "click",
+      "at": 2591.600000000093,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "target": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "button": "<button class=\"press inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-[var(--dur-shell)] ease-[var(--ease-shell)] disabled:pointer-events-none disabled:opacity-40 px-2.5 py-1.5 text-xs bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)] \" data-project-open=\"p-2a840b4",
+      "buttons": [
+        {
+          "id": "p-2a840b4dc2fcfab513b8f390",
+          "rect": [
+            329,
+            561.65625,
+            50.890625,
+            28
+          ],
+          "text": "First slide previewSaved presentationClean Deck1 slide · rev 0 · just nowOpenHistoryRenameExportDele"
+        }
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "at": 3010.7000000001863,
+      "trusted": true,
+      "x": 805,
+      "y": 64,
+      "target": "<button type=\"button\" title=\"Add an editable text box at the slide center\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">+ Text</button>",
+      "button": "<button type=\"button\" title=\"Add an editable text box at the slide center\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">+ Text</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "pointerup",
+      "at": 3012.5,
+      "trusted": true,
+      "x": 805,
+      "y": 64,
+      "target": "<button type=\"button\" title=\"Add an editable text box at the slide center\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">+ Text</button>",
+      "button": "<button type=\"button\" title=\"Add an editable text box at the slide center\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">+ Text</button>",
+      "buttons": [],
+      "loading": []
+    },
+    {
+      "type": "click",
+      "at": 3012.5,
+      "trusted": true,
+      "x": 805,
+      "y": 64,
+      "target": "<button type=\"button\" title=\"Add an editable text box at the slide center\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">+ Text</button>",
+      "button": "<button type=\"button\" title=\"Add an editable text box at the slide center\" class=\"rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40\">+ Text</button>",
+      "buttons": [],
+      "loading": []
+    }
+  ],
+  "body": "Forge\nChats\nNew chat\nYour chats will appear here.\nProjects\nThemes\nSettings\nAdmin\nS\nSeven\nPrivacy\n·\nTerms\n·\nReport an issue\n← Workspace\nSlides\nSave\nSaved · rev 1\n↩ Undo\n↪ Redo\nHistory\nExport\nPresent\nAssistant\nInspector\n1 / 1\nSlides\nLayers\n+ Slide ▾\nNew text\nSlide 1 · Custom\n⋯\n← Prev\nNext →\n−\n100%\n+\nFit\nDone\n+ Text\n+ Rect\n+ Round\n+ Ellipse\nSlide 1 of 1 · 1 selected · Custom slide\nNew text\nInspector\nAssistant\nText\nText formatting\n¶1 left\nColor \nSize \nB \nI \nApply"
+}
