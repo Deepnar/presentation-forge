@@ -8359,7 +8359,13 @@ needs direction on scope before building.*
   gates are explicitly out of scope. Preserve the standing BYOK locale failure,
   old restore timeout, Fit/capture/mixed-run SVG and original-PPTX provenance limits.
 
-  **Review/stop:** if the human selects this direction, freeze the implementation
+  **Review correction (2026-10-19):** the independent source audit found that
+  schema-valid receipts could contradict earlier project revisions or aggregate
+  counters. Strengthen cross-record plan/tool/revision/failure consistency and
+  active-cursor validation, with fail-first shared SQLite/PostgreSQL corruption
+  cases. This is a bounded correctness correction within the approved contract.
+
+  **Review/stop:** after the human selected this direction, freeze the implementation
   contract and required check mapping before coding; keep the accepted V2-8A
   baseline until one separate high-effort reviewer issues exact-source ACCEPT/HOLD.
   Commit focused scoped changes to `origin/v2`, preserve unrelated untracked work,
