@@ -1,0 +1,28 @@
+{
+  "cpuBusyPercent": 7.183002056202879,
+  "pressure": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1759587\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1217\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1204\n",
+    "io": "some avg10=0.03 avg60=2.01 avg300=3.79 total=54307362\nfull avg10=0.03 avg60=1.96 avg300=3.68 total=52638394\n"
+  },
+  "availableMemory": "MemAvailable:   49805532 kB",
+  "topProcesses": [
+    "    PID %CPU %MEM COMMAND",
+    "  19756 52.9 10.5 llama-server",
+    "  20791 34.8  2.2 python3",
+    "   5341 31.5  0.2 RDD Process",
+    "  11217 16.8  1.1 Isolated Web Co",
+    "  21290 12.0  0.1 MainThread",
+    "   5199 11.7  1.2 zen-bin",
+    "   4547  7.4  0.3 Hyprland",
+    "   6086  6.8  1.0 claude-desktop",
+    "   8470  3.9  1.0 ChatGPT",
+    "   5951  3.7  0.3 claude-desktop",
+    "   8156  2.5  0.8 ChatGPT",
+    "   5875  2.0  0.6 claude-desktop",
+    "   7860  1.7  1.2 Isolated Web Co",
+    "   7464  1.3  0.5 claude",
+    "   8490  1.1  1.0 codex"
+  ],
+  "reason": "CPU and memory have ample headroom; short I/O pressure is below 1%. Use bounded serial heavy owners and low priority."
+}

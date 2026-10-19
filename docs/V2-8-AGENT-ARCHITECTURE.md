@@ -74,3 +74,71 @@ No Assistant UI, model adapter, autonomous run loop, durable job/store, provider
 credentials, research/search integration, deployment or migration is shipped here.
 Later integration must bind fresh trusted scope and preserve these authority and
 revision boundaries; its work is recorded only in the roadmap.
+
+## V2-8B durable run core (implementation under review)
+
+`packages/agent/runtime.ts` injects a `RuntimeBackend`, with no storage or network
+imports. `run-state.ts` is the named Node/AJV schema-loading boundary. Run plans,
+records and receipts have exact schemas/generated types; drift tests also compare
+the embedded tool contract to the canonical request schema. Plans reject executable
+objects and exceedances before schema work. Grants and scripted semantic steps are
+immutable under a project-scoped request identity; replay with different content
+refuses. Persisted digests are checked again when loading. Model arguments contain
+no owner, project, lease or privilege override. Scope is a trusted application grant.
+
+`src/agent/index.js` resolves the existing backend. `npm run agent-run -- start
+--project ID --owner OWNER --plan FILE` persists a plan and exits. `work --project ID
+--owner OWNER --run RUN_ID` claims and executes at most 64 steps, renewing its lease
+between steps; `status` and `cancel` use the same shared core. Omit owner for an
+ownerless local project. These are trusted operator entrypoints, not a new public
+HTTP authentication mechanism. A future transport must derive authority from its
+session. No browser connection or SSE lifetime owns the worker. No provider runs
+inside the database transaction and no worker automatically starts on server boot.
+
+Runs persist version, plan, cursor, expected durable project revision, attempts,
+failures, absolute deadline, status, monotonic fence and current worker lease.
+Queued → running → succeeded/failed/cancelled/expired; expired leases can be claimed
+with a larger fence. The DB clock owns deadlines and lease comparisons. A separate
+transaction reserves an attempt before a tool executes. A crash after reservation
+consumes that attempt; restart does not reset budgets. A live pending reservation
+cannot be executed by a second concurrent advance. Takeover invalidates it and
+reserves another attempt. A bounded plan has at most 64 steps/attempts, 16 allowed
+failures, 24-hour initial deadline and a 64KiB JSON input budget; records cap at
+128KiB and each exact-schema receipt at 2KiB. Per-tool input/output limits still
+apply. Receipts contain result codes, changed flag and revisions, not read contents,
+raw scenes, prompts or credentials. The script/cursor/receipts suffice for recovery;
+this is not persistence of a conversational model transcript.
+
+Both store adapters provide a host-only transaction seam. SQLite uses its existing
+FIFO lane and BEGIN IMMEDIATE. PostgreSQL uses FOR UPDATE on the project before
+any run mutation, including cancel/claim/renew; cold DDL uses a separate advisory
+lock. Additive tables initialize only on explicit runtime invocation. Runs reference
+the project; receipts reference the run, both with ON DELETE CASCADE. Authorization
+is exact owner matching, including null local owner; admin override is absent here.
+Every operation rechecks project existence, ownership and schema. The run remains
+bound to its original owner. It cannot outlive or become a retained copy of a deck.
+
+Each effect loads the current canonical scene into a fresh command engine and
+executes the existing scoped tools. The engine starts at revision zero for that
+transaction. Tool baseRevision is an engine revision; the run independently compares
+its expected saved project revision before touching the scene. Run revision counts
+control/checkpoint changes. There is no automatic rebase across a human save.
+The engine's ownership flags, locks, command validation and human-preservation rules
+remain final. Project metadata stays unchanged; only canonical result scenes enter
+the shared project validator. Project payload + existing history/pruning + receipt
++ run cursor commit in one transaction, with a final DB-time lease/deadline guard.
+A guard failure rolls back all effects while retaining the prior attempt reservation.
+Reads, refusals and noops record receipts without inventing project history.
+
+Cancellation orders against commits through the project lock. If cancel commits
+first, a later worker cannot edit. If the edit commits first, it stays committed and
+cancel prevents subsequent steps. A completed run stays completed. A process killed
+before receipt commit leaves no project/history effect; killed after commit resumes
+at the next cursor. Stored checkpoint/receipt corruption fails closed. Session undo
+is unchanged and does not survive this worker. Durable project history supplies
+restoration. The core supplies exactly-once committed database edit receipts only;
+it makes no claim about arbitrary future network/provider side effects.
+
+No live provider, Assistant UI, public run route, search, new composition, persistent
+undo, framework adoption, production migration or deployment is part of this slice.
+Validation and the independent decision are indexed by state/[evaluation](V2-8B-EVAL.md).

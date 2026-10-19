@@ -2622,9 +2622,19 @@ context independence; the committed review/human decision remains the authority.
 
 ### V2-8A headless tool/context foundation
 
-The in-progress tools/agent/skill packages bind scoped semantic content tools to
+The accepted tools/agent/skill foundation binds scoped semantic content tools to
 the existing live command engine and compose bounded model input from filtered
 reads. No provider, Assistant UI, durable run or new document/store is introduced.
 [The as-built boundary](V2-8-AGENT-ARCHITECTURE.md) records schemas, authority,
 projection, preservation, error and budget contracts. Current validation/review
 state is indexed in development-state.json.
+
+### V2-8B durable semantic execution
+
+The backend-injected run core and headless CLI extend the accepted tool boundary
+with project-scoped persisted plans, attempts, leases/fencing, cancellation and
+checkpoints. Project scenes, existing history and concise edit receipts share one
+SQLite/PostgreSQL transaction. No browser lifetime, live provider or new UI owns
+execution. The [as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8b-durable-run-core-implementation-under-review)
+describes distinct revisions, exact ownership, recovery and limits; implementation
+review/validation remain indexed in development-state.json.

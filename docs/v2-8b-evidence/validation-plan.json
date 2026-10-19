@@ -1,7 +1,7 @@
 {
-  "implementationSha": "fa1ba84378af33fe3a1654d4bd177523e1dbf080",
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
-  "inventoryMethod": "Complete accepted 209-file inventory plus three durable-runtime contract/process/backend suites; freeze exact source before execution.",
+  "implementationSha": "1f309d02f5e564b7ea4fbbd6aebb3faf02a57aa9",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
+  "inventoryMethod": "All 209 accepted files plus the three runtime files; 181 bulk, 26 serial owners and 5 PostgreSQL files = 212 distinct test files.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",
@@ -217,9 +217,7 @@
     "test/v2-projects-6c-postgres.test.js",
     "test/v2-projects-6c-concurrency.test.js",
     "test/v2-projects-6c-faults.test.js",
-    "test/v2-import-postgres-7b.test.js"
-  ],
-  "runtimePostgres": [
+    "test/v2-import-postgres-7b.test.js",
     "test/v2-runtime-postgres-8b.test.js"
   ]
 }

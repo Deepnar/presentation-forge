@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8A-d4f446c.json"
   },
   "implementationHead": {
-    "sha": "fa1ba84378af33fe3a1654d4bd177523e1dbf080",
-    "note": "V2-8B task-entry source; implementation in progress. Freeze the completed source before validation. Accepted runtime prerequisite remains d4f446c."
+    "sha": "1f309d02f5e564b7ea4fbbd6aebb3faf02a57aa9",
+    "note": "Frozen V2-8B runtime implementation and regression tests. Documentation/evidence follow separately; independent review pending."
   },
   "activeMilestone": {
     "id": "V2-8B",
     "roadmapRef": "docs/ROADMAP.md#v2-8b-scope-proposal",
     "evalDoc": "docs/V2-8B-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
