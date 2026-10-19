@@ -225,6 +225,32 @@ async function clickSelector(page, selector) {
   await page.click(point[0], point[1]);
 }
 
+async function openSettledCatalogProject(page, id) {
+  // The grid mounts before both source reads finish; removing a loading row
+  // moves card actions. Measure only after that layout and the mount settle.
+  await waitFor(page, `document.querySelector('[data-project-catalog]') && ![...document.querySelectorAll('[data-project-catalog] [role=status]')].some(n => /^Loading (saved presentations|generated decks and reports)/.test(n.textContent)) && document.getAnimations().filter(a => ['view-in','fade-in'].some(name => a.effect?.target?.classList?.contains(name))).every(a => a.playState !== 'running')`);
+  const selector = `[data-project-open="${id}"]`;
+  await page.evaluate(`window.__catalogClickReady={done:false,point:null};void (async () => {
+    await document.fonts.ready;
+    const n=document.querySelector(${JSON.stringify(selector)});if(!n||n.disabled)return;
+    n.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});
+    let previous=null,stable=0;const end=performance.now()+5000;
+    while(performance.now()<end){
+      await new Promise(requestAnimationFrame);
+      if(!n.isConnected||n.disabled)return;
+      const r=n.getBoundingClientRect(),box=[r.x,r.y,r.width,r.height];
+      const x=r.x+r.width/2,y=r.y+r.height/2,hit=document.elementFromPoint(x,y);
+      const visible=r.width>0&&r.height>0&&x>=0&&x<innerWidth&&y>=0&&y<innerHeight&&(hit===n||n.contains(hit));
+      stable=visible&&previous&&box.every((v,i)=>Math.abs(v-previous[i])<.05)?stable+1:0;
+      if(stable>=3){window.__catalogClickReady.point=[x,y];return;}previous=box;
+    }
+  })().finally(()=>{window.__catalogClickReady.done=true})`);
+  await waitFor(page, 'window.__catalogClickReady?.done===true');
+  const point = await page.evaluate('window.__catalogClickReady.point');
+  assert.ok(point, `settled, visible project action ${id}`);
+  await page.click(...point);
+}
+
 describe("v2-7a workspace dashboard", () => {
   it("shows the empty state first, then real projects", async (t) => {
     if (skipped) {
@@ -733,8 +759,7 @@ describe("v2-7a editor shell", () => {
         const back = await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((n) => n.getAttribute('aria-label') === 'Back to workspace'); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
         await page.click(back[0], back[1]);
         await waitFor(page, `document.querySelector('[data-project-grid]') !== null`, 60000);
-        const openBtn = await page.evaluate(`(() => { const b = document.querySelector('[data-project-open="${id}"]'); b.scrollIntoView({block:"nearest"}); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
-        await page.click(openBtn[0], openBtn[1]);
+        await openSettledCatalogProject(page, id);
         await waitFor(page, `(${SAVE} === 'saved' && ${PROJ}?.id === '${id}')`, 90000);
       }
       assert.equal(await page.evaluate(`document.querySelectorAll('[data-save-state]').length`), 1, "one save machine mounted");
