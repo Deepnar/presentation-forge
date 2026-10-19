@@ -1,0 +1,474 @@
+{
+  "hash": "#/project/p-db2e356862a7894d813c62ed",
+  "events": [
+    {
+      "type": "pointerdown",
+      "cycle": 0,
+      "at": 517.2000000001863,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "text": "← Workspace",
+      "rect": [
+        268,
+        7.9698591232299805,
+        94.921875,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "pointerup",
+      "cycle": 0,
+      "at": 518.5999999996275,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "text": "← Workspace",
+      "rect": [
+        268,
+        7.9698591232299805,
+        94.921875,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "click",
+      "cycle": 0,
+      "at": 518.7000000001863,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "text": "← Workspace",
+      "rect": [
+        268,
+        7.9698591232299805,
+        94.921875,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "held-response",
+      "cycle": 0,
+      "at": 828.0999999996275
+    },
+    {
+      "type": "blocked-probe",
+      "at": 1077.2000000001863,
+      "cycle": 0,
+      "point": null,
+      "loading": [
+        "1 project",
+        "Loading generated decks and reports…"
+      ],
+      "openEvents": 0
+    },
+    {
+      "type": "release-response",
+      "cycle": 0,
+      "at": 1333.2999999998137
+    },
+    {
+      "type": "measured-open",
+      "cycle": 0,
+      "at": 1787.0999999996275,
+      "point": [
+        354.4453125,
+        575.65625
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "cycle": 0,
+      "at": 2137.7999999998137,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "text": "Open",
+      "openId": "p-db2e356862a7894d813c62ed",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerup",
+      "cycle": 0,
+      "at": 2138.9000000003725,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "text": "Open",
+      "openId": "p-db2e356862a7894d813c62ed",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "click",
+      "cycle": 0,
+      "at": 2139,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "text": "Open",
+      "openId": "p-db2e356862a7894d813c62ed",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "cycle": 1,
+      "at": 2556.5,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "text": "← Workspace",
+      "rect": [
+        268,
+        7.90625,
+        94.921875,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "pointerup",
+      "cycle": 1,
+      "at": 2557.7000000001863,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "text": "← Workspace",
+      "rect": [
+        268,
+        7.90625,
+        94.921875,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "click",
+      "cycle": 1,
+      "at": 2557.7999999998137,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "text": "← Workspace",
+      "rect": [
+        268,
+        7.90625,
+        94.921875,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "held-response",
+      "cycle": 1,
+      "at": 2571.9000000003725
+    },
+    {
+      "type": "blocked-probe",
+      "at": 3115.7999999998137,
+      "cycle": 1,
+      "point": null,
+      "loading": [
+        "1 project",
+        "Loading generated decks and reports…"
+      ],
+      "openEvents": 0
+    },
+    {
+      "type": "release-response",
+      "cycle": 1,
+      "at": 3369.5
+    },
+    {
+      "type": "measured-open",
+      "cycle": 1,
+      "at": 3820.2999999998137,
+      "point": [
+        354.4453125,
+        575.65625
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "cycle": 1,
+      "at": 4175.200000000186,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "text": "Open",
+      "openId": "p-db2e356862a7894d813c62ed",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerup",
+      "cycle": 1,
+      "at": 4176.299999999814,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "text": "Open",
+      "openId": "p-db2e356862a7894d813c62ed",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "click",
+      "cycle": 1,
+      "at": 4176.299999999814,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "text": "Open",
+      "openId": "p-db2e356862a7894d813c62ed",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "cycle": 2,
+      "at": 4597.9000000003725,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "text": "← Workspace",
+      "rect": [
+        268,
+        7.90625,
+        94.921875,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "pointerup",
+      "cycle": 2,
+      "at": 4599.299999999814,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "text": "← Workspace",
+      "rect": [
+        268,
+        7.90625,
+        94.921875,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "click",
+      "cycle": 2,
+      "at": 4599.299999999814,
+      "trusted": true,
+      "x": 315,
+      "y": 22,
+      "text": "← Workspace",
+      "rect": [
+        268,
+        7.90625,
+        94.921875,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "held-response",
+      "cycle": 2,
+      "at": 4606.200000000186
+    },
+    {
+      "type": "blocked-probe",
+      "at": 5160.299999999814,
+      "cycle": 2,
+      "point": null,
+      "loading": [
+        "1 project",
+        "Loading generated decks and reports…"
+      ],
+      "openEvents": 0
+    },
+    {
+      "type": "release-response",
+      "cycle": 2,
+      "at": 5415.799999999814
+    },
+    {
+      "type": "measured-open",
+      "cycle": 2,
+      "at": 5870.0999999996275,
+      "point": [
+        354.4453125,
+        575.65625
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "cycle": 2,
+      "at": 6222.799999999814,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "text": "Open",
+      "openId": "p-db2e356862a7894d813c62ed",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerup",
+      "cycle": 2,
+      "at": 6224.9000000003725,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "text": "Open",
+      "openId": "p-db2e356862a7894d813c62ed",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "click",
+      "cycle": 2,
+      "at": 6224.9000000003725,
+      "trusted": true,
+      "x": 354,
+      "y": 576,
+      "text": "Open",
+      "openId": "p-db2e356862a7894d813c62ed",
+      "rect": [
+        329,
+        561.65625,
+        50.890625,
+        28
+      ],
+      "loading": [
+        "1 project"
+      ]
+    },
+    {
+      "type": "pointerdown",
+      "cycle": 2,
+      "at": 6646.5,
+      "trusted": true,
+      "x": 805,
+      "y": 64,
+      "text": "+ Text",
+      "rect": [
+        779.40625,
+        50,
+        51.5625,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "pointerup",
+      "cycle": 2,
+      "at": 6647,
+      "trusted": true,
+      "x": 805,
+      "y": 64,
+      "text": "+ Text",
+      "rect": [
+        779.40625,
+        50,
+        51.5625,
+        27.1875
+      ],
+      "loading": []
+    },
+    {
+      "type": "click",
+      "cycle": 2,
+      "at": 6647.0999999996275,
+      "trusted": true,
+      "x": 805,
+      "y": 64,
+      "text": "+ Text",
+      "rect": [
+        779.40625,
+        50,
+        51.5625,
+        27.1875
+      ],
+      "loading": []
+    }
+  ],
+  "save": "saved",
+  "project": {
+    "id": "p-db2e356862a7894d813c62ed",
+    "title": "Clean Deck",
+    "revision": 1,
+    "updatedAt": "2026-10-19T13:26:36.816Z"
+  }
+}

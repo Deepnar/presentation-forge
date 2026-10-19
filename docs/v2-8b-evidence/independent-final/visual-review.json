@@ -1,0 +1,13 @@
+{
+  "implementationSha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+  "finalImagesInspected": 99,
+  "freshImagesInspected": 28,
+  "freshBrowser": 12,
+  "freshNativePages": 8,
+  "freshSvgRasters": 8,
+  "rootNativeArchivesHashed": 4,
+  "allFreshArchiveHashesMatched": true,
+  "technique": "All final/fresh captures viewed through labeled contact sheets; freshSQLiteafter1native enlarged. Rich-run XML equality independently checked for both backends; untargeted SVG byte identical.",
+  "observation": "No new overlap/clipped foreground dialog or cells. Known narrow canvas/Fit/capture limits remain; mixed-run SVG first-run flattening persists.",
+  "processLimit": "Review turn hit usage limit after all8jobs completed successfully; execution records retained. Resumed only bounded inspection/restoration/reporting, without rerunning completed expensive checks."
+}

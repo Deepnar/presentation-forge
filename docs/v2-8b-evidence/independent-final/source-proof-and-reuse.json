@@ -1,0 +1,23 @@
+{
+  "implementationSha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+  "previousSource": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+  "sourceDelta": [
+    "test/v2-edit-chrome-7a.test.js"
+  ],
+  "laterPacketRuntimeDelta": [],
+  "reusedPriorSourceExecution": {
+    "source": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+    "pass": 204,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "checks": {
+      "runtimeBothBackends": 69,
+      "foundation": 59,
+      "governanceBoundaryDriftUsage": 34,
+      "oldPostgresFourFiles": 42
+    },
+    "evidence": "docs/v2-8b-evidence/independent/runs.json",
+    "note": "Historical execution on prior source, not relabeled as current execution. Only canonical7A test changed; that full file and controlled case ran fresh. Governance34 also repeated, so counts must not be blindly added."
+  }
+}

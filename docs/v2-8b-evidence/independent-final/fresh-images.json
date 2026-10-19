@@ -1,0 +1,114 @@
+[
+  {
+    "file": "docs/v2-8b-evidence/independent-final/controlled-images/final.png",
+    "sha256": "3be94b4c82eada60fd275a37f9dd208ee468eb0a68c4e9e715b4ccb2d8d57b87"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/postgres/after-1-svg.png",
+    "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/postgres/after-1.png",
+    "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/postgres/after-2-svg.png",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/postgres/after-2.png",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/postgres/before-1-svg.png",
+    "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/postgres/before-1.png",
+    "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/postgres/before-2-svg.png",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/postgres/before-2.png",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/sqlite/after-1-svg.png",
+    "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/sqlite/after-1.png",
+    "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/sqlite/after-2-svg.png",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/sqlite/after-2.png",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/sqlite/before-1-svg.png",
+    "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/sqlite/before-1.png",
+    "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/sqlite/before-2-svg.png",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/native/sqlite/before-2.png",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/dashboard-empty.png",
+    "sha256": "0b84ebadd8e3ff434989b9884a3d37fa2f1ec5e3dd8cdc7daf88954164fa65a3"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/dashboard-hosted-anon.png",
+    "sha256": "03ee934f3bbc851cadc15500c1452fab68e0ae78a94c8a9cec97f41b711845fb"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/dashboard.png",
+    "sha256": "978dec752ac491f95287ca709c01e31f9305046085c835e1983518e6c1dc9ce4"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/editor-blank.png",
+    "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/editor-chart.png",
+    "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/editor-history.png",
+    "sha256": "a892526c9c16cf22e9b19b595f31d6197e7b93164b4e6dc6e22d78662b8f01f1"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/editor-narrow-projects.png",
+    "sha256": "2fff2a4a7392b14e222740bb664059b948ced415abc42eb03ee52fb777331632"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/editor-narrow.png",
+    "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/editor-readonly.png",
+    "sha256": "44796071cf8b6926f30af3b3d9981b9dd9eff5739c3f232903e0b087d2d6d95d"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/editor-shell.png",
+    "sha256": "134d9b1423c1b792e524690aaf8a8a8df62a39b8a1d3a0f61011160002b0efae"
+  },
+  {
+    "file": "docs/v2-8b-evidence/independent-final/shell-browser/editor-table.png",
+    "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9"
+  }
+]

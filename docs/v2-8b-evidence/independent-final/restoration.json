@@ -1,0 +1,36 @@
+{
+  "filesBackedUpAndVerified": 3193,
+  "pptxArchivesIncluded": 28,
+  "changedPathsRestored": [
+    "docs/v2-7a-evidence/canvas-chart.json",
+    "docs/v2-7a-evidence/canvas-table.json",
+    "docs/v2-7a-evidence/dashboard-empty.png",
+    "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+    "docs/v2-7a-evidence/dashboard.png",
+    "docs/v2-7a-evidence/editor-blank.png",
+    "docs/v2-7a-evidence/editor-chart.png",
+    "docs/v2-7a-evidence/editor-history.png",
+    "docs/v2-7a-evidence/editor-narrow-projects.png",
+    "docs/v2-7a-evidence/editor-narrow.png",
+    "docs/v2-7a-evidence/editor-readonly.png",
+    "docs/v2-7a-evidence/editor-shell.png",
+    "docs/v2-7a-evidence/editor-table.png",
+    "docs/v2-7a-evidence/large-deck.json",
+    "out/v2-7a-validation/shell-chart.pptx",
+    "out/v2-7a-validation/shell-table.pptx"
+  ],
+  "allOriginalHashesMatch": true,
+  "manifestChecks": {
+    "docs/v2-8b-evidence": {
+      "imageHashesMatched": 99,
+      "archiveHashesMatched": 4
+    },
+    "docs/v2-8b-evidence/final": {
+      "imageHashesMatched": 99,
+      "archiveHashesMatched": 4
+    }
+  },
+  "noByteReconstruction": true,
+  "originalUntrackedPreserved": true,
+  "historicalHoldEvidenceUnmodified": true
+}

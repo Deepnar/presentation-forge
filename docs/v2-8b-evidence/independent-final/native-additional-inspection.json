@@ -1,0 +1,56 @@
+[
+  {
+    "backend": "sqlite",
+    "richRunPropertiesIdentical": true,
+    "untargetedSvgByteIdentical": true,
+    "runs": [
+      [
+        {
+          "text": "Measured ",
+          "rPr": "<ns0:rPr xmlns:ns0=\"http://schemas.openxmlformats.org/drawingml/2006/main\" lang=\"en-US\" sz=\"2400\" b=\"1\" dirty=\"0\"><ns0:solidFill><ns0:srgbClr val=\"112233\" /></ns0:solidFill><ns0:latin typeface=\"Inter\" pitchFamily=\"34\" charset=\"0\" /><ns0:ea typeface=\"Inter\" pitchFamily=\"34\" charset=\"-122\" /><ns0:cs typeface=\"Inter\" pitchFamily=\"34\" charset=\"-120\" /></ns0:rPr>"
+        },
+        {
+          "text": "results",
+          "rPr": "<ns0:rPr xmlns:ns0=\"http://schemas.openxmlformats.org/drawingml/2006/main\" lang=\"en-US\" sz=\"2000\" i=\"1\" dirty=\"0\"><ns0:solidFill><ns0:srgbClr val=\"445566\" /></ns0:solidFill><ns0:latin typeface=\"Inter\" pitchFamily=\"34\" charset=\"0\" /><ns0:ea typeface=\"Inter\" pitchFamily=\"34\" charset=\"-122\" /><ns0:cs typeface=\"Inter\" pitchFamily=\"34\" charset=\"-120\" /></ns0:rPr>"
+        }
+      ],
+      [
+        {
+          "text": "Reviewed ",
+          "rPr": "<ns0:rPr xmlns:ns0=\"http://schemas.openxmlformats.org/drawingml/2006/main\" lang=\"en-US\" sz=\"2400\" b=\"1\" dirty=\"0\"><ns0:solidFill><ns0:srgbClr val=\"112233\" /></ns0:solidFill><ns0:latin typeface=\"Inter\" pitchFamily=\"34\" charset=\"0\" /><ns0:ea typeface=\"Inter\" pitchFamily=\"34\" charset=\"-122\" /><ns0:cs typeface=\"Inter\" pitchFamily=\"34\" charset=\"-120\" /></ns0:rPr>"
+        },
+        {
+          "text": "results",
+          "rPr": "<ns0:rPr xmlns:ns0=\"http://schemas.openxmlformats.org/drawingml/2006/main\" lang=\"en-US\" sz=\"2000\" i=\"1\" dirty=\"0\"><ns0:solidFill><ns0:srgbClr val=\"445566\" /></ns0:solidFill><ns0:latin typeface=\"Inter\" pitchFamily=\"34\" charset=\"0\" /><ns0:ea typeface=\"Inter\" pitchFamily=\"34\" charset=\"-122\" /><ns0:cs typeface=\"Inter\" pitchFamily=\"34\" charset=\"-120\" /></ns0:rPr>"
+        }
+      ]
+    ]
+  },
+  {
+    "backend": "postgres",
+    "richRunPropertiesIdentical": true,
+    "untargetedSvgByteIdentical": true,
+    "runs": [
+      [
+        {
+          "text": "Measured ",
+          "rPr": "<ns0:rPr xmlns:ns0=\"http://schemas.openxmlformats.org/drawingml/2006/main\" lang=\"en-US\" sz=\"2400\" b=\"1\" dirty=\"0\"><ns0:solidFill><ns0:srgbClr val=\"112233\" /></ns0:solidFill><ns0:latin typeface=\"Inter\" pitchFamily=\"34\" charset=\"0\" /><ns0:ea typeface=\"Inter\" pitchFamily=\"34\" charset=\"-122\" /><ns0:cs typeface=\"Inter\" pitchFamily=\"34\" charset=\"-120\" /></ns0:rPr>"
+        },
+        {
+          "text": "results",
+          "rPr": "<ns0:rPr xmlns:ns0=\"http://schemas.openxmlformats.org/drawingml/2006/main\" lang=\"en-US\" sz=\"2000\" i=\"1\" dirty=\"0\"><ns0:solidFill><ns0:srgbClr val=\"445566\" /></ns0:solidFill><ns0:latin typeface=\"Inter\" pitchFamily=\"34\" charset=\"0\" /><ns0:ea typeface=\"Inter\" pitchFamily=\"34\" charset=\"-122\" /><ns0:cs typeface=\"Inter\" pitchFamily=\"34\" charset=\"-120\" /></ns0:rPr>"
+        }
+      ],
+      [
+        {
+          "text": "Reviewed ",
+          "rPr": "<ns0:rPr xmlns:ns0=\"http://schemas.openxmlformats.org/drawingml/2006/main\" lang=\"en-US\" sz=\"2400\" b=\"1\" dirty=\"0\"><ns0:solidFill><ns0:srgbClr val=\"112233\" /></ns0:solidFill><ns0:latin typeface=\"Inter\" pitchFamily=\"34\" charset=\"0\" /><ns0:ea typeface=\"Inter\" pitchFamily=\"34\" charset=\"-122\" /><ns0:cs typeface=\"Inter\" pitchFamily=\"34\" charset=\"-120\" /></ns0:rPr>"
+        },
+        {
+          "text": "results",
+          "rPr": "<ns0:rPr xmlns:ns0=\"http://schemas.openxmlformats.org/drawingml/2006/main\" lang=\"en-US\" sz=\"2000\" i=\"1\" dirty=\"0\"><ns0:solidFill><ns0:srgbClr val=\"445566\" /></ns0:solidFill><ns0:latin typeface=\"Inter\" pitchFamily=\"34\" charset=\"0\" /><ns0:ea typeface=\"Inter\" pitchFamily=\"34\" charset=\"-122\" /><ns0:cs typeface=\"Inter\" pitchFamily=\"34\" charset=\"-120\" /></ns0:rPr>"
+        }
+      ]
+    ]
+  }
+]

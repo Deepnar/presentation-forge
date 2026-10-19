@@ -1,0 +1,10 @@
+✔ sqlite: persisted semantic edits survive reopen, history restore and native export (1027.225374ms)
+✔ postgres: persisted semantic edits survive reopen, history restore and native export (1047.26988ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2329.832979

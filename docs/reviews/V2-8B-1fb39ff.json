@@ -1,0 +1,114 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+  "acceptedBaselineCompared": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+  "reviewedEvidenceCommit": "ac605b11530e4defedf15588980abe2bf597c749",
+  "reviewer": "V2-8B independent durable-core reviewer",
+  "context": "/root/catalog_review",
+  "date": "2026-10-19",
+  "evidence": "docs/reviews/V2-8B-1fb39ff.md",
+  "independentEvidence": "docs/v2-8b-evidence/independent-final/runs.json",
+  "scope": "Approved durable run core only",
+  "supersedesHoldForEarlierSource": "docs/reviews/V2-8B-501f2f8.json",
+  "currentSourceExecutions": {
+    "total": 65,
+    "pass": 65,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "full7A": 28,
+    "controlledRemount": 1,
+    "governanceBoundaryDriftUsage": 34,
+    "persistedNative": 2,
+    "controlledFilterExcluded": 27
+  },
+  "historicalApplicableExecutions": {
+    "source": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+    "pass": 204,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "runtimeBothBackends": 69,
+    "foundation": 59,
+    "governanceBoundaryDriftUsage": 34,
+    "oldPostgresFourFiles": 42,
+    "notRelabeledCurrent": true,
+    "onlyProtectedSourceDelta": "test/v2-edit-chrome-7a.test.js",
+    "overlapWithCurrent": 34,
+    "proof": "docs/v2-8b-evidence/independent-final/source-proof-and-reuse.json"
+  },
+  "commands": {
+    "productionBuild": "passed independently",
+    "typecheck": "passed independently",
+    "protocol": "passed independently;0errors/0warnings",
+    "benchmark": "50cells;0L1/L2/fit/takeaway findings;5invariance comparisons agree"
+  },
+  "controlledProof": {
+    "cycles": 3,
+    "blockedPointNullAndOpenEventsZero": true,
+    "trustedOpenEventsAfterRelease": 9,
+    "finalSavedRevision": 1,
+    "originalAssertionsPreserved": true,
+    "trace": "docs/v2-8b-evidence/independent-final/controlled-images/trace.json"
+  },
+  "inspectedImplementerEvidence": {
+    "files": 212,
+    "total": 2462,
+    "pass": 2462,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "unexecuted": 0,
+    "distinctPersistedNativePass": 2,
+    "focused69NotAdded": true,
+    "fullMatrixIndependentlyDuplicated": false,
+    "standingLocale": {
+      "pass": 9,
+      "fail": 1,
+      "independentlyRepeated": false
+    }
+  },
+  "visuals": {
+    "finalImagesInspected": 99,
+    "freshImagesInspected": 28,
+    "freshNativePages": 8,
+    "freshSvgRasters": 8,
+    "freshBrowserControl": 12,
+    "nativeRichRunPropertiesIdentical": true,
+    "untargetedSvgByteIdentical": true
+  },
+  "preservation": {
+    "filesVerified": 3193,
+    "pptxArchivesIncluded": 28,
+    "changedPathsRestored": 16,
+    "historicalRootImagesAndArchives": {
+      "images": 99,
+      "archives": 4
+    },
+    "finalImagesAndArchives": {
+      "images": 99,
+      "archives": 4
+    },
+    "allHashesMatch": true,
+    "originalUntrackedPreserved": true,
+    "noByteReconstruction": true
+  },
+  "residuals": [
+    "Inherited catalog loading32pxlayout shift remains a separate frontend concern; readiness correction does not fix product geometry",
+    "Old B2 restore timeout, BYOK locale, Fit/narrow/capture limits and mixed-run SVG first-run flattening remain",
+    "Original untraced remount failure sequence not retroactively claimed identical to controlled proof",
+    "Earlier8A original ignored-PPTX availability limitation remains historical",
+    "Trusted operator/application binding is not new public HTTP authentication",
+    "No live provider/UI/search/deployment/full-V2-8 or external exactly-once acceptance",
+    "LibreOffice/Poppler is not interactive Microsoft PowerPoint; no pixel-parity or production percentile claim",
+    "Current65 and historical204 include34overlap; historical executions are not relabeled current",
+    "Usage limit interrupted review turn after all8jobs completed0; results retained and final inspection/restoration resumed",
+    "Owned PostgreSQL remains for implementer cleanup; no cleanup-completion claim"
+  ],
+  "blockingFindings": [],
+  "implementationTestsStateEdited": false,
+  "heavySlotReleased": true,
+  "ownedPostgresStoppedByReviewer": false,
+  "nextFeatureAuthorized": false
+}

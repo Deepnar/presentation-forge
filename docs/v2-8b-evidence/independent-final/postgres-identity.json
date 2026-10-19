@@ -1,0 +1,15 @@
+{
+  "Id": "f5f8a8156dcd03607a6c2daf6129f46fe0f4e0b90dff31c91a02c5448034bd89",
+  "Name": "/forge-v28b-validation",
+  "running": true,
+  "ports": {
+    "5432/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "5544"
+      }
+    ]
+  },
+  "autoRemove": true,
+  "serverVersion": "15.18"
+}

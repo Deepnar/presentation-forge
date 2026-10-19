@@ -1,0 +1,14 @@
+{
+  "implementationSha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+  "observedUniqueFiles": 212,
+  "counts": {
+    "tests": 2462,
+    "pass": 2462,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "finalImagesHashMatched": 99,
+  "finalArchivesHashMatched": 4,
+  "noMissingDuplicatesOrExtraTestFiles": true
+}
