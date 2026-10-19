@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: sqlite: persisted semantic edits survive reopen, history restore and native export
+ok 1 - sqlite: persisted semantic edits survive reopen, history restore and native export
+  ---
+  duration_ms: 1173.455864
+  type: 'test'
+  ...
+# Subtest: postgres: persisted semantic edits survive reopen, history restore and native export
+ok 2 - postgres: persisted semantic edits survive reopen, history restore and native export
+  ---
+  duration_ms: 1117.118978
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2566.526703

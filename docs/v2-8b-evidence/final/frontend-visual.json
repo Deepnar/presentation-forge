@@ -1,0 +1,15 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+  "command": "Inspect all99 final-source hashed PNGs in17 labeled contact sheets, plus full-resolution narrow history/deletion dialogs and persisted native text/chart/table output; inspect OOXML and measured canvas bounds",
+  "log": "docs/v2-8b-evidence/final/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": "docs/v2-8b-evidence/final/images.json",
+  "imageCount": 99,
+  "browserImages": 76,
+  "nativeRasters": 15,
+  "svgRasters": 8,
+  "limitations": "Inherited Fit/narrow/capture/mixed-run SVG and original prior-PPTX provenance limits remain explicit. Catalog loading reflow remains separate roadmap work. No new UI/provider/PowerPoint interaction claim."
+}

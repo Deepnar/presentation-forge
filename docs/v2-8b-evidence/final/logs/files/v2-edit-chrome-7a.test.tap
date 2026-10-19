@@ -1,0 +1,200 @@
+TAP version 13
+# Subtest: v2-7a workspace dashboard
+    # Subtest: shows the empty state first, then real projects
+    ok 1 - shows the empty state first, then real projects
+      ---
+      duration_ms: 2594.857003
+      type: 'test'
+      ...
+    # Subtest: creates a blank presentation that opens in the editor
+    ok 2 - creates a blank presentation that opens in the editor
+      ---
+      duration_ms: 2470.290742
+      type: 'test'
+      ...
+    # Subtest: creates from a layout with editable content
+    ok 3 - creates from a layout with editable content
+      ---
+      duration_ms: 2396.291622
+      type: 'test'
+      ...
+    # Subtest: renames from the top bar and returns to the dashboard
+    ok 4 - renames from the top bar and returns to the dashboard
+      ---
+      duration_ms: 2373.191307
+      type: 'test'
+      ...
+    # Subtest: deletes with confirmation from the dashboard
+    ok 5 - deletes with confirmation from the dashboard
+      ---
+      duration_ms: 2381.750577
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-7a workspace dashboard
+  ---
+  duration_ms: 12849.06595
+  type: 'suite'
+  ...
+# Subtest: v2-7a navigation and guards
+    # Subtest: back/forward and refresh keep the project
+    ok 1 - back/forward and refresh keep the project
+      ---
+      duration_ms: 4106.334622
+      type: 'test'
+      ...
+    # Subtest: unsaved changes guard the trip back with save and discard paths
+    ok 2 - unsaved changes guard the trip back with save and discard paths
+      ---
+      duration_ms: 2474.344053
+      type: 'test'
+      ...
+    # Subtest: switching projects from the dialog respects unsaved work
+    ok 3 - switching projects from the dialog respects unsaved work
+      ---
+      duration_ms: 2919.439074
+      type: 'test'
+      ...
+    1..3
+ok 2 - v2-7a navigation and guards
+  ---
+  duration_ms: 9500.498513
+  type: 'suite'
+  ...
+# Subtest: v2-7a editor shell
+    # Subtest: edits text, autosaves, and shows history access
+    ok 1 - edits text, autosaves, and shows history access
+      ---
+      duration_ms: 6102.218683
+      type: 'test'
+      ...
+    # Subtest: restores an older revision and exports native PowerPoint
+    ok 2 - restores an older revision and exports native PowerPoint
+      ---
+      duration_ms: 4984.356074
+      type: 'test'
+      ...
+    # Subtest: conflicts across sessions refuse instead of overwriting
+    ok 3 - conflicts across sessions refuse instead of overwriting
+      ---
+      duration_ms: 7651.483456
+      type: 'test'
+      ...
+    # Subtest: locks, hides, multi-selects, and undoes
+    ok 4 - locks, hides, multi-selects, and undoes
+      ---
+      duration_ms: 15687.509886
+      type: 'test'
+      ...
+    # Subtest: presents, assists honestly, and reads without editing
+    ok 5 - presents, assists honestly, and reads without editing
+      ---
+      duration_ms: 1643.537672
+      type: 'test'
+      ...
+    # Subtest: survives narrow viewports with usable rails
+    ok 6 - survives narrow viewports with usable rails
+      ---
+      duration_ms: 3767.379398
+      type: 'test'
+      ...
+    # Subtest: opens a large deck with a full filmstrip
+    ok 7 - opens a large deck with a full filmstrip
+      ---
+      duration_ms: 1548.594268
+      type: 'test'
+      ...
+    # Subtest: remounts cleanly with single-commit semantics
+    ok 8 - remounts cleanly with single-commit semantics
+      ---
+      duration_ms: 8175.747439
+      type: 'test'
+      ...
+    # Subtest: keyboard regions, shortcuts, dialogs, and focus return
+    ok 9 - keyboard regions, shortcuts, dialogs, and focus return
+      ---
+      duration_ms: 2084.874571
+      type: 'test'
+      ...
+    # Subtest: hosted anonymous users get a sign-in state, not an error
+    ok 10 - hosted anonymous users get a sign-in state, not an error
+      ---
+      duration_ms: 1737.308894
+      type: 'test'
+      ...
+    # Subtest: failed saves remain guarded after Done, sidebar navigation, and browser Back
+    ok 11 - failed saves remain guarded after Done, sidebar navigation, and browser Back
+      ---
+      duration_ms: 4817.266796
+      type: 'test'
+      ...
+    # Subtest: save and leave waits for the in-flight request and the newest engine revision
+    ok 12 - save and leave waits for the in-flight request and the newest engine revision
+      ---
+      duration_ms: 4499.755411
+      type: 'test'
+      ...
+    # Subtest: committing a pending text draft still guards and saves the new revision
+    ok 13 - committing a pending text draft still guards and saves the new revision
+      ---
+      duration_ms: 4003.509006
+      type: 'test'
+      ...
+    # Subtest: discard suppresses newer autosaves while history departure is delayed
+    ok 14 - discard suppresses newer autosaves while history departure is delayed
+      ---
+      duration_ms: 7915.425489
+      type: 'test'
+      ...
+    # Subtest: Done preserves failed edits for a later save and leave
+    ok 15 - Done preserves failed edits for a later save and leave
+      ---
+      duration_ms: 3991.389961
+      type: 'test'
+      ...
+    # Subtest: cancelling Save and switch prevents a delayed request from navigating
+    ok 16 - cancelling Save and switch prevents a delayed request from navigating
+      ---
+      duration_ms: 4411.789031
+      type: 'test'
+      ...
+    # Subtest: a failed discard-and-reload keeps the original document saveable
+    ok 17 - a failed discard-and-reload keeps the original document saveable
+      ---
+      duration_ms: 6498.689777
+      type: 'test'
+      ...
+    # Subtest: unbound standalone edits remain guarded through Done and re-entering Edit
+    ok 18 - unbound standalone edits remain guarded through Done and re-entering Edit
+      ---
+      duration_ms: 2371.291527
+      type: 'test'
+      ...
+    # Subtest: edits native chart data in the shell without moving the canvas
+    ok 19 - edits native chart data in the shell without moving the canvas
+      ---
+      duration_ms: 3718.594203
+      type: 'test'
+      ...
+    # Subtest: edits native table data in the shell without moving the canvas
+    ok 20 - edits native table data in the shell without moving the canvas
+      ---
+      duration_ms: 4172.102194
+      type: 'test'
+      ...
+    1..20
+ok 3 - v2-7a editor shell
+  ---
+  duration_ms: 99784.197677
+  type: 'suite'
+  ...
+1..3
+# tests 28
+# suites 3
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 124314.126835
+# forge-test-file "test/v2-edit-chrome-7a.test.js"

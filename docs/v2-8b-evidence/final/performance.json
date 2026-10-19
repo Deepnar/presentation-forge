@@ -1,0 +1,93 @@
+{
+  "implementationSha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+  "localSamples": {
+    "sqlite": {
+      "timingsMs": {
+        "startMs": 1.0083979999999997,
+        "claimMs": 1.4060539999999833,
+        "commitMs": 11.928196000000014,
+        "reopenMs": 0.4238690000000247
+      },
+      "traceBytes": 1285
+    },
+    "postgres": {
+      "timingsMs": {
+        "startMs": 2.4274669999999787,
+        "claimMs": 3.1697159999998803,
+        "commitMs": 9.437669000000142,
+        "reopenMs": 8.250573999999915
+      },
+      "traceBytes": 1285
+    }
+  },
+  "actualProcessRecovery": [
+    {
+      "backend": "PostgreSQL",
+      "source": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 260.6123719999996,
+      "excludesLeaseWait": true
+    },
+    {
+      "backend": "SQLite",
+      "source": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 226.1189089999998,
+      "excludesLeaseWait": true
+    },
+    {
+      "backend": "SQLite",
+      "source": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 229.79442899999958,
+      "excludesLeaseWait": true
+    },
+    {
+      "backend": "PostgreSQL",
+      "source": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 277.5356809999994,
+      "excludesLeaseWait": true
+    }
+  ],
+  "largeDeck": {
+    "project": "p-a5ddc47c2c83fede2dbfeaff",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1532
+  },
+  "canvasMeasurements": [
+    {
+      "file": "docs/v2-8b-evidence/final/measurements/docs--v2-7a-evidence--canvas-chart.json",
+      "kind": null,
+      "maxDeltaPx": 0.01898956298828125
+    },
+    {
+      "file": "docs/v2-8b-evidence/final/measurements/docs--v2-7a-evidence--canvas-table.json",
+      "kind": null,
+      "maxDeltaPx": 0
+    },
+    {
+      "file": "docs/v2-8b-evidence/final/measurements/out--v2-7b-1-validation--browser--canvas-table.json",
+      "kind": null,
+      "maxDeltaPx": 0.10289764404296875
+    },
+    {
+      "file": "docs/v2-8b-evidence/final/measurements/out--v2-7b-1-validation--browser--canvas-chart.json",
+      "kind": null,
+      "maxDeltaPx": 0.1028900146484375
+    },
+    {
+      "file": "docs/v2-8b-evidence/final/measurements/out--v2-7c-3-validation--browser--canvas.json",
+      "kind": "chart",
+      "maxDeltaPx": 0
+    },
+    {
+      "file": "docs/v2-8b-evidence/final/measurements/out--v2-7c-3-validation--browser--canvas.json",
+      "kind": "table",
+      "maxDeltaPx": 0
+    }
+  ],
+  "maximumCanvasDeltaPx": 0.10289764404296875,
+  "limitation": "Local samples only; recovery excludes lease wait. No production percentiles. 1285-byte trace uses ASCII fixtures. Canvas bounds are measured within each controlled edit pair."
+}

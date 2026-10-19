@@ -1,0 +1,30 @@
+[
+  {
+    "backend": "sqlite",
+    "label": "before",
+    "pptx": "docs/v2-8b-evidence/final/native/sqlite/before.pptx",
+    "sha256": "dd1bf63d9d0ce226f20a3b96d27bfaac071d8aca03b357bfa10b868aa31a6938",
+    "scenesSha256": "a6ce934d9b595afad3a18407e2e797580fccc84cc4b4d952b2d01cffa3a2d72e"
+  },
+  {
+    "backend": "sqlite",
+    "label": "after",
+    "pptx": "docs/v2-8b-evidence/final/native/sqlite/after.pptx",
+    "sha256": "fa33508cecb23866870bbd467d6110de5c9ea9914334276d47040a2857b3b6ed",
+    "scenesSha256": "0a95078982e91038e7ad68afc4f505a385225c5ae5f454165f4a4b341886eafa"
+  },
+  {
+    "backend": "postgres",
+    "label": "before",
+    "pptx": "docs/v2-8b-evidence/final/native/postgres/before.pptx",
+    "sha256": "e48f2dd70f8b983f142bd8b268f66135d67dfdc4f67a4bc1c3e2ab8bd00b24a4",
+    "scenesSha256": "a6ce934d9b595afad3a18407e2e797580fccc84cc4b4d952b2d01cffa3a2d72e"
+  },
+  {
+    "backend": "postgres",
+    "label": "after",
+    "pptx": "docs/v2-8b-evidence/final/native/postgres/after.pptx",
+    "sha256": "b5fd4a73f4b778ab19e3d45d05503da40680f17e370f5000163dc6b8bb908642",
+    "scenesSha256": "0a95078982e91038e7ad68afc4f505a385225c5ae5f454165f4a4b341886eafa"
+  }
+]

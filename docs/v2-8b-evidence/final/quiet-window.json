@@ -1,0 +1,12 @@
+{
+  "implementationSha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+  "cpuBusyPercent": 4.955264969029594,
+  "pressure": {
+    "cpu": "some avg10=0.00 avg60=0.01 avg300=0.01 total=7467250\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2430\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=2398\n",
+    "io": "some avg10=0.00 avg60=0.04 avg300=0.15 total=114416545\nfull avg10=0.00 avg60=0.02 avg300=0.12 total=110453651\n"
+  },
+  "availableMemory": "MemAvailable:   49620600 kB",
+  "backedUpFiles": 2871,
+  "includesIgnoredAndCurrentSliceArchives": true
+}
