@@ -1,5 +1,11 @@
-import datetime, hashlib, json, os, pathlib, re, shutil, subprocess, time
+import datetime, hashlib, json, os, pathlib, re, shutil, subprocess, time, sys, signal
 root=pathlib.Path('docs/v2-8b-evidence');out=pathlib.Path('out/v2-8b-validation');out.mkdir(exist_ok=True)
+class Tee:
+ def __init__(self,stream,file):self.stream,self.file=stream,file
+ def write(self,text):self.stream.write(text);self.stream.flush();self.file.write(text);self.file.flush()
+ def flush(self):self.stream.flush();self.file.flush()
+sys.stdout=Tee(sys.stdout,(out/'coordinator.log').open('w'))
+signal.signal(signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
 plan=json.loads((root/'validation-plan.json').read_text());sha=plan['implementationSha'];runs=[]
 subprocess.run(['git','merge-base','--is-ancestor',sha,'HEAD'],check=True)
 env={**os.environ,'LC_ALL':'C.UTF-8','TEST_PG_URL':os.environ.get('TEST_PG_URL','postgres://postgres:probe@127.0.0.1:5544/postgres'),'FORGE_RUNTIME_SOURCE':sha,'FORGE_RUNTIME_METRICS_PATH':str((out/'recovery-metrics.jsonl').resolve())}
@@ -10,7 +16,19 @@ start=time.time()
 def run(name,args,files=None,changes=None,expected=0):
  cmd=['nice','-n','10','ionice','-c','2','-n','7','timeout','--signal=TERM','--kill-after=10s','30m' if name=='bulk' else '15m',*args]
  log=out/(name+'.log');at=datetime.datetime.now(datetime.timezone.utc);print(name,'START',flush=True)
- with log.open('w') as stream:result=subprocess.run(cmd,env={**env,**(changes or {})},stdout=stream,stderr=subprocess.STDOUT)
+ with log.open('w') as stream:
+  process=subprocess.Popen(cmd,env={**env,**(changes or {})},stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
+  try:
+   while True:
+    try:process.wait(timeout=30);break
+    except subprocess.TimeoutExpired:print(name,'RUNNING',round((datetime.datetime.now(datetime.timezone.utc)-at).total_seconds()),'seconds',flush=True)
+  except BaseException:
+   os.killpg(process.pid,signal.SIGTERM)
+   try:process.wait(timeout=10)
+   except subprocess.TimeoutExpired:os.killpg(process.pid,signal.SIGKILL);process.wait()
+   (out/'interrupted.json').write_text(json.dumps({'name':name,'implementationSha':sha,'exitCode':process.returncode,'classification':'cancelled coordinator/job; incomplete execution is not a pass'},indent=2)+'\n')
+   raise
+  result=process
  record={'name':name,'implementationSha':sha,'command':cmd,'files':files or [],'exitCode':result.returncode,'atUtc':at.isoformat(),'durationSeconds':round((datetime.datetime.now(datetime.timezone.utc)-at).total_seconds(),6),'log':str(log)}
  text=log.read_text()
  if files:

@@ -6,7 +6,7 @@
     "source": "docs/reviews/V2-8A-d4f446c.json"
   },
   "implementationHead": {
-    "sha": "1f309d02f5e564b7ea4fbbd6aebb3faf02a57aa9",
+    "sha": "501f2f864bc1004c026c4e8ef53f4e907491e428",
     "note": "Frozen V2-8B runtime implementation and regression tests. Documentation/evidence follow separately; independent review pending."
   },
   "activeMilestone": {

@@ -1,0 +1,26 @@
+{
+  "source": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+  "cpuBusyPercent": 4.843962008141113,
+  "pressure": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.05 total=4081203\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1255\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1239\n",
+    "io": "some avg10=13.04 avg60=9.96 avg300=6.59 total=91736484\nfull avg10=12.84 avg60=9.77 avg300=6.40 total=88849480\n"
+  },
+  "memAvailable": "MemAvailable:   50087844 kB",
+  "competingProcesses": [
+    "    PID %CPU %MEM COMMAND",
+    "   5341 24.0  0.2 RDD Process",
+    "  19756 20.8 11.0 llama-server",
+    "  11217 18.3  1.3 Isolated Web Co",
+    "   5199 10.4  1.3 zen-bin",
+    "   4547  7.8  0.3 Hyprland",
+    "   6086  6.3  1.0 claude-desktop",
+    "   5951  3.8  0.3 claude-desktop",
+    "   8470  2.8  1.0 ChatGPT",
+    "   8156  2.1  0.9 ChatGPT",
+    "   5875  1.7  0.6 claude-desktop",
+    "   7464  1.3  0.5 claude",
+    "   7860  1.2  1.1 Isolated Web Co",
+    "   8490  0.9  1.0 codex"
+  ]
+}
