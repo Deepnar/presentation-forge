@@ -47,7 +47,7 @@ contract. The accepted baseline stays V2-8A until separate exact-source review.
 Preserve known Fit/timeout/capture/locale/mixed-runSVG limits and the explicit
 2ignored-original-PPTX provenance limitation. All original3untracked paths stay
 untouched. No new feature, infrastructure, migration or deployment is authorized
-by acceptance. Use the [runbook](v2-8a-evidence/RUNBOOK.md) when reproducing; earlier
+by acceptance. Use the [active runbook](v2-8b-evidence/RUNBOOK.md) when reproducing; earlier
 reports are historical evidence, not execution of a later source.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
@@ -61,6 +61,7 @@ The canonical test entrypoints are:
 ```sh
 node --test test/dev-protocol.test.js
 node --test --test-concurrency=1 test/v2-project-catalog-7c.test.js test/v2-project-catalog-http-7c.test.js test/v2-project-catalog-chrome-7c.test.js
+node --test --test-concurrency=1 test/v2-runtime-8b.test.js test/v2-runtime-process-8b.test.js test/v2-runtime-postgres-8b.test.js
 node --test test/v2-edit-chrome-7a.test.js
 node --test test/v2-projects-6c-sqlite.test.js
 node --test test/v2-projects-6c-postgres.test.js
@@ -68,12 +69,12 @@ node --test test/v2-projects-6c-concurrency.test.js
 node --test test/v2-projects-6c-faults.test.js
 node_modules/.bin/vite build --config app/web/vite.config.js
 npm run typecheck
-node tools/v2-benchmark.mjs --out out/v2-8a-benchmark --raster none
+node tools/v2-benchmark.mjs --out out/v2-8b-benchmark --raster none
 ```
 
 Use a process-group watchdog for each browser file and run browser files strictly
 serially; each may rebuild shared dist. Bulk inventory and exact bounded runner
-commands are in [the accepted foundation validation runbook](v2-8a-evidence/RUNBOOK.md) and its linked
+commands are in [the durable runtime validation runbook](v2-8b-evidence/RUNBOOK.md) and its linked
 `validation-plan.json`. Do not run plain npm test
 concurrently with browser/build validation. The benchmark must report all 50
 cells, not merely the 12 benchmark assertion tests. Render/preview and inspect

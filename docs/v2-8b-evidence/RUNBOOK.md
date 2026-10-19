@@ -15,7 +15,34 @@ PPTXs. The local backup inventory includes every regular file in prior evidence
 directories, not just git-tracked files. Collect fresh images and measurements into
 this slice, then restore original files from those exact bytes and verify hashes.
 
-Run `python3 docs/v2-8b-evidence/run-validation.py`. All 26 browser/build-owning
+The exact original snapshot setup (before the first full run) was:
+
+```sh
+mkdir -p out/v2-8b-validation
+python3 - <<'PYBACKUP'
+from pathlib import Path
+import shutil, hashlib, json
+backup=Path('out/v2-8b-validation/backup')
+backup.mkdir(exist_ok=False)
+index=[]
+for folder in Path('docs').glob('v2-*-evidence'):
+    if folder.name=='v2-8b-evidence': continue
+    for source in folder.rglob('*'):
+        if not source.is_file(): continue
+        target=backup/source
+        target.parent.mkdir(parents=True,exist_ok=True)
+        shutil.copy2(source,target)
+        index.append({'path':str(source),'sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'bytes':source.stat().st_size})
+(backup/'index.json').write_text(json.dumps(index,indent=2)+'\n')
+PYBACKUP
+```
+
+For any later rerun, separately back up **this slice too**, including all four
+original native PPTXs, or adapt the generator to a fresh namespace. The snapshot
+above restores prior slices only; it does not restore this slice's overwritten
+outputs. Never relabel a regenerated archive as the original.
+
+Run `python3 -u docs/v2-8b-evidence/run-validation.py`. All 26 browser/build-owning
 files run serially with watchdogs; never overlap Vite, browser or native rendering.
 The runner stops on unexpected failure and retains partial output; failures require
 classification and a documented correction/rerun. Full bulk, backend/process/fault,
