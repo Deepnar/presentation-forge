@@ -271,6 +271,16 @@ and remain optional: Open is available while a preview loads or fails. The
 [cover validation and review record](docs/V2-7C-1-EVAL.md) identifies the exact
 implementation and its acceptance status.
 
+V2 also provides a trusted headless CLI for bounded scripted edits to saved
+projects: `npm run agent-run -- start --project ID --plan FILE`, followed by
+`work`, `status` or `cancel` with `--project ID --run RUN_ID`. Start persists and
+exits; a separate worker resumes the durable run. Owner-bound projects additionally
+require the trusted operator's `--owner OWNER` on each call. See the
+[run-plan schema](packages/agent/run-plan.schema.json),
+[durable execution contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8b-durable-run-core)
+and [validation/review record](docs/V2-8B-EVAL.md). Live provider and Assistant
+integration remain in the [roadmap](docs/ROADMAP.md#v2-8-remaining).
+
 A written `.pptx` proves the file parsed and nothing else. `pres.writeFile()`
 succeeds for decks with text off the canvas and invisible-on-invisible colour
 pairs. So the checks ask four different questions, and each was added because

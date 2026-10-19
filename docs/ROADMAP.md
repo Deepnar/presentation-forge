@@ -8288,7 +8288,7 @@ needs direction on scope before building.*
 
 <a id="v2-8b-scope-proposal"></a>
 
-- [ ] **V2-8B durable run core — approved on 2026-10-19; validation complete, independent review pending.**
+- [x] **V2-8B durable run core — independently accepted on 2026-10-19.**
   Continuation resumes from accepted implementation
   `d4f446c7b2fcae851c37d1a46288cf91317c38b4`
   ([independent decision](reviews/V2-8A-d4f446c.json)), planning checkout
@@ -8309,7 +8309,7 @@ needs direction on scope before building.*
   interaction/draft/approval behavior and provider direction agreed before code.
   Do not switch to renderer polish or another milestone while this choice waits.
 
-  **Current seams and look-ahead:** the accepted tools bind a live EditorHandle;
+  **Entry seams and look-ahead:** the accepted tools bound a live EditorHandle;
   their duplicate identifiers and undo are session-local. The SQLite/PostgreSQL
   ProjectStore already commits project revisions and history atomically, but has
   no durable run leases or tool-step receipts. The engine revision starts at zero
@@ -8398,10 +8398,41 @@ needs direction on scope before building.*
   and stop after review/handoff/owned-service cleanup. No following provider/UI
   slice is authorized by this proposal or its eventual correctness acceptance.
 
+
+  **Completed and independently accepted.** Exact source
+  `1fb39ff75cd473ecaf2884232d5d7465d50a9af2`, compared with accepted V2-8A;
+  [independent decision/report](reviews/V2-8B-1fb39ff.md). Shared headless APIs/CLI,
+  immutable scoped semantic plans, database-time leases/fencing, durable attempt
+  budgets, cancellation and atomic project/history/receipt checkpoints are built
+  on both existing backends. Restart preserves committed cursors and human edits.
+  Checkpoint-integrity and pooled-listener defects were corrected; scoped remount
+  test readiness resolved the later independent HOLD without weakening assertions.
+  The complete 212-file matrix passes 2462/2462 plus 2 distinct persisted native cases,
+  with 0 fail/skip/cancel/unexecuted. Focus 69 repeats and locale 9 pass/1 standing fail are
+  separate. Build/type/50 cells pass;99 fresh images inspected. Independent current
+  execution 65/65 plus build/type/protocol/50cells passes; earlier 204 on unchanged
+  runtime source 501f2f8 remains explicitly historical, with 34 overlap. See
+  [evaluation](V2-8B-EVAL.md) for exact execution/provenance and limitations.
+
+  > **Learned.** Individually valid checkpoint/receipt objects can still encode
+  > an impossible history; reconcile every step against immutable plan and revision
+  > progression. Reserve attempts before execution so process death cannot refund
+  > budgets. Transaction final guards must use the database clock and preserve
+  > already committed reservations on rollback. Pooled-client listeners have the
+  > checkout's lifetime. Browser status-row removal can move Open to Delete's old
+  > point; actual-response traces distinguish this from an engine/save regression.
+  > Cross-cutting guidance is in TRAPS.md.
+  > **Look-ahead/completion propagation.** Providers and Assistant reuse the
+  > durable core and trusted semantic tools; provider calls stay outside database
+  > transactions. The parent now starts with provider/UI/search integration, not a
+  > replacement run store or queue. No persistent session undo, external exactly-once
+  > promise, new framework or production deployment is implied. Remaining Fit,
+  > capture, catalog loading geometry, locale and SVG work stays separately scoped.
+
 <a id="v2-8-remaining"></a>
 
 The accepted foundation supplies real scoped content tools, schemas, instruction
-sections and bounded context. The durable core is implemented and under independent review in V2-8B.
+sections and bounded context. The durable core is independently accepted in V2-8B.
 The remaining parent milestone integrates these boundaries with provider adapters, visible Assistant and common
 search/source orchestration; its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing
@@ -8432,8 +8463,9 @@ and bounded (steps, failures, fan-out, wall-clock); delegation stays
 disabled until a measured workload justifies bounded read-mostly
 workers. The agent infers what it can and asks only blocking questions;
 selection-aware edits; source-aware generation; manual-edit preservation
-through V2-5 commands; durable jobs (Vercel Workflow or equivalent),
-never browser-SSE-owned. Prove two materially different provider
+through V2-5 commands; durable jobs reuse the accepted SQLite/PostgreSQL run
+core, never browser-SSE-owned. Provider/network work stays outside edit
+transactions; external-effect idempotency needs its own bounded contract. Prove two materially different provider
 adapters (e.g. Anthropic-style + OpenAI-compatible, or Gemini-style +
 local) researching through the same Forge search.
 

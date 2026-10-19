@@ -215,6 +215,13 @@ Acceptance authorizes planning only; later scope and standing limits remain in
 the roadmap. The explicit original-PPTX provenance limitation is not a new product
 blocker or a claim of recovered archives.
 
+The approved V2-8B durable run core is independently accepted at1fb39ff; see
+[evaluation](V2-8B-EVAL.md), [decision](reviews/V2-8B-1fb39ff.md) and state.
+All required validation executed. Owned PostgreSQL cleanup saved/fsynced the
+zero-database observation before removal and verified5544closed. This historical
+execution does not turn unavailable future PostgreSQL checks into passes. Later
+scope and inherited limitations remain in the roadmap.
+
 Two are worth naming because they look like engineering and are not:
 
 - **The turn grammar's unscoped case** (options 2 and 3). The selection-scoped

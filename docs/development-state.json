@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "d4f446c7b2fcae851c37d1a46288cf91317c38b4",
+    "sha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8A-d4f446c.json"
+    "source": "docs/reviews/V2-8B-1fb39ff.json"
   },
   "implementationHead": {
     "sha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
-    "note": "Runtime unchanged from501f2f8; exact source includes scoped7A remount readiness correction after HOLD. Complete fresh validation and99-image inspection passed; independent acceptance pending."
+    "note": "Independently accepted durable run core and scoped7A remount readiness correction; later commits contain documentation/evidence only."
   },
   "activeMilestone": {
     "id": "V2-8B",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8B-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8B-1fb39ff.json",
+    "accepted": true
   },
   "validation": [
     {

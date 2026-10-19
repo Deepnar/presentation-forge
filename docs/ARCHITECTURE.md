@@ -2635,6 +2635,7 @@ The backend-injected run core and headless CLI extend the accepted tool boundary
 with project-scoped persisted plans, attempts, leases/fencing, cancellation and
 checkpoints. Project scenes, existing history and concise edit receipts share one
 SQLite/PostgreSQL transaction. No browser lifetime, live provider or new UI owns
-execution. The [as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8b-durable-run-core-implementation-under-review)
-describes distinct revisions, exact ownership, recovery and limits; implementation
-review/validation remain indexed in development-state.json.
+execution. The [as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8b-durable-run-core)
+describes distinct revisions, exact ownership, recovery and limits. Source1fb39ff
+is independently accepted; exact review/validation remain indexed in
+development-state.json.

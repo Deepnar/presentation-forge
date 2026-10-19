@@ -1,8 +1,9 @@
 # V2-8B durable run core evaluation
 
-Runtime implementation and fresh validation of the scoped remount correction are
-complete; separate exact-source acceptance is pending after the earlier HOLD. Accepted baseline remains
-`d4f446c7b2fcae851c37d1a46288cf91317c38b4`; task-entry checkout
+The durable run core is independently accepted at
+`1fb39ff75cd473ecaf2884232d5d7465d50a9af2` in
+[the separate decision](reviews/V2-8B-1fb39ff.md). The task entered from accepted
+V2-8A baseline `d4f446c7b2fcae851c37d1a46288cf91317c38b4`; task-entry checkout
 `fa1ba84378af33fe3a1654d4bd177523e1dbf080`, branch `v2`, push `origin/v2`.
 The human selected the recommended scope on 2026-10-19. The approved contract and
 sole future-work registry are [the roadmap](ROADMAP.md#v2-8b-scope-proposal).
@@ -56,7 +57,8 @@ review supplies ACCEPT/HOLD; the implementer does not accept. Stop after this sl
 
 ## Validation status and known limitations
 
-All required checks of corrected source1fb39ff passed; independent acceptance remains pending.
+All required checks of corrected source `1fb39ff` passed and the separate reviewer
+issued ACCEPT. Earlier pending/HOLD passages below are execution chronology.
 No V2-8A result is execution of this source. Standing BYOK locale, old B2 restore timeout, Fit/narrow/capture,
 mixed-run SVG fidelity and original ignored-PPTX provenance limitations retain their
 [existing records](V2-8A-EVAL.md). No provider or hosted-content quality claim.
@@ -183,8 +185,53 @@ canvas delta across7A/B1/C3 is0.102898px;7A alone0.018990px, below1px gates.
 These local samples do not establish production percentiles. Native exports
 preserve real runs/charts/tables and unrelated scenes; SVG mixed runs still flatten.
 
-Recommendation: accept the bounded durable core if independent corrected-source
-review confirms the evidence and remount correction. Accepted baseline remains
-V2-8A until that separate decision. The inherited32px catalog loading reflow,
-locale/Fit/capture/timeout/SVG and historical original-PPTX limits remain separate.
+The separate reviewer accepted the bounded durable core. The inherited 32px
+catalog loading reflow, locale/Fit/capture/timeout/SVG and historical original-PPTX limits remain separate.
 No provider, Assistant UI, production migration or deployment was added.
+
+## Independent acceptance and cleanup
+
+[The exact-source decision](reviews/V2-8B-1fb39ff.json) accepts only the approved
+headless durable core. Review commit `467b2e77e988af97728d814e35ce7d61680d7621`
+retains the separate context, source-delta proof, diagnostics and inspected evidence.
+Fresh independent execution is **65/65**: full Chrome 28, controlled remount 1,
+governance/boundary/drift/usage 34 and persisted native 2, with zero failures,
+skips or cancellations. Build, typecheck, protocol and all 50 cells also passed.
+The controlled case excluded 27 cases by name filter; the complete file separately
+executed every one. All three delayed-response cycles held point null/Open events
+zero, then all nine trusted pointer events targeted Open after release. The original
+single-machine and saved-revision-1 assertions passed.
+
+Earlier independent 204 successful checks on `501f2f8` remain prior-source evidence,
+with explicit proof that runtime/tools/stores were unchanged. They overlap fresh
+execution by 34 and are not relabeled or blindly added. The complete implementer
+matrix was independently reconciled and inspected, rather than independently
+repeated in full. The reviewer inspected all 99 final images and 28 fresh images,
+including native/SVG output and exact rich-run OOXML preservation. All 3,193 backup
+hashes, including 28 original archives, matched after restoring 16 changed paths.
+Six fresh independent archives have separate paths/hashes. The brief usage-limit
+interruption occurred after all eight independent jobs completed; final inspection,
+restoration and the explicit decision resumed without fabricating acceptance.
+
+Two additional metadata-only governance repeats passed 24/24 each: one while
+review was pending and one after attaching acceptance. Their 48 repeated cases
+are excluded from the 2,464 distinct required cases and the matrix/focus/locale
+2,543-execution subtotal. Including those repeats, final implementer execution
+is 2,591 leaves: 2,590 pass, 1 standing locale failure, zero skip/cancelled.
+These repeats do not represent additional product coverage or independent review.
+
+The state file now attaches this independent decision and advances the accepted
+baseline to the reviewed source. The previous HOLD remains historical. Scoped
+corrections comprise checkpoint consistency, PostgreSQL checkout listener cleanup
+and remount test readiness; no product redesign or weakened assertion was applied.
+
+[Cleanup evidence](v2-8b-evidence/final/cleanup.json) records the exact owned
+PostgreSQL container, a saved/fsynced zero-database observation before stopping,
+auto-removal and closed localhost port 5544. The first immediate post-stop probe
+raced asynchronous removal; the subsequent bounded observation confirmed cleanup.
+No unrelated service/database was stopped or reused. Missing PostgreSQL for a
+future run leaves those checks unexecuted and does not alter historical results.
+
+Acceptance recommendation is satisfied by the independent ACCEPT. Stop after this
+slice. Provider/Assistant/search and other remaining V2 work require their own
+roadmap scope; this acceptance grants no deployment or production schema migration.

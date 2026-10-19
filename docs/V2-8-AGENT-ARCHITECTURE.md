@@ -75,7 +75,9 @@ credentials, research/search integration, deployment or migration is shipped her
 Later integration must bind fresh trusted scope and preserve these authority and
 revision boundaries; its work is recorded only in the roadmap.
 
-## V2-8B durable run core (implementation under review)
+<a id="v2-8b-durable-run-core-implementation-under-review"></a>
+
+## V2-8B durable run core
 
 `packages/agent/runtime.ts` injects a `RuntimeBackend`, with no storage or network
 imports. `run-state.ts` is the named Node/AJV schema-loading boundary. Run plans,
@@ -141,4 +143,5 @@ it makes no claim about arbitrary future network/provider side effects.
 
 No live provider, Assistant UI, public run route, search, new composition, persistent
 undo, framework adoption, production migration or deployment is part of this slice.
-Validation and the independent decision are indexed by state/[evaluation](V2-8B-EVAL.md).
+Exact source1fb39ff is [independently accepted](reviews/V2-8B-1fb39ff.md).
+Validation, retained limitations and cleanup are indexed by state/[evaluation](V2-8B-EVAL.md).

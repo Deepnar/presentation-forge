@@ -1,0 +1,11 @@
+{
+  "atUtc": "2026-10-19T17:23:04.844898+00:00",
+  "containerId": "f5f8a8156dcd03607a6c2daf6129f46fe0f4e0b90dff31c91a02c5448034bd89",
+  "name": "/forge-v28b-validation",
+  "image": "postgres:15-alpine",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "autoRemove": true,
+  "remainingProjectDatabases": 0,
+  "observationBeforeStop": true,
+  "implementationSha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2"
+}

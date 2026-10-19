@@ -1,0 +1,13 @@
+{
+  "implementationSha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+  "atUtc": "2026-10-19T17:23:20.865852+00:00",
+  "preStopObservation": "docs/v2-8b-evidence/final/pre-stop-databases.json",
+  "savedAndFsyncedBeforeStop": true,
+  "remainingProjectDatabases": 0,
+  "containerId": "f5f8a8156dcd03607a6c2daf6129f46fe0f4e0b90dff31c91a02c5448034bd89",
+  "stopExitCode": 0,
+  "autoRemoved": true,
+  "localhost5544Closed": true,
+  "unrelatedServicesTouched": false,
+  "note": "Initial immediate post-stop assertion raced asynchronous auto-removal; subsequent bounded observation confirms removal and closed port."
+}

@@ -38,12 +38,17 @@ The approved [V2-8A foundation](ROADMAP.md#v2-8a-scope-proposal) is independentl
 accepted atd4f446c in [the decision](reviews/V2-8A-d4f446c.json).
 State/[evaluation](V2-8A-EVAL.md) index exact source,209-file2393/2393 plus1distinct
 headless case, independent148/148 and all command/visual evidence. The owned service
-was removed after a saved0-database observation;5544closed. Its absence does not
+was removed after a saved zero-database observation;5544closed. Its absence does not
 invalidate historical execution or supply a pass for a future run.
 
 The human selected the recommended [V2-8B durable run core](ROADMAP.md#v2-8b-scope-proposal)
 on 2026-10-19. Its [evaluation](V2-8B-EVAL.md) freezes the implementation/check
-contract. The accepted baseline stays V2-8A until separate exact-source review.
+contract. Exact source `1fb39ff` is [independently accepted](reviews/V2-8B-1fb39ff.md).
+The 212-file 2462/2462 matrix plus 2 distinct persisted native cases passed, as did
+build/type/50 cells and independent 65 current-source checks. Earlier 204 independent
+checks on `501f2f8` remain historical, with source-delta proof and 34 overlap. The owned
+service was removed after a saved zero-database observation; port 5544 is closed. Missing
+PostgreSQL on a future run means its checks are unexecuted, not automatically green.
 Preserve known Fit/timeout/capture/locale/mixed-runSVG limits and the explicit
 2ignored-original-PPTX provenance limitation. All original3untracked paths stay
 untouched. No new feature, infrastructure, migration or deployment is authorized

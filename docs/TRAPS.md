@@ -1798,6 +1798,11 @@ original failure; preserve both outputs and distinguish the traced reproduction.
 This client evaluates with returnByValue but without awaitPromise. Returning an
 async function's Promise gives no point; publish readiness in page state and poll
 it through scalar evaluations, keeping both the page loop and outer wait bounded.
+Catalog source reads may still be pending after the saved grid mounts. Removing
+a loading status row can move card actions32px, placing Delete under Open's old
+coordinates. Wait for actual source completion before measuring the intended
+action, then verify stable unobscured bounds; preserve controlled response/event
+traces separately from an original untraced failure.
 An absent loading label before a debounce fires does not prove query completion.
 Wait for the exact query response and its settled UI before recording empty-result
 evidence; otherwise a passing assertion can still capture an in-flight search.
