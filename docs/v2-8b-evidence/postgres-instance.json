@@ -1,0 +1,14 @@
+{
+  "containerId": "f5f8a8156dcd03607a6c2daf6129f46fe0f4e0b90dff31c91a02c5448034bd89",
+  "image": "postgres:15-alpine",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "name": "/forge-v28b-validation",
+  "cpus": 1000000000,
+  "memory": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=192m"
+  },
+  "port": "127.0.0.1:5544",
+  "ownedEphemeral": true,
+  "notProduction": true
+}

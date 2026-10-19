@@ -1,0 +1,35 @@
+▶ v2 core boundary
+  ✔ detects static, re-export, and literal dynamic imports (4.55015ms)
+  ✔ fails closed on require() and non-literal dynamic import (0.526879ms)
+  ✔ enforces package directions on synthetic edges (0.252351ms)
+  ✔ confines node builtins to the named renderer adapter (0.137838ms)
+  ✔ allows jszip only in renderer-docx (0.134735ms)
+  ✔ repository packages contain zero boundary violations (137.731211ms)
+✔ v2 core boundary (144.14772ms)
+✔ SQLite: project, history and receipt commit once with distinct revisions (55.005712ms)
+✔ SQLite: request identity reopens exact state and refuses changed plans (8.216454ms)
+✔ SQLite: input and output snapshots do not mutate durable authority (11.030041ms)
+✔ SQLite: foreign owner, foreign project and deleted project cannot inspect or act (7.023024ms)
+✔ SQLite: local ownerless projects retain local authority without widening scope (10.772133ms)
+✔ SQLite: read and noop receipts never invent durable project history (10.839986ms)
+✔ SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones (20.063747ms)
+✔ SQLite: human changes after start cause stale refusal without rebasing (8.716452ms)
+✔ SQLite: inspect-only and locked/hidden targets fail through canonical tools (14.869765ms)
+✔ SQLite: failure budgets and concise traces survive a new runtime instance (9.760475ms)
+✔ SQLite: cancellation before work and after commit preserves transaction order (10.543386ms)
+✔ SQLite: lease takeover fences the previous worker even with reused worker name (135.000147ms)
+✔ SQLite: deadlines persist across restart and expire before effects (187.540235ms)
+✔ SQLite: after-project failure rolls project/history/receipt back together (1020.253088ms)
+✔ SQLite: after-receipt failure rolls project/history/receipt back together (1020.021397ms)
+✔ SQLite: final-fence failure rolls project/history/receipt back together (149.92352ms)
+✔ SQLite: records and traces are bounded and omit raw document/read contents (5.952188ms)
+✔ SQLite: malformed/oversized/authority/layout data and duplicate grants are refused (5.83692ms)
+✔ SQLite: unsupported or corrupt durable records fail closed (5.757425ms)
+ℹ tests 25
+ℹ suites 1
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2884.028574

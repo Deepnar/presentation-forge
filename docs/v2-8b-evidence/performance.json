@@ -1,0 +1,60 @@
+{
+  "implementationSha": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+  "localSamples": {
+    "sqlite": {
+      "timingsMs": {
+        "startMs": 0.8012870000000021,
+        "claimMs": 1.2524119999999925,
+        "commitMs": 7.877816999999993,
+        "reopenMs": 0.348306000000008
+      },
+      "traceBytes": 1285
+    },
+    "postgres": {
+      "timingsMs": {
+        "startMs": 3.5997209999998176,
+        "claimMs": 4.610190999999986,
+        "commitMs": 10.726623999999902,
+        "reopenMs": 7.371047999999973
+      },
+      "traceBytes": 1285
+    }
+  },
+  "actualProcessRecovery": [
+    {
+      "backend": "PostgreSQL",
+      "source": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 253.98494599999867,
+      "excludesLeaseWait": true
+    },
+    {
+      "backend": "SQLite",
+      "source": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 263.1356680000008,
+      "excludesLeaseWait": true
+    },
+    {
+      "backend": "SQLite",
+      "source": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 195.2252870000002,
+      "excludesLeaseWait": true
+    },
+    {
+      "backend": "PostgreSQL",
+      "source": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 222.12010699999882,
+      "excludesLeaseWait": true
+    }
+  ],
+  "largeDeck": {
+    "project": "p-58b2b664090f2ac0621c3753",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1538
+  },
+  "limitation": "Local samples only; recovery timings exclude waiting for lease expiry. Different environments and fixture sizes, no production percentiles. 1285-byte trace uses ASCII fixtures."
+}

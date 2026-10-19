@@ -1,0 +1,257 @@
+TAP version 13
+# Subtest: v2-3f-5 theme audit
+    # Subtest: classifies all 34 themes: 10 plate, 12 decor, 7 declared cardFill
+    ok 1 - classifies all 34 themes: 10 plate, 12 decor, 7 declared cardFill
+      ---
+      duration_ms: 79.429983
+      type: 'test'
+      ...
+    # Subtest: every plate template interpolates fully against mode-resolved tokens
+    ok 2 - every plate template interpolates fully against mode-resolved tokens
+      ---
+      duration_ms: 65.525098
+      type: 'test'
+      ...
+    # Subtest: plate templates reference only embedded data: assets
+    ok 3 - plate templates reference only embedded data: assets
+      ---
+      duration_ms: 17.645858
+      type: 'test'
+      ...
+    1..3
+ok 1 - v2-3f-5 theme audit
+  ---
+  duration_ms: 163.243248
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 native resolution
+    # Subtest: solid-only themes keep the legacy background shape exactly
+    ok 1 - solid-only themes keep the legacy background shape exactly
+      ---
+      duration_ms: 19.942146
+      type: 'test'
+      ...
+    # Subtest: decor themes resolve fills with alpha into the scene background
+    ok 2 - decor themes resolve fills with alpha into the scene background
+      ---
+      duration_ms: 3.917647
+      type: 'test'
+      ...
+    # Subtest: translucent cardFill survives with its declared opacity
+    ok 3 - translucent cardFill survives with its declared opacity
+      ---
+      duration_ms: 4.781725
+      type: 'test'
+      ...
+    # Subtest: undeclared cardFill stays opaque with no new keys
+    ok 4 - undeclared cardFill stays opaque with no new keys
+      ---
+      duration_ms: 2.391513
+      type: 'test'
+      ...
+    # Subtest: surface mapping follows composition family, never theme names
+    ok 5 - surface mapping follows composition family, never theme names
+      ---
+      duration_ms: 0.142066
+      type: 'test'
+      ...
+    # Subtest: flat backgrounds omit absent keys for byte-identical legacy scenes
+    ok 6 - flat backgrounds omit absent keys for byte-identical legacy scenes
+      ---
+      duration_ms: 1.411861
+      type: 'test'
+      ...
+    # Subtest: dividers read surface ink only when their surface plate is present
+    ok 7 - dividers read surface ink only when their surface plate is present
+      ---
+      duration_ms: 3.57449
+      type: 'test'
+      ...
+    1..7
+ok 2 - v2-3f-5 native resolution
+  ---
+  duration_ms: 36.532066
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 adapter seam
+    # Subtest: native themes resolve no assets
+    ok 1 - native themes resolve no assets
+      ---
+      duration_ms: 3.000927
+      type: 'test'
+      ...
+    # Subtest: plate themes resolve three hashed assets with sampled contrast
+    ok 2 - plate themes resolve three hashed assets with sampled contrast
+      ---
+      duration_ms: 2193.463829
+      type: 'test'
+      ...
+    # Subtest: resolution is deterministic across runs
+    ok 3 - resolution is deterministic across runs
+      ---
+      duration_ms: 22.906154
+      type: 'test'
+      ...
+    # Subtest: missing or hostile plates fail explicitly
+    ok 4 - missing or hostile plates fail explicitly
+      ---
+      duration_ms: 2.395131
+      type: 'test'
+      ...
+    # Subtest: corner sampling reads pixels, not declarations
+    ok 5 - corner sampling reads pixels, not declarations
+      ---
+      duration_ms: 13.458151
+      type: 'test'
+      ...
+    1..5
+ok 3 - v2-3f-5 adapter seam
+  ---
+  duration_ms: 2235.701401
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 scene integration
+    # Subtest: plate assets land on scenes by planned surface
+    ok 1 - plate assets land on scenes by planned surface
+      ---
+      duration_ms: 4.906023
+      type: 'test'
+      ...
+    # Subtest: plated dividers stay readable while content text is untouched
+    ok 2 - plated dividers stay readable while content text is untouched
+      ---
+      duration_ms: 1.17188
+      type: 'test'
+      ...
+    # Subtest: backgrounds never alter authored semantics or identity
+    ok 3 - backgrounds never alter authored semantics or identity
+      ---
+      duration_ms: 1.826464
+      type: 'test'
+      ...
+    # Subtest: every authored block stays represented with native charts on plates
+    ok 4 - every authored block stays represented with native charts on plates
+      ---
+      duration_ms: 0.824145
+      type: 'test'
+      ...
+    # Subtest: historical scenes without the new fields remain valid
+    ok 5 - historical scenes without the new fields remain valid
+      ---
+      duration_ms: 0.081757
+      type: 'test'
+      ...
+    # Subtest: recompile preserves customized geometry over dressed backgrounds
+    ok 6 - recompile preserves customized geometry over dressed backgrounds
+      ---
+      duration_ms: 1.364419
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay authoritative
+    ok 7 - detached scenes stay authoritative
+      ---
+      duration_ms: 0.538944
+      type: 'test'
+      ...
+    # Subtest: decision-deck capacity is resolved on dressed themes
+    ok 8 - decision-deck capacity is resolved on dressed themes
+      ---
+      duration_ms: 15.271416
+      type: 'test'
+      ...
+    1..8
+ok 4 - v2-3f-5 scene integration
+  ---
+  duration_ms: 2182.551263
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 renderer projection
+    # Subtest: embeds the plate as the slide background image
+    ok 1 - embeds the plate as the slide background image
+      ---
+      duration_ms: 0.467618
+      type: 'test'
+      ...
+    # Subtest: keeps text, charts, and tables native above the plate
+    ok 2 - keeps text, charts, and tables native above the plate
+      ---
+      duration_ms: 0.129054
+      type: 'test'
+      ...
+    # Subtest: projects card translucency as OOXML transparency
+    ok 3 - projects card translucency as OOXML transparency
+      ---
+      duration_ms: 0.045162
+      type: 'test'
+      ...
+    # Subtest: draws decor dressing behind content on decor themes
+    ok 4 - draws decor dressing behind content on decor themes
+      ---
+      duration_ms: 6.794703
+      type: 'test'
+      ...
+    # Subtest: SVG projects the same resolved background above the flat fill
+    ok 5 - SVG projects the same resolved background above the flat fill
+      ---
+      duration_ms: 2.133282
+      type: 'test'
+      ...
+    # Subtest: SVG carries decor on decor themes
+    ok 6 - SVG carries decor on decor themes
+      ---
+      duration_ms: 0.683948
+      type: 'test'
+      ...
+    # Subtest: dark plates keep the accepted chrome opacities
+    ok 7 - dark plates keep the accepted chrome opacities
+      ---
+      duration_ms: 3442.945742
+      type: 'test'
+      ...
+    1..7
+ok 5 - v2-3f-5 renderer projection
+  ---
+  duration_ms: 5792.461159
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 background layer parity
+    # Subtest: accepts the combined scene as valid
+    ok 1 - accepts the combined scene as valid
+      ---
+      duration_ms: 0.158386
+      type: 'test'
+      ...
+    # Subtest: orders SVG flat fill, plate image, decor, then elements
+    ok 2 - orders SVG flat fill, plate image, decor, then elements
+      ---
+      duration_ms: 0.156286
+      type: 'test'
+      ...
+    # Subtest: keeps the PPTX background-before-decor order
+    ok 3 - keeps the PPTX background-before-decor order
+      ---
+      duration_ms: 2.421848
+      type: 'test'
+      ...
+    # Subtest: renders the combined scene deterministically
+    ok 4 - renders the combined scene deterministically
+      ---
+      duration_ms: 3.869042
+      type: 'test'
+      ...
+    1..4
+ok 6 - v2-3f-5 background layer parity
+  ---
+  duration_ms: 6.731692
+  type: 'suite'
+  ...
+1..6
+# tests 34
+# suites 6
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10553.370738
+# forge-test-file "test/v2-plate-3f5.test.js"

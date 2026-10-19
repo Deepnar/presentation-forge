@@ -1,0 +1,15 @@
+✔ SQLite process: two processes race for one lease and only one can claim (282.317973ms)
+✔ SQLite process: kill reserved then restart cannot lose or replay an edit (1725.575552ms)
+✔ SQLite process: kill after-project then restart cannot lose or replay an edit (1724.633599ms)
+✔ SQLite process: kill after-receipt then restart cannot lose or replay an edit (1718.027902ms)
+✔ SQLite process: kill committed then restart cannot lose or replay an edit (205.329426ms)
+✔ SQLite process: crashed reservations exhaust the persisted step budget (1038.346043ms)
+✔ SQLite process: cancellation racing an in-flight commit keeps that commit and prevents the next (356.835118ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7233.220879

@@ -1,0 +1,11 @@
+{
+  "source": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+  "atUtc": "2026-10-19T12:37:30.837467+00:00",
+  "pressure": {
+    "cpu": "some avg10=0.00 avg60=0.02 avg300=0.05 total=4309233\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1257\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1241\n",
+    "io": "some avg10=1.15 avg60=4.56 avg300=5.94 total=96265548\nfull avg10=1.13 avg60=4.42 avg300=5.76 total=93210530\n"
+  },
+  "memAvailable": "MemAvailable:   45227528 kB",
+  "reason": "Short I/O pressure settled to about1%, no CPU/memory pressure; resume isolated low-priority validation."
+}

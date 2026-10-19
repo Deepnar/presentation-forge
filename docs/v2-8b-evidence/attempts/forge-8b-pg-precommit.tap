@@ -1,0 +1,40 @@
+✔ PostgreSQL: project, history and receipt commit once with distinct revisions (103.924568ms)
+(node:21883) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 error listeners added to [Client]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ PostgreSQL: request identity reopens exact state and refuses changed plans (20.562767ms)
+✔ PostgreSQL: input and output snapshots do not mutate durable authority (29.805111ms)
+✔ PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act (10.885249ms)
+✔ PostgreSQL: local ownerless projects retain local authority without widening scope (17.608493ms)
+✔ PostgreSQL: read and noop receipts never invent durable project history (24.297883ms)
+✔ PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones (29.37649ms)
+✔ PostgreSQL: human changes after start cause stale refusal without rebasing (23.483632ms)
+✔ PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools (81.031118ms)
+✔ PostgreSQL: failure budgets and concise traces survive a new runtime instance (41.353861ms)
+✔ PostgreSQL: cancellation before work and after commit preserves transaction order (47.090864ms)
+✔ PostgreSQL: lease takeover fences the previous worker even with reused worker name (161.413488ms)
+✔ PostgreSQL: deadlines persist across restart and expire before effects (201.872881ms)
+✔ PostgreSQL: after-project failure rolls project/history/receipt back together (1045.617818ms)
+✔ PostgreSQL: after-receipt failure rolls project/history/receipt back together (1054.594649ms)
+✔ PostgreSQL: final-fence failure rolls project/history/receipt back together (169.265609ms)
+✔ PostgreSQL: deadline-fence failure rolls project/history/receipt back together (154.42939ms)
+✔ PostgreSQL: records and traces are bounded and omit raw document/read contents (6.279789ms)
+✔ PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused (3.74993ms)
+✔ PostgreSQL: concurrent advances sharing one lease reserve only one attempt (15.331936ms)
+✔ PostgreSQL: unsupported or corrupt durable records fail closed (3.312536ms)
+✔ PostgreSQL process: two processes race for one lease and only one can claim (273.494691ms)
+(node:21883) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 error listeners added to [Client]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+✔ PostgreSQL process: kill reserved then restart cannot lose or replay an edit (1796.509861ms)
+✔ PostgreSQL process: kill after-project then restart cannot lose or replay an edit (1767.639717ms)
+✔ PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit (1771.237478ms)
+✔ PostgreSQL process: kill committed then restart cannot lose or replay an edit (245.043654ms)
+✔ PostgreSQL process: restart resumes after a committed checkpoint without repeating it (1771.279272ms)
+✔ PostgreSQL process: crashed reservations exhaust the persisted step budget (1043.253275ms)
+✔ PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next (443.388866ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12587.121397

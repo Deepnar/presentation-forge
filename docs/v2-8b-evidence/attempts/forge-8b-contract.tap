@@ -1,0 +1,45 @@
+▶ v2 core boundary
+  ✔ detects static, re-export, and literal dynamic imports (4.573902ms)
+  ✔ fails closed on require() and non-literal dynamic import (0.571536ms)
+  ✔ enforces package directions on synthetic edges (0.256055ms)
+  ✔ confines node builtins to the named renderer adapter (0.133262ms)
+  ✔ allows jszip only in renderer-docx (0.132584ms)
+  ✔ repository packages contain zero boundary violations (132.826651ms)
+✔ v2 core boundary (139.305305ms)
+✔ SQLite: project, history and receipt commit once with distinct revisions (56.940057ms)
+✔ SQLite: request identity reopens exact state and refuses changed plans (10.658438ms)
+✔ SQLite: input and output snapshots do not mutate durable authority (13.338844ms)
+✔ SQLite: foreign owner, foreign project and deleted project cannot inspect or act (7.678811ms)
+✔ SQLite: local ownerless projects retain local authority without widening scope (10.775652ms)
+✔ SQLite: read and noop receipts never invent durable project history (13.052351ms)
+✖ SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones (7.03241ms)
+✔ SQLite: human changes after start cause stale refusal without rebasing (11.228977ms)
+✔ SQLite: inspect-only and locked/hidden targets fail through canonical tools (15.972373ms)
+✔ SQLite: failure budgets and concise traces survive a new runtime instance (11.580088ms)
+✔ SQLite: cancellation before work and after commit preserves transaction order (13.159659ms)
+✔ SQLite: lease takeover fences the previous worker even with reused worker name (135.852084ms)
+✔ SQLite: deadlines persist across restart and expire before effects (186.615771ms)
+✔ SQLite: after-project failure rolls project/history/receipt back together (1023.00333ms)
+✔ SQLite: after-receipt failure rolls project/history/receipt back together (1025.337665ms)
+✔ SQLite: final-fence failure rolls project/history/receipt back together (153.346303ms)
+✔ SQLite: records and traces are bounded and omit raw document/read contents (9.785613ms)
+✔ SQLite: malformed/oversized/authority/layout data and duplicate grants are refused (7.339526ms)
+✔ SQLite: unsupported or corrupt durable records fail closed (7.758023ms)
+ℹ tests 25
+ℹ suites 1
+ℹ pass 24
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2920.980439
+
+✖ failing tests:
+
+test at test/v2-runtime-contract.js:9:25
+✖ SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones (7.03241ms)
+  Error: save.scenes[0]: /suppressed/0 must be object
+      at saveProjectInner (file:///home/deepnar/Programs/presentations/src/projects/store.js:249:17) {
+    code: 'invalid-document',
+    details: [ 'save.scenes[0]: /suppressed/0 must be object' ]
+  }

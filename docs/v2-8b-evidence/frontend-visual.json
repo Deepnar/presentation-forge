@@ -1,0 +1,15 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+  "command": "Inspect all99 hashed final browser/native/SVG PNGs via17 labeled sheets plus full-resolution narrow dialog/native content; compare exact preservation, OOXML and final canvas measurements",
+  "log": "docs/v2-8b-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": "docs/v2-8b-evidence/images.json",
+  "imageCount": 99,
+  "browserImages": 76,
+  "nativeRasters": 15,
+  "svgRasters": 8,
+  "limitations": "Inherited Fit/narrow/capture/mixed-run SVG and original prior-PPTX provenance limits remain explicit. No new UI/provider/PowerPoint interaction claim."
+}

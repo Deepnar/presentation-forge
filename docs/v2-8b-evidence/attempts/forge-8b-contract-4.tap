@@ -1,0 +1,30 @@
+✔ SQLite: project, history and receipt commit once with distinct revisions (65.135291ms)
+✔ SQLite: request identity reopens exact state and refuses changed plans (10.207738ms)
+✔ SQLite: input and output snapshots do not mutate durable authority (11.853571ms)
+✔ SQLite: foreign owner, foreign project and deleted project cannot inspect or act (6.755785ms)
+✔ SQLite: local ownerless projects retain local authority without widening scope (9.638047ms)
+✔ SQLite: read and noop receipts never invent durable project history (10.474899ms)
+✔ SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones (20.072958ms)
+✔ SQLite: human changes after start cause stale refusal without rebasing (9.784047ms)
+✔ SQLite: inspect-only and locked/hidden targets fail through canonical tools (18.051665ms)
+✔ SQLite: failure budgets and concise traces survive a new runtime instance (11.730416ms)
+✔ SQLite: cancellation before work and after commit preserves transaction order (13.24447ms)
+✔ SQLite: lease takeover fences the previous worker even with reused worker name (137.474307ms)
+✔ SQLite: deadlines persist across restart and expire before effects (189.092073ms)
+✔ SQLite: after-project failure rolls project/history/receipt back together (1022.761778ms)
+✔ SQLite: after-receipt failure rolls project/history/receipt back together (1024.204342ms)
+✔ SQLite: final-fence failure rolls project/history/receipt back together (157.962133ms)
+✔ SQLite: deadline-fence failure rolls project/history/receipt back together (151.959747ms)
+✔ SQLite: records and traces are bounded and omit raw document/read contents (9.922048ms)
+✔ SQLite: malformed/oversized/authority/layout data and duplicate grants are refused (10.851612ms)
+✔ SQLite: concurrent advances sharing one lease reserve only one attempt (11.491043ms)
+✔ SQLite: unsupported or corrupt durable records fail closed (7.345828ms)
+✔ persisted semantic plan schemas retain the canonical tool contract (1.447237ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3162.542802

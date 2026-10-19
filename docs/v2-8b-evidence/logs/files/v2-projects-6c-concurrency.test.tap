@@ -1,0 +1,91 @@
+TAP version 13
+# Subtest: v2-6c two processes, one postgres
+    # Subtest: same-base saves across instances yield one 200 and one 409
+    ok 1 - same-base saves across instances yield one 200 and one 409
+      ---
+      duration_ms: 189.973764
+      type: 'test'
+      ...
+    # Subtest: save versus rename across instances keeps one winner
+    ok 2 - save versus rename across instances keeps one winner
+      ---
+      duration_ms: 18.124942
+      type: 'test'
+      ...
+    # Subtest: save versus restore across instances keeps one winner
+    ok 3 - save versus restore across instances keeps one winner
+      ---
+      duration_ms: 17.903628
+      type: 'test'
+      ...
+    # Subtest: restore versus restore across instances keeps one winner
+    ok 4 - restore versus restore across instances keeps one winner
+      ---
+      duration_ms: 14.182072
+      type: 'test'
+      ...
+    # Subtest: rename versus rename across instances keeps one winner
+    ok 5 - rename versus rename across instances keeps one winner
+      ---
+      duration_ms: 8.941501
+      type: 'test'
+      ...
+    # Subtest: delete during a concurrent save leaves exactly one consistent outcome
+    ok 6 - delete during a concurrent save leaves exactly one consistent outcome
+      ---
+      duration_ms: 7.735213
+      type: 'test'
+      ...
+    # Subtest: history initialization racing with saves yields one baseline
+    ok 7 - history initialization racing with saves yields one baseline
+      ---
+      duration_ms: 23.386643
+      type: 'test'
+      ...
+    # Subtest: concurrent mixed mutations keep prune accounting exact
+    ok 8 - concurrent mixed mutations keep prune accounting exact
+      ---
+      duration_ms: 14.653111
+      type: 'test'
+      ...
+    # Subtest: same owner email works across instances; cross-owner denied
+    ok 9 - same owner email works across instances; cross-owner denied
+      ---
+      duration_ms: 30.856104
+      type: 'test'
+      ...
+    # Subtest: rapid creates mint distinct ids across instances
+    ok 10 - rapid creates mint distinct ids across instances
+      ---
+      duration_ms: 29.138984
+      type: 'test'
+      ...
+    1..10
+ok 1 - v2-6c two processes, one postgres
+  ---
+  duration_ms: 906.565007
+  type: 'suite'
+  ...
+# Subtest: v2-6c two processes, one sqlite file
+    # Subtest: same-base saves across sqlite processes yield one 200 and one 409
+    ok 1 - same-base saves across sqlite processes yield one 200 and one 409
+      ---
+      duration_ms: 83.147982
+      type: 'test'
+      ...
+    1..1
+ok 2 - v2-6c two processes, one sqlite file
+  ---
+  duration_ms: 1331.878947
+  type: 'suite'
+  ...
+1..2
+# tests 11
+# suites 2
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3182.984989
+# forge-test-file "test/v2-projects-6c-concurrency.test.js"

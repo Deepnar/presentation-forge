@@ -1,0 +1,90 @@
+focused START
+focused EXIT 0 {'total': 69, 'pass': 69, 'fail': 0, 'skip': 0, 'cancelled': 0}
+bulk START
+bulk RUNNING 30 seconds
+bulk EXIT 0 {'total': 2178, 'pass': 2178, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-7a.test START
+v2-edit-chrome-7a.test RUNNING 30 seconds
+v2-edit-chrome-7a.test RUNNING 60 seconds
+v2-edit-chrome-7a.test RUNNING 90 seconds
+v2-edit-chrome-7a.test RUNNING 120 seconds
+v2-edit-chrome-7a.test EXIT 0 {'total': 28, 'pass': 28, 'fail': 0, 'skip': 0, 'cancelled': 0}
+freeform.test START
+freeform.test EXIT 0 {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+plate.test START
+plate.test EXIT 0 {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5c.test START
+v2-edit-chrome-5c.test EXIT 0 {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5d.test START
+v2-edit-chrome-5d.test EXIT 0 {'total': 4, 'pass': 4, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5e.test START
+v2-edit-chrome-5e.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5f.test START
+v2-edit-chrome-5f.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5i.test START
+v2-edit-chrome-5i.test EXIT 0 {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5j.test START
+v2-edit-chrome-5j.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5k.test START
+v2-edit-chrome-5k.test EXIT 0 {'total': 9, 'pass': 9, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-6a.test START
+v2-edit-chrome-6a.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-6b.test START
+v2-edit-chrome-6b.test EXIT 0 {'total': 4, 'pass': 4, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-6c.test START
+v2-edit-chrome-6c.test EXIT 0 {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-chart.test START
+v2-edit-chrome-chart.test EXIT 0 {'total': 2, 'pass': 2, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-table.test START
+v2-edit-chrome-table.test EXIT 0 {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-fontgate-4e.test START
+v2-fontgate-4e.test EXIT 0 {'total': 2, 'pass': 2, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-fonts-4d.test START
+v2-fonts-4d.test EXIT 0 {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-live-chrome-4f.test START
+v2-live-chrome-4f.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-plate-3f5.test START
+v2-plate-3f5.test EXIT 0 {'total': 34, 'pass': 34, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-selection-chrome.test START
+v2-selection-chrome.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-viewer-smoke.test START
+v2-viewer-smoke.test EXIT 0 {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-import-chrome-7b.test START
+v2-import-chrome-7b.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-handoff-chrome-7b.test START
+v2-handoff-chrome-7b.test RUNNING 30 seconds
+v2-handoff-chrome-7b.test EXIT 0 {'total': 11, 'pass': 11, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-project-covers-chrome-7c.test START
+v2-project-covers-chrome-7c.test RUNNING 30 seconds
+v2-project-covers-chrome-7c.test EXIT 0 {'total': 12, 'pass': 12, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-project-catalog-chrome-7c.test START
+v2-project-catalog-chrome-7c.test RUNNING 30 seconds
+v2-project-catalog-chrome-7c.test EXIT 0 {'total': 16, 'pass': 16, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-editor-toolbar-chrome-7c.test START
+v2-editor-toolbar-chrome-7c.test RUNNING 30 seconds
+v2-editor-toolbar-chrome-7c.test EXIT 0 {'total': 9, 'pass': 9, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-projects-6c-postgres.test START
+v2-projects-6c-postgres.test EXIT 0 {'total': 17, 'pass': 17, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-projects-6c-concurrency.test START
+v2-projects-6c-concurrency.test EXIT 0 {'total': 11, 'pass': 11, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-projects-6c-faults.test START
+v2-projects-6c-faults.test EXIT 0 {'total': 8, 'pass': 8, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-import-postgres-7b.test START
+v2-import-postgres-7b.test EXIT 0 {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-runtime-postgres-8b.test START
+v2-runtime-postgres-8b.test EXIT 0 {'total': 34, 'pass': 34, 'fail': 0, 'skip': 0, 'cancelled': 0}
+production-build START
+production-build EXIT 0 
+typecheck START
+typecheck EXIT 0 
+benchmark-50 START
+benchmark-50 EXIT 0 
+headless START
+headless EXIT 0 
+byok-locale START
+byok-locale EXIT 1 {'total': 10, 'pass': 9, 'fail': 1, 'skip': 0, 'cancelled': 0}
+native-review START
+native-review EXIT 0 
+shell-native START
+shell-native EXIT 0 
+Ordered execution complete; visual inspection and independent review remain.

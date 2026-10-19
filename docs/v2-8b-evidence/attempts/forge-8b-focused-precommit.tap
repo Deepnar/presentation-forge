@@ -1,0 +1,46 @@
+▶ v2 core boundary
+  ✔ detects static, re-export, and literal dynamic imports (5.337972ms)
+  ✔ fails closed on require() and non-literal dynamic import (0.642186ms)
+  ✔ enforces package directions on synthetic edges (0.324895ms)
+  ✔ confines node builtins to the named renderer adapter (0.153308ms)
+  ✔ allows jszip only in renderer-docx (0.151802ms)
+  ✔ repository packages contain zero boundary violations (202.55429ms)
+✔ v2 core boundary (210.219447ms)
+✔ SQLite: project, history and receipt commit once with distinct revisions (80.906863ms)
+✔ SQLite: request identity reopens exact state and refuses changed plans (13.793731ms)
+✔ SQLite: input and output snapshots do not mutate durable authority (18.842745ms)
+✔ SQLite: foreign owner, foreign project and deleted project cannot inspect or act (11.585665ms)
+✔ SQLite: local ownerless projects retain local authority without widening scope (12.831829ms)
+✔ SQLite: read and noop receipts never invent durable project history (15.10214ms)
+✔ SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones (30.39235ms)
+✔ SQLite: human changes after start cause stale refusal without rebasing (13.468266ms)
+✔ SQLite: inspect-only and locked/hidden targets fail through canonical tools (29.593421ms)
+✔ SQLite: failure budgets and concise traces survive a new runtime instance (20.047828ms)
+✔ SQLite: cancellation before work and after commit preserves transaction order (20.495766ms)
+✔ SQLite: lease takeover fences the previous worker even with reused worker name (137.411825ms)
+✔ SQLite: deadlines persist across restart and expire before effects (187.895124ms)
+✔ SQLite: after-project failure rolls project/history/receipt back together (1024.586979ms)
+✔ SQLite: after-receipt failure rolls project/history/receipt back together (1020.630308ms)
+✔ SQLite: final-fence failure rolls project/history/receipt back together (150.191269ms)
+✔ SQLite: deadline-fence failure rolls project/history/receipt back together (149.113048ms)
+✔ SQLite: records and traces are bounded and omit raw document/read contents (6.768713ms)
+✔ SQLite: malformed/oversized/authority/layout data and duplicate grants are refused (6.628762ms)
+✔ SQLite: concurrent advances sharing one lease reserve only one attempt (7.907273ms)
+✔ SQLite: unsupported or corrupt durable records fail closed (4.569222ms)
+✔ persisted semantic plan schemas retain the canonical tool contract (1.123788ms)
+✔ SQLite process: two processes race for one lease and only one can claim (414.450436ms)
+✔ SQLite process: kill reserved then restart cannot lose or replay an edit (1728.821799ms)
+✔ SQLite process: kill after-project then restart cannot lose or replay an edit (1739.008093ms)
+✔ SQLite process: kill after-receipt then restart cannot lose or replay an edit (1743.039646ms)
+✔ SQLite process: kill committed then restart cannot lose or replay an edit (240.778365ms)
+✔ SQLite process: restart resumes after a committed checkpoint without repeating it (1758.351191ms)
+✔ SQLite process: crashed reservations exhaust the persisted step budget (1041.080317ms)
+✔ SQLite process: cancellation racing an in-flight commit keeps that commit and prevents the next (429.079028ms)
+ℹ tests 36
+ℹ suites 1
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9336.350504

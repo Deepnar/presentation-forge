@@ -1,0 +1,32 @@
+file:///home/deepnar/Programs/presentations/test/v2-runtime-8b.test.js:9
+ const read=async name=>JSON.parse(await readFile(new URL(name,import.meta.url),'utf8')));
+                                                                                        ^
+
+SyntaxError: Unexpected token ')'
+    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:90:18)
+    at #translate (node:internal/modules/esm/loader:435:20)
+    at afterLoad (node:internal/modules/esm/loader:491:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)
+    at afterResolve (node:internal/modules/esm/loader:597:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:12)
+    at node:internal/modules/esm/loader:622:32
+    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)
+
+Node.js v24.16.0
+✖ test/v2-runtime-8b.test.js (33.515659ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41.098623
+
+✖ failing tests:
+
+test at test/v2-runtime-8b.test.js:1:1
+✖ test/v2-runtime-8b.test.js (33.515659ms)
+  'test failed'

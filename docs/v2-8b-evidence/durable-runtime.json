@@ -1,0 +1,21 @@
+{
+  "id": "durable-runtime",
+  "kind": "tests",
+  "implementationSha": "501f2f864bc1004c026c4e8ef53f4e907491e428",
+  "command": "python3 docs/v2-8b-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
+  "log": "docs/v2-8b-evidence/logs/durable-runtime.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 69,
+    "pass": 69,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-runtime-8b.test.js",
+    "test/v2-runtime-process-8b.test.js",
+    "test/v2-runtime-postgres-8b.test.js"
+  ],
+  "backend": "SQLite and isolated PostgreSQL; actual process death/races and CLI"
+}

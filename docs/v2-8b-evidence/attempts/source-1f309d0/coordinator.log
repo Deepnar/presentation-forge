@@ -1,0 +1,5 @@
+focused START
+focused EXIT 0 {'total': 67, 'pass': 67, 'fail': 0, 'skip': 0, 'cancelled': 0}
+bulk START
+bulk EXIT 0 {'total': 2177, 'pass': 2177, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-7a.test START
