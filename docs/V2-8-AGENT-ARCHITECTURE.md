@@ -103,8 +103,8 @@ transaction reserves an attempt before a tool executes. A crash after reservatio
 consumes that attempt; restart does not reset budgets. A live pending reservation
 cannot be executed by a second concurrent advance. Takeover invalidates it and
 reserves another attempt. A bounded plan has at most 64 steps/attempts, 16 allowed
-failures, 24-hour initial deadline and a 64KiB JSON input budget; records cap at
-128KiB and each exact-schema receipt at 2KiB. Per-tool input/output limits still
+failures, 24-hour initial deadline and a 65,536-character JSON input budget; records cap at
+131,072 characters and each exact-schema receipt at 2,048 characters. Per-tool input/output limits still
 apply. Receipts contain result codes, changed flag and revisions, not read contents,
 raw scenes, prompts or credentials. The script/cursor/receipts suffice for recovery;
 this is not persistence of a conversational model transcript.

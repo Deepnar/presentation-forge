@@ -1827,3 +1827,17 @@ between equivalent scene exports. If originals are overwritten, retain historica
 hash/scene/render/TAP witnesses, identify fresh archives with fresh hashes and
 state original-byte unavailability. Never reconstruct timestamps and relabel a
 new archive as a recovered original.
+
+**Checkpoint consistency crosses schema boundaries.** Valid individual run/receipt
+objects can still describe an impossible history. Validate every receipt against
+its immutable plan step, changed-driven durable revision progression, engine
+revision, increasing run revision and aggregate counters before resuming. Comparing
+only the last revision misses corruption in earlier receipts. Preserve legitimate
+crash states: attempts may exceed cursor and a pending reservation already consumed
+an attempt. Test schema-valid contradictions as well as missing/corrupt JSON rows.
+
+**Pooled-client listeners belong to the checkout.** Adding an error handler on each
+transaction without removing that exact handler at release accumulates listeners
+on reused PostgreSQL clients. Cold schema initialization has the same lifetime
+requirement. Keep the handler while checked out, remove it in finally, and retain
+the pool's idle-client error policy; increasing the listener limit hides the leak.

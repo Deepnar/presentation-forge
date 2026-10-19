@@ -8272,7 +8272,7 @@ needs direction on scope before building.*
 
 <a id="v2-8b-scope-proposal"></a>
 
-- [ ] **V2-8B durable run core — approved on 2026-10-19; implementation in progress.**
+- [ ] **V2-8B durable run core — approved on 2026-10-19; validation complete, independent review pending.**
   Continuation resumes from accepted implementation
   `d4f446c7b2fcae851c37d1a46288cf91317c38b4`
   ([independent decision](reviews/V2-8A-d4f446c.json)), planning checkout
@@ -8375,8 +8375,8 @@ needs direction on scope before building.*
 <a id="v2-8-remaining"></a>
 
 The accepted foundation supplies real scoped content tools, schemas, instruction
-sections and bounded context. The remaining parent milestone integrates these
-with durable run ownership, provider adapters, visible Assistant and common
+sections and bounded context. The durable core is implemented and under independent review in V2-8B.
+The remaining parent milestone integrates these boundaries with provider adapters, visible Assistant and common
 search/source orchestration; its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing
 resolved layout as model input.

@@ -14,7 +14,7 @@
     "roadmapRef": "docs/ROADMAP.md#v2-8b-scope-proposal",
     "evalDoc": "docs/V2-8B-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "durable-runtime",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/durable-runtime.json",
+      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/non-browser-bulk.json",
+      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/serial-browser.json",
+      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
     },
     {
       "id": "postgres-contract",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/postgres-contract.json",
+      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
     },
     {
       "id": "cross-process-faults",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/cross-process-faults.json",
+      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
     },
     {
       "id": "production-build",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/production-build.json",
+      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/typecheck.json",
+      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/benchmark-50.json",
+      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8B check; execution pending on the frozen implementation."
+      "status": "passed",
+      "evidence": "docs/v2-8b-evidence/frontend-visual.json",
+      "reason": "Executed/inspected on frozen corrected source501f2f8; exact commands, inventory and totals retained. Independent review pending."
     }
   ],
   "knownBlockers": [],
