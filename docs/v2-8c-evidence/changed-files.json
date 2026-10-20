@@ -1,0 +1,2380 @@
+{
+  "entryCheckout": "405a062a9c1bbc9e2358457913f87907cf6b1bb7",
+  "previousAcceptedBaseline": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+  "acceptedImplementation": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "reviewDecision": "docs/reviews/V2-8C-e41d509.json",
+  "throughDocumentationCommit": "f624ccfcd3ea11f24a931001e01df0b7de4f8d43",
+  "manifestExcludedFromOwnInventory": "docs/v2-8c-evidence/changed-files.json; the later manifest-only commit is intentionally outside this comparison to avoid a self-referencing SHA",
+  "totalChangedPaths": 472,
+  "categories": {
+    "guidance/evaluation/state": 12,
+    "governance tooling/schema": 2,
+    "independent review": 2,
+    "validation evidence/harness": 447,
+    "product": 3,
+    "tests": 6
+  },
+  "sourceDeltaAfterAcceptedImplementation": [],
+  "files": [
+    {
+      "status": "M",
+      "path": "AGENTS.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "README.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "docs/ARCHITECTURE.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "docs/BLOCKED.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "docs/CONTINUATION.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "docs/HANDOFF.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "docs/PRODUCT-VISION.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "docs/ROADMAP.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "docs/TRAPS.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "docs/V2-8-AGENT-ARCHITECTURE.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "A",
+      "path": "docs/V2-8C-EVAL.md",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "docs/development-state.json",
+      "category": "guidance/evaluation/state"
+    },
+    {
+      "status": "M",
+      "path": "docs/development-state.schema.json",
+      "category": "governance tooling/schema"
+    },
+    {
+      "status": "A",
+      "path": "docs/reviews/V2-8C-e41d509.json",
+      "category": "independent review"
+    },
+    {
+      "status": "A",
+      "path": "docs/reviews/V2-8C-e41d509.md",
+      "category": "independent review"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/RUNBOOK.md",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/VISUAL-REVIEW.md",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/assemble-results.py",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/development/cache-corrected-focus.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/development/cache-usage-fail-first.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/development/catalog-fail-first.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/development/corrected-final-focus.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/development/corrected-focus-and-foundation.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/development/focused-development.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/development/plan-governance.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/development/provider-first.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/development/sqlite-first.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/host-restart/coordinator.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/host-restart/partial-image-review.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/host-restart/recorded-completions.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/host-restart/selection-unacknowledged.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/bulk.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/captured-files.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/coordinator.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/coordinator.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/focused.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/interrupted.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/canvas-chart.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/canvas-table.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/dashboard-empty.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/dashboard-hosted-anon.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/dashboard.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-blank.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-chart.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-history.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-narrow-projects.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-narrow.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-readonly.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-shell.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/editor-table.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/shell/large-deck.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/status.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/v2-edit-chrome-7a.test.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/attempts/source-52821fb/validation-plan.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/benchmark-50.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/benchmark-results.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/browser-archives.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/browser-archives/out--v2-7a-validation--shell-chart.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/browser-archives/out--v2-7a-validation--shell-table.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-chart.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-table.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/browser-archives/out--v2-7b-2-validation--browser--handoff.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/cleanup.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/cross-process-faults.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/environment.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/export-inspection.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/finish-evidence.py",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/frontend-visual.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/full-matrix.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/generated-original-restoration.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/governance-repeat.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/headless-check.mjs",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/historical-evidence-restoration.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/host-restart.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/images.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/backup-manifest.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/benchmark-50.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/benchmark-audit.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/benchmark-results.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/browser-archives.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/browser-archives/shell-chart.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/browser-archives/shell-table.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/contact/browser-1.jpg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/contact/browser-2.jpg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/coordinator.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/execution-plan.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/execution-summary.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/foundation.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/fresh-browser-images.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/fresh-images.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/full-7a.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/headless-check.mjs",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native-additional-audit.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native-archives.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native-images.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native-packet-audit.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/after-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/after-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/after-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/after-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/after-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/after-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/after-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/after.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/before-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/before-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/before-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/before-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/before-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/before-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/before-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/before.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-anthropic/execution.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/after-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/after-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/after-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/after-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/after-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/after-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/after-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/after.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/before-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/before-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/before-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/before-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/before-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/before-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/before-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/before.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/execution.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/shell-chart.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/shell-table.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/after-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/after-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/after-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/after-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/after-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/after-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/after-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/after.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/before-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/before-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/before-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/before-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/before-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/before-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/before-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/before.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/execution.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/after-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/after-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/after-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/after-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/after-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/after-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/after-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/after.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/before-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/before-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/before-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/before-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/before-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/before-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/before-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/before.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/execution.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/negative-probes.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/negative-probes.mjs",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/packet-audit.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/performance.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/post-execution-databases.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/postgres-identity.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/postgres.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/production-build.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/protocol.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/provider.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/recovery-metrics.jsonl",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/resource-assessment.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/resource-window.jsonl",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/restoration.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/restore-evidence.py",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/run-review.py",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/run-supplement.py",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/runs.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/runtime.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/canvas-chart.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/canvas-table.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/dashboard-empty.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/dashboard-hosted-anon.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/dashboard.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/editor-blank.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/editor-chart.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/editor-history.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/editor-narrow-projects.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/editor-narrow.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/editor-readonly.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/editor-shell.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/editor-table.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-browser/large-deck.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-export-inspection.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-native.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/shell-native.mjs",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/source-identity.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/source-review.md",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/supplement-coordinator.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/supplement-plan.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/sustained-window.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/typecheck.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/validation-plan.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/independent/visual-review.md",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/benchmark-50.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/coordinator.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/coordinator.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/cross-process-faults.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/byok-locale.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/freeform.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/plate.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-5c.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-5d.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-5e.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-5f.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-5i.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-5j.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-5k.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-6a.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-6b.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-6c.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-7a.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-chart.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-edit-chrome-table.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-editor-toolbar-chrome-7c.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-fontgate-4e.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-fonts-4d.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-handoff-chrome-7b.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-import-chrome-7b.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-import-postgres-7b.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-live-chrome-4f.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-plate-3f5.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-project-catalog-chrome-7c.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-project-covers-chrome-7c.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-projects-6c-concurrency.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-projects-6c-faults.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-projects-6c-postgres.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-provider-postgres-8c.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-runtime-postgres-8b.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-selection-chrome.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/v2-viewer-smoke.test.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/files/window-qualification.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/final-governance.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/headless.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/model-provider.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/native-review.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/non-browser-bulk.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/postgres-contract.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/production-build.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/serial-browser.tap",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/shell-native.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/logs/typecheck.log",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/docs--v2-7a-evidence--canvas-chart.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/docs--v2-7a-evidence--canvas-table.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/docs--v2-7a-evidence--large-deck.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7b-1-validation--browser--boundary-60.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7b-1-validation--browser--canvas-chart.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7b-1-validation--browser--canvas-table.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7b-1-validation--browser--narrow.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7b-2-validation--browser--boundary-60.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7b-2-validation--browser--cold-warm.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7b-2-validation--browser--refusal-narrow.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7b-2-validation--browser--save-states.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-1-validation--browser--covers-font-http.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-1-validation--browser--covers-font-static.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-1-validation--browser--first-visible.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-1-validation--browser--many-projects.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-1-validation--browser--narrow.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-1-validation--browser--retry-font.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-1-validation--browser--retry-network.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-2-validation--browser--discovery.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-2-validation--browser--narrow.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-3-validation--browser--canvas.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-3-validation--browser--narrow-dark.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/measurements/out--v2-7c-3-validation--browser--narrow-light.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/model-provider.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native-archives.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native-images.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native-review.mjs",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/chart-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/handoff-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/handoff-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/handoff-3.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/after-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/after-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/after-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/after-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/after-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/after-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/after-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/after.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/before-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/before-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/before-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/before-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/before-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/before-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/before-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/before.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-anthropic/execution.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/after-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/after-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/after-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/after-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/after-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/after-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/after-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/after.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/before-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/before-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/before-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/before-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/before-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/before-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/before-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/before.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/postgres-openai-compatible/execution.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/shell-chart.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/shell-table.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/after-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/after-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/after-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/after-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/after-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/after-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/after-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/after.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/before-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/before-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/before-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/before-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/before-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/before-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/before-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/before.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-anthropic/execution.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/after-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/after-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/after-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/after-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/after-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/after-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/after-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/after.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/before-1-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/before-1.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/before-1.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/before-2-svg.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/before-2.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/before-2.svg",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/before-scenes.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/before.pptx",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/sqlite-openai-compatible/execution.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/native/table-3.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/non-browser-bulk.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/owned-postgres-restarted.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/owned-postgres.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/performance.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/postgres-contract.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/pre-resume-visual.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/production-build.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/quiet-pause.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/quiet-restart.jsonl",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/quiet-window.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/quiet_window.py",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/recovery-metrics.jsonl",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6a-evidence--conflict.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6a-evidence--project-list.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6a-evidence--recovered-banner.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6a-evidence--reopened.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6a-evidence--saved.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6b-evidence--history-after-refresh.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6b-evidence--history-list.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6b-evidence--history-preview.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6b-evidence--history-restored.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6b-evidence--history-three-versions.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6c-evidence--hosted-after-restart.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6c-evidence--hosted-conflict.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6c-evidence--hosted-history.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-6c-evidence--hosted-restored.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--dashboard-empty.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--dashboard-hosted-anon.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--dashboard.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--editor-blank.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--editor-chart.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--editor-history.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--editor-narrow-projects.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--editor-narrow.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--editor-readonly.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--editor-shell.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7a-evidence--editor-table.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-1-evidence--imported-chart.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-1-evidence--imported-narrow.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-1-evidence--imported-stats.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-1-evidence--imported-table.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-1-evidence--imported-transition.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-2-evidence--ambiguous-response.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-2-evidence--boundary-narrow.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-2-evidence--completed-chat.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-2-evidence--deck-page-action.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-2-evidence--handoff-history.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-2-evidence--opening-project.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-2-evidence--refusal-narrow.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7b-2-evidence--session-changed.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-content.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-desktop.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-development.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-failure.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-failure.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-recovered.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-failure.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-recovered.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-loading.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-narrow-dark.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-network-failure.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-restored.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-cross-tab.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-pending.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-settled.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-1-evidence--covers-timeout.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated-failure.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-pending.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-saved-failure.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-desktop.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-development.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-empty.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-generated-error.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dark.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dialog.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-no-matches.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-saved-error.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-2-evidence--catalog-signed-out.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-3-evidence--editor-blank-history.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-3-evidence--editor-chart.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-3-evidence--editor-desktop.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-dark.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-light.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-3-evidence--editor-readonly.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-3-evidence--editor-table.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-3-evidence--standalone-live.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/regression-images/docs--v2-7c-3-evidence--standalone-projects.png",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/resource-assessment.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/resource-window.jsonl",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/resume-after-quiet.py",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/run-validation.py",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/serial-browser.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/shell-export-inspection.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/shell-native.mjs",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/snapshot-owned-script-adjustment.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/storage-window.jsonl",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/sustained-window.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/typecheck.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8c-evidence/validation-plan.json",
+      "category": "validation evidence/harness"
+    },
+    {
+      "status": "A",
+      "path": "packages/agent/provider.ts",
+      "category": "product"
+    },
+    {
+      "status": "M",
+      "path": "packages/tools/session.ts",
+      "category": "product"
+    },
+    {
+      "status": "A",
+      "path": "src/agent/model-provider.js",
+      "category": "product"
+    },
+    {
+      "status": "M",
+      "path": "test/dev-protocol.test.js",
+      "category": "tests"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-provider-8c.test.js",
+      "category": "tests"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-provider-contract.js",
+      "category": "tests"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-provider-durable-8c.test.js",
+      "category": "tests"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-provider-fixture.js",
+      "category": "tests"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-provider-postgres-8c.test.js",
+      "category": "tests"
+    },
+    {
+      "status": "M",
+      "path": "tools/dev-protocol-check.mjs",
+      "category": "governance tooling/schema"
+    }
+  ]
+}
