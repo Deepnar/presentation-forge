@@ -1,0 +1,13 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "node": "v24.16.0",
+  "python": "Python 3.14.7",
+  "chrome": "Google Chrome 151.0.7922.173",
+  "nativeConverter": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+  "rasterizer": "pdftoppm version 26.05.0",
+  "postgres": "15.18; owned service identities in owned-postgres*.json",
+  "bulkLocale": "C.UTF-8",
+  "standingProbeLocale": "en_IN.UTF-8",
+  "sourceDeltaAfterImplementation": "No packages/src/test/app/tools/schema/themes delta; only documentation/evidence and validation harness changes",
+  "benchmarkRecordedGitHead": "0be971d"
+}

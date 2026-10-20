@@ -1,0 +1,16 @@
+{
+  "id": "governance-index-repeat",
+  "kind": "tests",
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "command": "node --test --test-reporter=tap test/dev-protocol.test.js",
+  "log": "docs/v2-8c-evidence/logs/final-governance.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 25,
+    "pass": 25,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "reason": "Meaningful repeat after all nine actual evidence gates were indexed; separate from215-file inventory and provider repeats."
+}

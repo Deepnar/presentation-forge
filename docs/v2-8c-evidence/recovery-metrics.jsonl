@@ -1,0 +1,2 @@
+{"backend": "SQLite", "source": "e41d509c20fca21a70b9a0c587ccb83684aee7e6", "case": "kill-after-commit-checkpoint", "recoveryClaimThroughWorkerCommitMs": 194.6471819999997, "excludesLeaseWait": true}
+{"backend": "PostgreSQL", "source": "e41d509c20fca21a70b9a0c587ccb83684aee7e6", "case": "kill-after-commit-checkpoint", "recoveryClaimThroughWorkerCommitMs": 237.93544900000052, "excludesLeaseWait": true}

@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: v2-4f live browser integration
+    # Subtest: compiles a live deck and selects through the shared viewer path
+    ok 1 - compiles a live deck and selects through the shared viewer path
+      ---
+      duration_ms: 2172.915423
+      type: 'test'
+      ...
+    # Subtest: theme change recompiles, clears selection, and loads new faces
+    ok 2 - theme change recompiles, clears selection, and loads new faces
+      ---
+      duration_ms: 2629.132493
+      type: 'test'
+      ...
+    # Subtest: loading indicator shows while compiling, ready replaces it
+    ok 3 - loading indicator shows while compiling, ready replaces it
+      ---
+      duration_ms: 3593.669821
+      type: 'test'
+      ...
+    # Subtest: zoomed live slides scroll and keep overlays aligned
+    ok 4 - zoomed live slides scroll and keep overlays aligned
+      ---
+      duration_ms: 2586.421792
+      type: 'test'
+      ...
+    # Subtest: narrow viewports and fixture return keep working
+    ok 5 - narrow viewports and fixture return keep working
+      ---
+      duration_ms: 2595.414267
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-4f live browser integration
+  ---
+  duration_ms: 14116.6142
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14211.265688
+# forge-test-file "test/v2-live-chrome-4f.test.js"

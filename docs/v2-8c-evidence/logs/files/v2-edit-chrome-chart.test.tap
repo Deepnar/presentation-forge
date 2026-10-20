@@ -1,0 +1,30 @@
+TAP version 13
+# Subtest: chart editing in real chrome
+    # Subtest: edits a value and a category through the panel in one revision
+    ok 1 - edits a value and a category through the panel in one revision
+      ---
+      duration_ms: 2716.301146
+      type: 'test'
+      ...
+    # Subtest: adds a category and a series, then refuses an unsafe pie switch
+    ok 2 - adds a category and a series, then refuses an unsafe pie switch
+      ---
+      duration_ms: 4544.082426
+      type: 'test'
+      ...
+    1..2
+ok 1 - chart editing in real chrome
+  ---
+  duration_ms: 7266.738515
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7756.224053
+# forge-test-file "test/v2-edit-chrome-chart.test.js"

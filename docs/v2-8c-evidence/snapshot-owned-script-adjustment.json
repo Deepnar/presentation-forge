@@ -1,0 +1,22 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "initialAdjustment": {
+    "path": "docs/v2-8c-evidence/run-validation.py",
+    "previousSha256": "6be03c267de783232ae8fed65a07b315b7e447669c7605c87ff07631ca101c32",
+    "newSha256": "8207be41cc2feee8c34ff9a63ae191fc7f45cdb5a6b0eda0fb1a617a1bcd56fb",
+    "reason": "Deliberate owned validation-runner recovery change; original historical evidence bytes remain untouched."
+  },
+  "finalOwnedScriptSnapshotEntries": [
+    {
+      "path": "docs/v2-8c-evidence/run-validation.py",
+      "sha256": "d3197bcb2f1d360e45499fe316332429a18db6d0973bff9a876ad7e83bedbec8",
+      "bytes": 7112
+    },
+    {
+      "path": "docs/v2-8c-evidence/assemble-results.py",
+      "sha256": "24b7068ace03022f2451b7eaaadbbb97f3123a261ad48a0156301c3feaaf548d",
+      "bytes": 4187
+    }
+  ],
+  "reason": "Deliberate owned harness recovery updates preserved in the active snapshot. All historical evidence/archive bytes remain unchanged; restore verification checks the final snapshot index."
+}

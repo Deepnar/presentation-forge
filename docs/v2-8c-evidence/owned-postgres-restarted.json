@@ -1,0 +1,17 @@
+{
+  "id": "2670350f8e8e867b1923c327f5235fd44783e0b5a26dc48d25d5a176d6330809",
+  "name": "forge-v28c-validation",
+  "port": 5544,
+  "createdAtUtc": "2026-10-20T07:16:39.049977812Z",
+  "image": "postgres:15-alpine",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "autoRemove": true,
+  "cpus": 1,
+  "memoryBytes": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=192m"
+  },
+  "version": "15.18",
+  "reason": "Replacement for owned auto-remove/tmpfs service lost during host restart",
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6"
+}

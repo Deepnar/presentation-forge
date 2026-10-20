@@ -1,0 +1,287 @@
+TAP version 13
+# Subtest: openai-compatible: actual HTTP preserves scoped instructions and distinct wire format
+ok 1 - openai-compatible: actual HTTP preserves scoped instructions and distinct wire format
+  ---
+  duration_ms: 46.575373
+  type: 'test'
+  ...
+# Subtest: openai-compatible: capability negotiation refuses before network without downgrade
+ok 2 - openai-compatible: capability negotiation refuses before network without downgrade
+  ---
+  duration_ms: 2.304339
+  type: 'test'
+  ...
+# Subtest: openai-compatible: invalid options and executable accessors never execute
+ok 3 - openai-compatible: invalid options and executable accessors never execute
+  ---
+  duration_ms: 1.00658
+  type: 'test'
+  ...
+# Subtest: openai-compatible: context budget counts wire schemas and controls
+ok 4 - openai-compatible: context budget counts wire schemas and controls
+  ---
+  duration_ms: 1.529671
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancellation before dispatch and during headers is bounded
+ok 5 - openai-compatible: cancellation before dispatch and during headers is bounded
+  ---
+  duration_ms: 6.154904
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancellation while reading a body aborts the request
+ok 6 - openai-compatible: cancellation while reading a body aborts the request
+  ---
+  duration_ms: 24.633347
+  type: 'test'
+  ...
+# Subtest: openai-compatible: timeout covers a stalled body without retries
+ok 7 - openai-compatible: timeout covers a stalled body without retries
+  ---
+  duration_ms: 42.75678
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status401 is sanitized and never retried
+ok 8 - openai-compatible: status401 is sanitized and never retried
+  ---
+  duration_ms: 3.085766
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status403 is sanitized and never retried
+ok 9 - openai-compatible: status403 is sanitized and never retried
+  ---
+  duration_ms: 2.574565
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status429 is sanitized and never retried
+ok 10 - openai-compatible: status429 is sanitized and never retried
+  ---
+  duration_ms: 2.51932
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status500 is sanitized and never retried
+ok 11 - openai-compatible: status500 is sanitized and never retried
+  ---
+  duration_ms: 2.281707
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status302 is sanitized and never retried
+ok 12 - openai-compatible: status302 is sanitized and never retried
+  ---
+  duration_ms: 3.63185
+  type: 'test'
+  ...
+# Subtest: openai-compatible: oversized chunked response refuses
+ok 13 - openai-compatible: oversized chunked response refuses
+  ---
+  duration_ms: 2.722323
+  type: 'test'
+  ...
+# Subtest: openai-compatible: oversized declared response refuses
+ok 14 - openai-compatible: oversized declared response refuses
+  ---
+  duration_ms: 2.352163
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed JSON refuses as invalid response
+ok 15 - openai-compatible: malformed JSON refuses as invalid response
+  ---
+  duration_ms: 2.299157
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed UTF8 refuses as invalid response
+ok 16 - openai-compatible: malformed UTF8 refuses as invalid response
+  ---
+  duration_ms: 2.213618
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed and unsafe tool proposals refuse atomically
+ok 17 - openai-compatible: malformed and unsafe tool proposals refuse atomically
+  ---
+  duration_ms: 3.164612
+  type: 'test'
+  ...
+# Subtest: openai-compatible: text, refusal and missing usage are truthful outcomes
+ok 18 - openai-compatible: text, refusal and missing usage are truthful outcomes
+  ---
+  duration_ms: 2.942078
+  type: 'test'
+  ...
+# Subtest: anthropic: actual HTTP preserves scoped instructions and distinct wire format
+ok 19 - anthropic: actual HTTP preserves scoped instructions and distinct wire format
+  ---
+  duration_ms: 3.070013
+  type: 'test'
+  ...
+# Subtest: anthropic: capability negotiation refuses before network without downgrade
+ok 20 - anthropic: capability negotiation refuses before network without downgrade
+  ---
+  duration_ms: 0.94215
+  type: 'test'
+  ...
+# Subtest: anthropic: invalid options and executable accessors never execute
+ok 21 - anthropic: invalid options and executable accessors never execute
+  ---
+  duration_ms: 0.524945
+  type: 'test'
+  ...
+# Subtest: anthropic: context budget counts wire schemas and controls
+ok 22 - anthropic: context budget counts wire schemas and controls
+  ---
+  duration_ms: 1.056984
+  type: 'test'
+  ...
+# Subtest: anthropic: cancellation before dispatch and during headers is bounded
+ok 23 - anthropic: cancellation before dispatch and during headers is bounded
+  ---
+  duration_ms: 2.639664
+  type: 'test'
+  ...
+# Subtest: anthropic: cancellation while reading a body aborts the request
+ok 24 - anthropic: cancellation while reading a body aborts the request
+  ---
+  duration_ms: 23.836177
+  type: 'test'
+  ...
+# Subtest: anthropic: timeout covers a stalled body without retries
+ok 25 - anthropic: timeout covers a stalled body without retries
+  ---
+  duration_ms: 41.424213
+  type: 'test'
+  ...
+# Subtest: anthropic: status401 is sanitized and never retried
+ok 26 - anthropic: status401 is sanitized and never retried
+  ---
+  duration_ms: 1.857344
+  type: 'test'
+  ...
+# Subtest: anthropic: status403 is sanitized and never retried
+ok 27 - anthropic: status403 is sanitized and never retried
+  ---
+  duration_ms: 1.622655
+  type: 'test'
+  ...
+# Subtest: anthropic: status429 is sanitized and never retried
+ok 28 - anthropic: status429 is sanitized and never retried
+  ---
+  duration_ms: 1.640608
+  type: 'test'
+  ...
+# Subtest: anthropic: status500 is sanitized and never retried
+ok 29 - anthropic: status500 is sanitized and never retried
+  ---
+  duration_ms: 1.664192
+  type: 'test'
+  ...
+# Subtest: anthropic: status302 is sanitized and never retried
+ok 30 - anthropic: status302 is sanitized and never retried
+  ---
+  duration_ms: 1.733056
+  type: 'test'
+  ...
+# Subtest: anthropic: oversized chunked response refuses
+ok 31 - anthropic: oversized chunked response refuses
+  ---
+  duration_ms: 1.709354
+  type: 'test'
+  ...
+# Subtest: anthropic: oversized declared response refuses
+ok 32 - anthropic: oversized declared response refuses
+  ---
+  duration_ms: 1.778876
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed JSON refuses as invalid response
+ok 33 - anthropic: malformed JSON refuses as invalid response
+  ---
+  duration_ms: 1.959428
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed UTF8 refuses as invalid response
+ok 34 - anthropic: malformed UTF8 refuses as invalid response
+  ---
+  duration_ms: 2.052035
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed and unsafe tool proposals refuse atomically
+ok 35 - anthropic: malformed and unsafe tool proposals refuse atomically
+  ---
+  duration_ms: 3.312049
+  type: 'test'
+  ...
+# Subtest: anthropic: text, refusal and missing usage are truthful outcomes
+ok 36 - anthropic: text, refusal and missing usage are truthful outcomes
+  ---
+  duration_ms: 2.362052
+  type: 'test'
+  ...
+# Subtest: transport configuration is immutable, explicit and cannot embed URL credentials
+ok 37 - transport configuration is immutable, explicit and cannot embed URL credentials
+  ---
+  duration_ms: 0.507198
+  type: 'test'
+  ...
+# Subtest: OpenAI-compatible legacy token parameter is an explicit configuration choice
+ok 38 - OpenAI-compatible legacy token parameter is an explicit configuration choice
+  ---
+  duration_ms: 4.037303
+  type: 'test'
+  ...
+# Subtest: wire budget includes the output limit and refuses before HTTP at its boundary
+ok 39 - wire budget includes the output limit and refuses before HTTP at its boundary
+  ---
+  duration_ms: 1.663408
+  type: 'test'
+  ...
+# Subtest: transport failure details never escape and a non-cooperating injected fetch is bounded
+ok 40 - transport failure details never escape and a non-cooperating injected fetch is bounded
+  ---
+  duration_ms: 20.990655
+  type: 'test'
+  ...
+# Subtest: openai-compatible: altered catalogs and noncanonical complete requests refuse
+ok 41 - openai-compatible: altered catalogs and noncanonical complete requests refuse
+  ---
+  duration_ms: 0.743184
+  type: 'test'
+  ...
+# Subtest: anthropic: altered catalogs and noncanonical complete requests refuse
+ok 42 - anthropic: altered catalogs and noncanonical complete requests refuse
+  ---
+  duration_ms: 0.547718
+  type: 'test'
+  ...
+# Subtest: openai-compatible: normalized usage includes cached input exactly once
+ok 43 - openai-compatible: normalized usage includes cached input exactly once
+  ---
+  duration_ms: 1.375985
+  type: 'test'
+  ...
+# Subtest: anthropic: normalized usage includes cached input exactly once
+ok 44 - anthropic: normalized usage includes cached input exactly once
+  ---
+  duration_ms: 1.273564
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cache counters reject invalid accounting and preserve unavailable breakdowns
+ok 45 - openai-compatible: cache counters reject invalid accounting and preserve unavailable breakdowns
+  ---
+  duration_ms: 1.34319
+  type: 'test'
+  ...
+# Subtest: anthropic: cache counters reject invalid accounting and preserve unavailable breakdowns
+ok 46 - anthropic: cache counters reject invalid accounting and preserve unavailable breakdowns
+  ---
+  duration_ms: 1.720493
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 461.747153
+# forge-test-file "test/v2-provider-8c.test.js"
