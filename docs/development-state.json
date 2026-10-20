@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
-    "note": "Frozen provider-backed run preparation implementation after null-prototype schema and PostgreSQL domain-refusal corrections. Required final-source full validation and independent acceptance remain pending."
+    "note": "Frozen provider-backed preparation/explicit queue implementation; full current-source validation and visual inspection passed. Independent acceptance is pending."
   },
   "activeMilestone": {
     "id": "V2-8D",
     "roadmapRef": "docs/ROADMAP.md#v2-8d-provider-run-preparation",
     "evalDoc": "docs/V2-8D-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -25,55 +25,55 @@
       "id": "provider-run",
       "status": "passed",
       "evidence": "docs/v2-8d-evidence/provider-run.json",
-      "reason": "Complete frozen-source three-file109/109 execution; no failures, skips or cancellations. Remaining final-source gates and independent acceptance are pending."
+      "reason": "Complete frozen-source execution/inspection passed; exact counts, commands and limitations are in the referenced evidence. Independent acceptance remains pending."
     },
     {
       "id": "non-browser-bulk",
       "status": "passed",
       "evidence": "docs/v2-8d-evidence/non-browser-bulk.json",
-      "reason": "Complete frozen-source185-file2303/2303 bulk; zero failures, skips or cancellations. Serial/browser/PostgreSQL/command/visual gates remain pending."
+      "reason": "Complete frozen-source execution/inspection passed; exact counts, commands and limitations are in the referenced evidence. Independent acceptance remains pending."
     },
     {
       "id": "serial-browser",
       "status": "passed",
       "evidence": "docs/v2-8d-evidence/serial-browser.json",
-      "reason": "Complete26-file208/208 serial browser/build-owner regression, including7A28/28 and B211/11; no failures, skips or cancellations. Visual inspection remains separate."
+      "reason": "Complete frozen-source execution/inspection passed; exact counts, commands and limitations are in the referenced evidence. Independent acceptance remains pending."
     },
     {
       "id": "postgres-contract",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8d-evidence/postgres-contract.json",
+      "reason": "Complete frozen-source execution/inspection passed; exact counts, commands and limitations are in the referenced evidence. Independent acceptance remains pending."
     },
     {
       "id": "cross-process-faults",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8d-evidence/cross-process-faults.json",
+      "reason": "Complete frozen-source execution/inspection passed; exact counts, commands and limitations are in the referenced evidence. Independent acceptance remains pending."
     },
     {
       "id": "production-build",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8d-evidence/production-build.json",
+      "reason": "Complete frozen-source execution/inspection passed; exact counts, commands and limitations are in the referenced evidence. Independent acceptance remains pending."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8d-evidence/typecheck.json",
+      "reason": "Complete frozen-source execution/inspection passed; exact counts, commands and limitations are in the referenced evidence. Independent acceptance remains pending."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8d-evidence/benchmark-50.json",
+      "reason": "Complete frozen-source execution/inspection passed; exact counts, commands and limitations are in the referenced evidence. Independent acceptance remains pending."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8d-evidence/frontend-visual.json",
+      "reason": "Complete frozen-source execution/inspection passed; exact counts, commands and limitations are in the referenced evidence. Independent acceptance remains pending."
     }
   ],
   "knownBlockers": [],
