@@ -1,0 +1,224 @@
+TAP version 13
+# Subtest: SQLite/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 1 - SQLite/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 435.888061
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: read-to-answer never creates an edit run
+ok 2 - SQLite/openai-compatible: read-to-answer never creates an edit run
+  ---
+  duration_ms: 35.387919
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: read-to-refusal never creates an edit run
+ok 3 - SQLite/openai-compatible: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 25.234901
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+ok 4 - SQLite/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 70.999621
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: exchange exhaustion refuses without effects or refunds
+ok 5 - SQLite/openai-compatible: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 18.916068
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: output exhaustion refuses without effects or refunds
+ok 6 - SQLite/openai-compatible: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 15.678275
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: tools exhaustion refuses without effects or refunds
+not ok 7 - SQLite/openai-compatible: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 14.286708
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-conversation-contract.js:40:33'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    null !== 20
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 20
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-conversation-contract.js:86:72)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: SQLite/openai-compatible: a repeated call ID across exchanges refuses before another read
+ok 8 - SQLite/openai-compatible: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 19.437679
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: mixed reads and edits cannot partially execute
+ok 9 - SQLite/openai-compatible: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 13.656991
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: an out-of-scope model read stops before another exchange
+ok 10 - SQLite/openai-compatible: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 17.53256
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: human save during exchange 1 invalidates the invocation
+ok 11 - SQLite/openai-compatible: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 15.33059
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: human save during exchange 3 invalidates the invocation
+ok 12 - SQLite/openai-compatible: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 24.274366
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: cancellation during the second provider request aborts the entire invocation
+ok 13 - SQLite/openai-compatible: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 19.528525
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 14 - SQLite/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 27.821984
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: foreign ownership refuses before any provider call
+ok 15 - SQLite/openai-compatible: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 7.867097
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 16 - SQLite/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 360.608728
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: read-to-answer never creates an edit run
+ok 17 - SQLite/anthropic: read-to-answer never creates an edit run
+  ---
+  duration_ms: 16.747496
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: read-to-refusal never creates an edit run
+ok 18 - SQLite/anthropic: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 15.659316
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+ok 19 - SQLite/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 44.393575
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: exchange exhaustion refuses without effects or refunds
+ok 20 - SQLite/anthropic: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 11.938291
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: output exhaustion refuses without effects or refunds
+ok 21 - SQLite/anthropic: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 11.16214
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: tools exhaustion refuses without effects or refunds
+not ok 22 - SQLite/anthropic: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 11.683882
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-conversation-contract.js:40:33'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    null !== 20
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 20
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-conversation-contract.js:86:72)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: SQLite/anthropic: a repeated call ID across exchanges refuses before another read
+ok 23 - SQLite/anthropic: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 19.172342
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: mixed reads and edits cannot partially execute
+ok 24 - SQLite/anthropic: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 14.28889
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: an out-of-scope model read stops before another exchange
+ok 25 - SQLite/anthropic: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 13.377667
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: human save during exchange 1 invalidates the invocation
+ok 26 - SQLite/anthropic: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 13.549981
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: human save during exchange 3 invalidates the invocation
+ok 27 - SQLite/anthropic: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 24.063606
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: cancellation during the second provider request aborts the entire invocation
+ok 28 - SQLite/anthropic: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 15.934561
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 29 - SQLite/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 22.535023
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: foreign ownership refuses before any provider call
+ok 30 - SQLite/anthropic: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 7.198362
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 28
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1653.523671

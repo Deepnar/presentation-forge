@@ -1,0 +1,28 @@
+✖ openai-compatible: canonical read result reaches the next real HTTP exchange (7.319573ms)
+✖ anthropic: canonical read result reaches the next real HTTP exchange (1.917286ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 272.465181
+
+✖ failing tests:
+
+test at test/v2-conversation-8e.test.js:9:3
+✖ openai-compatible: canonical read result reaches the next real HTTP exchange (7.319573ms)
+  TypeError: runner.converse is not a function
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-conversation-8e.test.js:34:33)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+test at test/v2-conversation-8e.test.js:9:3
+✖ anthropic: canonical read result reaches the next real HTTP exchange (1.917286ms)
+  TypeError: runner.converse is not a function
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-conversation-8e.test.js:34:33)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7)

@@ -26,3 +26,25 @@ Official protocol references checked at planning:
 [Chat Completions function calling](https://developers.openai.com/api/docs/guides/function-calling)
 and [Messages tool-result handling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls).
 The accepted Forge provider/command stack remains in use; no SDK/framework migration.
+
+
+## Development status and frozen source
+
+Implementation is frozen at `c71d65e189387684aac89ca9994acf8a9ff865c1`. No later
+product/test/tools changes are permitted without updating the source pointer and
+rerunning affected checks. The full 221-file matrix, final native/browser evidence
+and separate acceptance remain pending.
+
+[Development attempts](v2-8e-evidence/attempts/development/assessment.json) retain
+expected fail-first cases and the trace-accounting defect: SQLite passed 28/30;
+known response usage was lost when the tool-call budget refused a batch. Accounting
+now precedes that refusal; unchanged tests passed 46/46. Source `db93d7e` then
+passed 276/276 across nine files, including both new protocol/backend contracts,
+accepted provider/preparation behavior, governance and type drift. These repeats
+are not added to the final distinct matrix. The later test-only readiness diagnostic
+retains bounded stage/code without driver bodies; original assertions/timeouts stay.
+
+One separate high-effort reviewer performed a read-only plan audit, found no scope
+blocker and identified lifetime/budget/correlation seams. It ran 0 tests, changed
+0 files and supplied no implementation acceptance. Final independent execution
+waits for the complete frozen-source packet and release of the heavy slot.

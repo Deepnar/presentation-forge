@@ -1,0 +1,448 @@
+TAP version 13
+# Subtest: openai-compatible: canonical read result reaches the next real HTTP exchange
+ok 1 - openai-compatible: canonical read result reaches the next real HTTP exchange
+  ---
+  duration_ms: 68.239471
+  type: 'test'
+  ...
+# Subtest: anthropic: canonical read result reaches the next real HTTP exchange
+ok 2 - anthropic: canonical read result reaches the next real HTTP exchange
+  ---
+  duration_ms: 17.529011
+  type: 'test'
+  ...
+# Subtest: openai-compatible: actual HTTP preserves scoped instructions and distinct wire format
+ok 3 - openai-compatible: actual HTTP preserves scoped instructions and distinct wire format
+  ---
+  duration_ms: 56.973333
+  type: 'test'
+  ...
+# Subtest: openai-compatible: capability negotiation refuses before network without downgrade
+ok 4 - openai-compatible: capability negotiation refuses before network without downgrade
+  ---
+  duration_ms: 2.552277
+  type: 'test'
+  ...
+# Subtest: openai-compatible: invalid options and executable accessors never execute
+ok 5 - openai-compatible: invalid options and executable accessors never execute
+  ---
+  duration_ms: 1.104712
+  type: 'test'
+  ...
+# Subtest: openai-compatible: context budget counts wire schemas and controls
+ok 6 - openai-compatible: context budget counts wire schemas and controls
+  ---
+  duration_ms: 1.632593
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancellation before dispatch and during headers is bounded
+ok 7 - openai-compatible: cancellation before dispatch and during headers is bounded
+  ---
+  duration_ms: 6.124932
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancellation while reading a body aborts the request
+ok 8 - openai-compatible: cancellation while reading a body aborts the request
+  ---
+  duration_ms: 25.404061
+  type: 'test'
+  ...
+# Subtest: openai-compatible: timeout covers a stalled body without retries
+ok 9 - openai-compatible: timeout covers a stalled body without retries
+  ---
+  duration_ms: 41.766987
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status401 is sanitized and never retried
+ok 10 - openai-compatible: status401 is sanitized and never retried
+  ---
+  duration_ms: 4.981596
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status403 is sanitized and never retried
+ok 11 - openai-compatible: status403 is sanitized and never retried
+  ---
+  duration_ms: 3.43549
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status429 is sanitized and never retried
+ok 12 - openai-compatible: status429 is sanitized and never retried
+  ---
+  duration_ms: 3.743692
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status500 is sanitized and never retried
+ok 13 - openai-compatible: status500 is sanitized and never retried
+  ---
+  duration_ms: 3.006512
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status302 is sanitized and never retried
+ok 14 - openai-compatible: status302 is sanitized and never retried
+  ---
+  duration_ms: 3.532892
+  type: 'test'
+  ...
+# Subtest: openai-compatible: oversized chunked response refuses
+ok 15 - openai-compatible: oversized chunked response refuses
+  ---
+  duration_ms: 3.624162
+  type: 'test'
+  ...
+# Subtest: openai-compatible: oversized declared response refuses
+ok 16 - openai-compatible: oversized declared response refuses
+  ---
+  duration_ms: 2.699009
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed JSON refuses as invalid response
+ok 17 - openai-compatible: malformed JSON refuses as invalid response
+  ---
+  duration_ms: 4.209071
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed UTF8 refuses as invalid response
+ok 18 - openai-compatible: malformed UTF8 refuses as invalid response
+  ---
+  duration_ms: 2.81367
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed and unsafe tool proposals refuse atomically
+ok 19 - openai-compatible: malformed and unsafe tool proposals refuse atomically
+  ---
+  duration_ms: 4.304168
+  type: 'test'
+  ...
+# Subtest: openai-compatible: text, refusal and missing usage are truthful outcomes
+ok 20 - openai-compatible: text, refusal and missing usage are truthful outcomes
+  ---
+  duration_ms: 2.952097
+  type: 'test'
+  ...
+# Subtest: anthropic: actual HTTP preserves scoped instructions and distinct wire format
+ok 21 - anthropic: actual HTTP preserves scoped instructions and distinct wire format
+  ---
+  duration_ms: 3.914535
+  type: 'test'
+  ...
+# Subtest: anthropic: capability negotiation refuses before network without downgrade
+ok 22 - anthropic: capability negotiation refuses before network without downgrade
+  ---
+  duration_ms: 1.172657
+  type: 'test'
+  ...
+# Subtest: anthropic: invalid options and executable accessors never execute
+ok 23 - anthropic: invalid options and executable accessors never execute
+  ---
+  duration_ms: 0.643747
+  type: 'test'
+  ...
+# Subtest: anthropic: context budget counts wire schemas and controls
+ok 24 - anthropic: context budget counts wire schemas and controls
+  ---
+  duration_ms: 3.745508
+  type: 'test'
+  ...
+# Subtest: anthropic: cancellation before dispatch and during headers is bounded
+ok 25 - anthropic: cancellation before dispatch and during headers is bounded
+  ---
+  duration_ms: 3.780452
+  type: 'test'
+  ...
+# Subtest: anthropic: cancellation while reading a body aborts the request
+ok 26 - anthropic: cancellation while reading a body aborts the request
+  ---
+  duration_ms: 23.494513
+  type: 'test'
+  ...
+# Subtest: anthropic: timeout covers a stalled body without retries
+ok 27 - anthropic: timeout covers a stalled body without retries
+  ---
+  duration_ms: 41.733984
+  type: 'test'
+  ...
+# Subtest: anthropic: status401 is sanitized and never retried
+ok 28 - anthropic: status401 is sanitized and never retried
+  ---
+  duration_ms: 3.172238
+  type: 'test'
+  ...
+# Subtest: anthropic: status403 is sanitized and never retried
+ok 29 - anthropic: status403 is sanitized and never retried
+  ---
+  duration_ms: 2.493625
+  type: 'test'
+  ...
+# Subtest: anthropic: status429 is sanitized and never retried
+ok 30 - anthropic: status429 is sanitized and never retried
+  ---
+  duration_ms: 2.400186
+  type: 'test'
+  ...
+# Subtest: anthropic: status500 is sanitized and never retried
+ok 31 - anthropic: status500 is sanitized and never retried
+  ---
+  duration_ms: 2.367563
+  type: 'test'
+  ...
+# Subtest: anthropic: status302 is sanitized and never retried
+ok 32 - anthropic: status302 is sanitized and never retried
+  ---
+  duration_ms: 2.734291
+  type: 'test'
+  ...
+# Subtest: anthropic: oversized chunked response refuses
+ok 33 - anthropic: oversized chunked response refuses
+  ---
+  duration_ms: 3.209688
+  type: 'test'
+  ...
+# Subtest: anthropic: oversized declared response refuses
+ok 34 - anthropic: oversized declared response refuses
+  ---
+  duration_ms: 2.781787
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed JSON refuses as invalid response
+ok 35 - anthropic: malformed JSON refuses as invalid response
+  ---
+  duration_ms: 2.815254
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed UTF8 refuses as invalid response
+ok 36 - anthropic: malformed UTF8 refuses as invalid response
+  ---
+  duration_ms: 2.796379
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed and unsafe tool proposals refuse atomically
+ok 37 - anthropic: malformed and unsafe tool proposals refuse atomically
+  ---
+  duration_ms: 4.301867
+  type: 'test'
+  ...
+# Subtest: anthropic: text, refusal and missing usage are truthful outcomes
+ok 38 - anthropic: text, refusal and missing usage are truthful outcomes
+  ---
+  duration_ms: 2.907056
+  type: 'test'
+  ...
+# Subtest: transport configuration is immutable, explicit and cannot embed URL credentials
+ok 39 - transport configuration is immutable, explicit and cannot embed URL credentials
+  ---
+  duration_ms: 0.644355
+  type: 'test'
+  ...
+# Subtest: OpenAI-compatible legacy token parameter is an explicit configuration choice
+ok 40 - OpenAI-compatible legacy token parameter is an explicit configuration choice
+  ---
+  duration_ms: 4.840312
+  type: 'test'
+  ...
+# Subtest: wire budget includes the output limit and refuses before HTTP at its boundary
+ok 41 - wire budget includes the output limit and refuses before HTTP at its boundary
+  ---
+  duration_ms: 1.965479
+  type: 'test'
+  ...
+# Subtest: transport failure details never escape and a non-cooperating injected fetch is bounded
+ok 42 - transport failure details never escape and a non-cooperating injected fetch is bounded
+  ---
+  duration_ms: 21.323485
+  type: 'test'
+  ...
+# Subtest: openai-compatible: altered catalogs and noncanonical complete requests refuse
+ok 43 - openai-compatible: altered catalogs and noncanonical complete requests refuse
+  ---
+  duration_ms: 1.140405
+  type: 'test'
+  ...
+# Subtest: anthropic: altered catalogs and noncanonical complete requests refuse
+ok 44 - anthropic: altered catalogs and noncanonical complete requests refuse
+  ---
+  duration_ms: 0.870352
+  type: 'test'
+  ...
+# Subtest: openai-compatible: normalized usage includes cached input exactly once
+ok 45 - openai-compatible: normalized usage includes cached input exactly once
+  ---
+  duration_ms: 2.011447
+  type: 'test'
+  ...
+# Subtest: anthropic: normalized usage includes cached input exactly once
+ok 46 - anthropic: normalized usage includes cached input exactly once
+  ---
+  duration_ms: 1.848311
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cache counters reject invalid accounting and preserve unavailable breakdowns
+ok 47 - openai-compatible: cache counters reject invalid accounting and preserve unavailable breakdowns
+  ---
+  duration_ms: 2.203206
+  type: 'test'
+  ...
+# Subtest: anthropic: cache counters reject invalid accounting and preserve unavailable breakdowns
+ok 48 - anthropic: cache counters reject invalid accounting and preserve unavailable breakdowns
+  ---
+  duration_ms: 2.319546
+  type: 'test'
+  ...
+# Subtest: provider-run scope and read schemas remain canonical
+ok 49 - provider-run scope and read schemas remain canonical
+  ---
+  duration_ms: 5.833296
+  type: 'test'
+  ...
+# Subtest: preparation rejects unrecognized authority fields before storage or provider I/O
+ok 50 - preparation rejects unrecognized authority fields before storage or provider I/O
+  ---
+  duration_ms: 2.729662
+  type: 'test'
+  ...
+# Subtest: preparation rejects invalid context reads before storage or provider I/O
+ok 51 - preparation rejects invalid context reads before storage or provider I/O
+  ---
+  duration_ms: 0.471193
+  type: 'test'
+  ...
+# Subtest: preparation rejects invalid trusted scope before storage or provider I/O
+ok 52 - preparation rejects invalid trusted scope before storage or provider I/O
+  ---
+  duration_ms: 0.333074
+  type: 'test'
+  ...
+# Subtest: preparation rejects empty request text before storage or provider I/O
+ok 53 - preparation rejects empty request text before storage or provider I/O
+  ---
+  duration_ms: 0.277582
+  type: 'test'
+  ...
+# Subtest: preparation rejects context bounds before storage or provider I/O
+ok 54 - preparation rejects context bounds before storage or provider I/O
+  ---
+  duration_ms: 0.281075
+  type: 'test'
+  ...
+# Subtest: preparation rejects configured output allowance before storage or provider I/O
+ok 55 - preparation rejects configured output allowance before storage or provider I/O
+  ---
+  duration_ms: 0.278587
+  type: 'test'
+  ...
+# Subtest: preparation rejects nested geometry before storage or provider I/O
+ok 56 - preparation rejects nested geometry before storage or provider I/O
+  ---
+  duration_ms: 0.270056
+  type: 'test'
+  ...
+# Subtest: preparation rejects duplicate selection before storage or provider I/O
+ok 57 - preparation rejects duplicate selection before storage or provider I/O
+  ---
+  duration_ms: 0.353517
+  type: 'test'
+  ...
+# Subtest: live accessors, cycles and option accessors are refused without execution
+ok 58 - live accessors, cycles and option accessors are refused without execution
+  ---
+  duration_ms: 0.546009
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass foreign provider identity validation
+ok 59 - injected provider cannot bypass foreign provider identity validation
+  ---
+  duration_ms: 31.626354
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass wrong family validation
+ok 60 - injected provider cannot bypass wrong family validation
+  ---
+  duration_ms: 1.177248
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass unsupported outcome validation
+ok 61 - injected provider cannot bypass unsupported outcome validation
+  ---
+  duration_ms: 1.138271
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass extra authority metadata validation
+ok 62 - injected provider cannot bypass extra authority metadata validation
+  ---
+  duration_ms: 1.673907
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass duplicate tool IDs validation
+ok 63 - injected provider cannot bypass duplicate tool IDs validation
+  ---
+  duration_ms: 1.029634
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass noncanonical arguments validation
+ok 64 - injected provider cannot bypass noncanonical arguments validation
+  ---
+  duration_ms: 0.914204
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass stale engine revision validation
+ok 65 - injected provider cannot bypass stale engine revision validation
+  ---
+  duration_ms: 0.853284
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass inconsistent terminal outcome validation
+ok 66 - injected provider cannot bypass inconsistent terminal outcome validation
+  ---
+  duration_ms: 0.918741
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass invalid usage counters validation
+ok 67 - injected provider cannot bypass invalid usage counters validation
+  ---
+  duration_ms: 0.884184
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass output over allowance validation
+ok 68 - injected provider cannot bypass output over allowance validation
+  ---
+  duration_ms: 0.817891
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass missing usage field validation
+ok 69 - injected provider cannot bypass missing usage field validation
+  ---
+  duration_ms: 0.755188
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass oversized summary validation
+ok 70 - injected provider cannot bypass oversized summary validation
+  ---
+  duration_ms: 0.786888
+  type: 'test'
+  ...
+# Subtest: provider failures and thrown exceptions never expose raw diagnostics
+ok 71 - provider failures and thrown exceptions never expose raw diagnostics
+  ---
+  duration_ms: 3.094716
+  type: 'test'
+  ...
+# Subtest: context and aggregate read-result budgets refuse explicitly
+ok 72 - context and aggregate read-result budgets refuse explicitly
+  ---
+  duration_ms: 2.26769
+  type: 'test'
+  ...
+# Subtest: binding and deadline errors refuse before any provider call
+ok 73 - binding and deadline errors refuse before any provider call
+  ---
+  duration_ms: 0.35739
+  type: 'test'
+  ...
+1..73
+# tests 73
+# suites 0
+# pass 73
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1252.674659

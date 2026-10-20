@@ -231,3 +231,38 @@ An explicit new preparation may call the provider again; no network exactly-once
 or conversational runtime claim is made. Exact source8c1e5c4 is independently
 [accepted](reviews/V2-8D-8c1e5c4.json). [The evaluation](V2-8D-EVAL.md) and state
 index validation/review; later scope lives in the roadmap.
+
+
+## V2-8E bounded tool-conversation preparation (implementation under review)
+
+The existing provider runner now offers `converse` beside unchanged single-exchange
+`prepare`. Its generated request reuses the accepted scope/read contract and adds
+explicit exchange, tool-call and aggregate reserved-output limits. One ephemeral
+worker invocation executes scoped canonical reads and continues with validated,
+correlated read rounds. Adapters translate these rounds to assistant/tool messages
+or adjacent assistant/tool_result blocks. Result schemas exclude geometry/styling;
+policy and grants remain application-owned. Each actual serialized wire request
+includes accumulated history in its context-budget check.
+
+The loop shares accepted snapshot, normalized-response validation, preflight and
+queue authority. It checks owner/revision between exchanges/read groups, stops on
+refused reads, duplicate IDs, mixed read/edit output or exhausted bounds, and makes
+no automatic retry. The internal tool-session allowance separately covers initial
+context reads and final preflight. Full per-call output allowances are reserved
+before network I/O with no refund; absent/failed usage remains unknown.
+
+A whole-invocation 120-second/deadline guard starts before the first await. Its
+lifetime is separate from the trusted proposal deadline. Late async work checks
+cancellation before another provider call. Bounded trace metadata is attached
+before an edit proposal is frozen and registered in the existing private WeakMap.
+Arguments, content, raw IDs, responses, prompt text and keys are absent from trace.
+Pending measurements may be null rather than falsely reported as zero.
+
+Terminal text/refusal or a canonical atomic edit proposal ends preparation. Only
+explicit existing enqueue persists the semantic plan; existing workers/history own
+execution/recovery. No durable transcript, new schema/table, public route, UI or
+provider-default/configuration change is introduced. Conversations/proposals are
+host-instance ephemeral; queued runs retain accepted durability. This is not the
+hosted cross-request approval contract or live provider/content qualification.
+[Evaluation](V2-8E-EVAL.md) and state identify pending validation/review; future work
+remains only in the roadmap.

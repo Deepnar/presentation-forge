@@ -1,0 +1,18 @@
+{
+  "id": "1ce973f8745064c39c8acac8c39ac9d1b0343df4e26cd43c5cba747b16787906",
+  "name": "forge-v28e-validation",
+  "port": 5544,
+  "createdAtUtc": "2026-10-20T18:13:03.398863341Z",
+  "image": "postgres:15-alpine",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "autoRemove": true,
+  "cpus": 1,
+  "memoryBytes": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=192m"
+  },
+  "sourceAtCreation": "a3915390ebe60e214f77c20eff776c8e17d9108f",
+  "workingTreeImplementationAtCreation": true,
+  "purpose": "Owned isolated V2-8E development/final validation; save/fsync actual database count before exact removal.",
+  "version": "15.18"
+}

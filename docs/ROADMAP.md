@@ -8820,7 +8820,8 @@ probes, leaving precise cause unknown. Preserve a bounded sanitized error code
 and stage when a PostgreSQL test cannot start, without credentials, URLs or raw
 driver bodies; keep unavailable actual cases unexecuted rather than green. This
 is validation observability, separate from product behavior or relaxed readiness.
-[The V2-8D evaluation](V2-8D-EVAL.md) retains the original attempt and rerun status.
+The new V2-8E helper retains a bounded SELECT1 stage/code; earlier helpers still
+need this diagnostic treatment. [The V2-8D evaluation](V2-8D-EVAL.md) retains the original attempt and rerun status.
 
 <a id="byok-locale-standing-failure"></a>
 

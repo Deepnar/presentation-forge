@@ -1,7 +1,7 @@
 {
-  "implementationSha": "15e357c93bf301fd61867dd10e06a8921286568f",
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
-  "inventoryMethod": "Provisional current-source inventory: all218 accepted files plus three conversation files;187bulk/26serial/8PG=221. Freeze source and verify complete on-disk inventory before execution.",
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
+  "inventoryMethod": "Frozen source: all218 accepted files plus three conversation files;187bulk/26serial/8PostgreSQL=221distinct. Complete on-disk inventory asserted by the coordinator.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",

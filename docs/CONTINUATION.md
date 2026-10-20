@@ -93,6 +93,14 @@ provenance limits remain. Do not rerun finish-evidence.py against restored canon
 out/ originals. Next-candidate status remains unauthorized; stop after this closeout,
 and keep all future work in the roadmap.
 
+The new continuation authorizes only
+[V2-8E bounded tool-conversation preparation](ROADMAP.md#v2-8e-bounded-tool-conversation).
+State/[evaluation](V2-8E-EVAL.md) index frozen source c71d65e and pending final-source
+validation/review. The prior 8D stop and acceptance above are historical prerequisite
+state. [The new runbook](v2-8e-evidence/RUNBOOK.md) defines the 221-file matrix and
+owned service. Preserve original archives before generators and do not credit old
+results as this source's execution. Stop after this slice's separate review/cleanup.
+
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
 uses TEST_PG_URL or the isolated default on port 5544; other projects' databases

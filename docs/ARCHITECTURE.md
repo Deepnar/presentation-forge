@@ -2664,3 +2664,13 @@ No prompt/transcript store, public route or new UI is introduced.
 [The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8d-provider-backed-run-preparation)
 and [evaluation](V2-8D-EVAL.md) identify exact source8c1e5c4 and its independent
 [acceptance](reviews/V2-8D-8c1e5c4.json).
+
+
+### V2-8E bounded tool-conversation preparation
+
+The provider runner's `converse` operation reuses the accepted scoped preparation/
+explicit queue path, adding bounded read-result exchanges and metadata-only traces.
+Provider adapters translate canonical read rounds into their own message protocols;
+network work remains outside project transactions. No public surface or durable
+conversation store is added. [The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8e-bounded-tool-conversation-preparation-implementation-under-review)
+and [evaluation](V2-8E-EVAL.md) identify the implementation-under-review status.

@@ -1,0 +1,91 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "priorFocusedSource": "db93d7e",
+  "currentTestsChangedAfterPriorFocused": "Only new PostgreSQL availability-stage/code diagnostics; assertions and timeouts unchanged. Final-source full execution pending.",
+  "attempts": [
+    {
+      "log": "development-fail-first.tap",
+      "tests": {
+        "total": 2,
+        "pass": 0,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Expected missing converse operation. Default reporter; trailing cat masked child exit in shell status, so child exit is not independently retained."
+    },
+    {
+      "log": "development-fail-first-confirmed.tap",
+      "exitCode": 1,
+      "tests": {
+        "total": 2,
+        "pass": 0,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Direct TAP confirmation before implementation."
+    },
+    {
+      "log": "development-conversation.tap",
+      "tests": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "First real protocol read-to-answer development cases."
+    },
+    {
+      "log": "development-boundary.tap",
+      "tests": {
+        "total": 73,
+        "pass": 73,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Accepted provider/preparation boundary plus initial2conversation cases; repeats, not final-source gates."
+    },
+    {
+      "log": "development-sqlite.tap",
+      "exitCode": 1,
+      "tests": {
+        "total": 30,
+        "pass": 28,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Product trace-accounting defect: valid usage became unknown on tool-budget refusal. Preserve assertions; record valid usage before rejecting the tool batch."
+    },
+    {
+      "log": "development-conversation-combined.tap",
+      "exitCode": 0,
+      "tests": {
+        "total": 46,
+        "pass": 46,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Corrected accounting;16boundary+30SQLite cases before final additions."
+    },
+    {
+      "log": "development-complete-focused.tap",
+      "exitCode": 0,
+      "tests": {
+        "total": 276,
+        "pass": 276,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "classification": "Exactdb93d7e source;17newboundary+38SQLite+38PG plus109acceptedpreparation+46provider+27governance+1drift. Separate from final source matrix."
+    }
+  ],
+  "typingDiagnostics": "Initial strict typecheck found Json-array return narrowing and provider callback union diagnostics. Corrected with a justified array type and canonical provider cancellation result. Initial stderr remains tool-transcript-only; saved current typecheck passed.",
+  "assertionsOrTimeoutsWeakened": false,
+  "cancelledExecutionGroups": 0
+}
