@@ -1,0 +1,84 @@
+TAP version 13
+# cover browser backend: sqlite; actual production server/CSP
+# Subtest: saved first-slide cover matches the canonical SVG and opens by keyboard
+ok 1 - saved first-slide cover matches the canonical SVG and opens by keyboard
+  ---
+  duration_ms: 2594.793528
+  type: 'test'
+  ...
+# Subtest: human edits, first-slide reorder and history restoration refresh the saved cover
+ok 2 - human edits, first-slide reorder and history restoration refresh the saved cover
+  ---
+  duration_ms: 2933.578404
+  type: 'test'
+  ...
+# Subtest: blank, detached, hidden, chart and table content remain honest read-only previews
+ok 3 - blank, detached, hidden, chart and table content remain honest read-only previews
+  ---
+  duration_ms: 2216.961532
+  type: 'test'
+  ...
+# Subtest: dark narrow cards retain usable preview and action bounds
+ok 4 - dark narrow cards retain usable preview and action bounds
+  ---
+  duration_ms: 2486.730906
+  type: 'test'
+  ...
+# Subtest: near-viewport work stays bounded and loading never shifts the cards
+ok 5 - near-viewport work stays bounded and loading never shifts the cards
+  ---
+  duration_ms: 11318.863858
+  type: 'test'
+  ...
+# Subtest: network and transient shipped-font failures have stable local recovery
+ok 6 - network and transient shipped-font failures have stable local recovery
+  ---
+  duration_ms: 7176.756176
+  type: 'test'
+  ...
+# Subtest: actual shipped font HTTP failure recovers on retry
+ok 7 - actual shipped font HTTP failure recovers on retry
+  ---
+  duration_ms: 2288.42312
+  type: 'test'
+  ...
+# Subtest: static font source outage recovers on retry
+ok 8 - static font source outage recovers on retry
+  ---
+  duration_ms: 2298.996032
+  type: 'test'
+  ...
+# Subtest: refresh rejects old revision work and deletion cannot resurrect a card
+ok 9 - refresh rejects old revision work and deletion cannot resurrect a card
+  ---
+  duration_ms: 2220.232836
+  type: 'test'
+  ...
+# Subtest: pending and settled account changes clear previews and guard navigation
+ok 10 - pending and settled account changes clear previews and guard navigation
+  ---
+  duration_ms: 5358.725426
+  type: 'test'
+  ...
+# Subtest: departure cancels preview work and timeout leaves Open usable
+ok 11 - departure cancels preview work and timeout leaves Open usable
+  ---
+  duration_ms: 19378.973869
+  type: 'test'
+  ...
+# Subtest: development StrictMode effect replay creates a fresh live cover loader
+ok 12 - development StrictMode effect replay creates a fresh live cover loader
+  ---
+  duration_ms: 2378.941857
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 63608.949791
+# forge-test-file "test/v2-project-covers-chrome-7c.test.js"

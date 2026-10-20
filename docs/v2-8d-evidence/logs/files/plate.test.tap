@@ -1,0 +1,53 @@
+TAP version 13
+# Subtest: cache key covers html and viewport, in a stable way
+ok 1 - cache key covers html and viewport, in a stable way
+  ---
+  duration_ms: 0.951569
+  type: 'test'
+  ...
+# Subtest: a version prefix means a primitive change invalidates every plate
+ok 2 - a version prefix means a primitive change invalidates every plate
+  ---
+  duration_ms: 0.24982
+  type: 'test'
+  ...
+# Subtest: templates interpolate token paths and leave unknown paths literal
+ok 3 - templates interpolate token paths and leave unknown paths literal
+  ---
+  duration_ms: 0.196521
+  type: 'test'
+  ...
+# Subtest: plateHtmlFor: slide html overrides the theme, surfaces pick variants
+ok 4 - plateHtmlFor: slide html overrides the theme, surfaces pick variants
+  ---
+  duration_ms: 0.211587
+  type: 'test'
+  ...
+# Subtest: a content box without an h field still interpolates a real height
+ok 5 - a content box without an h field still interpolates a real height
+  ---
+  duration_ms: 0.1394
+  type: 'test'
+  ...
+# Subtest: default plate geometry is 16:9
+ok 6 - default plate geometry is 16:9
+  ---
+  duration_ms: 0.12296
+  type: 'test'
+  ...
+# Subtest: renderPlate writes a real PNG and the second call is a cache hit
+ok 7 - renderPlate writes a real PNG and the second call is a cache hit
+  ---
+  duration_ms: 598.099532
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 646.835206
+# forge-test-file "test/plate.test.js"

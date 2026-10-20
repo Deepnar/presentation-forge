@@ -1,0 +1,15 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "command": "Inspect115 final hashed browser/native/SVG images through20 contact sheets and full-resolution narrow/dialog/native risk cases; compare OOXML/preservation and6 canvas measurements",
+  "log": "docs/v2-8d-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": "docs/v2-8d-evidence/images.json",
+  "imageCount": 115,
+  "browserImages": 76,
+  "nativeRasters": 23,
+  "svgRasters": 16,
+  "limitations": "Inherited Fit/narrow/capture/mixed-run SVG limits remain. Native consumer rasterization is not interactive PowerPoint or live model quality. Elevated PSI/iowait cause remains unknown."
+}

@@ -1,0 +1,69 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "files": 218,
+  "tests": {
+    "total": 2639,
+    "pass": 2639,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "repeatedFocused": {
+    "total": 109,
+    "pass": 109,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "fullRuns": [
+    "bulk",
+    "v2-edit-chrome-7a.test",
+    "freeform.test",
+    "plate.test",
+    "v2-edit-chrome-5c.test",
+    "v2-edit-chrome-5d.test",
+    "v2-edit-chrome-5e.test",
+    "v2-edit-chrome-5f.test",
+    "v2-edit-chrome-5i.test",
+    "v2-edit-chrome-5j.test",
+    "v2-edit-chrome-5k.test",
+    "v2-edit-chrome-6a.test",
+    "v2-edit-chrome-6b.test",
+    "v2-edit-chrome-6c.test",
+    "v2-edit-chrome-chart.test",
+    "v2-edit-chrome-table.test",
+    "v2-fontgate-4e.test",
+    "v2-fonts-4d.test",
+    "v2-live-chrome-4f.test",
+    "v2-plate-3f5.test",
+    "v2-selection-chrome.test",
+    "v2-viewer-smoke.test",
+    "v2-import-chrome-7b.test",
+    "v2-handoff-chrome-7b.test",
+    "v2-project-covers-chrome-7c.test",
+    "v2-project-catalog-chrome-7c.test",
+    "v2-editor-toolbar-chrome-7c.test",
+    "v2-projects-6c-postgres.test",
+    "v2-projects-6c-concurrency.test",
+    "v2-projects-6c-faults.test",
+    "v2-import-postgres-7b.test",
+    "v2-runtime-postgres-8b.test",
+    "v2-provider-postgres-8c.test",
+    "v2-provider-run-postgres-8d.test"
+  ],
+  "standingByokLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "unexecuted": 0,
+  "repeatedResourceQualification": {
+    "total": 25,
+    "pass": 25,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  }
+}

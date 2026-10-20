@@ -1,0 +1,45 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "backend": "postgres",
+  "family": "openai-compatible",
+  "providerExchangeMs": 4.464984999999842,
+  "runId": "cd1e0681-0008-4853-9454-7f271e9d2ad8",
+  "timings": {
+    "prepareMs": 12.593585000000076,
+    "queueMs": 3.7553320000001804,
+    "claimMs": 4.19995700000004,
+    "commitMs": 11.58862299999987,
+    "reopenMs": 8.63760400000001
+  },
+  "traceBytes": 1306,
+  "trace": {
+    "run": {
+      "id": "cd1e0681-0008-4853-9454-7f271e9d2ad8",
+      "projectId": "p-8e73cd1e201f0fdbb682c046",
+      "projectRevision": 1,
+      "status": "succeeded",
+      "code": null,
+      "revision": 3,
+      "cursor": 1,
+      "attempts": 1,
+      "failures": 0,
+      "createdAt": 1792503375106,
+      "updatedAt": 1792503375117,
+      "deadlineAt": 1792503435091,
+      "stepCount": 1
+    },
+    "receipts": [
+      {
+        "step": 0,
+        "tool": "edit_content",
+        "ok": true,
+        "code": null,
+        "changed": true,
+        "projectRevision": 1,
+        "engineRevision": 1,
+        "runRevision": 3
+      }
+    ]
+  },
+  "limits": "Local samples, not production percentiles. Reopen after closing the pool/connection; actual kill recovery is tested separately. Mixed-run SVG inherits its first-run-style limitation."
+}

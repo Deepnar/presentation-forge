@@ -1,0 +1,161 @@
+TAP version 13
+# Subtest: provider-run scope and read schemas remain canonical
+ok 1 - provider-run scope and read schemas remain canonical
+  ---
+  duration_ms: 5.074253
+  type: 'test'
+  ...
+# Subtest: preparation rejects unrecognized authority fields before storage or provider I/O
+ok 2 - preparation rejects unrecognized authority fields before storage or provider I/O
+  ---
+  duration_ms: 2.601249
+  type: 'test'
+  ...
+# Subtest: preparation rejects invalid context reads before storage or provider I/O
+ok 3 - preparation rejects invalid context reads before storage or provider I/O
+  ---
+  duration_ms: 0.356264
+  type: 'test'
+  ...
+# Subtest: preparation rejects invalid trusted scope before storage or provider I/O
+ok 4 - preparation rejects invalid trusted scope before storage or provider I/O
+  ---
+  duration_ms: 0.223223
+  type: 'test'
+  ...
+# Subtest: preparation rejects empty request text before storage or provider I/O
+ok 5 - preparation rejects empty request text before storage or provider I/O
+  ---
+  duration_ms: 0.215988
+  type: 'test'
+  ...
+# Subtest: preparation rejects context bounds before storage or provider I/O
+ok 6 - preparation rejects context bounds before storage or provider I/O
+  ---
+  duration_ms: 0.220376
+  type: 'test'
+  ...
+# Subtest: preparation rejects configured output allowance before storage or provider I/O
+ok 7 - preparation rejects configured output allowance before storage or provider I/O
+  ---
+  duration_ms: 0.212654
+  type: 'test'
+  ...
+# Subtest: preparation rejects nested geometry before storage or provider I/O
+ok 8 - preparation rejects nested geometry before storage or provider I/O
+  ---
+  duration_ms: 0.202493
+  type: 'test'
+  ...
+# Subtest: preparation rejects duplicate selection before storage or provider I/O
+ok 9 - preparation rejects duplicate selection before storage or provider I/O
+  ---
+  duration_ms: 0.246499
+  type: 'test'
+  ...
+# Subtest: live accessors, cycles and option accessors are refused without execution
+ok 10 - live accessors, cycles and option accessors are refused without execution
+  ---
+  duration_ms: 0.390074
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass foreign provider identity validation
+ok 11 - injected provider cannot bypass foreign provider identity validation
+  ---
+  duration_ms: 24.558517
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass wrong family validation
+ok 12 - injected provider cannot bypass wrong family validation
+  ---
+  duration_ms: 0.925326
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass unsupported outcome validation
+ok 13 - injected provider cannot bypass unsupported outcome validation
+  ---
+  duration_ms: 1.019556
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass extra authority metadata validation
+ok 14 - injected provider cannot bypass extra authority metadata validation
+  ---
+  duration_ms: 0.845808
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass duplicate tool IDs validation
+ok 15 - injected provider cannot bypass duplicate tool IDs validation
+  ---
+  duration_ms: 0.701762
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass noncanonical arguments validation
+ok 16 - injected provider cannot bypass noncanonical arguments validation
+  ---
+  duration_ms: 0.633768
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass stale engine revision validation
+ok 17 - injected provider cannot bypass stale engine revision validation
+  ---
+  duration_ms: 0.608697
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass inconsistent terminal outcome validation
+ok 18 - injected provider cannot bypass inconsistent terminal outcome validation
+  ---
+  duration_ms: 0.66265
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass invalid usage counters validation
+ok 19 - injected provider cannot bypass invalid usage counters validation
+  ---
+  duration_ms: 0.669273
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass output over allowance validation
+ok 20 - injected provider cannot bypass output over allowance validation
+  ---
+  duration_ms: 0.618947
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass missing usage field validation
+ok 21 - injected provider cannot bypass missing usage field validation
+  ---
+  duration_ms: 0.559844
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass oversized summary validation
+ok 22 - injected provider cannot bypass oversized summary validation
+  ---
+  duration_ms: 0.534973
+  type: 'test'
+  ...
+# Subtest: provider failures and thrown exceptions never expose raw diagnostics
+ok 23 - provider failures and thrown exceptions never expose raw diagnostics
+  ---
+  duration_ms: 2.348095
+  type: 'test'
+  ...
+# Subtest: context and aggregate read-result budgets refuse explicitly
+ok 24 - context and aggregate read-result budgets refuse explicitly
+  ---
+  duration_ms: 2.118534
+  type: 'test'
+  ...
+# Subtest: binding and deadline errors refuse before any provider call
+ok 25 - binding and deadline errors refuse before any provider call
+  ---
+  duration_ms: 0.294894
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 297.350626
+# forge-test-file "test/v2-provider-run-8d.test.js"
