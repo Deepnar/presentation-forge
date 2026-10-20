@@ -8622,7 +8622,7 @@ needs direction on scope before building.*
 
 <a id="v2-8e-bounded-tool-conversation"></a>
 
-- [ ] **V2-8E bounded tool-conversation preparation — authorized continuation.**
+- [ ] **V2-8E bounded tool-conversation preparation — implemented; validation paused.**
   Accepted baseline `8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`; entry checkout
   `15e357c93bf301fd61867dd10e06a8921286568f`, branch `v2`, push `origin/v2`.
   The new instruction to start the next immediate work, with the standing direction
@@ -8684,6 +8684,24 @@ needs direction on scope before building.*
   Require one independent high-effort exact-source ACCEPT/HOLD; stop after this
   slice's review, owned cleanup and handoff. [Evaluation](V2-8E-EVAL.md) records
   evidence and limitations without self-acceptance.
+
+  **2026-10-21 stop:** the human ended the session during validation of frozen
+  `c71d65e`. Bulk2359/2359, serial23/26files171/171 and focused93/93 passed;
+  55focused cases overlap completed bulk, yielding2568distinct executed leaves.
+  No leaf failed, skipped or was cancelled. The coordinator stopped between files.
+  Remaining validation is the covers/catalog/toolbar browser files, seven other
+  PostgreSQL files (the new38-casePG conversation contract already ran focused),
+  planned final build/type/50cells, native supplements, full visual inspection,
+  separate locale probe and independent execution/decision. None is waived.
+  [Paused evidence](v2-8e-evidence/paused-2026-10-21/assessment.json) retains raw
+  results,38fresh screenshots and5actual fresh original PPTXs;11shell captures
+  have recorded inspection. Historical4067files/78PPTX and5canonical originals
+  were restored/hash-verified. The owned service was removed after a saved/fsynced
+  zero-database observation;5544closed. Resume only this approved validation with
+  fresh owned-service identity, measured headroom and full current-evidence snapshots.
+  The old coordinator cannot blindly resume after restoration: merge saved fresh
+  captures/originals or rerun affected serial generators before final assembly.
+  Independent source audit found no confirmed blocker but ran0tests/issuednoacceptance.
 
 <a id="v2-8-remaining"></a>
 

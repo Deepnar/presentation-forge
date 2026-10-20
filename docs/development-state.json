@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
-    "note": "Frozen bounded tool-conversation implementation after trace-accounting correction and scoped PostgreSQL readiness diagnostics. Required final-source validation and independent acceptance are pending."
+    "note": "Frozen bounded tool-conversation implementation. The human stopped the session during validation; partial passing results, original restoration and owned cleanup are retained. No acceptance."
   },
   "activeMilestone": {
     "id": "V2-8E",
@@ -25,55 +25,55 @@
       "id": "tool-conversation",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/tool-conversation.json",
-      "reason": "Complete frozen-source execution passed with0fail/skip/cancel; remaining required gates and independent acceptance are pending."
+      "reason": "Frozen-source93/93:17boundary+38SQLite+38ownedPostgreSQL;0fail/skip/cancel.55cases overlap the completed bulk. Remaining validation/review pending."
     },
     {
       "id": "non-browser-bulk",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/non-browser-bulk.json",
-      "reason": "Complete frozen-source execution passed with0fail/skip/cancel; remaining required gates and independent acceptance are pending."
+      "reason": "Complete frozen-source187-file2359/2359 passed;0fail/skip/cancel. Remaining validation/review pending."
     },
     {
       "id": "serial-browser",
       "status": "pending",
       "evidence": null,
-      "reason": "New approved V2-8E contract; current-source implementation and validation pending. Prior-slice evidence is historical."
+      "reason": "Human-requested stop after23of26files171/171;3files unexecuted. Partial evidence is not a complete gate pass."
     },
     {
       "id": "postgres-contract",
       "status": "pending",
       "evidence": null,
-      "reason": "New approved V2-8E contract; current-source implementation and validation pending. Prior-slice evidence is historical."
+      "reason": "Required project/import contract files unexecuted in the final matrix. The new38-casePGconversation contract passed focused; it does not supply this gate. Owned service removed after savedzero."
     },
     {
       "id": "cross-process-faults",
       "status": "pending",
       "evidence": null,
-      "reason": "New approved V2-8E contract; current-source implementation and validation pending. Prior-slice evidence is historical."
+      "reason": "Required final-source PostgreSQL concurrency/fault files unexecuted before the human-requested stop."
     },
     {
       "id": "production-build",
       "status": "pending",
       "evidence": null,
-      "reason": "New approved V2-8E contract; current-source implementation and validation pending. Prior-slice evidence is historical."
+      "reason": "Planned final production-build command unexecuted before the human-requested stop."
     },
     {
       "id": "typecheck",
       "status": "pending",
       "evidence": null,
-      "reason": "New approved V2-8E contract; current-source implementation and validation pending. Prior-slice evidence is historical."
+      "reason": "Planned final-matrix typecheck unexecuted before the human-requested stop; development typecheck is recorded separately."
     },
     {
       "id": "benchmark-50",
       "status": "pending",
       "evidence": null,
-      "reason": "New approved V2-8E contract; current-source implementation and validation pending. Prior-slice evidence is historical."
+      "reason": "Actual final50-cell benchmark unexecuted before the human-requested stop."
     },
     {
       "id": "frontend-visual",
       "status": "pending",
       "evidence": null,
-      "reason": "New approved V2-8E contract; current-source implementation and validation pending. Prior-slice evidence is historical."
+      "reason": "38fresh partial browser images retained;11shell images inspected with matching hashes. Full browser/native capture and inspection unexecuted; gate pending."
     }
   ],
   "knownBlockers": [],
@@ -103,5 +103,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-20"
+  "updated": "2026-10-21"
 }

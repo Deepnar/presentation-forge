@@ -96,10 +96,19 @@ and keep all future work in the roadmap.
 The new continuation authorizes only
 [V2-8E bounded tool-conversation preparation](ROADMAP.md#v2-8e-bounded-tool-conversation).
 State/[evaluation](V2-8E-EVAL.md) index frozen source c71d65e and pending final-source
-validation/review. The prior 8D stop and acceptance above are historical prerequisite
-state. [The new runbook](v2-8e-evidence/RUNBOOK.md) defines the 221-file matrix and
-owned service. Preserve original archives before generators and do not credit old
-results as this source's execution. Stop after this slice's separate review/cleanup.
+validation/review. The human stopped the session on2026-10-21; no validation process
+or owned service remains running. Bulk2359/2359,23serial files171/171 and focused93/93
+passed, with explicit overlap in the [paused assessment](v2-8e-evidence/paused-2026-10-21/assessment.json).
+Original4067evidence files and5canonical archives were restored/hash-verified;
+fresh partial captures/actual PPTXs are preserved separately. PostgreSQL cleanup
+saved/fsynced zero before removal and verified5544closure. Independent source audit
+ran0tests and issued no acceptance. The prior8Dacceptance remains the baseline.
+[The runbook](v2-8e-evidence/RUNBOOK.md) defines the221-file matrix and resume
+restrictions: first audit exact-source records, create a fresh owned service and
+snapshot ALL current evidence; merge saved fresh outputs or rerun affected generators.
+Do not blindly resume the old restored workspace or run finish-evidence.py against
+historical out/ originals. Resume only the approved remaining validation in the
+roadmap, then independent review/cleanup/handoff; no further feature is authorized.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
