@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
-    "note": "Frozen canonical provider/usage corrections. Focus66 and bulk2235 completed; remaining validation is recovering after host restart behind quiet-window guards. Independent acceptance remains pending."
+    "note": "Frozen provider exchange implementation. Complete215-file2529/2529 matrix plus4 persisted provider/native cases, focused66, qualification46, build/type/50 cells and115-image inspection completed. Separate exact-source acceptance remains pending."
   },
   "activeMilestone": {
     "id": "V2-8C",
     "roadmapRef": "docs/ROADMAP.md#v2-8c-provider-boundary",
     "evalDoc": "docs/V2-8C-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -25,55 +25,55 @@
       "id": "model-provider",
       "status": "passed",
       "evidence": "docs/v2-8c-evidence/model-provider.json",
-      "reason": "Saved exact-source zero-exit execution completed before host restart; no failures, skips or cancellations."
+      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
     },
     {
       "id": "non-browser-bulk",
       "status": "passed",
       "evidence": "docs/v2-8c-evidence/non-browser-bulk.json",
-      "reason": "Saved exact-source zero-exit execution completed before host restart; no failures, skips or cancellations."
+      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
+      "status": "passed",
+      "evidence": "docs/v2-8c-evidence/serial-browser.json",
+      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
     },
     {
       "id": "postgres-contract",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
+      "status": "passed",
+      "evidence": "docs/v2-8c-evidence/postgres-contract.json",
+      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
     },
     {
       "id": "cross-process-faults",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
+      "status": "passed",
+      "evidence": "docs/v2-8c-evidence/cross-process-faults.json",
+      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
     },
     {
       "id": "production-build",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
+      "status": "passed",
+      "evidence": "docs/v2-8c-evidence/production-build.json",
+      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
+      "status": "passed",
+      "evidence": "docs/v2-8c-evidence/typecheck.json",
+      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
+      "status": "passed",
+      "evidence": "docs/v2-8c-evidence/benchmark-50.json",
+      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
+      "status": "passed",
+      "evidence": "docs/v2-8c-evidence/frontend-visual.json",
+      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
     }
   ],
   "knownBlockers": [],

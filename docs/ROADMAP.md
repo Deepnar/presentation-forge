@@ -8496,6 +8496,14 @@ needs direction on scope before building.*
   guards. The lost ephemeral service has no saved pre-removal database count;
   replacement PG execution and later cleanup require their own exact identity.
 
+  **Validation complete, acceptance pending:** exact source e41d509 completed the
+  215-file2529/2529 inventory plus4 distinct persisted provider/native cases,
+  137 separate repeats, build/type/50 cells and115-image inspection. Locale probe
+  remains9pass/1standingfail. All required cases executed. Resource/host-restart
+  and inherited rendering limitations remain explicit in the evaluation. The box
+  stays unchecked until a separate exact-source ACCEPT; no parent-milestone or
+  next-feature authorization is inferred.
+
   **Gates/stop:** correctness, ownership/data integrity, canonical edit preservation,
   native/regression/compatibility/documentation gates apply; unchanged browser UI
   supplies interaction/accessibility/responsive regression evidence. Live-provider
