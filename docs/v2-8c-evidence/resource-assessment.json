@@ -49,5 +49,7 @@
     "inflightAtMost": 1,
     "noObservedUserspaceDThreads": true
   },
-  "criticalContention": "Three consecutive15-second critical samples terminate only the owned validation job; normal headroom loss withholds the next job. Timeouts/assertions unchanged."
+  "criticalContention": "Three consecutive15-second critical samples terminate only the owned validation job; normal headroom loss withholds the next job. Timeouts/assertions unchanged.",
+  "qualificationMethod": "180-second duration-weighted low CPU/storage/queue activity with bounded peaks (<50%CPU,<20%disk,<2weightedqueue), no critical/memory/user-D condition, followed by two fresh acceptable15s samples. A single bounded transient does not erase the measured window. Per-job readiness thresholds remain unchanged.",
+  "reasonForAggregation": "Observed small periodic CPU/storage bursts reset an all-samples-identical gate despite sustained substantial headroom. Aggregation assesses sustained contention while preserving peaks and fresh checks; it does not change test assertions/timeouts."
 }

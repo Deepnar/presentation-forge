@@ -43,10 +43,24 @@ class Window:
 
     def wait(self, stable_seconds=30):
         stable = 0
+        samples = []
+        fresh = 0
         while stable<stable_seconds:
             time.sleep(15)
             row = self.observe('pre-job')
-            stable = stable+row['sampleSeconds'] if row['ready'] else 0
+            fresh = fresh+1 if row['ready'] else 0
+            if stable_seconds<=30:
+                stable = stable+row['sampleSeconds'] if row['ready'] else 0
+            else:
+                samples.append(row)
+                while len(samples)>1 and sum(r['sampleSeconds'] for r in samples[1:])>=stable_seconds:samples.pop(0)
+                duration=sum(r['sampleSeconds'] for r in samples)
+                mean=lambda key:sum(r[key]*r['sampleSeconds'] for r in samples)/duration
+                disk_means={n:{k:sum(r['disks'][n][k]*r['sampleSeconds'] for r in samples)/duration for k in ['busyPercent','weightedQueue']} for n in DEVICES}
+                sustained=duration>=stable_seconds and mean('cpuBusyPercent')<25 and mean('cpuIoWaitPercent')<20 and all(d['busyPercent']<5 and d['weightedQueue']<0.5 for d in disk_means.values()) and all(not r['critical'] and r['cpuBusyPercent']<50 and r['availableKiB']>8*1024*1024 and not any(b['userspace'] for b in r['blockedThreads']) and all(d['busyPercent']<20 and d['weightedQueue']<2 for d in r['disks'].values()) and float(re.search(r'^some avg10=([\d.]+)',r['pressure']['memory']).group(1))<1 for r in samples)
+                stable=duration if sustained and fresh>=2 else 0
+                if stable:
+                    (OUT/'sustained-window.json').write_text(json.dumps({'implementationSha':SHA,'sampleSeconds':duration,'samples':len(samples),'cpuBusyMeanPercent':mean('cpuBusyPercent'),'cpuIoWaitMeanPercent':mean('cpuIoWaitPercent'),'diskMeans':disk_means,'freshConsecutiveReadySamples':fresh,'method':'Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance.'},indent=2)+'\n')
             print('RESOURCE WINDOW',round(stable),'of',stable_seconds,'stable seconds; CPU',round(row['cpuBusyPercent'],1),'iowait',round(row['cpuIoWaitPercent'],1),'storage',row['disks'],flush=True)
 
 if __name__=='__main__':
