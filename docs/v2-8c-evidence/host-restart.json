@@ -1,0 +1,20 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "observedAtUtc": "2026-10-20T06:54:43.694590+00:00",
+  "bootId": "c664967e-41af-41b0-9bea-8442fb4d2c91",
+  "previousCoordinatorPid": 1779172,
+  "previousCoordinatorPresent": false,
+  "recordedCompletedJobs": 21,
+  "unacknowledgedFile": "test/v2-selection-chrome.test.js",
+  "unacknowledgedLogTotals": {
+    "total": 5,
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "classification": "Host restart after intentional pause. Selection TAP completed but coordinator exit status was not saved; rerun required. No leaf cancellation total is inferred. All remaining jobs were unexecuted before restart.",
+  "previousOwnedPostgresRemoved": true,
+  "previousDatabasePreRemovalCount": null,
+  "previousDatabasePreRemovalLimitation": "Host restart removed auto-remove/tmpfs service before a saved pre-removal count. Earlier recorded PostgreSQL tests remain actual execution; new PostgreSQL jobs require a new isolated owned service."
+}

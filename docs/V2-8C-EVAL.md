@@ -28,8 +28,23 @@ live qualification, new UI and deployment are outside the contract.
 
 ## Current status and limitations
 
-All final-source required checks are pending. Accepted baseline stays V2-8B until independent
-exact-source ACCEPT. No provider endpoint or hosted content quality has executed.
+Final-source validation is incomplete. Before the host restart, focused66,
+bulk2235 and19 serial files147 passed with saved zero exits (2448 leaf executions,
+including the repeated focus). Seven serial files, six full-matrix PostgreSQL files
+and build/type/benchmark/native jobs remain. The selection file emitted5/5 but its
+coordinator exit status was not saved; it must run again before counting. The runner
+now resumes only recorded exact-source completions and waits for two quiet samples
+before starting each new heavy job. Raw unacknowledged output remains separate.
+
+The machine restarted after the coordinator was deliberately paused for I/O pressure.
+The owned auto-remove/tmpfs PostgreSQL service disappeared before a saved pre-removal
+database count; that observation is unavailable, not zero. Remaining PostgreSQL jobs
+need a replacement owned isolated service. See v2-8c-evidence/host-restart.json and
+quiet-pause.json. Snapshot backups and the five separately preserved baseline browser
+archives remain intact; restore those five only after capturing fresh native output.
+
+Accepted baseline stays V2-8B until independent exact-source ACCEPT. No provider
+endpoint or hosted content quality has executed.
 Fixture protocol verification is not live provider qualification. No live credentials
 are required or read for deterministic tests. Existing locale/timeout/Fit/catalog
 loading/capture/SVG and original-PPTX provenance limits remain separate in the roadmap.

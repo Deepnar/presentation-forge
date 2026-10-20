@@ -4,18 +4,40 @@ class Tee:
  def __init__(self,stream,file):self.stream,self.file=stream,file
  def write(self,text):self.stream.write(text);self.stream.flush();self.file.write(text);self.file.flush()
  def flush(self):self.stream.flush();self.file.flush()
-sys.stdout=Tee(sys.stdout,(out/'coordinator.log').open('w'))
+resume='--resume' in sys.argv
+sys.stdout=Tee(sys.stdout,(out/'coordinator.log').open('a' if resume else 'w'))
 signal.signal(signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
-plan=json.loads((root/'validation-plan.json').read_text());sha=plan['implementationSha'];runs=[]
+plan=json.loads((root/'validation-plan.json').read_text());sha=plan['implementationSha'];runs=json.loads((out/'coordinator.json').read_text()) if resume else []
+assert all(r['implementationSha']==sha for r in runs)
 subprocess.run(['git','merge-base','--is-ancestor',sha,'HEAD'],check=True)
 env={**os.environ,'LC_ALL':'C.UTF-8','TEST_PG_URL':os.environ.get('TEST_PG_URL','postgres://postgres:probe@127.0.0.1:5544/postgres'),'FORGE_RUNTIME_SOURCE':sha,'FORGE_RUNTIME_METRICS_PATH':str((out/'recovery-metrics.jsonl').resolve())}
 files=plan['bulk']+plan['serial']+plan['postgres']
 actual={str(f) for f in pathlib.Path('test').glob('*.test.js')}|{str(f) for f in pathlib.Path('test').glob('*.test.ts')}
 assert len(files)==len(set(files)) and set(files)==actual,(len(files),len(actual),set(files)^actual)
-start=time.time()
+start=datetime.datetime.fromisoformat(runs[0]['atUtc']).timestamp() if runs else time.time()
+def quiet_window():
+ quiet=0
+ while quiet<2:
+  pressure={name:pathlib.Path('/proc/pressure/'+name).read_text() for name in ['cpu','memory','io']}
+  averages={name:float(re.search(r'^some avg10=([\d.]+)',value).group(1)) for name,value in pressure.items()}
+  available=int(re.search(r'^MemAvailable:\s+(\d+)',pathlib.Path('/proc/meminfo').read_text(),re.M).group(1))
+  ready=averages['cpu']<10 and averages['memory']<1 and averages['io']<10 and available>8*1024*1024
+  quiet=quiet+1 if ready else 0
+  record={'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'implementationSha':sha,'pressure':pressure,'availableKiB':available,'ready':ready,'consecutiveQuietSamples':quiet}
+  with (out/'quiet-resume.jsonl').open('a') as stream:stream.write(json.dumps(record)+'\n')
+  if quiet<2:
+   print('QUIET WINDOW',averages,'sample',quiet,'of 2',flush=True);time.sleep(30)
 def run(name,args,files=None,changes=None,expected=0):
+ previous=next((r for r in runs if r['name']==name),None)
+ if previous:
+  assert previous['exitCode']==expected and previous['files']==(files or [])
+  assert pathlib.Path(previous['log']).exists()
+  if files and expected==0:assert not any(previous['tests'][k] for k in ['fail','skip','cancelled'])
+  print(name,'RETAINED recorded complete execution',previous.get('tests',''),flush=True);return previous
+ quiet_window()
  cmd=['nice','-n','10','ionice','-c','2','-n','7','timeout','--signal=TERM','--kill-after=10s','30m' if name=='bulk' else '15m',*args]
  log=out/(name+'.log');at=datetime.datetime.now(datetime.timezone.utc);print(name,'START',flush=True)
+ if resume and log.exists():shutil.copy2(log,log.with_suffix('.unacknowledged-before-reboot.log'))
  with log.open('w') as stream:
   process=subprocess.Popen(cmd,env={**env,**(changes or {})},stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
   try:

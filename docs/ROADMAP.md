@@ -8490,6 +8490,12 @@ needs direction on scope before building.*
   and reject invalid counters. Preserve the cancelled first-source attempt and
   fail-first evidence; refreeze and rerun every final-source gate.
 
+  **Validation recovery:** the final-source coordinator was paused for shared I/O
+  pressure, then lost during a host restart. Retain saved successful jobs, rerun
+  the unacknowledged selection file and all remaining jobs behind quiet-window
+  guards. The lost ephemeral service has no saved pre-removal database count;
+  replacement PG execution and later cleanup require their own exact identity.
+
   **Gates/stop:** correctness, ownership/data integrity, canonical edit preservation,
   native/regression/compatibility/documentation gates apply; unchanged browser UI
   supplies interaction/accessibility/responsive regression evidence. Live-provider

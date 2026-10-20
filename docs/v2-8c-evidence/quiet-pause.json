@@ -1,0 +1,11 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "coordinatorPid": 1779172,
+  "pausedAtUtc": "2026-10-19T17:53:19.212135+00:00",
+  "reason": "Shared-machine I/O pressure rose sharply; current isolated watchdog job may finish, coordinator cannot start the next job",
+  "pressure": {
+    "cpu": "some avg10=1.99 avg60=1.02 avg300=0.29 total=37172251\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.36 avg60=0.12 avg300=0.02 total=423356\nfull avg10=0.36 avg60=0.12 avg300=0.02 total=402594\n",
+    "io": "some avg10=34.01 avg60=36.27 avg300=17.01 total=988585148\nfull avg10=28.52 avg60=32.55 avg300=15.59 total=965924728\n"
+  }
+}

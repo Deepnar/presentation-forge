@@ -1,14 +1,20 @@
 {
-  "implementationSha": "52821fb26b796889da3154998480d2ed7d725bd9",
-  "atUtc": "2026-10-19T17:41:09.102974+00:00",
-  "cpuBusyPercent": 0.9102192800993003,
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "atUtc": "2026-10-19T17:46:19.473885+00:00",
+  "cpuBusyPercent": 1.4409221902017322,
   "pressure": {
-    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=34914450\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
-    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=265708\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=252897\n",
-    "io": "some avg10=0.00 avg60=0.94 avg300=2.81 total=917710638\nfull avg10=0.00 avg60=0.92 avg300=2.76 total=900178479\n"
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=35357327\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=266023\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=253211\n",
+    "io": "some avg10=2.49 avg60=3.21 avg300=2.46 total=925047777\nfull avg10=2.35 avg60=3.17 avg300=2.43 total=907374251\n"
   },
-  "availableMemory": "MemAvailable:   47901236 kB",
-  "backedUpFiles": 3171,
+  "backedUpFiles": 3198,
   "originalPptxArchives": 32,
-  "includesIgnoredAndCurrentSliceArchives": true
+  "includesIgnoredAndCurrentSliceArchives": true,
+  "startPressure": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=35408012\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=266024\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=253213\n",
+    "io": "some avg10=1.54 avg60=2.26 avg300=2.30 total=925981778\nfull avg10=1.54 avg60=2.25 avg300=2.28 total=908303166\n"
+  },
+  "startObservedAtUtc": "2026-10-19T17:47:07.408408+00:00",
+  "assessment": "Low CPU, zero CPU/memory pressure and low I/O pressure; competing work is ordinary desktop activity. Bounded low-priority execution is appropriate."
 }
