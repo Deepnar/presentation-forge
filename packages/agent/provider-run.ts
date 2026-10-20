@@ -28,7 +28,10 @@ const messages: Record<Code, string> = {
   'queue-refused': 'The durable run could not be queued with this request identity.',
 };
 const fail = (code: Code): TurnFailure => ({ ok: false, code, message: messages[code] });
-const stop = (code: Code): never => { throw Object.assign(new Error(messages[code]), { turnCode: code }); };
+// Backend adapters preserve these domain errors while sanitizing driver failures.
+const stop = (code: Code): never => { throw Object.assign(new Error(messages[code]), {
+  code: code === 'cancelled' || code === 'deadline' ? 'runtime-fenced' : 'invalid-document', turnCode: code,
+}); };
 function freeze<T>(value: T): T {
   if (value && typeof value === 'object') {
     for (const child of Object.values(value)) freeze(child);
@@ -225,6 +228,7 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
         const run = await createRuntime(guarded).start(binding, plan);
         return { ok: true, outcome: 'queued', run };
       } catch (error) {
+        if ((error as { turnCode?: Code })?.turnCode) return errorResult(error);
         if ((error as { code?: string })?.code === 'invalid-document') return fail('queue-refused');
         return errorResult(error);
       }
