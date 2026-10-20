@@ -1,0 +1,139 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "acceptedBaselineCompared": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "reviewedEvidenceCommit": "93bed024991fbcbe7d4c09b88922e54e46a86ed2",
+  "independentEvidenceCommit": "02e1c978bb4b921fb3b5b6a449302e2d84945266",
+  "reviewer": "/root/v28d_boundary_review",
+  "context": "/root/v28d_boundary_review",
+  "implementedBy": "/root",
+  "date": "2026-10-20",
+  "evidence": "docs/reviews/V2-8D-8c1e5c4.md",
+  "independentEvidence": "docs/v2-8d-evidence/independent/runs.json",
+  "scope": "Approved V2-8D provider-backed preparation and explicit durable queue only",
+  "sourceDeltaAfterImplementation": [],
+  "currentSourceExecutions": {
+    "total": 358,
+    "pass": 358,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "providerRunBothBackends": 109,
+    "foundationCanonicalPreservationGovernance": 104,
+    "runtimeBothBackendsAndProcesses": 69,
+    "postgresContractsConcurrencyFaultsImport": 42,
+    "full7A": 28,
+    "persistedNative": 4,
+    "reviewerNegativeProbes": 2
+  },
+  "commands": {
+    "productionBuild": "passed independently",
+    "typecheck": "passed independently",
+    "protocol": "Passed independently; 0 errors and 0 warnings.",
+    "benchmark": "50 cells; 465 ms compiler/ZIP; all 5 invariance comparisons agree; all cell results match the packet; no L1/L2/fit/takeaway/missing representation/chart mismatch findings.",
+    "shellNative": "2 actual embedded editor exports verified, rasterized and inspected.",
+    "nativeAdditionalAudit": "4 scenarios; native properties and geometry preserved; untouched slide 2 XML byte-identical."
+  },
+  "executionOverlap": {
+    "inventoryFilesReexecuted": 18,
+    "primaryPacketLeaves": 352,
+    "packetNativeSupplementCases": 4,
+    "reviewerAdditionalProbes": 2,
+    "notAddedToPrimaryPacketDistinctTotal": true
+  },
+  "inspectedImplementerEvidence": {
+    "files": 218,
+    "total": 2639,
+    "pass": 2639,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "unexecuted": 0,
+    "distinctPersistedNativePass": 4,
+    "successfulRepeatsExcludedFromDistinctCount": 134,
+    "fullMatrixIndependentlyDuplicated": false,
+    "inventoryNotIndependentlyExecuted": {
+      "files": 200,
+      "leaves": 2287
+    },
+    "standingLocale": {
+      "pass": 9,
+      "fail": 1,
+      "independentlyRepeated": false,
+      "standingFailureId": "byok-locale",
+      "source": "docs/ROADMAP.md#byok-locale-standing-failure"
+    },
+    "archivedReadinessAttempt": {
+      "placeholderSkips": 1,
+      "actualCasesUnexecutedAtAttempt": true,
+      "laterFullRuntimeCasesPassed": 34,
+      "independentlyRepeatedRuntimeCases": 34,
+      "preciseOriginalCause": "Unavailable: the original catch did not retain its exception."
+    }
+  },
+  "visuals": {
+    "packetImagesInspected": 115,
+    "freshImages": 45,
+    "freshBrowserImages": 11,
+    "freshNativePages": 18,
+    "freshSvgRasters": 16,
+    "freshNativeSvgAndShellByteIdenticalToInspectedPacket": 34,
+    "fullResolutionRiskCasesInspected": true,
+    "nativeRunParagraphCellPropertiesAndGeometryIdentical": true,
+    "untargetedSlideXmlByteIdentical": true,
+    "maximumFreshCanvasDeltaPx": 0.03064727783203125,
+    "largeDeck": {
+      "slides": 120,
+      "thumbs": 120,
+      "openMs": 1543
+    }
+  },
+  "preservation": {
+    "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+    "preExistingFilesVerified": 3898,
+    "evidenceFiles": 3893,
+    "evidenceOriginalPptx": 68,
+    "canonicalOutOriginals": 5,
+    "changedPathsRestored": [
+      "docs/v2-7a-evidence/canvas-chart.json",
+      "docs/v2-7a-evidence/canvas-table.json",
+      "docs/v2-7a-evidence/dashboard-empty.png",
+      "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+      "docs/v2-7a-evidence/dashboard.png",
+      "docs/v2-7a-evidence/editor-blank.png",
+      "docs/v2-7a-evidence/editor-chart.png",
+      "docs/v2-7a-evidence/editor-history.png",
+      "docs/v2-7a-evidence/editor-narrow-projects.png",
+      "docs/v2-7a-evidence/editor-narrow.png",
+      "docs/v2-7a-evidence/editor-readonly.png",
+      "docs/v2-7a-evidence/editor-shell.png",
+      "docs/v2-7a-evidence/editor-table.png",
+      "docs/v2-7a-evidence/large-deck.json",
+      "out/v2-7a-validation/shell-chart.pptx",
+      "out/v2-7a-validation/shell-table.pptx"
+    ],
+    "allHashesMatch": true,
+    "newIndependentOriginalsPreserved": 10,
+    "originalByteReconstruction": false
+  },
+  "resourceAssessment": "docs/v2-8d-evidence/independent/resource-assessment.json",
+  "independentPlannedJobsUnexecuted": 0,
+  "blockingFindings": [],
+  "residuals": [
+    "Standing BYOK locale 9 pass/1 failure remains a separate inspected failure; no skipped, cancelled or unexecuted required case is waived.",
+    "Inherited Fit/narrow overflow, rail/capture/pending-search and first-run SVG styling limits remain separately scoped.",
+    "Elevated global I/O PSI/iowait provenance remains unresolved; no zero-pressure, graphics-causality or production percentile claim.",
+    "The earlier PostgreSQL readiness placeholder skip is archived separately; its precise original exception is unavailable. A complete 34-case rerun and independent execution passed.",
+    "Historical original-archive and reboot-lost-service count provenance limits remain; no missing bytes were reconstructed.",
+    "Live provider/Auto content, parent multi-provider/common-search and interactive Microsoft PowerPoint remain unexecuted and outside this contract.",
+    "An opaque prepared proposal is ephemeral to one host instance; hosted cross-request approval awaits the already recorded lifecycle contract. No network exactly-once claim.",
+    "No Assistant, conversation loop, transcript store, shared search, framework, new credential setup, deployment, paid infrastructure, auth/data-policy or migration acceptance.",
+    "Owned PostgreSQL remains running; the implementer must save/fsync the final project-database count and remove the exact service."
+  ],
+  "implementationTestsStateRoadmapEdited": false,
+  "originalUntrackedPreserved": true,
+  "ownedPostgresStoppedByReviewer": false,
+  "heavySlotReleased": true,
+  "nextFeatureAuthorized": false
+}
