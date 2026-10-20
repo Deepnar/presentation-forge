@@ -1,0 +1,40 @@
+2026-10-20 09:44:05.424 UTC [58] LOG:  checkpoint starting: time
+2026-10-20 09:44:09.433 UTC [58] LOG:  checkpoint complete: wrote 43 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.009 s, sync=0.001 s, total=4.009 s; sync files=11, longest=0.001 s, average=0.001 s; distance=252 kB, estimate=252 kB
+2026-10-20 12:39:35.721 UTC [58] LOG:  checkpoint starting: immediate force wait
+2026-10-20 12:39:35.721 UTC [58] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=4, longest=0.001 s, average=0.000 s; distance=4680 kB, estimate=4680 kB
+2026-10-20 12:40:52.705 UTC [58] LOG:  checkpoint starting: immediate force wait
+2026-10-20 12:40:52.709 UTC [58] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 1 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=4, longest=0.001 s, average=0.000 s; distance=4681 kB, estimate=4681 kB
+2026-10-20 12:45:52.794 UTC [58] LOG:  checkpoint starting: time
+2026-10-20 12:45:52.894 UTC [58] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.101 s, sync=0.001 s, total=0.101 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=4213 kB
+2026-10-20 12:50:04.137 UTC [58] LOG:  checkpoint starting: immediate force wait
+2026-10-20 12:50:04.138 UTC [58] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=4, longest=0.001 s, average=0.000 s; distance=4683 kB, estimate=4683 kB
+2026-10-20 12:55:04.186 UTC [58] LOG:  checkpoint starting: time
+2026-10-20 12:55:04.287 UTC [58] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.101 s, sync=0.001 s, total=0.101 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=4214 kB
+2026-10-20 13:03:53.612 UTC [58] LOG:  checkpoint starting: immediate force wait
+2026-10-20 13:03:53.613 UTC [58] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.002 s; sync files=4, longest=0.001 s, average=0.000 s; distance=4377 kB, estimate=4377 kB
+2026-10-20 13:08:53.679 UTC [58] LOG:  checkpoint starting: time
+2026-10-20 13:08:53.779 UTC [58] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.101 s, sync=0.001 s, total=0.101 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=3939 kB
+2026-10-20 13:19:16.195 UTC [58] LOG:  checkpoint starting: immediate force wait
+2026-10-20 13:19:16.197 UTC [58] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=4, longest=0.001 s, average=0.000 s; distance=4665 kB, estimate=4665 kB
+2026-10-20 13:19:50.078 UTC [58] LOG:  checkpoint starting: immediate force wait
+2026-10-20 13:19:50.079 UTC [58] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=4, longest=0.001 s, average=0.000 s; distance=4484 kB, estimate=4647 kB
+2026-10-20 13:20:20.657 UTC [578] FATAL:  terminating connection due to administrator command
+2026-10-20 13:20:20.657 UTC [578] CONTEXT:  while locking tuple (0,1) in relation "v2_projects"
+2026-10-20 13:20:20.657 UTC [578] STATEMENT:  SELECT * FROM v2_projects WHERE id=$1 FOR UPDATE
+2026-10-20 13:20:20.686 UTC [581] ERROR:  injected history failure
+2026-10-20 13:20:20.686 UTC [581] CONTEXT:  PL/pgSQL function v2_fail_insert() line 1 at RAISE
+2026-10-20 13:20:20.686 UTC [581] STATEMENT:  INSERT INTO v2_project_revisions (project_id, revision, created_at, kind, audit, payload) VALUES ($1,$2,$3,$4,$5,$6)
+2026-10-20 13:20:20.776 UTC [582] ERROR:  injected prune failure
+2026-10-20 13:20:20.776 UTC [582] CONTEXT:  PL/pgSQL function v2_fail_prune() line 1 at RAISE
+2026-10-20 13:20:20.776 UTC [582] STATEMENT:  UPDATE v2_project_revisions SET payload=NULL WHERE project_id=$1 AND revision=$2
+2026-10-20 13:20:32.298 UTC [58] LOG:  checkpoint starting: immediate force wait
+2026-10-20 13:20:32.299 UTC [58] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=4, longest=0.001 s, average=0.000 s; distance=4599 kB, estimate=4642 kB
+2026-10-20 13:21:03.715 UTC [600] ERROR:  import history fault
+2026-10-20 13:21:03.715 UTC [600] CONTEXT:  PL/pgSQL function fail_import_history() line 1 at RAISE
+2026-10-20 13:21:03.715 UTC [600] STATEMENT:  INSERT INTO v2_project_revisions (project_id, revision, created_at, kind, audit, payload) VALUES ($1,$2,$3,$4,$5,$6)
+2026-10-20 13:21:03.822 UTC [602] FATAL:  terminating connection due to administrator command
+2026-10-20 13:21:03.822 UTC [602] CONTEXT:  SQL statement "SELECT pg_sleep(10)"
+	PL/pgSQL function delay_import_history() line 1 at PERFORM
+2026-10-20 13:21:03.822 UTC [602] STATEMENT:  INSERT INTO v2_project_revisions (project_id, revision, created_at, kind, audit, payload) VALUES ($1,$2,$3,$4,$5,$6)
+2026-10-20 13:21:03.972 UTC [58] LOG:  checkpoint starting: immediate force wait
+2026-10-20 13:21:03.972 UTC [58] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=4, longest=0.001 s, average=0.000 s; distance=4353 kB, estimate=4613 kB

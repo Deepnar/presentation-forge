@@ -1,0 +1,91 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "classification": "Environment/readiness setup limitation; original catch did not retain its error, so precise cause is unavailable. No product test body ran in this file. Required cases remain unexecuted until a complete successful rerun.",
+  "failedAttempt": {
+    "name": "v2-runtime-postgres-8b.test",
+    "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-runtime-postgres-8b.test.js"
+    ],
+    "files": [
+      "test/v2-runtime-postgres-8b.test.js"
+    ],
+    "exitCode": 0,
+    "atUtc": "2026-10-20T13:21:49.615567+00:00",
+    "durationSeconds": 6.354115,
+    "log": "docs/v2-8d-evidence/attempts/pg-readiness/unavailable.tap",
+    "tests": {
+      "total": 1,
+      "pass": 0,
+      "fail": 0,
+      "skip": 1,
+      "cancelled": 0
+    },
+    "originalLog": "out/v2-8d-validation/v2-runtime-postgres-8b.test.log"
+  },
+  "currentOwnedService": {
+    "id": "2ef3b51811f0e61ae574f74644cb1b1b9448c0052867360338ab81229147bf97",
+    "running": true,
+    "oomKilled": false,
+    "ports": {
+      "5432/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "5544"
+        }
+      ]
+    }
+  },
+  "currentTcpProbes": [
+    {
+      "ok": true,
+      "rows": [
+        {
+          "ready": 1,
+          "connections": "6"
+        }
+      ],
+      "atUtc": "2026-10-20T13:24:40.207Z"
+    },
+    {
+      "ok": true,
+      "rows": [
+        {
+          "ready": 1,
+          "connections": "6"
+        }
+      ],
+      "atUtc": "2026-10-20T13:24:42.261Z"
+    }
+  ],
+  "assertionsOrTimeoutsChanged": false,
+  "otherCompletedJobsRetained": 32,
+  "laterUnexecuted": [
+    "v2-runtime-postgres-8b",
+    "v2-provider-postgres-8c",
+    "v2-provider-run-postgres-8d",
+    "production-build",
+    "typecheck",
+    "benchmark-50",
+    "headless",
+    "byok-locale",
+    "native-review",
+    "shell-native"
+  ]
+}

@@ -1,0 +1,17 @@
+TAP version 13
+# Subtest: PostgreSQL unavailable; durable runtime contracts/process checks unexecuted
+ok 1 - PostgreSQL unavailable; durable runtime contracts/process checks unexecuted # SKIP isolated PostgreSQL required
+  ---
+  duration_ms: 1.152703
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 6245.979029
+# forge-test-file "test/v2-runtime-postgres-8b.test.js"

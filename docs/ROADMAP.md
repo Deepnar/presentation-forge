@@ -8725,6 +8725,18 @@ keeps behavioural tests before old code is removed.
 
 Done when: the legacy paths are gone and old projects still open.
 
+<a id="postgres-availability-diagnostics"></a>
+
+### [ ] PostgreSQL availability diagnostics
+
+The V2-8D final-source runtime probe skipped after an unsuccessful SELECT1 but
+its catch discarded the original error. The owned service was healthy on later
+probes, leaving precise cause unknown. Preserve a bounded sanitized error code
+and stage when a PostgreSQL test cannot start, without credentials, URLs or raw
+driver bodies; keep unavailable actual cases unexecuted rather than green. This
+is validation observability, separate from product behavior or relaxed readiness.
+[The V2-8D evaluation](V2-8D-EVAL.md) retains the original attempt and rerun status.
+
 <a id="byok-locale-standing-failure"></a>
 
 ### [ ] Standing BYOK locale assertion

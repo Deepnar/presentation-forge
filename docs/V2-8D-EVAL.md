@@ -70,3 +70,22 @@ limit. After its reported reset, the same context completed a
 [read-only source audit](v2-8d-evidence/preliminary-source-review.md) of exact8c1e5c4
 with no confirmed blocker. It executed0tests and supplied no acceptance. Root
 retains the heavy slot until the complete packet is ready.
+
+
+## Final-source PostgreSQL readiness interruption
+
+All26 serial files passed208/208, including complete7A28/28 and B211/11. The first
+four PostgreSQL inventory files passed42/42. The next runtime file emitted one
+availability-placeholder skip (0pass/0fail/1skip/0cancel); its actual cases did not
+run. The coordinator stopped and did not credit that file as passing. The owned
+service remained running, with no OOM,54.5MiB used of192MiB tmpfs, and two subsequent
+host TCP SELECT1 probes passed with6total server processes/connections reported.
+The original test catch retained no error; its precise cause is unknown rather
+than proven timing or product failure. Preserve this environmental/setup limitation.
+
+[The archived attempt](v2-8d-evidence/attempts/pg-readiness/assessment.json) retains
+raw TAP, original coordinator and service/probe observations. Only the archived
+skipped record was removed from the active continuation index;32 completed zero-
+exit jobs stay retained. No source, assertion or timeout changed. Resume requires
+fresh sustained headroom and reruns the complete runtime file plus remaining jobs.
+The skipped attempt remains separate; later actual totals must not absorb it.

@@ -8,7 +8,9 @@
 No acceptance is claimed. Original .agents/ and both PRESENTATION_FORGE_V2_*
 untracked documents remain untouched.
 
-Root owns the exclusive heavy slot. Full runner session91424 invokes
+Root owns the exclusive heavy slot. The original full runner session91424 stopped
+on one PG readiness skip after32 complete jobs; the continuation uses the same
+prepare-full-validation.py --resume and preserved snapshot. It invokes
 prepare-full-validation.py and writes out/v2-8d-validation/full-execution.log,
 then coordinator.json/log. It waits for180seconds sustained headroom, snapshots
 all evidence/ignored original archives and five canonical out/ originals, then
@@ -40,3 +42,14 @@ Stop after this slice's separate review, owned cleanup and final handoff. Queued
 runs use existing workers; no conversation loop, Assistant/search/UI, credentials
 store, public route, new data policy, paid infrastructure, deployment or migration
 is authorized. Future work lives only in the roadmap.
+
+
+All26 serial files passed208/208 and the first4PG files42/42. The runtime PG
+availability placeholder skipped1 (actual cases unexecuted), causing strict stop.
+Its raw record/TAP were archived in attempts/pg-readiness and removed only from
+the active continuation index. Exact owned service remained running;2fresh TCP
+probes passed. Precise original error was not retained; cause remains unknown.
+Resume has been started behind fresh180second headroom qualification; check the
+actual coordinator/session before further action. No test/source/assertion/timeout
+changed and no skipped attempt is relabeled as passing. Preserve fresh browser
+outputs until the resumed coordinator captures and restores them at normal completion.
