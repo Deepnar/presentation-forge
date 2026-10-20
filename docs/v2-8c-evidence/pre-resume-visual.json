@@ -1,0 +1,18 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "inspected": [
+    {
+      "file": "docs/v2-7a-evidence/editor-narrow-projects.png",
+      "sha256": "8ab171e28981f8f94dec5360073e987f69f91ceaecfbe3bba4593f691b4a869b"
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-history.png",
+      "sha256": "cb33ae90694d09a0d33396153284775c03f194133a9cb91a5bdadd1eefa27062"
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-chart.png",
+      "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+    }
+  ],
+  "observations": "Full-size 500px history dialog retains visible close and revision rows. Restored desktop history status and chart/layers/inspector controls are visible without new foreground overlap. Known narrow background canvas overflow remains. Final complete manifest inspection is pending."
+}

@@ -1,0 +1,75 @@
+[
+  {
+    "source": "out/v2-7b-1-validation/browser/imported-chart.pptx",
+    "backend": "SQLite; authenticated current serial B1/B2 browser exports",
+    "sha256": "5d71658285501aac9f82b9491a54d22696a201e631fbea94e6fe9013214e87eb",
+    "bytes": 92783,
+    "slideCount": 3,
+    "chartParts": 1,
+    "nativeTable": true,
+    "nativeAssertions": "passed",
+    "rasters": [
+      "docs/v2-8c-evidence/native/chart-2.png"
+    ],
+    "originalArchive": "docs/v2-8c-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-chart.pptx",
+    "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/imported-table.pptx",
+    "backend": "SQLite; authenticated current serial B1/B2 browser exports",
+    "sha256": "f3bf5bf33f76fd7c1caa9efd6702dc69f24b2429cc7889f4f0034ace6b931c1a",
+    "bytes": 92770,
+    "slideCount": 3,
+    "chartParts": 1,
+    "nativeTable": true,
+    "nativeAssertions": "passed",
+    "rasters": [
+      "docs/v2-8c-evidence/native/table-3.png"
+    ],
+    "originalArchive": "docs/v2-8c-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-table.pptx",
+    "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/handoff.pptx",
+    "backend": "SQLite; authenticated current serial B1/B2 browser exports",
+    "sha256": "8abbed3d818ae5b7bc0ddd16b17ae8c443d7bc8d3d1ce5fc1b8a6afbcb521599",
+    "bytes": 92763,
+    "slideCount": 3,
+    "chartParts": 1,
+    "nativeTable": true,
+    "nativeAssertions": "passed",
+    "rasters": [
+      "docs/v2-8c-evidence/native/handoff-1.png",
+      "docs/v2-8c-evidence/native/handoff-2.png",
+      "docs/v2-8c-evidence/native/handoff-3.png"
+    ],
+    "originalArchive": "docs/v2-8c-evidence/browser-archives/out--v2-7b-2-validation--browser--handoff.pptx",
+    "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6"
+  },
+  {
+    "source": "out/v2-7a-validation/shell-chart.pptx",
+    "sha256": "25f5413a61ecf6627904bd8798946c88690b69955391d2fded60f3abbd1ef980",
+    "bytes": 70668,
+    "slideCount": 1,
+    "nativeAssertions": "passed",
+    "backend": "SQLite; authenticated actual embedded editor save/export from complete7A suite",
+    "rasters": [
+      "docs/v2-8c-evidence/native/shell-chart.png"
+    ],
+    "originalArchive": "docs/v2-8c-evidence/browser-archives/out--v2-7a-validation--shell-chart.pptx",
+    "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6"
+  },
+  {
+    "source": "out/v2-7a-validation/shell-table.pptx",
+    "sha256": "46be94456012db118a7fd76783a8e5e6a4f6c2ccc44035c2a1bb3e6ca24cef3e",
+    "bytes": 72451,
+    "slideCount": 1,
+    "nativeAssertions": "passed",
+    "backend": "SQLite; authenticated actual embedded editor save/export from complete7A suite",
+    "rasters": [
+      "docs/v2-8c-evidence/native/shell-table.png"
+    ],
+    "originalArchive": "docs/v2-8c-evidence/browser-archives/out--v2-7a-validation--shell-table.pptx",
+    "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6"
+  }
+]

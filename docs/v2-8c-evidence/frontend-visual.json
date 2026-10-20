@@ -1,0 +1,15 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "command": "Inspect115 hashed final browser/native/SVG images via20 labeled sheets plus full-resolution narrow history/deletion dialogs and edited native text/chart/table; compare preservation, OOXML and measured canvas bounds",
+  "log": "docs/v2-8c-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": "docs/v2-8c-evidence/images.json",
+  "imageCount": 115,
+  "browserImages": 76,
+  "nativeRasters": 23,
+  "svgRasters": 16,
+  "limitations": "Inherited Fit/narrow/capture/mixed-run SVG limits remain. Consumer rasterization is not interactive PowerPoint qualification or live provider quality. Elevated PSI/iowait has unresolved provenance; local timings are samples only."
+}

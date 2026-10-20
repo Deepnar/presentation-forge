@@ -1,0 +1,113 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "localProtocolAndBackendSamples": {
+    "sqlite-openai-compatible": {
+      "timingsMs": {
+        "startMs": 1.4685680000000048,
+        "claimMs": 1.5615419999999745,
+        "commitMs": 5.588187000000005,
+        "reopenMs": 0.4098579999999856
+      },
+      "providerExchangeMs": 16.22213099999999,
+      "traceBytes": 1285,
+      "protocolFixture": true
+    },
+    "postgres-openai-compatible": {
+      "timingsMs": {
+        "startMs": 3.119425999999976,
+        "claimMs": 3.552248999999847,
+        "commitMs": 7.440151000000014,
+        "reopenMs": 7.554796000000124
+      },
+      "providerExchangeMs": 3.150293000000147,
+      "traceBytes": 1285,
+      "protocolFixture": true
+    },
+    "sqlite-anthropic": {
+      "timingsMs": {
+        "startMs": 0.8589630000001307,
+        "claimMs": 0.6973920000000362,
+        "commitMs": 2.31340100000034,
+        "reopenMs": 0.35621599999967657
+      },
+      "providerExchangeMs": 3.472668999999769,
+      "traceBytes": 1285,
+      "protocolFixture": true
+    },
+    "postgres-anthropic": {
+      "timingsMs": {
+        "startMs": 1.89984800000002,
+        "claimMs": 2.9504970000002686,
+        "commitMs": 6.941364000000249,
+        "reopenMs": 6.496559000000161
+      },
+      "providerExchangeMs": 2.860994000000119,
+      "traceBytes": 1285,
+      "protocolFixture": true
+    }
+  },
+  "actualExistingRuntimeProcessRecovery": [
+    {
+      "backend": "SQLite",
+      "source": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 194.6471819999997,
+      "excludesLeaseWait": true
+    },
+    {
+      "backend": "PostgreSQL",
+      "source": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 237.93544900000052,
+      "excludesLeaseWait": true
+    }
+  ],
+  "largeDeck": {
+    "project": "p-9ff5819d04aa4a5cbf5fec35",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1543
+  },
+  "canvasMeasurements": [
+    {
+      "file": "docs/v2-8c-evidence/measurements/docs--v2-7a-evidence--canvas-chart.json",
+      "kind": null,
+      "maxDeltaPx": 0.0494842529296875
+    },
+    {
+      "file": "docs/v2-8c-evidence/measurements/docs--v2-7a-evidence--canvas-table.json",
+      "kind": null,
+      "maxDeltaPx": 0.01897430419921875
+    },
+    {
+      "file": "docs/v2-8c-evidence/measurements/out--v2-7b-1-validation--browser--canvas-table.json",
+      "kind": null,
+      "maxDeltaPx": 0
+    },
+    {
+      "file": "docs/v2-8c-evidence/measurements/out--v2-7b-1-validation--browser--canvas-chart.json",
+      "kind": null,
+      "maxDeltaPx": 0
+    },
+    {
+      "file": "docs/v2-8c-evidence/measurements/out--v2-7c-3-validation--browser--canvas.json",
+      "kind": "chart",
+      "maxDeltaPx": 0
+    },
+    {
+      "file": "docs/v2-8c-evidence/measurements/out--v2-7c-3-validation--browser--canvas.json",
+      "kind": "table",
+      "maxDeltaPx": 0
+    }
+  ],
+  "maximumCanvasDeltaPx": 0.0494842529296875,
+  "limitation": "Local fixtures, not live provider latency/content quality or production percentiles. Existing runtime recovery excludes lease wait; no conversational network exactly-once claim.",
+  "benchmark": {
+    "cells": 50,
+    "compilerAndZipMs": 441,
+    "recordedGitHead": "0be971d"
+  },
+  "resourceAssessment": "docs/v2-8c-evidence/resource-assessment.json",
+  "resourceSamples": "docs/v2-8c-evidence/resource-window.jsonl",
+  "environmentLimitation": "Elevated global I/O PSI/iowait has unresolved provenance; all local latency measurements retain that limitation."
+}
