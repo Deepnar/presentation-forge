@@ -1,0 +1,20 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "reviewedEvidenceCommit": "93bed024991fbcbe7d4c09b88922e54e46a86ed2",
+  "sourceDeltaAfterImplementation": [],
+  "inventoryFiles": 218,
+  "primaryLeavesVerifiedFromRaw": 2639,
+  "nativeSupplementLeaves": 4,
+  "successfulRepeatLeavesExcluded": 134,
+  "standingLocale": {
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "independentlyReexecuted": false
+  },
+  "imageHashesVerified": 115,
+  "newOriginalArchivesVerifiedAndTracked": 13,
+  "allRecordedRawCountsAndFileMarkersMatch": true,
+  "fullMatrixIndependentlyReexecuted": false
+}

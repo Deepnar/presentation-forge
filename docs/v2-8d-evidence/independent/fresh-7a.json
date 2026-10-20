@@ -1,0 +1,82 @@
+[
+  {
+    "source": "docs/v2-7a-evidence/canvas-chart.json",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/canvas-chart.json",
+    "sha256": "ff0a6a8da7422f38e2314a92f3ac9c6e727900624289bb2be73d2f122f43dd56"
+  },
+  {
+    "source": "docs/v2-7a-evidence/canvas-table.json",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/canvas-table.json",
+    "sha256": "d99dbb18f0f60c5b7f23de833fd9d31cc4736dd3d60c655abe81de61c2f3c315"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-empty.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/dashboard-empty.png",
+    "sha256": "8d2740429f10fbf585dedf29a4d496ab5adc71e55eb31029e17b65393d52b60a"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/dashboard-hosted-anon.png",
+    "sha256": "dcc0ef4614ec16be6889111c83b9e2443a6e4aef39cf238e36bbfaa0cf60930b"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/dashboard.png",
+    "sha256": "efe925a1cf450a02513c736f061f8a96d343059b8e1fb616fa97aced6cd0d6ce"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-blank.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/editor-blank.png",
+    "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-chart.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/editor-chart.png",
+    "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-history.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/editor-history.png",
+    "sha256": "b5c442ed1d147f989e91eeddb1e2995e2c6dc42875ab4265661dce59b6046e20"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/editor-narrow-projects.png",
+    "sha256": "fa4928c9be4c5302e539e0c77e7850f27e2eed07a2ba6f6e5713869d468a9e55"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/editor-narrow.png",
+    "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-readonly.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/editor-readonly.png",
+    "sha256": "c9f7548027ee90671b013fea12086786a5070f704c919a85e0c67e0509578a61"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-shell.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/editor-shell.png",
+    "sha256": "6ce66df86c306aa2ab86ad32ac1d519c444bcbe762cbba83b4701983a5d31bdc"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-table.png",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/editor-table.png",
+    "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9"
+  },
+  {
+    "source": "docs/v2-7a-evidence/large-deck.json",
+    "file": "docs/v2-8d-evidence/independent/fresh-7a/large-deck.json",
+    "sha256": "807d56ed88b40110605b1e95e24b667d505464d473496c9873786d8247b9803d"
+  },
+  {
+    "source": "out/v2-7a-validation/shell-chart.pptx",
+    "file": "docs/v2-8d-evidence/independent/browser-archives/shell-chart.pptx",
+    "sha256": "1ad8a911151e22ddac905b54b41c6b5dbbf6c9997f279b361b96640bfdf70b44"
+  },
+  {
+    "source": "out/v2-7a-validation/shell-table.pptx",
+    "file": "docs/v2-8d-evidence/independent/browser-archives/shell-table.pptx",
+    "sha256": "5a97cc6ed96f1e8f93b14c6d095cc2eda1867c0337c6dcc2676989dd3da4fecf"
+  }
+]

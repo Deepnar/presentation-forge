@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: mutating caller binding and nested request during HTTP cannot rebind the private proposal
+ok 1 - mutating caller binding and nested request during HTTP cannot rebind the private proposal
+  ---
+  duration_ms: 78.801329
+  type: 'test'
+  ...
+# Subtest: mutating a retained normalized response after preparation cannot alter queued content
+ok 2 - mutating a retained normalized response after preparation cannot alter queued content
+  ---
+  duration_ms: 14.504922
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 336.912215

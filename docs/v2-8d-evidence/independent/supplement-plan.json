@@ -1,0 +1,36 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "jobs": [
+    {
+      "name": "negative-probes",
+      "args": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "docs/v2-8d-evidence/independent/negative-probes.mjs"
+      ],
+      "files": [
+        "docs/v2-8d-evidence/independent/negative-probes.mjs"
+      ]
+    },
+    {
+      "name": "shell-native",
+      "args": [
+        "node",
+        "docs/v2-8d-evidence/independent/shell-native.mjs"
+      ],
+      "files": []
+    },
+    {
+      "name": "native-audit",
+      "args": [
+        "python3",
+        "docs/v2-8d-evidence/independent/native-audit.py"
+      ],
+      "files": []
+    }
+  ],
+  "bounds": "Each process-group job15m TERM watchdog,10s KILL grace; all jobs sequential; initial180s measured headroom and two fresh15s acceptable samples per job; ongoing15s samples,3critical samples stop only owned job. Global PSI/iowait remains unresolved.",
+  "reviewedEvidenceCommit": "93bed024991fbcbe7d4c09b88922e54e46a86ed2"
+}

@@ -1,0 +1,30 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "records": [
+    {
+      "scenario": "postgres-anthropic",
+      "untargetedSlideXmlByteIdentical": true,
+      "nativeRunParagraphCellPropertiesAndGeometryIdentical": true,
+      "editedChartValuesNative": true
+    },
+    {
+      "scenario": "postgres-openai-compatible",
+      "untargetedSlideXmlByteIdentical": true,
+      "nativeRunParagraphCellPropertiesAndGeometryIdentical": true,
+      "editedChartValuesNative": true
+    },
+    {
+      "scenario": "sqlite-anthropic",
+      "untargetedSlideXmlByteIdentical": true,
+      "nativeRunParagraphCellPropertiesAndGeometryIdentical": true,
+      "editedChartValuesNative": true
+    },
+    {
+      "scenario": "sqlite-openai-compatible",
+      "untargetedSlideXmlByteIdentical": true,
+      "nativeRunParagraphCellPropertiesAndGeometryIdentical": true,
+      "editedChartValuesNative": true
+    }
+  ],
+  "freshNativeSvgImageHashesVerified": 32
+}

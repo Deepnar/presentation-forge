@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/deepnar/Programs/presentations/docs/v2-8d-evidence/independent/run-supplements.py", line 16, in <module>
+    assert runs[-1]['name'] == 'benchmark-50' and runs[-1]['exitCode'] == 0
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

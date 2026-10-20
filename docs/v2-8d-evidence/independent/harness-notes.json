@@ -1,0 +1,18 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "reviewerHarnessOnlyCorrections": [
+    {
+      "script": "packet-audit.py",
+      "cause": "Initial log lookup assumed original coordinator basenames; retained packet copies use aggregate TAP aliases and logs/files/*.tap.",
+      "effect": "Two lightweight packet-audit setup assertions refused missing paths before audit; no product test executed or assertion changed.",
+      "correction": "Resolve explicit focused/bulk aliases and per-file TAP locations; complete corrected audit passed."
+    },
+    {
+      "script": "run-supplements.py",
+      "cause": "Attempted dispatch while main runner was still waiting for benchmark headroom.",
+      "effect": "Precondition correctly refused before any supplemental job; raw supplement-precondition.log preserved.",
+      "correction": "Waited for main runner zero exit and recorded benchmark completion before redispatch; no precondition/assertion/timeout changed."
+    }
+  ],
+  "assertionsOrProductTimeoutsWeakened": false
+}

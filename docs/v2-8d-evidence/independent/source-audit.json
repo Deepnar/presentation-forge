@@ -1,0 +1,53 @@
+{
+  "acceptedBaselineCompared": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "reviewer": "/root/v28d_boundary_review",
+  "context": "separate from /root implementer; same context as preliminary source-only audit",
+  "blockingFindings": [],
+  "deltaInspected": [
+    "packages/agent/provider-run.ts",
+    "packages/agent/provider-run-request.schema.json",
+    "packages/agent/provider-run-request.generated.ts",
+    "packages/agent/run-state.ts",
+    "src/agent/index.js",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-provider-run-sqlite-8d.test.js",
+    "test/v2-provider-run-postgres-8d.test.js",
+    "test/v2-provider-run-contract.js",
+    "test/dev-protocol.test.js",
+    "tools/dev-protocol-check.mjs",
+    "tools/v2-types.mjs"
+  ],
+  "canonicalDependenciesInspected": [
+    "packages/agent/context.ts",
+    "packages/agent/provider.ts",
+    "packages/agent/runtime.ts",
+    "packages/tools/session.ts",
+    "packages/tools/json.ts",
+    "packages/tools/executor.ts",
+    "src/projects/store.js:withRuntimeTransaction/exact owner checks",
+    "src/projects/store-postgres.js:withRuntimeTransaction/domain-error preservation/exact owner checks"
+  ],
+  "invariantsChecked": [
+    "synchronous bounded clones before first await",
+    "exact owner/current durable revision snapshots and rechecks",
+    "semantic tool projections and allowed catalog",
+    "one bounded cancellable provider attempt outside DB transactions",
+    "normalized output revalidation before canonical batch merge/preflight",
+    "duplicate/mixed/protected/foreign/oversized writes refuse atomically",
+    "private cloned plan and binding separated from frozen preview",
+    "exact object identity and per-instance WeakMap proposal capability",
+    "digest/request identity conflict and replay through accepted runtime",
+    "queue cancellation/deadline guards at actual backend beforeCommit seam",
+    "no prompt/key/raw response/transcript persistence or new tables",
+    "same canonical worker and human scene preservation/history"
+  ],
+  "postgresCorrection": "stop supplies established invalid-document/runtime-fenced domain code plus turnCode; adapters preserve deliberate errors; enqueue classifies turnCode first; no adapter error policy change",
+  "scopeExclusions": [
+    "parent conversational execution/Assistant/shared search",
+    "live provider/Auto quality",
+    "hosted cross-request opaque approval lifecycle",
+    "interactive Microsoft PowerPoint",
+    "deployment/infrastructure/auth/data-policy changes"
+  ]
+}
