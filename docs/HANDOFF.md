@@ -1,55 +1,43 @@
-# Handoff — V2-8D frozen; full validation running
+# Handoff — V2-8D validated; independent acceptance pending
 
 2026-10-20, branch v2, push origin/v2. Accepted baseline remains
 `e41d509c20fca21a70b9a0c587ccb83684aee7e6`. Frozen implementation is
-`8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`; later commits are docs/evidence/harness.
-[Contract](ROADMAP.md#v2-8d-provider-run-preparation), state,
-[evaluation](V2-8D-EVAL.md) and [runbook](v2-8d-evidence/RUNBOOK.md) define scope.
-No acceptance is claimed. Original .agents/ and both PRESENTATION_FORGE_V2_*
-untracked documents remain untouched.
+`8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`; later commits are docs/evidence/harness,
+with no product/test/tools delta. [Contract](ROADMAP.md#v2-8d-provider-run-preparation),
+state, [evaluation](V2-8D-EVAL.md) and [runbook](v2-8d-evidence/RUNBOOK.md) define
+scope. Root does not accept its own implementation.
 
-Root owns the exclusive heavy slot. The original full runner session91424 stopped
-on one PG readiness skip after32 complete jobs; the continuation uses the same
-prepare-full-validation.py --resume and preserved snapshot. It invokes
-prepare-full-validation.py and writes out/v2-8d-validation/full-execution.log,
-then coordinator.json/log. It waits for180seconds sustained headroom, snapshots
-all evidence/ignored original archives and five canonical out/ originals, then
-runs218files (185bulk/26serial/7PG), focused repeats, build/type/50cells and4native
-supplements. Every job has fresh readiness checks, low priority and a watchdog.
-A timed-out/cancelled/unacknowledged job is not a pass. Check actual process/exit
-and saved coordinator state before attempting resume. Do not overlap browser/build.
+Complete218-file matrix2639/2639 plus4distinct persisted/native scenarios passed:
+2643distinct checks,0fail/skip/cancel and0required cases unexecuted. Separate repeats
+109focused+25resume qualification passed134/134. Standing en_IN BYOK locale is
+9pass/1fail separately. Build/typecheck/canonical50cells passed. All115final images
+were inspected;120slides opened1539ms, maximum canvas delta0.102196px. The3631-file
+snapshot and5canonical out/ originals were restored/hash-verified;13new original
+PPTXs are retained. Preserve inherited visual/live-quality/provenance limits.
 
-Owned PostgreSQL15.18 is exact container
+The original runtime PostgreSQL readiness placeholder skipped1; actual34cases
+were unexecuted in that attempt. Its complete rerun passed34/34 without source,
+assertion or timeout changes. Archived raw evidence remains; original cause unknown.
+Pre-freeze null-prototype uniqueness and PostgreSQL refusal classification fixes
+and all development failures remain distinct from final-source passing totals.
+
+Root has finished heavy execution. The separate high-effort reviewer context
+/root/v28d_boundary_review is available for applicable independent execution and
+exact-source ACCEPT/HOLD. Its preliminary read-only audit found no blocker but
+ran0tests and supplied no acceptance. During reviewer snapshot/execution/restoration,
+root must make no tracked edits or competing heavy tests. Keep the owned service
+running until review completes. Review may accept only this bounded slice.
+
+Owned PostgreSQL15.18 exact ID
 `2ef3b51811f0e61ae574f74644cb1b1b9448c0052867360338ab81229147bf97`,
-forge-v28d-validation,127.0.0.1:5544,1CPU/512MiB/192MiB data tmpfs. Keep for
-current validation/review; never use or stop unrelated services. Save/fsync a fresh
-non-template project-database count before stopping the exact ID; bounded-poll
-actual auto-removal and port closure. Prior reboot-lost-service count/PSI provenance
-limitations remain in their historical evidence. New runtime observations retain
-unresolved elevated PSI/iowait rather than assigning a graphics-worker cause.
+forge-v28d-validation,127.0.0.1:5544,1CPU/512MiB/192MiB data tmpfs. Before cleanup
+save/fsync a fresh non-template/non-postgres database count; stop only this exact
+ID and bounded-poll actual auto-removal/port closure. Never reuse or stop unrelated
+services. Global PSI/iowait provenance remains unresolved; bursts withheld new jobs.
+The earlier reboot-lost service's unavailable pre-removal count remains historical.
 
-Development null-prototype uniqueness correction passed93/93. Source9bf412f
-then exposed14PG classification failures in142checks (128pass); the correction is
-in8c1e5c4. Raw attempts are retained. The drift-file typo omitted1case in an earlier
-141-case run; no missing case is credited. Frozen-source focused109/109 and bulk2303/2303 passed; remaining gates are pending.
-A separate high-effort reviewer /root/v28d_boundary_review initially hit a usage
-limit, then retried after reset and completed a read-only exact-source audit with
-no confirmed blocker,0tests and no acceptance. Reuse that context for independent
-execution/ACCEPT/HOLD after the complete packet is pushed and the heavy slot is
-released; root makes no tracked edits during its evidence snapshot.
-
-Stop after this slice's separate review, owned cleanup and final handoff. Queued
-runs use existing workers; no conversation loop, Assistant/search/UI, credentials
-store, public route, new data policy, paid infrastructure, deployment or migration
-is authorized. Future work lives only in the roadmap.
-
-
-All26 serial files passed208/208 and the first4PG files42/42. The runtime PG
-availability placeholder skipped1 (actual cases unexecuted), causing strict stop.
-Its raw record/TAP were archived in attempts/pg-readiness and removed only from
-the active continuation index. Exact owned service remained running;2fresh TCP
-probes passed. Precise original error was not retained; cause remains unknown.
-Resume has been started behind fresh180second headroom qualification; check the
-actual coordinator/session before further action. No test/source/assertion/timeout
-changed and no skipped attempt is relabeled as passing. Preserve fresh browser
-outputs until the resumed coordinator captures and restores them at normal completion.
+Original .agents/ and both PRESENTATION_FORGE_V2_* untracked documents are untouched.
+Stop after independent review, owned cleanup and final handoff. No conversation
+loop, Assistant/search/UI, public routes/config, credential/transcript store, new
+policy, paid infrastructure, production deployment or migration is authorized.
+Future work and the hosted opaque-proposal lifetime seam live only in the roadmap.
