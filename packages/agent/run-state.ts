@@ -5,6 +5,7 @@ import type { RunPlan } from "./run-plan.generated.ts";
 import type { RunRecord } from "./run.generated.ts";
 import type { RunReceipt } from "./receipt.generated.ts";
 import type { ProviderRunRequest } from "./provider-run-request.generated.ts";
+import type { ConversationRequest } from "./conversation-request.generated.ts";
 export type { RunPlan, RunRecord };
 const receiptValidator = new Ajv({ strict: false }).compile<RunReceipt>(
   JSON.parse(
@@ -34,6 +35,15 @@ export function parseProviderRunRequest(input: unknown): ProviderRunRequest | nu
     // AJV's object uniqueItems comparison requires ordinary JSON prototypes.
     const copy: unknown = JSON.parse(JSON.stringify(cloneJson(input, MAX_PLAN_CHARS)));
     return providerRunValidator(copy) && copy.request.trim() ? copy : null;
+  } catch { return null; }
+}
+const conversationValidator = ajv.compile<ConversationRequest>(JSON.parse(
+  await readFile(new URL('./conversation-request.schema.json', import.meta.url), 'utf8'),
+));
+export function parseConversationRequest(input: unknown): ConversationRequest | null {
+  try {
+    const copy: unknown = JSON.parse(JSON.stringify(cloneJson(input, MAX_PLAN_CHARS)));
+    return conversationValidator(copy) && copy.request.trim() ? copy : null;
   } catch { return null; }
 }
 const planValidator = ajv.compile<RunPlan>(

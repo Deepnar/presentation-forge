@@ -1,0 +1,248 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ConversationRequest",
+  "type": "object",
+  "properties": {
+    "requestId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "projectRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "inspect",
+            "edit"
+          ]
+        },
+        "readableSlides": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "maxItems": 120,
+          "uniqueItems": true
+        },
+        "editableTargets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slideId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "elementId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "slideId",
+              "elementId"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 256,
+          "uniqueItems": true
+        },
+        "selection": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slideId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "elementId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "slideId",
+              "elementId"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 32,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "mode",
+        "readableSlides",
+        "editableTargets",
+        "selection"
+      ],
+      "additionalProperties": false
+    },
+    "deadlineAt": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "request": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16000
+    },
+    "reads": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "tool": {
+                "const": "get_project"
+              },
+              "args": {
+                "type": "object",
+                "properties": {
+                  "offset": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "tool",
+              "args"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "tool": {
+                "const": "get_slide"
+              },
+              "args": {
+                "type": "object",
+                "properties": {
+                  "slideId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "offset": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20
+                  }
+                },
+                "required": [
+                  "slideId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "tool",
+              "args"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "tool": {
+                "const": "get_selected_elements"
+              },
+              "args": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "tool",
+              "args"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "contextChars": {
+      "type": "integer",
+      "minimum": 2048,
+      "maximum": 100000
+    },
+    "maxOutputTokens": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 32000
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "maxExchanges": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "maxToolCalls": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "maxOutputTokensTotal": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32768
+        }
+      },
+      "required": [
+        "maxExchanges",
+        "maxToolCalls",
+        "maxOutputTokensTotal"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "requestId",
+    "projectRevision",
+    "scope",
+    "deadlineAt",
+    "request",
+    "reads",
+    "contextChars",
+    "maxOutputTokens",
+    "limits"
+  ]
+}
