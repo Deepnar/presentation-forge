@@ -31,8 +31,8 @@ ignored-original snapshots. Missing PostgreSQL is unexecuted, never passing.
 
 The frozen-source focused three-file suite passed109/109 (25boundary,42SQLite,
 42PostgreSQL), with0fail/skip/cancel. The185-file bulk also passed2303/2303 with
-0fail/skip/cancel. Serial browser, remaining PostgreSQL/process contracts, commands
-and visual inspection are pending. The accepted V2-8C results are
+0fail/skip/cancel. All26 serial files passed208/208. Remaining PostgreSQL files, commands
+and complete visual inspection are pending. The accepted V2-8C results are
 historical prerequisites, not current-source execution. Standing BYOK locale,
 Fit/narrow/rail/capture/pending-search/SVG styling and original-archive provenance
 limits remain as documented in the roadmap and prior evaluations. No new product
@@ -89,3 +89,7 @@ skipped record was removed from the active continuation index;32 completed zero-
 exit jobs stay retained. No source, assertion or timeout changed. Resume requires
 fresh sustained headroom and reruns the complete runtime file plus remaining jobs.
 The skipped attempt remains separate; later actual totals must not absorb it.
+
+The complete runtime PostgreSQL file then passed34/34 after fresh qualification,
+with0fail/skip/cancel and no source/assertion/timeout changes. The original skipped
+attempt remains separate; its precise original availability error is still unknown.

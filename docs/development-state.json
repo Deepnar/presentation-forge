@@ -35,9 +35,9 @@
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8d-evidence/serial-browser.json",
+      "reason": "Complete26-file208/208 serial browser/build-owner regression, including7A28/28 and B211/11; no failures, skips or cancellations. Visual inspection remains separate."
     },
     {
       "id": "postgres-contract",
