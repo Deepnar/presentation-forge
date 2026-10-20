@@ -1,0 +1,37 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "mounts": {
+    "/home/deepnar/Programs/presentations": {
+      "filesystems": [
+        {
+          "target": "/home",
+          "source": "/dev/nvme0n1p5[/@home]",
+          "fstype": "btrfs",
+          "options": "rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvolid=257,subvol=/@home"
+        }
+      ]
+    },
+    "/tmp": {
+      "filesystems": [
+        {
+          "target": "/tmp",
+          "source": "tmpfs",
+          "fstype": "tmpfs",
+          "options": "rw,noatime,inode64,huge=advise"
+        }
+      ]
+    },
+    "/var/lib/docker": {
+      "filesystems": [
+        {
+          "target": "/",
+          "source": "/dev/nvme0n1p5[/@]",
+          "fstype": "btrfs",
+          "options": "rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@"
+        }
+      ]
+    }
+  },
+  "postgresData": "Owned192MiBtmpfs; repository/output and backingDocker mount verified separately.",
+  "limitation": "Raw global I/O PSI/iowait has unresolved provenance; no graphics-causality or zero-pressure claim."
+}

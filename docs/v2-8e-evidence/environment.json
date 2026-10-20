@@ -1,0 +1,49 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "observedAtUtc": "2026-10-20T18:18:57.224423+00:00",
+  "tools": {
+    "node": {
+      "path": "/run/user/1000/fnm_multishells/9746_1792479075994/bin/node",
+      "args": [
+        "--version"
+      ],
+      "exitCode": 0,
+      "version": "v24.16.0"
+    },
+    "python3": {
+      "path": "/usr/bin/python3",
+      "args": [
+        "--version"
+      ],
+      "exitCode": 0,
+      "version": "Python 3.14.7"
+    },
+    "google-chrome-stable": {
+      "path": "/usr/bin/google-chrome-stable",
+      "args": [
+        "--version"
+      ],
+      "exitCode": 0,
+      "version": "Google Chrome 151.0.7922.173"
+    },
+    "soffice": {
+      "path": "/home/deepnar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+      "args": [
+        "--version"
+      ],
+      "exitCode": 0,
+      "version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5"
+    },
+    "pdftoppm": {
+      "path": "/home/deepnar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+      "args": [
+        "-v"
+      ],
+      "exitCode": 0,
+      "version": "pdftoppm version 26.05.0"
+    }
+  },
+  "ownedContainer": "1ce973f8745064c39c8acac8c39ac9d1b0343df4e26cd43c5cba747b16787906",
+  "postgresVersion": "15.18",
+  "limitation": "Local fixtures, not live model quality. Global I/O PSI/iowait cause remains unknown. Native preview uses resolved soffice/Poppler binaries, not interactive Microsoft PowerPoint."
+}
