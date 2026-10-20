@@ -1,0 +1,72 @@
+[
+  {
+    "source": "docs/v2-7a-evidence/canvas-chart.json",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/canvas-chart.json",
+    "sha256": "c9eb8d21fe52326324027c9a4dd679487e95bfa3388106ba918ac75a6821f603"
+  },
+  {
+    "source": "docs/v2-7a-evidence/canvas-table.json",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/canvas-table.json",
+    "sha256": "c0324ac75930a4c556026707c2c6b9cb5aa61aef592d4099f280733e80f14a34"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-empty.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/dashboard-empty.png",
+    "sha256": "1566607c6bc0a20c626dea2518a25607c7c5964844d08d4192ebf69e4a905caa"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/dashboard-hosted-anon.png",
+    "sha256": "798b436186b0bfa0d1082e1af591b371113d8a09c63a669721f1652705f62822"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/dashboard.png",
+    "sha256": "93798507ecaca3e6b03d0ac1193df7a71e0804dce00ddd0c3eefdf0b73ce8866"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-blank.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/editor-blank.png",
+    "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-chart.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/editor-chart.png",
+    "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-history.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/editor-history.png",
+    "sha256": "1dde880743b0c3e2965eec619a63968e93d877f6c1d6b56839316c3b68cc6b37"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/editor-narrow-projects.png",
+    "sha256": "e5c9e1e57eb8547781e69702f61e1ece1881da25c0f3b4017e21c7dca928ec56"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/editor-narrow.png",
+    "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-readonly.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/editor-readonly.png",
+    "sha256": "c9f7548027ee90671b013fea12086786a5070f704c919a85e0c67e0509578a61"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-shell.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/editor-shell.png",
+    "sha256": "25ecda1c02002efaa204256a5aba0babab0f1526280715f3f2513d8266826c14"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-table.png",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/editor-table.png",
+    "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9"
+  },
+  {
+    "source": "docs/v2-7a-evidence/large-deck.json",
+    "file": "docs/v2-8c-evidence/independent/shell-browser/large-deck.json",
+    "sha256": "ade1fff3f7a92ac0906eab369cb8bf3f5b088d2ede6125f1a38d01ab8d8d7976"
+  }
+]

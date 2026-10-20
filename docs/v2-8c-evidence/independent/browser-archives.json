@@ -1,0 +1,14 @@
+[
+  {
+    "source": "out/v2-7a-validation/shell-chart.pptx",
+    "originalArchive": "docs/v2-8c-evidence/independent/browser-archives/shell-chart.pptx",
+    "sha256": "6cb8827e6c1cd849d53e7c969d9592efaf8b17eca4b50a40c4e9eb67b4354441",
+    "bytes": 70668
+  },
+  {
+    "source": "out/v2-7a-validation/shell-table.pptx",
+    "originalArchive": "docs/v2-8c-evidence/independent/browser-archives/shell-table.pptx",
+    "sha256": "4e8221bd9b772f0ee87f8d4132cf210fe78eda4440aba17eae9c2d7ae2152a9f",
+    "bytes": 72451
+  }
+]

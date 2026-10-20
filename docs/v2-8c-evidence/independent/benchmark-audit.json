@@ -1,0 +1,10 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "recordedGitHead": "edf318b",
+  "cells": 50,
+  "invarianceComparisons": 5,
+  "allInvarianceAgree": true,
+  "l1L2FitTakeawayMissingRepresentationChartMismatchFindings": 0,
+  "compilerAndZipMs": 512,
+  "rasters": "none; native raster evidence recorded separately"
+}

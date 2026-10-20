@@ -1,0 +1,36 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "tests": {
+    "total": 320,
+    "pass": 320,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "inventoryFilesReexecuted": 18,
+  "inventoryLeavesReexecuted": 308,
+  "persistedNativeSupplement": 4,
+  "reviewerNegativeProbes": 8,
+  "primaryPacketOverlap": 308,
+  "packetNativeSupplementOverlap": 4,
+  "fullInventoryIndependentlyRerun": false,
+  "inventoryNotIndependentlyRerun": {
+    "files": 197,
+    "leaves": 2221,
+    "status": "Inspected complete passing implementer evidence; not independently executed"
+  },
+  "standingLocale": {
+    "pass": 9,
+    "fail": 1,
+    "status": "Inspected exact-source separate probe; not independently rerun"
+  },
+  "unexecutedIndependentPlannedJobs": 0,
+  "commandJobsPassed": [
+    "production-build",
+    "typecheck",
+    "protocol",
+    "benchmark-50",
+    "shell-native"
+  ],
+  "allSequential": true
+}

@@ -1,0 +1,150 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "jobs": [
+    {
+      "name": "provider",
+      "args": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-provider-8c.test.js",
+        "test/v2-provider-durable-8c.test.js",
+        "test/v2-provider-postgres-8c.test.js"
+      ],
+      "files": [
+        "test/v2-provider-8c.test.js",
+        "test/v2-provider-durable-8c.test.js",
+        "test/v2-provider-postgres-8c.test.js"
+      ]
+    },
+    {
+      "name": "foundation",
+      "args": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-tools-8a.test.js",
+        "test/v2-context-8a.test.js",
+        "test/v2-core-boundary.test.js",
+        "test/v2-preservation.test.js",
+        "test/v2-types-drift.test.js",
+        "test/v2-generated-usage.test.ts",
+        "test/dev-protocol.test.js"
+      ],
+      "files": [
+        "test/v2-tools-8a.test.js",
+        "test/v2-context-8a.test.js",
+        "test/v2-core-boundary.test.js",
+        "test/v2-preservation.test.js",
+        "test/v2-types-drift.test.js",
+        "test/v2-generated-usage.test.ts",
+        "test/dev-protocol.test.js"
+      ]
+    },
+    {
+      "name": "runtime",
+      "args": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-runtime-8b.test.js",
+        "test/v2-runtime-process-8b.test.js",
+        "test/v2-runtime-postgres-8b.test.js"
+      ],
+      "files": [
+        "test/v2-runtime-8b.test.js",
+        "test/v2-runtime-process-8b.test.js",
+        "test/v2-runtime-postgres-8b.test.js"
+      ]
+    },
+    {
+      "name": "postgres",
+      "args": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-projects-6c-postgres.test.js",
+        "test/v2-projects-6c-concurrency.test.js",
+        "test/v2-projects-6c-faults.test.js",
+        "test/v2-import-postgres-7b.test.js"
+      ],
+      "files": [
+        "test/v2-projects-6c-postgres.test.js",
+        "test/v2-projects-6c-concurrency.test.js",
+        "test/v2-projects-6c-faults.test.js",
+        "test/v2-import-postgres-7b.test.js"
+      ]
+    },
+    {
+      "name": "full-7a",
+      "args": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-7a.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-7a.test.js"
+      ]
+    },
+    {
+      "name": "native",
+      "args": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "docs/v2-8c-evidence/independent/headless-check.mjs"
+      ],
+      "files": [
+        "docs/v2-8c-evidence/independent/headless-check.mjs"
+      ]
+    },
+    {
+      "name": "production-build",
+      "args": [
+        "node_modules/.bin/vite",
+        "build",
+        "--config",
+        "app/web/vite.config.js"
+      ],
+      "files": []
+    },
+    {
+      "name": "typecheck",
+      "args": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "files": []
+    },
+    {
+      "name": "protocol",
+      "args": [
+        "npm",
+        "run",
+        "dev:protocol"
+      ],
+      "files": []
+    },
+    {
+      "name": "benchmark-50",
+      "args": [
+        "node",
+        "tools/v2-benchmark.mjs",
+        "--out",
+        "out/v2-8c-independent/benchmark",
+        "--raster",
+        "none"
+      ],
+      "files": []
+    }
+  ],
+  "bounds": "Each process-group job15m TERM watchdog,10s KILL grace; all jobs sequential; initial180s measured headroom and two fresh15s acceptable samples per job; ongoing15s samples,3critical samples stop only owned job. Global PSI/iowait remains unresolved."
+}

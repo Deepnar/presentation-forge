@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: openai-compatible: reported output above the requested allowance refuses
+ok 1 - openai-compatible: reported output above the requested allowance refuses
+  ---
+  duration_ms: 28.357164
+  type: 'test'
+  ...
+# Subtest: openai-compatible: unsupported terminal reason cannot produce a proposal
+ok 2 - openai-compatible: unsupported terminal reason cannot produce a proposal
+  ---
+  duration_ms: 2.380153
+  type: 'test'
+  ...
+# Subtest: openai-compatible: a valid call cannot survive beside a noncanonical call
+ok 3 - openai-compatible: a valid call cannot survive beside a noncanonical call
+  ---
+  duration_ms: 2.614612
+  type: 'test'
+  ...
+# Subtest: openai-compatible: caller mutation during HTTP cannot alter the prepared revision/catalog
+ok 4 - openai-compatible: caller mutation during HTTP cannot alter the prepared revision/catalog
+  ---
+  duration_ms: 17.513853
+  type: 'test'
+  ...
+# Subtest: anthropic: reported output above the requested allowance refuses
+ok 5 - anthropic: reported output above the requested allowance refuses
+  ---
+  duration_ms: 1.575551
+  type: 'test'
+  ...
+# Subtest: anthropic: unsupported terminal reason cannot produce a proposal
+ok 6 - anthropic: unsupported terminal reason cannot produce a proposal
+  ---
+  duration_ms: 1.970274
+  type: 'test'
+  ...
+# Subtest: anthropic: a valid call cannot survive beside a noncanonical call
+ok 7 - anthropic: a valid call cannot survive beside a noncanonical call
+  ---
+  duration_ms: 1.753172
+  type: 'test'
+  ...
+# Subtest: anthropic: caller mutation during HTTP cannot alter the prepared revision/catalog
+ok 8 - anthropic: caller mutation during HTTP cannot alter the prepared revision/catalog
+  ---
+  duration_ms: 5.213111
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4789.470627

@@ -1,0 +1,34 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "kind": "inspected-existing-evidence",
+  "cases": [
+    {
+      "familyBackend": "postgres-anthropic",
+      "richRunPropertiesAndShapeGeometryIdentical": true,
+      "unrelatedSlideOOXMLByteIdentical": true,
+      "unrelatedSceneExact": true,
+      "originalArchivesVerified": true
+    },
+    {
+      "familyBackend": "postgres-openai-compatible",
+      "richRunPropertiesAndShapeGeometryIdentical": true,
+      "unrelatedSlideOOXMLByteIdentical": true,
+      "unrelatedSceneExact": true,
+      "originalArchivesVerified": true
+    },
+    {
+      "familyBackend": "sqlite-anthropic",
+      "richRunPropertiesAndShapeGeometryIdentical": true,
+      "unrelatedSlideOOXMLByteIdentical": true,
+      "unrelatedSceneExact": true,
+      "originalArchivesVerified": true
+    },
+    {
+      "familyBackend": "sqlite-openai-compatible",
+      "richRunPropertiesAndShapeGeometryIdentical": true,
+      "unrelatedSlideOOXMLByteIdentical": true,
+      "unrelatedSceneExact": true,
+      "originalArchivesVerified": true
+    }
+  ]
+}

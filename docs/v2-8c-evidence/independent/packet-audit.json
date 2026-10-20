@@ -1,0 +1,24 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "packet": "edf318bbacd122a4fee9b6f86a348ecb8e469e65",
+  "exactInventory": 215,
+  "allPerFileLogsAndZeroExitsVerified": true,
+  "primaryTotals": {
+    "total": 2529,
+    "pass": 2529,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "persistedNativeSupplement": 4,
+  "separateRepeats": 137,
+  "standingLocale": {
+    "pass": 9,
+    "fail": 1,
+    "independentlyRepeated": false
+  },
+  "imageHashesVerified": 115,
+  "originalArchiveHashesVerified": 13,
+  "fullInventoryIndependentlyReexecuted": false,
+  "scope": "Original full-matrix logs/counts and current artifact hashes inspected, not independent test execution."
+}

@@ -1,0 +1,663 @@
+TAP version 13
+# Subtest: repository state, document references and real Git ancestry validate
+ok 1 - repository state, document references and real Git ancestry validate
+  ---
+  duration_ms: 45.201161
+  type: 'test'
+  ...
+# Subtest: missing required role document fails closed
+ok 2 - missing required role document fails closed
+  ---
+  duration_ms: 17.045117
+  type: 'test'
+  ...
+# Subtest: malformed state JSON returns diagnostics instead of crashing
+ok 3 - malformed state JSON returns diagnostics instead of crashing
+  ---
+  duration_ms: 1.121079
+  type: 'test'
+  ...
+# Subtest: unknown review state, malformed SHA and extra properties are rejected
+ok 4 - unknown review state, malformed SHA and extra properties are rejected
+  ---
+  duration_ms: 7.076825
+  type: 'test'
+  ...
+# Subtest: known pending validation cannot disappear or be duplicated
+ok 5 - known pending validation cannot disappear or be duplicated
+  ---
+  duration_ms: 18.46484
+  type: 'test'
+  ...
+# Subtest: unaccepted implementation cannot replace the accepted baseline
+ok 6 - unaccepted implementation cannot replace the accepted baseline
+  ---
+  duration_ms: 13.585204
+  type: 'test'
+  ...
+# Subtest: passed validation needs existing matching evidence and its output log
+ok 7 - passed validation needs existing matching evidence and its output log
+  ---
+  duration_ms: 48.741861
+  type: 'test'
+  ...
+# Subtest: stale evidence from another implementation SHA is refused
+ok 8 - stale evidence from another implementation SHA is refused
+  ---
+  duration_ms: 13.635084
+  type: 'test'
+  ...
+# Subtest: self-reported totals must match the retained test output
+ok 9 - self-reported totals must match the retained test output
+  ---
+  duration_ms: 15.738318
+  type: 'test'
+  ...
+# Subtest: nonzero, cancelled, skipped and inconsistent totals never become passes
+ok 10 - nonzero, cancelled, skipped and inconsistent totals never become passes
+  ---
+  duration_ms: 54.923446
+  type: 'test'
+  ...
+# Subtest: existing output cannot substitute for actual visual inspection or 50 benchmark cells
+ok 11 - existing output cannot substitute for actual visual inspection or 50 benchmark cells
+  ---
+  duration_ms: 37.915625
+  type: 'test'
+  ...
+# Subtest: renaming a reviewer cannot substitute for a separate decision record
+ok 12 - renaming a reviewer cannot substitute for a separate decision record
+  ---
+  duration_ms: 23.491455
+  type: 'test'
+  ...
+# Subtest: legitimate recorded acceptance can advance the baseline after completed validation
+ok 13 - legitimate recorded acceptance can advance the baseline after completed validation
+  ---
+  duration_ms: 62.939746
+  type: 'test'
+  ...
+# Subtest: document paths, anchors and symlinks cannot leave the repository or point nowhere
+ok 14 - document paths, anchors and symlinks cannot leave the repository or point nowhere
+  ---
+  duration_ms: 37.986277
+  type: 'test'
+  ...
+# Subtest: Git verification rejects well-shaped nonexistent commits
+ok 15 - Git verification rejects well-shaped nonexistent commits
+  ---
+  duration_ms: 9.473317
+  type: 'test'
+  ...
+# Subtest: a passing subset cannot substitute for the full required file scope
+ok 16 - a passing subset cannot substitute for the full required file scope
+  ---
+  duration_ms: 13.714681
+  type: 'test'
+  ...
+# Subtest: name-filtered runs and implausibly small suite counts fail closed
+ok 17 - name-filtered runs and implausibly small suite counts fail closed
+  ---
+  duration_ms: 25.388588
+  type: 'test'
+  ...
+# Subtest: the TAP inventory records entry files without imported contract helpers
+ok 18 - the TAP inventory records entry files without imported contract helpers
+  ---
+  duration_ms: 69.458782
+  type: 'test'
+  ...
+# Subtest: new milestone keeps its own focused gate and rejects old evidence inventory
+ok 19 - new milestone keeps its own focused gate and rejects old evidence inventory
+  ---
+  duration_ms: 52.514763
+  type: 'test'
+  ...
+# Subtest: browser handoff requires its own complete focused evidence
+ok 20 - browser handoff requires its own complete focused evidence
+  ---
+  duration_ms: 53.798176
+  type: 'test'
+  ...
+# Subtest: project covers require their own unit, HTTP and complete Chrome evidence
+ok 21 - project covers require their own unit, HTTP and complete Chrome evidence
+  ---
+  duration_ms: 52.653217
+  type: 'test'
+  ...
+# Subtest: project discovery requires its own complete unit, HTTP and Chrome evidence
+ok 22 - project discovery requires its own complete unit, HTTP and Chrome evidence
+  ---
+  duration_ms: 50.86886
+  type: 'test'
+  ...
+# Subtest: production toolbar evidence includes its complete Chrome file and full shell regression
+ok 23 - production toolbar evidence includes its complete Chrome file and full shell regression
+  ---
+  duration_ms: 46.203186
+  type: 'test'
+  ...
+# Subtest: agent foundation requires complete tool and context behavioral evidence
+ok 24 - agent foundation requires complete tool and context behavioral evidence
+  ---
+  duration_ms: 43.908288
+  type: 'test'
+  ...
+# Subtest: provider boundary requires both protocol and durable backend files
+ok 25 - provider boundary requires both protocol and durable backend files
+  ---
+  duration_ms: 48.576505
+  type: 'test'
+  ...
+# Subtest: edit context includes only scoped projected content and applicable instructions
+ok 26 - edit context includes only scoped projected content and applicable instructions
+  ---
+  duration_ms: 26.059226
+  type: 'test'
+  ...
+# Subtest: inspect context has no edit tool or edit skill
+ok 27 - inspect context has no edit tool or edit skill
+  ---
+  duration_ms: 0.719644
+  type: 'test'
+  ...
+# Subtest: context cannot invoke a mutation disguised as a read
+ok 28 - context cannot invoke a mutation disguised as a read
+  ---
+  duration_ms: 0.338532
+  type: 'test'
+  ...
+# Subtest: cross-owner or unreadable context is refused without identity/exception details
+ok 29 - cross-owner or unreadable context is refused without identity/exception details
+  ---
+  duration_ms: 0.887995
+  type: 'test'
+  ...
+# Subtest: core policy is isolated from hostile slide text and user prompt
+ok 30 - core policy is isolated from hostile slide text and user prompt
+  ---
+  duration_ms: 0.774218
+  type: 'test'
+  ...
+# Subtest: context refuses empty request explicitly
+ok 31 - context refuses empty request explicitly
+  ---
+  duration_ms: 0.248969
+  type: 'test'
+  ...
+# Subtest: context refuses oversized request explicitly
+ok 32 - context refuses oversized request explicitly
+  ---
+  duration_ms: 0.167156
+  type: 'test'
+  ...
+# Subtest: context refuses empty reads explicitly
+ok 33 - context refuses empty reads explicitly
+  ---
+  duration_ms: 0.164583
+  type: 'test'
+  ...
+# Subtest: context refuses too many reads explicitly
+ok 34 - context refuses too many reads explicitly
+  ---
+  duration_ms: 0.222063
+  type: 'test'
+  ...
+# Subtest: context refuses noninteger budget explicitly
+ok 35 - context refuses noninteger budget explicitly
+  ---
+  duration_ms: 0.250242
+  type: 'test'
+  ...
+# Subtest: context refuses invalid budget explicitly
+ok 36 - context refuses invalid budget explicitly
+  ---
+  duration_ms: 0.140893
+  type: 'test'
+  ...
+# Subtest: context refuses bad read explicitly
+ok 37 - context refuses bad read explicitly
+  ---
+  duration_ms: 0.288117
+  type: 'test'
+  ...
+# Subtest: context budgets include policy, schemas, user request and actual data
+ok 38 - context budgets include policy, schemas, user request and actual data
+  ---
+  duration_ms: 0.572181
+  type: 'test'
+  ...
+# Subtest: unknown fields, cycles and getters in read requests cannot enter model context
+ok 39 - unknown fields, cycles and getters in read requests cannot enter model context
+  ---
+  duration_ms: 0.397379
+  type: 'test'
+  ...
+# Subtest: context detects a human edit between its reads and returns no mixed snapshot
+ok 40 - context detects a human edit between its reads and returns no mixed snapshot
+  ---
+  duration_ms: 2.236071
+  type: 'test'
+  ...
+# Subtest: context also detects an edit immediately after its last read
+ok 41 - context also detects an edit immediately after its last read
+  ---
+  duration_ms: 0.654263
+  type: 'test'
+  ...
+# Subtest: caller credentials and theme tokens are structurally absent from context
+ok 42 - caller credentials and theme tokens are structurally absent from context
+  ---
+  duration_ms: 0.524904
+  type: 'test'
+  ...
+# Subtest: trusted target grants are visible as editability without revealing authority data
+ok 43 - trusted target grants are visible as editability without revealing authority data
+  ---
+  duration_ms: 0.507054
+  type: 'test'
+  ...
+# Subtest: an edit-mode binding with no effective grants loads only inspection instructions
+ok 44 - an edit-mode binding with no effective grants loads only inspection instructions
+  ---
+  duration_ms: 0.701199
+  type: 'test'
+  ...
+# Subtest: content overflow refuses explicitly after actual scoped acquisition
+ok 45 - content overflow refuses explicitly after actual scoped acquisition
+  ---
+  duration_ms: 0.957094
+  type: 'test'
+  ...
+# Subtest: v2 core boundary
+    # Subtest: detects static, re-export, and literal dynamic imports
+    ok 1 - detects static, re-export, and literal dynamic imports
+      ---
+      duration_ms: 4.291497
+      type: 'test'
+      ...
+    # Subtest: fails closed on require() and non-literal dynamic import
+    ok 2 - fails closed on require() and non-literal dynamic import
+      ---
+      duration_ms: 0.511731
+      type: 'test'
+      ...
+    # Subtest: enforces package directions on synthetic edges
+    ok 3 - enforces package directions on synthetic edges
+      ---
+      duration_ms: 0.245248
+      type: 'test'
+      ...
+    # Subtest: confines node builtins to the named renderer adapter
+    ok 4 - confines node builtins to the named renderer adapter
+      ---
+      duration_ms: 0.127123
+      type: 'test'
+      ...
+    # Subtest: allows jszip only in renderer-docx
+    ok 5 - allows jszip only in renderer-docx
+      ---
+      duration_ms: 0.125646
+      type: 'test'
+      ...
+    # Subtest: repository packages contain zero boundary violations
+    ok 6 - repository packages contain zero boundary violations
+      ---
+      duration_ms: 136.36926
+      type: 'test'
+      ...
+    1..6
+ok 46 - v2 core boundary
+  ---
+  duration_ms: 142.435487
+  type: 'suite'
+  ...
+# Subtest: v2 generated type usability
+    # Subtest: plain arrays assign to id lists
+    ok 1 - plain arrays assign to id lists
+      ---
+      duration_ms: 0.45663
+      type: 'test'
+      ...
+    # Subtest: export artifacts carry export fields as plain optionals
+    ok 2 - export artifacts carry export fields as plain optionals
+      ---
+      duration_ms: 0.094069
+      type: 'test'
+      ...
+    # Subtest: domain objects construct without casts
+    ok 3 - domain objects construct without casts
+      ---
+      duration_ms: 0.131139
+      type: 'test'
+      ...
+    1..3
+ok 47 - v2 generated type usability
+  ---
+  duration_ms: 1.330174
+  type: 'suite'
+  ...
+# Subtest: v2 preservation
+    # Subtest: a moved diagram keeps its geometry after a text edit
+    ok 1 - a moved diagram keeps its geometry after a text edit
+      ---
+      duration_ms: 20.569369
+      type: 'test'
+      ...
+    # Subtest: resize inverts exactly (undo)
+    ok 2 - resize inverts exactly (undo)
+      ---
+      duration_ms: 6.29102
+      type: 'test'
+      ...
+    # Subtest: a detached slide is authoritative: recompile returns it untouched
+    ok 3 - a detached slide is authoritative: recompile returns it untouched
+      ---
+      duration_ms: 5.656903
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: move
+    ok 4 - detached scenes stay manually editable: move
+      ---
+      duration_ms: 5.158292
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: resize
+    ok 5 - detached scenes stay manually editable: resize
+      ---
+      duration_ms: 2.746482
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: text edit
+    ok 6 - detached scenes stay manually editable: text edit
+      ---
+      duration_ms: 2.572807
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: add and delete
+    ok 7 - detached scenes stay manually editable: add and delete
+      ---
+      duration_ms: 5.096926
+      type: 'test'
+      ...
+    # Subtest: locked elements still reject edits on detached scenes
+    ok 8 - locked elements still reject edits on detached scenes
+      ---
+      duration_ms: 2.566121
+      type: 'test'
+      ...
+    # Subtest: human-added elements survive a recompile that drops nothing
+    ok 9 - human-added elements survive a recompile that drops nothing
+      ---
+      duration_ms: 2.325405
+      type: 'test'
+      ...
+    1..9
+ok 48 - v2 preservation
+  ---
+  duration_ms: 54.280306
+  type: 'suite'
+  ...
+# Subtest: unauthorized caller cannot inspect project state
+ok 49 - unauthorized caller cannot inspect project state
+  ---
+  duration_ms: 18.403997
+  type: 'test'
+  ...
+# Subtest: project index pages expose only allowed slides and no content/style
+ok 50 - project index pages expose only allowed slides and no content/style
+  ---
+  duration_ms: 8.748149
+  type: 'test'
+  ...
+# Subtest: slide and selection projections preserve exact content without renderer or authority fields
+ok 51 - slide and selection projections preserve exact content without renderer or authority fields
+  ---
+  duration_ms: 0.89886
+  type: 'test'
+  ...
+# Subtest: pagination is explicit and slide grants cannot be bypassed
+ok 52 - pagination is explicit and slide grants cannot be bypassed
+  ---
+  duration_ms: 0.577448
+  type: 'test'
+  ...
+# Subtest: empty and invalid selections never widen scope
+ok 53 - empty and invalid selections never widen scope
+  ---
+  duration_ms: 0.642368
+  type: 'test'
+  ...
+# Subtest: rejects raw command as untrusted input without mutation
+ok 54 - rejects raw command as untrusted input without mutation
+  ---
+  duration_ms: 0.386084
+  type: 'test'
+  ...
+# Subtest: rejects geometry as untrusted input without mutation
+ok 55 - rejects geometry as untrusted input without mutation
+  ---
+  duration_ms: 0.291209
+  type: 'test'
+  ...
+# Subtest: rejects owner override as untrusted input without mutation
+ok 56 - rejects owner override as untrusted input without mutation
+  ---
+  duration_ms: 0.300826
+  type: 'test'
+  ...
+# Subtest: rejects text style as untrusted input without mutation
+ok 57 - rejects text style as untrusted input without mutation
+  ---
+  duration_ms: 0.299258
+  type: 'test'
+  ...
+# Subtest: rejects nonfinite as untrusted input without mutation
+ok 58 - rejects nonfinite as untrusted input without mutation
+  ---
+  duration_ms: 0.255473
+  type: 'test'
+  ...
+# Subtest: rejects missing args as untrusted input without mutation
+ok 59 - rejects missing args as untrusted input without mutation
+  ---
+  duration_ms: 0.189184
+  type: 'test'
+  ...
+# Subtest: rejects unknown tool as untrusted input without mutation
+ok 60 - rejects unknown tool as untrusted input without mutation
+  ---
+  duration_ms: 0.180379
+  type: 'test'
+  ...
+# Subtest: rejects sparse array as untrusted input without mutation
+ok 61 - rejects sparse array as untrusted input without mutation
+  ---
+  duration_ms: 0.179375
+  type: 'test'
+  ...
+# Subtest: rejects function as untrusted input without mutation
+ok 62 - rejects function as untrusted input without mutation
+  ---
+  duration_ms: 0.173282
+  type: 'test'
+  ...
+# Subtest: rejects pollution as untrusted input without mutation
+ok 63 - rejects pollution as untrusted input without mutation
+  ---
+  duration_ms: 0.156549
+  type: 'test'
+  ...
+# Subtest: accessors and cycles are refused without invoking accessors
+ok 64 - accessors and cycles are refused without invoking accessors
+  ---
+  duration_ms: 0.175815
+  type: 'test'
+  ...
+# Subtest: text edits preserve all runs, styling and geometry with exact undo/redo
+ok 65 - text edits preserve all runs, styling and geometry with exact undo/redo
+  ---
+  duration_ms: 2.022281
+  type: 'test'
+  ...
+# Subtest: text, chart and table changes commit as one native batch
+ok 66 - text, chart and table changes commit as one native batch
+  ---
+  duration_ms: 21.86895
+  type: 'test'
+  ...
+# Subtest: invalid later chart or table edit rolls back every earlier valid edit
+ok 67 - invalid later chart or table edit rolls back every earlier valid edit
+  ---
+  duration_ms: 0.907555
+  type: 'test'
+  ...
+# Subtest: duplicate text run is refused atomically
+ok 68 - duplicate text run is refused atomically
+  ---
+  duration_ms: 0.303771
+  type: 'test'
+  ...
+# Subtest: duplicate data is refused atomically
+ok 69 - duplicate data is refused atomically
+  ---
+  duration_ms: 0.265388
+  type: 'test'
+  ...
+# Subtest: wrong kind is refused atomically
+ok 70 - wrong kind is refused atomically
+  ---
+  duration_ms: 0.225781
+  type: 'test'
+  ...
+# Subtest: invalid run is refused atomically
+ok 71 - invalid run is refused atomically
+  ---
+  duration_ms: 0.230678
+  type: 'test'
+  ...
+# Subtest: stale revisions and duplicate applied calls cannot overwrite
+ok 72 - stale revisions and duplicate applied calls cannot overwrite
+  ---
+  duration_ms: 0.649678
+  type: 'test'
+  ...
+# Subtest: parallel calls with the same revision have only one winner
+ok 73 - parallel calls with the same revision have only one winner
+  ---
+  duration_ms: 0.538808
+  type: 'test'
+  ...
+# Subtest: noop edits retain revision, history and redo state
+ok 74 - noop edits retain revision, history and redo state
+  ---
+  duration_ms: 0.359206
+  type: 'test'
+  ...
+# Subtest: read-only mode and absent grants cannot be widened by a tool request
+ok 75 - read-only mode and absent grants cannot be widened by a tool request
+  ---
+  duration_ms: 0.582568
+  type: 'test'
+  ...
+# Subtest: editing outside the grant or outside readable slides is refused
+ok 76 - editing outside the grant or outside readable slides is refused
+  ---
+  duration_ms: 0.244683
+  type: 'test'
+  ...
+# Subtest: locked targets are refused even with an explicit grant
+ok 77 - locked targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.223361
+  type: 'test'
+  ...
+# Subtest: hidden targets are refused even with an explicit grant
+ok 78 - hidden targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.289889
+  type: 'test'
+  ...
+# Subtest: ancestor locks and hidden groups protect nested targets
+ok 79 - ancestor locks and hidden groups protect nested targets
+  ---
+  duration_ms: 0.412692
+  type: 'test'
+  ...
+# Subtest: detached content stays editable and existing tombstones/human additions survive
+ok 80 - detached content stays editable and existing tombstones/human additions survive
+  ---
+  duration_ms: 0.804083
+  type: 'test'
+  ...
+# Subtest: input is snapshotted and output/catalog/grants cannot mutate authoritative state
+ok 81 - input is snapshotted and output/catalog/grants cannot mutate authoritative state
+  ---
+  duration_ms: 0.71931
+  type: 'test'
+  ...
+# Subtest: calls, oversized reads, input and pre-commit acknowledgements obey budgets
+ok 82 - calls, oversized reads, input and pre-commit acknowledgements obey budgets
+  ---
+  duration_ms: 0.51081
+  type: 'test'
+  ...
+# Subtest: unexpected document failures do not echo private exception text
+ok 83 - unexpected document failures do not echo private exception text
+  ---
+  duration_ms: 0.222675
+  type: 'test'
+  ...
+# Subtest: an oversized acknowledgement refuses before the real engine can commit
+ok 84 - an oversized acknowledgement refuses before the real engine can commit
+  ---
+  duration_ms: 1.112298
+  type: 'test'
+  ...
+# Subtest: result schemas reject missing fields and renderer/credential escapes in projected data
+ok 85 - result schemas reject missing fields and renderer/credential escapes in projected data
+  ---
+  duration_ms: 0.601718
+  type: 'test'
+  ...
+# Subtest: table content tools refuse dimension changes without committing any batch part
+ok 86 - table content tools refuse dimension changes without committing any batch part
+  ---
+  duration_ms: 0.560146
+  type: 'test'
+  ...
+# Subtest: tool wording and human placement survive deterministic regeneration together
+ok 87 - tool wording and human placement survive deterministic regeneration together
+  ---
+  duration_ms: 35.375955
+  type: 'test'
+  ...
+# Subtest: v2 generated types drift
+    # Subtest: checked-in generated types match the schemas byte-for-byte
+    ok 1 - checked-in generated types match the schemas byte-for-byte
+      ---
+      duration_ms: 149.750389
+      type: 'test'
+      ...
+    1..1
+ok 88 - v2 generated types drift
+  ---
+  duration_ms: 150.368336
+  type: 'suite'
+  ...
+1..88
+# tests 103
+# suites 4
+# pass 103
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2281.54172
+# forge-test-file "test/dev-protocol.test.js"
+# forge-test-file "test/v2-context-8a.test.js"
+# forge-test-file "test/v2-core-boundary.test.js"
+# forge-test-file "test/v2-generated-usage.test.ts"
+# forge-test-file "test/v2-preservation.test.js"
+# forge-test-file "test/v2-tools-8a.test.js"
+# forge-test-file "test/v2-types-drift.test.js"

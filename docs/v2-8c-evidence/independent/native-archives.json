@@ -1,0 +1,66 @@
+[
+  {
+    "backend": "sqlite",
+    "family": "openai-compatible",
+    "label": "before",
+    "pptx": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/before.pptx",
+    "sha256": "7e9265c36aa7c17d38f5389540b65552eb5610935193fb63504efe3574650072",
+    "scenesSha256": "a6ce934d9b595afad3a18407e2e797580fccc84cc4b4d952b2d01cffa3a2d72e"
+  },
+  {
+    "backend": "sqlite",
+    "family": "openai-compatible",
+    "label": "after",
+    "pptx": "docs/v2-8c-evidence/independent/native/sqlite-openai-compatible/after.pptx",
+    "sha256": "b933771e46dc970650deb95e16aea617a553f425c653366374d082d0fdde6850",
+    "scenesSha256": "0a95078982e91038e7ad68afc4f505a385225c5ae5f454165f4a4b341886eafa"
+  },
+  {
+    "backend": "postgres",
+    "family": "openai-compatible",
+    "label": "before",
+    "pptx": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/before.pptx",
+    "sha256": "bdf66718c54560a0306b055b3e05ca7f3541f0028585f90b2457170fdecaa93c",
+    "scenesSha256": "a6ce934d9b595afad3a18407e2e797580fccc84cc4b4d952b2d01cffa3a2d72e"
+  },
+  {
+    "backend": "postgres",
+    "family": "openai-compatible",
+    "label": "after",
+    "pptx": "docs/v2-8c-evidence/independent/native/postgres-openai-compatible/after.pptx",
+    "sha256": "166b9a2f26b10aacab07eba777ae81339eebeacd2b40c73514f4d6e0a254464d",
+    "scenesSha256": "0a95078982e91038e7ad68afc4f505a385225c5ae5f454165f4a4b341886eafa"
+  },
+  {
+    "backend": "sqlite",
+    "family": "anthropic",
+    "label": "before",
+    "pptx": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/before.pptx",
+    "sha256": "1fd405aa6a6a0dd1b4ca9a979fc787f00bcb4e7eaf7dfae838f6fd660652cb39",
+    "scenesSha256": "a6ce934d9b595afad3a18407e2e797580fccc84cc4b4d952b2d01cffa3a2d72e"
+  },
+  {
+    "backend": "sqlite",
+    "family": "anthropic",
+    "label": "after",
+    "pptx": "docs/v2-8c-evidence/independent/native/sqlite-anthropic/after.pptx",
+    "sha256": "424015ac76d824735af7ed4b646dcbc9789963a3fdcc1439299045149348fdbe",
+    "scenesSha256": "0a95078982e91038e7ad68afc4f505a385225c5ae5f454165f4a4b341886eafa"
+  },
+  {
+    "backend": "postgres",
+    "family": "anthropic",
+    "label": "before",
+    "pptx": "docs/v2-8c-evidence/independent/native/postgres-anthropic/before.pptx",
+    "sha256": "7409bcbbbd04d1a3250b94aa9a3b3e70838a23472ee24321f77544c4b7830ff8",
+    "scenesSha256": "a6ce934d9b595afad3a18407e2e797580fccc84cc4b4d952b2d01cffa3a2d72e"
+  },
+  {
+    "backend": "postgres",
+    "family": "anthropic",
+    "label": "after",
+    "pptx": "docs/v2-8c-evidence/independent/native/postgres-anthropic/after.pptx",
+    "sha256": "31643b1f3af932981a53b02f459cc30c4628c876ce0d0e8a2f5c4ea1cdd7b2c4",
+    "scenesSha256": "0a95078982e91038e7ad68afc4f505a385225c5ae5f454165f4a4b341886eafa"
+  }
+]

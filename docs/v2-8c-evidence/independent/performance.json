@@ -1,0 +1,69 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "samples": {
+    "sqlite-openai-compatible": {
+      "providerExchangeMs": 22.903710999999987,
+      "timings": {
+        "startMs": 1.909087999999997,
+        "claimMs": 2.040368000000001,
+        "commitMs": 6.924909000000014,
+        "reopenMs": 0.5373969999999986
+      },
+      "traceBytes": 1285
+    },
+    "postgres-openai-compatible": {
+      "providerExchangeMs": 3.882427000000007,
+      "timings": {
+        "startMs": 3.452046999999993,
+        "claimMs": 4.079680000000053,
+        "commitMs": 13.507938999999851,
+        "reopenMs": 9.345514999999978
+      },
+      "traceBytes": 1285
+    },
+    "sqlite-anthropic": {
+      "providerExchangeMs": 4.4676580000000286,
+      "timings": {
+        "startMs": 1.2345000000000255,
+        "claimMs": 1.0262860000002547,
+        "commitMs": 3.5202110000000175,
+        "reopenMs": 0.4714979999998832
+      },
+      "traceBytes": 1285
+    },
+    "postgres-anthropic": {
+      "providerExchangeMs": 3.70971499999996,
+      "timings": {
+        "startMs": 2.017974000000322,
+        "claimMs": 2.6921009999996386,
+        "commitMs": 6.935590000000047,
+        "reopenMs": 6.6891029999997045
+      },
+      "traceBytes": 1285
+    }
+  },
+  "processRecovery": [
+    {
+      "backend": "PostgreSQL",
+      "source": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 302.8352739999991,
+      "excludesLeaseWait": true
+    },
+    {
+      "backend": "SQLite",
+      "source": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 247.6068979999991,
+      "excludesLeaseWait": true
+    }
+  ],
+  "maximumCanvasDeltaPx": 0.049835205078125,
+  "largeDeck": {
+    "project": "p-db18cbb0e8997d3e6cdcfea3",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1541
+  },
+  "limit": "Local protocol/backend observations under measured headroom with unresolved elevated PSI/iowait. Not live LLM latency, production percentiles, network exactly-once, or interactive PowerPoint."
+}

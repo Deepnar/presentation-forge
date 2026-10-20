@@ -1,0 +1,371 @@
+TAP version 13
+# Subtest: cold cross-process creation races initialize safely and commit one project/history/receipt
+ok 1 - cold cross-process creation races initialize safely and commit one project/history/receipt
+  ---
+  duration_ms: 724.850258
+  type: 'test'
+  ...
+# Subtest: same-process concurrent imports return one current project without extra history
+ok 2 - same-process concurrent imports return one current project without extra history
+  ---
+  duration_ms: 290.239324
+  type: 'test'
+  ...
+# Subtest: changed sources, deleted targets and owner mismatches refuse without overwrites
+ok 3 - changed sources, deleted targets and owner mismatches refuse without overwrites
+  ---
+  duration_ms: 41.678387
+  type: 'test'
+  ...
+# Subtest: a history trigger fault rolls back reservation and project; retry can create
+ok 4 - a history trigger fault rolls back reservation and project; retry can create
+  ---
+  duration_ms: 32.890911
+  type: 'test'
+  ...
+# Subtest: a lost response and pool restart replay the committed current project
+ok 5 - a lost response and pool restart replay the committed current project
+  ---
+  duration_ms: 26.575622
+  type: 'test'
+  ...
+# Subtest: a terminated backend during history insertion rolls back every creation row
+ok 6 - a terminated backend during history insertion rolls back every creation row
+  ---
+  duration_ms: 64.460844
+  type: 'test'
+  ...
+# Subtest: v2-6c two processes, one postgres
+    # Subtest: same-base saves across instances yield one 200 and one 409
+    ok 1 - same-base saves across instances yield one 200 and one 409
+      ---
+      duration_ms: 270.531781
+      type: 'test'
+      ...
+    # Subtest: save versus rename across instances keeps one winner
+    ok 2 - save versus rename across instances keeps one winner
+      ---
+      duration_ms: 29.774447
+      type: 'test'
+      ...
+    # Subtest: save versus restore across instances keeps one winner
+    ok 3 - save versus restore across instances keeps one winner
+      ---
+      duration_ms: 28.853993
+      type: 'test'
+      ...
+    # Subtest: restore versus restore across instances keeps one winner
+    ok 4 - restore versus restore across instances keeps one winner
+      ---
+      duration_ms: 24.183331
+      type: 'test'
+      ...
+    # Subtest: rename versus rename across instances keeps one winner
+    ok 5 - rename versus rename across instances keeps one winner
+      ---
+      duration_ms: 13.750193
+      type: 'test'
+      ...
+    # Subtest: delete during a concurrent save leaves exactly one consistent outcome
+    ok 6 - delete during a concurrent save leaves exactly one consistent outcome
+      ---
+      duration_ms: 10.499938
+      type: 'test'
+      ...
+    # Subtest: history initialization racing with saves yields one baseline
+    ok 7 - history initialization racing with saves yields one baseline
+      ---
+      duration_ms: 31.528844
+      type: 'test'
+      ...
+    # Subtest: concurrent mixed mutations keep prune accounting exact
+    ok 8 - concurrent mixed mutations keep prune accounting exact
+      ---
+      duration_ms: 20.868973
+      type: 'test'
+      ...
+    # Subtest: same owner email works across instances; cross-owner denied
+    ok 9 - same owner email works across instances; cross-owner denied
+      ---
+      duration_ms: 47.173511
+      type: 'test'
+      ...
+    # Subtest: rapid creates mint distinct ids across instances
+    ok 10 - rapid creates mint distinct ids across instances
+      ---
+      duration_ms: 47.105817
+      type: 'test'
+      ...
+    1..10
+ok 7 - v2-6c two processes, one postgres
+  ---
+  duration_ms: 1420.155523
+  type: 'suite'
+  ...
+# Subtest: v2-6c two processes, one sqlite file
+    # Subtest: same-base saves across sqlite processes yield one 200 and one 409
+    ok 1 - same-base saves across sqlite processes yield one 200 and one 409
+      ---
+      duration_ms: 126.813524
+      type: 'test'
+      ...
+    1..1
+ok 8 - v2-6c two processes, one sqlite file
+  ---
+  duration_ms: 1659.911979
+  type: 'suite'
+  ...
+# Subtest: v2-6c transaction faults
+    # Subtest: terminated backend mid-transaction rolls back with nothing saved
+    ok 1 - terminated backend mid-transaction rolls back with nothing saved
+      ---
+      duration_ms: 212.739174
+      type: 'test'
+      ...
+    # Subtest: history-insert failure rolls back the project write
+    ok 2 - history-insert failure rolls back the project write
+      ---
+      duration_ms: 22.4999
+      type: 'test'
+      ...
+    # Subtest: prune failure rolls back the whole save
+    ok 3 - prune failure rolls back the whole save
+      ---
+      duration_ms: 100.95182
+      type: 'test'
+      ...
+    # Subtest: unreachable database reports storage-unavailable and never saved
+    ok 4 - unreachable database reports storage-unavailable and never saved
+      ---
+      duration_ms: 2.303453
+      type: 'test'
+      ...
+    # Subtest: pool exhaustion fails loudly instead of hanging or half-writing
+    ok 5 - pool exhaustion fails loudly instead of hanging or half-writing
+      ---
+      duration_ms: 5534.909856
+      type: 'test'
+      ...
+    # Subtest: killed writer processes leave consistent history
+    ok 6 - killed writer processes leave consistent history
+      ---
+      duration_ms: 2018.183293
+      type: 'test'
+      ...
+    1..6
+ok 9 - v2-6c transaction faults
+  ---
+  duration_ms: 7913.500322
+  type: 'suite'
+  ...
+# Subtest: v2-6c misconfiguration over HTTP
+    # Subtest: postgres selected without a URL answers 503 honestly, never sqlite
+    ok 1 - postgres selected without a URL answers 503 honestly, never sqlite
+      ---
+      duration_ms: 365.149325
+      type: 'test'
+      ...
+    # Subtest: aborted HTTP saves leave consistent history
+    ok 2 - aborted HTTP saves leave consistent history
+      ---
+      duration_ms: 2735.553562
+      type: 'test'
+      ...
+    1..2
+ok 10 - v2-6c misconfiguration over HTTP
+  ---
+  duration_ms: 3900.95789
+  type: 'suite'
+  ...
+# Subtest: v2-6c contract over postgres
+    # Subtest: adapter answers before the shared suite runs
+    ok 1 - adapter answers before the shared suite runs
+      ---
+      duration_ms: 10.589625
+      type: 'test'
+      ...
+    1..1
+ok 11 - v2-6c contract over postgres
+  ---
+  duration_ms: 31.149828
+  type: 'suite'
+  ...
+# Subtest: [postgres] CRUD and summaries
+    # Subtest: creates, loads, lists without scene bytes, renames, deletes
+    ok 1 - creates, loads, lists without scene bytes, renames, deletes
+      ---
+      duration_ms: 86.712871
+      type: 'test'
+      ...
+    # Subtest: no-op saves and renames advance nothing and record nothing
+    ok 2 - no-op saves and renames advance nothing and record nothing
+      ---
+      duration_ms: 8.594826
+      type: 'test'
+      ...
+    1..2
+ok 12 - [postgres] CRUD and summaries
+  ---
+  duration_ms: 95.573163
+  type: 'suite'
+  ...
+# Subtest: [postgres] schema validation
+    # Subtest: refuses malformed ids, titles, scenes, and provenance
+    ok 1 - refuses malformed ids, titles, scenes, and provenance
+      ---
+      duration_ms: 8.254498
+      type: 'test'
+      ...
+    1..1
+ok 13 - [postgres] schema validation
+  ---
+  duration_ms: 8.437433
+  type: 'suite'
+  ...
+# Subtest: [postgres] owner isolation
+    # Subtest: exact-match reads, lists, writes, and history without leaks
+    ok 1 - exact-match reads, lists, writes, and history without leaks
+      ---
+      duration_ms: 21.433535
+      type: 'test'
+      ...
+    1..1
+ok 14 - [postgres] owner isolation
+  ---
+  duration_ms: 21.663198
+  type: 'suite'
+  ...
+# Subtest: [postgres] revision conflicts
+    # Subtest: same-base saves serialize to one winner and one stale
+    ok 1 - same-base saves serialize to one winner and one stale
+      ---
+      duration_ms: 14.249343
+      type: 'test'
+      ...
+    # Subtest: save versus rename on one base keeps exactly one winner
+    ok 2 - save versus rename on one base keeps exactly one winner
+      ---
+      duration_ms: 10.877525
+      type: 'test'
+      ...
+    # Subtest: concurrent same-base renames yield one winner and one stale
+    ok 3 - concurrent same-base renames yield one winner and one stale
+      ---
+      duration_ms: 9.641151
+      type: 'test'
+      ...
+    1..3
+ok 15 - [postgres] revision conflicts
+  ---
+  duration_ms: 35.127461
+  type: 'suite'
+  ...
+# Subtest: [postgres] atomic history
+    # Subtest: every committed revision has a validated history row; failures add none
+    ok 1 - every committed revision has a validated history row; failures add none
+      ---
+      duration_ms: 11.485473
+      type: 'test'
+      ...
+    1..1
+ok 16 - [postgres] atomic history
+  ---
+  duration_ms: 11.635948
+  type: 'suite'
+  ...
+# Subtest: [postgres] retention
+    # Subtest: stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+    ok 1 - stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+      ---
+      duration_ms: 122.877951
+      type: 'test'
+      ...
+    1..1
+ok 17 - [postgres] retention
+  ---
+  duration_ms: 123.024868
+  type: 'suite'
+  ...
+# Subtest: [postgres] restore
+    # Subtest: restores as a new revision, preserves rows, refuses stale
+    ok 1 - restores as a new revision, preserves rows, refuses stale
+      ---
+      duration_ms: 17.190816
+      type: 'test'
+      ...
+    # Subtest: restore versus restore on one base keeps one winner
+    ok 2 - restore versus restore on one base keeps one winner
+      ---
+      duration_ms: 13.062096
+      type: 'test'
+      ...
+    1..2
+ok 18 - [postgres] restore
+  ---
+  duration_ms: 30.449027
+  type: 'suite'
+  ...
+# Subtest: [postgres] migration and corruption
+    # Subtest: history-less projects gain exactly one baseline without rewrites
+    ok 1 - history-less projects gain exactly one baseline without rewrites
+      ---
+      duration_ms: 14.360093
+      type: 'test'
+      ...
+    # Subtest: future schema versions refuse; corrupt rows refuse with current intact
+    ok 2 - future schema versions refuse; corrupt rows refuse with current intact
+      ---
+      duration_ms: 15.910323
+      type: 'test'
+      ...
+    1..2
+ok 19 - [postgres] migration and corruption
+  ---
+  duration_ms: 30.492955
+  type: 'suite'
+  ...
+# Subtest: [postgres] round-trip and export
+    # Subtest: mixed decks survive byte-identical with identity intact
+    ok 1 - mixed decks survive byte-identical with identity intact
+      ---
+      duration_ms: 7.782735
+      type: 'test'
+      ...
+    # Subtest: stored and restored documents export native and order-exact
+    ok 2 - stored and restored documents export native and order-exact
+      ---
+      duration_ms: 51.145451
+      type: 'test'
+      ...
+    1..2
+ok 20 - [postgres] round-trip and export
+  ---
+  duration_ms: 59.167429
+  type: 'suite'
+  ...
+# Subtest: [postgres] deletion
+    # Subtest: delete removes the project and its history together
+    ok 1 - delete removes the project and its history together
+      ---
+      duration_ms: 9.655914
+      type: 'test'
+      ...
+    1..1
+ok 21 - [postgres] deletion
+  ---
+  duration_ms: 9.797898
+  type: 'suite'
+  ...
+1..21
+# tests 42
+# suites 15
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18034.659957
+# forge-test-file "test/v2-import-postgres-7b.test.js"
+# forge-test-file "test/v2-projects-6c-concurrency.test.js"
+# forge-test-file "test/v2-projects-6c-faults.test.js"
+# forge-test-file "test/v2-projects-6c-postgres.test.js"

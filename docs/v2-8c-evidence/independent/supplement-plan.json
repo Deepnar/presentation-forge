@@ -1,0 +1,27 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "jobs": [
+    {
+      "name": "negative-probes",
+      "args": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "docs/v2-8c-evidence/independent/negative-probes.mjs"
+      ],
+      "files": [
+        "docs/v2-8c-evidence/independent/negative-probes.mjs"
+      ]
+    },
+    {
+      "name": "shell-native",
+      "args": [
+        "node",
+        "docs/v2-8c-evidence/independent/shell-native.mjs"
+      ],
+      "files": []
+    }
+  ],
+  "bounds": "Each process-group job15m TERM watchdog,10s KILL grace; all jobs sequential; initial180s measured headroom and two fresh15s acceptable samples per job; ongoing15s samples,3critical samples stop only owned job. Global PSI/iowait remains unresolved."
+}

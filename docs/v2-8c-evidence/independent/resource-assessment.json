@@ -1,0 +1,56 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "qualification": {
+    "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+    "sampleSeconds": 180.4724518930002,
+    "samples": 12,
+    "cpuBusyMeanPercent": 7.364091253925228,
+    "cpuIoWaitMeanPercent": 9.079220760256423,
+    "diskMeans": {
+      "nvme0n1": {
+        "busyPercent": 1.758717170796695,
+        "weightedQueue": 0.11038803867867601
+      }
+    },
+    "freshConsecutiveReadySamples": 12,
+    "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+  },
+  "readinessSamples": 55,
+  "criticalSamples": 0,
+  "unreadyPreJobSamples": 5,
+  "observedPeakCpuBusyPercent": 50.478848574399386,
+  "observedPeakDiskBusyPercent": 26.54431401111797,
+  "mounts": {
+    ".": {
+      "filesystems": [
+        {
+          "target": "/home",
+          "source": "/dev/nvme0n1p5[/@home]",
+          "fstype": "btrfs",
+          "options": "rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvolid=257,subvol=/@home"
+        }
+      ]
+    },
+    "out/v2-8c-independent": {
+      "filesystems": [
+        {
+          "target": "/home",
+          "source": "/dev/nvme0n1p5[/@home]",
+          "fstype": "btrfs",
+          "options": "rw,noatime,compress=zstd:1,ssd,discard=async,space_cache=v2,subvolid=257,subvol=/@home"
+        }
+      ]
+    },
+    "/tmp": {
+      "filesystems": [
+        {
+          "target": "/tmp",
+          "source": "tmpfs",
+          "fstype": "tmpfs",
+          "options": "rw,noatime,inode64,huge=advise"
+        }
+      ]
+    }
+  },
+  "limits": "Root resource-assessment.json method retained:180-second headroom qualification; two fresh acceptable15s samples per job; bounded serial low-priority watchdogs; long-running job monitoring. CPU/storage bursts withheld new jobs. Elevated global PSI/iowait remains unresolved; no zero-pressure or i915 provenance claim."
+}

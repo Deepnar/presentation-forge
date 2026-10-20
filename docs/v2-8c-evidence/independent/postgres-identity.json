@@ -1,0 +1,18 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "containerId": "2670350f8e8e867b1923c327f5235fd44783e0b5a26dc48d25d5a176d6330809",
+  "name": "/forge-v28c-validation",
+  "image": "postgres:15-alpine",
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=192m"
+  },
+  "ports": {
+    "5432/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "5544"
+      }
+    ]
+  },
+  "version": "PostgreSQL 15.18 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit"
+}
