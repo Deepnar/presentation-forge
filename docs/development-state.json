@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
-    "note": "Refrozen after canonical tool validation and cache-inclusive usage normalization. Prior partial52821fb attempt is retained; full current-source validation and independent review pending."
+    "note": "Frozen canonical provider/usage corrections. Focus66 and bulk2235 completed; remaining validation is recovering after host restart behind quiet-window guards. Independent acceptance remains pending."
   },
   "activeMilestone": {
     "id": "V2-8C",
@@ -23,15 +23,13 @@
   "validation": [
     {
       "id": "model-provider",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
+      "status": "passed",
+      "evidence": "docs/v2-8c-evidence/model-provider.json"
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved provider-exchange contract; implementation and final-source evidence pending."
+      "status": "passed",
+      "evidence": "docs/v2-8c-evidence/non-browser-bulk.json"
     },
     {
       "id": "serial-browser",
@@ -103,5 +101,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-19"
+  "updated": "2026-10-20"
 }

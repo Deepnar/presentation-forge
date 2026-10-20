@@ -1,0 +1,24 @@
+{
+  "id": "model-provider",
+  "kind": "tests",
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-provider-8c.test.js test/v2-provider-durable-8c.test.js test/v2-provider-postgres-8c.test.js",
+  "log": "docs/v2-8c-evidence/logs/model-provider.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 66,
+    "pass": 66,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-provider-8c.test.js",
+    "test/v2-provider-durable-8c.test.js",
+    "test/v2-provider-postgres-8c.test.js"
+  ],
+  "backend": "Actual HTTP fixtures on both wire families, SQLite and isolated PostgreSQL15.18",
+  "atUtc": "2026-10-19T17:47:07.439184+00:00",
+  "durationSeconds": 1.265725,
+  "provenance": "Completed and saved before host restart; exact product/test source unchanged"
+}

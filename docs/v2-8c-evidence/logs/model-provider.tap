@@ -1,0 +1,409 @@
+TAP version 13
+# Subtest: openai-compatible: actual HTTP preserves scoped instructions and distinct wire format
+ok 1 - openai-compatible: actual HTTP preserves scoped instructions and distinct wire format
+  ---
+  duration_ms: 42.739483
+  type: 'test'
+  ...
+# Subtest: openai-compatible: capability negotiation refuses before network without downgrade
+ok 2 - openai-compatible: capability negotiation refuses before network without downgrade
+  ---
+  duration_ms: 1.993078
+  type: 'test'
+  ...
+# Subtest: openai-compatible: invalid options and executable accessors never execute
+ok 3 - openai-compatible: invalid options and executable accessors never execute
+  ---
+  duration_ms: 0.863919
+  type: 'test'
+  ...
+# Subtest: openai-compatible: context budget counts wire schemas and controls
+ok 4 - openai-compatible: context budget counts wire schemas and controls
+  ---
+  duration_ms: 1.897519
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancellation before dispatch and during headers is bounded
+ok 5 - openai-compatible: cancellation before dispatch and during headers is bounded
+  ---
+  duration_ms: 4.790209
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancellation while reading a body aborts the request
+ok 6 - openai-compatible: cancellation while reading a body aborts the request
+  ---
+  duration_ms: 24.055602
+  type: 'test'
+  ...
+# Subtest: openai-compatible: timeout covers a stalled body without retries
+ok 7 - openai-compatible: timeout covers a stalled body without retries
+  ---
+  duration_ms: 41.310125
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status401 is sanitized and never retried
+ok 8 - openai-compatible: status401 is sanitized and never retried
+  ---
+  duration_ms: 2.674588
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status403 is sanitized and never retried
+ok 9 - openai-compatible: status403 is sanitized and never retried
+  ---
+  duration_ms: 2.145829
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status429 is sanitized and never retried
+ok 10 - openai-compatible: status429 is sanitized and never retried
+  ---
+  duration_ms: 2.805414
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status500 is sanitized and never retried
+ok 11 - openai-compatible: status500 is sanitized and never retried
+  ---
+  duration_ms: 1.94386
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status302 is sanitized and never retried
+ok 12 - openai-compatible: status302 is sanitized and never retried
+  ---
+  duration_ms: 1.94151
+  type: 'test'
+  ...
+# Subtest: openai-compatible: oversized chunked response refuses
+ok 13 - openai-compatible: oversized chunked response refuses
+  ---
+  duration_ms: 2.266285
+  type: 'test'
+  ...
+# Subtest: openai-compatible: oversized declared response refuses
+ok 14 - openai-compatible: oversized declared response refuses
+  ---
+  duration_ms: 1.931327
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed JSON refuses as invalid response
+ok 15 - openai-compatible: malformed JSON refuses as invalid response
+  ---
+  duration_ms: 1.859768
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed UTF8 refuses as invalid response
+ok 16 - openai-compatible: malformed UTF8 refuses as invalid response
+  ---
+  duration_ms: 1.857448
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed and unsafe tool proposals refuse atomically
+ok 17 - openai-compatible: malformed and unsafe tool proposals refuse atomically
+  ---
+  duration_ms: 3.936045
+  type: 'test'
+  ...
+# Subtest: openai-compatible: text, refusal and missing usage are truthful outcomes
+ok 18 - openai-compatible: text, refusal and missing usage are truthful outcomes
+  ---
+  duration_ms: 1.849855
+  type: 'test'
+  ...
+# Subtest: anthropic: actual HTTP preserves scoped instructions and distinct wire format
+ok 19 - anthropic: actual HTTP preserves scoped instructions and distinct wire format
+  ---
+  duration_ms: 2.636694
+  type: 'test'
+  ...
+# Subtest: anthropic: capability negotiation refuses before network without downgrade
+ok 20 - anthropic: capability negotiation refuses before network without downgrade
+  ---
+  duration_ms: 0.791044
+  type: 'test'
+  ...
+# Subtest: anthropic: invalid options and executable accessors never execute
+ok 21 - anthropic: invalid options and executable accessors never execute
+  ---
+  duration_ms: 0.474935
+  type: 'test'
+  ...
+# Subtest: anthropic: context budget counts wire schemas and controls
+ok 22 - anthropic: context budget counts wire schemas and controls
+  ---
+  duration_ms: 0.90196
+  type: 'test'
+  ...
+# Subtest: anthropic: cancellation before dispatch and during headers is bounded
+ok 23 - anthropic: cancellation before dispatch and during headers is bounded
+  ---
+  duration_ms: 2.288139
+  type: 'test'
+  ...
+# Subtest: anthropic: cancellation while reading a body aborts the request
+ok 24 - anthropic: cancellation while reading a body aborts the request
+  ---
+  duration_ms: 22.487014
+  type: 'test'
+  ...
+# Subtest: anthropic: timeout covers a stalled body without retries
+ok 25 - anthropic: timeout covers a stalled body without retries
+  ---
+  duration_ms: 41.421196
+  type: 'test'
+  ...
+# Subtest: anthropic: status401 is sanitized and never retried
+ok 26 - anthropic: status401 is sanitized and never retried
+  ---
+  duration_ms: 2.084805
+  type: 'test'
+  ...
+# Subtest: anthropic: status403 is sanitized and never retried
+ok 27 - anthropic: status403 is sanitized and never retried
+  ---
+  duration_ms: 1.865669
+  type: 'test'
+  ...
+# Subtest: anthropic: status429 is sanitized and never retried
+ok 28 - anthropic: status429 is sanitized and never retried
+  ---
+  duration_ms: 2.109585
+  type: 'test'
+  ...
+# Subtest: anthropic: status500 is sanitized and never retried
+ok 29 - anthropic: status500 is sanitized and never retried
+  ---
+  duration_ms: 2.602827
+  type: 'test'
+  ...
+# Subtest: anthropic: status302 is sanitized and never retried
+ok 30 - anthropic: status302 is sanitized and never retried
+  ---
+  duration_ms: 1.813359
+  type: 'test'
+  ...
+# Subtest: anthropic: oversized chunked response refuses
+ok 31 - anthropic: oversized chunked response refuses
+  ---
+  duration_ms: 1.662531
+  type: 'test'
+  ...
+# Subtest: anthropic: oversized declared response refuses
+ok 32 - anthropic: oversized declared response refuses
+  ---
+  duration_ms: 1.675256
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed JSON refuses as invalid response
+ok 33 - anthropic: malformed JSON refuses as invalid response
+  ---
+  duration_ms: 1.677843
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed UTF8 refuses as invalid response
+ok 34 - anthropic: malformed UTF8 refuses as invalid response
+  ---
+  duration_ms: 1.646962
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed and unsafe tool proposals refuse atomically
+ok 35 - anthropic: malformed and unsafe tool proposals refuse atomically
+  ---
+  duration_ms: 2.310563
+  type: 'test'
+  ...
+# Subtest: anthropic: text, refusal and missing usage are truthful outcomes
+ok 36 - anthropic: text, refusal and missing usage are truthful outcomes
+  ---
+  duration_ms: 1.860433
+  type: 'test'
+  ...
+# Subtest: transport configuration is immutable, explicit and cannot embed URL credentials
+ok 37 - transport configuration is immutable, explicit and cannot embed URL credentials
+  ---
+  duration_ms: 0.452135
+  type: 'test'
+  ...
+# Subtest: OpenAI-compatible legacy token parameter is an explicit configuration choice
+ok 38 - OpenAI-compatible legacy token parameter is an explicit configuration choice
+  ---
+  duration_ms: 2.595435
+  type: 'test'
+  ...
+# Subtest: wire budget includes the output limit and refuses before HTTP at its boundary
+ok 39 - wire budget includes the output limit and refuses before HTTP at its boundary
+  ---
+  duration_ms: 1.858876
+  type: 'test'
+  ...
+# Subtest: transport failure details never escape and a non-cooperating injected fetch is bounded
+ok 40 - transport failure details never escape and a non-cooperating injected fetch is bounded
+  ---
+  duration_ms: 21.216123
+  type: 'test'
+  ...
+# Subtest: openai-compatible: altered catalogs and noncanonical complete requests refuse
+ok 41 - openai-compatible: altered catalogs and noncanonical complete requests refuse
+  ---
+  duration_ms: 0.80982
+  type: 'test'
+  ...
+# Subtest: anthropic: altered catalogs and noncanonical complete requests refuse
+ok 42 - anthropic: altered catalogs and noncanonical complete requests refuse
+  ---
+  duration_ms: 0.576915
+  type: 'test'
+  ...
+# Subtest: openai-compatible: normalized usage includes cached input exactly once
+ok 43 - openai-compatible: normalized usage includes cached input exactly once
+  ---
+  duration_ms: 1.75047
+  type: 'test'
+  ...
+# Subtest: anthropic: normalized usage includes cached input exactly once
+ok 44 - anthropic: normalized usage includes cached input exactly once
+  ---
+  duration_ms: 1.450264
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cache counters reject invalid accounting and preserve unavailable breakdowns
+ok 45 - openai-compatible: cache counters reject invalid accounting and preserve unavailable breakdowns
+  ---
+  duration_ms: 2.252809
+  type: 'test'
+  ...
+# Subtest: anthropic: cache counters reject invalid accounting and preserve unavailable breakdowns
+ok 46 - anthropic: cache counters reject invalid accounting and preserve unavailable breakdowns
+  ---
+  duration_ms: 1.272404
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+ok 47 - SQLite/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 61.011891
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a human save during HTTP prevents stale plan execution
+ok 48 - SQLite/openai-compatible: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 11.320202
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: protected content remains protected after a valid proposal
+ok 49 - SQLite/openai-compatible: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 12.480032
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a normalized response grants no foreign-owner authority
+ok 50 - SQLite/openai-compatible: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 8.124281
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: inspection scope cannot receive an edit proposal
+ok 51 - SQLite/openai-compatible: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 6.891952
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+ok 52 - SQLite/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 12.247833
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a human save during HTTP prevents stale plan execution
+ok 53 - SQLite/anthropic: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 9.719274
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: protected content remains protected after a valid proposal
+ok 54 - SQLite/anthropic: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 11.847629
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a normalized response grants no foreign-owner authority
+ok 55 - SQLite/anthropic: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 8.776756
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: inspection scope cannot receive an edit proposal
+ok 56 - SQLite/anthropic: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 6.402309
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+ok 57 - PostgreSQL/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 112.283564
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save during HTTP prevents stale plan execution
+ok 58 - PostgreSQL/openai-compatible: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 13.481122
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: protected content remains protected after a valid proposal
+ok 59 - PostgreSQL/openai-compatible: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 20.416551
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a normalized response grants no foreign-owner authority
+ok 60 - PostgreSQL/openai-compatible: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 8.69992
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: inspection scope cannot receive an edit proposal
+ok 61 - PostgreSQL/openai-compatible: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 7.474561
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+ok 62 - PostgreSQL/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 58.053699
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save during HTTP prevents stale plan execution
+ok 63 - PostgreSQL/anthropic: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 10.235394
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: protected content remains protected after a valid proposal
+ok 64 - PostgreSQL/anthropic: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 16.411039
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a normalized response grants no foreign-owner authority
+ok 65 - PostgreSQL/anthropic: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 8.635891
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: inspection scope cannot receive an edit proposal
+ok 66 - PostgreSQL/anthropic: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 6.53949
+  type: 'test'
+  ...
+1..66
+# tests 66
+# suites 0
+# pass 66
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1232.920999
+# forge-test-file "test/v2-provider-8c.test.js"
+# forge-test-file "test/v2-provider-durable-8c.test.js"
+# forge-test-file "test/v2-provider-postgres-8c.test.js"
