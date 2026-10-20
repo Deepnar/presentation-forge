@@ -23,15 +23,15 @@
   "validation": [
     {
       "id": "tool-conversation",
-      "status": "pending",
-      "evidence": null,
-      "reason": "New approved V2-8E contract; current-source implementation and validation pending. Prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8e-evidence/tool-conversation.json",
+      "reason": "Complete frozen-source execution passed with0fail/skip/cancel; remaining required gates and independent acceptance are pending."
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "New approved V2-8E contract; current-source implementation and validation pending. Prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8e-evidence/non-browser-bulk.json",
+      "reason": "Complete frozen-source execution passed with0fail/skip/cancel; remaining required gates and independent acceptance are pending."
     },
     {
       "id": "serial-browser",

@@ -48,3 +48,18 @@ One separate high-effort reviewer performed a read-only plan audit, found no sco
 blocker and identified lifetime/budget/correlation seams. It ran 0 tests, changed
 0 files and supplied no implementation acceptance. Final independent execution
 waits for the complete frozen-source packet and release of the heavy slot.
+
+
+## Final-source validation in progress
+
+The frozen-source focused suite passed 93/93 (17 boundary, 38 SQLite, 38 PostgreSQL),
+and the full 187-file bulk passed 2359/2359. Both have 0 failures, skips and
+cancellations. Complete serial browser/build owners, all PostgreSQL files,
+commands/50 cells, native supplements, visual inspection and independent review
+remain pending. See the coordinator for actual active/completed jobs.
+
+Before generators, 4067 evidence files including 78 original PPTXs and 5 separate
+canonical out/ originals were copied/hash-verified. The runner qualified 180.420 s
+of sustained measured headroom: mean CPU 5.172%, iowait 8.154%, backing NVMe busy
+2.205%, weighted queue 0.09993, with 7 fresh consecutive ready samples. Global
+PSI/iowait cause remains unresolved. Every new job still requires fresh readiness.

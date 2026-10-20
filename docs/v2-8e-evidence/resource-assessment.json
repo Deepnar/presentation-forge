@@ -1,0 +1,41 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "method": "Sustained180-second duration-weighted CPU/memory/backing-device headroom, then two fresh15-second acceptable samples before each job; ongoing monitoring and process-group watchdogs.",
+  "qualification": {
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+    "sampleSeconds": 180.41996653399838,
+    "samples": 12,
+    "cpuBusyMeanPercent": 5.172350005634149,
+    "cpuIoWaitMeanPercent": 8.154124230444948,
+    "diskMeans": {
+      "nvme0n1": {
+        "busyPercent": 2.205410008902865,
+        "weightedQueue": 0.0999279644395822
+      }
+    },
+    "freshConsecutiveReadySamples": 7,
+    "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+  },
+  "mountEvidence": "docs/v2-8e-evidence/storage-environment.json",
+  "thresholds": {
+    "freshSampleSeconds": 15,
+    "freshConsecutiveSamples": 2,
+    "cpuBusyPercentBelow": 25,
+    "cpuIoWaitPercentBelow": 20,
+    "cpuPsiSomeAvg10Below": 10,
+    "memoryPsiSomeAvg10Below": 1,
+    "availableGiBAbove": 8,
+    "deviceBusyPercentBelow": 5,
+    "deviceWeightedQueueBelow": 0.5,
+    "deviceInflightAtMost": 1,
+    "userspaceDThreads": 0,
+    "sustainedPeakCpuBusyBelow": 50,
+    "sustainedPeakDeviceBusyBelow": 20,
+    "sustainedPeakQueueBelow": 2,
+    "ownedJobCriticalConsecutiveSamples": 3
+  },
+  "backingStorage": "Repository/output and Docker data on btrfs subvolumes on nvme0n1p5; /tmp and owned PostgreSQL data tmpfs.",
+  "limitation": "Raw global I/O PSI/iowait remains elevated with unresolved provenance. No graphics-causality, zero-pressure or production-percentile claim. Competing work was neither stopped nor reused.",
+  "watchdogs": "nice10/ionice2priority7,15minutes per job (bulk30minutes),10second TERM-to-KILL grace; browser/build owners never overlap.",
+  "resourceStreamNote": "Raw stream retains development entries labeled15e357c (with working-tree implementation) and final-source entries labeledc71d65e. Final qualification and gate observations refer only to the frozen source; no prior rows are relabeled."
+}

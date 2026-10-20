@@ -1,0 +1,21 @@
+{
+  "id": "tool-conversation",
+  "kind": "tests",
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-conversation-8e.test.js test/v2-conversation-sqlite-8e.test.js test/v2-conversation-postgres-8e.test.js",
+  "log": "docs/v2-8e-evidence/logs/tool-conversation.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 93,
+    "pass": 93,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-conversation-8e.test.js",
+    "test/v2-conversation-sqlite-8e.test.js",
+    "test/v2-conversation-postgres-8e.test.js"
+  ],
+  "backend": "Both real local HTTP protocols; temporary SQLite and owned isolated PostgreSQL15.18; strict boundary and durable preparation/execution"
+}
