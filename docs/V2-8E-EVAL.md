@@ -45,9 +45,12 @@ are not added to the final distinct matrix. The later test-only readiness diagno
 retains bounded stage/code without driver bodies; original assertions/timeouts stay.
 
 One separate high-effort reviewer performed a read-only plan audit, found no scope
-blocker and identified lifetime/budget/correlation seams. It ran 0 tests, changed
-0 files and supplied no implementation acceptance. Final independent execution
-waits for the complete frozen-source packet and release of the heavy slot.
+blocker and identified lifetime/budget/correlation seams. Its subsequent
+[source audit](v2-8e-evidence/preliminary-source-review.md) inspected all 14
+product/test/governance changes and canonical dependencies with no confirmed
+blocking defect. It ran 0 tests, changed 0 files and supplied no implementation
+acceptance. Final independent execution waits for the complete frozen-source
+packet and release of the heavy slot.
 
 
 ## Final-source validation in progress
