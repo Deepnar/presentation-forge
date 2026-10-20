@@ -8584,6 +8584,12 @@ needs direction on scope before building.*
   policy and exact model/layout/ownership boundaries. One complete atomic
   preparation/queue contract is the slice, not a partial conversational runtime.
 
+  **Implementation/validation:** frozen source `8c1e5c4` includes narrow fixes
+  for JSON object uniqueness validation and PostgreSQL refusal classification.
+  A separate read-only source audit found no confirmed blocker; complete execution,
+  final independent review and acceptance remain pending. Preserve failed development
+  attempts separately from final-source results.
+
   **Gates/stop:** common integrity, ownership, canonical edit, preservation,
   native/regression/compatibility/documentation gates apply; unchanged UI supplies
   interaction/accessibility/responsive regression evidence. Live quality/new UI/

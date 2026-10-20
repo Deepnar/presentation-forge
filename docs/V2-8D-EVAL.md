@@ -63,6 +63,7 @@ case was unexecuted in that attempt, then included in the142-case run. Raw attem
 are retained separately; neither failure run supplies a passing final-source gate.
 
 A separate high-effort reviewer initially could not start due an account usage
-limit. Its reported reset time has passed and the same context was asked once to
-retry a read-only audit. No independent execution or acceptance is inferred from
-an unavailable reviewer. Root retains the heavy slot until its full packet is ready.
+limit. After its reported reset, the same context completed a
+[read-only source audit](v2-8d-evidence/preliminary-source-review.md) of exact8c1e5c4
+with no confirmed blocker. It executed0tests and supplied no acceptance. Root
+retains the heavy slot until the complete packet is ready.
