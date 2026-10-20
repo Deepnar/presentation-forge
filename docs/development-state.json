@@ -24,12 +24,14 @@
     {
       "id": "model-provider",
       "status": "passed",
-      "evidence": "docs/v2-8c-evidence/model-provider.json"
+      "evidence": "docs/v2-8c-evidence/model-provider.json",
+      "reason": "Saved exact-source zero-exit execution completed before host restart; no failures, skips or cancellations."
     },
     {
       "id": "non-browser-bulk",
       "status": "passed",
-      "evidence": "docs/v2-8c-evidence/non-browser-bulk.json"
+      "evidence": "docs/v2-8c-evidence/non-browser-bulk.json",
+      "reason": "Saved exact-source zero-exit execution completed before host restart; no failures, skips or cancellations."
     },
     {
       "id": "serial-browser",
