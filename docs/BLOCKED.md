@@ -230,6 +230,14 @@ port 5544 closed. The earlier reboot-lost service count remains unavailable.
 Live-provider quality was outside this contract, not a passing fixture claim;
 later scope and inherited limits remain in the [roadmap](ROADMAP.md#v2-8-remaining).
 
+V2-8D preparation/explicit queueing is independently accepted at8c1e5c4; its
+[evaluation](V2-8D-EVAL.md) and [decision](reviews/V2-8D-8c1e5c4.json) report complete
+required execution and no blocking finding. The owned service was removed after a
+saved/fsynced zero-project-database observation and verified5544closure. The earlier
+readiness-placeholder skip remains archived with unknown original cause; complete
+34-case rerun and independent execution passed. Remaining live qualification and
+hosted proposal-lifetime scope stay in the [roadmap](ROADMAP.md#v2-8-remaining).
+
 Two are worth naming because they look like engineering and are not:
 
 - **The turn grammar's unscoped case** (options 2 and 3). The selection-scoped

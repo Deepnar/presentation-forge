@@ -288,6 +288,15 @@ and [evidence](docs/V2-8C-EVAL.md) distinguish local protocol fixtures from live
 provider qualification. Conversational integration and the Assistant remain in the
 [roadmap](docs/ROADMAP.md#v2-8-remaining).
 
+Trusted host callers can now prepare a single scoped provider turn against an exact
+saved project revision and explicitly queue its opaque edit proposal through the
+existing durable runtime. Read/text/refusal outcomes do not mutate project content;
+edit proposals preflight through canonical commands and retain owner/revision guards.
+A proposal belongs to one host instance; queued runs retain durable recovery. See
+the [preparation contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8d-provider-backed-run-preparation)
+and [independent validation](docs/V2-8D-EVAL.md). This internal boundary adds no new
+public route, credential setup or Assistant interface.
+
 A written `.pptx` proves the file parsed and nothing else. `pres.writeFile()`
 succeeds for decks with text off the canvas and invisible-on-invisible colour
 pairs. So the checks ask four different questions, and each was added because

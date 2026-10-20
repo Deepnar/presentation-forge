@@ -2661,5 +2661,6 @@ transactions. Canonical atomic preflight produces opaque immutable proposals;
 an explicit host action queues their private semantic plan through the accepted
 run core with fresh revision and commit-time cancellation/deadline guards.
 No prompt/transcript store, public route or new UI is introduced.
-[The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8d-provider-backed-run-preparation-implementation-under-review)
-and [evaluation](V2-8D-EVAL.md) identify the implementation-under-review status.
+[The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8d-provider-backed-run-preparation)
+and [evaluation](V2-8D-EVAL.md) identify exact source8c1e5c4 and its independent
+[acceptance](reviews/V2-8D-8c1e5c4.json).

@@ -75,9 +75,23 @@ live model quality or the parent two-provider/common-search gate. No Assistant/n
 UI is part of this slice. Acceptance permits planning only; the next candidate
 remains unauthorized in state and future work lives in the roadmap.
 
-The new continuation authorizes [V2-8D provider-backed run preparation](ROADMAP.md#v2-8d-provider-run-preparation).
-State/[evaluation](V2-8D-EVAL.md) index the active contract and pending checks.
-The accepted V2-8C source/evidence above remains historical prerequisite evidence.
+[V2-8D provider-backed run preparation](ROADMAP.md#v2-8d-provider-run-preparation)
+is independently accepted at8c1e5c4 in [the decision](reviews/V2-8D-8c1e5c4.json).
+State/[evaluation](V2-8D-EVAL.md) index2643distinct primary checks,134separate repeats,
+358independent executions with explicit overlap, build/type/50cells and inspected
+browser/native evidence. Standing locale remains9pass/1fail separately. The reviewer
+finished and staged its explicit decision before a usage-limit interruption; root
+committed that unchanged record. Accepted V2-8C evidence is historical prerequisite
+execution, not a new8D run.
+
+The owned service was removed after a saved/fsynced zero-project-database observation;
+5544is closed. Use [the8D runbook](v2-8d-evidence/RUNBOOK.md) and218-file inventory for
+fresh reproduction, preserving all evidence and ignored originals first. The root
+snapshot3631files and reviewer snapshot3898files were restored/hash-verified;23new
+original PPTXs are retained across both namespaces. Existing visual/live-quality/
+provenance limits remain. Do not rerun finish-evidence.py against restored canonical
+out/ originals. Next-candidate status remains unauthorized; stop after this closeout,
+and keep all future work in the roadmap.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
@@ -98,7 +112,7 @@ node --test test/v2-projects-6c-concurrency.test.js
 node --test test/v2-projects-6c-faults.test.js
 node_modules/.bin/vite build --config app/web/vite.config.js
 npm run typecheck
-node tools/v2-benchmark.mjs --out out/v2-8c-benchmark --raster none
+node tools/v2-benchmark.mjs --out out/v2-8d-benchmark --raster none
 ```
 
 Use a process-group watchdog for each browser file and run browser files strictly

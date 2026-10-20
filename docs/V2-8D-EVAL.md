@@ -3,8 +3,8 @@
 Approved continuation on 2026-10-20. Entry checkout
 `8e966552149f87686d624a05bfc55feab1dcbd76` is recorded by the roadmap/state;
 accepted baseline is `e41d509c20fca21a70b9a0c587ccb83684aee7e6`.
-Branch `v2`, push `origin/v2`. Implementation is frozen at `8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`. Required final-source
-validation and separate acceptance remain pending; no acceptance is claimed.
+Branch `v2`, push `origin/v2`. Implementation is frozen at `8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`. Complete final-source validation and a separate
+[ACCEPT decision](reviews/V2-8D-8c1e5c4.json) qualify this bounded slice.
 
 ## Bounded contract and gates
 
@@ -29,8 +29,8 @@ ignored-original snapshots. Missing PostgreSQL is unexecuted, never passing.
 
 ## Validation status
 
-Complete frozen-source execution passed all required gates. Independent acceptance
-is pending; the accepted baseline remains V2-8C. The full218-file inventory passed
+Complete frozen-source execution passed all required gates. A separate reviewer
+accepted exact8c1e5c4; state now indexes that accepted baseline. The full218-file inventory passed
 2639/2639, and4 distinct persisted/native preparation scenarios passed: **2643
 primary distinct checks,0fail/0skip/0cancel,0required cases unexecuted**. Separate
 successful repeat executions are109 focused and25 resource-resume qualification
@@ -60,7 +60,7 @@ records documentation HEAD1ebc5e2; source equality against8c1e5c4 is verified.
 
 All115 final images were inspected; the [visual report](v2-8d-evidence/VISUAL-REVIEW.md)
 records overlap/clipping and known limits. All9 required evidence gates are passed;
-state remains review-pending/acceptedfalse. The validator initially refused an
+state records the separate ACCEPT decision and acceptedtrue. The validator initially refused an
 expanded PostgreSQL gate file list; the report now preserves its exact23-case
 contract and supplies a separate all-seven128-case aggregate. No checker or test
 scope changed. Current dev:protocol reports0errors/0warnings.
@@ -145,8 +145,8 @@ samples preceded each job; browser/build owners stayed serial with watchdogs and
 low CPU/I/O priority. Busy samples withheld new jobs; global I/O PSI/iowait retains
 unresolved provenance. No unrelated process/service was stopped or reused. Raw
 resource streams/environment are retained; zero-pressure and graphics causality
-are not asserted. The owned PostgreSQL service remains running for independent
-review; final saved zero-database/removal proof is pending cleanup.
+are not asserted. The owned PostgreSQL service was removed after independent review, a saved/fsynced
+zero-database observation and fresh actual-removal/port-closure verification below.
 
 ## Remaining limitations and recommendation
 
@@ -168,7 +168,58 @@ No prompt/key/raw response/transcript or new journal/store was introduced. Exist
 backend runtime schema initialization on explicit invocation is distinct from
 preparation's no-run/project-row mutation guarantee.
 
-Recommendation: accept this bounded implementation if the separate reviewer
-confirms the source/evidence. This implementer does not accept it. Stop after
-independent review, exact owned-service cleanup and handoff; no parent V2-8 completion
-or further feature implementation is implied.
+The independent decision accepts this bounded implementation with the residual
+limits above. No blocking finding remains. Stop after owned cleanup and handoff;
+no parent V2-8 completion or further feature implementation is implied.
+
+
+## Independent acceptance and final cleanup
+
+The [separate decision/report](reviews/V2-8D-8c1e5c4.md) compares accepted V2-8C
+with exact `8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c` and packet `93bed02`.
+Independent evidence is committed at `02e1c97`; the decision is `ff0be70`.
+The reviewer finished and staged its explicit ACCEPT files, then hit a usage limit
+before committing/pushing them. Root committed those unchanged authored files;
+this is the separate reviewer's acceptance, not implementer self-acceptance. Its
+saved decision-time protocol check passed with 0 errors and 0 warnings.
+
+| Independently executed | Pass | Fail | Skip | Cancelled |
+|---|---:|---:|---:|---:|
+| Provider preparation, both protocols and backends |109|0|0|0|
+| Canonical foundation, preservation, types and governance |104|0|0|0|
+| Runtime, processes and both backends |69|0|0|0|
+| PostgreSQL contracts, concurrency, faults and import |42|0|0|0|
+| Complete Chrome shell |28|0|0|0|
+| Persisted/native preparation scenarios |4|0|0|0|
+| Additional authority mutation/response alias probes |2|0|0|0|
+| Total |358|0|0|0|
+
+These are separate executions: 352 inventory leaves from 18 files and 4 native
+supplement cases overlap the primary packet; 2 probes are additional. Do not add
+358 to the primary distinct 2643. The other 200 files/2287 inventory leaves were
+inspected as complete passing evidence, not independently rerun. No planned
+independent job remains unexecuted. The standing locale result was inspected,
+not independently repeated. Build/type/protocol passed independently, and all
+50 cells completed in 465 ms with all 5 invariance comparisons agreeing and every
+cell result matching the packet.
+
+The reviewer inspected all 115 packet images and 45 fresh images: 11 browser,
+18 native pages and 16 SVG rasters. All 34 fresh native/SVG/shell images were
+byte-identical to packet counterparts. OOXML audit confirmed unchanged human
+run/paragraph/cell properties, shape/frame geometry and byte-identical untouched
+slide 2 XML in all four protocol/backend scenarios. Fresh 120-slide opening was
+1543 ms with 120 thumbnails; maximum shell canvas delta was 0.03064727783203125 px.
+All 3898 snapshot files (3893 evidence files, including 68 original PPTXs, plus
+5 canonical out/ originals) were restored/hash-verified; 10 new independent
+originals were preserved. Independent resources retained 58 observations, 0 critical
+samples and 9 pre-job samples withholding work; global PSI provenance stays unknown.
+
+[Pre-removal observation](v2-8d-evidence/pre-removal-observation.json) records the
+fresh actual zero-project-database count, saved and fsynced before stopping the
+exact owned service. [Cleanup proof](v2-8d-evidence/owned-postgres-cleanup.json)
+confirms actual container absence through inspect/ps and closed loopback port 5544.
+The initial stop command returned exit 0 but its exact-stdout assertion failed;
+that raw reply was not retained. Fresh state checks establish removal, and the
+initial assertion failure is retained as a cleanup harness limitation. No service
+was recreated, no count was reconstructed and no unrelated service was touched.
+The earlier reboot-lost service's count remains unavailable, not zero.

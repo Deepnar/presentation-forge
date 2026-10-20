@@ -186,7 +186,10 @@ null and unavailable cache breakdowns are omitted. Invalid counters refuse; the
 transport does not enable or configure prompt caching.
 
 
-## V2-8D provider-backed run preparation (implementation under review)
+<a id="v2-8d-provider-backed-run-preparation-implementation-under-review"></a>
+<a id="v2-8d-provider-backed-run-preparation"></a>
+
+## V2-8D provider-backed run preparation
 
 `packages/agent/provider-run.ts` supplies `createProviderRunner(backend, provider)`;
 `src/agent/index.js` resolves the configured project backend for trusted callers.
@@ -225,5 +228,6 @@ also caps at120seconds and does not retry. Queued plans contain one atomic batch
 cannot be recovered after host restart; queued runs retain accepted recovery.
 No prompt, raw response, credential, transcript or new journal/table is stored.
 An explicit new preparation may call the provider again; no network exactly-once
-or conversational runtime claim is made. Current validation/review is indexed by
-[the evaluation](V2-8D-EVAL.md) and state; later scope lives in the roadmap.
+or conversational runtime claim is made. Exact source8c1e5c4 is independently
+[accepted](reviews/V2-8D-8c1e5c4.json). [The evaluation](V2-8D-EVAL.md) and state
+index validation/review; later scope lives in the roadmap.

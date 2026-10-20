@@ -8528,7 +8528,7 @@ needs direction on scope before building.*
 
 <a id="v2-8d-provider-run-preparation"></a>
 
-- [ ] **V2-8D provider-backed run preparation — authorized continuation, 2026-10-20.**
+- [x] **V2-8D provider-backed run preparation — independently accepted, 2026-10-20.**
   Accepted baseline `e41d509c20fca21a70b9a0c587ccb83684aee7e6`; entry checkout
   `8e966552149f87686d624a05bfc55feab1dcbd76`, branch `v2`, push `origin/v2`.
   The new continuation and standing recommended-choice direction authorize this
@@ -8593,8 +8593,14 @@ needs direction on scope before building.*
   for JSON object uniqueness validation and PostgreSQL refusal classification.
   Complete current-source validation passed2643distinct checks plus134separate
   repeats, build/type/50cells and115inspected images. A preliminary source audit
-  found no confirmed blocker; final independent execution/acceptance is pending. Preserve failed development
-  attempts separately from final-source results.
+  found no confirmed blocker; separate final execution passed358/358 and
+  [accepted exact8c1e5c4](reviews/V2-8D-8c1e5c4.json). Independent repeats352inventory
+  leaves and4native cases plus2new probes; do not add358 to2643distinct primary
+  checks. Independent build/type/protocol/50cells passed. All115packet and45fresh
+  images were inspected;3898snapshot files restored/hash-verified and10new
+  independent originals retained. Exact owned PostgreSQL cleanup saved/fsynced
+  zero project databases before removal and verified5544closed. No blocker remains.
+  Preserve failed development attempts separately from final-source results.
 
   **Gates/stop:** common integrity, ownership, canonical edit, preservation,
   native/regression/compatibility/documentation gates apply; unchanged UI supplies
@@ -8604,14 +8610,27 @@ needs direction on scope before building.*
   Require one separate high-effort exact-source ACCEPT/HOLD and stop after review,
   owned cleanup and handoff. [Evaluation](V2-8D-EVAL.md) records exact results.
 
+  > **Learned.** Validated sanitized objects may still need ordinary JSON identity
+  > before structural uniqueness comparison. Deliberate domain refusals must cross
+  > both backend rollback boundaries without becoming generic storage failures.
+  > Frozen metadata is separate from private cloned authority; independent mutation/
+  > alias probes confirmed that distinction. A host-instance proposal deliberately
+  > does not become a cross-request token. Look-ahead retains the explicit hosted
+  > lifecycle seam above; queued execution reuses the durable primitive rather than
+  > requiring another scene/store. Reusable failure modes are in TRAPS.md. Parent
+  > V2-8 remains incomplete; acceptance permits planning only, then this slice stops.
+
 <a id="v2-8-remaining"></a>
 
 The accepted foundation supplies real scoped content tools, schemas, instruction
 sections and bounded context. The durable core is independently accepted in V2-8B.
 V2-8C independently accepts bounded Chat Completions/Anthropic Messages exchanges,
 explicit capability profiles and canonical proposal validation. Local HTTP fixtures
-prove both protocols and persisted edits, not live model quality. The remaining
-parent milestone connects these exchanges to bounded conversational execution,
+prove both protocols and persisted edits, not live model quality. V2-8D independently
+accepts scoped single-turn preparation, atomic preflight and explicit opaque-proposal
+queueing through the existing durable core. Its host-instance lifetime seam remains
+explicit above. The remaining parent milestone connects these primitives to bounded
+conversational execution,
 qualifies live providers and integrates the visible Assistant and common
 search/source orchestration; its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing
