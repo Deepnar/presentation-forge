@@ -21,6 +21,8 @@ for name in ['production-build','typecheck','benchmark-50']:
 full=[byname['bulk']]+[byname[pathlib.Path(f).stem] for f in plan['serial']+plan['postgres']]
 assert sum(len(r['files']) for r in full)==215
 write('full-matrix.json',{'implementationSha':sha,'files':215,'tests':{key:sum(r['tests'][key] for r in full) for key in ['total','pass','fail','skip','cancelled']},'repeatedFocused':byname['focused']['tests'],'fullRuns':[r['name'] for r in full],'standingByokLocale':byname['byok-locale']['tests'],'unexecuted':0})
+if 'window-qualification' in byname:
+ result=json.loads((root/'full-matrix.json').read_text());result['repeatedResourceQualification']=byname['window-qualification']['tests'];write('full-matrix.json',result)
 for row in runs:
  if row['name'] not in ['bulk','focused'] and row['files']:
   folder=logs/'files';folder.mkdir(exist_ok=True);shutil.copy2(row['log'],folder/(row['name']+'.tap'))
@@ -28,4 +30,6 @@ for name in ['headless','native-review','shell-native']:
  assert byname[name]['exitCode']==0;shutil.copy2(byname[name]['log'],logs/(name+'.log'))
 headless=pathlib.Path(byname['headless']['log']).read_text();assert re.search(r'^# tests 4$',headless,re.M) and re.search(r'^# pass 4$',headless,re.M)
 shutil.copy2(out/'coordinator.json',logs/'coordinator.json');shutil.copy2(out/'coordinator.log',logs/'coordinator.log');(root/'recovery-metrics.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in [json.loads(line) for line in (out/'recovery-metrics.jsonl').read_text().splitlines() if line] if row['source']==sha))
+for name in ['resource-window.jsonl','storage-window.jsonl','quiet-restart.jsonl']:
+ if (out/name).exists():shutil.copy2(out/name,root/name)
 print(json.dumps(json.loads((root/'full-matrix.json').read_text()),indent=2))

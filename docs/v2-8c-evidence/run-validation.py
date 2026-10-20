@@ -1,4 +1,5 @@
 import datetime, hashlib, json, os, pathlib, re, shutil, subprocess, time, sys, signal
+from quiet_window import Window
 root=pathlib.Path('docs/v2-8c-evidence');out=pathlib.Path('out/v2-8c-validation');out.mkdir(exist_ok=True)
 class Tee:
  def __init__(self,stream,file):self.stream,self.file=stream,file
@@ -10,23 +11,14 @@ signal.signal(signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt(
 plan=json.loads((root/'validation-plan.json').read_text());sha=plan['implementationSha'];runs=json.loads((out/'coordinator.json').read_text()) if resume else []
 assert all(r['implementationSha']==sha for r in runs)
 subprocess.run(['git','merge-base','--is-ancestor',sha,'HEAD'],check=True)
+subprocess.run(['git','diff','--quiet',sha,'--','packages','src','test','app','tools','schema','themes'],check=True)
 env={**os.environ,'LC_ALL':'C.UTF-8','TEST_PG_URL':os.environ.get('TEST_PG_URL','postgres://postgres:probe@127.0.0.1:5544/postgres'),'FORGE_RUNTIME_SOURCE':sha,'FORGE_RUNTIME_METRICS_PATH':str((out/'recovery-metrics.jsonl').resolve())}
 files=plan['bulk']+plan['serial']+plan['postgres']
 actual={str(f) for f in pathlib.Path('test').glob('*.test.js')}|{str(f) for f in pathlib.Path('test').glob('*.test.ts')}
 assert len(files)==len(set(files)) and set(files)==actual,(len(files),len(actual),set(files)^actual)
 start=datetime.datetime.fromisoformat(runs[0]['atUtc']).timestamp() if runs else time.time()
 def quiet_window():
- quiet=0
- while quiet<2:
-  pressure={name:pathlib.Path('/proc/pressure/'+name).read_text() for name in ['cpu','memory','io']}
-  averages={name:float(re.search(r'^some avg10=([\d.]+)',value).group(1)) for name,value in pressure.items()}
-  available=int(re.search(r'^MemAvailable:\s+(\d+)',pathlib.Path('/proc/meminfo').read_text(),re.M).group(1))
-  ready=averages['cpu']<10 and averages['memory']<1 and averages['io']<10 and available>8*1024*1024
-  quiet=quiet+1 if ready else 0
-  record={'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'implementationSha':sha,'pressure':pressure,'availableKiB':available,'ready':ready,'consecutiveQuietSamples':quiet}
-  with (out/'quiet-resume.jsonl').open('a') as stream:stream.write(json.dumps(record)+'\n')
-  if quiet<2:
-   print('QUIET WINDOW',averages,'sample',quiet,'of 2',flush=True);time.sleep(30)
+ Window().wait()
 def run(name,args,files=None,changes=None,expected=0):
  previous=next((r for r in runs if r['name']==name),None)
  if previous:
@@ -40,10 +32,14 @@ def run(name,args,files=None,changes=None,expected=0):
  if resume and log.exists():shutil.copy2(log,log.with_suffix('.unacknowledged-before-reboot.log'))
  with log.open('w') as stream:
   process=subprocess.Popen(cmd,env={**env,**(changes or {})},stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
+  monitor=Window();critical=0
   try:
    while True:
-    try:process.wait(timeout=30);break
-    except subprocess.TimeoutExpired:print(name,'RUNNING',round((datetime.datetime.now(datetime.timezone.utc)-at).total_seconds()),'seconds',flush=True)
+    try:process.wait(timeout=15);break
+    except subprocess.TimeoutExpired:
+     sample=monitor.observe('running:'+name);critical=critical+1 if sample['critical'] else 0
+     print(name,'RUNNING',round((datetime.datetime.now(datetime.timezone.utc)-at).total_seconds()),'seconds',flush=True)
+     if critical>=3:raise KeyboardInterrupt('Owned validation stopped for sustained critical shared-machine contention')
   except BaseException:
    os.killpg(process.pid,signal.SIGTERM)
    try:process.wait(timeout=10)
@@ -64,6 +60,7 @@ def tests(name,selected,concurrency=1,changes=None,expected=0):
  return run(name,['node','--test',f'--test-concurrency={concurrency}','--test-reporter=./tools/validated-tap.mjs',*selected],selected,changes,expected)
 tests('focused',['test/v2-provider-8c.test.js','test/v2-provider-durable-8c.test.js','test/v2-provider-postgres-8c.test.js'])
 tests('bulk',plan['bulk'],4)
+if resume:tests('window-qualification',['test/v2-provider-8c.test.js'])
 for file in plan['serial']:tests(pathlib.Path(file).stem,[file])
 for file in plan['postgres']:tests(pathlib.Path(file).stem,[file])
 for name,args in [('production-build',['node_modules/.bin/vite','build','--config','app/web/vite.config.js']),('typecheck',['npm','run','typecheck']),('benchmark-50',['node','tools/v2-benchmark.mjs','--out','out/v2-8c-benchmark','--raster','none'])]:run(name,args)

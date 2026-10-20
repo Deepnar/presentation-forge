@@ -25,10 +25,17 @@ focused66, bulk2235,19 serial files147 all passed, zero failures/skips/cancellat
 The selection TAP emitted5/5 but has no saved process exit; rerun it. Seven serial
 files and six full-matrix PG jobs plus later commands/native checks remain.
 
-Recovery entrypoint is docs/v2-8c-evidence/resume-after-quiet.py (same running bytes as the out/ copy), currently running
-in session6612, wrapper PID15389. It waits for two low-pressure samples, creates one replacement owned
-isolated PostgreSQL service on127.0.0.1:5544 and runs run-validation.py --resume.
-Inspect the actual process/session before restarting to avoid duplicate builders.
+Recovery entrypoint is docs/v2-8c-evidence/resume-after-quiet.py, running in
+session47685. The earlier strict-PSI wait session6612 was stopped before any service
+or test started. Measured NVMe/CPU/memory headroom supports a sustained assessed
+window despite elevated global I/O PSI/iowait of unresolved provenance. The separate
+reviewer agreed with that distinction and safeguards; resource-assessment.json
+records mount coverage and exact thresholds. The guard requires180 stable seconds,
+then two fresh15-second samples per new job, monitors ongoing jobs and terminates
+only owned validation on sustained critical contention. It creates one replacement
+isolated PostgreSQL service on127.0.0.1:5544, runs run-validation.py --resume and
+repeats46 provider tests as a window qualification before remaining browser work.
+Inspect actual process/session before restarting to avoid duplicate builders.
 Replacement identity will be saved in v2-8c-evidence/owned-postgres-restarted.json.
 Never reuse/stop unrelated services. The runner retains recorded exact-source
 completions, preserves unacknowledged logs, waits between heavy jobs, collects fresh

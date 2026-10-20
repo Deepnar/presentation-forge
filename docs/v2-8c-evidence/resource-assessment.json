@@ -1,0 +1,53 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "mounts": {
+    "repository-and-output": {
+      "filesystems": [
+        {
+          "source": "/dev/nvme0n1p5[/@home]",
+          "fstype": "btrfs",
+          "target": "/home",
+          "maj:min": "0:34"
+        }
+      ]
+    },
+    "temporary-rendering": {
+      "filesystems": [
+        {
+          "source": "tmpfs",
+          "fstype": "tmpfs",
+          "target": "/tmp",
+          "maj:min": "0:58"
+        }
+      ]
+    },
+    "docker-image-storage": {
+      "filesystems": [
+        {
+          "source": "/dev/nvme0n1p5[/@]",
+          "fstype": "btrfs",
+          "target": "/",
+          "maj:min": "0:34"
+        }
+      ]
+    }
+  },
+  "postgresData": "New owned service explicitly uses192MiB tmpfs; Docker metadata/images use the measured NVMe device.",
+  "physicalDevicesMeasured": [
+    "nvme0n1"
+  ],
+  "decision": "Require180 stable seconds of low CPU/memory and actual backing-storage activity, then two fresh15-second acceptable samples per job. Elevated global I/O PSI/iowait is retained with unresolved provenance. No attribution to graphics is proven.",
+  "basis": "Four15-second measurements show CPU6.2\u20137.0%, NVMe1.3\u20132.85% utilization, low queue and zero sampled inflight. A separate reviewer assessed this as defensible with sustained monitoring and bounded serial isolation.",
+  "readiness": {
+    "cpuBusyBelowPercent": 25,
+    "cpuIoWaitBelowPercent": 20,
+    "cpuPsiAvg10BelowPercent": 10,
+    "memoryPsiAvg10BelowPercent": 1,
+    "availableMemoryAboveGiB": 8,
+    "diskBusyBelowPercent": 5,
+    "weightedQueueBelow": 0.5,
+    "inflightAtMost": 1,
+    "noObservedUserspaceDThreads": true
+  },
+  "criticalContention": "Three consecutive15-second critical samples terminate only the owned validation job; normal headroom loss withholds the next job. Timeouts/assertions unchanged."
+}

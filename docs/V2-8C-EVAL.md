@@ -43,6 +43,13 @@ need a replacement owned isolated service. See v2-8c-evidence/host-restart.json 
 quiet-pause.json. Snapshot backups and the five separately preserved baseline browser
 archives remain intact; restore those five only after capturing fresh native output.
 
+A sustained resource window is assessed from actual CPU/memory and backing-device
+utilization/queue measurements, with explicit pre-job and ongoing monitoring. Elevated
+global I/O PSI/iowait remains an unresolved environment limitation; a graphics worker
+does not prove its provenance. The separate reviewer assessed the low-storage-contention
+approach and safeguards before execution. See resource-assessment.json, storage-window.jsonl
+and quiet_window.py. No timeout or test assertion is relaxed.
+
 Accepted baseline stays V2-8B until independent exact-source ACCEPT. No provider
 endpoint or hosted content quality has executed.
 Fixture protocol verification is not live provider qualification. No live credentials

@@ -1,20 +1,9 @@
 import datetime, json, pathlib, re, subprocess, time
+from quiet_window import Window
 
 root = pathlib.Path('docs/v2-8c-evidence')
 out = pathlib.Path('out/v2-8c-validation')
-quiet = 0
-while quiet < 2:
-    pressure = {name: pathlib.Path('/proc/pressure/' + name).read_text() for name in ['cpu', 'memory', 'io']}
-    averages = {name: float(re.search(r'^some avg10=([\d.]+)', value).group(1)) for name, value in pressure.items()}
-    available = int(re.search(r'^MemAvailable:\s+(\d+)', pathlib.Path('/proc/meminfo').read_text(), re.M).group(1))
-    ready = averages['cpu'] < 10 and averages['memory'] < 1 and averages['io'] < 10 and available > 8 * 1024 * 1024
-    quiet = quiet + 1 if ready else 0
-    record = {'atUtc': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'pressure': pressure, 'ready': ready, 'consecutiveQuietSamples': quiet}
-    with (out / 'quiet-restart.jsonl').open('a') as stream:
-        stream.write(json.dumps(record) + '\n')
-    print('Restart quiet-window check', averages, 'sample', quiet, 'of 2', flush=True)
-    if quiet < 2:
-        time.sleep(30)
+Window().wait(180)
 
 assert not subprocess.check_output(['docker', 'ps', '-aq', '--filter', 'name=^/forge-v28c-validation$'], text=True).strip(), 'Owned name already exists; inspect before reuse'
 container = subprocess.check_output(['docker', 'run', '--rm', '-d', '--name', 'forge-v28c-validation', '--cpus', '1', '--memory', '512m', '--tmpfs', '/var/lib/postgresql/data:rw,size=192m', '-e', 'POSTGRES_PASSWORD=probe', '-p', '127.0.0.1:5544:5432', 'postgres:15-alpine'], text=True).strip()
