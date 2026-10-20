@@ -376,6 +376,21 @@ it to a roomier field rather than letting the clip decide.
 
 ## Third-party APIs and outside data
 
+**A supplied tool schema is metadata, not validation authority.** A provider
+context can contain a permissive replacement schema with a familiar tool name.
+Validating a proposal against that replacement admits fields the actual command
+rejects. Compare exposed definitions with the canonical catalog before sending and
+parsing, then validate the complete normalized request through the same primitive
+as execution. Never compile caller-supplied schemas to establish edit authority.
+
+**Provider usage counters need semantic normalization.** Anthropic's input counter
+excludes separately reported cache reads/writes; Chat Completions' prompt total
+already includes its cache breakdown. Adding both in every adapter double-counts
+one family; copying both raw totals undercounts the other. Define whether the
+normalized total includes cached input, map each family once, bound counters and
+sums, and leave unavailable usage unknown. Test missing, null, invalid and cached
+cases on each wire format. Local fixtures establish that mapping, not live billing.
+
 **A wired call site is not a working feature, and it reads as one.**
 `src/ai/images.js` existed for weeks, was imported by `src/ai/pipeline.js`, was
 called in `finalizeDeck`, and returned an empty array on every run — its only

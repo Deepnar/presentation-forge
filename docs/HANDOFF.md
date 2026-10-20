@@ -25,8 +25,8 @@ focused66, bulk2235,19 serial files147 all passed, zero failures/skips/cancellat
 The selection TAP emitted5/5 but has no saved process exit; rerun it. Seven serial
 files and six full-matrix PG jobs plus later commands/native checks remain.
 
-Recovery entrypoint is out/v2-8c-validation/resume-after-quiet.py, currently running
-in session6612. It waits for two low-pressure samples, creates one replacement owned
+Recovery entrypoint is docs/v2-8c-evidence/resume-after-quiet.py (same running bytes as the out/ copy), currently running
+in session6612, wrapper PID15389. It waits for two low-pressure samples, creates one replacement owned
 isolated PostgreSQL service on127.0.0.1:5544 and runs run-validation.py --resume.
 Inspect the actual process/session before restarting to avoid duplicate builders.
 Replacement identity will be saved in v2-8c-evidence/owned-postgres-restarted.json.
