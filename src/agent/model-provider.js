@@ -29,7 +29,7 @@ export function createModelProvider(config, { fetch: request = globalThis.fetch 
         const rest = {};
         for (const key of Reflect.ownKeys(options)) {
           const d = Object.getOwnPropertyDescriptor(options, key);
-          if (typeof key !== 'string' || !['signal', 'requires', 'maxOutputTokens'].includes(key) || !d.enumerable || !('value' in d)) return providerFailure('invalid-request');
+          if (typeof key !== 'string' || !['signal', 'requires', 'maxOutputTokens', 'contextChars', 'history'].includes(key) || !d.enumerable || !('value' in d)) return providerFailure('invalid-request');
           if (key === 'signal') signal = d.value;
           else rest[key] = d.value;
         }

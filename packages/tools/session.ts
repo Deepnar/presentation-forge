@@ -17,6 +17,13 @@ export function validatedToolRequest(input: unknown, maxChars = 65536): ToolRequ
   } catch { return null; }
 }
 
+export function validatedToolResult(input: unknown, maxChars = 65536): ToolResult | null {
+  try {
+    const copy: unknown = JSON.parse(JSON.stringify(cloneJson(input, maxChars)));
+    return validateResult(copy) ? copy : null;
+  } catch { return null; }
+}
+
 export function semanticToolCatalog(): { name: string; inputSchema: Json }[] {
   return schema.oneOf.map((branch: { properties: { tool: { const: string }; args: unknown } }) => ({ name: branch.properties.tool.const, inputSchema: cloneJson(branch.properties.args) }));
 }

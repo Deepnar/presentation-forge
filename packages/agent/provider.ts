@@ -1,6 +1,6 @@
 import { cloneJson, type Json } from '../tools/json.ts';
 import type { ToolRequest } from '../tools/request.generated.ts';
-import { semanticToolCatalog, validatedToolRequest } from '../tools/session.ts';
+import { semanticToolCatalog, validatedToolRequest, validatedToolResult, type ToolResult } from '../tools/session.ts';
 import type { ContextSuccess } from './context.ts';
 import { CORE_POLICY } from '../skill/sections.ts';
 
@@ -19,7 +19,8 @@ export type ProviderExchange = {
   calls: { id: string; request: ToolRequest }[];
   usage: null | { inputTokens: number; outputTokens: number; cacheReadInputTokens?: number; cacheWriteInputTokens?: number };
 };
-export type ExchangeOptions = { requires?: Feature[]; maxOutputTokens?: number };
+export type ReadRound = { exchange: ProviderExchange; results: ToolResult[] };
+export type ExchangeOptions = { requires?: Feature[]; maxOutputTokens?: number; contextChars?: number; history?: ReadRound[] };
 export interface ModelProvider {
   profile: ProviderProfile;
   exchange(context: ContextSuccess, options?: ExchangeOptions & { signal?: AbortSignal }): Promise<ProviderExchange | ProviderFailure>;
@@ -57,11 +58,64 @@ export function providerProfile(input: unknown): ProviderProfile {
 }
 export type PreparedExchange = { context: ContextSuccess; outputTokens: number; wire: Json };
 
+export function normalizedExchange(profile: ProviderProfile, context: ContextSuccess, input: unknown, outputTokens: number): ProviderExchange | null {
+  try {
+    const data = cloneJson(input, 262144) as unknown as ProviderExchange;
+    if (!data || data.ok !== true || data.providerId !== profile.id || data.family !== profile.family ||
+        !name(data.model) || typeof data.text !== 'string' || data.text.length > 32000 ||
+        !['text', 'refusal', 'tool-calls'].includes(data.outcome) || !Array.isArray(data.calls) || data.calls.length > 8 ||
+        Object.keys(data).sort().join(',') !== 'calls,family,model,ok,outcome,providerId,text,usage') return null;
+    const ids = new Set<string>(), allowed = new Set(context.tools.map(t => t.name));
+    for (const call of data.calls) {
+      if (!call || Object.keys(call).sort().join(',') !== 'id,request' || !name(call.id) || ids.has(call.id)) return null;
+      ids.add(call.id);
+      const canonical = validatedToolRequest(call.request);
+      if (!canonical || !allowed.has(canonical.tool) || canonical.tool === 'edit_content' && canonical.args.baseRevision !== context.revision) return null;
+      call.request = canonical;
+    }
+    if ((data.calls.length > 0) !== (data.outcome === 'tool-calls') || data.outcome === 'text' && !data.text.trim()) return null;
+    if (data.usage !== null && (!data.usage || Object.keys(data.usage).some(k => !['inputTokens','outputTokens','cacheReadInputTokens','cacheWriteInputTokens'].includes(k)) ||
+        !['inputTokens','outputTokens'].every(k => Object.hasOwn(data.usage!, k)) ||
+        Object.values(data.usage).some(v => !integer(v, 0, 100000000)) || data.usage.outputTokens > outputTokens)) return null;
+    return data;
+  } catch { return null; }
+}
+
+function historyMessages(profile: ProviderProfile, context: ContextSuccess, input: ReadRound[]): Json[] | null {
+  if (!Array.isArray(input) || input.length > 7) return null;
+  const messages: Json[] = [], ids = new Set<string>();
+  for (const round of input) {
+    if (!round || Object.keys(round).sort().join(',') !== 'exchange,results') return null;
+    const response = normalizedExchange(profile, context, round.exchange, profile.capabilities.maxOutputTokens);
+    if (!response || response.outcome !== 'tool-calls' || !Array.isArray(round.results) || round.results.length !== response.calls.length) return null;
+    const results: ToolResult[] = [];
+    for (let i = 0; i < response.calls.length; i++) {
+      const call = response.calls[i], result = validatedToolResult(round.results[i]);
+      if (call.request.tool === 'edit_content' || ids.has(call.id) || !result?.ok || result.changed ||
+          result.tool !== call.request.tool || result.revision !== context.revision) return null;
+      ids.add(call.id); results.push(result);
+    }
+    if (profile.family === 'anthropic') {
+      messages.push({ role: 'assistant', content: [
+        ...(response.text ? [{ type: 'text', text: response.text }] : []),
+        ...response.calls.map(c => ({ type: 'tool_use', id: c.id, name: c.request.tool, input: c.request.args })),
+      ] });
+      messages.push({ role: 'user', content: results.map((r, i) => ({ type: 'tool_result', tool_use_id: response.calls[i].id, content: JSON.stringify(r) })) });
+    } else {
+      messages.push({ role: 'assistant', content: response.text || null, tool_calls: response.calls.map(c => ({
+        id: c.id, type: 'function', function: { name: c.request.tool, arguments: JSON.stringify(c.request.args) },
+      })) });
+      messages.push(...results.map((r, i) => ({ role: 'tool', tool_call_id: response.calls[i].id, content: JSON.stringify(r) })));
+    }
+  }
+  return cloneJson(messages, 110000) as Json[];
+}
+
 export function prepareExchange(profile: ProviderProfile, input: unknown, options: unknown = {}): PreparedExchange | ProviderFailure {
   try {
     const context = cloneJson(input, 100000) as unknown as ContextSuccess;
-    const opts = cloneJson(options, 1024) as ExchangeOptions;
-    if (!opts || typeof opts !== 'object' || Array.isArray(opts) || Object.keys(opts).some(k => !['requires', 'maxOutputTokens'].includes(k)) ||
+    const opts = cloneJson(options, 262144) as ExchangeOptions;
+    if (!opts || typeof opts !== 'object' || Array.isArray(opts) || Object.keys(opts).some(k => !['requires', 'maxOutputTokens', 'contextChars', 'history'].includes(k)) ||
         opts.requires !== undefined && (!Array.isArray(opts.requires) || opts.requires.length > FEATURES.length || opts.requires.some(f => !FEATURES.includes(f))) ||
         !context?.ok || !integer(context.revision, 0, Number.MAX_SAFE_INTEGER) ||
         !Array.isArray(context.messages) || context.messages.length !== 2 ||
@@ -75,15 +129,20 @@ export function prepareExchange(profile: ProviderProfile, input: unknown, option
     const outputTokens = opts.maxOutputTokens ?? profile.capabilities.maxOutputTokens;
     if (!integer(outputTokens, 1, profile.capabilities.maxOutputTokens)) return providerFailure('invalid-request');
     if (!canonicalCatalog(context.tools)) return providerFailure('invalid-request');
+    const contextChars = opts.contextChars ?? profile.capabilities.contextChars;
+    if (!integer(contextChars, 2048, profile.capabilities.contextChars)) return providerFailure('invalid-request');
+    const history = historyMessages(profile, context, opts.history ?? []);
+    if (!history) return providerFailure('invalid-request');
     // The request budget includes provider-specific tool wrappers, not just prompt text.
-    const wire = cloneJson(profile.family === 'anthropic' ? {
-      model: profile.model, system: context.messages[0].content, messages: [context.messages[1]], max_tokens: outputTokens, stream: false,
+    const body = profile.family === 'anthropic' ? {
+      model: profile.model, system: context.messages[0].content, messages: [context.messages[1], ...history], max_tokens: outputTokens, stream: false,
       tools: context.tools.map(t => ({ name: t.name, input_schema: t.inputSchema })), tool_choice: { type: 'auto', disable_parallel_tool_use: true },
     } : {
-      model: profile.model, messages: context.messages, stream: false, n: 1, max_completion_tokens: outputTokens,
+      model: profile.model, messages: [...context.messages, ...history], stream: false, n: 1, max_completion_tokens: outputTokens,
       tools: context.tools.map(t => ({ type: 'function', function: { name: t.name, parameters: t.inputSchema } })), tool_choice: 'auto', parallel_tool_calls: false,
-    }, 110000);
-    if (JSON.stringify(wire).length > profile.capabilities.contextChars) return providerFailure('context-too-large');
+    };
+    if (JSON.stringify(body).length > contextChars) return providerFailure('context-too-large');
+    const wire = cloneJson(body, 110000);
     return { context, outputTokens, wire };
   } catch { return providerFailure('invalid-request'); }
 }
