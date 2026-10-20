@@ -8576,7 +8576,12 @@ needs direction on scope before building.*
 
   **Look-ahead/non-goals:** Assistant apply/preview and later conversation
   orchestration reuse this boundary; shared search and source-aware generation
-  retain the parent milestone contract. No autonomous/multi-turn loop, new public
+  retain the parent milestone contract. The current opaque proposal is deliberately
+  confined to one host instance/invocation. Hosted cross-request approval waits need
+  an explicitly agreed durable proposal/identity contract, or preparation and queue
+  must stay within one worker turn; never serialize this object as a public token.
+  That is the exact seam for later hosted interaction, not a new store in this slice.
+  No autonomous/multi-turn loop, new public
   HTTP/CLI credential configuration, Assistant UI, transcript persistence, new
   auth/data policy, provider defaults, search, generation, framework/SDK/Gateway,
   streaming/reasoning/files, persistent undo, unrelated render/locale fixes, paid
