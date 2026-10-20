@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-8C-e41d509.json"
   },
   "implementationHead": {
-    "sha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
-    "note": "Independently accepted bounded provider exchange implementation. Primary 2533/2533 distinct checks; 137 successful repeats separate; independent 320/320, with overlap recorded. Build/type/50 cells and visual/native evidence passed. Standing locale failure and live qualification exclusions remain explicit."
+    "sha": "8e966552149f87686d624a05bfc55feab1dcbd76",
+    "note": "V2-8D planning checkout; implementation not yet frozen. V2-8C remains the accepted baseline; all new validation is pending."
   },
   "activeMilestone": {
-    "id": "V2-8C",
-    "roadmapRef": "docs/ROADMAP.md#v2-8c-provider-boundary",
-    "evalDoc": "docs/V2-8C-EVAL.md",
+    "id": "V2-8D",
+    "roadmapRef": "docs/ROADMAP.md#v2-8d-provider-run-preparation",
+    "evalDoc": "docs/V2-8D-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8C-e41d509.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "model-provider",
-      "status": "passed",
-      "evidence": "docs/v2-8c-evidence/model-provider.json",
-      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
+      "id": "provider-run",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8c-evidence/non-browser-bulk.json",
-      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8c-evidence/serial-browser.json",
-      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8c-evidence/postgres-contract.json",
-      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8c-evidence/cross-process-faults.json",
-      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8c-evidence/production-build.json",
-      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8c-evidence/typecheck.json",
-      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8c-evidence/benchmark-50.json",
-      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8c-evidence/frontend-visual.json",
-      "reason": "Completed exact-source execution/inspection; zero new failures, skips or cancellations. Standing locale probe is recorded separately."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
     }
   ],
   "knownBlockers": [],
@@ -84,7 +84,7 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8 conversational provider runtime and Assistant scope",
+    "id": "V2-8 conversational orchestration, Assistant and shared search",
     "authorized": false,
     "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
   },

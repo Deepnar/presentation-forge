@@ -8526,6 +8526,72 @@ needs direction on scope before building.*
   and stop after this slice's review/handoff/owned cleanup. No next feature follows
   automatically. [Evaluation](V2-8C-EVAL.md) indexes implementation and results.
 
+<a id="v2-8d-provider-run-preparation"></a>
+
+- [ ] **V2-8D provider-backed run preparation — authorized continuation, 2026-10-20.**
+  Accepted baseline `e41d509c20fca21a70b9a0c587ccb83684aee7e6`; entry checkout
+  `8e966552149f87686d624a05bfc55feab1dcbd76`, branch `v2`, push `origin/v2`.
+  The new continuation and standing recommended-choice direction authorize this
+  next bounded dependency. Prepare one provider turn against current durable
+  project content, then allow an explicit host action to queue its edit proposal
+  through the accepted run core. No new UI or live credential setup is required.
+
+  **Contract:** a headless, backend/provider-injected preparation/queue boundary.
+  Exact-schema bounded requests carry trusted project revision, scope, request ID,
+  request text, one to four context reads, deadline and output/context limits.
+  Take an exact-owner snapshot in a short local transaction, validate grants, and
+  compose semantic-only context through accepted tools. Network I/O stays outside
+  transactions and makes one attempt, with cancellation/deadline bounds. Return
+  bounded text/refusal or read-only tool results without effects. For edit output,
+  merge calls from the same revision into one canonical atomic content batch;
+  reject mixed read/edit output, duplicate/invalid writes and oversized batches
+  before any queue or project effect. Preflight through the real command engine.
+  Stale, protected, foreign-owner and malformed requests refuse without mutation.
+
+  Queue only the exact opaque proposal returned by this host instance, keeping
+  private cloned plan/authority separate from visible metadata. Recheck current
+  durable revision, ownership, cancellation and deadline at the commit boundary.
+  Repeated queueing of the same proposal uses the existing run request/digest
+  identity and returns its durable run without duplicate effects. Conflicting
+  proposals sharing a request ID refuse; an explicit new preparation may make
+  another network request and incurs no network exactly-once guarantee. Existing
+  worker/CLI claim/advance/cancel/status executes queued edits and owns recovery.
+  Queuing is never reported as completed editing. No prompt, raw response, key,
+  transcript or new journal/table is persisted; existing semantic plans/history
+  are the sole durable effects. A prepared proposal is ephemeral across restart;
+  a queued run retains accepted cross-process recovery.
+
+  **Acceptance/evidence:** both real local HTTP wire families, SQLite and isolated
+  PostgreSQL; exact text/chart/table and human styling/geometry preservation,
+  unrelated-scene privacy, queued restart/execution/history restoration, atomic
+  refusal, concurrent human saves, conflicting IDs, input/output budgets, invalid
+  outcomes, cancellation/deadline during network and at queue commit. Test opaque
+  proposal tampering, owner mismatch, deleted projects and already-queued replay.
+  Expand the full215-file inventory by three focused files (218 total); retain
+  all26 browser/build owners serially, PostgreSQL/process/fault contracts,
+  build/typecheck/canonical50 cells and fresh inspected browser/native evidence.
+  Count every leaf, repeat, skip, cancellation and unexecuted case. BYOK locale
+  remains a separate standing failure. Live provider/Auto quality and interactive
+  PowerPoint remain explicitly outside fixture qualification.
+
+  **Look-ahead/non-goals:** Assistant apply/preview and later conversation
+  orchestration reuse this boundary; shared search and source-aware generation
+  retain the parent milestone contract. No autonomous/multi-turn loop, new public
+  HTTP/CLI credential configuration, Assistant UI, transcript persistence, new
+  auth/data policy, provider defaults, search, generation, framework/SDK/Gateway,
+  streaming/reasoning/files, persistent undo, unrelated render/locale fixes, paid
+  infrastructure, production migration or deployment. Keep existing Auto/local
+  policy and exact model/layout/ownership boundaries. One complete atomic
+  preparation/queue contract is the slice, not a partial conversational runtime.
+
+  **Gates/stop:** common integrity, ownership, canonical edit, preservation,
+  native/regression/compatibility/documentation gates apply; unchanged UI supplies
+  interaction/accessibility/responsive regression evidence. Live quality/new UI/
+  deployment gates are outside this scope. Wait for measured quiet headroom before
+  expensive validation, preserve all prior originals and unrelated untracked work.
+  Require one separate high-effort exact-source ACCEPT/HOLD and stop after review,
+  owned cleanup and handoff. [Evaluation](V2-8D-EVAL.md) records exact results.
+
 <a id="v2-8-remaining"></a>
 
 The accepted foundation supplies real scoped content tools, schemas, instruction

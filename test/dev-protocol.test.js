@@ -263,3 +263,15 @@ test('provider boundary requires both protocol and durable backend files', t => 
   writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-provider-postgres-8c.test.js"\n', ''));
   hasError(f.check(), /complete required scope/);
 });
+
+test('provider-run preparation requires both storage backends and boundary cases', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8d-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8d-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8d-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8D'; hasError(f.check(), /inventory.*contract/);
+  f.state.validation[0].id = 'provider-run'; assert.deepEqual(f.check().errors, []);
+  f.evidence(); assert.deepEqual(f.check().errors, []);
+  const log = path.join(f.dir, 'docs/output.tap');
+  writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-provider-run-postgres-8d.test.js"\n', ''));
+  hasError(f.check(), /complete required scope/);
+});

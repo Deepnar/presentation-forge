@@ -136,7 +136,8 @@
               "editor-toolbar",
               "agent-foundation",
               "durable-runtime",
-              "model-provider"
+              "model-provider",
+              "provider-run"
             ]
           },
           "status": {

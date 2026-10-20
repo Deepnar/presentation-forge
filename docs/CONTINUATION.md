@@ -75,6 +75,10 @@ live model quality or the parent two-provider/common-search gate. No Assistant/n
 UI is part of this slice. Acceptance permits planning only; the next candidate
 remains unauthorized in state and future work lives in the roadmap.
 
+The new continuation authorizes [V2-8D provider-backed run preparation](ROADMAP.md#v2-8d-provider-run-preparation).
+State/[evaluation](V2-8D-EVAL.md) index the active contract and pending checks.
+The accepted V2-8C source/evidence above remains historical prerequisite evidence.
+
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
 uses TEST_PG_URL or the isolated default on port 5544; other projects' databases
