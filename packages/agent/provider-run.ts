@@ -3,14 +3,15 @@ import { createDocument } from '../tools/executor.ts';
 import { createToolSession, validatedToolRequest, type ToolResult } from '../tools/session.ts';
 import type { ToolRequest } from '../tools/request.generated.ts';
 import { composeInstructions } from './context.ts';
-import { providerProfile, providerFailure, type ModelProvider, type ProviderExchange, type ProviderCode } from './provider.ts';
-import { parsePlan, parseProviderRunRequest } from './run-state.ts';
+import { providerProfile, providerFailure, normalizedExchange, prepareExchange, type ModelProvider, type ProviderExchange, type ProviderCode, type ReadRound, type ExchangeOptions } from './provider.ts';
+import { parsePlan, parseProviderRunRequest, parseConversationRequest } from './run-state.ts';
 import { createRuntime, type Binding, type RuntimeBackend, type RunView } from './runtime.ts';
 import type { ProviderRunRequest } from './provider-run-request.generated.ts';
+import type { ConversationRequest } from './conversation-request.generated.ts';
 
 type Code = 'invalid-request' | 'not-found' | 'stale-project' | 'storage-unavailable' |
   'cancelled' | 'deadline' | 'timeout' | 'provider-error' | 'invalid-response' |
-  'tool-refused' | 'result-too-large' | 'invalid-proposal' | 'queue-refused';
+  'budget-exhausted' | 'tool-refused' | 'result-too-large' | 'invalid-proposal' | 'queue-refused';
 export type TurnFailure = { ok: false; code: Code; message: string; providerCode?: ProviderCode };
 const messages: Record<Code, string> = {
   'invalid-request': 'Provide a valid bounded request and trusted project scope.',
@@ -22,6 +23,7 @@ const messages: Record<Code, string> = {
   timeout: 'The bounded provider attempt timed out.',
   'provider-error': 'The provider attempt did not produce a usable response.',
   'invalid-response': 'The response cannot form one supported bounded turn.',
+  'budget-exhausted': 'The bounded conversation allowance is exhausted. Start a new explicit request.',
   'tool-refused': 'A scoped tool refused the proposed content operation.',
   'result-too-large': 'The result exceeds its budget. Request less content.',
   'invalid-proposal': 'Queue the exact unexpired proposal from this host instance.',
@@ -77,6 +79,18 @@ export type TurnResult = TurnFailure | EditProposal | {
   summary: Summary; results: ToolResult[];
 };
 
+export type ConversationTrace = {
+  exchanges: number; toolCalls: number; reservedOutputTokens: number;
+  reportedInputTokens: number | null; reportedOutputTokens: number | null;
+  steps: { step: number; providerId: string; family: string; model: string;
+    wireChars: number; reservedOutputTokens: number; durationMs: number | null;
+    outcome: string; toolNames: string[] }[];
+};
+export type ConversationResult = TurnResult & { conversation: ConversationTrace };
+type Loop = { limits: ConversationRequest['limits']; history: ReadRound[]; ids: Set<string>; trace: ConversationTrace };
+const newTrace = (): ConversationTrace => ({ exchanges: 0, toolCalls: 0, reservedOutputTokens: 0,
+  reportedInputTokens: 0, reportedOutputTokens: 0, steps: [] });
+
 // Preparation is ephemeral. Only an explicit queue action persists the canonical
 // semantic plan; no request text, provider response or new transcript is stored.
 export function createProviderRunner(backend: RuntimeBackend, provider: ModelProvider) {
@@ -94,8 +108,8 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
       return { scenes: structuredClone(tx.doc.scenes), remainingMs: request.deadlineAt - now };
     });
   }
-  return Object.freeze({
-    async prepare(binding: Binding, input: unknown, options: { signal?: AbortSignal } = {}): Promise<TurnResult> {
+  async function prepareTurn(binding: Binding, input: unknown, options: { signal?: AbortSignal } = {}, loop?: Loop): Promise<TurnResult> {
+      const publish = <T extends TurnResult>(result: T): T => freeze(loop ? { ...result, conversation: structuredClone(loop.trace) } : result);
       let request: ProviderRunRequest, trusted: Binding, signal: AbortSignal | undefined;
       try {
         signal = signalOption(options);
@@ -107,101 +121,165 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
       } catch { return fail('invalid-request'); }
       try {
         const initial = await snapshot(trusted, request, signal);
+        if (signal?.aborted) return fail('cancelled');
         const document = await createDocument(initial.scenes), identity = trusted.owner ?? 'local';
+        if (signal?.aborted) return fail('cancelled');
         const session = createToolSession({ document, projectId: trusted.id, ownerId: identity,
-          actorId: identity, agentId: request.requestId, ...request.scope });
+          actorId: identity, agentId: request.requestId, ...request.scope,
+          ...(loop ? { limits: { maxCalls: request.reads.length + loop.limits.maxToolCalls + 1 } } : {}) });
         const context = await composeInstructions({ session, request: request.request, reads: request.reads,
           maxChars: request.contextChars });
-        if (!context.ok) return fail(context.code === 'context-too-large' ? 'result-too-large' : 'tool-refused');
-        const networkWindow = await snapshot(trusted, request, signal);
-        const controller = new AbortController();
-        let timer: ReturnType<typeof setTimeout> | undefined;
-        let abort: () => void = () => {};
-        const stopped = new Promise<TurnFailure>(resolve => {
-          abort = () => { controller.abort(); resolve(fail('cancelled')); };
-          signal?.addEventListener('abort', abort, { once: true });
-          if (signal?.aborted) abort();
-          timer = setTimeout(() => { controller.abort(); resolve(fail(networkWindow.remainingMs <= 120000 ? 'deadline' : 'timeout')); }, Math.min(networkWindow.remainingMs, 120000));
-        });
-        let raw: unknown;
-        try {
-          if (signal?.aborted) return fail('cancelled');
-          raw = await Promise.race([Promise.resolve().then(() => provider.exchange(context, {
-            signal: controller.signal, maxOutputTokens: request.maxOutputTokens,
-          })).catch(() => fail('provider-error')), stopped]);
-        } finally { clearTimeout(timer); signal?.removeEventListener('abort', abort); }
         if (signal?.aborted) return fail('cancelled');
-        // The injectable provider is a host dependency, but every returned request
-        // still crosses canonical validation before it can reach a durable plan.
-        let response: ProviderExchange;
-        try {
-          const copied = cloneJson(raw, 262144);
-          if (copied && typeof copied === 'object' && !Array.isArray(copied) && copied.ok === false) {
-            const data = copied;
-            const code = (data as unknown as { code: ProviderCode }).code;
-            if (Object.hasOwn(messages, code) && ['cancelled', 'deadline', 'timeout', 'provider-error'].includes(code)) return fail(code as Code);
-            if (!['invalid-request','unsupported-capability','context-too-large','invalid-response','truncated','unauthorized','rate-limited','provider-unavailable','timeout','cancelled','response-too-large'].includes(code)) return fail('invalid-response');
-            return { ...fail('provider-error'), providerCode: code, message: providerFailure(code).message };
+        if (!context.ok) return fail(context.code === 'context-too-large' ? 'result-too-large' : 'tool-refused');
+        for (;;) {
+          const networkWindow = await snapshot(trusted, request, signal);
+          if (signal?.aborted) return fail('cancelled');
+          const remainingOutput = loop ? loop.limits.maxOutputTokensTotal - loop.trace.reservedOutputTokens : request.maxOutputTokens;
+          if (loop && (loop.trace.exchanges >= loop.limits.maxExchanges || remainingOutput < 1)) return fail('budget-exhausted');
+          const outputTokens = Math.min(request.maxOutputTokens, remainingOutput);
+          const exchangeOptions: ExchangeOptions = { maxOutputTokens: outputTokens,
+            ...(loop ? { contextChars: Math.min(request.contextChars, profile.capabilities.contextChars), history: structuredClone(loop.history) } : {}) };
+          const prepared = loop ? prepareExchange(profile, context, exchangeOptions) : null;
+          if (prepared && 'ok' in prepared && prepared.ok === false) return fail(prepared.code === 'context-too-large' ? 'result-too-large' : 'invalid-request');
+          let step: ConversationTrace['steps'][number] | undefined;
+          const priorInput = loop?.trace.reportedInputTokens, priorOutput = loop?.trace.reportedOutputTokens;
+          const started = performance.now();
+          if (loop) {
+            loop.trace.exchanges++; loop.trace.reservedOutputTokens += outputTokens;
+            loop.trace.reportedInputTokens = null; loop.trace.reportedOutputTokens = null;
+            step = { step: loop.trace.exchanges, providerId: profile.id, family: profile.family, model: profile.model,
+              wireChars: prepared && 'wire' in prepared ? JSON.stringify(prepared.wire).length : 0,
+              reservedOutputTokens: outputTokens, durationMs: null, outcome: 'error', toolNames: [] };
+            loop.trace.steps.push(step);
           }
-          const data = copied as unknown as ProviderExchange;
-          if (!data || data.ok !== true || data.providerId !== profile.id || data.family !== profile.family ||
-              typeof data.model !== 'string' || !data.model.trim() || data.model.length > 128 ||
-              typeof data.text !== 'string' || data.text.length > 32000 ||
-              !['text', 'refusal', 'tool-calls'].includes(data.outcome) || !Array.isArray(data.calls) || data.calls.length > 8 ||
-              Object.keys(data).sort().join(',') !== 'calls,family,model,ok,outcome,providerId,text,usage') return fail('invalid-response');
-          const ids = new Set<string>(), allowed = new Set(context.tools.map(t => t.name));
-          for (const call of data.calls) {
-            if (!call || Object.keys(call).sort().join(',') !== 'id,request' || typeof call.id !== 'string' ||
-                !call.id.trim() || call.id.length > 128 || ids.has(call.id)) return fail('invalid-response');
-            ids.add(call.id);
-            const canonical = validatedToolRequest(call.request);
-            if (!canonical || !allowed.has(canonical.tool) || canonical.tool === 'edit_content' && canonical.args.baseRevision !== context.revision) return fail('invalid-response');
-            call.request = canonical;
-          }
-          if ((data.calls.length > 0) !== (data.outcome === 'tool-calls') || data.outcome === 'text' && !data.text.trim()) return fail('invalid-response');
-          if (data.usage !== null) {
-            if (!data.usage || Object.keys(data.usage).some(k => !['inputTokens','outputTokens','cacheReadInputTokens','cacheWriteInputTokens'].includes(k)) ||
-                !['inputTokens','outputTokens'].every(k => Object.hasOwn(data.usage!, k)) ||
-                Object.values(data.usage).some(v => !Number.isSafeInteger(v) || v < 0 || v > 100000000) ||
-                data.usage.outputTokens > request.maxOutputTokens) return fail('invalid-response');
-          }
-          response = data;
-        } catch { return fail('invalid-response'); }
-        const { providerId, family, model, text, usage } = response;
-        const summary = { providerId, family, model, text, usage };
-        const edits = response.calls.filter(c => c.request.tool === 'edit_content');
-        if (edits.length && edits.length !== response.calls.length) return fail('invalid-response');
-        if (edits.length) {
-          const batch = validatedToolRequest({ tool: 'edit_content', args: { baseRevision: context.revision,
-            edits: edits.flatMap(c => c.request.tool === 'edit_content' ? c.request.args.edits : []) } });
-          if (!batch || batch.tool !== 'edit_content') return fail('invalid-response');
-          const preflight = await session.execute(batch, crypto.randomUUID());
-          if (!preflight.ok) return fail('tool-refused');
-          let plan: ReturnType<typeof parsePlan>;
+          const controller = new AbortController();
+          let timer: ReturnType<typeof setTimeout> | undefined;
+          let abort: () => void = () => {};
+          const stopped = new Promise<TurnFailure>(resolve => {
+            abort = () => { controller.abort(); resolve(fail('cancelled')); };
+            signal?.addEventListener('abort', abort, { once: true });
+            if (signal?.aborted) abort();
+            timer = setTimeout(() => { controller.abort(); resolve(fail(networkWindow.remainingMs <= 120000 ? 'deadline' : 'timeout')); }, Math.min(networkWindow.remainingMs, 120000));
+          });
+          let raw: unknown;
           try {
-            plan = parsePlan({ requestId: request.requestId, projectRevision: request.projectRevision,
-              scope: request.scope, steps: [batch], maxSteps: 8, maxFailures: 1, deadlineAt: request.deadlineAt });
+            if (signal?.aborted) return fail('cancelled');
+            raw = await Promise.race([Promise.resolve().then(() => {
+              if (controller.signal.aborted || signal?.aborted) return providerFailure('cancelled');
+              return provider.exchange(loop ? freeze(structuredClone(context)) : context, {
+                ...exchangeOptions, ...(loop ? { history: freeze(structuredClone(loop.history)) } : {}), signal: controller.signal,
+              });
+            }).catch(() => fail('provider-error')), stopped]);
+          } finally { clearTimeout(timer); signal?.removeEventListener('abort', abort); if (step) step.durationMs = performance.now() - started; }
+          if (signal?.aborted) return fail('cancelled');
+          // The injectable provider is a host dependency, but every returned request
+          // still crosses canonical validation before it can reach a durable plan.
+          let response: ProviderExchange;
+          try {
+            const copied = cloneJson(raw, 262144);
+            if (copied && typeof copied === 'object' && !Array.isArray(copied) && copied.ok === false) {
+              const data = copied;
+              const code = (data as unknown as { code: ProviderCode }).code;
+              if (Object.hasOwn(messages, code) && ['cancelled', 'deadline', 'timeout', 'provider-error'].includes(code)) return fail(code as Code);
+              if (!['invalid-request','unsupported-capability','context-too-large','invalid-response','truncated','unauthorized','rate-limited','provider-unavailable','timeout','cancelled','response-too-large'].includes(code)) return fail('invalid-response');
+              return { ...fail('provider-error'), providerCode: code, message: providerFailure(code).message };
+            }
+            const data = normalizedExchange(profile, context, copied, outputTokens);
+            if (!data) return fail('invalid-response');
+            response = data;
           } catch { return fail('invalid-response'); }
+          if (loop) {
+            loop.trace.reportedInputTokens = priorInput !== null && priorInput !== undefined && response.usage !== null
+              ? priorInput + response.usage.inputTokens : null;
+            loop.trace.reportedOutputTokens = priorOutput !== null && priorOutput !== undefined && response.usage !== null
+              ? priorOutput + response.usage.outputTokens : null;
+            if (response.calls.some(c => loop.ids.has(c.id))) return fail('invalid-response');
+            if (loop.trace.toolCalls + response.calls.length > loop.limits.maxToolCalls) return fail('budget-exhausted');
+            response.calls.forEach(c => loop.ids.add(c.id)); loop.trace.toolCalls += response.calls.length;
+            if (step) { step.outcome = response.outcome; step.toolNames = response.calls.map(c => c.request.tool); }
+          }
+          const { providerId, family, model, text, usage } = response;
+          const summary = { providerId, family, model, text, usage };
+          const edits = response.calls.filter(c => c.request.tool === 'edit_content');
+          if (edits.length && edits.length !== response.calls.length) return fail('invalid-response');
+          if (edits.length) {
+            const batch = validatedToolRequest({ tool: 'edit_content', args: { baseRevision: context.revision,
+              edits: edits.flatMap(c => c.request.tool === 'edit_content' ? c.request.args.edits : []) } });
+            if (!batch || batch.tool !== 'edit_content') return fail('invalid-response');
+            const preflight = await session.execute(batch, crypto.randomUUID());
+            if (signal?.aborted) return fail('cancelled');
+            if (!preflight.ok) return fail('tool-refused');
+            let plan: ReturnType<typeof parsePlan>;
+            try {
+              plan = parsePlan({ requestId: request.requestId, projectRevision: request.projectRevision,
+                scope: request.scope, steps: [batch], maxSteps: 8, maxFailures: 1, deadlineAt: request.deadlineAt });
+            } catch { return fail('invalid-response'); }
+            await snapshot(trusted, request, signal);
+            if (signal?.aborted) return fail('cancelled');
+            const proposal: EditProposal = publish({ ok: true, outcome: 'edit-proposal', proposalId: crypto.randomUUID(),
+              projectRevision: request.projectRevision, editCount: batch.args.edits.length, expiresAt: request.deadlineAt,
+              edits: structuredClone(batch.args.edits), summary });
+            if (JSON.stringify(proposal).length > 65536) return fail('result-too-large');
+            proposals.set(proposal, { binding: trusted, plan });
+            return proposal;
+          }
+          const results: ToolResult[] = [];
+          for (const call of response.calls) {
+            await snapshot(trusted, request, signal);
+            if (signal?.aborted) return fail('cancelled');
+            const result = await session.execute(call.request);
+            if (signal?.aborted) return fail('cancelled');
+            if (!result.ok) return fail('tool-refused');
+            results.push(result);
+          }
+          const output = { ok: true as const, outcome: response.outcome === 'tool-calls' ? 'read-results' as const : response.outcome,
+            projectRevision: request.projectRevision, summary, results };
+          if (JSON.stringify(output).length > 65536) return fail('result-too-large');
           await snapshot(trusted, request, signal);
-          const proposal: EditProposal = freeze({ ok: true, outcome: 'edit-proposal', proposalId: crypto.randomUUID(),
-            projectRevision: request.projectRevision, editCount: batch.args.edits.length, expiresAt: request.deadlineAt,
-            edits: structuredClone(batch.args.edits), summary });
-          if (JSON.stringify(proposal).length > 65536) return fail('result-too-large');
-          proposals.set(proposal, { binding: trusted, plan });
-          return proposal;
+          if (signal?.aborted) return fail('cancelled');
+          if (loop && response.calls.length) {
+            loop.history.push({ exchange: structuredClone(response), results: structuredClone(results) });
+            if (step) step.outcome = 'read-results';
+            continue;
+          }
+          return publish(output);
         }
-        const results: ToolResult[] = [];
-        for (const call of response.calls) {
-          const result = await session.execute(call.request);
-          if (!result.ok) return fail('tool-refused');
-          results.push(result);
-        }
-        const output = { ok: true as const, outcome: response.outcome === 'tool-calls' ? 'read-results' as const : response.outcome,
-          projectRevision: request.projectRevision, summary, results };
-        if (JSON.stringify(output).length > 65536) return fail('result-too-large');
-        await snapshot(trusted, request, signal);
-        return freeze(output);
       } catch (error) { return errorResult(error); }
+  }
+  return Object.freeze({
+    prepare(binding: Binding, input: unknown, options: { signal?: AbortSignal } = {}) {
+      return prepareTurn(binding, input, options);
+    },
+    async converse(binding: Binding, input: unknown, options: { signal?: AbortSignal } = {}): Promise<ConversationResult> {
+      const trace = newTrace();
+      const finish = (result: TurnResult): ConversationResult => {
+        if (Object.hasOwn(result, 'conversation')) return result as ConversationResult;
+        return freeze({ ...result, conversation: structuredClone(trace) });
+      };
+      let request: ConversationRequest, signal: AbortSignal | undefined;
+      try {
+        signal = signalOption(options);
+        const parsed = parseConversationRequest(input);
+        if (!parsed) return finish(fail('invalid-request'));
+        request = parsed;
+      } catch { return finish(fail('invalid-request')); }
+      if (signal?.aborted) return finish(fail('cancelled'));
+      const { limits, ...base } = request;
+      const controller = new AbortController();
+      let timer: ReturnType<typeof setTimeout> | undefined, abort: () => void = () => {};
+      const remaining = request.deadlineAt - Date.now();
+      if (remaining <= 0) return finish(fail('deadline'));
+      const stopped = new Promise<TurnFailure>(resolve => {
+        abort = () => { controller.abort(); resolve(fail('cancelled')); };
+        signal?.addEventListener('abort', abort, { once: true });
+        if (signal?.aborted) abort();
+        timer = setTimeout(() => { controller.abort(); resolve(fail(remaining <= 120000 ? 'deadline' : 'timeout')); }, Math.min(remaining, 120000));
+      });
+      try {
+        const result = await Promise.race([prepareTurn(binding, base, { signal: controller.signal },
+          { limits, history: [], ids: new Set(), trace }), stopped]);
+        return finish(result);
+      } finally { clearTimeout(timer); signal?.removeEventListener('abort', abort); }
     },
     async enqueue(proposal: unknown, options: { signal?: AbortSignal } = {}): Promise<TurnFailure | { ok: true; outcome: 'queued'; run: RunView }> {
       let signal: AbortSignal | undefined;
