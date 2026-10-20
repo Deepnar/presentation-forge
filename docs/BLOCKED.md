@@ -222,6 +222,14 @@ zero-database observation before removal and verified5544closed. This historical
 execution does not turn unavailable future PostgreSQL checks into passes. Later
 scope and inherited limitations remain in the roadmap.
 
+The approved V2-8C provider exchange boundary is independently accepted at
+`e41d509`; [evaluation](V2-8C-EVAL.md) and [decision](reviews/V2-8C-e41d509.md)
+record no blocking findings and complete required execution. Current owned
+PostgreSQL cleanup saved/fsynced zero project databases before removal and verified
+port 5544 closed. The earlier reboot-lost service count remains unavailable.
+Live-provider quality was outside this contract, not a passing fixture claim;
+later scope and inherited limits remain in the [roadmap](ROADMAP.md#v2-8-remaining).
+
 Two are worth naming because they look like engineering and are not:
 
 - **The turn grammar's unscoped case** (options 2 and 3). The selection-scoped

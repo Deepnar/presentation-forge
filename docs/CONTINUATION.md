@@ -55,12 +55,25 @@ untouched. No new feature, infrastructure, migration or deployment is authorized
 by acceptance. Use the [active runbook](v2-8b-evidence/RUNBOOK.md) when reproducing; earlier
 reports are historical evidence, not execution of a later source.
 
-The current continuation starts [V2-8C provider exchanges](ROADMAP.md#v2-8c-provider-boundary)
-after accepted V2-8B. Exact current source and pending validation are indexed by
-state/[evaluation](V2-8C-EVAL.md). Use v2-8c-evidence/run-validation.py with an
-all-evidence snapshot at out/v2-8c-validation/backup and an owned isolated PG service.
-Provider fixtures prove protocol/command plumbing, not live model quality or the
-parent two-provider/common-search gate. No Assistant/new UI is part of this slice.
+[V2-8C provider exchanges](ROADMAP.md#v2-8c-provider-boundary) are independently
+accepted at `e41d509` in [the exact-source decision](reviews/V2-8C-e41d509.json).
+State/[evaluation](V2-8C-EVAL.md) index 2533/2533 distinct primary checks, 137 separate
+repeats and 320/320 independent executions with explicit overlap. Build/type/50 cells
+and browser/native inspection passed. The separate locale probe remains 9 pass/1
+standing failure. Current owned PostgreSQL was removed after a fresh saved/fsynced
+zero-database observation; port 5544 is closed. The earlier reboot-lost service
+has no saved pre-removal count; that count remains unavailable. All 3473 files in
+the independent snapshot were restored/hash-verified and 10 new independent
+originals preserved, in addition to 13 new implementer originals.
+
+For reproduction use [the current runbook](v2-8c-evidence/RUNBOOK.md) and its full
+215-file inventory, snapshotting all current evidence and ignored originals before
+any generators and creating an owned isolated PostgreSQL service. Do not rerun
+finish-evidence.py against restored canonical out/ originals: its fresh-source hash
+checks deliberately refuse. Provider fixtures prove protocol/command plumbing, not
+live model quality or the parent two-provider/common-search gate. No Assistant/new
+UI is part of this slice. Acceptance permits planning only; the next candidate
+remains unauthorized in state and future work lives in the roadmap.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
@@ -81,12 +94,12 @@ node --test test/v2-projects-6c-concurrency.test.js
 node --test test/v2-projects-6c-faults.test.js
 node_modules/.bin/vite build --config app/web/vite.config.js
 npm run typecheck
-node tools/v2-benchmark.mjs --out out/v2-8b-benchmark --raster none
+node tools/v2-benchmark.mjs --out out/v2-8c-benchmark --raster none
 ```
 
 Use a process-group watchdog for each browser file and run browser files strictly
 serially; each may rebuild shared dist. Bulk inventory and exact bounded runner
-commands are in [the durable runtime validation runbook](v2-8b-evidence/RUNBOOK.md) and its linked
+commands are in [the provider-boundary validation runbook](v2-8c-evidence/RUNBOOK.md) and its linked
 `validation-plan.json`. Do not run plain npm test
 concurrently with browser/build validation. The benchmark must report all 50
 cells, not merely the 12 benchmark assertion tests. Render/preview and inspect

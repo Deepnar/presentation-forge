@@ -1,45 +1,51 @@
-# Handoff — V2-8C validated, independent acceptance pending
+# Handoff — V2-8C independently accepted and closed
 
-2026-10-20, branch v2, push origin/v2. Accepted baseline remains
-1fb39ff75cd473ecaf2884232d5d7465d50a9af2. Frozen implementation is
-e41d509c20fca21a70b9a0c587ccb83684aee7e6; later changes are docs/evidence/harness.
-[Contract](ROADMAP.md#v2-8c-provider-boundary), [evaluation](V2-8C-EVAL.md), state
-and [runbook](v2-8c-evidence/RUNBOOK.md) define scope and exact reproduction.
+2026-10-20, branch `v2`, authorized push `origin/v2`. The accepted implementation is
+`e41d509c20fca21a70b9a0c587ccb83684aee7e6`, compared against entry baseline
+`1fb39ff75cd473ecaf2884232d5d7465d50a9af2`. The separate reviewer issued
+[ACCEPT](reviews/V2-8C-e41d509.json) at `4c61e38`; independent evidence is `d43ada7`.
+State, roadmap and as-built guidance now apply that decision. Subsequent commits
+contain documentation/evidence/harness work, with no product/test source delta.
+Resolve final repository HEAD with Git rather than replacing the accepted source
+with a documentation SHA. [The evaluation](V2-8C-EVAL.md) holds exact results,
+chronology, performance and limitations; [the runbook](v2-8c-evidence/RUNBOOK.md)
+defines reproduction and preservation.
 
-All nine gates passed:215-file2529/2529 plus4 distinct persisted provider/native
-cases; provider66, qualification46 and governance25 repeats separately. Build/type/
-50 cells passed;115 final images inspected. Locale probe remains9pass/1standingfail.
-No required case remains unexecuted. Live endpoints/hosted content quality and
-interactive PowerPoint qualification remain outside this execution. No credentials
-were read. Known narrow/Fit/capture/SVG limits remain, with no new product regression.
-Canonical catalog and cache-counter defects received fail-first coverage and narrow
-corrections before e41d509. The complete evidence packet recommends acceptance,
-without self-acceptance or a parent V2-8 completion claim.
+Primary execution: 215 files/2529 passing leaves plus 4 distinct persisted/native
+cases = 2533/2533, zero failures/skips/cancellations/unexecuted required cases.
+The 137 successful repeats are separate. Independent execution passed 320/320,
+including 308 overlapping inventory leaves, 4 overlapping native cases and 8 new
+probes; the remaining 197 files/2221 leaves were inspected, not independently rerun.
+Build, typecheck, protocol and all 50 benchmark cells passed in both contexts.
+The separate en_IN locale probe remains 9 pass/1 standing failure and was inspected,
+not independently repeated. All 115 packet images plus 45 fresh independent images
+were inspected. Local 120-slide opening measured 1541–1543ms and canvas movement
+stayed below 0.05px. No blocking finding or new final-validation product regression
+remains; canonical catalog/cache-counter corrections preceded the source freeze.
 
-Root runner session80366 completed with exit0; no validation process owns the heavy
-slot now. The3198-file snapshot and five baseline browser archives were restored and
-hash-verified. Thirteen new originals live in this slice. Preserve them and all other
-existing evidence before independent generators. Do not run finish-evidence.py again
-against restored canonical out/ files; its fresh-source hash checks deliberately refuse.
+The exact owned PostgreSQL15.18 service
+`2670350f8e8e867b1923c327f5235fd44783e0b5a26dc48d25d5a176d6330809`
+was stopped and removed after a fresh zero project-database observation was saved
+and fsynced. Port 5544 is closed; [cleanup evidence](v2-8c-evidence/cleanup.json)
+retains the corrected case-sensitive removal-probe error. No unrelated service was
+used or stopped. The old reboot-lost c0d62e38 service has no saved pre-removal count;
+that count remains unavailable, not zero. Elevated global I/O PSI/iowait provenance
+remains unresolved; measured headroom and per-job guards qualified the completed
+serial runs. No validation job or owned validation database remains running.
 
-Current owned PostgreSQL15.18:2670350f8e8e867b1923c327f5235fd44783e0b5a26dc48d25d5a176d6330809,
-name forge-v28c-validation,127.0.0.1:5544,1CPU/512MiB/192MiB tmpfs. Keep it for
-independent review; never reuse/stop unrelated services. The prior c0d62e38 service
-was lost at host restart without a saved pre-removal count; that limitation is
-explicit. For this current service save/fsync its non-template database count before
-stopping, then bounded-poll actual auto-removal/port closure. Elevated global PSI/
-iowait has unresolved provenance; sustained actual CPU/memory/storage headroom and
-fresh pre-job checks qualified serial low-priority execution. Preserve raw samples.
+All 3473 files in the independent snapshot, including 50 original archives, were
+restored/hash-verified; 10 new independent originals are preserved separately from
+13 new implementer originals. Preserve all current evidence and ignored originals
+before any generator. Do not rerun finish-evidence.py against restored canonical
+out/ files; its fresh-source checks deliberately refuse. Historical archive-byte
+provenance limits and the earlier cancelled/unacknowledged attempts remain explicit.
+Original `.agents/` and both `PRESENTATION_FORGE_V2_*` untracked documents remain
+untouched. No credentials were read or deployment/migration performed.
 
-/root/v28c_final_review completed a fresh separate read-only source/resource audit
-with no confirmed blocker and0 executed tests. After this complete packet is pushed,
-release the exclusive heavy slot to that same high-effort reviewer for applicable
-independent execution and exact-source ACCEPT/HOLD in reviews/V2-8C-e41d509.{json,md}.
-Use a fresh independent/ namespace; root makes no tracked edits during its snapshot.
-The earlier pre-restart reviewer supplied no acceptance.
-
-After the separate decision, follow protocol for state/roadmap/as-built propagation,
-owned cleanup and handoff. Stop after this slice: no provider loop, Assistant UI,
-search, credential storage, new public transport, deployment or migration follows
-automatically. Future work lives only in the roadmap. Original untracked .agents/
-and both PRESENTATION_FORGE_V2_* markdown files remain untouched.
+Inherited Fit/narrow overflow, rail/loading/capture/pending-search and first-run SVG
+rich-run styling limits remain. Live endpoints/model availability, hosted Auto
+content quality and interactive Microsoft PowerPoint were unexecuted and outside
+this bounded qualification. Fixture HTTP proves protocol and command plumbing only.
+The parent V2-8 is incomplete. The sole remaining-work pointer is
+[the roadmap](ROADMAP.md#v2-8-remaining); the next candidate is unauthorized in state.
+Stop after this accepted slice and handoff. Acceptance permits later planning only.
