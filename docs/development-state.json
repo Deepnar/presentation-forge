@@ -29,9 +29,9 @@
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8d-evidence/non-browser-bulk.json",
+      "reason": "Complete frozen-source185-file2303/2303 bulk; zero failures, skips or cancellations. Serial/browser/PostgreSQL/command/visual gates remain pending."
     },
     {
       "id": "serial-browser",

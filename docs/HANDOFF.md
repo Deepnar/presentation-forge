@@ -29,7 +29,7 @@ unresolved elevated PSI/iowait rather than assigning a graphics-worker cause.
 Development null-prototype uniqueness correction passed93/93. Source9bf412f
 then exposed14PG classification failures in142checks (128pass); the correction is
 in8c1e5c4. Raw attempts are retained. The drift-file typo omitted1case in an earlier
-141-case run; no missing case is credited. Frozen-source focused109/109 passed; remaining final-source gates are pending.
+141-case run; no missing case is credited. Frozen-source focused109/109 and bulk2303/2303 passed; remaining gates are pending.
 A separate high-effort reviewer /root/v28d_boundary_review initially hit a usage
 limit, then retried after reset and completed a read-only exact-source audit with
 no confirmed blocker,0tests and no acceptance. Reuse that context for independent

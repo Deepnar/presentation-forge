@@ -30,8 +30,9 @@ ignored-original snapshots. Missing PostgreSQL is unexecuted, never passing.
 ## Validation status
 
 The frozen-source focused three-file suite passed109/109 (25boundary,42SQLite,
-42PostgreSQL), with0fail/skip/cancel. The remaining required execution/inspection
-is pending. The accepted V2-8C results are
+42PostgreSQL), with0fail/skip/cancel. The185-file bulk also passed2303/2303 with
+0fail/skip/cancel. Serial browser, remaining PostgreSQL/process contracts, commands
+and visual inspection are pending. The accepted V2-8C results are
 historical prerequisites, not current-source execution. Standing BYOK locale,
 Fit/narrow/rail/capture/pending-search/SVG styling and original-archive provenance
 limits remain as documented in the roadmap and prior evaluations. No new product

@@ -1,0 +1,69 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "inspectedImages": 11,
+  "method": "Two six-up contact sheets plus full-size editor-narrow-projects, editor-narrow and editor-history. Actual source7A file completed28/28 before inspection. Final owned capture hashes must match this witness.",
+  "observations": [
+    "Empty/populated/signed-out dashboards and chart/table/readonly/editor/history states show no new foreground control overlap.",
+    "Narrow history dialog, close control and revision actions remain within the viewport.",
+    "Narrow inspector remains visible; the100-percent canvas retains the inherited overflow/occlusion limitation, not a new geometry regression.",
+    "Wide history restoration shows the new revision and preserved history; its inner list scroll clipping is distinct from dialog clipping."
+  ],
+  "images": [
+    {
+      "file": "docs/v2-7a-evidence/dashboard-empty.png",
+      "sha256": "b21b7a1d11186635a434fe338e78b81eefda11510e62413199af78786606c415",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    },
+    {
+      "file": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+      "sha256": "5aab7a9bfd9ba052fbc15e359f9d5bbf809174b2aa1aff1c1b0cc53b12050420",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    },
+    {
+      "file": "docs/v2-7a-evidence/dashboard.png",
+      "sha256": "1946a9ab0add6de5555dfe032949231d3451c3efedfd7ef8f08c6959f9dc3b2d",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-blank.png",
+      "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-chart.png",
+      "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-history.png",
+      "sha256": "6d210c0912e0defd7daa716860a902ca055151e6f2cc6bc53f70293088be965c",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-narrow-projects.png",
+      "sha256": "f947675aadd12adc285eb6bc345ee3ab14079ed2fa637b9f19740dad51098893",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-narrow.png",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-readonly.png",
+      "sha256": "965724375cc9f9a3f8fd69007f03d489b975aeae4e571f6fafcd5f92c1205cb4",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-shell.png",
+      "sha256": "72275d56a7ef434d4c615375dce81c1c0a1e470c848f9bf7d369ff84eb057a74",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-table.png",
+      "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9",
+      "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c"
+    }
+  ],
+  "finalOwnCaptureHashMatch": "pending complete coordinator capture/restore"
+}
