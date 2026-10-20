@@ -137,7 +137,8 @@
               "agent-foundation",
               "durable-runtime",
               "model-provider",
-              "provider-run"
+              "provider-run",
+              "tool-conversation"
             ]
           },
           "status": {

@@ -8620,6 +8620,71 @@ needs direction on scope before building.*
   > requiring another scene/store. Reusable failure modes are in TRAPS.md. Parent
   > V2-8 remains incomplete; acceptance permits planning only, then this slice stops.
 
+<a id="v2-8e-bounded-tool-conversation"></a>
+
+- [ ] **V2-8E bounded tool-conversation preparation — authorized continuation.**
+  Accepted baseline `8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`; entry checkout
+  `15e357c93bf301fd61867dd10e06a8921286568f`, branch `v2`, push `origin/v2`.
+  The new instruction to start the next immediate work, with the standing direction
+  to use recommended choices, authorizes this bounded dependency of V2-8. Existing
+  single-turn preparation remains supported with its current behavior.
+
+  **Contract:** add a headless conversation operation to the accepted provider
+  runner. One worker invocation may execute canonical scoped reads, send correctly
+  correlated tool results through either accepted HTTP family and continue until
+  text/refusal or one atomic edit proposal. Model content never controls scope,
+  owner, layout, budgets or queue authority. No project edit occurs during the
+  loop. Edit batches preflight through the same command engine, then return the
+  exact opaque proposal for an explicit host enqueue; existing workers execute it.
+  Mixed read/edit responses, invalid/mismatched results, duplicate call IDs and
+  protected/foreign targets refuse. Every exchange/read group checks the current
+  exact owner/project revision; a concurrent human save invalidates the invocation.
+
+  Strict generated requests reuse the accepted request/scope/read contracts and
+  add explicit limits: 1–8 exchanges, 1–32 model tool calls and 1–32768 aggregate
+  reserved output tokens. Each call reserves its entire requested output allowance
+  before network I/O, including when usage is absent; no silent budget reset/refund.
+  Context budgets include all tool wrappers and accumulated read history. The
+  whole invocation is bounded by the earlier of its absolute deadline and 120 s;
+  cancellation covers every await and no failed call is automatically retried.
+  A bounded immutable trace reports step/outcome/tool names/counts, timing and
+  reservation/usage metadata, never prompt text, read content, raw response or keys.
+  Text/refusal/budget/error outcomes create no durable run or project-row mutation.
+  Failed reads stop the invocation rather than feeding unvalidated failure content
+  back to the model. Ephemeral histories/proposals remain confined to one host
+  instance; only explicitly queued canonical plans use accepted durable recovery.
+
+  **Look-ahead:** the operation is the worker primitive for later Assistant and
+  shared-search integration. Provider-neutral read rounds translate to ordinary
+  Chat Completions tool messages or Messages tool_result blocks. Canonical result
+  schemas preserve semantic-only context. No replacement framework/provider stack,
+  second scene, new persistence or stateless public proposal token is introduced.
+  The previously recorded hosted cross-request lifecycle seam remains unresolved;
+  this invocation does not claim restartable model conversation. Later user-turn
+  history, search tools and visible approval need their own agreed contracts.
+
+  **Acceptance/evidence:** both real local HTTP protocols and both persistent
+  backends must execute multi-read-to-edit and read-to-answer flows; cover scoped
+  privacy, exact call/result correlation, budgets at every boundary, repeated IDs,
+  invalid/injected outcomes, timeout/cancellation, human-save/deletion/owner races,
+  proposal tampering/replay, worker restart, history and human styling/geometry.
+  Retain all accepted tests and add three focused files: 221 inventory files
+  (187 bulk, 26 serial browser/build owners, 8 PostgreSQL). Build/typecheck and all
+  50 benchmark cells, complete Chrome shell and fresh inspected browser/native
+  evidence remain required. Preserve all historical evidence and original PPTXs
+  before generators; run browser/build owners serially behind measured headroom
+  and watchdogs. PostgreSQL absence means unexecuted cases, never passing. Standing
+  BYOK locale and inherited Fit/SVG/capture/provenance limits remain separate.
+
+  **Non-goals/stop:** no Assistant/UI, new public HTTP/CLI credential surface,
+  persistent conversation/prompt/transcript journal, cross-request approval store,
+  search or source generation, layout authoring, streaming/reasoning/files,
+  provider defaults, auth/data policy, paid infrastructure, production migration
+  or deployment. Fixture plumbing is not live provider/Auto quality qualification.
+  Require one independent high-effort exact-source ACCEPT/HOLD; stop after this
+  slice's review, owned cleanup and handoff. [Evaluation](V2-8E-EVAL.md) records
+  evidence and limitations without self-acceptance.
+
 <a id="v2-8-remaining"></a>
 
 The accepted foundation supplies real scoped content tools, schemas, instruction
