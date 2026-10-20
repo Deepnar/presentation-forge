@@ -5,11 +5,13 @@ import { scenario } from './v2-runtime-fixture.js';
 import { conversationContract } from './v2-conversation-contract.js';
 const url = process.env.TEST_PG_URL ?? 'postgres://postgres:probe@127.0.0.1:5544/postgres';
 const maintenance = new Pool({ connectionString: url, connectionTimeoutMillis: 3000 });
-let available = false;
-try { await maintenance.query('SELECT 1'); available = true; } catch {}
+let available = false, readinessCode = 'unknown';
+try { await maintenance.query('SELECT 1'); available = true; } catch (error) {
+  if (typeof error?.code === 'string' && /^[A-Z0-9_]{1,32}$/.test(error.code)) readinessCode = error.code;
+}
 if (!available) {
   await maintenance.end();
-  test('PostgreSQL unavailable; conversation contracts unexecuted', t => t.skip('isolated PostgreSQL required'));
+  test('PostgreSQL unavailable; conversation contracts unexecuted', t => { t.diagnostic(`readiness stage=SELECT1 code=${readinessCode}`); t.skip('isolated PostgreSQL required'); });
 } else {
   const database = `forge_8e_${crypto.randomUUID().replaceAll('-', '')}`, previous = process.env.FORGE_PROJECTS_DATABASE_URL;
   before(async () => {
