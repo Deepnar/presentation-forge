@@ -1,43 +1,53 @@
-# Handoff — V2-8D validated; independent acceptance pending
+# Handoff — V2-8D independently accepted and closed
 
-2026-10-20, branch v2, push origin/v2. Accepted baseline remains
-`e41d509c20fca21a70b9a0c587ccb83684aee7e6`. Frozen implementation is
-`8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`; later commits are docs/evidence/harness,
-with no product/test/tools delta. [Contract](ROADMAP.md#v2-8d-provider-run-preparation),
-state, [evaluation](V2-8D-EVAL.md) and [runbook](v2-8d-evidence/RUNBOOK.md) define
-scope. Root does not accept its own implementation.
+2026-10-20, branch `v2`, push `origin/v2`. Accepted implementation:
+`8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`, compared with V2-8C baseline
+`e41d509c20fca21a70b9a0c587ccb83684aee7e6`. Later commits are documentation,
+harness and evidence only; no product/test/tools delta. State indexes the separate
+[ACCEPT decision](reviews/V2-8D-8c1e5c4.json), [evaluation](V2-8D-EVAL.md) and
+[bounded contract](ROADMAP.md#v2-8d-provider-run-preparation).
 
-Complete218-file matrix2639/2639 plus4distinct persisted/native scenarios passed:
-2643distinct checks,0fail/skip/cancel and0required cases unexecuted. Separate repeats
-109focused+25resume qualification passed134/134. Standing en_IN BYOK locale is
-9pass/1fail separately. Build/typecheck/canonical50cells passed. All115final images
-were inspected;120slides opened1539ms, maximum canvas delta0.102196px. The3631-file
-snapshot and5canonical out/ originals were restored/hash-verified;13new original
-PPTXs are retained. Preserve inherited visual/live-quality/provenance limits.
+The headless boundary prepares one scoped provider turn, preflights canonical
+atomic edits and explicitly queues an opaque host-instance proposal through the
+existing durable run core. Human edits, ownership and revisions remain guarded.
+No new UI, public route, credential/transcript store, policy or migration was added.
 
-The original runtime PostgreSQL readiness placeholder skipped1; actual34cases
-were unexecuted in that attempt. Its complete rerun passed34/34 without source,
-assertion or timeout changes. Archived raw evidence remains; original cause unknown.
-Pre-freeze null-prototype uniqueness and PostgreSQL refusal classification fixes
-and all development failures remain distinct from final-source passing totals.
+All 218 inventory files passed 2639/2639, plus 4 distinct persisted/native scenarios:
+2643 primary distinct checks, 0 failures/skips/cancellations and 0 required cases
+unexecuted. Separate focused/qualification repeats passed 134/134. Independent
+execution passed 358/358: 352 repeated inventory leaves, 4 repeated native cases
+and 2 additional authority/alias probes. These totals are not added together.
+Standing en_IN BYOK locale remains 9 pass/1 failure separately. Build/type/protocol
+and all 50 benchmark cells passed in both executions. All 115 packet and 45 fresh
+independent images were inspected. Root 120-slide opening was 1539 ms; independent
+1543 ms. Maximum root canvas shift was 0.102196 px, independent shell 0.030647 px.
 
-Root has finished heavy execution. The separate high-effort reviewer context
-/root/v28d_boundary_review is available for applicable independent execution and
-exact-source ACCEPT/HOLD. Its preliminary read-only audit found no blocker but
-ran0tests and supplied no acceptance. During reviewer snapshot/execution/restoration,
-root must make no tracked edits or competing heavy tests. Keep the owned service
-running until review completes. Review may accept only this bounded slice.
+The reviewer committed evidence at `02e1c97` and authored/staged its exact-source
+ACCEPT files before a usage-limit interruption. Root committed those unchanged
+files at `ff0be70`; this is separate acceptance, not implementer self-review.
+State, roadmap, architecture, README, vision and AGENTS.md now reflect it.
 
-Owned PostgreSQL15.18 exact ID
-`2ef3b51811f0e61ae574f74644cb1b1b9448c0052867360338ab81229147bf97`,
-forge-v28d-validation,127.0.0.1:5544,1CPU/512MiB/192MiB data tmpfs. Before cleanup
-save/fsync a fresh non-template/non-postgres database count; stop only this exact
-ID and bounded-poll actual auto-removal/port closure. Never reuse or stop unrelated
-services. Global PSI/iowait provenance remains unresolved; bursts withheld new jobs.
-The earlier reboot-lost service's unavailable pre-removal count remains historical.
+The earlier PG readiness attempt retains 1 placeholder skip and unexecuted actual
+cases at that attempt; the complete 34-case rerun and independent execution passed.
+Its original exception was not retained, so cause remains unknown. Pre-freeze
+uniqueness/refusal-classification failures and corrections remain in the evaluation.
+Inherited visual, locale, live-quality and historical provenance limits remain.
+Fixtures do not qualify live Auto/model output or interactive Microsoft PowerPoint.
 
-Original .agents/ and both PRESENTATION_FORGE_V2_* untracked documents are untouched.
-Stop after independent review, owned cleanup and final handoff. No conversation
-loop, Assistant/search/UI, public routes/config, credential/transcript store, new
-policy, paid infrastructure, production deployment or migration is authorized.
-Future work and the hosted opaque-proposal lifetime seam live only in the roadmap.
+The owned PostgreSQL service was removed after a fresh saved/fsynced zero-project-
+database count. Exact container absence and closed 5544 were verified; no unrelated
+service was touched. A stop-reply assertion failed after exit 0; fresh actual-state
+checks verified cleanup and the raw-reply limitation is retained in cleanup proof.
+The earlier reboot-lost service count remains unavailable, not zero.
+
+All 3898 independent snapshot files still match their hashes in the final read-only
+check, and all 23 new original PPTXs were reverified. See
+[final preservation](v2-8d-evidence/final-preservation-check.json). Original `.agents/`
+and both `PRESENTATION_FORGE_V2_*` untracked documents remain untouched.
+
+This slice stops here. `nextCandidate.authorized` remains false. Recover future
+scope only from [the roadmap](ROADMAP.md#v2-8-remaining); acceptance permits planning,
+not another feature implementation, deployment, paid infrastructure or migration.
+Fresh reproduction uses [the runbook](v2-8d-evidence/RUNBOOK.md), a new owned isolated
+service and measured headroom. Missing PostgreSQL means unexecuted checks, not passes.
+Do not rerun finish-evidence.py against restored canonical out/ archives.

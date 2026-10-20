@@ -1,0 +1,9 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "verifiedAtUtc": "2026-10-20T17:54:25.856255+00:00",
+  "preExistingSnapshotFiles": 3898,
+  "allSnapshotHashesMatch": true,
+  "newOriginalArchivesVerified": 23,
+  "sourceDeltaAfterImplementation": [],
+  "method": "Final read-only recheck of independent backup manifest, both native manifests and fresh browser archive witnesses; no generators or test repeats."
+}
