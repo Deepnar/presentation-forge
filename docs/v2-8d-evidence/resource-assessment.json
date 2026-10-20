@@ -1,0 +1,40 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "method": "Sustained180-second duration-weighted CPU/memory/backing-device headroom, then two fresh15-second acceptable samples before each job; ongoing monitoring and process-group watchdogs.",
+  "qualification": {
+    "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+    "sampleSeconds": 180.47340123299728,
+    "samples": 12,
+    "cpuBusyMeanPercent": 5.698299539537873,
+    "cpuIoWaitMeanPercent": 7.884837683243436,
+    "diskMeans": {
+      "nvme0n1": {
+        "busyPercent": 1.3736096195136962,
+        "weightedQueue": 0.11386165418066535
+      }
+    },
+    "freshConsecutiveReadySamples": 12,
+    "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+  },
+  "mountEvidence": "docs/v2-8d-evidence/environment.json",
+  "thresholds": {
+    "freshSampleSeconds": 15,
+    "freshConsecutiveSamples": 2,
+    "cpuBusyPercentBelow": 25,
+    "cpuIoWaitPercentBelow": 20,
+    "cpuPsiSomeAvg10Below": 10,
+    "memoryPsiSomeAvg10Below": 1,
+    "availableGiBAbove": 8,
+    "deviceBusyPercentBelow": 5,
+    "deviceWeightedQueueBelow": 0.5,
+    "deviceInflightAtMost": 1,
+    "userspaceDThreads": 0,
+    "sustainedPeakCpuBusyBelow": 50,
+    "sustainedPeakDeviceBusyBelow": 20,
+    "sustainedPeakQueueBelow": 2,
+    "ownedJobCriticalConsecutiveSamples": 3
+  },
+  "backingStorage": "Repository/output and Docker data on btrfs subvolumes on nvme0n1p5; /tmp and owned PostgreSQL data tmpfs.",
+  "limitation": "Raw global I/O PSI/iowait remains elevated with unresolved provenance. No graphics-causality, zero-pressure or production-percentile claim. Competing work was neither stopped nor reused.",
+  "watchdogs": "nice10/ionice2priority7,15minutes per job (bulk30minutes),10second TERM-to-KILL grace; browser/build owners never overlap."
+}

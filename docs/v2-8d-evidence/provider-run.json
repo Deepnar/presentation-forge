@@ -1,0 +1,21 @@
+{
+  "id": "provider-run",
+  "kind": "tests",
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-provider-run-8d.test.js test/v2-provider-run-sqlite-8d.test.js test/v2-provider-run-postgres-8d.test.js",
+  "log": "docs/v2-8d-evidence/logs/provider-run.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 109,
+    "pass": 109,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-provider-run-sqlite-8d.test.js",
+    "test/v2-provider-run-postgres-8d.test.js"
+  ],
+  "backend": "Both actual HTTP protocol families; SQLite and owned PostgreSQL15.18; opaque preparation, explicit queue, process reopen and canonical preservation."
+}

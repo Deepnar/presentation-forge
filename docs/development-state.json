@@ -23,9 +23,9 @@
   "validation": [
     {
       "id": "provider-run",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved V2-8D implementation/validation not yet completed; prior-slice evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8d-evidence/provider-run.json",
+      "reason": "Complete frozen-source three-file109/109 execution; no failures, skips or cancellations. Remaining final-source gates and independent acceptance are pending."
     },
     {
       "id": "non-browser-bulk",
