@@ -1881,3 +1881,13 @@ an exact-ID inspect/ps check and a closed-port observation. An exact stdout-byte
 assertion can fail after a successful stop. Preserve that failure, then verify
 state without recreating the service or reconstructing the lost reply/count.
 V2-8D's saved cleanup evidence records this distinction.
+
+
+**Known provider usage survives a later tool-budget refusal.** A valid response
+can report billable usage even when its proposed tool batch exceeds the remaining
+tool-call allowance. Record validated response usage before refusing that batch;
+otherwise the trace incorrectly reports unknown usage for a completed exchange.
+Keep admission accounting separate: reserve the entire requested output allowance
+before each network call and do not refund it from smaller or missing reported
+usage. Refusing tools neither erases an already completed call nor authorizes a
+replacement call. V2-8E's unchanged SQLite contract caught this ordering defect.
