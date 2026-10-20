@@ -1,0 +1,42 @@
+[
+  {
+    "source": "out/v2-7b-1-validation/browser/boundary-60.json",
+    "file": "docs/v2-8e-evidence/paused-2026-10-21/measurements/out--v2-7b-1-validation--browser--boundary-60.json",
+    "sha256": "ff288bf5bfb23a214668d6cf84ca37ba63ee2c6001f09ee922ae548eb1dbb214"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/canvas-chart.json",
+    "file": "docs/v2-8e-evidence/paused-2026-10-21/measurements/out--v2-7b-1-validation--browser--canvas-chart.json",
+    "sha256": "1b44380daf77dce622b22e9bf6ac0bfed69567e68296496611d0593c94b8376c"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/canvas-table.json",
+    "file": "docs/v2-8e-evidence/paused-2026-10-21/measurements/out--v2-7b-1-validation--browser--canvas-table.json",
+    "sha256": "bf9c0bdf8bafbae866486bbe2dec0d9d756aca45932ca2c55402dcd7b7cdff0e"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/narrow.json",
+    "file": "docs/v2-8e-evidence/paused-2026-10-21/measurements/out--v2-7b-1-validation--browser--narrow.json",
+    "sha256": "ae727c2a6b27c324fd15e2d244f55aecabf54043cff57d4e3b4d0a0b3e827413"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/boundary-60.json",
+    "file": "docs/v2-8e-evidence/paused-2026-10-21/measurements/out--v2-7b-2-validation--browser--boundary-60.json",
+    "sha256": "1a851e8112a162fe049c19d96bda3ced5d7865bad261cd13b00dc1bef40d6999"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/cold-warm.json",
+    "file": "docs/v2-8e-evidence/paused-2026-10-21/measurements/out--v2-7b-2-validation--browser--cold-warm.json",
+    "sha256": "36368a8ee93410c9751e101953ba59cbd913949ec028be5e1462285e55ee398e"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/refusal-narrow.json",
+    "file": "docs/v2-8e-evidence/paused-2026-10-21/measurements/out--v2-7b-2-validation--browser--refusal-narrow.json",
+    "sha256": "45ec228c98632572dde6cdce92cff4b4f06d7d1813706a07527e3025a451e6bd"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/save-states.json",
+    "file": "docs/v2-8e-evidence/paused-2026-10-21/measurements/out--v2-7b-2-validation--browser--save-states.json",
+    "sha256": "0fa6aa1ca35c5ad65840b8d183573bbc117d42108808be911ee41787e14cec3a"
+  }
+]

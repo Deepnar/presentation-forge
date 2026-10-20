@@ -1,0 +1,52 @@
+[
+  {
+    "source": "out/v2-7a-validation/shell-chart.pptx",
+    "originalArchive": "docs/v2-8e-evidence/paused-2026-10-21/browser-archives/out--v2-7a-validation--shell-chart.pptx",
+    "sha256": "7e2d98ac9643bd1265dc1241dc3658b77306b67bcc163124722fbdef99f9328f",
+    "bytes": 70668,
+    "snapshotSha256": "d529524d800edc5d23966da387d956111c4df389b7b078f80e01d3afde9fbb48",
+    "changedFromSnapshot": true,
+    "modifiedDuringRun": true,
+    "provenance": "Actual bytes at the human-requested stop; not a completed native-export qualification."
+  },
+  {
+    "source": "out/v2-7a-validation/shell-table.pptx",
+    "originalArchive": "docs/v2-8e-evidence/paused-2026-10-21/browser-archives/out--v2-7a-validation--shell-table.pptx",
+    "sha256": "a789a6e2b9922d7ad101b32b84256d1beb7987f63179d24552ce0e5067e877ab",
+    "bytes": 72451,
+    "snapshotSha256": "cc2e20f39d899448102f2b004fd7f15e38da609c18f8ea1b2ea976f22efb32f3",
+    "changedFromSnapshot": true,
+    "modifiedDuringRun": true,
+    "provenance": "Actual bytes at the human-requested stop; not a completed native-export qualification."
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/imported-chart.pptx",
+    "originalArchive": "docs/v2-8e-evidence/paused-2026-10-21/browser-archives/out--v2-7b-1-validation--browser--imported-chart.pptx",
+    "sha256": "928183965ccf78147cf7e03c817f1e00ff54c0adcd0ac7faff2f8c4e9cdadaaf",
+    "bytes": 92783,
+    "snapshotSha256": "ded44c071f4f79aac18c3e50e61bb078f8fcca1661b36faf77c529d297ca25ae",
+    "changedFromSnapshot": true,
+    "modifiedDuringRun": true,
+    "provenance": "Actual bytes at the human-requested stop; not a completed native-export qualification."
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/imported-table.pptx",
+    "originalArchive": "docs/v2-8e-evidence/paused-2026-10-21/browser-archives/out--v2-7b-1-validation--browser--imported-table.pptx",
+    "sha256": "9ddd7964b311f872c9f267fc89bbee52a8c21d2ffa22507730782fe17877df35",
+    "bytes": 92770,
+    "snapshotSha256": "329d35568baa343a2e1a192e70c4b3db61c6d4b06da07615c1f75fa94ce6d997",
+    "changedFromSnapshot": true,
+    "modifiedDuringRun": true,
+    "provenance": "Actual bytes at the human-requested stop; not a completed native-export qualification."
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/handoff.pptx",
+    "originalArchive": "docs/v2-8e-evidence/paused-2026-10-21/browser-archives/out--v2-7b-2-validation--browser--handoff.pptx",
+    "sha256": "21728990e03c5a5b778cc1f1da6c8d378b3beeb4391150e299ad1c69ee5c56b9",
+    "bytes": 92763,
+    "snapshotSha256": "846eaf78eaccbb1fa6fdbaab96b08d3a6e6910d28168cfe84b85f423cf2db3ee",
+    "changedFromSnapshot": true,
+    "modifiedDuringRun": true,
+    "provenance": "Actual bytes at the human-requested stop; not a completed native-export qualification."
+  }
+]

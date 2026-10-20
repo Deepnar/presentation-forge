@@ -1,0 +1,80 @@
+{
+  "images": [
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--dashboard-empty.png",
+      "sha256": "7b91ed7a687415c63e3fce123934d56b700832980cd36b50cf8893a664e3dc82",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/dashboard-empty.png"
+    },
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--dashboard-hosted-anon.png",
+      "sha256": "21e7026e502388a810c65252a04d270f8bb400a8e2a6fbcb16bb44077717252d",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/dashboard-hosted-anon.png"
+    },
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--dashboard.png",
+      "sha256": "b8bd46c29c3a2a467c93cabbdcf02c16115f2a9e2d75713f835434cfbd5cf81d",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/dashboard.png"
+    },
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-blank.png",
+      "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/editor-blank.png"
+    },
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-chart.png",
+      "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/editor-chart.png"
+    },
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-history.png",
+      "sha256": "a78ccbe196ba48bf5464b198976afa839e02b9f011dc19e81895339b66c45589",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/editor-history.png"
+    },
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-narrow-projects.png",
+      "sha256": "c93c906082f3b7a88b72ad0866aef5404f2b64ae09040f8d174288bdaed9ccf6",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/editor-narrow-projects.png"
+    },
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-narrow.png",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/editor-narrow.png"
+    },
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-readonly.png",
+      "sha256": "7ee64bf983c1a5cc40d897767c18adb7d54a8d2192699f07cd17127d14b079c1",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/editor-readonly.png"
+    },
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-shell.png",
+      "sha256": "3f6a304e04245bce7af1d2613deed1ec5d793d9fb28e94f8c0334b84444eaa1f",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/editor-shell.png"
+    },
+    {
+      "file": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-table.png",
+      "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "originalSource": "docs/v2-7a-evidence/editor-table.png"
+    }
+  ],
+  "method": "Two contact sheets plus full-resolution narrow history, narrow inspector and restored history. Fresh images filtered by the completed7A coordinator timestamp.",
+  "inspectedImages": 11,
+  "observations": [
+    "No new foreground overlap or clipped history dialog; narrow close control and both revision rows remain visible.",
+    "Narrow inspector remains visible; inherited100-percent canvas overflow/occlusion remains.",
+    "Wide restoration shows revision2 and preserved history; inner scrolling clips a lower list row rather than the dialog itself.",
+    "Dashboard empty/populated/sign-in, chart/table, blank and read-only captures agree with the passing28-case interaction suite."
+  ],
+  "finalOwnCaptureHashMatch": true,
+  "limitation": "Only these 11 images have recorded inspection; other paused captures are retained but not yet inspected. Final full evidence assembly is unexecuted."
+}

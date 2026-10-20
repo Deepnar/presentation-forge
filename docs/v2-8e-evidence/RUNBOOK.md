@@ -1,5 +1,19 @@
 # V2-8E validation reproduction
 
+**Session stopped at the human's request on2026-10-21.** See
+[the paused assessment](paused-2026-10-21/assessment.json) and current state/evaluation.
+The old coordinator stopped between files after25complete jobs. Original evidence
+and canonical out/ archives have been restored; the owned PostgreSQL service was
+removed after saved/fsynced zero and verified5544closure. No validation runs remain.
+Do not blindly run --resume or finish-evidence.py against this restored state.
+On continuation, audit completed exact-source records, establish a fresh owned
+service identity and snapshot ALL current evidence/originals into a fresh namespace.
+Preserve the paused captures and actual fresh PPTXs when merging a continuation,
+or rerun affected serial generators; do not let assembly silently omit23completed
+browser files or replace their current-source outputs with historical originals.
+Completed bulk/focused results remain valid evidence; source corrections require
+affected reruns. The full scripts below describe an uninterrupted reproduction.
+
 Read the active state/evaluation, roadmap contract and development protocol.
 The implementation SHA in validation-plan.json is the source under evaluation;
 later documentation/harness commits must have no product/test delta. Fixtures

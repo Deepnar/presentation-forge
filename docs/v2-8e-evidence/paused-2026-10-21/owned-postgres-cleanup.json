@@ -1,0 +1,14 @@
+{
+  "containerId": "1ce973f8745064c39c8acac8c39ac9d1b0343df4e26cd43c5cba747b16787906",
+  "stopExitCode": 0,
+  "stopStdout": "Flag --time has been deprecated, use --timeout instead\n1ce973f8745064c39c8acac8c39ac9d1b0343df4e26cd43c5cba747b16787906",
+  "stopStderr": "",
+  "preRemovalObservation": "docs/v2-8e-evidence/paused-2026-10-21/pre-removal-observation.json",
+  "stoppedOnlyExactOwnedId": true,
+  "observedAtUtc": "2026-10-20T18:45:17.076273+00:00",
+  "inspectExitCode": 1,
+  "inspectError": "error: no such object: 1ce973f8745064c39c8acac8c39ac9d1b0343df4e26cd43c5cba747b16787906",
+  "exactIdList": "",
+  "containerAbsent": true,
+  "port5544Closed": true
+}

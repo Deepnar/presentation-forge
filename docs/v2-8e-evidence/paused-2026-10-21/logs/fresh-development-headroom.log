@@ -1,0 +1,2 @@
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 7.5 iowait 9.3 storage {'nvme0n1': {'busyPercent': 1.186639276975373, 'weightedQueue': 0.02166616657398855, 'inflight': 0, 'readKiBps': 5.066549721917323, 'writeKiBps': 330.9256949947051}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 7.8 iowait 9.1 storage {'nvme0n1': {'busyPercent': 1.3019032413019749, 'weightedQueue': 0.23680025792048676, 'inflight': 0, 'readKiBps': 3.1883344684946326, 'writeKiBps': 1398.6160535129789}}

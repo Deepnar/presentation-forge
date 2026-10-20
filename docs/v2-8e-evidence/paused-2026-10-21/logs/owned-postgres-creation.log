@@ -1,0 +1,21 @@
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 7.8 iowait 9.2 storage {'nvme0n1': {'busyPercent': 1.8999571534327213, 'weightedQueue': 0.13766356216977435, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1697.2950570665644}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 7.2 iowait 9.2 storage {'nvme0n1': {'busyPercent': 1.69486732863925, 'weightedQueue': 0.030640542686380168, 'inflight': 0, 'readKiBps': 3.7220615844626668, 'writeKiBps': 561.499576170368}}
+1ce973f8745064c39c8acac8c39ac9d1b0343df4e26cd43c5cba747b16787906
+{
+  "id": "1ce973f8745064c39c8acac8c39ac9d1b0343df4e26cd43c5cba747b16787906",
+  "name": "forge-v28e-validation",
+  "port": 5544,
+  "createdAtUtc": "2026-10-20T18:13:03.398863341Z",
+  "image": "postgres:15-alpine",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "autoRemove": true,
+  "cpus": 1,
+  "memoryBytes": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=192m"
+  },
+  "sourceAtCreation": "a3915390ebe60e214f77c20eff776c8e17d9108f",
+  "workingTreeImplementationAtCreation": true,
+  "purpose": "Owned isolated V2-8E development/final validation; save/fsync actual database count before exact removal.",
+  "version": "15.18"
+}

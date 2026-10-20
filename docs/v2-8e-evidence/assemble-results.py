@@ -11,7 +11,7 @@ group('tool-conversation',['focused'],'Actual OpenAI-compatible/Anthropic HTTP f
 group('non-browser-bulk',['bulk'],'Pure domain and temporary SQLite stores; selected tests use their isolated backends')
 group('serial-browser',[pathlib.Path(f).stem for f in plan['serial']],'Temporary SQLite production routes, isolated PostgreSQL browser suite and standalone fixtures')
 group('postgres-contract',['v2-projects-6c-postgres.test','v2-import-postgres-7b.test'],'Owned isolated PostgreSQL15.18; designated23-case project/import contract gate')
-group('postgres-complete',[pathlib.Path(f).stem for f in plan['postgres']],'Owned isolated PostgreSQL15.18; all seven files128cases. Designated contract23 and cross-process/fault19 are overlapping subsets.')
+group('postgres-complete',[pathlib.Path(f).stem for f in plan['postgres']],'Owned isolated PostgreSQL15.18; all eight files166cases. Designated contract23 and cross-process/fault19 are overlapping subsets.')
 group('cross-process-faults',['v2-projects-6c-concurrency.test','v2-projects-6c-faults.test'],'Isolated PostgreSQL15; actual independent processes and injected faults')
 for name in ['production-build','typecheck','benchmark-50']:
  row=byname[name];assert row['exitCode']==0;log=logs/(name+'.log');shutil.copy2(row['log'],log)

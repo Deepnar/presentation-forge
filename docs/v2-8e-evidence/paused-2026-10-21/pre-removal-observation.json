@@ -1,0 +1,12 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "observedAtUtc": "2026-10-20T18:45:16.717445+00:00",
+  "containerId": "1ce973f8745064c39c8acac8c39ac9d1b0343df4e26cd43c5cba747b16787906",
+  "containerName": "forge-v28e-validation",
+  "port": 5544,
+  "projectDatabaseCount": 0,
+  "query": "SELECT count(*) FROM pg_database WHERE NOT datistemplate AND datname <> 'postgres';",
+  "queryExitCode": 0,
+  "savedAndFsyncedBeforeStop": true,
+  "reason": "Human-requested end of session; no validation job remains running."
+}

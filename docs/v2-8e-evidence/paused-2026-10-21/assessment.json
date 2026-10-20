@@ -1,0 +1,64 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "status": "paused-at-human-request; incomplete validation, no acceptance",
+  "coordinatorExitCode": 254,
+  "coordinatorTermination": "SIGTERM handled as KeyboardInterrupt during pre-job quiet-window sleep; child -2 propagated as parent254. No test process was active or cancelled.",
+  "completedJobs": 25,
+  "completedMatrixFiles": 210,
+  "completedMatrixTests": {
+    "total": 2530,
+    "pass": 2530,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "completedSerialFiles": 23,
+  "completedSerialTests": {
+    "total": 171,
+    "pass": 171,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "focusedExecution": {
+    "total": 93,
+    "pass": 93,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "focusedOverlapWithCompletedMatrixLeaves": 55,
+  "distinctExecutedInventoryFiles": 211,
+  "distinctExecutedInventoryLeaves": 2568,
+  "requiredInventoryFiles": 221,
+  "unexecutedInventoryFiles": [
+    "test/v2-project-covers-chrome-7c.test.js",
+    "test/v2-project-catalog-chrome-7c.test.js",
+    "test/v2-editor-toolbar-chrome-7c.test.js",
+    "test/v2-projects-6c-postgres.test.js",
+    "test/v2-projects-6c-concurrency.test.js",
+    "test/v2-projects-6c-faults.test.js",
+    "test/v2-import-postgres-7b.test.js",
+    "test/v2-runtime-postgres-8b.test.js",
+    "test/v2-provider-postgres-8c.test.js",
+    "test/v2-provider-run-postgres-8d.test.js"
+  ],
+  "unexecutedCommands": [
+    "production-build",
+    "typecheck (planned final matrix command)",
+    "benchmark-50"
+  ],
+  "unexecutedSupplements": [
+    "four persisted/native conversation scenarios",
+    "native-review",
+    "shell-native"
+  ],
+  "unexecutedSeparateProbes": [
+    "en_IN BYOK locale"
+  ],
+  "independentAcceptance": "pending; read-only source audit executed0tests and issued no decision",
+  "partialCaptures": "captures.json; only11shell images have recorded visual inspection",
+  "restoration": "restoration.json",
+  "cleanup": "owned-postgres-cleanup.json",
+  "resumeRestriction": "Original paths were restored and PostgreSQL removed. Do not run finish-evidence.py or blindly resume the old coordinator. First establish fresh owned service and full current-evidence snapshots; preserve complete logs and merge retained fresh captures/actual original PPTXs or rerun affected browser generators in bounded serial isolation. Update the coordinator/output namespace and actual service identity explicitly."
+}
