@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "1fb39ff75cd473ecaf2884232d5d7465d50a9af2",
+    "sha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8B-1fb39ff.json"
+    "source": "docs/reviews/V2-8C-e41d509.json"
   },
   "implementationHead": {
     "sha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
-    "note": "Frozen provider exchange implementation. Complete215-file2529/2529 matrix plus4 persisted provider/native cases, focused66, qualification46, build/type/50 cells and115-image inspection completed. Separate exact-source acceptance remains pending."
+    "note": "Independently accepted bounded provider exchange implementation. Primary 2533/2533 distinct checks; 137 successful repeats separate; independent 320/320, with overlap recorded. Build/type/50 cells and visual/native evidence passed. Standing locale failure and live qualification exclusions remain explicit."
   },
   "activeMilestone": {
     "id": "V2-8C",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8C-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8C-e41d509.json",
+    "accepted": true
   },
   "validation": [
     {

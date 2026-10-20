@@ -6,6 +6,13 @@ no product/test delta. Read the active state, evaluation, development protocol a
 reviewer role before running anything. This is the bounded exchange primitive,
 not live provider or content-quality qualification. Fixtures require no live keys.
 
+The exact source is now independently accepted in reviews/V2-8C-e41d509.json.
+Both contexts completed their planned executions; the owned service was removed
+after a saved/fsynced zero-database observation and port5544closure (cleanup.json).
+A reproduction needs its own fresh isolated service and current-evidence snapshot.
+The independent snapshot covered3473 files/50 originals and preserved10 new originals
+beyond the13 implementer originals; preserve all of them before new generators.
+
 ## Environment and execution
 
 environment.json records Node24.16.0, Chrome151.0.7922.173, Python3.14.7,
@@ -57,7 +64,7 @@ by this runbook.
 
 full-matrix.json counts2529 successful inventory leaves. The four headless persisted
 provider/native cases are distinct;66 provider-focus and46 resource-qualification
-leaves are repeats. The separate locale probe intentionally retains its observed
+leaves are repeats, as are25 governance-index checks (137 repeats total). The separate locale probe intentionally retains its observed
 9pass/1standing-failure result. No required case is unexecuted in this packet.
 The earlier cancelled source52821fb and unacknowledged pre-restart selection output
 remain historical attempts, not added to successful totals.

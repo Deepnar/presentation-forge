@@ -8431,7 +8431,7 @@ needs direction on scope before building.*
 
 <a id="v2-8c-provider-boundary"></a>
 
-- [ ] **V2-8C provider exchange boundary — authorized continuation, 2026-10-19.**
+- [x] **V2-8C provider exchange boundary — independently accepted, 2026-10-20.**
   Accepted baseline `1fb39ff75cd473ecaf2884232d5d7465d50a9af2`; entry checkout
   `405a062a9c1bbc9e2358457913f87907cf6b1bb7`, branch `v2`, push `origin/v2`.
   The continuation request starts the next dependency; the standing direction is
@@ -8496,13 +8496,25 @@ needs direction on scope before building.*
   guards. The lost ephemeral service has no saved pre-removal database count;
   replacement PG execution and later cleanup require their own exact identity.
 
-  **Validation complete, acceptance pending:** exact source e41d509 completed the
-  215-file2529/2529 inventory plus4 distinct persisted provider/native cases,
-  137 separate repeats, build/type/50 cells and115-image inspection. Locale probe
-  remains9pass/1standingfail. All required cases executed. Resource/host-restart
-  and inherited rendering limitations remain explicit in the evaluation. The box
-  stays unchecked until a separate exact-source ACCEPT; no parent-milestone or
-  next-feature authorization is inferred.
+  **Completion:** exact source `e41d509c20fca21a70b9a0c587ccb83684aee7e6`
+  received separate [ACCEPT](reviews/V2-8C-e41d509.json). The 215-file inventory
+  passed 2529/2529 plus 4 distinct persisted provider/native cases: 2533/2533
+  primary checks, with 137 repeats separate. Independent execution passed 320/320:
+  308 inventory leaves, 4 overlapping native cases and 8 additional probes.
+  Build/type/50 cells passed in both contexts. All 115 packet images and 45 fresh
+  independent images were inspected. The locale probe remains 9 pass/1 standing
+  failure; no required case was unexecuted, skipped or cancelled. Local 120-slide
+  opening samples were 1541–1543ms; canvas movement stayed below 0.05px. Current
+  owned PostgreSQL was removed after a saved/fsynced zero-database observation
+  and port 5544 closure. Resource/host-restart and inherited rendering limits
+  remain explicit; parent V2-8 is incomplete and no next feature is authorized.
+
+  > **Learned.** Provider-supplied context metadata is not tool authority: compare
+  > the canonical catalog and independently validate complete requests. Input-token
+  > totals have protocol-specific cache semantics. Fixture HTTP plus persisted
+  > native output can prove the exchange/edit boundary while leaving live quality
+  > unqualified. The typed boundary reuses the accepted context/runtime seams, so
+  > later conversational integration need not replace the command engine or store.
 
   **Gates/stop:** correctness, ownership/data integrity, canonical edit preservation,
   native/regression/compatibility/documentation gates apply; unchanged browser UI
@@ -8518,13 +8530,18 @@ needs direction on scope before building.*
 
 The accepted foundation supplies real scoped content tools, schemas, instruction
 sections and bounded context. The durable core is independently accepted in V2-8B.
-The remaining parent milestone integrates these boundaries with provider adapters, visible Assistant and common
+V2-8C independently accepts bounded Chat Completions/Anthropic Messages exchanges,
+explicit capability profiles and canonical proposal validation. Local HTTP fixtures
+prove both protocols and persisted edits, not live model quality. The remaining
+parent milestone connects these exchanges to bounded conversational execution,
+qualifies live providers and integrates the visible Assistant and common
 search/source orchestration; its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing
 resolved layout as model input.
 
-`ModelProvider` with capability negotiation (tool calling, structured
-output, vision, reasoning, context, files, streaming) and a separate
+The accepted `ModelProvider` supports bounded text/client tools and context limits;
+structured output, vision, reasoning, files and streaming currently refuse explicitly.
+Expand those capabilities only in later approved contracts. A separate
 `SearchProvider` with SearXNG as the default implementation —
 `web_search` is a Forge tool, never a vendor feature. Academic
 (`paper_search`: arXiv/Crossref) and project (`project_search`) tools

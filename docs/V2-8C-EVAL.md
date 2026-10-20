@@ -1,11 +1,14 @@
 # V2-8C provider exchange boundary evaluation
 
-Implementation is complete and frozen at `e41d509c20fca21a70b9a0c587ccb83684aee7e6`. Required validation is complete;
-independent review is pending. The task entered from accepted baseline
+Implementation is frozen and independently accepted at
+`e41d509c20fca21a70b9a0c587ccb83684aee7e6` by the separate
+[2026-10-20 ACCEPT decision](reviews/V2-8C-e41d509.json). Required validation,
+review and owned cleanup are complete. The task entered from accepted baseline
 `1fb39ff75cd473ecaf2884232d5d7465d50a9af2`, entry checkout
 `405a062a9c1bbc9e2358457913f87907cf6b1bb7`, branch `v2`, push `origin/v2`.
 The current continuation and standing recommended-choice direction authorize the
-[next bounded contract](ROADMAP.md#v2-8c-provider-boundary). No acceptance is claimed.
+[bounded exchange contract](ROADMAP.md#v2-8c-provider-boundary). Acceptance covers
+that slice only; the parent V2-8 milestone remains incomplete.
 
 ## Validation contract
 
@@ -30,9 +33,9 @@ live qualification, new UI and deployment are outside the contract.
 
 All nine required gates passed on frozen implementation e41d509. Product/test code
 has no delta after that SHA; later commits contain documentation/evidence and the
-resource-aware validation harness. Baseline remains V2-8B until a separate exact-source
-ACCEPT. Implementer recommendation: accept the bounded exchange contract after that
-review; do not advertise completion of the parent V2-8 milestone.
+resource-aware validation harness. The separate reviewer accepted this exact source
+against V2-8B; state now indexes that decision and accepted baseline. The implementer
+applied the decision after review and did not self-accept.
 
 | Execution | Files/cases | Pass | Fail | Skip | Cancelled |
 |---|---:|---:|---:|---:|---:|
@@ -76,10 +79,14 @@ Stopping quiet-window waits before any child/service started is not a cancelled 
 The old owned auto-remove/tmpfs PostgreSQL service c0d62e38 disappeared during the
 restart before a saved pre-removal database count; that count is unavailable, not
 zero. The replacement owned service2670350f8e8e867b1923c327f5235fd44783e0b5a26dc48d25d5a176d6330809
-runs PostgreSQL15.18 on127.0.0.1:5544 with1CPU/512MiB and192MiB data tmpfs. Both
-identities and the restart are recorded in this evidence namespace. Keep the current
-service for independent review, then save/fsync its database-count observation before
-stopping/removal and verify port closure. No unrelated service was used or stopped.
+ran PostgreSQL15.18 on127.0.0.1:5544 with1CPU/512MiB and192MiB data tmpfs. Both
+identities and the restart are recorded in this evidence namespace. After review,
+a fresh zero project-database observation was saved and fsynced before stopping
+this exact service. Auto-removal and port5544closure were verified in
+[cleanup.json](v2-8c-evidence/cleanup.json). The initial removal probe matched Docker
+error capitalization incorrectly; the corrected inspect/identity check confirmed
+absence. That harness error did not affect the saved count or port observation.
+No unrelated service was used or stopped.
 
 Resource assessment covered repository/output and Docker storage on nvme0n1, /tmp
 and PostgreSQL data in tmpfs. Three-minute duration-weighted headroom qualification
@@ -118,6 +125,50 @@ excluding lease wait. These are local protocol/backend samples, not live LLM lat
 production percentiles or conversational network exactly-once guarantees. Detailed
 measurements are in performance.json and the50-cell benchmark artifact.
 
+## Independent acceptance and execution
+
+The separate reviewer compared accepted V2-8B to exact source e41d509 and reviewed
+packet edf318b. Its evidence commit is d43ada7 and decision commit is 4c61e38.
+[The report](reviews/V2-8C-e41d509.md),
+[execution summary](v2-8c-evidence/independent/execution-summary.json) and runs.json
+supply commands, exits, overlap, exclusions, audit and inspection methods.
+
+| Independent execution | Pass | Fail | Skip | Cancelled |
+|---|---:|---:|---:|---:|
+| Provider protocols and both durable backends |66|0|0|0|
+| Canonical tools/context/preservation/governance |103|0|0|0|
+| Runtime, processes and both backends |69|0|0|0|
+| PostgreSQL contracts/concurrency/faults/import |42|0|0|0|
+| Complete 7A Chrome shell |28|0|0|0|
+| Persisted provider/native scenarios |4|0|0|0|
+| Additional reviewer negative probes |8|0|0|0|
+| Total |320|0|0|0|
+
+These are separate executions: 308 leaves in 18 inventory files overlap the primary
+matrix, and 4 native cases overlap its supplement. The 8 reviewer probes are additional.
+Do not add 320 to the primary distinct 2533. The other 197 inventory files/2221 leaves
+were inspected as passing implementer evidence, not independently rerun. The standing
+locale failure was inspected, not independently repeated. No planned independent job
+remains unexecuted. Independent build/type/protocol passed with 0 errors/warnings;
+all 50 benchmark cells completed in 512ms and all five invariance comparisons agreed.
+
+The reviewer inspected all 115 packet images and 45 fresh images (11 Chrome,
+18 native pages, 16 SVG rasters); 32 fresh provider/native/SVG images were byte-identical
+to inspected packet images, with full-resolution risk cases also inspected. Two
+actual embedded-editor exports were checked in OOXML and rasterized; those command
+checks are not additional test leaves. Rich-run styling/geometry matched and untargeted
+slide XML stayed byte-identical. No new overlap/clipping was found. Fresh 120-slide
+opening measured 1541ms with 120 thumbnails; maximum canvas delta was 0.049835px.
+Independent worker recovery measured 247.607ms SQLite/302.835ms PostgreSQL, excluding
+lease wait. These remain local samples rather than production or live-model claims.
+
+All 3473 pre-existing evidence/archive files, including 50 original PPTXs, were
+restored and hash-verified; 16 changed paths were restored. Ten new independent
+originals are preserved separately. All 55 resource observations are retained, with
+0 critical samples and bursts withholding new jobs; global PSI provenance remains
+unresolved. The reviewer left the owned service running with a saved zero-database
+observation; root then completed the fresh pre-stop/fsync/removal check above.
+
 ## Remaining limitations and recommendation
 
 Canonical catalog and cache-accounting defects were corrected narrowly with fail-first
@@ -129,10 +180,11 @@ qualify interactive PowerPoint. Live-provider/content qualification is unexecute
 fixtures prove protocol and command plumbing only. Elevated I/O PSI/iowait and the lost
 service's unavailable pre-removal count remain explicit environmental limitations.
 
-Recommend independent acceptance of this bounded slice. No Assistant UI, autonomous
-provider loop, common search, credential storage, deployment or migration follows
-from this evidence. Future work remains only in the roadmap; stop after review,
-owned cleanup and handoff.
+The independent decision accepts this bounded slice with these residual limits;
+no blocking finding remains. No Assistant UI, autonomous provider loop, common search,
+credential storage, deployment or migration follows. Future work remains only in
+the [roadmap](ROADMAP.md#v2-8-remaining). Stop after the completed review, owned
+cleanup and handoff.
 
 ## Protocol sources
 
@@ -184,4 +236,4 @@ is already included in the prompt total. A new fail-first selected run failed2/2
 once; optional cache breakdowns are preserved, unavailable breakdowns stay absent,
 and invalid counters refuse. This changes no caching request or credential policy.
 The corrected provider focus passed66/66 and typecheck passed. The entire final
-inventory is refrozen and will run afresh; prior results remain prior-source.
+inventory was refrozen and executed as recorded above; prior results remain prior-source.

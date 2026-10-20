@@ -1,0 +1,25 @@
+{
+  "implementationSha": "e41d509c20fca21a70b9a0c587ccb83684aee7e6",
+  "containerId": "2670350f8e8e867b1923c327f5235fd44783e0b5a26dc48d25d5a176d6330809",
+  "name": "/forge-v28c-validation",
+  "observedAtUtc": "2026-10-20T08:10:55.560205+00:00",
+  "query": "SELECT datname FROM pg_database WHERE NOT datistemplate AND datname <> 'postgres' ORDER BY datname",
+  "nonTemplateProjectDatabases": [],
+  "count": 0,
+  "countSavedAndFsyncedBeforeStop": true,
+  "stopped": true,
+  "removed": true,
+  "port5544Closed": true,
+  "oldRebootLostContainerPreRemovalCount": null,
+  "oldCountLimitation": "The earlier c0d62e38 service disappeared at host restart without a saved pre-removal count; unavailable is not zero.",
+  "stopCompletedAtUtc": "2026-10-20T08:10:55.791960+00:00",
+  "verifiedAtUtc": "2026-10-20T08:11:43.176799+00:00",
+  "verificationCorrection": {
+    "previousObservationAtUtc": "2026-10-20T08:11:26.997347+00:00",
+    "reason": "Initial verification used a case-sensitive Docker error match and reported removal false although the service was absent. Case-insensitive inspect plus empty docker ps identity recheck confirms removal. Saved zero count and port closure were unaffected.",
+    "inspectExitCode": 1,
+    "inspectOutput": "[]",
+    "inspectError": "error: no such object: 2670350f8e8e867b1923c327f5235fd44783e0b5a26dc48d25d5a176d6330809",
+    "matchingContainerIds": []
+  }
+}
