@@ -1870,3 +1870,14 @@ those objects can throw there even when their data is valid. Sanitize first to
 reject getters, cycles, executable values and dangerous keys, then JSON roundtrip
 before schemas that compare object items. Keep valid multi-target scope cases as
 well as malicious-input tests; an invalid-input catch alone can hide this defect.
+
+
+## Verify owned service state after a stop command
+
+Save and fsync the fresh project-database count before removing an owned tmpfs/
+auto-remove PostgreSQL service. A later absent container cannot establish its old
+count. Treat the stop command's reply as diagnostic output; actual removal needs
+an exact-ID inspect/ps check and a closed-port observation. An exact stdout-byte
+assertion can fail after a successful stop. Preserve that failure, then verify
+state without recreating the service or reconstructing the lost reply/count.
+V2-8D's saved cleanup evidence records this distinction.

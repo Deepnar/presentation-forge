@@ -1,0 +1,14 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "atUtc": "2026-10-20T17:50:55.882315+00:00",
+  "containerId": "2ef3b51811f0e61ae574f74644cb1b1b9448c0052867360338ab81229147bf97",
+  "containerName": "forge-v28d-validation",
+  "host": "127.0.0.1",
+  "port": 5544,
+  "postgresVersion": "15.18",
+  "running": true,
+  "oomKilled": false,
+  "projectDatabaseCount": 0,
+  "projectDatabases": [],
+  "method": "Exact owned container identity/name/loopback port verified, then fresh pg_database query excludes templates and postgres. File and parent directory fsynced before stop."
+}

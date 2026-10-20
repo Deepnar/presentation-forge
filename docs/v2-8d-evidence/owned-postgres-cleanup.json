@@ -1,0 +1,19 @@
+{
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "verifiedAtUtc": "2026-10-20T17:51:33.854030+00:00",
+  "containerId": "2ef3b51811f0e61ae574f74644cb1b1b9448c0052867360338ab81229147bf97",
+  "containerName": "forge-v28d-validation",
+  "preRemovalObservation": "docs/v2-8d-evidence/pre-removal-observation.json",
+  "preRemovalObservationSha256": "970fd31772d6c5a33b2d160839a0b407dc7de55a76a4a8998a8883db8f728374",
+  "savedAndFsyncedBeforeStop": true,
+  "projectDatabaseCountBeforeStop": 0,
+  "stopExitCode": 0,
+  "autoRemovalVerified": true,
+  "loopbackPort5544Closed": true,
+  "inspectExitCode": 1,
+  "inspectDiagnostic": "error: no such object: 2ef3b51811f0e61ae574f74644cb1b1b9448c0052867360338ab81229147bf97",
+  "dockerPsExactIdEmpty": true,
+  "unrelatedServicesTouched": false,
+  "verificationCorrection": "The first cleanup command saved/fsynced the zero-database observation and docker stop returned exit0, but its subsequent exact-stdout assertion failed. Raw stop reply was not retained. This fresh inspect/ps/socket verification establishes actual removal; the initial failed assertion is not relabeled as a clean execution. No service was recreated or count reconstructed.",
+  "historicalLimitation": "Earlier reboot-lost service pre-removal count remains unavailable, not zero."
+}
