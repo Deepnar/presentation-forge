@@ -147,7 +147,13 @@ Exact source1fb39ff is [independently accepted](reviews/V2-8B-1fb39ff.md).
 Validation, retained limitations and cleanup are indexed by state/[evaluation](V2-8B-EVAL.md).
 
 
-## V2-8C provider exchange boundary (implementation under review)
+<a id="v2-8c-provider-exchange-boundary-implementation-under-review"></a>
+
+## V2-8C provider exchange boundary
+
+Source `e41d509c20fca21a70b9a0c587ccb83684aee7e6` is independently
+[accepted](reviews/V2-8C-e41d509.json) for this bounded exchange contract.
+[The evaluation](V2-8C-EVAL.md) records execution, inspection and limitations.
 
 `packages/agent/provider.ts` defines the typed ModelProvider, explicit capability
 profile, bounded request preparation and normalized response/tool validation.

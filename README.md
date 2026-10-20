@@ -278,8 +278,15 @@ exits; a separate worker resumes the durable run. Owner-bound projects additiona
 require the trusted operator's `--owner OWNER` on each call. See the
 [run-plan schema](packages/agent/run-plan.schema.json),
 [durable execution contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8b-durable-run-core)
-and [validation/review record](docs/V2-8B-EVAL.md). Live provider and Assistant
-integration remain in the [roadmap](docs/ROADMAP.md#v2-8-remaining).
+and [validation/review record](docs/V2-8B-EVAL.md).
+
+Internal, operator-configured adapters now support bounded text/tool exchanges
+through OpenAI-compatible Chat Completions and Anthropic Messages. They use explicit
+capabilities and injected credentials, validate semantic proposals and leave editing
+authority with the canonical tools. [The accepted exchange contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8c-provider-exchange-boundary)
+and [evidence](docs/V2-8C-EVAL.md) distinguish local protocol fixtures from live
+provider qualification. Conversational integration and the Assistant remain in the
+[roadmap](docs/ROADMAP.md#v2-8-remaining).
 
 A written `.pptx` proves the file parsed and nothing else. `pres.writeFile()`
 succeeds for decks with text off the canvas and invisible-on-invisible colour

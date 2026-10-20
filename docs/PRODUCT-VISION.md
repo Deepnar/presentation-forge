@@ -63,6 +63,11 @@ C2 unifies generated originals and saved copies in one Projects catalog without
 merging documents or importing on reads. C3 separates standalone developer
 controls/diagnostics from normal saved-project editing; its current validation
 and independent-review state are indexed in development-state.json.
+The headless tool/context foundation, durable run core and bounded provider
+exchanges are independently accepted. Exchanges propose canonical semantic edits;
+the live editor/runtime retains authority. [The V2-8C evaluation](V2-8C-EVAL.md)
+distinguishes local protocol/persistence evidence from live content qualification.
+The Assistant remains a placeholder.
 The sole work registry is [ROADMAP.md](ROADMAP.md); AI editing integration,
 native assets/imports, frontend polish and deployment operations retain their
 roadmap dependencies.

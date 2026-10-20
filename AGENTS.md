@@ -47,8 +47,9 @@ semantic/compiler vocabulary when a composition is missing. Manual layout
 templates are editable scene skeletons, separate from AI composition families.
 Preserve human modifications, ownership flags, tombstones and detached scenes
 during regeneration. Human and future agent changes share validated commands,
-stale-revision checks and history. The headless durable run core is built; live
-provider and Assistant integration remain in the
+stale-revision checks and history. The headless durable run core and bounded
+provider exchanges are independently accepted; conversational provider and
+Assistant integration remain in the
 [roadmap](docs/ROADMAP.md#v2-8-remaining). Resolve exact accepted
 scope through development-state.json and its independent review record.
 

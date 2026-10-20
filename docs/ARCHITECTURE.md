@@ -2647,6 +2647,7 @@ The typed provider profile/preparation/parser in packages/agent is separate from
 credential-owning HTTP transport in src/agent/model-provider.js. Distinct Chat
 Completions and Anthropic Messages protocols produce validated semantic proposals;
 canonical tools and durable project transactions retain editing authority. See
-[the as-built exchange contract](V2-8-AGENT-ARCHITECTURE.md#v2-8c-provider-exchange-boundary-implementation-under-review)
-and [current evidence/review status](V2-8C-EVAL.md). No Assistant or provider loop
-is introduced by this boundary.
+[the as-built exchange contract](V2-8-AGENT-ARCHITECTURE.md#v2-8c-provider-exchange-boundary)
+and [evidence](V2-8C-EVAL.md). Source `e41d509` is independently
+[accepted](reviews/V2-8C-e41d509.json). No Assistant or provider loop is introduced
+by this boundary.
