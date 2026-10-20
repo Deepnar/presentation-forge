@@ -184,3 +184,44 @@ uncached/cache-read/cache-write fields are summed; Chat Completions prompt_token
 is already inclusive and its cache details remain breakdowns. Missing usage stays
 null and unavailable cache breakdowns are omitted. Invalid counters refuse; the
 transport does not enable or configure prompt caching.
+
+
+## V2-8D provider-backed run preparation (implementation under review)
+
+`packages/agent/provider-run.ts` supplies `createProviderRunner(backend, provider)`;
+`src/agent/index.js` resolves the configured project backend for trusted callers.
+The strict generated request contract reuses the run scope and canonical read
+queries. Sanitization rejects executable objects before ordinary-JSON conversion
+for AJV object uniqueness comparisons. No framework, transport route, credential
+configuration or provider default is added.
+
+`prepare` copies the trusted binding/request before any await, acquires an exact-
+owner/current-revision snapshot in a short local transaction, then builds scoped
+semantic context through accepted tools. One bounded provider attempt executes
+outside transactions. Normalized requests still cross canonical validation. Text,
+refusal and bounded read results have no durable effects. Edit calls at one engine
+revision merge into one batch (maximum32 edits); mixed read/edit output, duplicate
+writes, protected/foreign targets and invalid structures refuse atomically through
+the actual local command engine. Fresh durable revision checks invalidate stale
+results. Engine revision starts at0 independently of the stored project revision.
+
+An edit proposal exposes an immutable semantic preview and summary. Its object
+identity maps weakly to a private cloned binding/plan; copied objects, other runner
+instances and added caller fields cannot rebind authority. `enqueue` uses that exact
+host proposal, the existing run request/digest identity and commit-time deadline/
+cancellation guards. Concurrent repeats return the same run; conflicting plans
+refuse. Queueing reports queued, never completed editing. Existing worker/CLI
+claim/advance/status/cancel owns execution, atomic project/history receipts and
+cross-process recovery. Proposed reads/edits never execute on a second durable
+project document.
+
+Requests cap JSON at65536 characters, user text at16000, context at100000 and
+normalized results/previews at65536. Configured provider output limits remain
+binding. The absolute deadline is at most24hours; an individual network attempt
+also caps at120seconds and does not retry. Queued plans contain one atomic batch,
+8reserved-attempt allowance and1failure allowance. Ephemeral proposals expire and
+cannot be recovered after host restart; queued runs retain accepted recovery.
+No prompt, raw response, credential, transcript or new journal/table is stored.
+An explicit new preparation may call the provider again; no network exactly-once
+or conversational runtime claim is made. Current validation/review is indexed by
+[the evaluation](V2-8D-EVAL.md) and state; later scope lives in the roadmap.

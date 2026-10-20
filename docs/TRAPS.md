@@ -1861,3 +1861,12 @@ transaction without removing that exact handler at release accumulates listeners
 on reused PostgreSQL clients. Cold schema initialization has the same lifetime
 requirement. Keep the handler while checked out, remove it in finally, and retain
 the pool's idle-client error policy; increasing the listener limit hides the leak.
+
+
+**Sanitized JSON can still need ordinary prototypes for schema comparisons.**
+The bounded JSON copier deliberately produces null-prototype objects. AJV's
+object uniqueItems comparison delegates to a deep comparator that calls valueOf;
+those objects can throw there even when their data is valid. Sanitize first to
+reject getters, cycles, executable values and dangerous keys, then JSON roundtrip
+before schemas that compare object items. Keep valid multi-target scope cases as
+well as malicious-input tests; an invalid-input catch alone can hide this defect.

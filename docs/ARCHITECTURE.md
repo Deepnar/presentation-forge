@@ -2651,3 +2651,15 @@ canonical tools and durable project transactions retain editing authority. See
 and [evidence](V2-8C-EVAL.md). Source `e41d509` is independently
 [accepted](reviews/V2-8C-e41d509.json). No Assistant or provider loop is introduced
 by this boundary.
+
+
+### V2-8D provider-backed run preparation
+
+The backend/provider-injected preparation boundary composes scoped context from
+current exact-owner project snapshots and keeps network exchanges outside local
+transactions. Canonical atomic preflight produces opaque immutable proposals;
+an explicit host action queues their private semantic plan through the accepted
+run core with fresh revision and commit-time cancellation/deadline guards.
+No prompt/transcript store, public route or new UI is introduced.
+[The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8d-provider-backed-run-preparation-implementation-under-review)
+and [evaluation](V2-8D-EVAL.md) identify the implementation-under-review status.
