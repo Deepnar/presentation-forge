@@ -199,7 +199,9 @@ configuration or provider default is added.
 owner/current-revision snapshot in a short local transaction, then builds scoped
 semantic context through accepted tools. One bounded provider attempt executes
 outside transactions. Normalized requests still cross canonical validation. Text,
-refusal and bounded read results have no durable effects. Edit calls at one engine
+refusal and bounded read results create no run or project-row mutation. The
+backend may initialize the already accepted runtime tables on explicit invocation;
+no new schema or journal is introduced. Edit calls at one engine
 revision merge into one batch (maximum32 edits); mixed read/edit output, duplicate
 writes, protected/foreign targets and invalid structures refuse atomically through
 the actual local command engine. Fresh durable revision checks invalidate stale
