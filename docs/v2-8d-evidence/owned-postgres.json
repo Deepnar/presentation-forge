@@ -1,0 +1,18 @@
+{
+  "id": "2ef3b51811f0e61ae574f74644cb1b1b9448c0052867360338ab81229147bf97",
+  "name": "forge-v28d-validation",
+  "port": 5544,
+  "createdAtUtc": "2026-10-20T09:39:04.262315391Z",
+  "image": "postgres:15-alpine",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "autoRemove": true,
+  "cpus": 1,
+  "memoryBytes": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=192m"
+  },
+  "version": "15.18",
+  "sourceAtCreation": "f25452d60e27b3ed08bb22c82db3495be8e6bd12",
+  "workingTreeImplementationAtCreation": true,
+  "purpose": "Owned isolated V2-8D development and final regression validation; preserve identity until saved/fsynced pre-stop count and verified removal."
+}

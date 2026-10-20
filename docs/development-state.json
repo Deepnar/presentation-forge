@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8C-e41d509.json"
   },
   "implementationHead": {
-    "sha": "8e966552149f87686d624a05bfc55feab1dcbd76",
-    "note": "V2-8D planning checkout; implementation not yet frozen. V2-8C remains the accepted baseline; all new validation is pending."
+    "sha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+    "note": "Frozen provider-backed run preparation implementation after null-prototype schema and PostgreSQL domain-refusal corrections. Required final-source full validation and independent acceptance remain pending."
   },
   "activeMilestone": {
     "id": "V2-8D",
     "roadmapRef": "docs/ROADMAP.md#v2-8d-provider-run-preparation",
     "evalDoc": "docs/V2-8D-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,

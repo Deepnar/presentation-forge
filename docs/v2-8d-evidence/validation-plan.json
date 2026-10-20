@@ -1,7 +1,7 @@
 {
-  "implementationSha": "8e966552149f87686d624a05bfc55feab1dcbd76",
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
-  "inventoryMethod": "All215 accepted files plus three provider-run files:185 bulk,26 serial owners,7 PostgreSQL files =218 distinct files. Planning checkout only; refreeze to implementation before final validation.",
+  "implementationSha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
+  "inventoryMethod": "All215 accepted files plus three provider-run files:185 bulk,26 serial owners,7 PostgreSQL files =218 distinct files. Frozen implementation; later commits are documentation/evidence/harness only.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",

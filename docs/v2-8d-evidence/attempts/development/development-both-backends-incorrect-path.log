@@ -1,0 +1,1133 @@
+TAP version 13
+# Subtest: repository state, document references and real Git ancestry validate
+ok 1 - repository state, document references and real Git ancestry validate
+  ---
+  duration_ms: 43.46742
+  type: 'test'
+  ...
+# Subtest: missing required role document fails closed
+ok 2 - missing required role document fails closed
+  ---
+  duration_ms: 21.069495
+  type: 'test'
+  ...
+# Subtest: malformed state JSON returns diagnostics instead of crashing
+ok 3 - malformed state JSON returns diagnostics instead of crashing
+  ---
+  duration_ms: 1.436061
+  type: 'test'
+  ...
+# Subtest: unknown review state, malformed SHA and extra properties are rejected
+ok 4 - unknown review state, malformed SHA and extra properties are rejected
+  ---
+  duration_ms: 8.971461
+  type: 'test'
+  ...
+# Subtest: known pending validation cannot disappear or be duplicated
+ok 5 - known pending validation cannot disappear or be duplicated
+  ---
+  duration_ms: 25.119724
+  type: 'test'
+  ...
+# Subtest: unaccepted implementation cannot replace the accepted baseline
+ok 6 - unaccepted implementation cannot replace the accepted baseline
+  ---
+  duration_ms: 15.48724
+  type: 'test'
+  ...
+# Subtest: passed validation needs existing matching evidence and its output log
+ok 7 - passed validation needs existing matching evidence and its output log
+  ---
+  duration_ms: 61.105825
+  type: 'test'
+  ...
+# Subtest: stale evidence from another implementation SHA is refused
+ok 8 - stale evidence from another implementation SHA is refused
+  ---
+  duration_ms: 14.843434
+  type: 'test'
+  ...
+# Subtest: self-reported totals must match the retained test output
+ok 9 - self-reported totals must match the retained test output
+  ---
+  duration_ms: 16.18824
+  type: 'test'
+  ...
+# Subtest: nonzero, cancelled, skipped and inconsistent totals never become passes
+ok 10 - nonzero, cancelled, skipped and inconsistent totals never become passes
+  ---
+  duration_ms: 56.699197
+  type: 'test'
+  ...
+# Subtest: existing output cannot substitute for actual visual inspection or 50 benchmark cells
+ok 11 - existing output cannot substitute for actual visual inspection or 50 benchmark cells
+  ---
+  duration_ms: 39.375298
+  type: 'test'
+  ...
+# Subtest: renaming a reviewer cannot substitute for a separate decision record
+ok 12 - renaming a reviewer cannot substitute for a separate decision record
+  ---
+  duration_ms: 26.250388
+  type: 'test'
+  ...
+# Subtest: legitimate recorded acceptance can advance the baseline after completed validation
+ok 13 - legitimate recorded acceptance can advance the baseline after completed validation
+  ---
+  duration_ms: 65.442132
+  type: 'test'
+  ...
+# Subtest: document paths, anchors and symlinks cannot leave the repository or point nowhere
+ok 14 - document paths, anchors and symlinks cannot leave the repository or point nowhere
+  ---
+  duration_ms: 39.707916
+  type: 'test'
+  ...
+# Subtest: Git verification rejects well-shaped nonexistent commits
+ok 15 - Git verification rejects well-shaped nonexistent commits
+  ---
+  duration_ms: 9.502273
+  type: 'test'
+  ...
+# Subtest: a passing subset cannot substitute for the full required file scope
+ok 16 - a passing subset cannot substitute for the full required file scope
+  ---
+  duration_ms: 14.300505
+  type: 'test'
+  ...
+# Subtest: name-filtered runs and implausibly small suite counts fail closed
+ok 17 - name-filtered runs and implausibly small suite counts fail closed
+  ---
+  duration_ms: 25.527801
+  type: 'test'
+  ...
+# Subtest: the TAP inventory records entry files without imported contract helpers
+ok 18 - the TAP inventory records entry files without imported contract helpers
+  ---
+  duration_ms: 66.614634
+  type: 'test'
+  ...
+# Subtest: new milestone keeps its own focused gate and rejects old evidence inventory
+ok 19 - new milestone keeps its own focused gate and rejects old evidence inventory
+  ---
+  duration_ms: 51.102619
+  type: 'test'
+  ...
+# Subtest: browser handoff requires its own complete focused evidence
+ok 20 - browser handoff requires its own complete focused evidence
+  ---
+  duration_ms: 49.501183
+  type: 'test'
+  ...
+# Subtest: project covers require their own unit, HTTP and complete Chrome evidence
+ok 21 - project covers require their own unit, HTTP and complete Chrome evidence
+  ---
+  duration_ms: 49.434295
+  type: 'test'
+  ...
+# Subtest: project discovery requires its own complete unit, HTTP and Chrome evidence
+ok 22 - project discovery requires its own complete unit, HTTP and Chrome evidence
+  ---
+  duration_ms: 46.955486
+  type: 'test'
+  ...
+# Subtest: production toolbar evidence includes its complete Chrome file and full shell regression
+ok 23 - production toolbar evidence includes its complete Chrome file and full shell regression
+  ---
+  duration_ms: 46.902765
+  type: 'test'
+  ...
+# Subtest: agent foundation requires complete tool and context behavioral evidence
+ok 24 - agent foundation requires complete tool and context behavioral evidence
+  ---
+  duration_ms: 53.515455
+  type: 'test'
+  ...
+# Subtest: provider boundary requires both protocol and durable backend files
+ok 25 - provider boundary requires both protocol and durable backend files
+  ---
+  duration_ms: 61.009313
+  type: 'test'
+  ...
+# Subtest: provider-run preparation requires both storage backends and boundary cases
+ok 26 - provider-run preparation requires both storage backends and boundary cases
+  ---
+  duration_ms: 56.722691
+  type: 'test'
+  ...
+# Subtest: v2 core boundary
+    # Subtest: detects static, re-export, and literal dynamic imports
+    ok 1 - detects static, re-export, and literal dynamic imports
+      ---
+      duration_ms: 4.121166
+      type: 'test'
+      ...
+    # Subtest: fails closed on require() and non-literal dynamic import
+    ok 2 - fails closed on require() and non-literal dynamic import
+      ---
+      duration_ms: 0.486203
+      type: 'test'
+      ...
+    # Subtest: enforces package directions on synthetic edges
+    ok 3 - enforces package directions on synthetic edges
+      ---
+      duration_ms: 0.240915
+      type: 'test'
+      ...
+    # Subtest: confines node builtins to the named renderer adapter
+    ok 4 - confines node builtins to the named renderer adapter
+      ---
+      duration_ms: 0.117638
+      type: 'test'
+      ...
+    # Subtest: allows jszip only in renderer-docx
+    ok 5 - allows jszip only in renderer-docx
+      ---
+      duration_ms: 0.121217
+      type: 'test'
+      ...
+    # Subtest: repository packages contain zero boundary violations
+    ok 6 - repository packages contain zero boundary violations
+      ---
+      duration_ms: 130.198149
+      type: 'test'
+      ...
+    1..6
+ok 27 - v2 core boundary
+  ---
+  duration_ms: 136.024879
+  type: 'suite'
+  ...
+# Subtest: provider-run scope and read schemas remain canonical
+ok 28 - provider-run scope and read schemas remain canonical
+  ---
+  duration_ms: 4.852758
+  type: 'test'
+  ...
+# Subtest: preparation rejects unrecognized authority fields before storage or provider I/O
+ok 29 - preparation rejects unrecognized authority fields before storage or provider I/O
+  ---
+  duration_ms: 1.674557
+  type: 'test'
+  ...
+# Subtest: preparation rejects invalid context reads before storage or provider I/O
+ok 30 - preparation rejects invalid context reads before storage or provider I/O
+  ---
+  duration_ms: 0.307805
+  type: 'test'
+  ...
+# Subtest: preparation rejects invalid trusted scope before storage or provider I/O
+ok 31 - preparation rejects invalid trusted scope before storage or provider I/O
+  ---
+  duration_ms: 0.186769
+  type: 'test'
+  ...
+# Subtest: preparation rejects empty request text before storage or provider I/O
+ok 32 - preparation rejects empty request text before storage or provider I/O
+  ---
+  duration_ms: 0.184783
+  type: 'test'
+  ...
+# Subtest: preparation rejects context bounds before storage or provider I/O
+ok 33 - preparation rejects context bounds before storage or provider I/O
+  ---
+  duration_ms: 0.181915
+  type: 'test'
+  ...
+# Subtest: preparation rejects configured output allowance before storage or provider I/O
+ok 34 - preparation rejects configured output allowance before storage or provider I/O
+  ---
+  duration_ms: 0.18196
+  type: 'test'
+  ...
+# Subtest: preparation rejects nested geometry before storage or provider I/O
+ok 35 - preparation rejects nested geometry before storage or provider I/O
+  ---
+  duration_ms: 0.175879
+  type: 'test'
+  ...
+# Subtest: preparation rejects duplicate selection before storage or provider I/O
+ok 36 - preparation rejects duplicate selection before storage or provider I/O
+  ---
+  duration_ms: 0.207205
+  type: 'test'
+  ...
+# Subtest: live accessors, cycles and option accessors are refused without execution
+ok 37 - live accessors, cycles and option accessors are refused without execution
+  ---
+  duration_ms: 0.340209
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass foreign provider identity validation
+ok 38 - injected provider cannot bypass foreign provider identity validation
+  ---
+  duration_ms: 20.128242
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass wrong family validation
+ok 39 - injected provider cannot bypass wrong family validation
+  ---
+  duration_ms: 0.759856
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass unsupported outcome validation
+ok 40 - injected provider cannot bypass unsupported outcome validation
+  ---
+  duration_ms: 0.738731
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass extra authority metadata validation
+ok 41 - injected provider cannot bypass extra authority metadata validation
+  ---
+  duration_ms: 0.587758
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass duplicate tool IDs validation
+ok 42 - injected provider cannot bypass duplicate tool IDs validation
+  ---
+  duration_ms: 0.626674
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass noncanonical arguments validation
+ok 43 - injected provider cannot bypass noncanonical arguments validation
+  ---
+  duration_ms: 0.55407
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass stale engine revision validation
+ok 44 - injected provider cannot bypass stale engine revision validation
+  ---
+  duration_ms: 0.528963
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass inconsistent terminal outcome validation
+ok 45 - injected provider cannot bypass inconsistent terminal outcome validation
+  ---
+  duration_ms: 0.52899
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass invalid usage counters validation
+ok 46 - injected provider cannot bypass invalid usage counters validation
+  ---
+  duration_ms: 0.547734
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass output over allowance validation
+ok 47 - injected provider cannot bypass output over allowance validation
+  ---
+  duration_ms: 0.517201
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass missing usage field validation
+ok 48 - injected provider cannot bypass missing usage field validation
+  ---
+  duration_ms: 0.455997
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass oversized summary validation
+ok 49 - injected provider cannot bypass oversized summary validation
+  ---
+  duration_ms: 0.452897
+  type: 'test'
+  ...
+# Subtest: provider failures and thrown exceptions never expose raw diagnostics
+ok 50 - provider failures and thrown exceptions never expose raw diagnostics
+  ---
+  duration_ms: 1.988013
+  type: 'test'
+  ...
+# Subtest: context and aggregate read-result budgets refuse explicitly
+ok 51 - context and aggregate read-result budgets refuse explicitly
+  ---
+  duration_ms: 1.834546
+  type: 'test'
+  ...
+# Subtest: binding and deadline errors refuse before any provider call
+ok 52 - binding and deadline errors refuse before any provider call
+  ---
+  duration_ms: 0.239265
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+ok 53 - PostgreSQL/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 437.99522
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: text returns bounded information without a queue or edit
+ok 54 - PostgreSQL/openai-compatible: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 20.027122
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refusal returns bounded information without a queue or edit
+ok 55 - PostgreSQL/openai-compatible: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 10.767303
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-results returns bounded information without a queue or edit
+ok 56 - PostgreSQL/openai-compatible: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 14.034123
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 57 - PostgreSQL/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 16.898714
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+ok 58 - PostgreSQL/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 19.232271
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses protected batches without partial edits
+ok 59 - PostgreSQL/openai-compatible: refuses protected batches without partial edits
+  ---
+  duration_ms: 19.0046
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: uses engine revision zero independently of an advanced durable revision
+ok 60 - PostgreSQL/openai-compatible: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 43.568519
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save while HTTP is pending invalidates preparation
+not ok 61 - PostgreSQL/openai-compatible: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 17.278494
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'stale-project'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'stale-project'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:128:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save after preparation prevents queuing
+not ok 62 - PostgreSQL/openai-compatible: a human save after preparation prevents queuing
+  ---
+  duration_ms: 20.181149
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'stale-project'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'stale-project'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:135:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses foreign owners and invalid scopes before network
+not ok 63 - PostgreSQL/openai-compatible: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 7.275387
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'invalid-request'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'invalid-request'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:140:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancellation covers both preparation and pending HTTP
+not ok 64 - PostgreSQL/openai-compatible: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 6.639699
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'cancelled'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'cancelled'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:146:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/openai-compatible: an expired deadline refuses before HTTP
+not ok 65 - PostgreSQL/openai-compatible: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 5.85347
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'deadline'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'deadline'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:153:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/openai-compatible: the absolute deadline also bounds pending provider HTTP
+ok 66 - PostgreSQL/openai-compatible: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 509.766996
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancelled at final queue commit rolls back the run insert
+not ok 67 - PostgreSQL/openai-compatible: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 18.172031
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'cancelled'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'cancelled'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:178:16
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/openai-compatible: deadline at final queue commit rolls back the run insert
+not ok 68 - PostgreSQL/openai-compatible: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 13.139569
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'deadline'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'deadline'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:178:16
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/openai-compatible: only the original proposal instance can queue its private plan
+ok 69 - PostgreSQL/openai-compatible: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 13.754411
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: conflicting proposals cannot reuse a queued request identity
+ok 70 - PostgreSQL/openai-compatible: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 39.079517
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-only grants cannot receive edit proposals
+ok 71 - PostgreSQL/openai-compatible: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 14.934448
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deleting a project invalidates its ephemeral proposals
+ok 72 - PostgreSQL/openai-compatible: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 18.397459
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+ok 73 - PostgreSQL/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 12.111869
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+ok 74 - PostgreSQL/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 313.403255
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: text returns bounded information without a queue or edit
+ok 75 - PostgreSQL/anthropic: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 12.125918
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refusal returns bounded information without a queue or edit
+ok 76 - PostgreSQL/anthropic: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 11.359552
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-results returns bounded information without a queue or edit
+ok 77 - PostgreSQL/anthropic: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 11.216076
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 78 - PostgreSQL/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 15.381708
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+ok 79 - PostgreSQL/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 11.786557
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses protected batches without partial edits
+ok 80 - PostgreSQL/anthropic: refuses protected batches without partial edits
+  ---
+  duration_ms: 11.216264
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: uses engine revision zero independently of an advanced durable revision
+ok 81 - PostgreSQL/anthropic: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 26.267954
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save while HTTP is pending invalidates preparation
+not ok 82 - PostgreSQL/anthropic: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 14.473972
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'stale-project'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'stale-project'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:128:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/anthropic: a human save after preparation prevents queuing
+not ok 83 - PostgreSQL/anthropic: a human save after preparation prevents queuing
+  ---
+  duration_ms: 10.572661
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'stale-project'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'stale-project'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:135:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/anthropic: refuses foreign owners and invalid scopes before network
+not ok 84 - PostgreSQL/anthropic: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 3.84726
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'invalid-request'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'invalid-request'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:140:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/anthropic: cancellation covers both preparation and pending HTTP
+not ok 85 - PostgreSQL/anthropic: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 3.359614
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'cancelled'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'cancelled'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:146:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/anthropic: an expired deadline refuses before HTTP
+not ok 86 - PostgreSQL/anthropic: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 3.881222
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'deadline'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'deadline'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:153:14
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/anthropic: the absolute deadline also bounds pending provider HTTP
+ok 87 - PostgreSQL/anthropic: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 508.588767
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancelled at final queue commit rolls back the run insert
+not ok 88 - PostgreSQL/anthropic: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 18.193652
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'cancelled'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'cancelled'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:178:16
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/anthropic: deadline at final queue commit rolls back the run insert
+not ok 89 - PostgreSQL/anthropic: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 10.504922
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:33:35'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'deadline'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'deadline'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    file:///home/deepnar/Programs/presentations/test/v2-provider-run-contract.js:178:16
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: PostgreSQL/anthropic: only the original proposal instance can queue its private plan
+ok 90 - PostgreSQL/anthropic: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 11.539608
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: conflicting proposals cannot reuse a queued request identity
+ok 91 - PostgreSQL/anthropic: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 23.157256
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-only grants cannot receive edit proposals
+ok 92 - PostgreSQL/anthropic: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 7.410036
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deleting a project invalidates its ephemeral proposals
+ok 93 - PostgreSQL/anthropic: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 19.554362
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+ok 94 - PostgreSQL/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 11.191799
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+ok 95 - SQLite/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 322.73745
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: text returns bounded information without a queue or edit
+ok 96 - SQLite/openai-compatible: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 11.191926
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: refusal returns bounded information without a queue or edit
+ok 97 - SQLite/openai-compatible: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 10.254264
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: read-results returns bounded information without a queue or edit
+ok 98 - SQLite/openai-compatible: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 9.797058
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 99 - SQLite/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 14.411954
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+ok 100 - SQLite/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 12.409641
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: refuses protected batches without partial edits
+ok 101 - SQLite/openai-compatible: refuses protected batches without partial edits
+  ---
+  duration_ms: 10.37348
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: uses engine revision zero independently of an advanced durable revision
+ok 102 - SQLite/openai-compatible: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 14.039336
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a human save while HTTP is pending invalidates preparation
+ok 103 - SQLite/openai-compatible: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 10.571259
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a human save after preparation prevents queuing
+ok 104 - SQLite/openai-compatible: a human save after preparation prevents queuing
+  ---
+  duration_ms: 9.829173
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: refuses foreign owners and invalid scopes before network
+ok 105 - SQLite/openai-compatible: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 5.322767
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: cancellation covers both preparation and pending HTTP
+ok 106 - SQLite/openai-compatible: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 8.287865
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: an expired deadline refuses before HTTP
+ok 107 - SQLite/openai-compatible: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 4.82312
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: the absolute deadline also bounds pending provider HTTP
+ok 108 - SQLite/openai-compatible: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 506.824561
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: cancelled at final queue commit rolls back the run insert
+ok 109 - SQLite/openai-compatible: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 8.612959
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: deadline at final queue commit rolls back the run insert
+ok 110 - SQLite/openai-compatible: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 8.224078
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: only the original proposal instance can queue its private plan
+ok 111 - SQLite/openai-compatible: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 7.984881
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: conflicting proposals cannot reuse a queued request identity
+ok 112 - SQLite/openai-compatible: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 10.529216
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: read-only grants cannot receive edit proposals
+ok 113 - SQLite/openai-compatible: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 6.492983
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: deleting a project invalidates its ephemeral proposals
+ok 114 - SQLite/openai-compatible: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 7.836634
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+ok 115 - SQLite/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 6.531622
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+ok 116 - SQLite/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 233.388284
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: text returns bounded information without a queue or edit
+ok 117 - SQLite/anthropic: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 8.707231
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: refusal returns bounded information without a queue or edit
+ok 118 - SQLite/anthropic: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 8.206002
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: read-results returns bounded information without a queue or edit
+ok 119 - SQLite/anthropic: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 7.603481
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 120 - SQLite/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 11.584278
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+ok 121 - SQLite/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 12.681376
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: refuses protected batches without partial edits
+ok 122 - SQLite/anthropic: refuses protected batches without partial edits
+  ---
+  duration_ms: 7.910326
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: uses engine revision zero independently of an advanced durable revision
+ok 123 - SQLite/anthropic: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 10.728535
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a human save while HTTP is pending invalidates preparation
+ok 124 - SQLite/anthropic: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 8.742938
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a human save after preparation prevents queuing
+ok 125 - SQLite/anthropic: a human save after preparation prevents queuing
+  ---
+  duration_ms: 9.309583
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: refuses foreign owners and invalid scopes before network
+ok 126 - SQLite/anthropic: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 5.19944
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: cancellation covers both preparation and pending HTTP
+ok 127 - SQLite/anthropic: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 8.813202
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: an expired deadline refuses before HTTP
+ok 128 - SQLite/anthropic: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 4.720951
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: the absolute deadline also bounds pending provider HTTP
+ok 129 - SQLite/anthropic: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 506.261677
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: cancelled at final queue commit rolls back the run insert
+ok 130 - SQLite/anthropic: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 8.184367
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: deadline at final queue commit rolls back the run insert
+ok 131 - SQLite/anthropic: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 7.70733
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: only the original proposal instance can queue its private plan
+ok 132 - SQLite/anthropic: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 7.179116
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: conflicting proposals cannot reuse a queued request identity
+ok 133 - SQLite/anthropic: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 11.605446
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: read-only grants cannot receive edit proposals
+ok 134 - SQLite/anthropic: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 5.552184
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: deleting a project invalidates its ephemeral proposals
+ok 135 - SQLite/anthropic: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 6.881884
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+ok 136 - SQLite/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 6.231058
+  type: 'test'
+  ...
+1..136
+# tests 141
+# suites 1
+# pass 127
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6357.069349

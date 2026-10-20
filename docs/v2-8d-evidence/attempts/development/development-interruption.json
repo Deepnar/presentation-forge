@@ -1,0 +1,6 @@
+{
+  "classification": "Product defect before implementation freeze: canonical scope uniqueItems checking raised on sanitizer null-prototype objects; active SQLite test awaited HTTP that correctly never began. Owned development group terminated for correction. Incomplete file totals unavailable; not a passing gate.",
+  "cancelledExecutionGroup": true,
+  "completeLeafTotals": null,
+  "assertionsWeakened": false
+}

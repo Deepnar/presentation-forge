@@ -1,0 +1,18 @@
+{
+  "source": "9bf412ffca6af5b2843af35f5fd44e8b263d428f",
+  "implementationSha": "9bf412ffca6af5b2843af35f5fd44e8b263d428f",
+  "exitCode": 1,
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-provider-run-sqlite-8d.test.js",
+    "test/v2-provider-run-postgres-8d.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/v2-types-drift.test.js",
+    "test/dev-protocol.test.js"
+  ],
+  "atUtc": "2026-10-20T12:40:55.123412+00:00"
+}
