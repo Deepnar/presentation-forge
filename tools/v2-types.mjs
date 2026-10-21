@@ -15,6 +15,7 @@ function banner(schemaPath) {
 
 export async function generateTypes({ write = true } = {}) {
   const targets = [
+    { schema: "packages/agent/search-request.schema.json", out: "packages/agent/search-request.generated.ts", name: "SearchRequest" },
     { schema: "packages/agent/provider-run-request.schema.json", out: "packages/agent/provider-run-request.generated.ts", name: "ProviderRunRequest" },
     { schema: "packages/agent/conversation-request.schema.json", out: "packages/agent/conversation-request.generated.ts", name: "ConversationRequest" },
     { schema: "packages/agent/receipt.schema.json", out: "packages/agent/receipt.generated.ts", name: "RunReceipt" },
