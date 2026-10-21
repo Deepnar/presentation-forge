@@ -1,0 +1,25 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "imagesInspected": 30,
+  "contactSheetsOpened": 5,
+  "status": "Preliminary current-source Chrome inspection; final hash reconciliation still required",
+  "observations": [
+    "Dashboard empty/saved/hosted-anonymous modal, edit/read-only, history and table/chart states inspected.",
+    "No new foreground control overlap or clipped dialog observed in these captures.",
+    "Known narrow100percent canvas occlusion/overflow remains visible with inspector controls accessible; not erased or called perfect responsiveness.",
+    "History lists remain scrollable within their dialog; long fixture text and standalone viewer geometry remain inherited limits.",
+    "Full-size narrow history dialog fits inside viewport with close/preview controls visible. Inspector controls remain visible; canvas occlusion and off-viewport toolbar overflow remain inherited limits.",
+    "All76current browser captures now inspected, including import/refusal/session guards, covers, catalog and toolbar states.",
+    "Known C1narrow-dark transition capture shows sidebar/content occlusion; C2no-match capture still indicates pending generated-content search. These canonical capture limits retain their existing roadmap entries.",
+    "Narrow dark catalog delete confirmation and C3text/chart/table/slide-menu controls appear contained; native inspection and final hash reconciliation are still pending."
+  ],
+  "images": "docs/v2-8f-evidence/preliminary-visual/images.json",
+  "fullSizeRiskCases": [
+    "docs/v2-7a-evidence/editor-narrow-projects.png",
+    "docs/v2-7a-evidence/editor-narrow.png"
+  ],
+  "additionalBrowserImagesInspected": 46,
+  "additionalContactSheetsOpened": 8,
+  "allBrowserImagesInspected": 76,
+  "additionalImages": "docs/v2-8f-evidence/preliminary-visual/remaining-browser.json"
+}

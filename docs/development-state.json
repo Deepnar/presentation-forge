@@ -23,33 +23,33 @@
   "validation": [
     {
       "id": "search-provider",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required current-source execution/inspection remains pending; prior accepted evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8f-evidence/search-provider.json",
+      "reason": "Complete current-source gate executed0fail/skip/cancel; remaining gates and independent review still pending."
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required current-source execution/inspection remains pending; prior accepted evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8f-evidence/non-browser-bulk.json",
+      "reason": "Complete current-source gate executed0fail/skip/cancel; remaining gates and independent review still pending."
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required current-source execution/inspection remains pending; prior accepted evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8f-evidence/serial-browser.json",
+      "reason": "Complete current-source gate executed0fail/skip/cancel; remaining gates and independent review still pending."
     },
     {
       "id": "postgres-contract",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required current-source execution/inspection remains pending; prior accepted evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8f-evidence/postgres-contract.json",
+      "reason": "Complete current-source gate executed0fail/skip/cancel; remaining gates and independent review still pending."
     },
     {
       "id": "cross-process-faults",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required current-source execution/inspection remains pending; prior accepted evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8f-evidence/cross-process-faults.json",
+      "reason": "Complete current-source gate executed0fail/skip/cancel; remaining gates and independent review still pending."
     },
     {
       "id": "production-build",

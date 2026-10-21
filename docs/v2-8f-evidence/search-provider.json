@@ -1,0 +1,21 @@
+{
+  "id": "search-provider",
+  "kind": "tests",
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "command": "python3 docs/v2-8f-evidence/run-validation.py; individual commands remain in active out/v2-8f-validation-final-20261021/coordinator.json until complete packet assembly",
+  "log": "docs/v2-8f-evidence/logs/search-provider.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 48,
+    "pass": 48,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-search-8f.test.js",
+    "test/v2-search-http-8f.test.js"
+  ],
+  "backend": "Actual loopback SearXNG HTTP fixtures and canonical source normalization",
+  "checkpoint": "Complete acknowledged gate; no credit for remaining files/commands or visual/native work"
+}

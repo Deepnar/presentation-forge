@@ -88,3 +88,20 @@ four samples, before any snapshot, service creation or test job. Its exit143 and
 raw samples are [retained](v2-8f-evidence/development/pre-matrix-interruption.json).
 No test leaf was cancelled and no test is credited from that wait. The final run
 uses a fresh scratch namespace, preserving the preliminary resource observations.
+
+## Current full-run checkpoint (not final acceptance)
+
+Exact0cab854 focused search48/48 (separate overlapping repeat), non-browser bulk
+2408/2408 and all26serial browser/build files208/208 passed with0fail/skip/cancel.
+PostgreSQL designated contracts23/23 and concurrency/fault19/19 passed; these are
+subsets of the still-incomplete8-file inventory. The durable runtime adds34passed
+cases, for76acknowledged PostgreSQL leaves across5files at this checkpoint. The
+remaining provider/preparation/conversation PG files, final build/type/50cells,
+native supplements/inspection, search timing, separate locale and independent
+execution remain pending, not passes. Per-job headroom holds remain active.
+
+All76current browser captures were inspected through13contact sheets and two
+full-size narrow risk cases. Final captured-image hash reconciliation is pending.
+Known C1narrow transition, C2pending-search capture, narrow canvas/toolbar overflow
+and inspector occlusion remain explicit; no new foreground dialog regression was
+found. Native exports are not yet inspected for this run.

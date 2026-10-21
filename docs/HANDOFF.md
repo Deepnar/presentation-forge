@@ -13,10 +13,10 @@ Read actual process/current logs before doing anything. Do NOT start another
 coordinator, browser/build owner, snapshot or independent execution concurrently.
 The223-file plan is189bulk/26serial/8PostgreSQL. Complete acknowledged records now:
 focused48/48 (separate overlapping repeat), bulk2408/2408,
-serial21/26files 155passing leaves,
-PostgreSQL0/8files. Each completed record has0fail/skip/cancel. Remaining
-files/commands/visuals are pending, not passes. Existing images/archives in a live
-namespace are not final inspected evidence. Resource guard is holding jobs during
+serial26/26files 208passing leaves,
+PostgreSQL5/8files 76passing leaves. Five complete gates are now recorded in state. Each completed record has0fail/skip/cancel. Remaining
+files/commands/visuals are pending, not passes. All76browser captures were inspected with hashes saved in preliminary-visual;
+final hash reconciliation and native evidence remain pending. Resource guard is holding jobs during
 storage bursts; do not relax it or stop unrelated work.
 
 Before generators, sustained180-second headroom qualified and a full4653-file

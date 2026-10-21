@@ -1,0 +1,21 @@
+{
+  "id": "postgres-contract",
+  "kind": "tests",
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "command": "python3 docs/v2-8f-evidence/run-validation.py; individual commands remain in active out/v2-8f-validation-final-20261021/coordinator.json until complete packet assembly",
+  "log": "docs/v2-8f-evidence/logs/postgres-contract.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 23,
+    "pass": 23,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-projects-6c-postgres.test.js",
+    "test/v2-import-postgres-7b.test.js"
+  ],
+  "backend": "Exact owned PostgreSQL15.18; designated project/import contracts",
+  "checkpoint": "Complete acknowledged gate; no credit for remaining files/commands or visual/native work"
+}

@@ -1,0 +1,300 @@
+TAP version 13
+# Subtest: search requests and trusted project binding stay separate
+ok 1 - search requests and trusted project binding stay separate
+  ---
+  duration_ms: 1.577997
+  type: 'test'
+  ...
+# Subtest: executable, cyclic and non-plain boundary objects refuse without invocation
+ok 2 - executable, cyclic and non-plain boundary objects refuse without invocation
+  ---
+  duration_ms: 0.563779
+  type: 'test'
+  ...
+# Subtest: normalized sources satisfy the canonical source schema and exclude backend payloads
+ok 3 - normalized sources satisfy the canonical source schema and exclude backend payloads
+  ---
+  duration_ms: 12.493704
+  type: 'test'
+  ...
+# Subtest: source identity is stable across retrieval times, query order and provider metadata
+ok 4 - source identity is stable across retrieval times, query order and provider metadata
+  ---
+  duration_ms: 2.300025
+  type: 'test'
+  ...
+# Subtest: canonical URL identity removes fragments and normalizes host/default port
+ok 5 - canonical URL identity removes fragments and normalizes host/default port
+  ---
+  duration_ms: 0.57597
+  type: 'test'
+  ...
+# Subtest: rank, URL deduplication and host diversity are deterministic
+ok 6 - rank, URL deduplication and host diversity are deterministic
+  ---
+  duration_ms: 3.521992
+  type: 'test'
+  ...
+# Subtest: malformed rows and unsafe citation URLs are discarded with an explicit warning
+ok 7 - malformed rows and unsafe citation URLs are discarded with an explicit warning
+  ---
+  duration_ms: 0.746401
+  type: 'test'
+  ...
+# Subtest: snippets become bounded plain text without executing or retaining executable markup
+ok 8 - snippets become bounded plain text without executing or retaining executable markup
+  ---
+  duration_ms: 1.274132
+  type: 'test'
+  ...
+# Subtest: partial upstream results remain successful but distinguish backend failures from empty search
+ok 9 - partial upstream results remain successful but distinguish backend failures from empty search
+  ---
+  duration_ms: 0.282602
+  type: 'test'
+  ...
+# Subtest: malformed envelopes and oversized candidate sets refuse rather than masquerading as empty
+ok 10 - malformed envelopes and oversized candidate sets refuse rather than masquerading as empty
+  ---
+  duration_ms: 0.486066
+  type: 'test'
+  ...
+# Subtest: serialized output budget is exact and never emits an oversized partial citation set
+ok 11 - serialized output budget is exact and never emits an oversized partial citation set
+  ---
+  duration_ms: 0.493655
+  type: 'test'
+  ...
+# Subtest: returned citation content and nested result collections are immutable
+ok 12 - returned citation content and nested result collections are immutable
+  ---
+  duration_ms: 0.335086
+  type: 'test'
+  ...
+# Subtest: malformed normalization options cannot execute getters or supply backend fields
+ok 13 - malformed normalization options cannot execute getters or supply backend fields
+  ---
+  duration_ms: 0.149429
+  type: 'test'
+  ...
+# Subtest: normalization handles malformed Unicode and excessive fields within canonical bounds
+ok 14 - normalization handles malformed Unicode and excessive fields within canonical bounds
+  ---
+  duration_ms: 0.342734
+  type: 'test'
+  ...
+# Subtest: plain snippets preserve block and line-break word boundaries without splitting inline words
+ok 15 - plain snippets preserve block and line-break word boundaries without splitting inline words
+  ---
+  duration_ms: 0.890892
+  type: 'test'
+  ...
+# Subtest: real form POST encodes query fields while keeping project identity and limits local
+ok 16 - real form POST encodes query fields while keeping project identity and limits local
+  ---
+  duration_ms: 24.298308
+  type: 'test'
+  ...
+# Subtest: invalid query, rebinding fields and executable accessors refuse before network
+ok 17 - invalid query, rebinding fields and executable accessors refuse before network
+  ---
+  duration_ms: 1.215541
+  type: 'test'
+  ...
+# Subtest: configuration is immutable, sanitized and never accepts URL credentials or query options
+ok 18 - configuration is immutable, sanitized and never accepts URL credentials or query options
+  ---
+  duration_ms: 0.430248
+  type: 'test'
+  ...
+# Subtest: HTTP 401 is sanitized with no retry or redirect
+ok 19 - HTTP 401 is sanitized with no retry or redirect
+  ---
+  duration_ms: 3.527982
+  type: 'test'
+  ...
+# Subtest: HTTP 403 is sanitized with no retry or redirect
+ok 20 - HTTP 403 is sanitized with no retry or redirect
+  ---
+  duration_ms: 1.917702
+  type: 'test'
+  ...
+# Subtest: HTTP 429 is sanitized with no retry or redirect
+ok 21 - HTTP 429 is sanitized with no retry or redirect
+  ---
+  duration_ms: 1.804759
+  type: 'test'
+  ...
+# Subtest: HTTP 500 is sanitized with no retry or redirect
+ok 22 - HTTP 500 is sanitized with no retry or redirect
+  ---
+  duration_ms: 1.800621
+  type: 'test'
+  ...
+# Subtest: HTTP 302 is sanitized with no retry or redirect
+ok 23 - HTTP 302 is sanitized with no retry or redirect
+  ---
+  duration_ms: 1.852677
+  type: 'test'
+  ...
+# Subtest: pre-dispatch and in-flight header cancellation are bounded
+ok 24 - pre-dispatch and in-flight header cancellation are bounded
+  ---
+  duration_ms: 2.004924
+  type: 'test'
+  ...
+# Subtest: body cancellation covers an incomplete JSON stream
+ok 25 - body cancellation covers an incomplete JSON stream
+  ---
+  duration_ms: 2.225137
+  type: 'test'
+  ...
+# Subtest: deadline includes a stalled body without retries
+ok 26 - deadline includes a stalled body without retries
+  ---
+  duration_ms: 41.82764
+  type: 'test'
+  ...
+# Subtest: declared byte overflow refuses
+ok 27 - declared byte overflow refuses
+  ---
+  duration_ms: 2.031737
+  type: 'test'
+  ...
+# Subtest: chunked byte overflow refuses
+ok 28 - chunked byte overflow refuses
+  ---
+  duration_ms: 1.439585
+  type: 'test'
+  ...
+# Subtest: invalid text/html / <html>privat refuses
+ok 29 - invalid text/html / <html>privat refuses
+  ---
+  duration_ms: 1.334756
+  type: 'test'
+  ...
+# Subtest: invalid application/json / {bad refuses
+ok 30 - invalid application/json / {bad refuses
+  ---
+  duration_ms: 1.284299
+  type: 'test'
+  ...
+# Subtest: invalid application/json / UTF8 refuses
+ok 31 - invalid application/json / UTF8 refuses
+  ---
+  duration_ms: 1.460942
+  type: 'test'
+  ...
+# Subtest: invalid application/json / {} refuses
+ok 32 - invalid application/json / {} refuses
+  ---
+  duration_ms: 1.341425
+  type: 'test'
+  ...
+# Subtest: non-cooperating injected fetch cannot defeat timeout or start a late body read
+ok 33 - non-cooperating injected fetch cannot defeat timeout or start a late body read
+  ---
+  duration_ms: 19.932202
+  type: 'test'
+  ...
+# Subtest: request inputs are snapshotted before network waits
+ok 34 - request inputs are snapshotted before network waits
+  ---
+  duration_ms: 22.216245
+  type: 'test'
+  ...
+# Subtest: transport errors never expose endpoint details or raw failure text
+ok 35 - transport errors never expose endpoint details or raw failure text
+  ---
+  duration_ms: 0.213748
+  type: 'test'
+  ...
+# Subtest: configuration accessors refuse without invoking them
+ok 36 - configuration accessors refuse without invoking them
+  ---
+  duration_ms: 0.095417
+  type: 'test'
+  ...
+# Subtest: header deadline is bounded before the backend sends a response
+ok 37 - header deadline is bounded before the backend sends a response
+  ---
+  duration_ms: 40.208342
+  type: 'test'
+  ...
+# Subtest: response bytes count UTF8 encoding rather than string characters
+ok 38 - response bytes count UTF8 encoding rather than string characters
+  ---
+  duration_ms: 1.510088
+  type: 'test'
+  ...
+# Subtest: exact byte boundary passes
+ok 39 - exact byte boundary passes
+  ---
+  duration_ms: 1.595648
+  type: 'test'
+  ...
+# Subtest: exact byte boundary overflow
+ok 40 - exact byte boundary overflow
+  ---
+  duration_ms: 1.135803
+  type: 'test'
+  ...
+# Subtest: normalized output budget remains distinct from HTTP response bytes
+ok 41 - normalized output budget remains distinct from HTTP response bytes
+  ---
+  duration_ms: 1.782728
+  type: 'test'
+  ...
+# Subtest: non-cooperating fetch cancellation fences a later response
+ok 42 - non-cooperating fetch cancellation fences a later response
+  ---
+  duration_ms: 0.359639
+  type: 'test'
+  ...
+# Subtest: non-cooperating body stream is cancelled on the whole-operation deadline
+ok 43 - non-cooperating body stream is cancelled on the whole-operation deadline
+  ---
+  duration_ms: 20.242706
+  type: 'test'
+  ...
+# Subtest: an actual partial-engine HTTP response exposes only normalized data and warning codes
+ok 44 - an actual partial-engine HTTP response exposes only normalized data and warning codes
+  ---
+  duration_ms: 1.652341
+  type: 'test'
+  ...
+# Subtest: infinite empty chunks cannot starve the deadline
+ok 45 - infinite empty chunks cannot starve the deadline
+  ---
+  duration_ms: 174.955433
+  type: 'test'
+  ...
+# Subtest: infinite empty chunks cannot starve caller cancellation
+ok 46 - infinite empty chunks cannot starve caller cancellation
+  ---
+  duration_ms: 156.943946
+  type: 'test'
+  ...
+# Subtest: monotonic timeout cancels the source before releasing its reader lock
+ok 47 - monotonic timeout cancels the source before releasing its reader lock
+  ---
+  duration_ms: 1.163826
+  type: 'test'
+  ...
+# Subtest: many empty chunks do not consume the response-byte allowance of a valid result
+ok 48 - many empty chunks do not consume the response-byte allowance of a valid result
+  ---
+  duration_ms: 13.872902
+  type: 'test'
+  ...
+1..48
+# tests 48
+# suites 0
+# pass 48
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 884.899211
+# forge-test-file "test/v2-search-8f.test.js"
+# forge-test-file "test/v2-search-http-8f.test.js"
