@@ -264,5 +264,5 @@ execution/recovery. No durable transcript, new schema/table, public route, UI or
 provider-default/configuration change is introduced. Conversations/proposals are
 host-instance ephemeral; queued runs retain accepted durability. This is not the
 hosted cross-request approval contract or live provider/content qualification.
-[Evaluation](V2-8E-EVAL.md) and state identify pending validation/review; future work
-remains only in the roadmap.
+[Evaluation](V2-8E-EVAL.md) and state identify complete validation and pending
+independent review; future work remains only in the roadmap.

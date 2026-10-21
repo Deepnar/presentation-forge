@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
-    "note": "Frozen bounded tool-conversation implementation. Authorized continuation is completing remaining validation with fresh snapshots/service identity and retained exact-source results. Independent acceptance remains pending."
+    "note": "Frozen bounded tool-conversation implementation. Complete final-source validation and inspected evidence passed across retained/resumed execution. Independent exact-source acceptance remains pending."
   },
   "activeMilestone": {
     "id": "V2-8E",
     "roadmapRef": "docs/ROADMAP.md#v2-8e-bounded-tool-conversation",
     "evalDoc": "docs/V2-8E-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -25,55 +25,55 @@
       "id": "tool-conversation",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/tool-conversation.json",
-      "reason": "Frozen-source93/93:17boundary+38SQLite+38ownedPostgreSQL;0fail/skip/cancel.55cases overlap the completed bulk. Remaining validation/review pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
     },
     {
       "id": "non-browser-bulk",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/non-browser-bulk.json",
-      "reason": "Complete frozen-source187-file2359/2359 passed;0fail/skip/cancel. Remaining validation/review pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
     },
     {
       "id": "serial-browser",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/serial-browser.json",
-      "reason": "Complete frozen-source26-file208/208 passed;0fail/skip/cancel.23complete records retained,3remaining browser files executed after resumption. Other gates/review pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
     },
     {
       "id": "postgres-contract",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/postgres-contract.json",
-      "reason": "Complete designated gate passed23/23;0fail/skip/cancel. Broader PostgreSQL inventory/other validation/review still pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
     },
     {
       "id": "cross-process-faults",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/cross-process-faults.json",
-      "reason": "Complete designated gate passed19/19;0fail/skip/cancel. Broader PostgreSQL inventory/other validation/review still pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
     },
     {
       "id": "production-build",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Planned final production-build command unexecuted before the human-requested stop."
+      "status": "passed",
+      "evidence": "docs/v2-8e-evidence/production-build.json",
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Planned final-matrix typecheck unexecuted before the human-requested stop; development typecheck is recorded separately."
+      "status": "passed",
+      "evidence": "docs/v2-8e-evidence/typecheck.json",
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Actual final50-cell benchmark unexecuted before the human-requested stop."
+      "status": "passed",
+      "evidence": "docs/v2-8e-evidence/benchmark-50.json",
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "38fresh partial browser images retained;11shell images inspected with matching hashes. Full browser/native capture and inspection unexecuted; gate pending."
+      "status": "passed",
+      "evidence": "docs/v2-8e-evidence/frontend-visual.json",
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
     }
   ],
   "knownBlockers": [],

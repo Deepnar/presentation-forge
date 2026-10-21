@@ -95,20 +95,24 @@ and keep all future work in the roadmap.
 
 The new continuation authorizes only
 [V2-8E bounded tool-conversation preparation](ROADMAP.md#v2-8e-bounded-tool-conversation).
-State/[evaluation](V2-8E-EVAL.md) index frozen source c71d65e and pending final-source
-validation/review. The human stopped the session on2026-10-21; no validation process
-or owned service remains running. Bulk2359/2359,23serial files171/171 and focused93/93
-passed, with explicit overlap in the [paused assessment](v2-8e-evidence/paused-2026-10-21/assessment.json).
-Original4067evidence files and5canonical archives were restored/hash-verified;
-fresh partial captures/actual PPTXs are preserved separately. PostgreSQL cleanup
-saved/fsynced zero before removal and verified5544closure. Independent source audit
-ran0tests and issued no acceptance. The prior8Dacceptance remains the baseline.
-[The runbook](v2-8e-evidence/RUNBOOK.md) defines the221-file matrix and resume
-restrictions: first audit exact-source records, create a fresh owned service and
-snapshot ALL current evidence; merge saved fresh outputs or rerun affected generators.
-Do not blindly resume the old restored workspace or run finish-evidence.py against
-historical out/ originals. Resume only the approved remaining validation in the
-roadmap, then independent review/cleanup/handoff; no further feature is authorized.
+State/[evaluation](V2-8E-EVAL.md) index frozen source c71d65e and complete final-source
+validation, with independent acceptance pending. After the human resumed, the
+221-file matrix passed2733/2733 plus4distinct persisted/native scenarios,110separate
+repeats, build/type/50cells and115inspected images. Locale remains9pass/1fail separately.
+The paused4067-file and resumed4183-file evidence snapshots and5canonical originals
+were restored/hash-verified. Actual retained browser exports are distinguished
+from newly produced headless originals. Historical paused results are retained in
+the [assessment](v2-8e-evidence/paused-2026-10-21/assessment.json); their old unexecuted
+status is resolved by the later complete packet, not erased.
+
+The old service was removed after savedzero; the resumed owned service is indexed
+in owned-postgres-resumed-2026-10-21.json and remains for review. Read actual current
+handoff/process state before acting. The new high-effort reviewer source audit ran
+0tests/0edits and issued no acceptance; independent execution requires its own full
+snapshot, fresh headroom and explicit exclusive-slot release. Prior8Dacceptance
+remains the baseline. [The runbook](v2-8e-evidence/RUNBOOK.md) defines reproduction;
+never rerun finish-evidence.py against restored canonical originals. Complete only
+independent review, exact owned cleanup and handoff; no further feature is authorized.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL

@@ -4,8 +4,9 @@ Accepted baseline: `8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`.
 Entry checkout: `15e357c93bf301fd61867dd10e06a8921286568f`, branch `v2`;
 authorized push `origin/v2`. The current continuation authorizes the bounded
 [roadmap contract](ROADMAP.md#v2-8e-bounded-tool-conversation). Implementation is
-frozen; validation and separate acceptance remain incomplete. The human ended
-the session on2026-10-21 before the required matrix finished. No acceptance is claimed.
+frozen at `c71d65e189387684aac89ca9994acf8a9ff865c1`. Complete final-source
+validation and visual inspection passed across the retained/resumed executions
+below. **Independent acceptance remains pending; no acceptance is claimed.**
 
 Correctness, authorization, data integrity, canonical commands, preservation,
 backward compatibility, native export, browser/accessibility/responsive regression
@@ -28,13 +29,81 @@ Official protocol references checked at planning:
 and [Messages tool-result handling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls).
 The accepted Forge provider/command stack remains in use; no SDK/framework migration.
 
+## Complete final-source results
+
+The221-file inventory passed2733/2733, with4additional distinct persisted/native
+conversation scenarios: **2737primary distinct checks,0fail/0skip/0cancel,
+0required implementer cases unexecuted**. Separate successful repeats are93focused
+and17resumption qualification (110total); they overlap inventory leaves and are
+not added to2737. The acknowledged locale probe is separate9pass/1fail. Independent
+execution/acceptance is still pending.
+
+| Executed group | Files/scenarios | Pass | Fail | Skip | Cancelled |
+|---|---:|---:|---:|---:|---:|
+| Non-browser bulk |187|2359|0|0|0|
+| Serial browser/build owners |26|208|0|0|0|
+| Complete PostgreSQL inventory |8|166|0|0|0|
+| Distinct persisted/native supplements |4|4|0|0|0|
+| Separate focused repeats |3|93|0|0|0|
+| Separate resumption qualification |1|17|0|0|0|
+| Separate standing en_IN locale probe |1|9|1|0|0|
+
+[Full matrix](v2-8e-evidence/full-matrix.json), the221-file plan and raw
+[coordinator](v2-8e-evidence/logs/coordinator.json) retain commands, UTC exits,
+actual backends, leaf counts and retained-log hashes. The designated PostgreSQL
+contract23 and process/fault19 are overlapping subsets of the complete166cases.
+Twenty-five acknowledged complete jobs were retained from the paused exact-source
+run; the remaining3browser/8PGfiles and commands/native jobs executed after fresh
+qualification. No accepted8D result is credited as a new8E execution. All9evidence
+gates passed; state retains the8Dbaseline and pending independent review.
+
+The governance checker rejected an unsupported implementation-status label during
+packet preparation. The record now uses the existing `validated` enum, with review
+pending and acceptedfalse; the schema/checker were unchanged. The corrected check
+reports0errors/0warnings, with the metadata-only attempt retained separately.
+
+Production build/typecheck passed in0.667163s/1.468993s command wall time.
+The actual50-cell benchmark completed in410ms compiler/ZIP time (0.566052s wall).
+Its recorded documentation HEAD is c628912; later source matches exactc71d65e.
+All115 final hashed images were inspected; [visual report](v2-8e-evidence/VISUAL-REVIEW.md)
+and reconciliation distinguish actual retained/resumed captures. No new foreground
+overlap or clipped dialog was found.120slides opened in1540ms with120thumbnails;
+maximum canvas movement across6cases was0.10284423828125px, under1px.
+
+[Performance](v2-8e-evidence/performance.json) retains4local protocol/backend samples:
+conversation preparation15.671–36.043ms, queue0.803–4.535ms, worker commit2.297–11.213ms,
+reopen0.354–8.671ms. Each uses3actual local HTTP exchanges (2.040–14.576ms each),
+2canonical read-result rounds and1edit proposal. Each reserves6144output tokens;
+conversation metadata is792–818bytes and persisted run payload1306bytes. Recovery
+claim-through-commit measured208.539msSQLite/421.563msPostgreSQL, excluding lease
+wait. These are local samples, not live provider latency, quality or production
+percentiles; global PSI/iowait provenance remains unresolved.
+
+The paused4067-file/78-PPTX snapshot and5canonical originals were restored at stop.
+Resumption verified a fresh4183-file/83-PPTX snapshot plus5canonical originals;
+all were restored/hash-verified.8new headless originals and5actual paused browser
+originals are retained in final manifests; the latter were reused for fresh native
+inspection, not represented as rerun browser generators. No original bytes were
+reconstructed. The old service was removed after savedzero; the new owned15.18
+service remains available for independent review and requires its own saved/fsynced
+count and exact cleanup afterward.
+
+No new product regression was found in final-source execution. The pre-freeze
+usage-accounting defect below was corrected narrowly with unchanged assertions.
+Known locale, Fit/narrow/capture, catalog source-loading and mixed-run SVG limits,
+and historical archive/service provenance limits, remain separate roadmap items.
+Live providers/Auto quality, parent common-search/Assistant qualification and
+interactive Microsoft PowerPoint are unexecuted/outside this bounded contract.
+The implementer recommends independent acceptance review of this bounded slice;
+the parent V2-8 milestone is incomplete and no further feature is authorized.
+
 
 ## Development status and frozen source
 
 Implementation is frozen at `c71d65e189387684aac89ca9994acf8a9ff865c1`. No later
 product/test/tools changes are permitted without updating the source pointer and
-rerunning affected checks. The full 221-file matrix, final native/browser evidence
-and separate acceptance remain pending.
+rerunning affected checks. The full221-file matrix and inspected native/browser
+evidence above are complete; separate acceptance remains pending.
 
 [Development attempts](v2-8e-evidence/attempts/development/assessment.json) retain
 expected fail-first cases and the trace-accounting defect: SQLite passed 28/30;
@@ -54,7 +123,10 @@ acceptance. Final independent execution waits for the complete frozen-source
 packet and release of the heavy slot.
 
 
-## Final-source validation paused at human request
+## Historical paused attempt at human request
+
+This section records the stopped attempt before the later completed continuation;
+its unexecuted cases below are not the current final status.
 
 The frozen-source focused suite passed93/93 (17boundary,38SQLite,38PostgreSQL),
 the full187-file bulk passed2359/2359, and23of26serial browser/build owners
@@ -116,6 +188,7 @@ records actual matching tool versions; prior observations are retained separatel
 The committed recovery harness uses a fresh output/snapshot namespace, verifies
 complete paused records and hashes, and merges actual saved captures/PPTXs before
 executing remaining jobs. It does not relax any product assertion or timeout.
-The same required matrix and independent acceptance remain pending. A new single
-high-effort reviewer performs read-only source inspection; its heavy slot remains
-withheld until the complete implementer packet is ready.
+The same required matrix completed without weakened assertions. A new single
+high-effort reviewer completed [read-only source inspection](v2-8e-evidence/resumed-source-audit.md)
+with no confirmed blocker,0tests/0edits/noacceptance. Its heavy slot remains withheld
+until this complete implementer packet is pushed. Separate acceptance is pending.

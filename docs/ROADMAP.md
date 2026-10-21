@@ -8622,7 +8622,7 @@ needs direction on scope before building.*
 
 <a id="v2-8e-bounded-tool-conversation"></a>
 
-- [ ] **V2-8E bounded tool-conversation preparation — implemented; validation resuming.**
+- [ ] **V2-8E bounded tool-conversation preparation — validated; independent review pending.**
   Accepted baseline `8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`; entry checkout
   `15e357c93bf301fd61867dd10e06a8921286568f`, branch `v2`, push `origin/v2`.
   The new instruction to start the next immediate work, with the standing direction
@@ -8708,6 +8708,15 @@ needs direction on scope before building.*
   PPTXs using a fresh full-current-evidence snapshot and a newly recorded owned
   service. [The runbook](v2-8e-evidence/RUNBOOK.md) gives the bounded recovery command;
   no product source change, acceptance or parent milestone advance is implied.
+
+  **Complete validation:** exactc71d65e passed the221-file2733/2733matrix plus
+  4distinct persisted/native conversation scenarios (2737primary distinct).
+  Focused93 and resumption17 are separate repeats. Build/type/actual50cells and
+  inspection of115hashed images passed; the separate locale probe remains9pass/1fail.
+  All9evidence gates passed with0required implementer cases unexecuted. Current
+  service remains for independent review; its cleanup is still required. The
+  accepted baseline remains8Duntil a separate exact-source decision. See evaluation
+  for resource qualification, actual retained/resumed provenance and limitations.
 
 <a id="v2-8-remaining"></a>
 
