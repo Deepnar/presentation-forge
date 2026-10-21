@@ -118,16 +118,23 @@ database observation; exact absence/5544closure are proved in
 finish-evidence.py against restored canonical originals. Acceptance and cleanup
 are complete. No further feature is authorized; future scope is only in the roadmap.
 
-The latest continuation authorizes only the
-[V2-8F shared search boundary](ROADMAP.md#v2-8f-shared-search-boundary), frozen at
-0cab854 for final validation. [Evaluation](V2-8F-EVAL.md) records development
-corrections and complete final-source gates, with separate acceptance pending. Accepted baseline remains V2-8E c71d65e. Use
-[the8F runbook](v2-8f-evidence/RUNBOOK.md) for current reproduction: its223-file
-inventory and all-current evidence/original snapshots replace no historical proof.
-Final validation passed2786primary distinct checks plus48separate focused repeats,
-all commands and115inspected images. Exact owned service remains for independent
-review; cleanup and acceptance are pending. Read current HANDOFF before any job.
-Complete only this approved slice through independent review and handoff.
+The [V2-8F shared search boundary](ROADMAP.md#v2-8f-shared-search-boundary) is
+independently accepted at `0cab854` in the
+[exact-source decision](reviews/V2-8F-0cab854.json). [Evaluation](V2-8F-EVAL.md) and
+state index 2,786 primary distinct passes, 48 separate focused repeats, all nine
+gates, 115 inspected packet images and 595 independent passes. The latter repeat
+592 packet cases and add three probes; they are not added to the primary total.
+The reviewer inspected 54 fresh images and 16 native archives, restored all 4,918
+evidence files plus five canonical originals, and retained ten fresh original PPTXs.
+The interrupted unacknowledged 477-case report remains excluded; all 477 were rerun
+with recorded exit 0. Locale remains 9 pass/1 standing failure separately.
+The owned service was removed after a fresh saved/fsynced actual zero-project-DB
+observation; exact-ID absence and port 5544 closure are
+[verified](v2-8f-evidence/owned-postgres-cleanup.json). Use the
+[8F runbook](v2-8f-evidence/RUNBOOK.md) with a new namespace and all-current snapshots
+for reproduction; do not run generators against restored canonical originals.
+Read current HANDOFF before any job. Acceptance and cleanup are complete; no next
+feature or parent V2-8 completion is authorized by this decision.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL

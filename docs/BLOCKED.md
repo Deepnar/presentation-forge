@@ -245,6 +245,14 @@ actual0project databases and verified removal/5544closure. The inherited native
 identity limitation and remaining parent scope stay in the
 [roadmap](ROADMAP.md#native-pptx-shape-id-uniqueness).
 
+V2-8F shared web-search boundary is independently accepted at `0cab854`;
+[evaluation](V2-8F-EVAL.md) and [decision](reviews/V2-8F-0cab854.json) record complete
+required execution and no blocking finding. Exact owned-service cleanup saved/fsynced
+a fresh actual zero-project-database observation and verified removal/5544 closure.
+Remaining [parent scope](ROADMAP.md#v2-8-remaining) and the source-inspected
+[older model-stream risk](ROADMAP.md#model-provider-stream-resource-bounds) remain
+in the roadmap.
+
 Two are worth naming because they look like engineering and are not:
 
 - **The turn grammar's unscoped case** (options 2 and 3). The selection-scoped

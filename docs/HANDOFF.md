@@ -1,52 +1,74 @@
-# Handoff — V2-8F validated; independent acceptance pending
+# Handoff — V2-8F independently accepted and closed
 
-2026-10-21, branch v2, push origin/v2. Accepted baseline remains V2-8E source
-c71d65e189387684aac89ca9994acf8a9ff865c1. Approved scope is only
-[shared Forge Search boundary](ROADMAP.md#v2-8f-shared-search-boundary).
-Frozen implementation:0cab854bce04b862060829812a9ab6ff0b765fd9; later commits are
-docs/harness/evidence. All9state gates passed. Independent exact-source acceptance
-is still pending; do not promote the baseline or start another feature yourself.
+2026-10-21, branch `v2`, authorized push `origin/v2`. Accepted implementation is
+`0cab854bce04b862060829812a9ab6ff0b765fd9`, replacing V2-8E `c71d65e` through the
+separate [ACCEPT decision](reviews/V2-8F-0cab854.json), committed at `70d5fea` after
+independent evidence `f3115e2`. Later commits propagate documentation, evidence and
+cleanup; they contain no product/test/tooling delta. Resolve the final documentation
+HEAD with `git rev-parse HEAD` and compare the remote before beginning new work.
 
-The complete223-file matrix passed2782/2782 plus4distinct persisted/native cases:
-2786primary distinct,0fail/skip/cancel and0required implementer cases unexecuted.
-Focused48/48 are separate overlapping repeats. All8PostgreSQL files166/166,
-build/type/all50cells and115hashed-image inspection passed. The separate locale
-probe remains9pass/1standingfail. Exact commands/UTC/source/backend and complete
-file markers are in v2-8f-evidence/logs/coordinator.json. Full source equals0cab854.
+Approved [V2-8F scope](ROADMAP.md#v2-8f-shared-search-boundary) is complete: the pure
+SearchProvider contract and bounded SearXNG HTTP/SourceRef normalization. The
+[as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary) preserves
+canonical project binding, citation identity, strict input/output bounds, cancellation,
+privacy and the unchanged package dependency graph. Legacy/model/UI paths remain
+supported without automatic search rewiring.
 
-All76browser captures were viewed through13grouped sheets, all32headless native/SVG
-images through6sheets and7browser-export rasters through2sheets, plus full-size
-narrow/native risk cases. Reconciliation proves the inspected union matches final115.
-The20final combined sheets were generated, not separately all opened. Actual50cells
-495ms;120slides/120thumbs1541ms; maximum canvas movement0.06939697265625px. New search
-latency samples cover30actual local HTTP requests. No live quality claim is made.
+[Evaluation](V2-8F-EVAL.md) indexes the complete 223-file inventory: 2,782/2,782
+leaves plus four distinct persisted/native scenarios = **2,786 primary passes**,
+0 failures/skips/cancellations and 0 required implementer cases unexecuted. The
+48/48 focused repeats remain separate. All eight PostgreSQL files passed 166/166;
+contracts and fault/concurrency gates overlap that total. Build/typecheck and actual
+50 cells passed (495 ms compiler/ZIP time). All 115 final hashed images were inspected;
+120 slides/thumbnails opened in 1,541 ms; maximum canvas movement was 0.069397 px.
+Search timing covers 30 actual loopback requests, not extra test leaves or live quality.
 
-All4653evidence files/106original PPTXs plus5canonical browser originals were
-restored/hash-verified after execution, preserving8fresh headless and5actual fresh
-browser original PPTXs first. No archive bytes were reconstructed. Do NOT rerun
-finish-evidence.py or generators against restored canonical originals. Fresh
-reproduction needs [the runbook](v2-8f-evidence/RUNBOOK.md), a new namespace and
-ALL-current evidence/original snapshots, owned service and measured headroom.
+The [independent review](reviews/V2-8F-0cab854.md) passed **595/595**, 0 failures,
+skips or cancellations: 588 inventory repeats, four native repeats and three additional
+probes. Its 592 overlapping cases are not added to the primary total. The remaining
+194 inventory files / 2,194 leaves were inspected, not independently rerun. An initial
+outer exit 143 left an unacknowledged raw 477-pass report; it remains excluded, and
+all 477 were rerun with recorded exit 0. Cause remains unresolved. Build/type/actual
+50 cells (409 ms) passed independently. All 115 packet images, 54 fresh images and
+16 native ZIPs were inspected, including embedded workbooks and untouched-slide XML.
+Independent 120-slide opening was 1,542 ms; maximum canvas movement was 0.029327 px.
+Both separate locale probes retain 9 pass / 1 standing BYOK grouping failure.
 
-No validation process remains running. Keep exact owned PostgreSQL15.18 for review:
-6e62a7609dc0355ef8ef65fc61d87d1ebbaf6cb76dd92dd858cefb6a96d3beaa,
-name forge-v28f-validation,127.0.0.1:5544,1CPU/512MiB/192MiBtmpfs.
-Its identity is v2-8f-evidence/owned-postgres.json. Root must save/fsync a fresh actual
-project-DB count BEFORE exact-ID removal, then prove actual absence and port closure.
-Never stop or reuse another project's service/database.
+Before root generators, 4,653 evidence files including 106 original PPTXs plus five
+canonical exports were protected and restored; 13 actual fresh originals were retained.
+The reviewer then protected/restored all 4,918 evidence files including 119 PPTXs plus
+five canonical exports, retaining ten further actual fresh originals. All 4,923
+protected hashes were verified. No archive bytes were reconstructed. Use the
+[runbook](v2-8f-evidence/RUNBOOK.md), a fresh namespace and ALL-current evidence/original
+snapshots for reproduction. Never rerun finish-evidence.py or generators against
+restored canonical originals and call those historical bytes fresh.
 
-One reused separate high-effort reviewer /root/v28e_independent_review completed
-read-only source audit with no remaining confirmed blocker,0tests/0edits/noacceptance.
-Root must send the complete pushed packet and explicitly release the heavy slot
-for independent execution/ACCEPT-HOLD. Root makes NO tracked edits or heavy jobs
-while the reviewer snapshots, executes and restores ALL-current evidence and5
-canonical originals. Source-only clearance and this green report are not acceptance.
+The reviewer released the exclusive slot after its committed decision and verified
+restoration. No validation job remains running. Root then saved/fsynced a fresh
+actual **zero-project-database** observation, including its parent directory, before
+removing only owned PostgreSQL15.18 container
+`6e62a7609dc0355ef8ef65fc61d87d1ebbaf6cb76dd92dd858cefb6a96d3beaa`,
+name `forge-v28f-validation`. Exact-ID absence and port 5544 closure are proved in
+[cleanup evidence](v2-8f-evidence/owned-postgres-cleanup.json). No unrelated process
+or service was stopped. Future missing PostgreSQL means its cases are unexecuted.
 
-Initial configuration, lifetime, dependency, word-boundary and reader-cleanup
-findings/corrections and failed probes remain in development assessment with
-unchanged assertions/rules/timeouts. Standing locale, Fit/narrow/SVG/capture/native-ID,
-archive/service provenance and unresolved global I/O pressure limits remain explicit.
-The older model-stream risk is separately in the roadmap, with no executed failure
-claim or model transport change here. Interactive PowerPoint and live Auto/search
-quality remain unexecuted. Original3untracked paths are untouched. Future work is
-only in ROADMAP. Stop after8F independent review, exact cleanup and final handoff.
+Initial configuration, empty-stream lifetime/storage/cleanup, dependency and visible
+word-boundary defects were corrected before freeze, with failing attempts retained
+and no weakened assertion, timeout or dependency rule. No final-source regression
+or blocking review finding remains. Known locale, Fit/narrow controls/inspector,
+C1/C2 capture, mixed-run SVG, duplicate native shape IDs, historical archive/service
+provenance and unresolved global I/O-pressure limitations remain explicit. Interactive
+Microsoft PowerPoint and live search/provider/Auto quality were not executed.
+
+State, roadmap and as-built docs reflect independent acceptance; all nine gates
+remain passed. Final protocol validation, source equality, preservation recheck and
+file inventory are retained in this slice's evidence. The three original untracked
+paths remain untouched: `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`
+and `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`.
+
+Stop after this closeout. Parent V2-8 remains incomplete and the next candidate
+remains unauthorized. All remaining scope and dependencies are only in
+[the parent roadmap](ROADMAP.md#v2-8-remaining), with the separate
+[model-stream audit](ROADMAP.md#model-provider-stream-resource-bounds) and
+[native identity correction](ROADMAP.md#native-pptx-shape-id-uniqueness).
+No next feature, infrastructure, migration or deployment began.

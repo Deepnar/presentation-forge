@@ -1,0 +1,46 @@
+{
+  "atUtc": "2026-10-21T18:04:55.113339+00:00",
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "independentDecision": "docs/reviews/V2-8F-0cab854.json",
+  "independentDecisionCommit": "70d5fea2bc3630f0ca4a0a411d616e2ac06f706a",
+  "acceptedBaselineAndReviewMetadataAgree": true,
+  "nextCandidateAuthorized": false,
+  "productTestToolingSchemaSourcePaths": [
+    "app",
+    "packages",
+    "src",
+    "test",
+    "tools",
+    "schema",
+    "config",
+    "themes",
+    "package.json",
+    "package-lock.json",
+    "docs/development-state.schema.json"
+  ],
+  "sourceDelta": [],
+  "protectedFilesRechecked": 4923,
+  "allProtectedHashesMatch": true,
+  "actualFreshOriginalPptxRechecked": 23,
+  "implementerOriginals": 13,
+  "reviewerOriginals": 10,
+  "allFreshOriginalHashesMatch": true,
+  "allFreshOriginalsTracked": true,
+  "protocol": {
+    "command": "npm run dev:protocol",
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 0,
+    "log": "docs/v2-8f-evidence/acceptance-propagation-protocol.log"
+  },
+  "savedActualProjectDatabaseCountBeforeRemoval": 0,
+  "serviceCleanup": "docs/v2-8f-evidence/owned-postgres-cleanup.json",
+  "containerAbsent": true,
+  "port5544Closed": true,
+  "originalUntrackedPathsPreserved": [
+    ".agents/",
+    "PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md",
+    "PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md"
+  ],
+  "scope": "Documentation/state/cleanup propagation of separate committed acceptance only; no tests or generators rerun and no new feature started."
+}

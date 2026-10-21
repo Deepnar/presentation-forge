@@ -1,0 +1,2102 @@
+{
+  "taskEntryCommit": "661eedc70f3c3f8a4290449303438d391fe97755",
+  "acceptedImplementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "comparison": "Task entry to complete staged closeout tree; this manifest excludes itself to avoid a self-reference. Final branch HEAD is reported after commit/push.",
+  "filesExcludingThisManifest": 511,
+  "statusCounts": {
+    "M": 16,
+    "A": 495
+  },
+  "productTestToolingFiles": [
+    {
+      "status": "A",
+      "path": "packages/agent/search-request.generated.ts"
+    },
+    {
+      "status": "A",
+      "path": "packages/agent/search-request.schema.json"
+    },
+    {
+      "status": "A",
+      "path": "packages/agent/search.ts"
+    },
+    {
+      "status": "M",
+      "path": "packages/tools/executor.ts"
+    },
+    {
+      "status": "A",
+      "path": "src/agent/search-provider.js"
+    },
+    {
+      "status": "A",
+      "path": "src/agent/search-sources.js"
+    },
+    {
+      "status": "M",
+      "path": "test/dev-protocol.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-search-8f.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-search-http-8f.test.js"
+    },
+    {
+      "status": "M",
+      "path": "tools/dev-protocol-check.mjs"
+    },
+    {
+      "status": "M",
+      "path": "tools/v2-types.mjs"
+    }
+  ],
+  "allFiles": [
+    {
+      "status": "M",
+      "path": "AGENTS.md"
+    },
+    {
+      "status": "M",
+      "path": "README.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/ARCHITECTURE.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/BLOCKED.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/CONTINUATION.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/HANDOFF.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/PRODUCT-VISION.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/ROADMAP.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/TRAPS.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/V2-8-AGENT-ARCHITECTURE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/V2-8F-EVAL.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/development-state.json"
+    },
+    {
+      "status": "M",
+      "path": "docs/development-state.schema.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/reviews/V2-8F-0cab854.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/reviews/V2-8F-0cab854.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/RUNBOOK.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/VISUAL-REVIEW.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/acceptance-propagation-check.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/acceptance-propagation-protocol.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/assemble-results.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/backup-manifest.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/benchmark-50.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/benchmark-results.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/browser-archives.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/browser-archives/out--v2-7a-validation--shell-chart.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/browser-archives/out--v2-7a-validation--shell-table.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-chart.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-table.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/browser-archives/out--v2-7b-2-validation--browser--handoff.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/cross-process-faults.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/assessment.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/block-text-fail-first.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/empty-stream-fail-first.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/expanded-corrected.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/expanded.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/final-expanded.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/lifetime-boundary-corrected.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/package-boundary-fail-first.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/pre-matrix-interruption.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/pre-matrix-resource-window.jsonl"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/prerequisite.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/reader-cleanup-fail-first.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/resource-corrected.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/search-corrected.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/search-first.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/development/typecheck-corrected.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/environment.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/export-inspection.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/finish-evidence.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/frontend-visual.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/full-matrix.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/generated-original-restoration.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/headless-check.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/historical-evidence-restoration.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/RUNBOOK.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/SOURCE-AUDIT.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/VISUAL-REVIEW.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/accepted-domain.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/adversarial.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/adversarial.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/assessment.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/benchmark-50.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/benchmark-audit.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/benchmark-results.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-archives/fresh-shell-chart.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-archives/fresh-shell-table.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/fresh-shell-chart-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/fresh-shell-table-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/retained-handoff-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/retained-handoff-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/retained-handoff-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/retained-imported-chart-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/retained-imported-chart-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/retained-imported-chart-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/retained-imported-table-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/retained-imported-table-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/browser-native/retained-imported-table-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/canonical-manifest.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/collect-fresh.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/coordinator-resumed.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/coordinator.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/environment.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/final-integrity.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a-preliminary.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/canvas-chart.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/canvas-table.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/dashboard-empty.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/dashboard-hosted-anon.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/dashboard.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/editor-blank.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/editor-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/editor-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/editor-narrow-projects.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/editor-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/editor-readonly.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/editor-shell.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/editor-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-7a/large-deck.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/browser-01.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/browser-02.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/native-01.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/native-02.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/native-03.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/native-04.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/native-05.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/native-detail.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/svg-01.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/svg-02.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-contact/svg-03.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/fresh-originals.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/full-7a.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/headless-check.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/headless-native.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/interrupted-accepted-domain.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/interruption.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/locale.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native-archives.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native-audit.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native-audit.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native-audit.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native-images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-anthropic/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-archive-audit.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-audit.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-01.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-02.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-03.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-04.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-05.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-06.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-07.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-08.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-09.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-10.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-11.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-12.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-13.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-14.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-15.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-16.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-17.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-18.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-19.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/packet-contact/sheet-20.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/preserve-restore.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/production-build.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/protocol.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/qualification.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/recovery-metrics.jsonl"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/resource-assessment.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/resource-window.jsonl"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/restoration.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/restoration.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/run.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/runner-completion.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/search-boundaries.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/search-performance.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/search-performance.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/search-timing.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/snapshot-manifest.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/snapshot.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/source-equality.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/sustained-window.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/typecheck.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/independent/visual-inspection.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/benchmark-50.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/coordinator.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/coordinator.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/cross-process-faults.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/byok-locale.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/freeform.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/plate.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-conversation-postgres-8e.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5d.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5e.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5f.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5i.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5j.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5k.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-6a.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-6b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-6c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-7a.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-chart.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-edit-chrome-table.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-editor-toolbar-chrome-7c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-fontgate-4e.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-fonts-4d.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-handoff-chrome-7b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-import-chrome-7b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-import-postgres-7b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-live-chrome-4f.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-plate-3f5.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-project-catalog-chrome-7c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-project-covers-chrome-7c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-projects-6c-concurrency.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-projects-6c-faults.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-projects-6c-postgres.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-provider-postgres-8c.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-provider-run-postgres-8d.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-runtime-postgres-8b.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-selection-chrome.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/files/v2-viewer-smoke.test.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/headless.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/native-review.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/non-browser-bulk.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/postgres-complete.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/postgres-contract.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/production-build.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/search-performance.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/search-provider.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/serial-browser.tap"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/shell-native.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/logs/typecheck.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/docs--v2-7a-evidence--canvas-chart.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/docs--v2-7a-evidence--canvas-table.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/docs--v2-7a-evidence--large-deck.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7b-1-validation--browser--boundary-60.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7b-1-validation--browser--canvas-chart.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7b-1-validation--browser--canvas-table.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7b-1-validation--browser--narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7b-2-validation--browser--boundary-60.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7b-2-validation--browser--cold-warm.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7b-2-validation--browser--refusal-narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7b-2-validation--browser--save-states.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-1-validation--browser--covers-font-http.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-1-validation--browser--covers-font-static.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-1-validation--browser--first-visible.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-1-validation--browser--many-projects.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-1-validation--browser--narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-1-validation--browser--retry-font.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-1-validation--browser--retry-network.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-2-validation--browser--discovery.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-2-validation--browser--narrow.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-3-validation--browser--canvas.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-3-validation--browser--narrow-dark.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/measurements/out--v2-7c-3-validation--browser--narrow-light.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native-archives.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native-identity-observation.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native-images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native-review.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/chart-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/handoff-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/handoff-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/handoff-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-anthropic/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/shell-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/shell-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-anthropic/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/native/table-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/non-browser-bulk.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/owned-postgres-cleanup.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/owned-postgres.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/performance.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/postgres-complete.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/postgres-contract.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/pre-removal-observation.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/preliminary-source-review.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/preliminary-visual/all-browser.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/preliminary-visual/images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/preliminary-visual/inspection.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/preliminary-visual/remaining-browser.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/prepare-full-validation.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/production-build.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/quiet_window.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/recovery-metrics.jsonl"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6a-evidence--conflict.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6a-evidence--project-list.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6a-evidence--recovered-banner.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6a-evidence--reopened.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6a-evidence--saved.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6b-evidence--history-after-refresh.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6b-evidence--history-list.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6b-evidence--history-preview.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6b-evidence--history-restored.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6b-evidence--history-three-versions.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6c-evidence--hosted-after-restart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6c-evidence--hosted-conflict.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6c-evidence--hosted-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-6c-evidence--hosted-restored.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--dashboard-empty.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--dashboard-hosted-anon.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--dashboard.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--editor-blank.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--editor-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--editor-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--editor-narrow-projects.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--editor-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--editor-readonly.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--editor-shell.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7a-evidence--editor-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-1-evidence--imported-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-1-evidence--imported-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-1-evidence--imported-stats.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-1-evidence--imported-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-1-evidence--imported-transition.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-2-evidence--ambiguous-response.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-2-evidence--boundary-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-2-evidence--completed-chat.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-2-evidence--deck-page-action.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-2-evidence--handoff-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-2-evidence--opening-project.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-2-evidence--refusal-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7b-2-evidence--session-changed.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-content.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-desktop.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-development.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-recovered.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-recovered.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-loading.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-narrow-dark.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-network-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-restored.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-cross-tab.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-pending.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-settled.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-1-evidence--covers-timeout.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-pending.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-saved-failure.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-desktop.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-development.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-empty.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-generated-error.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dark.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dialog.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-no-matches.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-saved-error.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-2-evidence--catalog-signed-out.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-3-evidence--editor-blank-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-3-evidence--editor-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-3-evidence--editor-desktop.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-dark.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-light.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-3-evidence--editor-readonly.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-3-evidence--editor-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-3-evidence--standalone-live.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/regression-images/docs--v2-7c-3-evidence--standalone-projects.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/resource-assessment.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/resource-window.jsonl"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/restoration-recheck.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/run-validation.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/search-performance.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/search-performance.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/search-provider.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/serial-browser.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/shell-export-inspection.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/shell-native.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/sustained-window.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/typecheck.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/validation-plan.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8f-evidence/visual-hash-reconciliation.json"
+    },
+    {
+      "status": "A",
+      "path": "packages/agent/search-request.generated.ts"
+    },
+    {
+      "status": "A",
+      "path": "packages/agent/search-request.schema.json"
+    },
+    {
+      "status": "A",
+      "path": "packages/agent/search.ts"
+    },
+    {
+      "status": "M",
+      "path": "packages/tools/executor.ts"
+    },
+    {
+      "status": "A",
+      "path": "src/agent/search-provider.js"
+    },
+    {
+      "status": "A",
+      "path": "src/agent/search-sources.js"
+    },
+    {
+      "status": "M",
+      "path": "test/dev-protocol.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-search-8f.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-search-http-8f.test.js"
+    },
+    {
+      "status": "M",
+      "path": "tools/dev-protocol-check.mjs"
+    },
+    {
+      "status": "M",
+      "path": "tools/v2-types.mjs"
+    }
+  ]
+}
