@@ -1,0 +1,30 @@
+{
+  "atUtc": "2026-10-21T17:42:54.279583+00:00",
+  "node": "v24.16.0",
+  "branch": "v2",
+  "packetHead": "34b4b005ca2b81bf86f3cb90d2b203fb8b5d2498",
+  "backend": {
+    "id": "6e62a7609dc0355ef8ef65fc61d87d1ebbaf6cb76dd92dd858cefb6a96d3beaa",
+    "name": "/forge-v28f-validation",
+    "image": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+    "running": true,
+    "memoryBytes": 536870912,
+    "nanoCpus": 1000000000,
+    "tmpfs": {
+      "/var/lib/postgresql/data": "rw,size=192m"
+    },
+    "ports": {
+      "5432/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "5544"
+        }
+      ]
+    }
+  },
+  "postgresVersion": "postgres (PostgreSQL) 15.18",
+  "unrelatedServicesTouched": false,
+  "serviceCleanupOwner": "/root",
+  "localePrimary": "C.UTF-8",
+  "localeStandingProbe": "en_IN.UTF-8"
+}

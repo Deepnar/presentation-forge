@@ -1,0 +1,54 @@
+[
+  {
+    "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before.pptx",
+    "sha256": "e6637147a47df6cd20bd18e149af71b6bf3fbc1d4f936672f692e0b74fdd62cb"
+  },
+  {
+    "path": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after.pptx",
+    "sha256": "90faf6dfffa754c42c63d1f013b458d700c636cc5d9aa715ff2eee8bb044c359"
+  },
+  {
+    "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/before.pptx",
+    "sha256": "212683208656c8151ea1642afa033cf43aa3fbc6ce481ba78461b9b5b2b445bf"
+  },
+  {
+    "path": "docs/v2-8f-evidence/native/postgres-openai-compatible/after.pptx",
+    "sha256": "372f195e8c47f029ac309583446d1140a03842e266fa8097936685eee31982fb"
+  },
+  {
+    "path": "docs/v2-8f-evidence/native/sqlite-anthropic/before.pptx",
+    "sha256": "1a1756fd8c797c59efeaa40566539dfd2fe6012e8bacc64fae58d3d8af738a81"
+  },
+  {
+    "path": "docs/v2-8f-evidence/native/sqlite-anthropic/after.pptx",
+    "sha256": "49015d1eadddef92fb66a4f69cee1210e0733366c6e33480257b662e22086aae"
+  },
+  {
+    "path": "docs/v2-8f-evidence/native/postgres-anthropic/before.pptx",
+    "sha256": "84042b9ffafced9f3e62cb2292e25b2b5315ada2c4a57e575f91dc46dda6792a"
+  },
+  {
+    "path": "docs/v2-8f-evidence/native/postgres-anthropic/after.pptx",
+    "sha256": "de347881964c9c7da96850e79f0faccb8f48c774c7a4c848a658f13e8c3c0388"
+  },
+  {
+    "path": "docs/v2-8f-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-chart.pptx",
+    "sha256": "5becd5ebef5df282fb3dd255d4a5e5687a01ec6e8d18dda2decaf76b9a4b33ce"
+  },
+  {
+    "path": "docs/v2-8f-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-table.pptx",
+    "sha256": "cd0d71151b99e8cfc0cadf3f63c217666798f90b0d4fdc64accbde451c9fa71c"
+  },
+  {
+    "path": "docs/v2-8f-evidence/browser-archives/out--v2-7b-2-validation--browser--handoff.pptx",
+    "sha256": "3d959427344cdf599ac5a93ff599b3005d3fc4583b027bb02bf6e56ac99dfe82"
+  },
+  {
+    "path": "docs/v2-8f-evidence/browser-archives/out--v2-7a-validation--shell-chart.pptx",
+    "sha256": "a5b06d035612e098ea7dcf021d745d6d581269930421a6192c0143823107d504"
+  },
+  {
+    "path": "docs/v2-8f-evidence/browser-archives/out--v2-7a-validation--shell-table.pptx",
+    "sha256": "b1d9aa05a17ddfa0117a4311f19e283d9ae9dbac98c8f6e4c12371d8a05870dd"
+  }
+]

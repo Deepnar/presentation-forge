@@ -1,0 +1,98 @@
+TAP version 13
+# Subtest: a BYOK call is reserved before it can cross the rolling budget
+ok 1 - a BYOK call is reserved before it can cross the rolling budget
+  ---
+  duration_ms: 9.902741
+  type: 'test'
+  ...
+# Subtest: settlement replaces a conservative reservation with reported usage
+ok 2 - settlement replaces a conservative reservation with reported usage
+  ---
+  duration_ms: 0.348248
+  type: 'test'
+  ...
+# Subtest: the account owner can raise the guard without changing another setting
+ok 3 - the account owner can raise the guard without changing another setting
+  ---
+  duration_ms: 12.69578
+  type: 'test'
+  ...
+# Subtest: cost acknowledgement is recorded without replacing routing or budget
+ok 4 - cost acknowledgement is recorded without replacing routing or budget
+  ---
+  duration_ms: 0.359471
+  type: 'test'
+  ...
+# Subtest: implausibly low and effectively unbounded values are refused
+not ok 5 - implausibly low and effectively unbounded values are refused
+  ---
+  duration_ms: 0.607734
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/byok-budget.test.js:68:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /between 10,000 and 5,000,000/. Input:
+    
+    'Error: dailyTokens must be between 10,000 and 50,00,000'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'dailyTokens must be between 10,000 and 50,00,000'
+  stack: |-
+    setByokBudget (file:///home/deepnar/Programs/presentations/src/byok-budget.js:29:11)
+    file:///home/deepnar/Programs/presentations/test/byok-budget.test.js:69:23
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/byok-budget.test.js:69:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/byok-budget.test.js:69:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: missing provider usage falls back to a conservative text estimate
+ok 6 - missing provider usage falls back to a conservative text estimate
+  ---
+  duration_ms: 0.298219
+  type: 'test'
+  ...
+# Subtest: concurrent-looking reservations cannot both observe an unspent budget
+ok 7 - concurrent-looking reservations cannot both observe an unspent budget
+  ---
+  duration_ms: 0.384769
+  type: 'test'
+  ...
+# Subtest: a run reservation fails fast before burning when the estimate exceeds the cap
+ok 8 - a run reservation fails fast before burning when the estimate exceeds the cap
+  ---
+  duration_ms: 0.340427
+  type: 'test'
+  ...
+# Subtest: an accepted overrun starts the run and settles actuals without a mid-run throw
+ok 9 - an accepted overrun starts the run and settles actuals without a mid-run throw
+  ---
+  duration_ms: 0.408288
+  type: 'test'
+  ...
+# Subtest: withByokRun passes anonymous callers through untouched
+ok 10 - withByokRun passes anonymous callers through untouched
+  ---
+  duration_ms: 0.243731
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 9
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 116.273989
+# forge-test-file "test/byok-budget.test.js"

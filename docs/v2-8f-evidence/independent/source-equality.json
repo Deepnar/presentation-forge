@@ -1,0 +1,35 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "acceptedBaseline": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "reviewedPacket": "34b4b005ca2b81bf86f3cb90d2b203fb8b5d2498",
+  "pathsChecked": [
+    "packages",
+    "src",
+    "app",
+    "test",
+    "tools",
+    "schema",
+    "config",
+    "themes",
+    "package.json",
+    "package-lock.json",
+    "docs/development-state.schema.json"
+  ],
+  "sourceDeltaAfterFreeze": [],
+  "acceptedToImplementationFiles": [
+    "packages/agent/search-request.generated.ts",
+    "packages/agent/search-request.schema.json",
+    "packages/agent/search.ts",
+    "packages/tools/executor.ts",
+    "src/agent/search-provider.js",
+    "src/agent/search-sources.js",
+    "test/dev-protocol.test.js",
+    "test/v2-search-8f.test.js",
+    "test/v2-search-http-8f.test.js",
+    "tools/dev-protocol-check.mjs",
+    "tools/v2-types.mjs"
+  ],
+  "governanceSchemaDelta": [
+    "docs/development-state.schema.json"
+  ]
+}

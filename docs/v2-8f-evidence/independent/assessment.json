@@ -1,0 +1,246 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "primaryAcknowledged": {
+    "total": 595,
+    "pass": 595,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "groups": {
+    "search-boundaries": {
+      "total": 83,
+      "pass": 83,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "accepted-domain": {
+      "total": 477,
+      "pass": 477,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "adversarial": {
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "full-7a": {
+      "total": 28,
+      "pass": 28,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "headless-native": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "allAcknowledgedLeavesIncludingLocale": {
+    "total": 605,
+    "pass": 604,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "overlap": {
+    "inventoryFiles": 29,
+    "inventoryLeaves": 588,
+    "packetNativeSupplement": 4,
+    "additionalReviewerProbes": 3,
+    "allReexecutionsOfPacketPrimaryCases": 592,
+    "notAddedToPacketDistinctTotal": true
+  },
+  "packetInspected": {
+    "files": 223,
+    "inventoryLeaves": 2782,
+    "nativeSupplement": 4,
+    "primaryDistinct": 2786,
+    "fullMatrixIndependentlyDuplicated": false,
+    "notIndependentlyReexecuted": {
+      "files": 194,
+      "leaves": 2194
+    },
+    "focusedRepeatsExcluded": 48,
+    "rawJobsAudited": 44,
+    "images": 115,
+    "originalArchiveHashes": 13
+  },
+  "interruptedUnacknowledged": {
+    "outerExitCode": 143,
+    "atObservedUtc": "2026-10-21T17:44:24.190390+00:00",
+    "acknowledgedJobs": [
+      "search-boundaries"
+    ],
+    "unacknowledgedJob": "accepted-domain",
+    "rawLog": "docs/v2-8f-evidence/independent/interrupted-accepted-domain.log",
+    "rawSha256": "af477deb0a05960fafc7f2aeed216dd1d76998c2d0a070f078bbac724ee79020",
+    "rawReportedLeaves": 477,
+    "rawReportedPass": 477,
+    "countedAsAcknowledgedPass": false,
+    "monitorCriticalStop": false,
+    "cause": "Unresolved external termination of outer runner; no SIGTERM handler or outer completion record survived. Child raw output completed, without acknowledged outer exit. Rerun required.",
+    "noJobsAliveAtDiagnosis": true
+  },
+  "commands": {
+    "production-build": {
+      "exitCode": 0,
+      "durationSeconds": 0.515422
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "durationSeconds": 1.316119
+    },
+    "benchmark-50": {
+      "exitCode": 0,
+      "durationSeconds": 0.565319
+    },
+    "browser-native": {
+      "exitCode": 0,
+      "durationSeconds": 2.518278
+    },
+    "search-timing": {
+      "exitCode": 0,
+      "durationSeconds": 0.666603
+    }
+  },
+  "benchmark": {
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "cells": 50,
+    "compilerAndZipMs": 409,
+    "recordedDocumentationHead": "34b4b00",
+    "allCellResultsMatchPacket": true,
+    "allInvarianceAndCounterfactualsMatchPacket": true,
+    "invariance": {
+      "research-defense": {
+        "agree": true
+      },
+      "source-of-truth-project": {
+        "agree": true
+      },
+      "technical-explainer": {
+        "agree": true
+      },
+      "decision-recommendation": {
+        "agree": true
+      },
+      "data-heavy-analytical": {
+        "agree": true
+      }
+    },
+    "raster": "none; visuals supplied separately",
+    "comparisonMetadataExcluded": [
+      "commit",
+      "generatedAt",
+      "ms"
+    ],
+    "auditNote": "Initial comparison also compared elapsed ms and rejected the expected409-vs495 difference. Result cell/invariance/counterfactual assertions were unchanged; only run metadata excluded."
+  },
+  "searchMeasurements": {
+    "requests": 30,
+    "testLeafCount": 0,
+    "localTiming": {
+      "1": {
+        "samples": 10,
+        "minMs": 1.1823459999999955,
+        "medianMs": 1.4769900000000007,
+        "maxMs": 19.490488
+      },
+      "20": {
+        "samples": 10,
+        "minMs": 1.837192999999985,
+        "medianMs": 2.6473510000000147,
+        "maxMs": 3.416999000000004
+      },
+      "1000": {
+        "samples": 10,
+        "minMs": 28.707602000000065,
+        "medianMs": 36.940886999999975,
+        "maxMs": 77.272741
+      }
+    },
+    "limitation": "Local sequential samples, not live SearXNG relevance/provider quality or production percentiles; retrieval metadata excluded from citation identity."
+  },
+  "nativeAudit": {
+    "archives": 16,
+    "geometryStylesWorkbookAndUnrelatedSlideVerified": true
+  },
+  "visuals": {
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "packetImagesInspected": 115,
+    "packetContactSheetsOpened": 20,
+    "freshImagesInspected": 54,
+    "freshBrowser": 11,
+    "freshNative": 27,
+    "freshSvg": 16,
+    "freshContactSheetsOpened": 10,
+    "additionalOriginalResolutionNativeDetailOpened": true,
+    "fullSizeRiskCasesInspected": true,
+    "allManifestHashesVerified": true,
+    "maximumFreshCanvasDeltaPx": 0.029327392578125,
+    "largeDeck": {
+      "project": "p-fbb4d6075a4c27c64fb349da",
+      "slides": 120,
+      "thumbs": 120,
+      "openMs": 1542
+    },
+    "noNewForegroundClippingOrOverlap": true,
+    "inheritedNarrowCanvasAndSvgStyleLimitsVisible": true,
+    "interactivePowerPointExecuted": false,
+    "retainedBrowserArchivesIndependentlyRerenderedNotRegenerated": 3
+  },
+  "preservation": {
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "atUtc": "2026-10-21T17:56:23.999961+00:00",
+    "snapshots": {
+      "backup": {
+        "restored": 4918,
+        "pptx": 119,
+        "changedBeforeRestoration": 14,
+        "allHashesMatch": true
+      },
+      "canonical": {
+        "restored": 5,
+        "pptx": 5,
+        "changedBeforeRestoration": 2,
+        "allHashesMatch": true
+      }
+    },
+    "preservedFreshBrowserCaptures": 11,
+    "preservedFreshMeasurements": 3,
+    "freshHeadlessOriginalArchives": 8,
+    "freshShellOriginalArchives": 2,
+    "archiveBytesReconstructed": false,
+    "serviceStopped": false
+  },
+  "resources": {
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "samples": 60,
+    "withheldPreJob": 7,
+    "runningSamples": 12,
+    "criticalRunningSamples": 0,
+    "thresholdsChanged": false,
+    "qualifier": "sustained-window.json",
+    "provenance": "Global PSI/iowait remains unresolved; no causal attribution or production percentile claim."
+  },
+  "allPlannedJobsCompleted": true,
+  "plannedJobsUnexecuted": 0,
+  "interactivePowerPointExecuted": false,
+  "liveSearchOrAutoQualityExecuted": false,
+  "productTestToolsConfigEdited": false
+}

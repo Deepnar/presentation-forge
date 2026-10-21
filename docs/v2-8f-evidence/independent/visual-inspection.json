@@ -1,0 +1,24 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "packetImagesInspected": 115,
+  "packetContactSheetsOpened": 20,
+  "freshImagesInspected": 54,
+  "freshBrowser": 11,
+  "freshNative": 27,
+  "freshSvg": 16,
+  "freshContactSheetsOpened": 10,
+  "additionalOriginalResolutionNativeDetailOpened": true,
+  "fullSizeRiskCasesInspected": true,
+  "allManifestHashesVerified": true,
+  "maximumFreshCanvasDeltaPx": 0.029327392578125,
+  "largeDeck": {
+    "project": "p-fbb4d6075a4c27c64fb349da",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1542
+  },
+  "noNewForegroundClippingOrOverlap": true,
+  "inheritedNarrowCanvasAndSvgStyleLimitsVisible": true,
+  "interactivePowerPointExecuted": false,
+  "retainedBrowserArchivesIndependentlyRerenderedNotRegenerated": 3
+}

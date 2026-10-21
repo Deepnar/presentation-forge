@@ -1,0 +1,4 @@
+{"backend":"PostgreSQL","source":"0cab854bce04b862060829812a9ab6ff0b765fd9","case":"kill-after-commit-checkpoint","recoveryClaimThroughWorkerCommitMs":243.36909900000137,"excludesLeaseWait":true}
+{"backend":"SQLite","source":"0cab854bce04b862060829812a9ab6ff0b765fd9","case":"kill-after-commit-checkpoint","recoveryClaimThroughWorkerCommitMs":275.060614,"excludesLeaseWait":true}
+{"backend":"PostgreSQL","source":"0cab854bce04b862060829812a9ab6ff0b765fd9","case":"kill-after-commit-checkpoint","recoveryClaimThroughWorkerCommitMs":313.6833630000001,"excludesLeaseWait":true}
+{"backend":"SQLite","source":"0cab854bce04b862060829812a9ab6ff0b765fd9","case":"kill-after-commit-checkpoint","recoveryClaimThroughWorkerCommitMs":339.9357400000008,"excludesLeaseWait":true}

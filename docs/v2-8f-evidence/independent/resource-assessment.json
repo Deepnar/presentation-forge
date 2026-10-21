@@ -1,0 +1,10 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "samples": 60,
+  "withheldPreJob": 7,
+  "runningSamples": 12,
+  "criticalRunningSamples": 0,
+  "thresholdsChanged": false,
+  "qualifier": "sustained-window.json",
+  "provenance": "Global PSI/iowait remains unresolved; no causal attribution or production percentile claim."
+}

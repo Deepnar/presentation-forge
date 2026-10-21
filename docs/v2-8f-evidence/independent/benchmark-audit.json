@@ -1,0 +1,32 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "cells": 50,
+  "compilerAndZipMs": 409,
+  "recordedDocumentationHead": "34b4b00",
+  "allCellResultsMatchPacket": true,
+  "allInvarianceAndCounterfactualsMatchPacket": true,
+  "invariance": {
+    "research-defense": {
+      "agree": true
+    },
+    "source-of-truth-project": {
+      "agree": true
+    },
+    "technical-explainer": {
+      "agree": true
+    },
+    "decision-recommendation": {
+      "agree": true
+    },
+    "data-heavy-analytical": {
+      "agree": true
+    }
+  },
+  "raster": "none; visuals supplied separately",
+  "comparisonMetadataExcluded": [
+    "commit",
+    "generatedAt",
+    "ms"
+  ],
+  "auditNote": "Initial comparison also compared elapsed ms and rejected the expected409-vs495 difference. Result cell/invariance/counterfactual assertions were unchanged; only run metadata excluded."
+}

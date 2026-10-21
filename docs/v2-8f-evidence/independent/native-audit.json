@@ -1,0 +1,291 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "archiveChecks": 16,
+  "records": [
+    {
+      "archive": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before.pptx",
+      "sha256": "e6637147a47df6cd20bd18e149af71b6bf3fbc1d4f936672f692e0b74fdd62cb",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after.pptx",
+      "sha256": "90faf6dfffa754c42c63d1f013b458d700c636cc5d9aa715ff2eee8bb044c359",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/postgres-openai-compatible/before.pptx",
+      "sha256": "212683208656c8151ea1642afa033cf43aa3fbc6ce481ba78461b9b5b2b445bf",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/postgres-openai-compatible/after.pptx",
+      "sha256": "372f195e8c47f029ac309583446d1140a03842e266fa8097936685eee31982fb",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/sqlite-anthropic/before.pptx",
+      "sha256": "1a1756fd8c797c59efeaa40566539dfd2fe6012e8bacc64fae58d3d8af738a81",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/sqlite-anthropic/after.pptx",
+      "sha256": "49015d1eadddef92fb66a4f69cee1210e0733366c6e33480257b662e22086aae",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/postgres-anthropic/before.pptx",
+      "sha256": "84042b9ffafced9f3e62cb2292e25b2b5315ada2c4a57e575f91dc46dda6792a",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/postgres-anthropic/after.pptx",
+      "sha256": "de347881964c9c7da96850e79f0faccb8f48c774c7a4c848a658f13e8c3c0388",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before.pptx",
+      "sha256": "68f34aa27c96d66003e9128c33bd09f6b2675d320600a41988289f8a5f841f94",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after.pptx",
+      "sha256": "ee0d4e73f575ea7edc5c36466d12c8261d8934e6d34e697411572349da1a9ed4",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before.pptx",
+      "sha256": "0cb94c23433989c5f801c0df8fbdba15880bcca9ed0dcd2020e4ca95e5e23743",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after.pptx",
+      "sha256": "81042c14fec513ddf19328d8c14a576a8f209e03656ebb62dfecaf38fc71cb8e",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before.pptx",
+      "sha256": "0706d6a831a7218481a6e92d1b1a5f537c6a0859cebd65a8290f00c431d8523d",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after.pptx",
+      "sha256": "cd60bcabe26301431b9fecbb414bcd21f2359040f8cb70ce71ba80743bfe5d9d",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before.pptx",
+      "sha256": "3b0620cc46d74ab282e8abe912c121c11b56753d451ec11bc70c0a608122e852",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after.pptx",
+      "sha256": "d85db0bba31547ad3c25f17baf23c4948a11c5d5512f8789c975708a817debf3",
+      "nativeTextChartTableAndEmbeddedWorkbook": true,
+      "humanStylesAndTableGeometry": true,
+      "sceneDeltaExact": true
+    }
+  ],
+  "inheritedDuplicateNonVisualIds": [
+    {
+      "archive": "docs/v2-8f-evidence/native/sqlite-openai-compatible/before.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/postgres-openai-compatible/before.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/postgres-openai-compatible/after.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/sqlite-anthropic/before.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/sqlite-anthropic/after.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/postgres-anthropic/before.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/native/postgres-anthropic/after.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    },
+    {
+      "archive": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after.pptx",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ],
+      "inherited": true
+    }
+  ],
+  "accepted8dWitness": {
+    "archive": "docs/v2-8d-evidence/native/sqlite-openai-compatible/before.pptx",
+    "sha256": "17148c07acfc2996588a6e8cc351423d2127f81849cc0cb980528084a55bbf2b",
+    "ids": [
+      "1",
+      "2",
+      "3",
+      "2"
+    ]
+  },
+  "limitation": "Repeated cNvPr ID2 exists in accepted8D and before/after8F exports. No8F renderer delta; rasterization succeeds, but interactive consumer identity behavior is unverified. Native rasters do not qualify interactive Microsoft PowerPoint."
+}

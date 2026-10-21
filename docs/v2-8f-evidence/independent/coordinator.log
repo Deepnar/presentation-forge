@@ -1,0 +1,8 @@
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 7.0 iowait 10.0 storage {'nvme0n1': {'busyPercent': 0.4799900859008768, 'weightedQueue': 0.020666239809621085, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 130.13064551090437}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 9.1 iowait 9.7 storage {'nvme0n1': {'busyPercent': 2.2198468319186424, 'weightedQueue': 0.16655497487389573, 'inflight': 0, 'readKiBps': 2.1267993599220523, 'writeKiBps': 1737.3292271363266}}
+search-boundaries START
+search-boundaries EXIT 0 {'total': 83, 'pass': 83, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 8.8 iowait 9.8 storage {'nvme0n1': {'busyPercent': 2.3999528919646824, 'weightedQueue': 0.25852825875108437, 'inflight': 0, 'readKiBps': 9.59981156785873, 'writeKiBps': 4171.384787667059}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 8.1 iowait 9.9 storage {'nvme0n1': {'busyPercent': 1.3149004521697403, 'weightedQueue': 0.03632578521903272, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 425.54960088402504}}
+accepted-domain START
+accepted-domain RUNNING

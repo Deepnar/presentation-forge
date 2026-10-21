@@ -1,0 +1,16 @@
+{
+  "outerExitCode": 143,
+  "atObservedUtc": "2026-10-21T17:44:24.190390+00:00",
+  "acknowledgedJobs": [
+    "search-boundaries"
+  ],
+  "unacknowledgedJob": "accepted-domain",
+  "rawLog": "docs/v2-8f-evidence/independent/interrupted-accepted-domain.log",
+  "rawSha256": "af477deb0a05960fafc7f2aeed216dd1d76998c2d0a070f078bbac724ee79020",
+  "rawReportedLeaves": 477,
+  "rawReportedPass": 477,
+  "countedAsAcknowledgedPass": false,
+  "monitorCriticalStop": false,
+  "cause": "Unresolved external termination of outer runner; no SIGTERM handler or outer completion record survived. Child raw output completed, without acknowledged outer exit. Rerun required.",
+  "noJobsAliveAtDiagnosis": true
+}

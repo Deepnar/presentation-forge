@@ -1,0 +1,3091 @@
+TAP version 13
+# Subtest: one flooding domain is capped while the others still get in
+ok 1 - one flooding domain is capped while the others still get in
+  ---
+  duration_ms: 0.971762
+  type: 'test'
+  ...
+# Subtest: a corpus that would starve is back-filled from the surplus
+ok 2 - a corpus that would starve is back-filled from the surplus
+  ---
+  duration_ms: 0.159265
+  type: 'test'
+  ...
+# Subtest: back-fill stops at the minimum rather than undoing the cap
+ok 3 - back-fill stops at the minimum rather than undoing the cap
+  ---
+  duration_ms: 0.140162
+  type: 'test'
+  ...
+# Subtest: duplicate URLs are still dropped, and failures never enter
+ok 4 - duplicate URLs are still dropped, and failures never enter
+  ---
+  duration_ms: 0.115916
+  type: 'test'
+  ...
+# Subtest: an unparseable url is grouped rather than crashing the run
+ok 5 - an unparseable url is grouped rather than crashing the run
+  ---
+  duration_ms: 0.142788
+  type: 'test'
+  ...
+# Subtest: writeResearch stores per-page texts beside the merged notes
+ok 6 - writeResearch stores per-page texts beside the merged notes
+  ---
+  duration_ms: 6.488495
+  type: 'test'
+  ...
+# Subtest: writeResearch without pages writes no pages.json and reads back null
+ok 7 - writeResearch without pages writes no pages.json and reads back null
+  ---
+  duration_ms: 2.545223
+  type: 'test'
+  ...
+# Subtest: empty-text pages are dropped and upload pseudo-pages survive
+ok 8 - empty-text pages are dropped and upload pseudo-pages survive
+  ---
+  duration_ms: 1.037954
+  type: 'test'
+  ...
+# Subtest: readResearchPages is null-safe on corrupt or missing files
+ok 9 - readResearchPages is null-safe on corrupt or missing files
+  ---
+  duration_ms: 0.613749
+  type: 'test'
+  ...
+# Subtest: the yardstick is the brief's distinctive words, and the code never learns the topic
+ok 10 - the yardstick is the brief's distinctive words, and the code never learns the topic
+  ---
+  duration_ms: 1.267697
+  type: 'test'
+  ...
+# Subtest: a hyphenated compound is kept whole and never also split
+ok 11 - a hyphenated compound is kept whole and never also split
+  ---
+  duration_ms: 0.123782
+  type: 'test'
+  ...
+# Subtest: density separates on- from off-topic where presence cannot
+ok 12 - density separates on- from off-topic where presence cannot
+  ---
+  duration_ms: 1.907111
+  type: 'test'
+  ...
+# Subtest: a short page cannot enter on one incidental hit — density alone cannot see below 1000/N
+ok 13 - a short page cannot enter on one incidental hit — density alone cannot see below 1000/N
+  ---
+  duration_ms: 0.260277
+  type: 'test'
+  ...
+# Subtest: the evidence rule costs a real source nothing
+ok 14 - the evidence rule costs a real source nothing
+  ---
+  duration_ms: 0.142384
+  type: 'test'
+  ...
+# Subtest: an empty or unreadable page scores zero rather than passing
+ok 15 - an empty or unreadable page scores zero rather than passing
+  ---
+  duration_ms: 0.107042
+  type: 'test'
+  ...
+# Subtest: with no yardstick nothing is judged — the gate is off, not inverted
+ok 16 - with no yardstick nothing is judged — the gate is off, not inverted
+  ---
+  duration_ms: 0.266695
+  type: 'test'
+  ...
+# Subtest: absorb drops the off-topic page and keeps the on-topic one
+ok 17 - absorb drops the off-topic page and keeps the on-topic one
+  ---
+  duration_ms: 0.760444
+  type: 'test'
+  ...
+# Subtest: an off-topic page is never backfilled, however thin the corpus
+ok 18 - an off-topic page is never backfilled, however thin the corpus
+  ---
+  duration_ms: 0.233601
+  type: 'test'
+  ...
+# Subtest: the per-host cap still overflows and still backfills
+ok 19 - the per-host cap still overflows and still backfills
+  ---
+  duration_ms: 0.31333
+  type: 'test'
+  ...
+# Subtest: short research passes through unchanged
+ok 20 - short research passes through unchanged
+  ---
+  duration_ms: 0.731888
+  type: 'test'
+  ...
+# Subtest: empty research stays empty
+ok 21 - empty research stays empty
+  ---
+  duration_ms: 0.099872
+  type: 'test'
+  ...
+# Subtest: oversized research is capped and ends on a line boundary
+ok 22 - oversized research is capped and ends on a line boundary
+  ---
+  duration_ms: 0.314933
+  type: 'test'
+  ...
+# Subtest: the cap stays well under the author role's 32K context
+ok 23 - the cap stays well under the author role's 32K context
+  ---
+  duration_ms: 0.089014
+  type: 'test'
+  ...
+# Subtest: expandQueries uses the model's angle queries, brief first
+ok 24 - expandQueries uses the model's angle queries, brief first
+  ---
+  duration_ms: 0.715059
+  type: 'test'
+  ...
+# Subtest: expandQueries falls back to the brief alone when the model is unavailable
+ok 25 - expandQueries falls back to the brief alone when the model is unavailable
+  ---
+  duration_ms: 0.168116
+  type: 'test'
+  ...
+# Subtest: expandQueries drops malformed expansions but keeps the brief
+ok 26 - expandQueries drops malformed expansions but keeps the brief
+  ---
+  duration_ms: 0.133659
+  type: 'test'
+  ...
+# Subtest: diversityFollowups suggests queries when a pass is one-domain or has no academic voice
+ok 27 - diversityFollowups suggests queries when a pass is one-domain or has no academic voice
+  ---
+  duration_ms: 0.660469
+  type: 'test'
+  ...
+# Subtest: gapQueries returns examiner-gap searches from the model
+ok 28 - gapQueries returns examiner-gap searches from the model
+  ---
+  duration_ms: 0.235831
+  type: 'test'
+  ...
+# Subtest: gapQueries returns [] when the model is unavailable
+ok 29 - gapQueries returns [] when the model is unavailable
+  ---
+  duration_ms: 0.217722
+  type: 'test'
+  ...
+# Subtest: researchSummary counts sources, domains, and academic vs listicle
+ok 30 - researchSummary counts sources, domains, and academic vs listicle
+  ---
+  duration_ms: 0.222128
+  type: 'test'
+  ...
+# Subtest: researchSummary flags single-source domains
+ok 31 - researchSummary flags single-source domains
+  ---
+  duration_ms: 0.125424
+  type: 'test'
+  ...
+# Subtest: openai-compatible: canonical read result reaches the next real HTTP exchange
+ok 32 - openai-compatible: canonical read result reaches the next real HTTP exchange
+  ---
+  duration_ms: 67.760026
+  type: 'test'
+  ...
+# Subtest: anthropic: canonical read result reaches the next real HTTP exchange
+ok 33 - anthropic: canonical read result reaches the next real HTTP exchange
+  ---
+  duration_ms: 14.19476
+  type: 'test'
+  ...
+# Subtest: conversation rejects zero exchange allowance before storage or HTTP
+ok 34 - conversation rejects zero exchange allowance before storage or HTTP
+  ---
+  duration_ms: 0.510469
+  type: 'test'
+  ...
+# Subtest: conversation rejects excessive exchange allowance before storage or HTTP
+ok 35 - conversation rejects excessive exchange allowance before storage or HTTP
+  ---
+  duration_ms: 0.287547
+  type: 'test'
+  ...
+# Subtest: conversation rejects invalid tool allowance before storage or HTTP
+ok 36 - conversation rejects invalid tool allowance before storage or HTTP
+  ---
+  duration_ms: 0.298048
+  type: 'test'
+  ...
+# Subtest: conversation rejects fractional output allowance before storage or HTTP
+ok 37 - conversation rejects fractional output allowance before storage or HTTP
+  ---
+  duration_ms: 0.252435
+  type: 'test'
+  ...
+# Subtest: conversation rejects unknown authority metadata before storage or HTTP
+ok 38 - conversation rejects unknown authority metadata before storage or HTTP
+  ---
+  duration_ms: 0.225754
+  type: 'test'
+  ...
+# Subtest: conversation rejects untrusted message history before storage or HTTP
+ok 39 - conversation rejects untrusted message history before storage or HTTP
+  ---
+  duration_ms: 0.227921
+  type: 'test'
+  ...
+# Subtest: conversation rejects layout inside a read before storage or HTTP
+ok 40 - conversation rejects layout inside a read before storage or HTTP
+  ---
+  duration_ms: 0.251047
+  type: 'test'
+  ...
+# Subtest: conversation refuses nested live accessors without invoking them
+ok 41 - conversation refuses nested live accessors without invoking them
+  ---
+  duration_ms: 0.340998
+  type: 'test'
+  ...
+# Subtest: deadline returns while initial storage is pending and late storage cannot issue HTTP
+ok 42 - deadline returns while initial storage is pending and late storage cannot issue HTTP
+  ---
+  duration_ms: 251.352165
+  type: 'test'
+  ...
+# Subtest: the single 120s timer starts before the first storage await
+ok 43 - the single 120s timer starts before the first storage await
+  ---
+  duration_ms: 1.082084
+  type: 'test'
+  ...
+# Subtest: failed provider usage remains unknown and returned trace cannot change after late completion
+ok 44 - failed provider usage remains unknown and returned trace cannot change after late completion
+  ---
+  duration_ms: 2.278351
+  type: 'test'
+  ...
+# Subtest: binding, nested scope and limits are copied before the first asynchronous boundary
+ok 45 - binding, nested scope and limits are copied before the first asynchronous boundary
+  ---
+  duration_ms: 1.681688
+  type: 'test'
+  ...
+# Subtest: openai-compatible: history validates semantic results and actual wire budget
+ok 46 - openai-compatible: history validates semantic results and actual wire budget
+  ---
+  duration_ms: 5.534556
+  type: 'test'
+  ...
+# Subtest: anthropic: history validates semantic results and actual wire budget
+ok 47 - anthropic: history validates semantic results and actual wire budget
+  ---
+  duration_ms: 6.60681
+  type: 'test'
+  ...
+# Subtest: conversation scope and initial reads keep the accepted canonical contract
+ok 48 - conversation scope and initial reads keep the accepted canonical contract
+  ---
+  duration_ms: 1.521151
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 49 - PostgreSQL/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 599.55635
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-to-answer never creates an edit run
+ok 50 - PostgreSQL/openai-compatible: read-to-answer never creates an edit run
+  ---
+  duration_ms: 24.981315
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-to-refusal never creates an edit run
+ok 51 - PostgreSQL/openai-compatible: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 24.672178
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+ok 52 - PostgreSQL/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 90.367721
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: exchange exhaustion refuses without effects or refunds
+ok 53 - PostgreSQL/openai-compatible: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 16.421679
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: output exhaustion refuses without effects or refunds
+ok 54 - PostgreSQL/openai-compatible: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 17.995819
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: tools exhaustion refuses without effects or refunds
+ok 55 - PostgreSQL/openai-compatible: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 16.606355
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a repeated call ID across exchanges refuses before another read
+ok 56 - PostgreSQL/openai-compatible: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 20.988391
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: mixed reads and edits cannot partially execute
+ok 57 - PostgreSQL/openai-compatible: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 16.174165
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: an out-of-scope model read stops before another exchange
+ok 58 - PostgreSQL/openai-compatible: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 18.459428
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: human save during exchange 1 invalidates the invocation
+ok 59 - PostgreSQL/openai-compatible: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 21.876444
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: human save during exchange 3 invalidates the invocation
+ok 60 - PostgreSQL/openai-compatible: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 36.737847
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancellation during the second provider request aborts the entire invocation
+ok 61 - PostgreSQL/openai-compatible: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 18.187897
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 62 - PostgreSQL/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 38.710893
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: foreign ownership refuses before any provider call
+ok 63 - PostgreSQL/openai-compatible: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 9.109682
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: protected edits refuse the entire terminal batch after investigation
+ok 64 - PostgreSQL/openai-compatible: protected edits refuse the entire terminal batch after investigation
+  ---
+  duration_ms: 30.420057
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deletion while a provider response is pending stops further exchanges
+ok 65 - PostgreSQL/openai-compatible: deletion while a provider response is pending stops further exchanges
+  ---
+  duration_ms: 17.853109
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancelled at queue commit rolls back a traced proposal
+ok 66 - PostgreSQL/openai-compatible: cancelled at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 49.940466
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deadline at queue commit rolls back a traced proposal
+ok 67 - PostgreSQL/openai-compatible: deadline at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 38.977059
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 68 - PostgreSQL/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 429.061678
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-to-answer never creates an edit run
+ok 69 - PostgreSQL/anthropic: read-to-answer never creates an edit run
+  ---
+  duration_ms: 22.724245
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-to-refusal never creates an edit run
+ok 70 - PostgreSQL/anthropic: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 20.941148
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+ok 71 - PostgreSQL/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 77.12871
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: exchange exhaustion refuses without effects or refunds
+ok 72 - PostgreSQL/anthropic: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 23.10759
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: output exhaustion refuses without effects or refunds
+ok 73 - PostgreSQL/anthropic: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 16.787076
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: tools exhaustion refuses without effects or refunds
+ok 74 - PostgreSQL/anthropic: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 13.598677
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a repeated call ID across exchanges refuses before another read
+ok 75 - PostgreSQL/anthropic: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 23.944616
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: mixed reads and edits cannot partially execute
+ok 76 - PostgreSQL/anthropic: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 14.830913
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: an out-of-scope model read stops before another exchange
+ok 77 - PostgreSQL/anthropic: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 19.432659
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: human save during exchange 1 invalidates the invocation
+ok 78 - PostgreSQL/anthropic: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 14.322018
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: human save during exchange 3 invalidates the invocation
+ok 79 - PostgreSQL/anthropic: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 30.293552
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancellation during the second provider request aborts the entire invocation
+ok 80 - PostgreSQL/anthropic: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 15.846226
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 81 - PostgreSQL/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 25.965128
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: foreign ownership refuses before any provider call
+ok 82 - PostgreSQL/anthropic: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 4.374316
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: protected edits refuse the entire terminal batch after investigation
+ok 83 - PostgreSQL/anthropic: protected edits refuse the entire terminal batch after investigation
+  ---
+  duration_ms: 23.977826
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deletion while a provider response is pending stops further exchanges
+ok 84 - PostgreSQL/anthropic: deletion while a provider response is pending stops further exchanges
+  ---
+  duration_ms: 12.273243
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancelled at queue commit rolls back a traced proposal
+ok 85 - PostgreSQL/anthropic: cancelled at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 24.369694
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deadline at queue commit rolls back a traced proposal
+ok 86 - PostgreSQL/anthropic: deadline at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 25.885202
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 87 - SQLite/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 475.934446
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: read-to-answer never creates an edit run
+ok 88 - SQLite/openai-compatible: read-to-answer never creates an edit run
+  ---
+  duration_ms: 25.605707
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: read-to-refusal never creates an edit run
+ok 89 - SQLite/openai-compatible: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 20.377782
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+ok 90 - SQLite/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 65.052094
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: exchange exhaustion refuses without effects or refunds
+ok 91 - SQLite/openai-compatible: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 17.480148
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: output exhaustion refuses without effects or refunds
+ok 92 - SQLite/openai-compatible: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 16.255336
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: tools exhaustion refuses without effects or refunds
+ok 93 - SQLite/openai-compatible: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 14.852341
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a repeated call ID across exchanges refuses before another read
+ok 94 - SQLite/openai-compatible: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 20.877944
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: mixed reads and edits cannot partially execute
+ok 95 - SQLite/openai-compatible: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 14.235025
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: an out-of-scope model read stops before another exchange
+ok 96 - SQLite/openai-compatible: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 13.143144
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: human save during exchange 1 invalidates the invocation
+ok 97 - SQLite/openai-compatible: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 14.615163
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: human save during exchange 3 invalidates the invocation
+ok 98 - SQLite/openai-compatible: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 27.214342
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: cancellation during the second provider request aborts the entire invocation
+ok 99 - SQLite/openai-compatible: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 18.945287
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 100 - SQLite/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 24.22575
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: foreign ownership refuses before any provider call
+ok 101 - SQLite/openai-compatible: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 8.431808
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: protected edits refuse the entire terminal batch after investigation
+ok 102 - SQLite/openai-compatible: protected edits refuse the entire terminal batch after investigation
+  ---
+  duration_ms: 25.03525
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: deletion while a provider response is pending stops further exchanges
+ok 103 - SQLite/openai-compatible: deletion while a provider response is pending stops further exchanges
+  ---
+  duration_ms: 12.905978
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: cancelled at queue commit rolls back a traced proposal
+ok 104 - SQLite/openai-compatible: cancelled at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 25.709624
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: deadline at queue commit rolls back a traced proposal
+ok 105 - SQLite/openai-compatible: deadline at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 25.622705
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 106 - SQLite/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 364.11822
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: read-to-answer never creates an edit run
+ok 107 - SQLite/anthropic: read-to-answer never creates an edit run
+  ---
+  duration_ms: 18.353204
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: read-to-refusal never creates an edit run
+ok 108 - SQLite/anthropic: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 19.39779
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+ok 109 - SQLite/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 54.085455
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: exchange exhaustion refuses without effects or refunds
+ok 110 - SQLite/anthropic: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 17.63947
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: output exhaustion refuses without effects or refunds
+ok 111 - SQLite/anthropic: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 16.493062
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: tools exhaustion refuses without effects or refunds
+ok 112 - SQLite/anthropic: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 20.474728
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a repeated call ID across exchanges refuses before another read
+ok 113 - SQLite/anthropic: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 23.913501
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: mixed reads and edits cannot partially execute
+ok 114 - SQLite/anthropic: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 15.585994
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: an out-of-scope model read stops before another exchange
+ok 115 - SQLite/anthropic: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 17.076502
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: human save during exchange 1 invalidates the invocation
+ok 116 - SQLite/anthropic: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 14.514556
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: human save during exchange 3 invalidates the invocation
+ok 117 - SQLite/anthropic: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 24.502913
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: cancellation during the second provider request aborts the entire invocation
+ok 118 - SQLite/anthropic: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 16.800422
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 119 - SQLite/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 24.594494
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: foreign ownership refuses before any provider call
+ok 120 - SQLite/anthropic: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 7.121004
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: protected edits refuse the entire terminal batch after investigation
+ok 121 - SQLite/anthropic: protected edits refuse the entire terminal batch after investigation
+  ---
+  duration_ms: 22.064245
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: deletion while a provider response is pending stops further exchanges
+ok 122 - SQLite/anthropic: deletion while a provider response is pending stops further exchanges
+  ---
+  duration_ms: 11.85396
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: cancelled at queue commit rolls back a traced proposal
+ok 123 - SQLite/anthropic: cancelled at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 21.384328
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: deadline at queue commit rolls back a traced proposal
+ok 124 - SQLite/anthropic: deadline at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 21.625552
+  type: 'test'
+  ...
+# Subtest: v2 preservation
+    # Subtest: a moved diagram keeps its geometry after a text edit
+    ok 1 - a moved diagram keeps its geometry after a text edit
+      ---
+      duration_ms: 17.486203
+      type: 'test'
+      ...
+    # Subtest: resize inverts exactly (undo)
+    ok 2 - resize inverts exactly (undo)
+      ---
+      duration_ms: 5.305333
+      type: 'test'
+      ...
+    # Subtest: a detached slide is authoritative: recompile returns it untouched
+    ok 3 - a detached slide is authoritative: recompile returns it untouched
+      ---
+      duration_ms: 5.425193
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: move
+    ok 4 - detached scenes stay manually editable: move
+      ---
+      duration_ms: 5.114406
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: resize
+    ok 5 - detached scenes stay manually editable: resize
+      ---
+      duration_ms: 3.004553
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: text edit
+    ok 6 - detached scenes stay manually editable: text edit
+      ---
+      duration_ms: 3.587938
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: add and delete
+    ok 7 - detached scenes stay manually editable: add and delete
+      ---
+      duration_ms: 5.385106
+      type: 'test'
+      ...
+    # Subtest: locked elements still reject edits on detached scenes
+    ok 8 - locked elements still reject edits on detached scenes
+      ---
+      duration_ms: 3.114888
+      type: 'test'
+      ...
+    # Subtest: human-added elements survive a recompile that drops nothing
+    ok 9 - human-added elements survive a recompile that drops nothing
+      ---
+      duration_ms: 2.440656
+      type: 'test'
+      ...
+    1..9
+ok 125 - v2 preservation
+  ---
+  duration_ms: 52.218241
+  type: 'suite'
+  ...
+# Subtest: v2-6c two processes, one postgres
+    # Subtest: same-base saves across instances yield one 200 and one 409
+    ok 1 - same-base saves across instances yield one 200 and one 409
+      ---
+      duration_ms: 242.498608
+      type: 'test'
+      ...
+    # Subtest: save versus rename across instances keeps one winner
+    ok 2 - save versus rename across instances keeps one winner
+      ---
+      duration_ms: 24.569003
+      type: 'test'
+      ...
+    # Subtest: save versus restore across instances keeps one winner
+    ok 3 - save versus restore across instances keeps one winner
+      ---
+      duration_ms: 25.859252
+      type: 'test'
+      ...
+    # Subtest: restore versus restore across instances keeps one winner
+    ok 4 - restore versus restore across instances keeps one winner
+      ---
+      duration_ms: 34.015555
+      type: 'test'
+      ...
+    # Subtest: rename versus rename across instances keeps one winner
+    ok 5 - rename versus rename across instances keeps one winner
+      ---
+      duration_ms: 12.031976
+      type: 'test'
+      ...
+    # Subtest: delete during a concurrent save leaves exactly one consistent outcome
+    ok 6 - delete during a concurrent save leaves exactly one consistent outcome
+      ---
+      duration_ms: 9.316872
+      type: 'test'
+      ...
+    # Subtest: history initialization racing with saves yields one baseline
+    ok 7 - history initialization racing with saves yields one baseline
+      ---
+      duration_ms: 26.419439
+      type: 'test'
+      ...
+    # Subtest: concurrent mixed mutations keep prune accounting exact
+    ok 8 - concurrent mixed mutations keep prune accounting exact
+      ---
+      duration_ms: 18.633399
+      type: 'test'
+      ...
+    # Subtest: same owner email works across instances; cross-owner denied
+    ok 9 - same owner email works across instances; cross-owner denied
+      ---
+      duration_ms: 21.942309
+      type: 'test'
+      ...
+    # Subtest: rapid creates mint distinct ids across instances
+    ok 10 - rapid creates mint distinct ids across instances
+      ---
+      duration_ms: 39.04306
+      type: 'test'
+      ...
+    1..10
+ok 126 - v2-6c two processes, one postgres
+  ---
+  duration_ms: 1216.819371
+  type: 'suite'
+  ...
+# Subtest: v2-6c two processes, one sqlite file
+    # Subtest: same-base saves across sqlite processes yield one 200 and one 409
+    ok 1 - same-base saves across sqlite processes yield one 200 and one 409
+      ---
+      duration_ms: 134.778602
+      type: 'test'
+      ...
+    1..1
+ok 127 - v2-6c two processes, one sqlite file
+  ---
+  duration_ms: 1626.908171
+  type: 'suite'
+  ...
+# Subtest: v2-6c transaction faults
+    # Subtest: terminated backend mid-transaction rolls back with nothing saved
+    ok 1 - terminated backend mid-transaction rolls back with nothing saved
+      ---
+      duration_ms: 212.889214
+      type: 'test'
+      ...
+    # Subtest: history-insert failure rolls back the project write
+    ok 2 - history-insert failure rolls back the project write
+      ---
+      duration_ms: 20.489175
+      type: 'test'
+      ...
+    # Subtest: prune failure rolls back the whole save
+    ok 3 - prune failure rolls back the whole save
+      ---
+      duration_ms: 98.167457
+      type: 'test'
+      ...
+    # Subtest: unreachable database reports storage-unavailable and never saved
+    ok 4 - unreachable database reports storage-unavailable and never saved
+      ---
+      duration_ms: 2.639006
+      type: 'test'
+      ...
+    # Subtest: pool exhaustion fails loudly instead of hanging or half-writing
+    ok 5 - pool exhaustion fails loudly instead of hanging or half-writing
+      ---
+      duration_ms: 5530.098319
+      type: 'test'
+      ...
+    # Subtest: killed writer processes leave consistent history
+    ok 6 - killed writer processes leave consistent history
+      ---
+      duration_ms: 2018.313002
+      type: 'test'
+      ...
+    1..6
+ok 128 - v2-6c transaction faults
+  ---
+  duration_ms: 7905.277428
+  type: 'suite'
+  ...
+# Subtest: v2-6c misconfiguration over HTTP
+    # Subtest: postgres selected without a URL answers 503 honestly, never sqlite
+    ok 1 - postgres selected without a URL answers 503 honestly, never sqlite
+      ---
+      duration_ms: 418.090815
+      type: 'test'
+      ...
+    # Subtest: aborted HTTP saves leave consistent history
+    ok 2 - aborted HTTP saves leave consistent history
+      ---
+      duration_ms: 2877.586443
+      type: 'test'
+      ...
+    1..2
+ok 129 - v2-6c misconfiguration over HTTP
+  ---
+  duration_ms: 4096.771837
+  type: 'suite'
+  ...
+# Subtest: v2-6c contract over postgres
+    # Subtest: adapter answers before the shared suite runs
+    ok 1 - adapter answers before the shared suite runs
+      ---
+      duration_ms: 10.179856
+      type: 'test'
+      ...
+    1..1
+ok 130 - v2-6c contract over postgres
+  ---
+  duration_ms: 31.960494
+  type: 'suite'
+  ...
+# Subtest: [postgres] CRUD and summaries
+    # Subtest: creates, loads, lists without scene bytes, renames, deletes
+    ok 1 - creates, loads, lists without scene bytes, renames, deletes
+      ---
+      duration_ms: 91.012602
+      type: 'test'
+      ...
+    # Subtest: no-op saves and renames advance nothing and record nothing
+    ok 2 - no-op saves and renames advance nothing and record nothing
+      ---
+      duration_ms: 8.863768
+      type: 'test'
+      ...
+    1..2
+ok 131 - [postgres] CRUD and summaries
+  ---
+  duration_ms: 100.146607
+  type: 'suite'
+  ...
+# Subtest: [postgres] schema validation
+    # Subtest: refuses malformed ids, titles, scenes, and provenance
+    ok 1 - refuses malformed ids, titles, scenes, and provenance
+      ---
+      duration_ms: 7.538536
+      type: 'test'
+      ...
+    1..1
+ok 132 - [postgres] schema validation
+  ---
+  duration_ms: 7.787115
+  type: 'suite'
+  ...
+# Subtest: [postgres] owner isolation
+    # Subtest: exact-match reads, lists, writes, and history without leaks
+    ok 1 - exact-match reads, lists, writes, and history without leaks
+      ---
+      duration_ms: 28.152402
+      type: 'test'
+      ...
+    1..1
+ok 133 - [postgres] owner isolation
+  ---
+  duration_ms: 28.36982
+  type: 'suite'
+  ...
+# Subtest: [postgres] revision conflicts
+    # Subtest: same-base saves serialize to one winner and one stale
+    ok 1 - same-base saves serialize to one winner and one stale
+      ---
+      duration_ms: 14.766566
+      type: 'test'
+      ...
+    # Subtest: save versus rename on one base keeps exactly one winner
+    ok 2 - save versus rename on one base keeps exactly one winner
+      ---
+      duration_ms: 11.327771
+      type: 'test'
+      ...
+    # Subtest: concurrent same-base renames yield one winner and one stale
+    ok 3 - concurrent same-base renames yield one winner and one stale
+      ---
+      duration_ms: 9.985749
+      type: 'test'
+      ...
+    1..3
+ok 134 - [postgres] revision conflicts
+  ---
+  duration_ms: 36.4076
+  type: 'suite'
+  ...
+# Subtest: [postgres] atomic history
+    # Subtest: every committed revision has a validated history row; failures add none
+    ok 1 - every committed revision has a validated history row; failures add none
+      ---
+      duration_ms: 14.913552
+      type: 'test'
+      ...
+    1..1
+ok 135 - [postgres] atomic history
+  ---
+  duration_ms: 15.060313
+  type: 'suite'
+  ...
+# Subtest: [postgres] retention
+    # Subtest: stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+    ok 1 - stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+      ---
+      duration_ms: 106.934008
+      type: 'test'
+      ...
+    1..1
+ok 136 - [postgres] retention
+  ---
+  duration_ms: 107.097267
+  type: 'suite'
+  ...
+# Subtest: [postgres] restore
+    # Subtest: restores as a new revision, preserves rows, refuses stale
+    ok 1 - restores as a new revision, preserves rows, refuses stale
+      ---
+      duration_ms: 17.361184
+      type: 'test'
+      ...
+    # Subtest: restore versus restore on one base keeps one winner
+    ok 2 - restore versus restore on one base keeps one winner
+      ---
+      duration_ms: 14.36685
+      type: 'test'
+      ...
+    1..2
+ok 137 - [postgres] restore
+  ---
+  duration_ms: 31.948831
+  type: 'suite'
+  ...
+# Subtest: [postgres] migration and corruption
+    # Subtest: history-less projects gain exactly one baseline without rewrites
+    ok 1 - history-less projects gain exactly one baseline without rewrites
+      ---
+      duration_ms: 14.305115
+      type: 'test'
+      ...
+    # Subtest: future schema versions refuse; corrupt rows refuse with current intact
+    ok 2 - future schema versions refuse; corrupt rows refuse with current intact
+      ---
+      duration_ms: 11.597152
+      type: 'test'
+      ...
+    1..2
+ok 138 - [postgres] migration and corruption
+  ---
+  duration_ms: 26.108102
+  type: 'suite'
+  ...
+# Subtest: [postgres] round-trip and export
+    # Subtest: mixed decks survive byte-identical with identity intact
+    ok 1 - mixed decks survive byte-identical with identity intact
+      ---
+      duration_ms: 9.520501
+      type: 'test'
+      ...
+    # Subtest: stored and restored documents export native and order-exact
+    ok 2 - stored and restored documents export native and order-exact
+      ---
+      duration_ms: 60.297904
+      type: 'test'
+      ...
+    1..2
+ok 139 - [postgres] round-trip and export
+  ---
+  duration_ms: 70.056186
+  type: 'suite'
+  ...
+# Subtest: [postgres] deletion
+    # Subtest: delete removes the project and its history together
+    ok 1 - delete removes the project and its history together
+      ---
+      duration_ms: 10.330259
+      type: 'test'
+      ...
+    1..1
+ok 140 - [postgres] deletion
+  ---
+  duration_ms: 10.477186
+  type: 'suite'
+  ...
+# Subtest: v2-6c contract over sqlite
+    # Subtest: adapter surfaces match the shared interface
+    ok 1 - adapter surfaces match the shared interface
+      ---
+      duration_ms: 2.058028
+      type: 'test'
+      ...
+    1..1
+ok 141 - v2-6c contract over sqlite
+  ---
+  duration_ms: 6.750332
+  type: 'suite'
+  ...
+# Subtest: [sqlite] CRUD and summaries
+    # Subtest: creates, loads, lists without scene bytes, renames, deletes
+    ok 1 - creates, loads, lists without scene bytes, renames, deletes
+      ---
+      duration_ms: 84.333883
+      type: 'test'
+      ...
+    # Subtest: no-op saves and renames advance nothing and record nothing
+    ok 2 - no-op saves and renames advance nothing and record nothing
+      ---
+      duration_ms: 4.174872
+      type: 'test'
+      ...
+    1..2
+ok 142 - [sqlite] CRUD and summaries
+  ---
+  duration_ms: 88.739178
+  type: 'suite'
+  ...
+# Subtest: [sqlite] schema validation
+    # Subtest: refuses malformed ids, titles, scenes, and provenance
+    ok 1 - refuses malformed ids, titles, scenes, and provenance
+      ---
+      duration_ms: 3.76963
+      type: 'test'
+      ...
+    1..1
+ok 143 - [sqlite] schema validation
+  ---
+  duration_ms: 3.900419
+  type: 'suite'
+  ...
+# Subtest: [sqlite] owner isolation
+    # Subtest: exact-match reads, lists, writes, and history without leaks
+    ok 1 - exact-match reads, lists, writes, and history without leaks
+      ---
+      duration_ms: 7.222558
+      type: 'test'
+      ...
+    1..1
+ok 144 - [sqlite] owner isolation
+  ---
+  duration_ms: 7.360607
+  type: 'suite'
+  ...
+# Subtest: [sqlite] revision conflicts
+    # Subtest: same-base saves serialize to one winner and one stale
+    ok 1 - same-base saves serialize to one winner and one stale
+      ---
+      duration_ms: 3.221593
+      type: 'test'
+      ...
+    # Subtest: save versus rename on one base keeps exactly one winner
+    ok 2 - save versus rename on one base keeps exactly one winner
+      ---
+      duration_ms: 3.320793
+      type: 'test'
+      ...
+    # Subtest: concurrent same-base renames yield one winner and one stale
+    ok 3 - concurrent same-base renames yield one winner and one stale
+      ---
+      duration_ms: 1.947945
+      type: 'test'
+      ...
+    1..3
+ok 145 - [sqlite] revision conflicts
+  ---
+  duration_ms: 8.688289
+  type: 'suite'
+  ...
+# Subtest: [sqlite] atomic history
+    # Subtest: every committed revision has a validated history row; failures add none
+    ok 1 - every committed revision has a validated history row; failures add none
+      ---
+      duration_ms: 5.256915
+      type: 'test'
+      ...
+    1..1
+ok 146 - [sqlite] atomic history
+  ---
+  duration_ms: 5.327855
+  type: 'suite'
+  ...
+# Subtest: [sqlite] retention
+    # Subtest: stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+    ok 1 - stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+      ---
+      duration_ms: 35.463113
+      type: 'test'
+      ...
+    1..1
+ok 147 - [sqlite] retention
+  ---
+  duration_ms: 35.545378
+  type: 'suite'
+  ...
+# Subtest: [sqlite] restore
+    # Subtest: restores as a new revision, preserves rows, refuses stale
+    ok 1 - restores as a new revision, preserves rows, refuses stale
+      ---
+      duration_ms: 5.370223
+      type: 'test'
+      ...
+    # Subtest: restore versus restore on one base keeps one winner
+    ok 2 - restore versus restore on one base keeps one winner
+      ---
+      duration_ms: 3.205018
+      type: 'test'
+      ...
+    1..2
+ok 148 - [sqlite] restore
+  ---
+  duration_ms: 8.682415
+  type: 'suite'
+  ...
+# Subtest: [sqlite] migration and corruption
+    # Subtest: history-less projects gain exactly one baseline without rewrites
+    ok 1 - history-less projects gain exactly one baseline without rewrites
+      ---
+      duration_ms: 2.528714
+      type: 'test'
+      ...
+    # Subtest: future schema versions refuse; corrupt rows refuse with current intact
+    ok 2 - future schema versions refuse; corrupt rows refuse with current intact
+      ---
+      duration_ms: 4.739573
+      type: 'test'
+      ...
+    1..2
+ok 149 - [sqlite] migration and corruption
+  ---
+  duration_ms: 7.365313
+  type: 'suite'
+  ...
+# Subtest: [sqlite] round-trip and export
+    # Subtest: mixed decks survive byte-identical with identity intact
+    ok 1 - mixed decks survive byte-identical with identity intact
+      ---
+      duration_ms: 5.091898
+      type: 'test'
+      ...
+    # Subtest: stored and restored documents export native and order-exact
+    ok 2 - stored and restored documents export native and order-exact
+      ---
+      duration_ms: 42.354222
+      type: 'test'
+      ...
+    1..2
+ok 150 - [sqlite] round-trip and export
+  ---
+  duration_ms: 47.639109
+  type: 'suite'
+  ...
+# Subtest: [sqlite] deletion
+    # Subtest: delete removes the project and its history together
+    ok 1 - delete removes the project and its history together
+      ---
+      duration_ms: 2.442543
+      type: 'test'
+      ...
+    1..1
+ok 151 - [sqlite] deletion
+  ---
+  duration_ms: 2.51794
+  type: 'suite'
+  ...
+# Subtest: openai-compatible: actual HTTP preserves scoped instructions and distinct wire format
+ok 152 - openai-compatible: actual HTTP preserves scoped instructions and distinct wire format
+  ---
+  duration_ms: 59.596757
+  type: 'test'
+  ...
+# Subtest: openai-compatible: capability negotiation refuses before network without downgrade
+ok 153 - openai-compatible: capability negotiation refuses before network without downgrade
+  ---
+  duration_ms: 2.68478
+  type: 'test'
+  ...
+# Subtest: openai-compatible: invalid options and executable accessors never execute
+ok 154 - openai-compatible: invalid options and executable accessors never execute
+  ---
+  duration_ms: 1.201019
+  type: 'test'
+  ...
+# Subtest: openai-compatible: context budget counts wire schemas and controls
+ok 155 - openai-compatible: context budget counts wire schemas and controls
+  ---
+  duration_ms: 1.677564
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancellation before dispatch and during headers is bounded
+ok 156 - openai-compatible: cancellation before dispatch and during headers is bounded
+  ---
+  duration_ms: 7.067737
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancellation while reading a body aborts the request
+ok 157 - openai-compatible: cancellation while reading a body aborts the request
+  ---
+  duration_ms: 25.814447
+  type: 'test'
+  ...
+# Subtest: openai-compatible: timeout covers a stalled body without retries
+ok 158 - openai-compatible: timeout covers a stalled body without retries
+  ---
+  duration_ms: 42.373652
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status401 is sanitized and never retried
+ok 159 - openai-compatible: status401 is sanitized and never retried
+  ---
+  duration_ms: 4.450865
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status403 is sanitized and never retried
+ok 160 - openai-compatible: status403 is sanitized and never retried
+  ---
+  duration_ms: 3.517214
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status429 is sanitized and never retried
+ok 161 - openai-compatible: status429 is sanitized and never retried
+  ---
+  duration_ms: 3.568383
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status500 is sanitized and never retried
+ok 162 - openai-compatible: status500 is sanitized and never retried
+  ---
+  duration_ms: 3.229158
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status302 is sanitized and never retried
+ok 163 - openai-compatible: status302 is sanitized and never retried
+  ---
+  duration_ms: 4.613993
+  type: 'test'
+  ...
+# Subtest: openai-compatible: oversized chunked response refuses
+ok 164 - openai-compatible: oversized chunked response refuses
+  ---
+  duration_ms: 3.945595
+  type: 'test'
+  ...
+# Subtest: openai-compatible: oversized declared response refuses
+ok 165 - openai-compatible: oversized declared response refuses
+  ---
+  duration_ms: 3.365119
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed JSON refuses as invalid response
+ok 166 - openai-compatible: malformed JSON refuses as invalid response
+  ---
+  duration_ms: 2.910844
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed UTF8 refuses as invalid response
+ok 167 - openai-compatible: malformed UTF8 refuses as invalid response
+  ---
+  duration_ms: 2.786798
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed and unsafe tool proposals refuse atomically
+ok 168 - openai-compatible: malformed and unsafe tool proposals refuse atomically
+  ---
+  duration_ms: 4.070332
+  type: 'test'
+  ...
+# Subtest: openai-compatible: text, refusal and missing usage are truthful outcomes
+ok 169 - openai-compatible: text, refusal and missing usage are truthful outcomes
+  ---
+  duration_ms: 3.658101
+  type: 'test'
+  ...
+# Subtest: anthropic: actual HTTP preserves scoped instructions and distinct wire format
+ok 170 - anthropic: actual HTTP preserves scoped instructions and distinct wire format
+  ---
+  duration_ms: 4.239781
+  type: 'test'
+  ...
+# Subtest: anthropic: capability negotiation refuses before network without downgrade
+ok 171 - anthropic: capability negotiation refuses before network without downgrade
+  ---
+  duration_ms: 1.545137
+  type: 'test'
+  ...
+# Subtest: anthropic: invalid options and executable accessors never execute
+ok 172 - anthropic: invalid options and executable accessors never execute
+  ---
+  duration_ms: 0.735122
+  type: 'test'
+  ...
+# Subtest: anthropic: context budget counts wire schemas and controls
+ok 173 - anthropic: context budget counts wire schemas and controls
+  ---
+  duration_ms: 1.331659
+  type: 'test'
+  ...
+# Subtest: anthropic: cancellation before dispatch and during headers is bounded
+ok 174 - anthropic: cancellation before dispatch and during headers is bounded
+  ---
+  duration_ms: 3.624722
+  type: 'test'
+  ...
+# Subtest: anthropic: cancellation while reading a body aborts the request
+ok 175 - anthropic: cancellation while reading a body aborts the request
+  ---
+  duration_ms: 25.252002
+  type: 'test'
+  ...
+# Subtest: anthropic: timeout covers a stalled body without retries
+ok 176 - anthropic: timeout covers a stalled body without retries
+  ---
+  duration_ms: 42.587927
+  type: 'test'
+  ...
+# Subtest: anthropic: status401 is sanitized and never retried
+ok 177 - anthropic: status401 is sanitized and never retried
+  ---
+  duration_ms: 2.889197
+  type: 'test'
+  ...
+# Subtest: anthropic: status403 is sanitized and never retried
+ok 178 - anthropic: status403 is sanitized and never retried
+  ---
+  duration_ms: 2.37314
+  type: 'test'
+  ...
+# Subtest: anthropic: status429 is sanitized and never retried
+ok 179 - anthropic: status429 is sanitized and never retried
+  ---
+  duration_ms: 2.288004
+  type: 'test'
+  ...
+# Subtest: anthropic: status500 is sanitized and never retried
+ok 180 - anthropic: status500 is sanitized and never retried
+  ---
+  duration_ms: 2.279787
+  type: 'test'
+  ...
+# Subtest: anthropic: status302 is sanitized and never retried
+ok 181 - anthropic: status302 is sanitized and never retried
+  ---
+  duration_ms: 2.299186
+  type: 'test'
+  ...
+# Subtest: anthropic: oversized chunked response refuses
+ok 182 - anthropic: oversized chunked response refuses
+  ---
+  duration_ms: 2.319561
+  type: 'test'
+  ...
+# Subtest: anthropic: oversized declared response refuses
+ok 183 - anthropic: oversized declared response refuses
+  ---
+  duration_ms: 2.424047
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed JSON refuses as invalid response
+ok 184 - anthropic: malformed JSON refuses as invalid response
+  ---
+  duration_ms: 2.602288
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed UTF8 refuses as invalid response
+ok 185 - anthropic: malformed UTF8 refuses as invalid response
+  ---
+  duration_ms: 2.955127
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed and unsafe tool proposals refuse atomically
+ok 186 - anthropic: malformed and unsafe tool proposals refuse atomically
+  ---
+  duration_ms: 4.938033
+  type: 'test'
+  ...
+# Subtest: anthropic: text, refusal and missing usage are truthful outcomes
+ok 187 - anthropic: text, refusal and missing usage are truthful outcomes
+  ---
+  duration_ms: 2.892007
+  type: 'test'
+  ...
+# Subtest: transport configuration is immutable, explicit and cannot embed URL credentials
+ok 188 - transport configuration is immutable, explicit and cannot embed URL credentials
+  ---
+  duration_ms: 0.654656
+  type: 'test'
+  ...
+# Subtest: OpenAI-compatible legacy token parameter is an explicit configuration choice
+ok 189 - OpenAI-compatible legacy token parameter is an explicit configuration choice
+  ---
+  duration_ms: 5.287353
+  type: 'test'
+  ...
+# Subtest: wire budget includes the output limit and refuses before HTTP at its boundary
+ok 190 - wire budget includes the output limit and refuses before HTTP at its boundary
+  ---
+  duration_ms: 2.215736
+  type: 'test'
+  ...
+# Subtest: transport failure details never escape and a non-cooperating injected fetch is bounded
+ok 191 - transport failure details never escape and a non-cooperating injected fetch is bounded
+  ---
+  duration_ms: 22.577779
+  type: 'test'
+  ...
+# Subtest: openai-compatible: altered catalogs and noncanonical complete requests refuse
+ok 192 - openai-compatible: altered catalogs and noncanonical complete requests refuse
+  ---
+  duration_ms: 1.082639
+  type: 'test'
+  ...
+# Subtest: anthropic: altered catalogs and noncanonical complete requests refuse
+ok 193 - anthropic: altered catalogs and noncanonical complete requests refuse
+  ---
+  duration_ms: 0.771574
+  type: 'test'
+  ...
+# Subtest: openai-compatible: normalized usage includes cached input exactly once
+ok 194 - openai-compatible: normalized usage includes cached input exactly once
+  ---
+  duration_ms: 1.816368
+  type: 'test'
+  ...
+# Subtest: anthropic: normalized usage includes cached input exactly once
+ok 195 - anthropic: normalized usage includes cached input exactly once
+  ---
+  duration_ms: 1.760136
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cache counters reject invalid accounting and preserve unavailable breakdowns
+ok 196 - openai-compatible: cache counters reject invalid accounting and preserve unavailable breakdowns
+  ---
+  duration_ms: 1.901093
+  type: 'test'
+  ...
+# Subtest: anthropic: cache counters reject invalid accounting and preserve unavailable breakdowns
+ok 197 - anthropic: cache counters reject invalid accounting and preserve unavailable breakdowns
+  ---
+  duration_ms: 2.320538
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+ok 198 - SQLite/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 106.828241
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a human save during HTTP prevents stale plan execution
+ok 199 - SQLite/openai-compatible: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 17.623575
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: protected content remains protected after a valid proposal
+ok 200 - SQLite/openai-compatible: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 20.480748
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a normalized response grants no foreign-owner authority
+ok 201 - SQLite/openai-compatible: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 16.717915
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: inspection scope cannot receive an edit proposal
+ok 202 - SQLite/openai-compatible: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 11.416329
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+ok 203 - SQLite/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 18.309032
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a human save during HTTP prevents stale plan execution
+ok 204 - SQLite/anthropic: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 13.420204
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: protected content remains protected after a valid proposal
+ok 205 - SQLite/anthropic: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 17.973181
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a normalized response grants no foreign-owner authority
+ok 206 - SQLite/anthropic: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 15.799256
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: inspection scope cannot receive an edit proposal
+ok 207 - SQLite/anthropic: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 11.760183
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+ok 208 - PostgreSQL/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 153.074939
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save during HTTP prevents stale plan execution
+ok 209 - PostgreSQL/openai-compatible: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 18.53246
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: protected content remains protected after a valid proposal
+ok 210 - PostgreSQL/openai-compatible: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 20.898755
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a normalized response grants no foreign-owner authority
+ok 211 - PostgreSQL/openai-compatible: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 8.746358
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: inspection scope cannot receive an edit proposal
+ok 212 - PostgreSQL/openai-compatible: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 6.062246
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+ok 213 - PostgreSQL/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 31.362638
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save during HTTP prevents stale plan execution
+ok 214 - PostgreSQL/anthropic: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 12.859113
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: protected content remains protected after a valid proposal
+ok 215 - PostgreSQL/anthropic: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 15.032252
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a normalized response grants no foreign-owner authority
+ok 216 - PostgreSQL/anthropic: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 7.911445
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: inspection scope cannot receive an edit proposal
+ok 217 - PostgreSQL/anthropic: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 6.054536
+  type: 'test'
+  ...
+# Subtest: provider-run scope and read schemas remain canonical
+ok 218 - provider-run scope and read schemas remain canonical
+  ---
+  duration_ms: 5.079663
+  type: 'test'
+  ...
+# Subtest: preparation rejects unrecognized authority fields before storage or provider I/O
+ok 219 - preparation rejects unrecognized authority fields before storage or provider I/O
+  ---
+  duration_ms: 2.173673
+  type: 'test'
+  ...
+# Subtest: preparation rejects invalid context reads before storage or provider I/O
+ok 220 - preparation rejects invalid context reads before storage or provider I/O
+  ---
+  duration_ms: 0.382877
+  type: 'test'
+  ...
+# Subtest: preparation rejects invalid trusted scope before storage or provider I/O
+ok 221 - preparation rejects invalid trusted scope before storage or provider I/O
+  ---
+  duration_ms: 0.274533
+  type: 'test'
+  ...
+# Subtest: preparation rejects empty request text before storage or provider I/O
+ok 222 - preparation rejects empty request text before storage or provider I/O
+  ---
+  duration_ms: 0.230476
+  type: 'test'
+  ...
+# Subtest: preparation rejects context bounds before storage or provider I/O
+ok 223 - preparation rejects context bounds before storage or provider I/O
+  ---
+  duration_ms: 0.236256
+  type: 'test'
+  ...
+# Subtest: preparation rejects configured output allowance before storage or provider I/O
+ok 224 - preparation rejects configured output allowance before storage or provider I/O
+  ---
+  duration_ms: 0.225644
+  type: 'test'
+  ...
+# Subtest: preparation rejects nested geometry before storage or provider I/O
+ok 225 - preparation rejects nested geometry before storage or provider I/O
+  ---
+  duration_ms: 0.221304
+  type: 'test'
+  ...
+# Subtest: preparation rejects duplicate selection before storage or provider I/O
+ok 226 - preparation rejects duplicate selection before storage or provider I/O
+  ---
+  duration_ms: 0.258497
+  type: 'test'
+  ...
+# Subtest: live accessors, cycles and option accessors are refused without execution
+ok 227 - live accessors, cycles and option accessors are refused without execution
+  ---
+  duration_ms: 0.452396
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass foreign provider identity validation
+ok 228 - injected provider cannot bypass foreign provider identity validation
+  ---
+  duration_ms: 28.967209
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass wrong family validation
+ok 229 - injected provider cannot bypass wrong family validation
+  ---
+  duration_ms: 1.069678
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass unsupported outcome validation
+ok 230 - injected provider cannot bypass unsupported outcome validation
+  ---
+  duration_ms: 0.999273
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass extra authority metadata validation
+ok 231 - injected provider cannot bypass extra authority metadata validation
+  ---
+  duration_ms: 0.876422
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass duplicate tool IDs validation
+ok 232 - injected provider cannot bypass duplicate tool IDs validation
+  ---
+  duration_ms: 0.858784
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass noncanonical arguments validation
+ok 233 - injected provider cannot bypass noncanonical arguments validation
+  ---
+  duration_ms: 0.816021
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass stale engine revision validation
+ok 234 - injected provider cannot bypass stale engine revision validation
+  ---
+  duration_ms: 1.396527
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass inconsistent terminal outcome validation
+ok 235 - injected provider cannot bypass inconsistent terminal outcome validation
+  ---
+  duration_ms: 0.781124
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass invalid usage counters validation
+ok 236 - injected provider cannot bypass invalid usage counters validation
+  ---
+  duration_ms: 0.78448
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass output over allowance validation
+ok 237 - injected provider cannot bypass output over allowance validation
+  ---
+  duration_ms: 0.765405
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass missing usage field validation
+ok 238 - injected provider cannot bypass missing usage field validation
+  ---
+  duration_ms: 0.717818
+  type: 'test'
+  ...
+# Subtest: injected provider cannot bypass oversized summary validation
+ok 239 - injected provider cannot bypass oversized summary validation
+  ---
+  duration_ms: 0.797541
+  type: 'test'
+  ...
+# Subtest: provider failures and thrown exceptions never expose raw diagnostics
+ok 240 - provider failures and thrown exceptions never expose raw diagnostics
+  ---
+  duration_ms: 4.094095
+  type: 'test'
+  ...
+# Subtest: context and aggregate read-result budgets refuse explicitly
+ok 241 - context and aggregate read-result budgets refuse explicitly
+  ---
+  duration_ms: 1.914966
+  type: 'test'
+  ...
+# Subtest: binding and deadline errors refuse before any provider call
+ok 242 - binding and deadline errors refuse before any provider call
+  ---
+  duration_ms: 0.28232
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+ok 243 - PostgreSQL/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 514.682546
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: text returns bounded information without a queue or edit
+ok 244 - PostgreSQL/openai-compatible: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 17.753253
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refusal returns bounded information without a queue or edit
+ok 245 - PostgreSQL/openai-compatible: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 18.372856
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-results returns bounded information without a queue or edit
+ok 246 - PostgreSQL/openai-compatible: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 19.726384
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 247 - PostgreSQL/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 23.838863
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+ok 248 - PostgreSQL/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 20.730147
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses protected batches without partial edits
+ok 249 - PostgreSQL/openai-compatible: refuses protected batches without partial edits
+  ---
+  duration_ms: 18.20844
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: uses engine revision zero independently of an advanced durable revision
+ok 250 - PostgreSQL/openai-compatible: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 23.75058
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save while HTTP is pending invalidates preparation
+ok 251 - PostgreSQL/openai-compatible: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 14.436644
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save after preparation prevents queuing
+ok 252 - PostgreSQL/openai-compatible: a human save after preparation prevents queuing
+  ---
+  duration_ms: 15.435279
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses foreign owners and invalid scopes before network
+ok 253 - PostgreSQL/openai-compatible: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 5.33345
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancellation covers both preparation and pending HTTP
+ok 254 - PostgreSQL/openai-compatible: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 12.746576
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: an expired deadline refuses before HTTP
+ok 255 - PostgreSQL/openai-compatible: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 6.513654
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: the absolute deadline also bounds pending provider HTTP
+ok 256 - PostgreSQL/openai-compatible: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 506.214437
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancelled at final queue commit rolls back the run insert
+ok 257 - PostgreSQL/openai-compatible: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 16.792493
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deadline at final queue commit rolls back the run insert
+ok 258 - PostgreSQL/openai-compatible: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 11.68399
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: only the original proposal instance can queue its private plan
+ok 259 - PostgreSQL/openai-compatible: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 9.701291
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: conflicting proposals cannot reuse a queued request identity
+ok 260 - PostgreSQL/openai-compatible: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 18.978759
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-only grants cannot receive edit proposals
+ok 261 - PostgreSQL/openai-compatible: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 12.359034
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deleting a project invalidates its ephemeral proposals
+ok 262 - PostgreSQL/openai-compatible: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 23.010457
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+ok 263 - PostgreSQL/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 14.973523
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+ok 264 - PostgreSQL/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 388.693366
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: text returns bounded information without a queue or edit
+ok 265 - PostgreSQL/anthropic: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 9.781294
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refusal returns bounded information without a queue or edit
+ok 266 - PostgreSQL/anthropic: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 9.170544
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-results returns bounded information without a queue or edit
+ok 267 - PostgreSQL/anthropic: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 9.281962
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 268 - PostgreSQL/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 13.161045
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+ok 269 - PostgreSQL/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 14.139079
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses protected batches without partial edits
+ok 270 - PostgreSQL/anthropic: refuses protected batches without partial edits
+  ---
+  duration_ms: 9.607573
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: uses engine revision zero independently of an advanced durable revision
+ok 271 - PostgreSQL/anthropic: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 18.28894
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save while HTTP is pending invalidates preparation
+ok 272 - PostgreSQL/anthropic: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 11.476033
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save after preparation prevents queuing
+ok 273 - PostgreSQL/anthropic: a human save after preparation prevents queuing
+  ---
+  duration_ms: 14.509252
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses foreign owners and invalid scopes before network
+ok 274 - PostgreSQL/anthropic: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 5.305653
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancellation covers both preparation and pending HTTP
+ok 275 - PostgreSQL/anthropic: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 8.311489
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: an expired deadline refuses before HTTP
+ok 276 - PostgreSQL/anthropic: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 4.164383
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: the absolute deadline also bounds pending provider HTTP
+ok 277 - PostgreSQL/anthropic: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 504.894519
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancelled at final queue commit rolls back the run insert
+ok 278 - PostgreSQL/anthropic: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 11.994871
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deadline at final queue commit rolls back the run insert
+ok 279 - PostgreSQL/anthropic: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 10.662877
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: only the original proposal instance can queue its private plan
+ok 280 - PostgreSQL/anthropic: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 8.97896
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: conflicting proposals cannot reuse a queued request identity
+ok 281 - PostgreSQL/anthropic: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 20.277768
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-only grants cannot receive edit proposals
+ok 282 - PostgreSQL/anthropic: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 7.049866
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deleting a project invalidates its ephemeral proposals
+ok 283 - PostgreSQL/anthropic: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 13.922678
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+ok 284 - PostgreSQL/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 8.529828
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+ok 285 - SQLite/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 385.224215
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: text returns bounded information without a queue or edit
+ok 286 - SQLite/openai-compatible: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 16.412211
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: refusal returns bounded information without a queue or edit
+ok 287 - SQLite/openai-compatible: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 13.316087
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: read-results returns bounded information without a queue or edit
+ok 288 - SQLite/openai-compatible: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 15.518986
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 289 - SQLite/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 19.357667
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+ok 290 - SQLite/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 19.039022
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: refuses protected batches without partial edits
+ok 291 - SQLite/openai-compatible: refuses protected batches without partial edits
+  ---
+  duration_ms: 14.655204
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: uses engine revision zero independently of an advanced durable revision
+ok 292 - SQLite/openai-compatible: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 21.575789
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a human save while HTTP is pending invalidates preparation
+ok 293 - SQLite/openai-compatible: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 14.085515
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a human save after preparation prevents queuing
+ok 294 - SQLite/openai-compatible: a human save after preparation prevents queuing
+  ---
+  duration_ms: 15.560573
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: refuses foreign owners and invalid scopes before network
+ok 295 - SQLite/openai-compatible: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 8.140996
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: cancellation covers both preparation and pending HTTP
+ok 296 - SQLite/openai-compatible: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 11.476743
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: an expired deadline refuses before HTTP
+ok 297 - SQLite/openai-compatible: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 7.043906
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: the absolute deadline also bounds pending provider HTTP
+ok 298 - SQLite/openai-compatible: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 508.191261
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: cancelled at final queue commit rolls back the run insert
+ok 299 - SQLite/openai-compatible: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 11.396939
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: deadline at final queue commit rolls back the run insert
+ok 300 - SQLite/openai-compatible: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 12.726593
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: only the original proposal instance can queue its private plan
+ok 301 - SQLite/openai-compatible: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 14.022433
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: conflicting proposals cannot reuse a queued request identity
+ok 302 - SQLite/openai-compatible: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 15.519741
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: read-only grants cannot receive edit proposals
+ok 303 - SQLite/openai-compatible: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 8.610989
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: deleting a project invalidates its ephemeral proposals
+ok 304 - SQLite/openai-compatible: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 11.273466
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+ok 305 - SQLite/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 11.647664
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+ok 306 - SQLite/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 334.881672
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: text returns bounded information without a queue or edit
+ok 307 - SQLite/anthropic: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 9.773197
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: refusal returns bounded information without a queue or edit
+ok 308 - SQLite/anthropic: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 9.310204
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: read-results returns bounded information without a queue or edit
+ok 309 - SQLite/anthropic: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 10.613886
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 310 - SQLite/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 13.769567
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+ok 311 - SQLite/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 16.196811
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: refuses protected batches without partial edits
+ok 312 - SQLite/anthropic: refuses protected batches without partial edits
+  ---
+  duration_ms: 11.022964
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: uses engine revision zero independently of an advanced durable revision
+ok 313 - SQLite/anthropic: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 16.067144
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a human save while HTTP is pending invalidates preparation
+ok 314 - SQLite/anthropic: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 11.771109
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a human save after preparation prevents queuing
+ok 315 - SQLite/anthropic: a human save after preparation prevents queuing
+  ---
+  duration_ms: 12.215298
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: refuses foreign owners and invalid scopes before network
+ok 316 - SQLite/anthropic: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 8.800023
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: cancellation covers both preparation and pending HTTP
+ok 317 - SQLite/anthropic: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 25.397534
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: an expired deadline refuses before HTTP
+ok 318 - SQLite/anthropic: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 39.705661
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: the absolute deadline also bounds pending provider HTTP
+ok 319 - SQLite/anthropic: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 508.966968
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: cancelled at final queue commit rolls back the run insert
+ok 320 - SQLite/anthropic: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 37.461121
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: deadline at final queue commit rolls back the run insert
+ok 321 - SQLite/anthropic: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 13.672673
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: only the original proposal instance can queue its private plan
+ok 322 - SQLite/anthropic: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 13.512527
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: conflicting proposals cannot reuse a queued request identity
+ok 323 - SQLite/anthropic: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 21.576897
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: read-only grants cannot receive edit proposals
+ok 324 - SQLite/anthropic: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 11.592135
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: deleting a project invalidates its ephemeral proposals
+ok 325 - SQLite/anthropic: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 14.891242
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+ok 326 - SQLite/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 12.51216
+  type: 'test'
+  ...
+# Subtest: SQLite: project, history and receipt commit once with distinct revisions
+ok 327 - SQLite: project, history and receipt commit once with distinct revisions
+  ---
+  duration_ms: 59.422384
+  type: 'test'
+  ...
+# Subtest: SQLite: request identity reopens exact state and refuses changed plans
+ok 328 - SQLite: request identity reopens exact state and refuses changed plans
+  ---
+  duration_ms: 9.01705
+  type: 'test'
+  ...
+# Subtest: SQLite: input and output snapshots do not mutate durable authority
+ok 329 - SQLite: input and output snapshots do not mutate durable authority
+  ---
+  duration_ms: 10.632405
+  type: 'test'
+  ...
+# Subtest: SQLite: foreign owner, foreign project and deleted project cannot inspect or act
+ok 330 - SQLite: foreign owner, foreign project and deleted project cannot inspect or act
+  ---
+  duration_ms: 6.421508
+  type: 'test'
+  ...
+# Subtest: SQLite: local ownerless projects retain local authority without widening scope
+ok 331 - SQLite: local ownerless projects retain local authority without widening scope
+  ---
+  duration_ms: 9.036947
+  type: 'test'
+  ...
+# Subtest: SQLite: read and noop receipts never invent durable project history
+ok 332 - SQLite: read and noop receipts never invent durable project history
+  ---
+  duration_ms: 10.870868
+  type: 'test'
+  ...
+# Subtest: SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+ok 333 - SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+  ---
+  duration_ms: 20.671226
+  type: 'test'
+  ...
+# Subtest: SQLite: human changes after start cause stale refusal without rebasing
+ok 334 - SQLite: human changes after start cause stale refusal without rebasing
+  ---
+  duration_ms: 9.356811
+  type: 'test'
+  ...
+# Subtest: SQLite: inspect-only and locked/hidden targets fail through canonical tools
+ok 335 - SQLite: inspect-only and locked/hidden targets fail through canonical tools
+  ---
+  duration_ms: 18.51185
+  type: 'test'
+  ...
+# Subtest: SQLite: failure budgets and concise traces survive a new runtime instance
+ok 336 - SQLite: failure budgets and concise traces survive a new runtime instance
+  ---
+  duration_ms: 12.639464
+  type: 'test'
+  ...
+# Subtest: SQLite: cancellation before work and after commit preserves transaction order
+ok 337 - SQLite: cancellation before work and after commit preserves transaction order
+  ---
+  duration_ms: 15.487044
+  type: 'test'
+  ...
+# Subtest: SQLite: lease takeover fences the previous worker even with reused worker name
+ok 338 - SQLite: lease takeover fences the previous worker even with reused worker name
+  ---
+  duration_ms: 136.955687
+  type: 'test'
+  ...
+# Subtest: SQLite: deadlines persist across restart and expire before effects
+ok 339 - SQLite: deadlines persist across restart and expire before effects
+  ---
+  duration_ms: 189.729294
+  type: 'test'
+  ...
+# Subtest: SQLite: after-project failure rolls project/history/receipt back together
+ok 340 - SQLite: after-project failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1025.116209
+  type: 'test'
+  ...
+# Subtest: SQLite: after-receipt failure rolls project/history/receipt back together
+ok 341 - SQLite: after-receipt failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1024.271093
+  type: 'test'
+  ...
+# Subtest: SQLite: final-fence failure rolls project/history/receipt back together
+ok 342 - SQLite: final-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 156.302077
+  type: 'test'
+  ...
+# Subtest: SQLite: deadline-fence failure rolls project/history/receipt back together
+ok 343 - SQLite: deadline-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 153.426768
+  type: 'test'
+  ...
+# Subtest: SQLite: records and traces are bounded and omit raw document/read contents
+ok 344 - SQLite: records and traces are bounded and omit raw document/read contents
+  ---
+  duration_ms: 9.724961
+  type: 'test'
+  ...
+# Subtest: SQLite: malformed/oversized/authority/layout data and duplicate grants are refused
+ok 345 - SQLite: malformed/oversized/authority/layout data and duplicate grants are refused
+  ---
+  duration_ms: 11.022295
+  type: 'test'
+  ...
+# Subtest: SQLite: concurrent advances sharing one lease reserve only one attempt
+ok 346 - SQLite: concurrent advances sharing one lease reserve only one attempt
+  ---
+  duration_ms: 13.087458
+  type: 'test'
+  ...
+# Subtest: SQLite: unsupported or corrupt durable records fail closed
+ok 347 - SQLite: unsupported or corrupt durable records fail closed
+  ---
+  duration_ms: 7.963724
+  type: 'test'
+  ...
+# Subtest: SQLite: renewal extends the current lease without changing its fence
+ok 348 - SQLite: renewal extends the current lease without changing its fence
+  ---
+  duration_ms: 192.156076
+  type: 'test'
+  ...
+# Subtest: SQLite: project deletion cascades runs and all step receipts
+ok 349 - SQLite: project deletion cascades runs and all step receipts
+  ---
+  duration_ms: 10.210595
+  type: 'test'
+  ...
+# Subtest: SQLite: corrupt receipt checkpoints refuse resume instead of skipping work
+ok 350 - SQLite: corrupt receipt checkpoints refuse resume instead of skipping work
+  ---
+  duration_ms: 9.688851
+  type: 'test'
+  ...
+# Subtest: SQLite: CLI start exits and a separate worker completes the saved project
+ok 351 - SQLite: CLI start exits and a separate worker completes the saved project
+  ---
+  duration_ms: 992.314255
+  type: 'test'
+  ...
+# Subtest: SQLite: schema-valid contradictory receipts and counters fail closed
+ok 352 - SQLite: schema-valid contradictory receipts and counters fail closed
+  ---
+  duration_ms: 23.15071
+  type: 'test'
+  ...
+# Subtest: persisted semantic plan schemas retain the canonical tool contract
+ok 353 - persisted semantic plan schemas retain the canonical tool contract
+  ---
+  duration_ms: 1.601279
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project, history and receipt commit once with distinct revisions
+ok 354 - PostgreSQL: project, history and receipt commit once with distinct revisions
+  ---
+  duration_ms: 118.965627
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: request identity reopens exact state and refuses changed plans
+ok 355 - PostgreSQL: request identity reopens exact state and refuses changed plans
+  ---
+  duration_ms: 11.523398
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: input and output snapshots do not mutate durable authority
+ok 356 - PostgreSQL: input and output snapshots do not mutate durable authority
+  ---
+  duration_ms: 16.635264
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act
+ok 357 - PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act
+  ---
+  duration_ms: 6.699743
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: local ownerless projects retain local authority without widening scope
+ok 358 - PostgreSQL: local ownerless projects retain local authority without widening scope
+  ---
+  duration_ms: 12.604421
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: read and noop receipts never invent durable project history
+ok 359 - PostgreSQL: read and noop receipts never invent durable project history
+  ---
+  duration_ms: 15.189312
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+ok 360 - PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+  ---
+  duration_ms: 29.722995
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: human changes after start cause stale refusal without rebasing
+ok 361 - PostgreSQL: human changes after start cause stale refusal without rebasing
+  ---
+  duration_ms: 9.790927
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools
+ok 362 - PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools
+  ---
+  duration_ms: 25.687067
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: failure budgets and concise traces survive a new runtime instance
+ok 363 - PostgreSQL: failure budgets and concise traces survive a new runtime instance
+  ---
+  duration_ms: 15.184516
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: cancellation before work and after commit preserves transaction order
+ok 364 - PostgreSQL: cancellation before work and after commit preserves transaction order
+  ---
+  duration_ms: 22.357073
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: lease takeover fences the previous worker even with reused worker name
+ok 365 - PostgreSQL: lease takeover fences the previous worker even with reused worker name
+  ---
+  duration_ms: 141.654023
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: deadlines persist across restart and expire before effects
+ok 366 - PostgreSQL: deadlines persist across restart and expire before effects
+  ---
+  duration_ms: 191.482116
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: after-project failure rolls project/history/receipt back together
+ok 367 - PostgreSQL: after-project failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1030.39062
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: after-receipt failure rolls project/history/receipt back together
+ok 368 - PostgreSQL: after-receipt failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1031.803978
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: final-fence failure rolls project/history/receipt back together
+ok 369 - PostgreSQL: final-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 191.864271
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: deadline-fence failure rolls project/history/receipt back together
+ok 370 - PostgreSQL: deadline-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 180.638018
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: records and traces are bounded and omit raw document/read contents
+ok 371 - PostgreSQL: records and traces are bounded and omit raw document/read contents
+  ---
+  duration_ms: 22.303567
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused
+ok 372 - PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused
+  ---
+  duration_ms: 9.431601
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: concurrent advances sharing one lease reserve only one attempt
+ok 373 - PostgreSQL: concurrent advances sharing one lease reserve only one attempt
+  ---
+  duration_ms: 16.829905
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: unsupported or corrupt durable records fail closed
+ok 374 - PostgreSQL: unsupported or corrupt durable records fail closed
+  ---
+  duration_ms: 5.012003
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: renewal extends the current lease without changing its fence
+ok 375 - PostgreSQL: renewal extends the current lease without changing its fence
+  ---
+  duration_ms: 199.282669
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project deletion cascades runs and all step receipts
+ok 376 - PostgreSQL: project deletion cascades runs and all step receipts
+  ---
+  duration_ms: 12.835183
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: corrupt receipt checkpoints refuse resume instead of skipping work
+ok 377 - PostgreSQL: corrupt receipt checkpoints refuse resume instead of skipping work
+  ---
+  duration_ms: 12.679506
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: CLI start exits and a separate worker completes the saved project
+ok 378 - PostgreSQL: CLI start exits and a separate worker completes the saved project
+  ---
+  duration_ms: 1083.251916
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: schema-valid contradictory receipts and counters fail closed
+ok 379 - PostgreSQL: schema-valid contradictory receipts and counters fail closed
+  ---
+  duration_ms: 79.273686
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: two processes race for one lease and only one can claim
+ok 380 - PostgreSQL process: two processes race for one lease and only one can claim
+  ---
+  duration_ms: 411.048901
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill reserved then restart cannot lose or replay an edit
+ok 381 - PostgreSQL process: kill reserved then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1844.44031
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill after-project then restart cannot lose or replay an edit
+ok 382 - PostgreSQL process: kill after-project then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1895.045882
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit
+ok 383 - PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1883.058798
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill committed then restart cannot lose or replay an edit
+ok 384 - PostgreSQL process: kill committed then restart cannot lose or replay an edit
+  ---
+  duration_ms: 339.972453
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: restart resumes after a committed checkpoint without repeating it
+ok 385 - PostgreSQL process: restart resumes after a committed checkpoint without repeating it
+  ---
+  duration_ms: 1855.058072
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: crashed reservations exhaust the persisted step budget
+ok 386 - PostgreSQL process: crashed reservations exhaust the persisted step budget
+  ---
+  duration_ms: 1042.695621
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next
+ok 387 - PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next
+  ---
+  duration_ms: 705.624269
+  type: 'test'
+  ...
+# Subtest: SQLite process: two processes race for one lease and only one can claim
+ok 388 - SQLite process: two processes race for one lease and only one can claim
+  ---
+  duration_ms: 422.118497
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill reserved then restart cannot lose or replay an edit
+ok 389 - SQLite process: kill reserved then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1855.232047
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill after-project then restart cannot lose or replay an edit
+ok 390 - SQLite process: kill after-project then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1836.773602
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill after-receipt then restart cannot lose or replay an edit
+ok 391 - SQLite process: kill after-receipt then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1843.451888
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill committed then restart cannot lose or replay an edit
+ok 392 - SQLite process: kill committed then restart cannot lose or replay an edit
+  ---
+  duration_ms: 277.46944
+  type: 'test'
+  ...
+# Subtest: SQLite process: restart resumes after a committed checkpoint without repeating it
+ok 393 - SQLite process: restart resumes after a committed checkpoint without repeating it
+  ---
+  duration_ms: 1881.930129
+  type: 'test'
+  ...
+# Subtest: SQLite process: crashed reservations exhaust the persisted step budget
+ok 394 - SQLite process: crashed reservations exhaust the persisted step budget
+  ---
+  duration_ms: 1041.159564
+  type: 'test'
+  ...
+# Subtest: SQLite process: cancellation racing an in-flight commit keeps that commit and prevents the next
+ok 395 - SQLite process: cancellation racing an in-flight commit keeps that commit and prevents the next
+  ---
+  duration_ms: 597.42497
+  type: 'test'
+  ...
+# Subtest: v2 sourceref
+    # Subtest: accepts a minimal project source
+    ok 1 - accepts a minimal project source
+      ---
+      duration_ms: 31.201227
+      type: 'test'
+      ...
+    # Subtest: accepts all supported kinds
+    ok 2 - accepts all supported kinds
+      ---
+      duration_ms: 0.29107
+      type: 'test'
+      ...
+    # Subtest: rejects invalid kinds and missing projectId
+    ok 3 - rejects invalid kinds and missing projectId
+      ---
+      duration_ms: 0.207396
+      type: 'test'
+      ...
+    # Subtest: accepts a web source with URL
+    ok 4 - accepts a web source with URL
+      ---
+      duration_ms: 0.146868
+      type: 'test'
+      ...
+    # Subtest: accepts a paper source with DOI
+    ok 5 - accepts a paper source with DOI
+      ---
+      duration_ms: 0.128929
+      type: 'test'
+      ...
+    # Subtest: accepts a project-file source with fileId and locator
+    ok 6 - accepts a project-file source with fileId and locator
+      ---
+      duration_ms: 0.126435
+      type: 'test'
+      ...
+    # Subtest: accepts searchProvider as an opaque string without enumerating vendors
+    ok 7 - accepts searchProvider as an opaque string without enumerating vendors
+      ---
+      duration_ms: 0.161047
+      type: 'test'
+      ...
+    # Subtest: rejects unknown fields
+    ok 8 - rejects unknown fields
+      ---
+      duration_ms: 0.242509
+      type: 'test'
+      ...
+    1..8
+ok 396 - v2 sourceref
+  ---
+  duration_ms: 33.66773
+  type: 'suite'
+  ...
+# Subtest: unauthorized caller cannot inspect project state
+ok 397 - unauthorized caller cannot inspect project state
+  ---
+  duration_ms: 28.551408
+  type: 'test'
+  ...
+# Subtest: project index pages expose only allowed slides and no content/style
+ok 398 - project index pages expose only allowed slides and no content/style
+  ---
+  duration_ms: 12.321021
+  type: 'test'
+  ...
+# Subtest: slide and selection projections preserve exact content without renderer or authority fields
+ok 399 - slide and selection projections preserve exact content without renderer or authority fields
+  ---
+  duration_ms: 1.262477
+  type: 'test'
+  ...
+# Subtest: pagination is explicit and slide grants cannot be bypassed
+ok 400 - pagination is explicit and slide grants cannot be bypassed
+  ---
+  duration_ms: 0.793886
+  type: 'test'
+  ...
+# Subtest: empty and invalid selections never widen scope
+ok 401 - empty and invalid selections never widen scope
+  ---
+  duration_ms: 0.883852
+  type: 'test'
+  ...
+# Subtest: rejects raw command as untrusted input without mutation
+ok 402 - rejects raw command as untrusted input without mutation
+  ---
+  duration_ms: 0.524188
+  type: 'test'
+  ...
+# Subtest: rejects geometry as untrusted input without mutation
+ok 403 - rejects geometry as untrusted input without mutation
+  ---
+  duration_ms: 0.402551
+  type: 'test'
+  ...
+# Subtest: rejects owner override as untrusted input without mutation
+ok 404 - rejects owner override as untrusted input without mutation
+  ---
+  duration_ms: 0.414452
+  type: 'test'
+  ...
+# Subtest: rejects text style as untrusted input without mutation
+ok 405 - rejects text style as untrusted input without mutation
+  ---
+  duration_ms: 0.420765
+  type: 'test'
+  ...
+# Subtest: rejects nonfinite as untrusted input without mutation
+ok 406 - rejects nonfinite as untrusted input without mutation
+  ---
+  duration_ms: 0.352705
+  type: 'test'
+  ...
+# Subtest: rejects missing args as untrusted input without mutation
+ok 407 - rejects missing args as untrusted input without mutation
+  ---
+  duration_ms: 0.256379
+  type: 'test'
+  ...
+# Subtest: rejects unknown tool as untrusted input without mutation
+ok 408 - rejects unknown tool as untrusted input without mutation
+  ---
+  duration_ms: 0.233677
+  type: 'test'
+  ...
+# Subtest: rejects sparse array as untrusted input without mutation
+ok 409 - rejects sparse array as untrusted input without mutation
+  ---
+  duration_ms: 0.261101
+  type: 'test'
+  ...
+# Subtest: rejects function as untrusted input without mutation
+ok 410 - rejects function as untrusted input without mutation
+  ---
+  duration_ms: 0.252989
+  type: 'test'
+  ...
+# Subtest: rejects pollution as untrusted input without mutation
+ok 411 - rejects pollution as untrusted input without mutation
+  ---
+  duration_ms: 0.221716
+  type: 'test'
+  ...
+# Subtest: accessors and cycles are refused without invoking accessors
+ok 412 - accessors and cycles are refused without invoking accessors
+  ---
+  duration_ms: 0.241365
+  type: 'test'
+  ...
+# Subtest: text edits preserve all runs, styling and geometry with exact undo/redo
+ok 413 - text edits preserve all runs, styling and geometry with exact undo/redo
+  ---
+  duration_ms: 2.864802
+  type: 'test'
+  ...
+# Subtest: text, chart and table changes commit as one native batch
+ok 414 - text, chart and table changes commit as one native batch
+  ---
+  duration_ms: 28.279469
+  type: 'test'
+  ...
+# Subtest: invalid later chart or table edit rolls back every earlier valid edit
+ok 415 - invalid later chart or table edit rolls back every earlier valid edit
+  ---
+  duration_ms: 1.06672
+  type: 'test'
+  ...
+# Subtest: duplicate text run is refused atomically
+ok 416 - duplicate text run is refused atomically
+  ---
+  duration_ms: 0.364782
+  type: 'test'
+  ...
+# Subtest: duplicate data is refused atomically
+ok 417 - duplicate data is refused atomically
+  ---
+  duration_ms: 0.317445
+  type: 'test'
+  ...
+# Subtest: wrong kind is refused atomically
+ok 418 - wrong kind is refused atomically
+  ---
+  duration_ms: 0.272676
+  type: 'test'
+  ...
+# Subtest: invalid run is refused atomically
+ok 419 - invalid run is refused atomically
+  ---
+  duration_ms: 0.264047
+  type: 'test'
+  ...
+# Subtest: stale revisions and duplicate applied calls cannot overwrite
+ok 420 - stale revisions and duplicate applied calls cannot overwrite
+  ---
+  duration_ms: 0.751136
+  type: 'test'
+  ...
+# Subtest: parallel calls with the same revision have only one winner
+ok 421 - parallel calls with the same revision have only one winner
+  ---
+  duration_ms: 0.660097
+  type: 'test'
+  ...
+# Subtest: noop edits retain revision, history and redo state
+ok 422 - noop edits retain revision, history and redo state
+  ---
+  duration_ms: 0.434547
+  type: 'test'
+  ...
+# Subtest: read-only mode and absent grants cannot be widened by a tool request
+ok 423 - read-only mode and absent grants cannot be widened by a tool request
+  ---
+  duration_ms: 0.721617
+  type: 'test'
+  ...
+# Subtest: editing outside the grant or outside readable slides is refused
+ok 424 - editing outside the grant or outside readable slides is refused
+  ---
+  duration_ms: 0.315735
+  type: 'test'
+  ...
+# Subtest: locked targets are refused even with an explicit grant
+ok 425 - locked targets are refused even with an explicit grant
+  ---
+  duration_ms: 1.130836
+  type: 'test'
+  ...
+# Subtest: hidden targets are refused even with an explicit grant
+ok 426 - hidden targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.220239
+  type: 'test'
+  ...
+# Subtest: ancestor locks and hidden groups protect nested targets
+ok 427 - ancestor locks and hidden groups protect nested targets
+  ---
+  duration_ms: 0.48252
+  type: 'test'
+  ...
+# Subtest: detached content stays editable and existing tombstones/human additions survive
+ok 428 - detached content stays editable and existing tombstones/human additions survive
+  ---
+  duration_ms: 0.986655
+  type: 'test'
+  ...
+# Subtest: input is snapshotted and output/catalog/grants cannot mutate authoritative state
+ok 429 - input is snapshotted and output/catalog/grants cannot mutate authoritative state
+  ---
+  duration_ms: 0.920698
+  type: 'test'
+  ...
+# Subtest: calls, oversized reads, input and pre-commit acknowledgements obey budgets
+ok 430 - calls, oversized reads, input and pre-commit acknowledgements obey budgets
+  ---
+  duration_ms: 0.637712
+  type: 'test'
+  ...
+# Subtest: unexpected document failures do not echo private exception text
+ok 431 - unexpected document failures do not echo private exception text
+  ---
+  duration_ms: 0.273263
+  type: 'test'
+  ...
+# Subtest: an oversized acknowledgement refuses before the real engine can commit
+ok 432 - an oversized acknowledgement refuses before the real engine can commit
+  ---
+  duration_ms: 1.359848
+  type: 'test'
+  ...
+# Subtest: result schemas reject missing fields and renderer/credential escapes in projected data
+ok 433 - result schemas reject missing fields and renderer/credential escapes in projected data
+  ---
+  duration_ms: 0.747779
+  type: 'test'
+  ...
+# Subtest: table content tools refuse dimension changes without committing any batch part
+ok 434 - table content tools refuse dimension changes without committing any batch part
+  ---
+  duration_ms: 0.681254
+  type: 'test'
+  ...
+# Subtest: tool wording and human placement survive deterministic regeneration together
+ok 435 - tool wording and human placement survive deterministic regeneration together
+  ---
+  duration_ms: 48.430333
+  type: 'test'
+  ...
+1..435
+# tests 477
+# suites 28
+# pass 477
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 59911.089947
+# forge-test-file "test/research-diversity.test.js"
+# forge-test-file "test/research-pages.test.js"
+# forge-test-file "test/research-relevance.test.js"
+# forge-test-file "test/research.test.js"
+# forge-test-file "test/v2-conversation-8e.test.js"
+# forge-test-file "test/v2-conversation-postgres-8e.test.js"
+# forge-test-file "test/v2-conversation-sqlite-8e.test.js"
+# forge-test-file "test/v2-preservation.test.js"
+# forge-test-file "test/v2-projects-6c-concurrency.test.js"
+# forge-test-file "test/v2-projects-6c-faults.test.js"
+# forge-test-file "test/v2-projects-6c-postgres.test.js"
+# forge-test-file "test/v2-projects-6c-sqlite.test.js"
+# forge-test-file "test/v2-provider-8c.test.js"
+# forge-test-file "test/v2-provider-durable-8c.test.js"
+# forge-test-file "test/v2-provider-postgres-8c.test.js"
+# forge-test-file "test/v2-provider-run-8d.test.js"
+# forge-test-file "test/v2-provider-run-postgres-8d.test.js"
+# forge-test-file "test/v2-provider-run-sqlite-8d.test.js"
+# forge-test-file "test/v2-runtime-8b.test.js"
+# forge-test-file "test/v2-runtime-postgres-8b.test.js"
+# forge-test-file "test/v2-runtime-process-8b.test.js"
+# forge-test-file "test/v2-sourceref.test.js"
+# forge-test-file "test/v2-tools-8a.test.js"

@@ -1,0 +1,333 @@
+[
+  {
+    "file": "docs/v2-8f-evidence/independent/fresh-contact/browser-01.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/dashboard-empty.png",
+        "kind": "browser",
+        "sha256": "f3bc9a0d7368fe7d3b2cfdd0e4f9b8a4e7c030180c3265698cc37cbc1be47bf5"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/dashboard-hosted-anon.png",
+        "kind": "browser",
+        "sha256": "8bc69b45ec65fb4ba4c4b8a1afef7e700a6d762aa7f4ba054c098143e4c44b2c"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/dashboard.png",
+        "kind": "browser",
+        "sha256": "fc37d69e34977e7316bc59022498653b067e7d2c3be950e3c118a9e27952a350"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/editor-blank.png",
+        "kind": "browser",
+        "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/editor-chart.png",
+        "kind": "browser",
+        "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/editor-history.png",
+        "kind": "browser",
+        "sha256": "a49898ae60e28eff3a16c1116e7d6e1a36b8651d985c6054f0d33cea81ffb0af"
+      }
+    ]
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/fresh-contact/browser-02.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/editor-narrow-projects.png",
+        "kind": "browser",
+        "sha256": "402ebaf30399f032c6d7528b91a15438ec2c6448b1b8d566d015534bc55c1fd1"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/editor-narrow.png",
+        "kind": "browser",
+        "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/editor-readonly.png",
+        "kind": "browser",
+        "sha256": "965724375cc9f9a3f8fd69007f03d489b975aeae4e571f6fafcd5f92c1205cb4"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/editor-shell.png",
+        "kind": "browser",
+        "sha256": "caa6fb175a677381f3a44520a8ffd27d7c0b79fefa5e47ce89f3dc23463ec70e"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/fresh-7a/editor-table.png",
+        "kind": "browser",
+        "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9"
+      }
+    ]
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/fresh-contact/native-01.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-1.png",
+        "kind": "native",
+        "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-2.png",
+        "kind": "native",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-1.png",
+        "kind": "native",
+        "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-2.png",
+        "kind": "native",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-1.png",
+        "kind": "native",
+        "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-2.png",
+        "kind": "native",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      }
+    ]
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/fresh-contact/native-02.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-1.png",
+        "kind": "native",
+        "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-2.png",
+        "kind": "native",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-1.png",
+        "kind": "native",
+        "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-2.png",
+        "kind": "native",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-1.png",
+        "kind": "native",
+        "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-2.png",
+        "kind": "native",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      }
+    ]
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/fresh-contact/native-03.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-1.png",
+        "kind": "native",
+        "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-2.png",
+        "kind": "native",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-1.png",
+        "kind": "native",
+        "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-2.png",
+        "kind": "native",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/fresh-shell-chart-1.png",
+        "kind": "native",
+        "archiveFresh": true,
+        "sha256": "bdae197071e3f226f6d652a6f4d71ed3ac5a6e15c92342bbadd31095b561cf47"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/fresh-shell-table-1.png",
+        "kind": "native",
+        "archiveFresh": true,
+        "sha256": "64f377da7127d2ac26b63fb346d861e67966524c4c6703f741296f613a832f27"
+      }
+    ]
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/fresh-contact/native-04.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/retained-imported-chart-1.png",
+        "kind": "native",
+        "archiveFresh": false,
+        "sha256": "0657cc18494dda55383df308f6e18d747c7a194c6be13b44a9f8c076ca81a4dd"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/retained-imported-chart-2.png",
+        "kind": "native",
+        "archiveFresh": false,
+        "sha256": "7b885b1303026d117743b6c978e502b05b8ba0b624a0d0960b751ae0bf6c60c2"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/retained-imported-chart-3.png",
+        "kind": "native",
+        "archiveFresh": false,
+        "sha256": "4ed100494d7b5ea9894b11ba2e14c033360d9c713dfbb9cfa703cf9db79dd76d"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/retained-imported-table-1.png",
+        "kind": "native",
+        "archiveFresh": false,
+        "sha256": "0657cc18494dda55383df308f6e18d747c7a194c6be13b44a9f8c076ca81a4dd"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/retained-imported-table-2.png",
+        "kind": "native",
+        "archiveFresh": false,
+        "sha256": "5d349386404d0660dcbc1bf02c055fdbc9f5675c24928b10e2579b48fa026ad1"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/retained-imported-table-3.png",
+        "kind": "native",
+        "archiveFresh": false,
+        "sha256": "1d46d4fe9d25573ed1ed1acec42299b37faacb07af3f35c66c80f2617cbb6a83"
+      }
+    ]
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/fresh-contact/native-05.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/retained-handoff-1.png",
+        "kind": "native",
+        "archiveFresh": false,
+        "sha256": "0657cc18494dda55383df308f6e18d747c7a194c6be13b44a9f8c076ca81a4dd"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/retained-handoff-2.png",
+        "kind": "native",
+        "archiveFresh": false,
+        "sha256": "5d349386404d0660dcbc1bf02c055fdbc9f5675c24928b10e2579b48fa026ad1"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/browser-native/retained-handoff-3.png",
+        "kind": "native",
+        "archiveFresh": false,
+        "sha256": "4ed100494d7b5ea9894b11ba2e14c033360d9c713dfbb9cfa703cf9db79dd76d"
+      }
+    ]
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/fresh-contact/svg-01.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-1-svg.png",
+        "kind": "svg",
+        "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-2-svg.png",
+        "kind": "svg",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-1-svg.png",
+        "kind": "svg",
+        "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-2-svg.png",
+        "kind": "svg",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-1-svg.png",
+        "kind": "svg",
+        "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-2-svg.png",
+        "kind": "svg",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      }
+    ]
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/fresh-contact/svg-02.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-1-svg.png",
+        "kind": "svg",
+        "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-2-svg.png",
+        "kind": "svg",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-1-svg.png",
+        "kind": "svg",
+        "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-2-svg.png",
+        "kind": "svg",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-1-svg.png",
+        "kind": "svg",
+        "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-2-svg.png",
+        "kind": "svg",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      }
+    ]
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/fresh-contact/svg-03.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-1-svg.png",
+        "kind": "svg",
+        "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-2-svg.png",
+        "kind": "svg",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-1-svg.png",
+        "kind": "svg",
+        "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+      },
+      {
+        "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-2-svg.png",
+        "kind": "svg",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      }
+    ]
+  }
+]

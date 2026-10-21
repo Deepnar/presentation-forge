@@ -1,0 +1,527 @@
+TAP version 13
+# Subtest: repository state, document references and real Git ancestry validate
+ok 1 - repository state, document references and real Git ancestry validate
+  ---
+  duration_ms: 52.660582
+  type: 'test'
+  ...
+# Subtest: missing required role document fails closed
+ok 2 - missing required role document fails closed
+  ---
+  duration_ms: 22.820611
+  type: 'test'
+  ...
+# Subtest: malformed state JSON returns diagnostics instead of crashing
+ok 3 - malformed state JSON returns diagnostics instead of crashing
+  ---
+  duration_ms: 1.498504
+  type: 'test'
+  ...
+# Subtest: unknown review state, malformed SHA and extra properties are rejected
+ok 4 - unknown review state, malformed SHA and extra properties are rejected
+  ---
+  duration_ms: 9.969064
+  type: 'test'
+  ...
+# Subtest: known pending validation cannot disappear or be duplicated
+ok 5 - known pending validation cannot disappear or be duplicated
+  ---
+  duration_ms: 26.935518
+  type: 'test'
+  ...
+# Subtest: unaccepted implementation cannot replace the accepted baseline
+ok 6 - unaccepted implementation cannot replace the accepted baseline
+  ---
+  duration_ms: 16.303402
+  type: 'test'
+  ...
+# Subtest: passed validation needs existing matching evidence and its output log
+ok 7 - passed validation needs existing matching evidence and its output log
+  ---
+  duration_ms: 70.066087
+  type: 'test'
+  ...
+# Subtest: stale evidence from another implementation SHA is refused
+ok 8 - stale evidence from another implementation SHA is refused
+  ---
+  duration_ms: 20.584578
+  type: 'test'
+  ...
+# Subtest: self-reported totals must match the retained test output
+ok 9 - self-reported totals must match the retained test output
+  ---
+  duration_ms: 22.590831
+  type: 'test'
+  ...
+# Subtest: nonzero, cancelled, skipped and inconsistent totals never become passes
+ok 10 - nonzero, cancelled, skipped and inconsistent totals never become passes
+  ---
+  duration_ms: 68.252982
+  type: 'test'
+  ...
+# Subtest: existing output cannot substitute for actual visual inspection or 50 benchmark cells
+ok 11 - existing output cannot substitute for actual visual inspection or 50 benchmark cells
+  ---
+  duration_ms: 47.757961
+  type: 'test'
+  ...
+# Subtest: renaming a reviewer cannot substitute for a separate decision record
+ok 12 - renaming a reviewer cannot substitute for a separate decision record
+  ---
+  duration_ms: 30.751571
+  type: 'test'
+  ...
+# Subtest: legitimate recorded acceptance can advance the baseline after completed validation
+ok 13 - legitimate recorded acceptance can advance the baseline after completed validation
+  ---
+  duration_ms: 77.804178
+  type: 'test'
+  ...
+# Subtest: document paths, anchors and symlinks cannot leave the repository or point nowhere
+ok 14 - document paths, anchors and symlinks cannot leave the repository or point nowhere
+  ---
+  duration_ms: 50.308573
+  type: 'test'
+  ...
+# Subtest: Git verification rejects well-shaped nonexistent commits
+ok 15 - Git verification rejects well-shaped nonexistent commits
+  ---
+  duration_ms: 11.165815
+  type: 'test'
+  ...
+# Subtest: a passing subset cannot substitute for the full required file scope
+ok 16 - a passing subset cannot substitute for the full required file scope
+  ---
+  duration_ms: 19.371065
+  type: 'test'
+  ...
+# Subtest: name-filtered runs and implausibly small suite counts fail closed
+ok 17 - name-filtered runs and implausibly small suite counts fail closed
+  ---
+  duration_ms: 38.161689
+  type: 'test'
+  ...
+# Subtest: the TAP inventory records entry files without imported contract helpers
+ok 18 - the TAP inventory records entry files without imported contract helpers
+  ---
+  duration_ms: 80.795677
+  type: 'test'
+  ...
+# Subtest: new milestone keeps its own focused gate and rejects old evidence inventory
+ok 19 - new milestone keeps its own focused gate and rejects old evidence inventory
+  ---
+  duration_ms: 63.905421
+  type: 'test'
+  ...
+# Subtest: browser handoff requires its own complete focused evidence
+ok 20 - browser handoff requires its own complete focused evidence
+  ---
+  duration_ms: 66.320995
+  type: 'test'
+  ...
+# Subtest: project covers require their own unit, HTTP and complete Chrome evidence
+ok 21 - project covers require their own unit, HTTP and complete Chrome evidence
+  ---
+  duration_ms: 60.69162
+  type: 'test'
+  ...
+# Subtest: project discovery requires its own complete unit, HTTP and Chrome evidence
+ok 22 - project discovery requires its own complete unit, HTTP and Chrome evidence
+  ---
+  duration_ms: 65.365172
+  type: 'test'
+  ...
+# Subtest: production toolbar evidence includes its complete Chrome file and full shell regression
+ok 23 - production toolbar evidence includes its complete Chrome file and full shell regression
+  ---
+  duration_ms: 72.187332
+  type: 'test'
+  ...
+# Subtest: agent foundation requires complete tool and context behavioral evidence
+ok 24 - agent foundation requires complete tool and context behavioral evidence
+  ---
+  duration_ms: 71.267733
+  type: 'test'
+  ...
+# Subtest: provider boundary requires both protocol and durable backend files
+ok 25 - provider boundary requires both protocol and durable backend files
+  ---
+  duration_ms: 83.797246
+  type: 'test'
+  ...
+# Subtest: provider-run preparation requires both storage backends and boundary cases
+ok 26 - provider-run preparation requires both storage backends and boundary cases
+  ---
+  duration_ms: 80.634498
+  type: 'test'
+  ...
+# Subtest: bounded conversation requires both storage backends and boundary cases
+ok 27 - bounded conversation requires both storage backends and boundary cases
+  ---
+  duration_ms: 84.273008
+  type: 'test'
+  ...
+# Subtest: shared search requires normalization and complete HTTP transport evidence
+ok 28 - shared search requires normalization and complete HTTP transport evidence
+  ---
+  duration_ms: 78.343164
+  type: 'test'
+  ...
+# Subtest: v2 core boundary
+    # Subtest: detects static, re-export, and literal dynamic imports
+    ok 1 - detects static, re-export, and literal dynamic imports
+      ---
+      duration_ms: 5.70771
+      type: 'test'
+      ...
+    # Subtest: fails closed on require() and non-literal dynamic import
+    ok 2 - fails closed on require() and non-literal dynamic import
+      ---
+      duration_ms: 0.70814
+      type: 'test'
+      ...
+    # Subtest: enforces package directions on synthetic edges
+    ok 3 - enforces package directions on synthetic edges
+      ---
+      duration_ms: 0.316833
+      type: 'test'
+      ...
+    # Subtest: confines node builtins to the named renderer adapter
+    ok 4 - confines node builtins to the named renderer adapter
+      ---
+      duration_ms: 0.164243
+      type: 'test'
+      ...
+    # Subtest: allows jszip only in renderer-docx
+    ok 5 - allows jszip only in renderer-docx
+      ---
+      duration_ms: 0.166734
+      type: 'test'
+      ...
+    # Subtest: repository packages contain zero boundary violations
+    ok 6 - repository packages contain zero boundary violations
+      ---
+      duration_ms: 207.261774
+      type: 'test'
+      ...
+    1..6
+ok 29 - v2 core boundary
+  ---
+  duration_ms: 215.365279
+  type: 'suite'
+  ...
+# Subtest: search requests and trusted project binding stay separate
+ok 30 - search requests and trusted project binding stay separate
+  ---
+  duration_ms: 2.530808
+  type: 'test'
+  ...
+# Subtest: executable, cyclic and non-plain boundary objects refuse without invocation
+ok 31 - executable, cyclic and non-plain boundary objects refuse without invocation
+  ---
+  duration_ms: 0.846632
+  type: 'test'
+  ...
+# Subtest: normalized sources satisfy the canonical source schema and exclude backend payloads
+ok 32 - normalized sources satisfy the canonical source schema and exclude backend payloads
+  ---
+  duration_ms: 22.060526
+  type: 'test'
+  ...
+# Subtest: source identity is stable across retrieval times, query order and provider metadata
+ok 33 - source identity is stable across retrieval times, query order and provider metadata
+  ---
+  duration_ms: 4.615174
+  type: 'test'
+  ...
+# Subtest: canonical URL identity removes fragments and normalizes host/default port
+ok 34 - canonical URL identity removes fragments and normalizes host/default port
+  ---
+  duration_ms: 1.306396
+  type: 'test'
+  ...
+# Subtest: rank, URL deduplication and host diversity are deterministic
+ok 35 - rank, URL deduplication and host diversity are deterministic
+  ---
+  duration_ms: 6.7969
+  type: 'test'
+  ...
+# Subtest: malformed rows and unsafe citation URLs are discarded with an explicit warning
+ok 36 - malformed rows and unsafe citation URLs are discarded with an explicit warning
+  ---
+  duration_ms: 1.536214
+  type: 'test'
+  ...
+# Subtest: snippets become bounded plain text without executing or retaining executable markup
+ok 37 - snippets become bounded plain text without executing or retaining executable markup
+  ---
+  duration_ms: 2.668931
+  type: 'test'
+  ...
+# Subtest: partial upstream results remain successful but distinguish backend failures from empty search
+ok 38 - partial upstream results remain successful but distinguish backend failures from empty search
+  ---
+  duration_ms: 0.788239
+  type: 'test'
+  ...
+# Subtest: malformed envelopes and oversized candidate sets refuse rather than masquerading as empty
+ok 39 - malformed envelopes and oversized candidate sets refuse rather than masquerading as empty
+  ---
+  duration_ms: 1.014914
+  type: 'test'
+  ...
+# Subtest: serialized output budget is exact and never emits an oversized partial citation set
+ok 40 - serialized output budget is exact and never emits an oversized partial citation set
+  ---
+  duration_ms: 1.062983
+  type: 'test'
+  ...
+# Subtest: returned citation content and nested result collections are immutable
+ok 41 - returned citation content and nested result collections are immutable
+  ---
+  duration_ms: 0.711472
+  type: 'test'
+  ...
+# Subtest: malformed normalization options cannot execute getters or supply backend fields
+ok 42 - malformed normalization options cannot execute getters or supply backend fields
+  ---
+  duration_ms: 0.311141
+  type: 'test'
+  ...
+# Subtest: normalization handles malformed Unicode and excessive fields within canonical bounds
+ok 43 - normalization handles malformed Unicode and excessive fields within canonical bounds
+  ---
+  duration_ms: 1.050714
+  type: 'test'
+  ...
+# Subtest: plain snippets preserve block and line-break word boundaries without splitting inline words
+ok 44 - plain snippets preserve block and line-break word boundaries without splitting inline words
+  ---
+  duration_ms: 1.872203
+  type: 'test'
+  ...
+# Subtest: real form POST encodes query fields while keeping project identity and limits local
+ok 45 - real form POST encodes query fields while keeping project identity and limits local
+  ---
+  duration_ms: 35.027984
+  type: 'test'
+  ...
+# Subtest: invalid query, rebinding fields and executable accessors refuse before network
+ok 46 - invalid query, rebinding fields and executable accessors refuse before network
+  ---
+  duration_ms: 2.298884
+  type: 'test'
+  ...
+# Subtest: configuration is immutable, sanitized and never accepts URL credentials or query options
+ok 47 - configuration is immutable, sanitized and never accepts URL credentials or query options
+  ---
+  duration_ms: 0.655945
+  type: 'test'
+  ...
+# Subtest: HTTP 401 is sanitized with no retry or redirect
+ok 48 - HTTP 401 is sanitized with no retry or redirect
+  ---
+  duration_ms: 5.267469
+  type: 'test'
+  ...
+# Subtest: HTTP 403 is sanitized with no retry or redirect
+ok 49 - HTTP 403 is sanitized with no retry or redirect
+  ---
+  duration_ms: 2.625361
+  type: 'test'
+  ...
+# Subtest: HTTP 429 is sanitized with no retry or redirect
+ok 50 - HTTP 429 is sanitized with no retry or redirect
+  ---
+  duration_ms: 2.424302
+  type: 'test'
+  ...
+# Subtest: HTTP 500 is sanitized with no retry or redirect
+ok 51 - HTTP 500 is sanitized with no retry or redirect
+  ---
+  duration_ms: 2.377231
+  type: 'test'
+  ...
+# Subtest: HTTP 302 is sanitized with no retry or redirect
+ok 52 - HTTP 302 is sanitized with no retry or redirect
+  ---
+  duration_ms: 3.628816
+  type: 'test'
+  ...
+# Subtest: pre-dispatch and in-flight header cancellation are bounded
+ok 53 - pre-dispatch and in-flight header cancellation are bounded
+  ---
+  duration_ms: 2.547269
+  type: 'test'
+  ...
+# Subtest: body cancellation covers an incomplete JSON stream
+ok 54 - body cancellation covers an incomplete JSON stream
+  ---
+  duration_ms: 3.039633
+  type: 'test'
+  ...
+# Subtest: deadline includes a stalled body without retries
+ok 55 - deadline includes a stalled body without retries
+  ---
+  duration_ms: 42.518278
+  type: 'test'
+  ...
+# Subtest: declared byte overflow refuses
+ok 56 - declared byte overflow refuses
+  ---
+  duration_ms: 3.008497
+  type: 'test'
+  ...
+# Subtest: chunked byte overflow refuses
+ok 57 - chunked byte overflow refuses
+  ---
+  duration_ms: 2.317327
+  type: 'test'
+  ...
+# Subtest: invalid text/html / <html>privat refuses
+ok 58 - invalid text/html / <html>privat refuses
+  ---
+  duration_ms: 1.701655
+  type: 'test'
+  ...
+# Subtest: invalid application/json / {bad refuses
+ok 59 - invalid application/json / {bad refuses
+  ---
+  duration_ms: 1.677474
+  type: 'test'
+  ...
+# Subtest: invalid application/json / UTF8 refuses
+ok 60 - invalid application/json / UTF8 refuses
+  ---
+  duration_ms: 1.54191
+  type: 'test'
+  ...
+# Subtest: invalid application/json / {} refuses
+ok 61 - invalid application/json / {} refuses
+  ---
+  duration_ms: 1.695384
+  type: 'test'
+  ...
+# Subtest: non-cooperating injected fetch cannot defeat timeout or start a late body read
+ok 62 - non-cooperating injected fetch cannot defeat timeout or start a late body read
+  ---
+  duration_ms: 21.044966
+  type: 'test'
+  ...
+# Subtest: request inputs are snapshotted before network waits
+ok 63 - request inputs are snapshotted before network waits
+  ---
+  duration_ms: 22.35316
+  type: 'test'
+  ...
+# Subtest: transport errors never expose endpoint details or raw failure text
+ok 64 - transport errors never expose endpoint details or raw failure text
+  ---
+  duration_ms: 0.314144
+  type: 'test'
+  ...
+# Subtest: configuration accessors refuse without invoking them
+ok 65 - configuration accessors refuse without invoking them
+  ---
+  duration_ms: 0.120967
+  type: 'test'
+  ...
+# Subtest: header deadline is bounded before the backend sends a response
+ok 66 - header deadline is bounded before the backend sends a response
+  ---
+  duration_ms: 40.75762
+  type: 'test'
+  ...
+# Subtest: response bytes count UTF8 encoding rather than string characters
+ok 67 - response bytes count UTF8 encoding rather than string characters
+  ---
+  duration_ms: 2.106658
+  type: 'test'
+  ...
+# Subtest: exact byte boundary passes
+ok 68 - exact byte boundary passes
+  ---
+  duration_ms: 2.073039
+  type: 'test'
+  ...
+# Subtest: exact byte boundary overflow
+ok 69 - exact byte boundary overflow
+  ---
+  duration_ms: 1.487218
+  type: 'test'
+  ...
+# Subtest: normalized output budget remains distinct from HTTP response bytes
+ok 70 - normalized output budget remains distinct from HTTP response bytes
+  ---
+  duration_ms: 2.262213
+  type: 'test'
+  ...
+# Subtest: non-cooperating fetch cancellation fences a later response
+ok 71 - non-cooperating fetch cancellation fences a later response
+  ---
+  duration_ms: 0.473368
+  type: 'test'
+  ...
+# Subtest: non-cooperating body stream is cancelled on the whole-operation deadline
+ok 72 - non-cooperating body stream is cancelled on the whole-operation deadline
+  ---
+  duration_ms: 21.90918
+  type: 'test'
+  ...
+# Subtest: an actual partial-engine HTTP response exposes only normalized data and warning codes
+ok 73 - an actual partial-engine HTTP response exposes only normalized data and warning codes
+  ---
+  duration_ms: 2.393568
+  type: 'test'
+  ...
+# Subtest: infinite empty chunks cannot starve the deadline
+ok 74 - infinite empty chunks cannot starve the deadline
+  ---
+  duration_ms: 195.264206
+  type: 'test'
+  ...
+# Subtest: infinite empty chunks cannot starve caller cancellation
+ok 75 - infinite empty chunks cannot starve caller cancellation
+  ---
+  duration_ms: 194.670653
+  type: 'test'
+  ...
+# Subtest: monotonic timeout cancels the source before releasing its reader lock
+ok 76 - monotonic timeout cancels the source before releasing its reader lock
+  ---
+  duration_ms: 1.572056
+  type: 'test'
+  ...
+# Subtest: many empty chunks do not consume the response-byte allowance of a valid result
+ok 77 - many empty chunks do not consume the response-byte allowance of a valid result
+  ---
+  duration_ms: 17.607711
+  type: 'test'
+  ...
+# Subtest: v2 generated types drift
+    # Subtest: checked-in generated types match the schemas byte-for-byte
+    ok 1 - checked-in generated types match the schemas byte-for-byte
+      ---
+      duration_ms: 193.386206
+      type: 'test'
+      ...
+    1..1
+ok 78 - v2 generated types drift
+  ---
+  duration_ms: 194.280224
+  type: 'suite'
+  ...
+1..78
+# tests 83
+# suites 2
+# pass 83
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3449.037107
+# forge-test-file "test/dev-protocol.test.js"
+# forge-test-file "test/v2-core-boundary.test.js"
+# forge-test-file "test/v2-search-8f.test.js"
+# forge-test-file "test/v2-search-http-8f.test.js"
+# forge-test-file "test/v2-types-drift.test.js"

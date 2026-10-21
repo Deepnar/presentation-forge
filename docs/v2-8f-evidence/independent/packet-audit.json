@@ -1,0 +1,622 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "packetCommit": "34b4b005ca2b81bf86f3cb90d2b203fb8b5d2498",
+  "files": 223,
+  "inventoryLeaves": 2782,
+  "imagesVerified": 115,
+  "coordinatorLogsVerified": 44,
+  "logs": [
+    {
+      "name": "focused",
+      "path": "out/v2-8f-validation-final-20261021/focused.log",
+      "sha256": "7ca48f1904b79b948644f1b06f53fc38480048709558a862dc9816563a92a5a4",
+      "totals": {
+        "total": 48,
+        "pass": 48,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/search-provider.tap"
+      ]
+    },
+    {
+      "name": "bulk",
+      "path": "out/v2-8f-validation-final-20261021/bulk.log",
+      "sha256": "30f7fe862fb54d2c1545008184275ace34166411107effc3b0196e5ef1bc2ea7",
+      "totals": {
+        "total": 2408,
+        "pass": 2408,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/non-browser-bulk.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-7a.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-7a.test.log",
+      "sha256": "da554df5fe283ec944887e7b858db39ab4ecdaeff64274e2be52c903ad0a78b7",
+      "totals": {
+        "total": 28,
+        "pass": 28,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-7a.test.tap"
+      ]
+    },
+    {
+      "name": "freeform.test",
+      "path": "out/v2-8f-validation-final-20261021/freeform.test.log",
+      "sha256": "b057800cec39e942a2f4235322670ac0825a5084b7068bf47b85cd066ff91ee8",
+      "totals": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/freeform.test.tap"
+      ]
+    },
+    {
+      "name": "plate.test",
+      "path": "out/v2-8f-validation-final-20261021/plate.test.log",
+      "sha256": "18754426c59b9d95116dbc1008b7deb031a83e0c3b8366c61747e395612c7fbe",
+      "totals": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/plate.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-5c.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-5c.test.log",
+      "sha256": "86d8995b5900b9c29925a5c535e442930e826e9b2254c7f99566b43ac146c751",
+      "totals": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5c.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-5d.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-5d.test.log",
+      "sha256": "570e2c7226e544a63e92c7299117b8f44b8fd2c430310c69bf65a743efe92523",
+      "totals": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5d.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-5e.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-5e.test.log",
+      "sha256": "6816c2f9534db2a3704865afcfafdf5a042057a4e382824962b6795ac6f06b22",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5e.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-5f.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-5f.test.log",
+      "sha256": "0d24925ceb496c613deff5f0fe6b47624959fd699087d7ada28d5749c46e89ea",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5f.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-5i.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-5i.test.log",
+      "sha256": "67543b708383c4ed5c67a8ac2860acfb2eda8824ab089230ea7ab55ebfee6904",
+      "totals": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5i.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-5j.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-5j.test.log",
+      "sha256": "8048c80575244baa823941b16470f7cfdf4a5d77f0eb2bcb8b99ea2240729eb2",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5j.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-5k.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-5k.test.log",
+      "sha256": "336cea18f018c3dd70f4478702b9b109da07a18c6d3f27160a8e2919103ac586",
+      "totals": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-5k.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-6a.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-6a.test.log",
+      "sha256": "003c64a268b66263c447757ba7a9481f99f1e2013bcb6a37d7542954afc4ab19",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-6a.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-6b.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-6b.test.log",
+      "sha256": "c3bb8e71fa142277ccb34e00045357f5daf4a8388916372766e1a1b72f0e8462",
+      "totals": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-6b.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-6c.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-6c.test.log",
+      "sha256": "206cfabe76fa664bc7ce7056e7f05a8f1ad0d453786bda360d69fe197371f723",
+      "totals": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-6c.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-chart.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-chart.test.log",
+      "sha256": "006c2cc2d4a7e633e222ef2fce9dae1cb8d285419ec1d9b7c4b3a79f65a08a63",
+      "totals": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-chart.test.tap"
+      ]
+    },
+    {
+      "name": "v2-edit-chrome-table.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-edit-chrome-table.test.log",
+      "sha256": "5d5f81cedc171b9c99e7ed35ea597d00fa46f76fe2a79dc3736be8a64a99ccd5",
+      "totals": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-edit-chrome-table.test.tap"
+      ]
+    },
+    {
+      "name": "v2-fontgate-4e.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-fontgate-4e.test.log",
+      "sha256": "470c76ddf188e34830071ad21bfd16cb3df9e2dd7a5846dda56fe2b7d99fe5ef",
+      "totals": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-fontgate-4e.test.tap"
+      ]
+    },
+    {
+      "name": "v2-fonts-4d.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-fonts-4d.test.log",
+      "sha256": "f60f05436ef9dcb65d7a5479e0b58cf6389796340f90d7d73f637027081a18e3",
+      "totals": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-fonts-4d.test.tap"
+      ]
+    },
+    {
+      "name": "v2-live-chrome-4f.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-live-chrome-4f.test.log",
+      "sha256": "2ae03caea0226dc3372faf729e8afed6a3737be891e6565522fd2ca1971c3a5f",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-live-chrome-4f.test.tap"
+      ]
+    },
+    {
+      "name": "v2-plate-3f5.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-plate-3f5.test.log",
+      "sha256": "f00d9234c3894d4fd87ae3436e93a50c2980c4591774ae5a573cc6cbc80734f6",
+      "totals": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-plate-3f5.test.tap"
+      ]
+    },
+    {
+      "name": "v2-selection-chrome.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-selection-chrome.test.log",
+      "sha256": "fa552a40ea02d58718d4f146773b1d5c385fd0574c2c4efdca8b7cc57d19085c",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-selection-chrome.test.tap"
+      ]
+    },
+    {
+      "name": "v2-viewer-smoke.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-viewer-smoke.test.log",
+      "sha256": "ca47cda7cdbe9c2aa439df7625d01f756fc959c6372693221127aabea65d7e8d",
+      "totals": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-viewer-smoke.test.tap"
+      ]
+    },
+    {
+      "name": "v2-import-chrome-7b.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-import-chrome-7b.test.log",
+      "sha256": "f56180f7a38ffaa081d1555dc904d1ef9dbcdbad4a6810b1e35734ad2db7b171",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-import-chrome-7b.test.tap"
+      ]
+    },
+    {
+      "name": "v2-handoff-chrome-7b.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-handoff-chrome-7b.test.log",
+      "sha256": "4c414101c70f4ee0d5f2955dc0007968a604c7672f0c5efb7252f3fb37889f6a",
+      "totals": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-handoff-chrome-7b.test.tap"
+      ]
+    },
+    {
+      "name": "v2-project-covers-chrome-7c.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-project-covers-chrome-7c.test.log",
+      "sha256": "9fc2a8c1a7a03ac436aacc0eca5376ea29eb0dc125956f6481df417e723a49ce",
+      "totals": {
+        "total": 12,
+        "pass": 12,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-project-covers-chrome-7c.test.tap"
+      ]
+    },
+    {
+      "name": "v2-project-catalog-chrome-7c.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-project-catalog-chrome-7c.test.log",
+      "sha256": "82148f4aab89af6f4bdb1d5ec0d001c76bfd596fc96c0eeea37f75b8f6322df0",
+      "totals": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-project-catalog-chrome-7c.test.tap"
+      ]
+    },
+    {
+      "name": "v2-editor-toolbar-chrome-7c.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-editor-toolbar-chrome-7c.test.log",
+      "sha256": "f5adeca4eeea35e3b4b7c36af4fdfdc1ca3cd6b83e9af26bec1ca1b0443a926e",
+      "totals": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-editor-toolbar-chrome-7c.test.tap"
+      ]
+    },
+    {
+      "name": "v2-projects-6c-postgres.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-projects-6c-postgres.test.log",
+      "sha256": "916eaf682f95eed76082e64b7dfe5c468fe3babc52dc8903761e695d1b43b920",
+      "totals": {
+        "total": 17,
+        "pass": 17,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-projects-6c-postgres.test.tap"
+      ]
+    },
+    {
+      "name": "v2-projects-6c-concurrency.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-projects-6c-concurrency.test.log",
+      "sha256": "0da3756219f01bca8f73dbddde49e001244e37635cf9f59a4b0e79ebe6cec50d",
+      "totals": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-projects-6c-concurrency.test.tap"
+      ]
+    },
+    {
+      "name": "v2-projects-6c-faults.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-projects-6c-faults.test.log",
+      "sha256": "11752e8da98b148a4d7d65a1c477bb84b9b8107aa9f0d9f6c105c8aaa51a18d8",
+      "totals": {
+        "total": 8,
+        "pass": 8,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-projects-6c-faults.test.tap"
+      ]
+    },
+    {
+      "name": "v2-import-postgres-7b.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-import-postgres-7b.test.log",
+      "sha256": "db489f464f6012bcf64cafc079dfcbf7d7fbf07e8d03e06f88515be512501fa5",
+      "totals": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-import-postgres-7b.test.tap"
+      ]
+    },
+    {
+      "name": "v2-runtime-postgres-8b.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-runtime-postgres-8b.test.log",
+      "sha256": "ca95906cb4f49ad43a793dd93e2a37b4a7a8ebd03915c2e1f988ef1994c63062",
+      "totals": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-runtime-postgres-8b.test.tap"
+      ]
+    },
+    {
+      "name": "v2-provider-postgres-8c.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-provider-postgres-8c.test.log",
+      "sha256": "5fb77b22b1358ec147f9692bd29b1ee09da2e3423228bd0267fb40ad7fa7f154",
+      "totals": {
+        "total": 10,
+        "pass": 10,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-provider-postgres-8c.test.tap"
+      ]
+    },
+    {
+      "name": "v2-provider-run-postgres-8d.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-provider-run-postgres-8d.test.log",
+      "sha256": "db8c4c6e4b6f01e5900675ebf0313937d844bb67b32934df57e9ac1468254a7d",
+      "totals": {
+        "total": 42,
+        "pass": 42,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-provider-run-postgres-8d.test.tap"
+      ]
+    },
+    {
+      "name": "v2-conversation-postgres-8e.test",
+      "path": "out/v2-8f-validation-final-20261021/v2-conversation-postgres-8e.test.log",
+      "sha256": "8665e9f80008ad3212bf27e4e4895c6f3dfc2aa0b689879510afd5fa17d9caf2",
+      "totals": {
+        "total": 38,
+        "pass": 38,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/v2-conversation-postgres-8e.test.tap"
+      ]
+    },
+    {
+      "name": "production-build",
+      "path": "out/v2-8f-validation-final-20261021/production-build.log",
+      "sha256": "a202837e6305a25b9d5699dab4807c6895e7190853613e0fe4e3034617056c03",
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/production-build.log"
+      ]
+    },
+    {
+      "name": "typecheck",
+      "path": "out/v2-8f-validation-final-20261021/typecheck.log",
+      "sha256": "5b7f3df27a2b67b5ec58d28781702999fd5e43a5c7f20576d631e777f0477c88",
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/typecheck.log"
+      ]
+    },
+    {
+      "name": "benchmark-50",
+      "path": "out/v2-8f-validation-final-20261021/benchmark-50.log",
+      "sha256": "b29aef6a4e33ec92111903efd46f212fa53a5c92f0e65f10ec6013e8cde45084",
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/benchmark-50.log"
+      ]
+    },
+    {
+      "name": "headless",
+      "path": "out/v2-8f-validation-final-20261021/headless.log",
+      "sha256": "33b632dcb0e8f75288e1e38ce99cd81b879396847f6b1872b6de382a7119dbf8",
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/headless.log"
+      ]
+    },
+    {
+      "name": "search-performance",
+      "path": "out/v2-8f-validation-final-20261021/search-performance.log",
+      "sha256": "9e449142a9bb50724a5ce5b78ce790ede8724c47d5d95e18fda04e951cbfee75",
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/search-performance.log"
+      ]
+    },
+    {
+      "name": "byok-locale",
+      "path": "out/v2-8f-validation-final-20261021/byok-locale.log",
+      "sha256": "91b5dcdf9ff278c50e02b2ad492eee76469149714ce415f8332525d6a6de8fa1",
+      "totals": {
+        "total": 10,
+        "pass": 9,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/files/byok-locale.tap"
+      ]
+    },
+    {
+      "name": "native-review",
+      "path": "out/v2-8f-validation-final-20261021/native-review.log",
+      "sha256": "c5d8077f587916a6af3af80022d73bbc6127c2cf0d5b25498581d49d537dfbd0",
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/native-review.log"
+      ]
+    },
+    {
+      "name": "shell-native",
+      "path": "out/v2-8f-validation-final-20261021/shell-native.log",
+      "sha256": "223f061a6a603fa03e03758dbe27f04ecf0df653cdf3e178a452cc5bcffb104a",
+      "durablePacketLogs": [
+        "docs/v2-8f-evidence/logs/shell-native.log"
+      ]
+    }
+  ],
+  "allRawLogsMatchedDurablePacketBytes": true
+}

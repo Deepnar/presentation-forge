@@ -1,0 +1,194 @@
+[
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-1.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-1-svg.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-2.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/before-2-svg.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-1.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-1-svg.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-2.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-openai-compatible/after-2-svg.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-1.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-1-svg.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-2.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/before-2-svg.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-1.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-1-svg.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-2.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-openai-compatible/after-2-svg.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-1.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-1-svg.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-2.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/before-2-svg.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-1.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-1-svg.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-2.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/sqlite-anthropic/after-2-svg.png",
+    "backend": "sqlite",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-1.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-1-svg.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-2.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/before-2-svg.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-1.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-1-svg.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-2.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+  },
+  {
+    "file": "docs/v2-8f-evidence/independent/native/postgres-anthropic/after-2-svg.png",
+    "backend": "postgres",
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+  }
+]
