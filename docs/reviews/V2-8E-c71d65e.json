@@ -1,0 +1,247 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "acceptedBaselineCompared": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+  "reviewedEvidenceCommit": "bc8a6ed2c7faa761ffedec013f12c060c1f540d0",
+  "independentEvidenceCommit": "1b0c8a8d8d0398c453b7b0d96a08dde63464895b",
+  "reviewer": "/root/v28e_independent_review",
+  "context": "/root/v28e_independent_review",
+  "implementedBy": "/root",
+  "date": "2026-10-21",
+  "evidence": "docs/reviews/V2-8E-c71d65e.md",
+  "independentEvidence": "docs/v2-8e-evidence/independent/execution.json",
+  "scope": "Approved bounded headless tool-conversation preparation and explicit opaque proposal enqueue only",
+  "sourceDeltaAfterImplementation": [],
+  "currentSourceExecutions": {
+    "total": 504,
+    "pass": 504,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "groups": {
+    "conversation": {
+      "total": 93,
+      "pass": 93,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "accepted-preparation": {
+      "total": 109,
+      "pass": 109,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "accepted-provider": {
+      "total": 66,
+      "pass": 66,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "canonical-runtime-backends": {
+      "total": 198,
+      "pass": 198,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "adversarial": {
+      "total": 6,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "full-7a": {
+      "total": 28,
+      "pass": 28,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "headless-native": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "allLeafExecutionsIncludingStandingLocale": {
+    "total": 514,
+    "pass": 513,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "id": "byok-locale",
+    "source": "docs/ROADMAP.md#byok-locale-standing-failure",
+    "independentlyRepeated": true,
+    "classification": "Acknowledged standing assertion; not relabeled passing or merged into successful primary totals"
+  },
+  "commands": {
+    "production-build": {
+      "exitCode": 0,
+      "durationSeconds": 0.764949
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "durationSeconds": 1.967161
+    },
+    "benchmark-50": {
+      "exitCode": 0,
+      "durationSeconds": 0.765959
+    },
+    "browser-native": {
+      "exitCode": 0,
+      "durationSeconds": 2.321166
+    },
+    "protocol": {
+      "command": "npm run dev:protocol",
+      "exitCode": 0,
+      "log": "docs/v2-8e-evidence/independent/protocol.log"
+    },
+    "benchmark": {
+      "cells": 50,
+      "compilerAndZipMs": 584,
+      "cellCounterfactualAndInvarianceResultsMatchPacket": true
+    },
+    "nativeArchiveAudit": {
+      "archives": 16,
+      "geometryStylesChartWorkbookAndUntargetedSlideVerified": true
+    }
+  },
+  "executionOverlap": {
+    "inventoryFiles": 21,
+    "inventoryLeaves": 494,
+    "packetNativeSupplement": 4,
+    "additionalReviewerProbes": 6,
+    "allReexecutionsOfPacketPrimaryCases": 498,
+    "notAddedToPacketDistinctTotal": true
+  },
+  "inspectedImplementerEvidence": {
+    "files": 221,
+    "inventoryLeaves": 2733,
+    "primaryDistinctIncludingFourNativeSupplements": 2737,
+    "pass": 2737,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "unexecuted": 0,
+    "repeatsExcluded": 110,
+    "retainedCompleteCurrentSourceJobs": 25,
+    "rawCoordinatorLogsAudited": 44,
+    "fullMatrixIndependentlyDuplicated": false,
+    "inventoryNotIndependentlyReexecuted": {
+      "inventoryFiles": 200,
+      "inventoryLeaves": 2239
+    }
+  },
+  "visuals": {
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+    "packetImagesInspected": 115,
+    "packetContactSheetsOpened": 20,
+    "freshImagesInspected": 54,
+    "freshBrowser": 11,
+    "freshNative": 27,
+    "freshSvg": 16,
+    "freshContactSheetsOpened": 10,
+    "fullSizeRiskCasesInspected": true,
+    "allManifestHashesVerified": true,
+    "maximumFreshCanvasDeltaPx": 0.07738494873046875,
+    "largeDeck": {
+      "project": "p-53ee8399e7eaecf79578613a",
+      "slides": 120,
+      "thumbs": 120,
+      "openMs": 1542
+    },
+    "noNewForegroundClippingOrOverlap": true,
+    "inheritedNarrowCanvasAndSvgStyleLimitsVisible": true,
+    "interactivePowerPointExecuted": false
+  },
+  "preservation": {
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+    "atUtc": "2026-10-21T11:49:26.119665+00:00",
+    "snapshots": {
+      "backup": {
+        "restored": 4443,
+        "pptx": 96,
+        "changedBeforeRestoration": 14,
+        "allHashesMatch": true
+      },
+      "canonical": {
+        "restored": 5,
+        "pptx": 5,
+        "changedBeforeRestoration": 2,
+        "allHashesMatch": true
+      }
+    },
+    "preservedFreshBrowserCaptures": 11,
+    "preservedFreshMeasurements": 3,
+    "freshHeadlessOriginalArchives": 8,
+    "freshShellOriginalArchives": 2,
+    "archiveBytesReconstructed": false,
+    "serviceStopped": false
+  },
+  "resourceAssessment": "docs/v2-8e-evidence/independent/sustained-window.json",
+  "ownedPostgres": {
+    "id": "f9cf7b71e1dabc410944a90d81e9b30d4d42de1ab6a0dd47ae230fbac134b8c9",
+    "name": "forge-v28e-resumed-20261021",
+    "stoppedByReviewer": false,
+    "cleanupOwner": "root; save/fsync fresh database count then remove exact service"
+  },
+  "independentPlannedJobsUnexecuted": 0,
+  "blockingFindings": [],
+  "inheritedNativeIdentityFinding": {
+    "ids": [
+      "1",
+      "2",
+      "3",
+      "2"
+    ],
+    "duplicateId": "2",
+    "names": [
+      "Text 0",
+      "Table 0"
+    ],
+    "accepted8dWitness": {
+      "archive": "docs/v2-8d-evidence/native/sqlite-openai-compatible/before.pptx",
+      "sha256": "17148c07acfc2996588a6e8cc351423d2127f81849cc0cb980528084a55bbf2b",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ]
+    },
+    "current8eBeforeAndAfter": true,
+    "introducedByThisSlice": false,
+    "evidence": "docs/v2-8e-evidence/independent/native-audit.json",
+    "roadmap": "docs/ROADMAP.md#native-pptx-shape-id-uniqueness",
+    "interactiveConsumerBehavior": "unexecuted; raster success does not establish behavior"
+  },
+  "residuals": [
+    "Separate BYOK locale probe retains9pass/1standingfail; no skipped,cancelled or unexecuted required check is waived.",
+    "Inherited repeated nonvisual shape IDs remain in accepted8D/current8E native output; interactive consumer identity behavior is unverified.",
+    "Known Fit/narrow/capture,catalog loading/pending-search and mixed-runSVG limitations remain.",
+    "Elevated globalPSI/iowait provenance remains unresolved; local samples are not production percentiles or a causal attribution.",
+    "Historical missing-original/reboot-lost service-count provenance limits remain; no archive bytes were reconstructed.",
+    "Live provider/Auto quality,parent common-search/Assistant qualification and interactive Microsoft PowerPoint remain outside this slice and unexecuted.",
+    "Conversation/proposal lifetime is host-instance ephemeral; no durable transcript or network exactly-once claim.",
+    "Owned service remains alive for root fresh count/fsync/exact cleanup; no service stopped by reviewer."
+  ],
+  "implementationTestsStateRoadmapEdited": false,
+  "originalUntrackedPreserved": true,
+  "heavySlotReleased": true,
+  "nextFeatureAuthorized": false
+}
