@@ -8936,6 +8936,21 @@ keeps behavioural tests before old code is removed.
 
 Done when: the legacy paths are gone and old projects still open.
 
+<a id="model-provider-stream-resource-bounds"></a>
+
+### [ ] Model-provider stream lifetime and buffering audit
+
+V2-8F source review reproduced timer starvation and reader-cleanup/resource defects
+in the new search adapter and corrected that bounded slice. The accepted
+src/agent/model-provider.js transport still has the similar timer-only read loop,
+accumulated chunk array and release-before-outer-cancel pattern. Audit it with
+isolated bounded reproductions before claiming those edge cases are qualified;
+this is a source-inspected risk, not an executed failure of the model adapter.
+Preserve both real HTTP protocols, normalized usage, canonical result/privacy gates
+and existing assertions. Any correction needs its own bounded contract, unchanged
+regression coverage and exact-source independent review. Do not absorb provider
+changes into the shared-search slice or infer a live-provider failure from a fixture.
+
 <a id="postgres-availability-diagnostics"></a>
 
 ### [ ] PostgreSQL availability diagnostics

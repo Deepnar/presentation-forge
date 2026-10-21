@@ -1891,3 +1891,14 @@ Keep admission accounting separate: reserve the entire requested output allowanc
 before each network call and do not refund it from smaller or missing reported
 usage. Refusing tools neither erases an already completed call nor authorizes a
 replacement call. V2-8E's unchanged SQLite contract caught this ordering defect.
+
+
+**Byte bounds do not bound immediately resolved empty stream chunks.** A stream can
+keep resolving reads with zero bytes, starving timeout timers while growing an
+array of retained chunk objects. Use a monotonic deadline, periodic event-loop
+yielding and bounded response storage. On a self-detected deadline, request source
+cancellation before releasing its reader lock; cancelling a released reader can
+reject without stopping the source. Isolated child/watchdog cases and a mocked
+monotonic-clock cleanup case caught these distinct failures in V2-8F. The separate
+[older model-transport audit](ROADMAP.md#model-provider-stream-resource-bounds)
+remains outside that correction.
