@@ -1,0 +1,530 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "allCoordinatorLogTotalsAndFileMarkersVerified": true,
+  "records": [
+    {
+      "name": "focused",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/focused.log",
+      "sha256": "2cd875444edd312c5a4de2ccb0a88d338acb94c9919993f23671898293430acf",
+      "totals": {
+        "total": 93,
+        "pass": 93,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "bulk",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/bulk.log",
+      "sha256": "b5a9e29d17373139fd920683eb2b26a3d004d143ba616901385c38ec0e1fd2b7",
+      "totals": {
+        "total": 2359,
+        "pass": 2359,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-7a.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-7a.test.log",
+      "sha256": "deeb57a5737dad7ad23c215ead1e8df430eabf5c6a2c5eafc65d19ed07227543",
+      "totals": {
+        "total": 28,
+        "pass": 28,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "freeform.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/freeform.test.log",
+      "sha256": "97f123435687645ec56f0d29279634eca2875b258690f31e208b39091bcc17a8",
+      "totals": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "plate.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/plate.test.log",
+      "sha256": "6656f79f939890af8eb60a9949a966f6a11f9c7a1d95d9d049783998b9b4148f",
+      "totals": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-5c.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-5c.test.log",
+      "sha256": "b46797f331557bd2d25e76d9a478817f219524b7c01433316e336234837a6990",
+      "totals": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-5d.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-5d.test.log",
+      "sha256": "5933949ee54b4c0990f1941af0c2e087968290c4053e0ca7c672b1e5e07b3dd6",
+      "totals": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-5e.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-5e.test.log",
+      "sha256": "23edc736e3250f6a1e32050604288f59622ab5b2e2bf62f5c4805fa671e13bba",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-5f.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-5f.test.log",
+      "sha256": "e4b4ef0546b9b73e34bab2dde6e8384f7ff063bc20512e822d7d8b7f05342609",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-5i.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-5i.test.log",
+      "sha256": "35574d8961dcc81842bf4fbdd3079ea1b6b77abfbb36341c4d3d1cb81368048e",
+      "totals": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-5j.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-5j.test.log",
+      "sha256": "bc82e1688b77e6a58b5993d6c642f936d34e5f7754301807fdfa01a650535ca6",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-5k.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-5k.test.log",
+      "sha256": "45280d131aab0224a4d1381cdc4b9f653faf72397361326c9205cea7f51ca02c",
+      "totals": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-6a.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-6a.test.log",
+      "sha256": "7206f505e434da275f9fa837e0a99c2824b76e35688e12e220f9be8372e8413b",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-6b.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-6b.test.log",
+      "sha256": "26a022d3c81ced05dbc2623ca854c5ba7adcc3f7d1e7dd368393a44d0b953dad",
+      "totals": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-6c.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-6c.test.log",
+      "sha256": "6ea761f6adb0eed825ccba1b0adea2e14b8fa623e4a6cad583fbc2c51dead087",
+      "totals": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-chart.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-chart.test.log",
+      "sha256": "141ee7d806a7c33c0518426d959ea4d90ff413538d282b1785c3b6458d2bfadb",
+      "totals": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-edit-chrome-table.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-edit-chrome-table.test.log",
+      "sha256": "491c80852e89617640c91212d2c677696f676ed8211f9ef6aae21181a103ea73",
+      "totals": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-fontgate-4e.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-fontgate-4e.test.log",
+      "sha256": "879040dcc57f707180271af3e175b6895665153e824c6ba32468e5a547313578",
+      "totals": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-fonts-4d.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-fonts-4d.test.log",
+      "sha256": "69b6db8fcefc52e3aebbaeb2fb5a8cb960ed21aaeead97a99d7eb5693fe79417",
+      "totals": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-live-chrome-4f.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-live-chrome-4f.test.log",
+      "sha256": "7d2e8703c28c285bd2bd4b8bba56130e41e991218ac4aa45105f6303704ec23d",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-plate-3f5.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-plate-3f5.test.log",
+      "sha256": "c91b32c05fab9a2f81fa5893a529459e59e5948b204b7a8e40b6ad6f8d409c27",
+      "totals": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-selection-chrome.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-selection-chrome.test.log",
+      "sha256": "136e905d87b8e3af4c3826f3cac299710c292fbe1742a9458ff35cb1750ecddb",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-viewer-smoke.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-viewer-smoke.test.log",
+      "sha256": "8b26e815217927d15285b984079004c1b9e3cfc71804bb6734ca174cf08e5878",
+      "totals": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-import-chrome-7b.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-import-chrome-7b.test.log",
+      "sha256": "9c5f6683c02dbdbe4ad113e35d2295833b30e44ff2af1f5e7586cee294304499",
+      "totals": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-handoff-chrome-7b.test",
+      "path": "docs/v2-8e-evidence/paused-2026-10-21/logs/v2-handoff-chrome-7b.test.log",
+      "sha256": "0a205bdff20cfb615cdb6aac9714e8d3b9147248de5fce95a79c47306a03384f",
+      "totals": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "window-qualification",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/window-qualification.log",
+      "sha256": "4417bbebfa37913fc871876f5b96ef6ad4effc306bda24f7567ea217cc135568",
+      "totals": {
+        "total": 17,
+        "pass": 17,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-project-covers-chrome-7c.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-project-covers-chrome-7c.test.log",
+      "sha256": "fa19db39c3d91c7fbedfcc1a29e2f30dc9f12918c05bd36a90506caef8ee6dfc",
+      "totals": {
+        "total": 12,
+        "pass": 12,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-project-catalog-chrome-7c.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-project-catalog-chrome-7c.test.log",
+      "sha256": "caf6a5cf03c847d4ac0db25557d39c2eabbbabff3cd9d25ba48b4ddae01106ee",
+      "totals": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-editor-toolbar-chrome-7c.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-editor-toolbar-chrome-7c.test.log",
+      "sha256": "88fe5aae1d0cb9e9a258f53802a3944a254aef7024d7ce728642e52765f3372e",
+      "totals": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-projects-6c-postgres.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-projects-6c-postgres.test.log",
+      "sha256": "ca97d061789abc737ae2dbf228e08bcaef8eca1b2f30e8ec785894a322a90524",
+      "totals": {
+        "total": 17,
+        "pass": 17,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-projects-6c-concurrency.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-projects-6c-concurrency.test.log",
+      "sha256": "e1446b20d14835805e8330458c59c5216a711958fae58a0f66ec9b9eb6c9c2f4",
+      "totals": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-projects-6c-faults.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-projects-6c-faults.test.log",
+      "sha256": "0600bb7b71126d155951635409aa71361118617c6d4f2a946a6c10e8df641bb6",
+      "totals": {
+        "total": 8,
+        "pass": 8,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-import-postgres-7b.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-import-postgres-7b.test.log",
+      "sha256": "906416370ea78944306c943e42fab91009288b27ef4960c894fb752f8382fac1",
+      "totals": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-runtime-postgres-8b.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-runtime-postgres-8b.test.log",
+      "sha256": "29c75f32ccc8ad61e0bd750a020f44af5b621c0b0d0b79afd994e4a56edda846",
+      "totals": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-provider-postgres-8c.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-provider-postgres-8c.test.log",
+      "sha256": "8a6dc8e9141f673b1cb71c66d066d6da5fae7e2419efafefa0ef40f872714cc7",
+      "totals": {
+        "total": 10,
+        "pass": 10,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-provider-run-postgres-8d.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-provider-run-postgres-8d.test.log",
+      "sha256": "c90b19de48c89ae00ea4336239bdf53b401b04d7944c7b4d2ef05a3c404a5f7a",
+      "totals": {
+        "total": 42,
+        "pass": 42,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "v2-conversation-postgres-8e.test",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/v2-conversation-postgres-8e.test.log",
+      "sha256": "80402eaafdccf98da2f700b42e4141f5f1162ef17ba9288984a795b7f9bb55a1",
+      "totals": {
+        "total": 38,
+        "pass": 38,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "production-build",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/production-build.log",
+      "sha256": "b349c262160692b5a445801da99f17d7f4ff3350bf04ae96fbe9bc7bf4dfb268"
+    },
+    {
+      "name": "typecheck",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/typecheck.log",
+      "sha256": "5b7f3df27a2b67b5ec58d28781702999fd5e43a5c7f20576d631e777f0477c88"
+    },
+    {
+      "name": "benchmark-50",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/benchmark-50.log",
+      "sha256": "763b3f403718f668127043f2d86b788f49d507a7df1938727e986c3a280db9e8"
+    },
+    {
+      "name": "headless",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/headless.log",
+      "sha256": "e0fc43ed253904de83e229a114b8b1ef94025ca642bce31de28933faf4a29c99"
+    },
+    {
+      "name": "byok-locale",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/byok-locale.log",
+      "sha256": "3e81eeb48ea9fac0189c125ad1060b9120dd995e0aa7b5e496be3943447a7d43",
+      "totals": {
+        "total": 10,
+        "pass": 9,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "fileMarkersVerified": true
+    },
+    {
+      "name": "native-review",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/native-review.log",
+      "sha256": "c5d8077f587916a6af3af80022d73bbc6127c2cf0d5b25498581d49d537dfbd0"
+    },
+    {
+      "name": "shell-native",
+      "path": "out/v2-8e-validation-resumed-2026-10-21/shell-native.log",
+      "sha256": "223f061a6a603fa03e03758dbe27f04ecf0df653cdf3e178a452cc5bcffb104a"
+    }
+  ]
+}

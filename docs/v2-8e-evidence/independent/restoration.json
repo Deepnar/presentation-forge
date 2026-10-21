@@ -1,0 +1,24 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "atUtc": "2026-10-21T11:49:26.119665+00:00",
+  "snapshots": {
+    "backup": {
+      "restored": 4443,
+      "pptx": 96,
+      "changedBeforeRestoration": 14,
+      "allHashesMatch": true
+    },
+    "canonical": {
+      "restored": 5,
+      "pptx": 5,
+      "changedBeforeRestoration": 2,
+      "allHashesMatch": true
+    }
+  },
+  "preservedFreshBrowserCaptures": 11,
+  "preservedFreshMeasurements": 3,
+  "freshHeadlessOriginalArchives": 8,
+  "freshShellOriginalArchives": 2,
+  "archiveBytesReconstructed": false,
+  "serviceStopped": false
+}

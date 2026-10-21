@@ -1,0 +1,111 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "reviewedPacketCommit": "bc8a6ed2c7faa761ffedec013f12c060c1f540d0",
+  "currentSourceTests": {
+    "total": 504,
+    "pass": 504,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "groups": {
+    "conversation": {
+      "total": 93,
+      "pass": 93,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "accepted-preparation": {
+      "total": 109,
+      "pass": 109,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "accepted-provider": {
+      "total": 66,
+      "pass": 66,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "canonical-runtime-backends": {
+      "total": 198,
+      "pass": 198,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "adversarial": {
+      "total": 6,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "full-7a": {
+      "total": 28,
+      "pass": 28,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "headless-native": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "overlap": {
+    "inventoryFiles": 21,
+    "inventoryLeaves": 494,
+    "packetNativeSupplement": 4,
+    "additionalReviewerProbes": 6,
+    "allReexecutionsOfPacketPrimaryCases": 498,
+    "notAddedToPacketDistinctTotal": true
+  },
+  "inspectedNotIndependentlyReexecuted": {
+    "inventoryFiles": 200,
+    "inventoryLeaves": 2239
+  },
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "plannedIndependentJobsUnexecuted": 0,
+  "commands": {
+    "production-build": {
+      "exitCode": 0,
+      "durationSeconds": 0.764949
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "durationSeconds": 1.967161
+    },
+    "benchmark-50": {
+      "exitCode": 0,
+      "durationSeconds": 0.765959
+    },
+    "browser-native": {
+      "exitCode": 0,
+      "durationSeconds": 2.321166
+    }
+  },
+  "nativeArchiveAudit": {
+    "archives": 16,
+    "passed": true,
+    "inheritedNonVisualIdIssue": true
+  },
+  "protocol": {
+    "command": "npm run dev:protocol",
+    "exitCode": 0,
+    "log": "docs/v2-8e-evidence/independent/protocol.log"
+  },
+  "productTestToolsChanges": false
+}

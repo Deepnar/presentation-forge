@@ -1,0 +1,61 @@
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 10.0 iowait 9.7 storage {'nvme0n1': {'busyPercent': 1.613298515339856, 'weightedQueue': 0.04426571132998613, 'inflight': 0, 'readKiBps': 104.5310773575576, 'writeKiBps': 1950.6245685472804}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 9.4 iowait 9.7 storage {'nvme0n1': {'busyPercent': 2.300425994960151, 'weightedQueue': 0.047138787006553384, 'inflight': 0, 'readKiBps': 29.253972190244696, 'writeKiBps': 390.93944654236094}}
+conversation START
+conversation EXIT 0 {'total': 93, 'pass': 93, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 10.2 iowait 10.2 storage {'nvme0n1': {'busyPercent': 1.8599489100553577, 'weightedQueue': 0.09299744550276788, 'inflight': 0, 'readKiBps': 219.72729776137845, 'writeKiBps': 3811.628633739252}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 10.2 iowait 10.5 storage {'nvme0n1': {'busyPercent': 0.9440373191354902, 'weightedQueue': 0.015689634318026457, 'inflight': 0, 'readKiBps': 13.828152280294503, 'writeKiBps': 114.08225631242965}}
+accepted-preparation START
+accepted-preparation EXIT 0 {'total': 109, 'pass': 109, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 9.8 iowait 10.4 storage {'nvme0n1': {'busyPercent': 0.993315548018472, 'weightedQueue': 0.046265838276833525, 'inflight': 0, 'readKiBps': 5.333237841709916, 'writeKiBps': 1459.4405353839186}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 9.8 iowait 9.8 storage {'nvme0n1': {'busyPercent': 1.5888706136525519, 'weightedQueue': 0.020010462540143017, 'inflight': 0, 'readKiBps': 6.116154663432417, 'writeKiBps': 139.6078781870443}}
+accepted-provider START
+accepted-provider EXIT 0 {'total': 66, 'pass': 66, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 6.6 iowait 8.7 storage {'nvme0n1': {'busyPercent': 0.7933104245380026, 'weightedQueue': 0.04813194340474267, 'inflight': 0, 'readKiBps': 15.999537973875682, 'writeKiBps': 1175.1660641811688}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 7.4 iowait 8.8 storage {'nvme0n1': {'busyPercent': 0.824726611729642, 'weightedQueue': 0.013701103388411795, 'inflight': 0, 'readKiBps': 23.145553296928664, 'writeKiBps': 83.00474285795107}}
+canonical-runtime-backends START
+canonical-runtime-backends RUNNING
+canonical-runtime-backends RUNNING
+canonical-runtime-backends RUNNING
+canonical-runtime-backends EXIT 0 {'total': 198, 'pass': 198, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 21.3 iowait 9.1 storage {'nvme0n1': {'busyPercent': 1.6466189709210672, 'weightedQueue': 0.33065708889750983, 'inflight': 0, 'readKiBps': 121.59647785263265, 'writeKiBps': 2111.672166918855}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 17.7 iowait 9.7 storage {'nvme0n1': {'busyPercent': 0.8966059248111642, 'weightedQueue': 0.07272470279023888, 'inflight': 0, 'readKiBps': 5.844542324694997, 'writeKiBps': 173.74230365229673}}
+adversarial START
+adversarial EXIT 0 {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 19.2 iowait 9.9 storage {'nvme0n1': {'busyPercent': 0.9933089689874083, 'weightedQueue': 0.02986593410109791, 'inflight': 0, 'readKiBps': 3.1999215108319192, 'writeKiBps': 104.79742947974535}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 12.0 iowait 9.5 storage {'nvme0n1': {'busyPercent': 2.5002157160851577, 'weightedQueue': 0.13664742809986702, 'inflight': 0, 'readKiBps': 11035.79258256269, 'writeKiBps': 2031.824239912183}}
+full-7a START
+full-7a RUNNING
+full-7a RUNNING
+full-7a RUNNING
+full-7a RUNNING
+full-7a RUNNING
+full-7a RUNNING
+full-7a RUNNING
+full-7a RUNNING
+full-7a EXIT 0 {'total': 28, 'pass': 28, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 16.7 iowait 9.7 storage {'nvme0n1': {'busyPercent': 1.6733027560680616, 'weightedQueue': 0.050199082682041846, 'inflight': 0, 'readKiBps': 2.1332943503656563, 'writeKiBps': 652.7880712118908}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 16.5 iowait 9.7 storage {'nvme0n1': {'busyPercent': 0.7245697314801421, 'weightedQueue': 0.03363598936962862, 'inflight': 0, 'readKiBps': 50.786355490901705, 'writeKiBps': 126.30114585433671}}
+production-build START
+production-build EXIT 0 
+RESOURCE WINDOW 0 of 30 stable seconds; CPU 19.4 iowait 9.7 storage {'nvme0n1': {'busyPercent': 0.6866498579359153, 'weightedQueue': 0.03026592577698112, 'inflight': 27, 'readKiBps': 2.1332811120339117, 'writeKiBps': 761.3146968571021}}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 22.4 iowait 9.2 storage {'nvme0n1': {'busyPercent': 0.48451205705334266, 'weightedQueue': 0.034513187625717555, 'inflight': 0, 'readKiBps': 2.1238884692749265, 'writeKiBps': 530.7066312600723}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 22.9 iowait 9.1 storage {'nvme0n1': {'busyPercent': 0.27902557322094196, 'weightedQueue': 0.005580511464418839, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 155.4571050802391}}
+typecheck START
+typecheck EXIT 0 
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 22.8 iowait 8.9 storage {'nvme0n1': {'busyPercent': 0.5333226135843636, 'weightedQueue': 0.02226621911714718, 'inflight': 0, 'readKiBps': 10.666452271687273, 'writeKiBps': 222.12886855788744}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 14.3 iowait 9.8 storage {'nvme0n1': {'busyPercent': 1.1028347343069367, 'weightedQueue': 0.05215212448379189, 'inflight': 0, 'readKiBps': 71.21920693837568, 'writeKiBps': 2758.1498090052282}}
+benchmark-50 START
+benchmark-50 EXIT 0 
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 16.4 iowait 9.3 storage {'nvme0n1': {'busyPercent': 0.706647959292577, 'weightedQueue': 0.09019761216253364, 'inflight': 0, 'readKiBps': 0.2666596072802177, 'writeKiBps': 181.86185216510847}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 11.1 iowait 8.7 storage {'nvme0n1': {'busyPercent': 1.7929110709512799, 'weightedQueue': 0.03652226255641496, 'inflight': 0, 'readKiBps': 149.54206414008453, 'writeKiBps': 754.3507320743163}}
+headless-native START
+headless-native EXIT 0 {'total': 4, 'pass': 4, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 5.2 iowait 6.8 storage {'nvme0n1': {'busyPercent': 1.7666387309261946, 'weightedQueue': 0.08206536897245832, 'inflight': 0, 'readKiBps': 15.999746997067422, 'writeKiBps': 834.6534683470172}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 4.9 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.6252711530344712, 'weightedQueue': 0.024478700459221854, 'inflight': 0, 'readKiBps': 41.507361648245755, 'writeKiBps': 1803.7077218811407}}
+locale START
+locale EXIT 1 {'total': 10, 'pass': 9, 'fail': 1, 'skip': 0, 'cancelled': 0}
+Independent executions finished; preservation/inspection/restoration remain.
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 5.4 iowait 8.3 storage {'nvme0n1': {'busyPercent': 1.746612840716556, 'weightedQueue': 0.18146107452024676, 'inflight': 0, 'readKiBps': 21.865992815077494, 'writeKiBps': 1752.7459850427363}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 4.8 iowait 8.5 storage {'nvme0n1': {'busyPercent': 1.13077435192551, 'weightedQueue': 0.029932262256851735, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 260.21113321956443}}
+browser-native START
+browser-native EXIT 0 

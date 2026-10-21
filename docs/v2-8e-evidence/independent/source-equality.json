@@ -1,0 +1,21 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "reviewedPacketCommit": "bc8a6ed2c7faa761ffedec013f12c060c1f540d0",
+  "checkedAtUtc": "2026-10-21T11:52:48.506068+00:00",
+  "checkedPaths": [
+    "packages",
+    "src",
+    "app",
+    "test",
+    "tools",
+    "schema",
+    "config",
+    "themes",
+    "package.json",
+    "package-lock.json"
+  ],
+  "noLaterCommittedOrWorkingTreeSourceDelta": true,
+  "originalEvidenceFilesReverified": 4443,
+  "canonicalArchivesReverified": 5,
+  "allOriginalHashesMatch": true
+}

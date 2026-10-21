@@ -1,0 +1,86 @@
+[
+  {
+    "source": "docs/v2-7a-evidence/canvas-chart.json",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/canvas-chart.json",
+    "sha256": "c46fa6cc2447d44ae9f9614afcb44f2e0e0f3e201b36e5e5d7cfc0b147f71cff",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/canvas-table.json",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/canvas-table.json",
+    "sha256": "da0c2821acbe0fc6bc14325c6c2aa75b057704b852f5ec2a948a0fbafd764212",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-empty.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/dashboard-empty.png",
+    "sha256": "51c6555ccd31de932914216affc03bb60757ba653d5a59cb975886e0b6ac7b81",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/dashboard-hosted-anon.png",
+    "sha256": "4e539f4d5df1ddfcb1f705e0f87715d47f53df642083f6294da5933d298c9c73",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/dashboard.png",
+    "sha256": "3d1691f62b0824268fe4b7fa435336484f4cab9a1879e6a54338e3a5234aec64",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-blank.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/editor-blank.png",
+    "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-chart.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/editor-chart.png",
+    "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-history.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/editor-history.png",
+    "sha256": "3fc6efd87688cbc2e5a8e53644afa02373644f00c30ee7d7423f1d248127d5e1",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/editor-narrow-projects.png",
+    "sha256": "94354137057edfa974214671bf885c025d77f6e4286e039ed810e967b5ea780c",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/editor-narrow.png",
+    "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-readonly.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/editor-readonly.png",
+    "sha256": "44796071cf8b6926f30af3b3d9981b9dd9eff5739c3f232903e0b087d2d6d95d",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-shell.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/editor-shell.png",
+    "sha256": "412ae24e064732798b1328489a8ee61043303b8d85ef85f9c48cbf7d029d6b8b",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-table.png",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/editor-table.png",
+    "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  },
+  {
+    "source": "docs/v2-7a-evidence/large-deck.json",
+    "file": "docs/v2-8e-evidence/independent/fresh-7a/large-deck.json",
+    "sha256": "994218cc27b413bad9cafb09ddb9226160cb5cc2497ba17c4a94ac6a593346ed",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1"
+  }
+]

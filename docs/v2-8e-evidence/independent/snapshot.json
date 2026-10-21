@@ -1,0 +1,12 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "packetHead": "bc8a6ed2c7faa761ffedec013f12c060c1f540d0",
+  "atUtc": "2026-10-21T11:35:21.407547+00:00",
+  "evidenceFiles": 4443,
+  "evidencePptx": 96,
+  "canonicalOriginals": 5,
+  "snapshotRoot": "out/v2-8e-independent-2026-10-21",
+  "allHashesVerified": true,
+  "includesIgnoredOriginals": true,
+  "excludedNewIndependentNamespace": true
+}

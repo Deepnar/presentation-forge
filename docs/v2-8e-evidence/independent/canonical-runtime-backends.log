@@ -1,0 +1,1405 @@
+TAP version 13
+# Subtest: repository state, document references and real Git ancestry validate
+ok 1 - repository state, document references and real Git ancestry validate
+  ---
+  duration_ms: 64.933625
+  type: 'test'
+  ...
+# Subtest: missing required role document fails closed
+ok 2 - missing required role document fails closed
+  ---
+  duration_ms: 30.625984
+  type: 'test'
+  ...
+# Subtest: malformed state JSON returns diagnostics instead of crashing
+ok 3 - malformed state JSON returns diagnostics instead of crashing
+  ---
+  duration_ms: 1.926927
+  type: 'test'
+  ...
+# Subtest: unknown review state, malformed SHA and extra properties are rejected
+ok 4 - unknown review state, malformed SHA and extra properties are rejected
+  ---
+  duration_ms: 12.243921
+  type: 'test'
+  ...
+# Subtest: known pending validation cannot disappear or be duplicated
+ok 5 - known pending validation cannot disappear or be duplicated
+  ---
+  duration_ms: 32.064714
+  type: 'test'
+  ...
+# Subtest: unaccepted implementation cannot replace the accepted baseline
+ok 6 - unaccepted implementation cannot replace the accepted baseline
+  ---
+  duration_ms: 26.038638
+  type: 'test'
+  ...
+# Subtest: passed validation needs existing matching evidence and its output log
+ok 7 - passed validation needs existing matching evidence and its output log
+  ---
+  duration_ms: 103.970426
+  type: 'test'
+  ...
+# Subtest: stale evidence from another implementation SHA is refused
+ok 8 - stale evidence from another implementation SHA is refused
+  ---
+  duration_ms: 26.486439
+  type: 'test'
+  ...
+# Subtest: self-reported totals must match the retained test output
+ok 9 - self-reported totals must match the retained test output
+  ---
+  duration_ms: 31.681617
+  type: 'test'
+  ...
+# Subtest: nonzero, cancelled, skipped and inconsistent totals never become passes
+ok 10 - nonzero, cancelled, skipped and inconsistent totals never become passes
+  ---
+  duration_ms: 103.82988
+  type: 'test'
+  ...
+# Subtest: existing output cannot substitute for actual visual inspection or 50 benchmark cells
+ok 11 - existing output cannot substitute for actual visual inspection or 50 benchmark cells
+  ---
+  duration_ms: 71.592946
+  type: 'test'
+  ...
+# Subtest: renaming a reviewer cannot substitute for a separate decision record
+ok 12 - renaming a reviewer cannot substitute for a separate decision record
+  ---
+  duration_ms: 48.761276
+  type: 'test'
+  ...
+# Subtest: legitimate recorded acceptance can advance the baseline after completed validation
+ok 13 - legitimate recorded acceptance can advance the baseline after completed validation
+  ---
+  duration_ms: 120.058617
+  type: 'test'
+  ...
+# Subtest: document paths, anchors and symlinks cannot leave the repository or point nowhere
+ok 14 - document paths, anchors and symlinks cannot leave the repository or point nowhere
+  ---
+  duration_ms: 76.572169
+  type: 'test'
+  ...
+# Subtest: Git verification rejects well-shaped nonexistent commits
+ok 15 - Git verification rejects well-shaped nonexistent commits
+  ---
+  duration_ms: 16.372181
+  type: 'test'
+  ...
+# Subtest: a passing subset cannot substitute for the full required file scope
+ok 16 - a passing subset cannot substitute for the full required file scope
+  ---
+  duration_ms: 25.775258
+  type: 'test'
+  ...
+# Subtest: name-filtered runs and implausibly small suite counts fail closed
+ok 17 - name-filtered runs and implausibly small suite counts fail closed
+  ---
+  duration_ms: 47.764205
+  type: 'test'
+  ...
+# Subtest: the TAP inventory records entry files without imported contract helpers
+ok 18 - the TAP inventory records entry files without imported contract helpers
+  ---
+  duration_ms: 137.709129
+  type: 'test'
+  ...
+# Subtest: new milestone keeps its own focused gate and rejects old evidence inventory
+ok 19 - new milestone keeps its own focused gate and rejects old evidence inventory
+  ---
+  duration_ms: 101.612288
+  type: 'test'
+  ...
+# Subtest: browser handoff requires its own complete focused evidence
+ok 20 - browser handoff requires its own complete focused evidence
+  ---
+  duration_ms: 105.386078
+  type: 'test'
+  ...
+# Subtest: project covers require their own unit, HTTP and complete Chrome evidence
+ok 21 - project covers require their own unit, HTTP and complete Chrome evidence
+  ---
+  duration_ms: 96.968695
+  type: 'test'
+  ...
+# Subtest: project discovery requires its own complete unit, HTTP and Chrome evidence
+ok 22 - project discovery requires its own complete unit, HTTP and Chrome evidence
+  ---
+  duration_ms: 97.822926
+  type: 'test'
+  ...
+# Subtest: production toolbar evidence includes its complete Chrome file and full shell regression
+ok 23 - production toolbar evidence includes its complete Chrome file and full shell regression
+  ---
+  duration_ms: 98.899466
+  type: 'test'
+  ...
+# Subtest: agent foundation requires complete tool and context behavioral evidence
+ok 24 - agent foundation requires complete tool and context behavioral evidence
+  ---
+  duration_ms: 100.818031
+  type: 'test'
+  ...
+# Subtest: provider boundary requires both protocol and durable backend files
+ok 25 - provider boundary requires both protocol and durable backend files
+  ---
+  duration_ms: 97.553817
+  type: 'test'
+  ...
+# Subtest: provider-run preparation requires both storage backends and boundary cases
+ok 26 - provider-run preparation requires both storage backends and boundary cases
+  ---
+  duration_ms: 93.23871
+  type: 'test'
+  ...
+# Subtest: bounded conversation requires both storage backends and boundary cases
+ok 27 - bounded conversation requires both storage backends and boundary cases
+  ---
+  duration_ms: 113.12075
+  type: 'test'
+  ...
+# Subtest: v2 preservation
+    # Subtest: a moved diagram keeps its geometry after a text edit
+    ok 1 - a moved diagram keeps its geometry after a text edit
+      ---
+      duration_ms: 27.567875
+      type: 'test'
+      ...
+    # Subtest: resize inverts exactly (undo)
+    ok 2 - resize inverts exactly (undo)
+      ---
+      duration_ms: 7.638853
+      type: 'test'
+      ...
+    # Subtest: a detached slide is authoritative: recompile returns it untouched
+    ok 3 - a detached slide is authoritative: recompile returns it untouched
+      ---
+      duration_ms: 8.273875
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: move
+    ok 4 - detached scenes stay manually editable: move
+      ---
+      duration_ms: 7.865552
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: resize
+    ok 5 - detached scenes stay manually editable: resize
+      ---
+      duration_ms: 3.915924
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: text edit
+    ok 6 - detached scenes stay manually editable: text edit
+      ---
+      duration_ms: 4.157219
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay manually editable: add and delete
+    ok 7 - detached scenes stay manually editable: add and delete
+      ---
+      duration_ms: 7.143558
+      type: 'test'
+      ...
+    # Subtest: locked elements still reject edits on detached scenes
+    ok 8 - locked elements still reject edits on detached scenes
+      ---
+      duration_ms: 4.085521
+      type: 'test'
+      ...
+    # Subtest: human-added elements survive a recompile that drops nothing
+    ok 9 - human-added elements survive a recompile that drops nothing
+      ---
+      duration_ms: 3.480924
+      type: 'test'
+      ...
+    1..9
+ok 28 - v2 preservation
+  ---
+  duration_ms: 76.201145
+  type: 'suite'
+  ...
+# Subtest: v2-6c two processes, one postgres
+    # Subtest: same-base saves across instances yield one 200 and one 409
+    ok 1 - same-base saves across instances yield one 200 and one 409
+      ---
+      duration_ms: 420.483521
+      type: 'test'
+      ...
+    # Subtest: save versus rename across instances keeps one winner
+    ok 2 - save versus rename across instances keeps one winner
+      ---
+      duration_ms: 31.076263
+      type: 'test'
+      ...
+    # Subtest: save versus restore across instances keeps one winner
+    ok 3 - save versus restore across instances keeps one winner
+      ---
+      duration_ms: 39.035434
+      type: 'test'
+      ...
+    # Subtest: restore versus restore across instances keeps one winner
+    ok 4 - restore versus restore across instances keeps one winner
+      ---
+      duration_ms: 49.195042
+      type: 'test'
+      ...
+    # Subtest: rename versus rename across instances keeps one winner
+    ok 5 - rename versus rename across instances keeps one winner
+      ---
+      duration_ms: 18.064888
+      type: 'test'
+      ...
+    # Subtest: delete during a concurrent save leaves exactly one consistent outcome
+    ok 6 - delete during a concurrent save leaves exactly one consistent outcome
+      ---
+      duration_ms: 15.259025
+      type: 'test'
+      ...
+    # Subtest: history initialization racing with saves yields one baseline
+    ok 7 - history initialization racing with saves yields one baseline
+      ---
+      duration_ms: 41.647163
+      type: 'test'
+      ...
+    # Subtest: concurrent mixed mutations keep prune accounting exact
+    ok 8 - concurrent mixed mutations keep prune accounting exact
+      ---
+      duration_ms: 32.721062
+      type: 'test'
+      ...
+    # Subtest: same owner email works across instances; cross-owner denied
+    ok 9 - same owner email works across instances; cross-owner denied
+      ---
+      duration_ms: 43.95931
+      type: 'test'
+      ...
+    # Subtest: rapid creates mint distinct ids across instances
+    ok 10 - rapid creates mint distinct ids across instances
+      ---
+      duration_ms: 63.779595
+      type: 'test'
+      ...
+    1..10
+ok 29 - v2-6c two processes, one postgres
+  ---
+  duration_ms: 1995.886438
+  type: 'suite'
+  ...
+# Subtest: v2-6c two processes, one sqlite file
+    # Subtest: same-base saves across sqlite processes yield one 200 and one 409
+    ok 1 - same-base saves across sqlite processes yield one 200 and one 409
+      ---
+      duration_ms: 114.686027
+      type: 'test'
+      ...
+    1..1
+ok 30 - v2-6c two processes, one sqlite file
+  ---
+  duration_ms: 1650.665826
+  type: 'suite'
+  ...
+# Subtest: v2-6c transaction faults
+    # Subtest: terminated backend mid-transaction rolls back with nothing saved
+    ok 1 - terminated backend mid-transaction rolls back with nothing saved
+      ---
+      duration_ms: 240.630729
+      type: 'test'
+      ...
+    # Subtest: history-insert failure rolls back the project write
+    ok 2 - history-insert failure rolls back the project write
+      ---
+      duration_ms: 22.638187
+      type: 'test'
+      ...
+    # Subtest: prune failure rolls back the whole save
+    ok 3 - prune failure rolls back the whole save
+      ---
+      duration_ms: 106.542846
+      type: 'test'
+      ...
+    # Subtest: unreachable database reports storage-unavailable and never saved
+    ok 4 - unreachable database reports storage-unavailable and never saved
+      ---
+      duration_ms: 2.673141
+      type: 'test'
+      ...
+    # Subtest: pool exhaustion fails loudly instead of hanging or half-writing
+    ok 5 - pool exhaustion fails loudly instead of hanging or half-writing
+      ---
+      duration_ms: 5538.966851
+      type: 'test'
+      ...
+    # Subtest: killed writer processes leave consistent history
+    ok 6 - killed writer processes leave consistent history
+      ---
+      duration_ms: 2017.969448
+      type: 'test'
+      ...
+    1..6
+ok 31 - v2-6c transaction faults
+  ---
+  duration_ms: 7952.573832
+  type: 'suite'
+  ...
+# Subtest: v2-6c misconfiguration over HTTP
+    # Subtest: postgres selected without a URL answers 503 honestly, never sqlite
+    ok 1 - postgres selected without a URL answers 503 honestly, never sqlite
+      ---
+      duration_ms: 304.473956
+      type: 'test'
+      ...
+    # Subtest: aborted HTTP saves leave consistent history
+    ok 2 - aborted HTTP saves leave consistent history
+      ---
+      duration_ms: 2697.496225
+      type: 'test'
+      ...
+    1..2
+ok 32 - v2-6c misconfiguration over HTTP
+  ---
+  duration_ms: 3803.33431
+  type: 'suite'
+  ...
+# Subtest: v2-6c contract over postgres
+    # Subtest: adapter answers before the shared suite runs
+    ok 1 - adapter answers before the shared suite runs
+      ---
+      duration_ms: 10.880693
+      type: 'test'
+      ...
+    1..1
+ok 33 - v2-6c contract over postgres
+  ---
+  duration_ms: 33.42826
+  type: 'suite'
+  ...
+# Subtest: [postgres] CRUD and summaries
+    # Subtest: creates, loads, lists without scene bytes, renames, deletes
+    ok 1 - creates, loads, lists without scene bytes, renames, deletes
+      ---
+      duration_ms: 97.69555
+      type: 'test'
+      ...
+    # Subtest: no-op saves and renames advance nothing and record nothing
+    ok 2 - no-op saves and renames advance nothing and record nothing
+      ---
+      duration_ms: 9.378382
+      type: 'test'
+      ...
+    1..2
+ok 34 - [postgres] CRUD and summaries
+  ---
+  duration_ms: 107.378884
+  type: 'suite'
+  ...
+# Subtest: [postgres] schema validation
+    # Subtest: refuses malformed ids, titles, scenes, and provenance
+    ok 1 - refuses malformed ids, titles, scenes, and provenance
+      ---
+      duration_ms: 9.663204
+      type: 'test'
+      ...
+    1..1
+ok 35 - [postgres] schema validation
+  ---
+  duration_ms: 9.884106
+  type: 'suite'
+  ...
+# Subtest: [postgres] owner isolation
+    # Subtest: exact-match reads, lists, writes, and history without leaks
+    ok 1 - exact-match reads, lists, writes, and history without leaks
+      ---
+      duration_ms: 24.51979
+      type: 'test'
+      ...
+    1..1
+ok 36 - [postgres] owner isolation
+  ---
+  duration_ms: 24.770353
+  type: 'suite'
+  ...
+# Subtest: [postgres] revision conflicts
+    # Subtest: same-base saves serialize to one winner and one stale
+    ok 1 - same-base saves serialize to one winner and one stale
+      ---
+      duration_ms: 15.610726
+      type: 'test'
+      ...
+    # Subtest: save versus rename on one base keeps exactly one winner
+    ok 2 - save versus rename on one base keeps exactly one winner
+      ---
+      duration_ms: 10.329958
+      type: 'test'
+      ...
+    # Subtest: concurrent same-base renames yield one winner and one stale
+    ok 3 - concurrent same-base renames yield one winner and one stale
+      ---
+      duration_ms: 9.142593
+      type: 'test'
+      ...
+    1..3
+ok 37 - [postgres] revision conflicts
+  ---
+  duration_ms: 35.476532
+  type: 'suite'
+  ...
+# Subtest: [postgres] atomic history
+    # Subtest: every committed revision has a validated history row; failures add none
+    ok 1 - every committed revision has a validated history row; failures add none
+      ---
+      duration_ms: 12.31686
+      type: 'test'
+      ...
+    1..1
+ok 38 - [postgres] atomic history
+  ---
+  duration_ms: 12.461083
+  type: 'suite'
+  ...
+# Subtest: [postgres] retention
+    # Subtest: stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+    ok 1 - stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+      ---
+      duration_ms: 110.817504
+      type: 'test'
+      ...
+    1..1
+ok 39 - [postgres] retention
+  ---
+  duration_ms: 110.976584
+  type: 'suite'
+  ...
+# Subtest: [postgres] restore
+    # Subtest: restores as a new revision, preserves rows, refuses stale
+    ok 1 - restores as a new revision, preserves rows, refuses stale
+      ---
+      duration_ms: 18.345557
+      type: 'test'
+      ...
+    # Subtest: restore versus restore on one base keeps one winner
+    ok 2 - restore versus restore on one base keeps one winner
+      ---
+      duration_ms: 12.564039
+      type: 'test'
+      ...
+    1..2
+ok 40 - [postgres] restore
+  ---
+  duration_ms: 31.123051
+  type: 'suite'
+  ...
+# Subtest: [postgres] migration and corruption
+    # Subtest: history-less projects gain exactly one baseline without rewrites
+    ok 1 - history-less projects gain exactly one baseline without rewrites
+      ---
+      duration_ms: 10.614039
+      type: 'test'
+      ...
+    # Subtest: future schema versions refuse; corrupt rows refuse with current intact
+    ok 2 - future schema versions refuse; corrupt rows refuse with current intact
+      ---
+      duration_ms: 9.202786
+      type: 'test'
+      ...
+    1..2
+ok 41 - [postgres] migration and corruption
+  ---
+  duration_ms: 19.997482
+  type: 'suite'
+  ...
+# Subtest: [postgres] round-trip and export
+    # Subtest: mixed decks survive byte-identical with identity intact
+    ok 1 - mixed decks survive byte-identical with identity intact
+      ---
+      duration_ms: 7.01564
+      type: 'test'
+      ...
+    # Subtest: stored and restored documents export native and order-exact
+    ok 2 - stored and restored documents export native and order-exact
+      ---
+      duration_ms: 49.445009
+      type: 'test'
+      ...
+    1..2
+ok 42 - [postgres] round-trip and export
+  ---
+  duration_ms: 56.671999
+  type: 'suite'
+  ...
+# Subtest: [postgres] deletion
+    # Subtest: delete removes the project and its history together
+    ok 1 - delete removes the project and its history together
+      ---
+      duration_ms: 7.278815
+      type: 'test'
+      ...
+    1..1
+ok 43 - [postgres] deletion
+  ---
+  duration_ms: 7.434
+  type: 'suite'
+  ...
+# Subtest: v2-6c contract over sqlite
+    # Subtest: adapter surfaces match the shared interface
+    ok 1 - adapter surfaces match the shared interface
+      ---
+      duration_ms: 2.239048
+      type: 'test'
+      ...
+    1..1
+ok 44 - v2-6c contract over sqlite
+  ---
+  duration_ms: 7.481214
+  type: 'suite'
+  ...
+# Subtest: [sqlite] CRUD and summaries
+    # Subtest: creates, loads, lists without scene bytes, renames, deletes
+    ok 1 - creates, loads, lists without scene bytes, renames, deletes
+      ---
+      duration_ms: 88.740998
+      type: 'test'
+      ...
+    # Subtest: no-op saves and renames advance nothing and record nothing
+    ok 2 - no-op saves and renames advance nothing and record nothing
+      ---
+      duration_ms: 3.579786
+      type: 'test'
+      ...
+    1..2
+ok 45 - [sqlite] CRUD and summaries
+  ---
+  duration_ms: 92.575895
+  type: 'suite'
+  ...
+# Subtest: [sqlite] schema validation
+    # Subtest: refuses malformed ids, titles, scenes, and provenance
+    ok 1 - refuses malformed ids, titles, scenes, and provenance
+      ---
+      duration_ms: 3.990534
+      type: 'test'
+      ...
+    1..1
+ok 46 - [sqlite] schema validation
+  ---
+  duration_ms: 4.129819
+  type: 'suite'
+  ...
+# Subtest: [sqlite] owner isolation
+    # Subtest: exact-match reads, lists, writes, and history without leaks
+    ok 1 - exact-match reads, lists, writes, and history without leaks
+      ---
+      duration_ms: 7.143266
+      type: 'test'
+      ...
+    1..1
+ok 47 - [sqlite] owner isolation
+  ---
+  duration_ms: 7.302037
+  type: 'suite'
+  ...
+# Subtest: [sqlite] revision conflicts
+    # Subtest: same-base saves serialize to one winner and one stale
+    ok 1 - same-base saves serialize to one winner and one stale
+      ---
+      duration_ms: 3.53085
+      type: 'test'
+      ...
+    # Subtest: save versus rename on one base keeps exactly one winner
+    ok 2 - save versus rename on one base keeps exactly one winner
+      ---
+      duration_ms: 2.851745
+      type: 'test'
+      ...
+    # Subtest: concurrent same-base renames yield one winner and one stale
+    ok 3 - concurrent same-base renames yield one winner and one stale
+      ---
+      duration_ms: 2.062119
+      type: 'test'
+      ...
+    1..3
+ok 48 - [sqlite] revision conflicts
+  ---
+  duration_ms: 8.667691
+  type: 'suite'
+  ...
+# Subtest: [sqlite] atomic history
+    # Subtest: every committed revision has a validated history row; failures add none
+    ok 1 - every committed revision has a validated history row; failures add none
+      ---
+      duration_ms: 5.000059
+      type: 'test'
+      ...
+    1..1
+ok 49 - [sqlite] atomic history
+  ---
+  duration_ms: 5.078094
+  type: 'suite'
+  ...
+# Subtest: [sqlite] retention
+    # Subtest: stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+    ok 1 - stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+      ---
+      duration_ms: 38.7338
+      type: 'test'
+      ...
+    1..1
+ok 50 - [sqlite] retention
+  ---
+  duration_ms: 38.824087
+  type: 'suite'
+  ...
+# Subtest: [sqlite] restore
+    # Subtest: restores as a new revision, preserves rows, refuses stale
+    ok 1 - restores as a new revision, preserves rows, refuses stale
+      ---
+      duration_ms: 6.091225
+      type: 'test'
+      ...
+    # Subtest: restore versus restore on one base keeps one winner
+    ok 2 - restore versus restore on one base keeps one winner
+      ---
+      duration_ms: 3.566011
+      type: 'test'
+      ...
+    1..2
+ok 51 - [sqlite] restore
+  ---
+  duration_ms: 9.78069
+  type: 'suite'
+  ...
+# Subtest: [sqlite] migration and corruption
+    # Subtest: history-less projects gain exactly one baseline without rewrites
+    ok 1 - history-less projects gain exactly one baseline without rewrites
+      ---
+      duration_ms: 3.317741
+      type: 'test'
+      ...
+    # Subtest: future schema versions refuse; corrupt rows refuse with current intact
+    ok 2 - future schema versions refuse; corrupt rows refuse with current intact
+      ---
+      duration_ms: 4.460566
+      type: 'test'
+      ...
+    1..2
+ok 52 - [sqlite] migration and corruption
+  ---
+  duration_ms: 7.899576
+  type: 'suite'
+  ...
+# Subtest: [sqlite] round-trip and export
+    # Subtest: mixed decks survive byte-identical with identity intact
+    ok 1 - mixed decks survive byte-identical with identity intact
+      ---
+      duration_ms: 5.555091
+      type: 'test'
+      ...
+    # Subtest: stored and restored documents export native and order-exact
+    ok 2 - stored and restored documents export native and order-exact
+      ---
+      duration_ms: 44.052682
+      type: 'test'
+      ...
+    1..2
+ok 53 - [sqlite] round-trip and export
+  ---
+  duration_ms: 49.78973
+  type: 'suite'
+  ...
+# Subtest: [sqlite] deletion
+    # Subtest: delete removes the project and its history together
+    ok 1 - delete removes the project and its history together
+      ---
+      duration_ms: 2.528398
+      type: 'test'
+      ...
+    1..1
+ok 54 - [sqlite] deletion
+  ---
+  duration_ms: 2.596335
+  type: 'suite'
+  ...
+# Subtest: SQLite: project, history and receipt commit once with distinct revisions
+ok 55 - SQLite: project, history and receipt commit once with distinct revisions
+  ---
+  duration_ms: 61.493153
+  type: 'test'
+  ...
+# Subtest: SQLite: request identity reopens exact state and refuses changed plans
+ok 56 - SQLite: request identity reopens exact state and refuses changed plans
+  ---
+  duration_ms: 11.335558
+  type: 'test'
+  ...
+# Subtest: SQLite: input and output snapshots do not mutate durable authority
+ok 57 - SQLite: input and output snapshots do not mutate durable authority
+  ---
+  duration_ms: 13.063659
+  type: 'test'
+  ...
+# Subtest: SQLite: foreign owner, foreign project and deleted project cannot inspect or act
+ok 58 - SQLite: foreign owner, foreign project and deleted project cannot inspect or act
+  ---
+  duration_ms: 7.979486
+  type: 'test'
+  ...
+# Subtest: SQLite: local ownerless projects retain local authority without widening scope
+ok 59 - SQLite: local ownerless projects retain local authority without widening scope
+  ---
+  duration_ms: 12.346609
+  type: 'test'
+  ...
+# Subtest: SQLite: read and noop receipts never invent durable project history
+ok 60 - SQLite: read and noop receipts never invent durable project history
+  ---
+  duration_ms: 12.224163
+  type: 'test'
+  ...
+# Subtest: SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+ok 61 - SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+  ---
+  duration_ms: 21.223464
+  type: 'test'
+  ...
+# Subtest: SQLite: human changes after start cause stale refusal without rebasing
+ok 62 - SQLite: human changes after start cause stale refusal without rebasing
+  ---
+  duration_ms: 9.75863
+  type: 'test'
+  ...
+# Subtest: SQLite: inspect-only and locked/hidden targets fail through canonical tools
+ok 63 - SQLite: inspect-only and locked/hidden targets fail through canonical tools
+  ---
+  duration_ms: 20.01699
+  type: 'test'
+  ...
+# Subtest: SQLite: failure budgets and concise traces survive a new runtime instance
+ok 64 - SQLite: failure budgets and concise traces survive a new runtime instance
+  ---
+  duration_ms: 15.379295
+  type: 'test'
+  ...
+# Subtest: SQLite: cancellation before work and after commit preserves transaction order
+ok 65 - SQLite: cancellation before work and after commit preserves transaction order
+  ---
+  duration_ms: 15.88999
+  type: 'test'
+  ...
+# Subtest: SQLite: lease takeover fences the previous worker even with reused worker name
+ok 66 - SQLite: lease takeover fences the previous worker even with reused worker name
+  ---
+  duration_ms: 138.732351
+  type: 'test'
+  ...
+# Subtest: SQLite: deadlines persist across restart and expire before effects
+ok 67 - SQLite: deadlines persist across restart and expire before effects
+  ---
+  duration_ms: 190.451244
+  type: 'test'
+  ...
+# Subtest: SQLite: after-project failure rolls project/history/receipt back together
+ok 68 - SQLite: after-project failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1025.146536
+  type: 'test'
+  ...
+# Subtest: SQLite: after-receipt failure rolls project/history/receipt back together
+ok 69 - SQLite: after-receipt failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1025.163884
+  type: 'test'
+  ...
+# Subtest: SQLite: final-fence failure rolls project/history/receipt back together
+ok 70 - SQLite: final-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 154.624731
+  type: 'test'
+  ...
+# Subtest: SQLite: deadline-fence failure rolls project/history/receipt back together
+ok 71 - SQLite: deadline-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 151.056082
+  type: 'test'
+  ...
+# Subtest: SQLite: records and traces are bounded and omit raw document/read contents
+ok 72 - SQLite: records and traces are bounded and omit raw document/read contents
+  ---
+  duration_ms: 8.806535
+  type: 'test'
+  ...
+# Subtest: SQLite: malformed/oversized/authority/layout data and duplicate grants are refused
+ok 73 - SQLite: malformed/oversized/authority/layout data and duplicate grants are refused
+  ---
+  duration_ms: 7.214179
+  type: 'test'
+  ...
+# Subtest: SQLite: concurrent advances sharing one lease reserve only one attempt
+ok 74 - SQLite: concurrent advances sharing one lease reserve only one attempt
+  ---
+  duration_ms: 10.580836
+  type: 'test'
+  ...
+# Subtest: SQLite: unsupported or corrupt durable records fail closed
+ok 75 - SQLite: unsupported or corrupt durable records fail closed
+  ---
+  duration_ms: 6.026707
+  type: 'test'
+  ...
+# Subtest: SQLite: renewal extends the current lease without changing its fence
+ok 76 - SQLite: renewal extends the current lease without changing its fence
+  ---
+  duration_ms: 191.61263
+  type: 'test'
+  ...
+# Subtest: SQLite: project deletion cascades runs and all step receipts
+ok 77 - SQLite: project deletion cascades runs and all step receipts
+  ---
+  duration_ms: 9.606656
+  type: 'test'
+  ...
+# Subtest: SQLite: corrupt receipt checkpoints refuse resume instead of skipping work
+ok 78 - SQLite: corrupt receipt checkpoints refuse resume instead of skipping work
+  ---
+  duration_ms: 9.155562
+  type: 'test'
+  ...
+# Subtest: SQLite: CLI start exits and a separate worker completes the saved project
+ok 79 - SQLite: CLI start exits and a separate worker completes the saved project
+  ---
+  duration_ms: 1109.961435
+  type: 'test'
+  ...
+# Subtest: SQLite: schema-valid contradictory receipts and counters fail closed
+ok 80 - SQLite: schema-valid contradictory receipts and counters fail closed
+  ---
+  duration_ms: 27.905276
+  type: 'test'
+  ...
+# Subtest: persisted semantic plan schemas retain the canonical tool contract
+ok 81 - persisted semantic plan schemas retain the canonical tool contract
+  ---
+  duration_ms: 1.862661
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project, history and receipt commit once with distinct revisions
+ok 82 - PostgreSQL: project, history and receipt commit once with distinct revisions
+  ---
+  duration_ms: 110.019986
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: request identity reopens exact state and refuses changed plans
+ok 83 - PostgreSQL: request identity reopens exact state and refuses changed plans
+  ---
+  duration_ms: 16.948364
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: input and output snapshots do not mutate durable authority
+ok 84 - PostgreSQL: input and output snapshots do not mutate durable authority
+  ---
+  duration_ms: 29.338203
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act
+ok 85 - PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act
+  ---
+  duration_ms: 16.897951
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: local ownerless projects retain local authority without widening scope
+ok 86 - PostgreSQL: local ownerless projects retain local authority without widening scope
+  ---
+  duration_ms: 25.813774
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: read and noop receipts never invent durable project history
+ok 87 - PostgreSQL: read and noop receipts never invent durable project history
+  ---
+  duration_ms: 38.007433
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+ok 88 - PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+  ---
+  duration_ms: 62.590707
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: human changes after start cause stale refusal without rebasing
+ok 89 - PostgreSQL: human changes after start cause stale refusal without rebasing
+  ---
+  duration_ms: 21.53917
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools
+ok 90 - PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools
+  ---
+  duration_ms: 54.724837
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: failure budgets and concise traces survive a new runtime instance
+ok 91 - PostgreSQL: failure budgets and concise traces survive a new runtime instance
+  ---
+  duration_ms: 24.31014
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: cancellation before work and after commit preserves transaction order
+ok 92 - PostgreSQL: cancellation before work and after commit preserves transaction order
+  ---
+  duration_ms: 22.616186
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: lease takeover fences the previous worker even with reused worker name
+ok 93 - PostgreSQL: lease takeover fences the previous worker even with reused worker name
+  ---
+  duration_ms: 148.816281
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: deadlines persist across restart and expire before effects
+ok 94 - PostgreSQL: deadlines persist across restart and expire before effects
+  ---
+  duration_ms: 194.986335
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: after-project failure rolls project/history/receipt back together
+ok 95 - PostgreSQL: after-project failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1035.944965
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: after-receipt failure rolls project/history/receipt back together
+ok 96 - PostgreSQL: after-receipt failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1041.232422
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: final-fence failure rolls project/history/receipt back together
+ok 97 - PostgreSQL: final-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 188.061853
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: deadline-fence failure rolls project/history/receipt back together
+ok 98 - PostgreSQL: deadline-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 164.324691
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: records and traces are bounded and omit raw document/read contents
+ok 99 - PostgreSQL: records and traces are bounded and omit raw document/read contents
+  ---
+  duration_ms: 11.184622
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused
+ok 100 - PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused
+  ---
+  duration_ms: 5.436786
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: concurrent advances sharing one lease reserve only one attempt
+ok 101 - PostgreSQL: concurrent advances sharing one lease reserve only one attempt
+  ---
+  duration_ms: 15.858562
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: unsupported or corrupt durable records fail closed
+ok 102 - PostgreSQL: unsupported or corrupt durable records fail closed
+  ---
+  duration_ms: 4.574113
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: renewal extends the current lease without changing its fence
+ok 103 - PostgreSQL: renewal extends the current lease without changing its fence
+  ---
+  duration_ms: 201.136916
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project deletion cascades runs and all step receipts
+ok 104 - PostgreSQL: project deletion cascades runs and all step receipts
+  ---
+  duration_ms: 18.831503
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: corrupt receipt checkpoints refuse resume instead of skipping work
+ok 105 - PostgreSQL: corrupt receipt checkpoints refuse resume instead of skipping work
+  ---
+  duration_ms: 19.857179
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: CLI start exits and a separate worker completes the saved project
+ok 106 - PostgreSQL: CLI start exits and a separate worker completes the saved project
+  ---
+  duration_ms: 1494.132621
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: schema-valid contradictory receipts and counters fail closed
+ok 107 - PostgreSQL: schema-valid contradictory receipts and counters fail closed
+  ---
+  duration_ms: 72.836152
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: two processes race for one lease and only one can claim
+ok 108 - PostgreSQL process: two processes race for one lease and only one can claim
+  ---
+  duration_ms: 542.902096
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill reserved then restart cannot lose or replay an edit
+ok 109 - PostgreSQL process: kill reserved then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1984.727049
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill after-project then restart cannot lose or replay an edit
+ok 110 - PostgreSQL process: kill after-project then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1938.258586
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit
+ok 111 - PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1901.543727
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill committed then restart cannot lose or replay an edit
+ok 112 - PostgreSQL process: kill committed then restart cannot lose or replay an edit
+  ---
+  duration_ms: 340.45875
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: restart resumes after a committed checkpoint without repeating it
+ok 113 - PostgreSQL process: restart resumes after a committed checkpoint without repeating it
+  ---
+  duration_ms: 1876.169307
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: crashed reservations exhaust the persisted step budget
+ok 114 - PostgreSQL process: crashed reservations exhaust the persisted step budget
+  ---
+  duration_ms: 1044.552587
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next
+ok 115 - PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next
+  ---
+  duration_ms: 650.022515
+  type: 'test'
+  ...
+# Subtest: SQLite process: two processes race for one lease and only one can claim
+ok 116 - SQLite process: two processes race for one lease and only one can claim
+  ---
+  duration_ms: 430.435733
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill reserved then restart cannot lose or replay an edit
+ok 117 - SQLite process: kill reserved then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1828.655543
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill after-project then restart cannot lose or replay an edit
+ok 118 - SQLite process: kill after-project then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1966.755382
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill after-receipt then restart cannot lose or replay an edit
+ok 119 - SQLite process: kill after-receipt then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1909.032567
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill committed then restart cannot lose or replay an edit
+ok 120 - SQLite process: kill committed then restart cannot lose or replay an edit
+  ---
+  duration_ms: 376.489703
+  type: 'test'
+  ...
+# Subtest: SQLite process: restart resumes after a committed checkpoint without repeating it
+ok 121 - SQLite process: restart resumes after a committed checkpoint without repeating it
+  ---
+  duration_ms: 1912.750547
+  type: 'test'
+  ...
+# Subtest: SQLite process: crashed reservations exhaust the persisted step budget
+ok 122 - SQLite process: crashed reservations exhaust the persisted step budget
+  ---
+  duration_ms: 1042.365956
+  type: 'test'
+  ...
+# Subtest: SQLite process: cancellation racing an in-flight commit keeps that commit and prevents the next
+ok 123 - SQLite process: cancellation racing an in-flight commit keeps that commit and prevents the next
+  ---
+  duration_ms: 739.042805
+  type: 'test'
+  ...
+# Subtest: unauthorized caller cannot inspect project state
+ok 124 - unauthorized caller cannot inspect project state
+  ---
+  duration_ms: 23.872956
+  type: 'test'
+  ...
+# Subtest: project index pages expose only allowed slides and no content/style
+ok 125 - project index pages expose only allowed slides and no content/style
+  ---
+  duration_ms: 13.017679
+  type: 'test'
+  ...
+# Subtest: slide and selection projections preserve exact content without renderer or authority fields
+ok 126 - slide and selection projections preserve exact content without renderer or authority fields
+  ---
+  duration_ms: 1.503602
+  type: 'test'
+  ...
+# Subtest: pagination is explicit and slide grants cannot be bypassed
+ok 127 - pagination is explicit and slide grants cannot be bypassed
+  ---
+  duration_ms: 0.848743
+  type: 'test'
+  ...
+# Subtest: empty and invalid selections never widen scope
+ok 128 - empty and invalid selections never widen scope
+  ---
+  duration_ms: 0.902813
+  type: 'test'
+  ...
+# Subtest: rejects raw command as untrusted input without mutation
+ok 129 - rejects raw command as untrusted input without mutation
+  ---
+  duration_ms: 0.564153
+  type: 'test'
+  ...
+# Subtest: rejects geometry as untrusted input without mutation
+ok 130 - rejects geometry as untrusted input without mutation
+  ---
+  duration_ms: 0.411716
+  type: 'test'
+  ...
+# Subtest: rejects owner override as untrusted input without mutation
+ok 131 - rejects owner override as untrusted input without mutation
+  ---
+  duration_ms: 0.400243
+  type: 'test'
+  ...
+# Subtest: rejects text style as untrusted input without mutation
+ok 132 - rejects text style as untrusted input without mutation
+  ---
+  duration_ms: 0.428308
+  type: 'test'
+  ...
+# Subtest: rejects nonfinite as untrusted input without mutation
+ok 133 - rejects nonfinite as untrusted input without mutation
+  ---
+  duration_ms: 0.369642
+  type: 'test'
+  ...
+# Subtest: rejects missing args as untrusted input without mutation
+ok 134 - rejects missing args as untrusted input without mutation
+  ---
+  duration_ms: 0.259576
+  type: 'test'
+  ...
+# Subtest: rejects unknown tool as untrusted input without mutation
+ok 135 - rejects unknown tool as untrusted input without mutation
+  ---
+  duration_ms: 0.255153
+  type: 'test'
+  ...
+# Subtest: rejects sparse array as untrusted input without mutation
+ok 136 - rejects sparse array as untrusted input without mutation
+  ---
+  duration_ms: 0.269632
+  type: 'test'
+  ...
+# Subtest: rejects function as untrusted input without mutation
+ok 137 - rejects function as untrusted input without mutation
+  ---
+  duration_ms: 0.241228
+  type: 'test'
+  ...
+# Subtest: rejects pollution as untrusted input without mutation
+ok 138 - rejects pollution as untrusted input without mutation
+  ---
+  duration_ms: 0.221379
+  type: 'test'
+  ...
+# Subtest: accessors and cycles are refused without invoking accessors
+ok 139 - accessors and cycles are refused without invoking accessors
+  ---
+  duration_ms: 0.238277
+  type: 'test'
+  ...
+# Subtest: text edits preserve all runs, styling and geometry with exact undo/redo
+ok 140 - text edits preserve all runs, styling and geometry with exact undo/redo
+  ---
+  duration_ms: 2.868818
+  type: 'test'
+  ...
+# Subtest: text, chart and table changes commit as one native batch
+ok 141 - text, chart and table changes commit as one native batch
+  ---
+  duration_ms: 32.927505
+  type: 'test'
+  ...
+# Subtest: invalid later chart or table edit rolls back every earlier valid edit
+ok 142 - invalid later chart or table edit rolls back every earlier valid edit
+  ---
+  duration_ms: 1.055812
+  type: 'test'
+  ...
+# Subtest: duplicate text run is refused atomically
+ok 143 - duplicate text run is refused atomically
+  ---
+  duration_ms: 0.327143
+  type: 'test'
+  ...
+# Subtest: duplicate data is refused atomically
+ok 144 - duplicate data is refused atomically
+  ---
+  duration_ms: 0.262446
+  type: 'test'
+  ...
+# Subtest: wrong kind is refused atomically
+ok 145 - wrong kind is refused atomically
+  ---
+  duration_ms: 0.227509
+  type: 'test'
+  ...
+# Subtest: invalid run is refused atomically
+ok 146 - invalid run is refused atomically
+  ---
+  duration_ms: 0.230061
+  type: 'test'
+  ...
+# Subtest: stale revisions and duplicate applied calls cannot overwrite
+ok 147 - stale revisions and duplicate applied calls cannot overwrite
+  ---
+  duration_ms: 0.682274
+  type: 'test'
+  ...
+# Subtest: parallel calls with the same revision have only one winner
+ok 148 - parallel calls with the same revision have only one winner
+  ---
+  duration_ms: 0.613066
+  type: 'test'
+  ...
+# Subtest: noop edits retain revision, history and redo state
+ok 149 - noop edits retain revision, history and redo state
+  ---
+  duration_ms: 0.467922
+  type: 'test'
+  ...
+# Subtest: read-only mode and absent grants cannot be widened by a tool request
+ok 150 - read-only mode and absent grants cannot be widened by a tool request
+  ---
+  duration_ms: 0.644185
+  type: 'test'
+  ...
+# Subtest: editing outside the grant or outside readable slides is refused
+ok 151 - editing outside the grant or outside readable slides is refused
+  ---
+  duration_ms: 0.26442
+  type: 'test'
+  ...
+# Subtest: locked targets are refused even with an explicit grant
+ok 152 - locked targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.225218
+  type: 'test'
+  ...
+# Subtest: hidden targets are refused even with an explicit grant
+ok 153 - hidden targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.198484
+  type: 'test'
+  ...
+# Subtest: ancestor locks and hidden groups protect nested targets
+ok 154 - ancestor locks and hidden groups protect nested targets
+  ---
+  duration_ms: 0.488777
+  type: 'test'
+  ...
+# Subtest: detached content stays editable and existing tombstones/human additions survive
+ok 155 - detached content stays editable and existing tombstones/human additions survive
+  ---
+  duration_ms: 0.877695
+  type: 'test'
+  ...
+# Subtest: input is snapshotted and output/catalog/grants cannot mutate authoritative state
+ok 156 - input is snapshotted and output/catalog/grants cannot mutate authoritative state
+  ---
+  duration_ms: 0.847916
+  type: 'test'
+  ...
+# Subtest: calls, oversized reads, input and pre-commit acknowledgements obey budgets
+ok 157 - calls, oversized reads, input and pre-commit acknowledgements obey budgets
+  ---
+  duration_ms: 1.128118
+  type: 'test'
+  ...
+# Subtest: unexpected document failures do not echo private exception text
+ok 158 - unexpected document failures do not echo private exception text
+  ---
+  duration_ms: 0.285199
+  type: 'test'
+  ...
+# Subtest: an oversized acknowledgement refuses before the real engine can commit
+ok 159 - an oversized acknowledgement refuses before the real engine can commit
+  ---
+  duration_ms: 1.156278
+  type: 'test'
+  ...
+# Subtest: result schemas reject missing fields and renderer/credential escapes in projected data
+ok 160 - result schemas reject missing fields and renderer/credential escapes in projected data
+  ---
+  duration_ms: 0.74289
+  type: 'test'
+  ...
+# Subtest: table content tools refuse dimension changes without committing any batch part
+ok 161 - table content tools refuse dimension changes without committing any batch part
+  ---
+  duration_ms: 0.667535
+  type: 'test'
+  ...
+# Subtest: tool wording and human placement survive deterministic regeneration together
+ok 162 - tool wording and human placement survive deterministic regeneration together
+  ---
+  duration_ms: 50.892222
+  type: 'test'
+  ...
+# Subtest: v2 generated types drift
+    # Subtest: checked-in generated types match the schemas byte-for-byte
+    ok 1 - checked-in generated types match the schemas byte-for-byte
+      ---
+      duration_ms: 233.033724
+      type: 'test'
+      ...
+    1..1
+ok 163 - v2 generated types drift
+  ---
+  duration_ms: 234.012424
+  type: 'suite'
+  ...
+1..163
+# tests 198
+# suites 28
+# pass 198
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 51602.905812
+# forge-test-file "test/dev-protocol.test.js"
+# forge-test-file "test/v2-preservation.test.js"
+# forge-test-file "test/v2-projects-6c-concurrency.test.js"
+# forge-test-file "test/v2-projects-6c-faults.test.js"
+# forge-test-file "test/v2-projects-6c-postgres.test.js"
+# forge-test-file "test/v2-projects-6c-sqlite.test.js"
+# forge-test-file "test/v2-runtime-8b.test.js"
+# forge-test-file "test/v2-runtime-postgres-8b.test.js"
+# forge-test-file "test/v2-runtime-process-8b.test.js"
+# forge-test-file "test/v2-tools-8a.test.js"
+# forge-test-file "test/v2-types-drift.test.js"

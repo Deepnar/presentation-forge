@@ -1,0 +1,28 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "packetHead": "bc8a6ed2c7faa761ffedec013f12c060c1f540d0",
+  "observedAtUtc": "2026-10-21T11:41:24.806975+00:00",
+  "node": "v24.16.0",
+  "postgres": {
+    "id": "f9cf7b71e1dabc410944a90d81e9b30d4d42de1ab6a0dd47ae230fbac134b8c9",
+    "name": "/forge-v28e-resumed-20261021",
+    "running": true,
+    "image": "postgres:15-alpine",
+    "ports": {
+      "5432/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "5544"
+        }
+      ]
+    },
+    "nanoCpus": 1000000000,
+    "memoryBytes": 536870912,
+    "tmpfs": {
+      "/var/lib/postgresql/data": "rw,size=192m"
+    }
+  },
+  "sourceMatchesFrozen": true,
+  "serviceCleanupOwner": "root; reviewer will not stop service",
+  "limitation": "GlobalPSI/iowait provenance unresolved. Resource thresholds unchanged; low priority serial execution with per-job fresh readiness and process-group watchdog."
+}

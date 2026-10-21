@@ -1,0 +1,22 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "packetImagesInspected": 115,
+  "packetContactSheetsOpened": 20,
+  "freshImagesInspected": 54,
+  "freshBrowser": 11,
+  "freshNative": 27,
+  "freshSvg": 16,
+  "freshContactSheetsOpened": 10,
+  "fullSizeRiskCasesInspected": true,
+  "allManifestHashesVerified": true,
+  "maximumFreshCanvasDeltaPx": 0.07738494873046875,
+  "largeDeck": {
+    "project": "p-53ee8399e7eaecf79578613a",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1542
+  },
+  "noNewForegroundClippingOrOverlap": true,
+  "inheritedNarrowCanvasAndSvgStyleLimitsVisible": true,
+  "interactivePowerPointExecuted": false
+}

@@ -1,0 +1,823 @@
+[
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-01.jpg",
+    "images": [
+      {
+        "source": "docs/v2-6a-evidence/conflict.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6a-evidence--conflict.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "49146bd9dea78c8cf9b39cf662ac5431672a0685c3573488f6a08a1289686d4a",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6a-evidence--conflict.png"
+      },
+      {
+        "source": "docs/v2-6a-evidence/project-list.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6a-evidence--project-list.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "59af96e578b8432fc953f1e55f2ac5d5a95ee35dd5070ed4c0dd6c985c205eb5",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6a-evidence--project-list.png"
+      },
+      {
+        "source": "docs/v2-6a-evidence/recovered-banner.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6a-evidence--recovered-banner.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "fdfa0f94138d093e8b2037c4da2828adb45000bf0a9ac9b642a17fad653d123d",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6a-evidence--recovered-banner.png"
+      },
+      {
+        "source": "docs/v2-6a-evidence/reopened.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6a-evidence--reopened.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "5d52fef99abf6c07bc7ed06d9885d160de11a6d66bee1736ae686099c057350c",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6a-evidence--reopened.png"
+      },
+      {
+        "source": "docs/v2-6a-evidence/saved.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6a-evidence--saved.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "9bb7095b5eb13291a8218277653644491e6c5f684921824a5143bb1464479bd0",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6a-evidence--saved.png"
+      },
+      {
+        "source": "docs/v2-6b-evidence/history-after-refresh.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6b-evidence--history-after-refresh.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "697b78fb666e23c96991112f4b76b2fd1fb16c47bd96930be4c97b4c5be1e792",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6b-evidence--history-after-refresh.png"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-02.jpg",
+    "images": [
+      {
+        "source": "docs/v2-6b-evidence/history-list.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6b-evidence--history-list.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "9201db6112911baf3fe4346a68e22e76131bc601f8be5a9fe53b03eb1206a1b6",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6b-evidence--history-list.png"
+      },
+      {
+        "source": "docs/v2-6b-evidence/history-preview.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6b-evidence--history-preview.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "b8720c5ed7ba1e605c9140677f0636ad1f724bc5a85f527136e3ff077a472ba5",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6b-evidence--history-preview.png"
+      },
+      {
+        "source": "docs/v2-6b-evidence/history-restored.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6b-evidence--history-restored.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "b0ed1f9f3794cc34f0a52b479e211f271d97325bc673d2d6c23c67ea6af0eafe",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6b-evidence--history-restored.png"
+      },
+      {
+        "source": "docs/v2-6b-evidence/history-three-versions.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6b-evidence--history-three-versions.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "dce6fa3aeda94d454130b23150b5d3d880ac608c8d5b5d6412ccd113186ffc01",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6b-evidence--history-three-versions.png"
+      },
+      {
+        "source": "docs/v2-6c-evidence/hosted-after-restart.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6c-evidence--hosted-after-restart.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "0e19a4a6a1b54f22cd0b010364e2504a754c5f09affd0d12c8ff2bcacfbef4ee",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6c-evidence--hosted-after-restart.png"
+      },
+      {
+        "source": "docs/v2-6c-evidence/hosted-conflict.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6c-evidence--hosted-conflict.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "53280e885483905bd322ff6fc09808875ea10dedcd36b360e8e4cc22435b0c5d",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6c-evidence--hosted-conflict.png"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-03.jpg",
+    "images": [
+      {
+        "source": "docs/v2-6c-evidence/hosted-history.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6c-evidence--hosted-history.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7c37dac079367026ac0cddee481f2a8598712bd3e51943b09a0a816f0a340be9",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6c-evidence--hosted-history.png"
+      },
+      {
+        "source": "docs/v2-6c-evidence/hosted-restored.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-6c-evidence--hosted-restored.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "bd03f494f227391dc5e92d2c1fdadeb9127920d57712f3afab6e84cb6c9aeac5",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-6c-evidence--hosted-restored.png"
+      },
+      {
+        "source": "docs/v2-7a-evidence/dashboard-empty.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--dashboard-empty.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7b91ed7a687415c63e3fce123934d56b700832980cd36b50cf8893a664e3dc82",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--dashboard-empty.png"
+      },
+      {
+        "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--dashboard-hosted-anon.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "21e7026e502388a810c65252a04d270f8bb400a8e2a6fbcb16bb44077717252d",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--dashboard-hosted-anon.png"
+      },
+      {
+        "source": "docs/v2-7a-evidence/dashboard.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--dashboard.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "b8bd46c29c3a2a467c93cabbdcf02c16115f2a9e2d75713f835434cfbd5cf81d",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--dashboard.png"
+      },
+      {
+        "source": "docs/v2-7a-evidence/editor-blank.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--editor-blank.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-blank.png"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-04.jpg",
+    "images": [
+      {
+        "source": "docs/v2-7a-evidence/editor-chart.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--editor-chart.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-chart.png"
+      },
+      {
+        "source": "docs/v2-7a-evidence/editor-history.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--editor-history.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "a78ccbe196ba48bf5464b198976afa839e02b9f011dc19e81895339b66c45589",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-history.png"
+      },
+      {
+        "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--editor-narrow-projects.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "c93c906082f3b7a88b72ad0866aef5404f2b64ae09040f8d174288bdaed9ccf6",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-narrow-projects.png"
+      },
+      {
+        "source": "docs/v2-7a-evidence/editor-narrow.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--editor-narrow.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-narrow.png"
+      },
+      {
+        "source": "docs/v2-7a-evidence/editor-readonly.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--editor-readonly.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7ee64bf983c1a5cc40d897767c18adb7d54a8d2192699f07cd17127d14b079c1",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-readonly.png"
+      },
+      {
+        "source": "docs/v2-7a-evidence/editor-shell.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--editor-shell.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "3f6a304e04245bce7af1d2613deed1ec5d793d9fb28e94f8c0334b84444eaa1f",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-shell.png"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-05.jpg",
+    "images": [
+      {
+        "source": "docs/v2-7a-evidence/editor-table.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7a-evidence--editor-table.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7a-evidence--editor-table.png"
+      },
+      {
+        "source": "docs/v2-7b-1-evidence/imported-chart.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-1-evidence--imported-chart.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "2adc698b8b3681c4631365f341c6a401533731bb0520d9063d3cef0d4926f3ec",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-1-evidence--imported-chart.png"
+      },
+      {
+        "source": "docs/v2-7b-1-evidence/imported-narrow.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-1-evidence--imported-narrow.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "c013186cf7e38737faae233e31e424e3df26bc9b084481c1b283b06b2ac97de0",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-1-evidence--imported-narrow.png"
+      },
+      {
+        "source": "docs/v2-7b-1-evidence/imported-stats.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-1-evidence--imported-stats.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "f1268d3f19efffde6f5835fe9eef48107bf3e6430524b27e45069aec769b7496",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-1-evidence--imported-stats.png"
+      },
+      {
+        "source": "docs/v2-7b-1-evidence/imported-table.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-1-evidence--imported-table.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "5986dedaca9e3f751953b5ad3d3ca821eb697f1739603e3da44c157229249866",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-1-evidence--imported-table.png"
+      },
+      {
+        "source": "docs/v2-7b-1-evidence/imported-transition.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-1-evidence--imported-transition.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "d375efc975ddd3f8ed05a2079c572b000dc455e8d1f33ae57f23ff55807862a6",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-1-evidence--imported-transition.png"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-06.jpg",
+    "images": [
+      {
+        "source": "docs/v2-7b-2-evidence/ambiguous-response.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-2-evidence--ambiguous-response.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "0ab2cad75a3c16d6c87a74fa9812519cb9b48ad62b32353ac96a24abaa7238b7",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-2-evidence--ambiguous-response.png"
+      },
+      {
+        "source": "docs/v2-7b-2-evidence/boundary-narrow.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-2-evidence--boundary-narrow.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "a62c079413580621ef64c64ada2fb1d06794292804639f3402c527480c8f5521",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-2-evidence--boundary-narrow.png"
+      },
+      {
+        "source": "docs/v2-7b-2-evidence/completed-chat.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-2-evidence--completed-chat.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "a4584fecced9fa0af572762611aca23ac31ebff7614ff885fd9a686ceebeb016",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-2-evidence--completed-chat.png"
+      },
+      {
+        "source": "docs/v2-7b-2-evidence/deck-page-action.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-2-evidence--deck-page-action.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "b5675d2b16d3c576f39e77a94dbb66e2dd89242e5baa6b323955ccbf3d133056",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-2-evidence--deck-page-action.png"
+      },
+      {
+        "source": "docs/v2-7b-2-evidence/handoff-history.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-2-evidence--handoff-history.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "aa6643c87c581ef06f218cb6ab2b38bde3231a15211eaa74a9dcdb9e45261ab9",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-2-evidence--handoff-history.png"
+      },
+      {
+        "source": "docs/v2-7b-2-evidence/opening-project.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-2-evidence--opening-project.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "0b153f9fa58ac1b937b556c400b7e39758025f50a40ec71f293c2c633d85d51f",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-2-evidence--opening-project.png"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-07.jpg",
+    "images": [
+      {
+        "source": "docs/v2-7b-2-evidence/refusal-narrow.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-2-evidence--refusal-narrow.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "70a1acb2341ce92d262a5b06afc57250ec89fc97f6260be1f66ce016494f1ed2",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-2-evidence--refusal-narrow.png"
+      },
+      {
+        "source": "docs/v2-7b-2-evidence/session-changed.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7b-2-evidence--session-changed.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "dd84d0b0a9804f3d8fc20f7d88f434bca79eb1fe39262382d63db239fa8b1b7c",
+        "retainedFrom": "docs/v2-8e-evidence/paused-2026-10-21/captures/docs--v2-7b-2-evidence--session-changed.png"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-content.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-content.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "b9ca076bb4e74deb50067c399dbd2162e7362e3da6622e6571c469475d111d39"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-desktop.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-desktop.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "fa5fdb3a1d61ef9bdcd1a378fea0018943379aabf50f2ad8039165d162d1e945"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-development.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-development.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "d17bfba30ec66773c0c85edd67c807175cf19855ac5c5897fdac542eaecde212"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-font-failure.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-failure.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "711263ef7cfa32e9f98fcee992bfa5b25f0f0ed81af8dcc249b3b6c45909c10d"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-08.jpg",
+    "images": [
+      {
+        "source": "docs/v2-7c-1-evidence/covers-font-http-failure.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-failure.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "63cb2e75bc3ca65f80c90bd38bd5157633eba48a0125d59406766e513dd94c40"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-font-http-recovered.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-recovered.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "230ea9a03bbf716a8db9074916f663ae4d8b5d8f6dce7c630f2e117bad83402a"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-font-static-failure.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-failure.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "64c879792fe1c0a9fba5afcfcc39a6674a94e6fd7f737c732d15b57b3ba8ab9c"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-font-static-recovered.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-recovered.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "f126acdcaa89024a6cbb8ccd6fc3a465bcfe74f7738f72327fdbbe668f39e75b"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-loading.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-loading.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "e45c732c5fe3e26c9c939de5b35b99ef074d3e1bd1110b9da4263cc9c64f1e10"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-narrow-dark.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-narrow-dark.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "53b0e012949402b543d3102a46c6c6ebc8bac5ba99aacc44f78450094b42bd92"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-09.jpg",
+    "images": [
+      {
+        "source": "docs/v2-7c-1-evidence/covers-network-failure.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-network-failure.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "beb0679663b518bee8ea2afaabfde2f520139ce438ed8175278a76cd0b87fae1"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-restored.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-restored.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "18c16f5c1155a9eec528598db54c6e6c9a6ad6fb853d75f947bd9d0204158fdd"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-session-cross-tab.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-cross-tab.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "8ad8f3e0d207ef9a5cbed4cd9f0578272dc47e5bb6222d57cf0b5f8d1a737e2b"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-session-pending.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-pending.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "6d39aad6c7a91ac2912331e6657efc41f2cd424a146e5f1c32be30a6e6be6389"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-session-settled.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-settled.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "eafba7867b83c4e8a25eb2d57ee24f979bac082f825f384b133da6e92e58f293"
+      },
+      {
+        "source": "docs/v2-7c-1-evidence/covers-timeout.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-timeout.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "27e4af919ab6216d41e534772fe6341022a5ead2f144e18d84c34844a8d22b93"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-10.jpg",
+    "images": [
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-delete-generated-failure.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated-failure.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "cc337d95cd849b3f2f8cb3af6d8332811b5c77ae81625229593409eab0758e85"
+      },
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-delete-generated.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "435b9071c37693d0a19bc82f2d7afe31ccce1279c144e6d0dead4b488270200d"
+      },
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-delete-pending.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-pending.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "de1cbde7d5423c48f98a6e2f1d1384725d79b675e980bee99bd1596c0da59955"
+      },
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-delete-saved-failure.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-saved-failure.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "da1f9f50a0e5cdd79722ec00ec0ab53f1d785273abf4063de501045539aa7c20"
+      },
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-desktop.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-desktop.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "5881fb162849cad36bdeece140e7546d89058b544f8c5416aa8174c867dd0563"
+      },
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-development.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-development.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "58f21473e4af5d7057b79b128a05772a00d6456028719d7ca1cdb6337577cf75"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-11.jpg",
+    "images": [
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-empty.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-empty.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "10e9b2700ec8400b100e0f9a408f31615628160859dbe59594f713631e800854"
+      },
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-generated-error.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-generated-error.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "60de4eb2efc74a8c47d129dc4fe468c3d285696c738e85c690e52b7b6705e2f7"
+      },
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-narrow-dark.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dark.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "bba8af498f5ccab9aa3f32b60db0253d605c99251d8596150435dabfbacddd2f"
+      },
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-narrow-dialog.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dialog.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "368b6d2da001d0e2fedad3b32f9958990cb605a2eead89c4734d2dbd8985d44b"
+      },
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-no-matches.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-no-matches.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "06565743705e670e6bdc6dc6cd89844d756348429820987335a345a56507e04e"
+      },
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-saved-error.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-saved-error.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "1df8083190cf24e446a7954caf8393d40c405d4a196df5fe916a410da80099b9"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-12.jpg",
+    "images": [
+      {
+        "source": "docs/v2-7c-2-evidence/catalog-signed-out.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-signed-out.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "0288cbaf6ba16f2101ed81a19d3c6195350e216f9d645e4c75c049e6b108d5a0"
+      },
+      {
+        "source": "docs/v2-7c-3-evidence/editor-chart.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-chart.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "052614d015a10664144858cc3a72820dc29fa3fae8ae61e3abc9ee0b25af838d"
+      },
+      {
+        "source": "docs/v2-7c-3-evidence/editor-readonly.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-readonly.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "38899725b0e0eea147f2c7ad4f70ad3bbf43fdb5c7b8461df70f08d67354b48a"
+      },
+      {
+        "source": "docs/v2-7c-3-evidence/editor-narrow-light.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-light.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "b7b1c9001cccd3d60f9861abe793ae7392cfc1f5d734c24b2d0fbff1248cbdba"
+      },
+      {
+        "source": "docs/v2-7c-3-evidence/editor-narrow-dark.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-dark.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "3d40113f2f2cb79302af90b7a4951c180fed9bb77466f6003b83ea2e194c254e"
+      },
+      {
+        "source": "docs/v2-7c-3-evidence/editor-blank-history.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-blank-history.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "55f96d872f4942d3c739dfb9687300a365105baae929ea81facd179e5f162ede"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-13.jpg",
+    "images": [
+      {
+        "source": "docs/v2-7c-3-evidence/editor-desktop.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-desktop.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7ad360b99a39df194d0edc58a2f1d886015efd4c0d3efdd891b9f2040a860044"
+      },
+      {
+        "source": "docs/v2-7c-3-evidence/editor-table.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-table.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "c8e8a9cdc2115fbea245a631de1a500b834cd175227754f775ccb28c325c14bf"
+      },
+      {
+        "source": "docs/v2-7c-3-evidence/standalone-live.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--standalone-live.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "136f637d42e677545a7990e8b2fa5549f1f9cf9d77328d6c56bf0a7efca7aa13"
+      },
+      {
+        "source": "docs/v2-7c-3-evidence/standalone-projects.png",
+        "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--standalone-projects.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "c71df8442457212e3e323c12b61eee1eb1ac444965118bb64677519301369a7c"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-openai-compatible/before-1.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-openai-compatible/before-1-svg.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-14.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-openai-compatible/before-2.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-openai-compatible/before-2-svg.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-openai-compatible/after-1.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-openai-compatible/after-1-svg.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-openai-compatible/after-2.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-openai-compatible/after-2-svg.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-15.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-openai-compatible/before-1.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-openai-compatible/before-1-svg.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-openai-compatible/before-2.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-openai-compatible/before-2-svg.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-openai-compatible/after-1.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-openai-compatible/after-1-svg.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-16.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-openai-compatible/after-2.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-openai-compatible/after-2-svg.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-anthropic/before-1.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-anthropic/before-1-svg.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-anthropic/before-2.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-anthropic/before-2-svg.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-17.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-anthropic/after-1.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-anthropic/after-1-svg.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-anthropic/after-2.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/sqlite-anthropic/after-2-svg.png",
+        "backend": "sqlite",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-anthropic/before-1.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "4f884f9303fc159806425e4f58a6de795605b6f3064e4ec34704d7462aaa6a1a"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-anthropic/before-1-svg.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "2203f5eb0b16b7b60ca09fab19b123ae630f3710027b31bfa75944d40df8170c"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-18.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-anthropic/before-2.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-anthropic/before-2-svg.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-anthropic/after-1.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-anthropic/after-1-svg.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-anthropic/after-2.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "789187e0dec66e5127571bae0439c68253b1f10e32b9e6924c599e1e4aa73f49"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/postgres-anthropic/after-2-svg.png",
+        "backend": "postgres",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7de3fd260ed0aecabab52589573f0542178f9ef313c978c0ba733f93abf05e11"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-19.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8e-evidence/native/chart-2.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "7b885b1303026d117743b6c978e502b05b8ba0b624a0d0960b751ae0bf6c60c2"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/table-3.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "1d46d4fe9d25573ed1ed1acec42299b37faacb07af3f35c66c80f2617cbb6a83"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/handoff-1.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "0657cc18494dda55383df308f6e18d747c7a194c6be13b44a9f8c076ca81a4dd"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/handoff-2.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "5d349386404d0660dcbc1bf02c055fdbc9f5675c24928b10e2579b48fa026ad1"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/handoff-3.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "4ed100494d7b5ea9894b11ba2e14c033360d9c713dfbb9cfa703cf9db79dd76d"
+      },
+      {
+        "file": "docs/v2-8e-evidence/native/shell-chart.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "bdae197071e3f226f6d652a6f4d71ed3ac5a6e15c92342bbadd31095b561cf47"
+      }
+    ]
+  },
+  {
+    "sheet": "docs/v2-8e-evidence/independent/packet-contact/sheet-20.jpg",
+    "images": [
+      {
+        "file": "docs/v2-8e-evidence/native/shell-table.png",
+        "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+        "sha256": "64f377da7127d2ac26b63fb346d861e67966524c4c6703f741296f613a832f27"
+      }
+    ]
+  }
+]

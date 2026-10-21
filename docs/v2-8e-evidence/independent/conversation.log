@@ -1,0 +1,571 @@
+TAP version 13
+# Subtest: openai-compatible: canonical read result reaches the next real HTTP exchange
+ok 1 - openai-compatible: canonical read result reaches the next real HTTP exchange
+  ---
+  duration_ms: 72.281307
+  type: 'test'
+  ...
+# Subtest: anthropic: canonical read result reaches the next real HTTP exchange
+ok 2 - anthropic: canonical read result reaches the next real HTTP exchange
+  ---
+  duration_ms: 13.432292
+  type: 'test'
+  ...
+# Subtest: conversation rejects zero exchange allowance before storage or HTTP
+ok 3 - conversation rejects zero exchange allowance before storage or HTTP
+  ---
+  duration_ms: 0.518888
+  type: 'test'
+  ...
+# Subtest: conversation rejects excessive exchange allowance before storage or HTTP
+ok 4 - conversation rejects excessive exchange allowance before storage or HTTP
+  ---
+  duration_ms: 0.244672
+  type: 'test'
+  ...
+# Subtest: conversation rejects invalid tool allowance before storage or HTTP
+ok 5 - conversation rejects invalid tool allowance before storage or HTTP
+  ---
+  duration_ms: 0.240134
+  type: 'test'
+  ...
+# Subtest: conversation rejects fractional output allowance before storage or HTTP
+ok 6 - conversation rejects fractional output allowance before storage or HTTP
+  ---
+  duration_ms: 0.206421
+  type: 'test'
+  ...
+# Subtest: conversation rejects unknown authority metadata before storage or HTTP
+ok 7 - conversation rejects unknown authority metadata before storage or HTTP
+  ---
+  duration_ms: 0.212225
+  type: 'test'
+  ...
+# Subtest: conversation rejects untrusted message history before storage or HTTP
+ok 8 - conversation rejects untrusted message history before storage or HTTP
+  ---
+  duration_ms: 0.200463
+  type: 'test'
+  ...
+# Subtest: conversation rejects layout inside a read before storage or HTTP
+ok 9 - conversation rejects layout inside a read before storage or HTTP
+  ---
+  duration_ms: 0.229171
+  type: 'test'
+  ...
+# Subtest: conversation refuses nested live accessors without invoking them
+ok 10 - conversation refuses nested live accessors without invoking them
+  ---
+  duration_ms: 0.342416
+  type: 'test'
+  ...
+# Subtest: deadline returns while initial storage is pending and late storage cannot issue HTTP
+ok 11 - deadline returns while initial storage is pending and late storage cannot issue HTTP
+  ---
+  duration_ms: 250.564153
+  type: 'test'
+  ...
+# Subtest: the single 120s timer starts before the first storage await
+ok 12 - the single 120s timer starts before the first storage await
+  ---
+  duration_ms: 1.023673
+  type: 'test'
+  ...
+# Subtest: failed provider usage remains unknown and returned trace cannot change after late completion
+ok 13 - failed provider usage remains unknown and returned trace cannot change after late completion
+  ---
+  duration_ms: 3.573669
+  type: 'test'
+  ...
+# Subtest: binding, nested scope and limits are copied before the first asynchronous boundary
+ok 14 - binding, nested scope and limits are copied before the first asynchronous boundary
+  ---
+  duration_ms: 1.643598
+  type: 'test'
+  ...
+# Subtest: openai-compatible: history validates semantic results and actual wire budget
+ok 15 - openai-compatible: history validates semantic results and actual wire budget
+  ---
+  duration_ms: 5.016027
+  type: 'test'
+  ...
+# Subtest: anthropic: history validates semantic results and actual wire budget
+ok 16 - anthropic: history validates semantic results and actual wire budget
+  ---
+  duration_ms: 5.316698
+  type: 'test'
+  ...
+# Subtest: conversation scope and initial reads keep the accepted canonical contract
+ok 17 - conversation scope and initial reads keep the accepted canonical contract
+  ---
+  duration_ms: 2.949992
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 18 - PostgreSQL/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 605.430822
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-to-answer never creates an edit run
+ok 19 - PostgreSQL/openai-compatible: read-to-answer never creates an edit run
+  ---
+  duration_ms: 36.07899
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-to-refusal never creates an edit run
+ok 20 - PostgreSQL/openai-compatible: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 31.692772
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+ok 21 - PostgreSQL/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 103.809878
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: exchange exhaustion refuses without effects or refunds
+ok 22 - PostgreSQL/openai-compatible: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 22.197182
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: output exhaustion refuses without effects or refunds
+ok 23 - PostgreSQL/openai-compatible: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 21.096083
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: tools exhaustion refuses without effects or refunds
+ok 24 - PostgreSQL/openai-compatible: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 19.09355
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a repeated call ID across exchanges refuses before another read
+ok 25 - PostgreSQL/openai-compatible: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 24.142227
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: mixed reads and edits cannot partially execute
+ok 26 - PostgreSQL/openai-compatible: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 13.922818
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: an out-of-scope model read stops before another exchange
+ok 27 - PostgreSQL/openai-compatible: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 13.120901
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: human save during exchange 1 invalidates the invocation
+ok 28 - PostgreSQL/openai-compatible: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 17.429854
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: human save during exchange 3 invalidates the invocation
+ok 29 - PostgreSQL/openai-compatible: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 31.807251
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancellation during the second provider request aborts the entire invocation
+ok 30 - PostgreSQL/openai-compatible: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 26.500103
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 31 - PostgreSQL/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 43.156391
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: foreign ownership refuses before any provider call
+ok 32 - PostgreSQL/openai-compatible: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 7.249344
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: protected edits refuse the entire terminal batch after investigation
+ok 33 - PostgreSQL/openai-compatible: protected edits refuse the entire terminal batch after investigation
+  ---
+  duration_ms: 36.404361
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deletion while a provider response is pending stops further exchanges
+ok 34 - PostgreSQL/openai-compatible: deletion while a provider response is pending stops further exchanges
+  ---
+  duration_ms: 24.461514
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancelled at queue commit rolls back a traced proposal
+ok 35 - PostgreSQL/openai-compatible: cancelled at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 44.17598
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deadline at queue commit rolls back a traced proposal
+ok 36 - PostgreSQL/openai-compatible: deadline at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 48.927654
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 37 - PostgreSQL/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 426.009158
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-to-answer never creates an edit run
+ok 38 - PostgreSQL/anthropic: read-to-answer never creates an edit run
+  ---
+  duration_ms: 24.160421
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-to-refusal never creates an edit run
+ok 39 - PostgreSQL/anthropic: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 20.918896
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+ok 40 - PostgreSQL/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 69.621677
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: exchange exhaustion refuses without effects or refunds
+ok 41 - PostgreSQL/anthropic: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 15.145577
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: output exhaustion refuses without effects or refunds
+ok 42 - PostgreSQL/anthropic: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 14.660529
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: tools exhaustion refuses without effects or refunds
+ok 43 - PostgreSQL/anthropic: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 11.957217
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a repeated call ID across exchanges refuses before another read
+ok 44 - PostgreSQL/anthropic: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 23.680419
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: mixed reads and edits cannot partially execute
+ok 45 - PostgreSQL/anthropic: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 13.613361
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: an out-of-scope model read stops before another exchange
+ok 46 - PostgreSQL/anthropic: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 18.877706
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: human save during exchange 1 invalidates the invocation
+ok 47 - PostgreSQL/anthropic: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 16.910144
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: human save during exchange 3 invalidates the invocation
+ok 48 - PostgreSQL/anthropic: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 48.368791
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancellation during the second provider request aborts the entire invocation
+ok 49 - PostgreSQL/anthropic: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 21.668225
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 50 - PostgreSQL/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 26.540295
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: foreign ownership refuses before any provider call
+ok 51 - PostgreSQL/anthropic: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 5.813566
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: protected edits refuse the entire terminal batch after investigation
+ok 52 - PostgreSQL/anthropic: protected edits refuse the entire terminal batch after investigation
+  ---
+  duration_ms: 29.13143
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deletion while a provider response is pending stops further exchanges
+ok 53 - PostgreSQL/anthropic: deletion while a provider response is pending stops further exchanges
+  ---
+  duration_ms: 12.585231
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancelled at queue commit rolls back a traced proposal
+ok 54 - PostgreSQL/anthropic: cancelled at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 27.97457
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deadline at queue commit rolls back a traced proposal
+ok 55 - PostgreSQL/anthropic: deadline at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 28.559445
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 56 - SQLite/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 429.150308
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: read-to-answer never creates an edit run
+ok 57 - SQLite/openai-compatible: read-to-answer never creates an edit run
+  ---
+  duration_ms: 21.89171
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: read-to-refusal never creates an edit run
+ok 58 - SQLite/openai-compatible: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 18.658578
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+ok 59 - SQLite/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 57.707212
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: exchange exhaustion refuses without effects or refunds
+ok 60 - SQLite/openai-compatible: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 16.139348
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: output exhaustion refuses without effects or refunds
+ok 61 - SQLite/openai-compatible: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 13.351209
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: tools exhaustion refuses without effects or refunds
+ok 62 - SQLite/openai-compatible: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 12.229364
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: a repeated call ID across exchanges refuses before another read
+ok 63 - SQLite/openai-compatible: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 18.447068
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: mixed reads and edits cannot partially execute
+ok 64 - SQLite/openai-compatible: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 13.814668
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: an out-of-scope model read stops before another exchange
+ok 65 - SQLite/openai-compatible: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 14.728172
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: human save during exchange 1 invalidates the invocation
+ok 66 - SQLite/openai-compatible: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 14.6943
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: human save during exchange 3 invalidates the invocation
+ok 67 - SQLite/openai-compatible: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 25.481946
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: cancellation during the second provider request aborts the entire invocation
+ok 68 - SQLite/openai-compatible: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 20.849147
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 69 - SQLite/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 26.285983
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: foreign ownership refuses before any provider call
+ok 70 - SQLite/openai-compatible: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 8.409729
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: protected edits refuse the entire terminal batch after investigation
+ok 71 - SQLite/openai-compatible: protected edits refuse the entire terminal batch after investigation
+  ---
+  duration_ms: 26.40041
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: deletion while a provider response is pending stops further exchanges
+ok 72 - SQLite/openai-compatible: deletion while a provider response is pending stops further exchanges
+  ---
+  duration_ms: 12.830471
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: cancelled at queue commit rolls back a traced proposal
+ok 73 - SQLite/openai-compatible: cancelled at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 25.038351
+  type: 'test'
+  ...
+# Subtest: SQLite/openai-compatible: deadline at queue commit rolls back a traced proposal
+ok 74 - SQLite/openai-compatible: deadline at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 27.744072
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 75 - SQLite/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 369.525271
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: read-to-answer never creates an edit run
+ok 76 - SQLite/anthropic: read-to-answer never creates an edit run
+  ---
+  duration_ms: 20.585218
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: read-to-refusal never creates an edit run
+ok 77 - SQLite/anthropic: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 18.000742
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+ok 78 - SQLite/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 50.758853
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: exchange exhaustion refuses without effects or refunds
+ok 79 - SQLite/anthropic: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 13.56483
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: output exhaustion refuses without effects or refunds
+ok 80 - SQLite/anthropic: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 12.538121
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: tools exhaustion refuses without effects or refunds
+ok 81 - SQLite/anthropic: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 12.290553
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: a repeated call ID across exchanges refuses before another read
+ok 82 - SQLite/anthropic: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 19.736024
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: mixed reads and edits cannot partially execute
+ok 83 - SQLite/anthropic: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 13.240217
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: an out-of-scope model read stops before another exchange
+ok 84 - SQLite/anthropic: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 14.856521
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: human save during exchange 1 invalidates the invocation
+ok 85 - SQLite/anthropic: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 13.255765
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: human save during exchange 3 invalidates the invocation
+ok 86 - SQLite/anthropic: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 21.675583
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: cancellation during the second provider request aborts the entire invocation
+ok 87 - SQLite/anthropic: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 15.800778
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 88 - SQLite/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 19.975381
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: foreign ownership refuses before any provider call
+ok 89 - SQLite/anthropic: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 6.23416
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: protected edits refuse the entire terminal batch after investigation
+ok 90 - SQLite/anthropic: protected edits refuse the entire terminal batch after investigation
+  ---
+  duration_ms: 20.157975
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: deletion while a provider response is pending stops further exchanges
+ok 91 - SQLite/anthropic: deletion while a provider response is pending stops further exchanges
+  ---
+  duration_ms: 10.255123
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: cancelled at queue commit rolls back a traced proposal
+ok 92 - SQLite/anthropic: cancelled at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 20.426591
+  type: 'test'
+  ...
+# Subtest: SQLite/anthropic: deadline at queue commit rolls back a traced proposal
+ok 93 - SQLite/anthropic: deadline at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 22.955245
+  type: 'test'
+  ...
+1..93
+# tests 93
+# suites 0
+# pass 93
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4846.500525
+# forge-test-file "test/v2-conversation-8e.test.js"
+# forge-test-file "test/v2-conversation-postgres-8e.test.js"
+# forge-test-file "test/v2-conversation-sqlite-8e.test.js"

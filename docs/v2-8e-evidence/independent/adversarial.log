@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: openai-compatible: ownership transfer between read rounds fences the old binding
+ok 1 - openai-compatible: ownership transfer between read rounds fences the old binding
+  ---
+  duration_ms: 90.239765
+  type: 'test'
+  ...
+# Subtest: openai-compatible: distinct read calls retain exact result IDs and order on the wire
+ok 2 - openai-compatible: distinct read calls retain exact result IDs and order on the wire
+  ---
+  duration_ms: 24.013295
+  type: 'test'
+  ...
+# Subtest: openai-compatible: absent usage retains full reservation and reduces next allowance
+ok 3 - openai-compatible: absent usage retains full reservation and reduces next allowance
+  ---
+  duration_ms: 22.579702
+  type: 'test'
+  ...
+# Subtest: anthropic: ownership transfer between read rounds fences the old binding
+ok 4 - anthropic: ownership transfer between read rounds fences the old binding
+  ---
+  duration_ms: 13.369787
+  type: 'test'
+  ...
+# Subtest: anthropic: distinct read calls retain exact result IDs and order on the wire
+ok 5 - anthropic: distinct read calls retain exact result IDs and order on the wire
+  ---
+  duration_ms: 17.424453
+  type: 'test'
+  ...
+# Subtest: anthropic: absent usage retains full reservation and reduces next allowance
+ok 6 - anthropic: absent usage retains full reservation and reduces next allowance
+  ---
+  duration_ms: 18.269169
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 538.221992

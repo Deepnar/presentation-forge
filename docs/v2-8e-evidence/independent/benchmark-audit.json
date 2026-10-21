@@ -1,0 +1,26 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "cells": 50,
+  "compilerAndZipMs": 584,
+  "recordedDocumentationHead": "bc8a6ed",
+  "allCellResultsMatchPacket": true,
+  "allInvarianceAndCounterfactualsMatchPacket": true,
+  "invariance": {
+    "research-defense": {
+      "agree": true
+    },
+    "source-of-truth-project": {
+      "agree": true
+    },
+    "technical-explainer": {
+      "agree": true
+    },
+    "decision-recommendation": {
+      "agree": true
+    },
+    "data-heavy-analytical": {
+      "agree": true
+    }
+  },
+  "raster": "none;visuals supplied separately"
+}
