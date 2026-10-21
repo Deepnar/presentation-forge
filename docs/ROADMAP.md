@@ -8751,10 +8751,10 @@ needs direction on scope before building.*
 
 <a id="v2-8f-shared-search-boundary"></a>
 
-- [ ] **V2-8F shared Forge Search boundary — approved implementation in progress.**
+- [x] **V2-8F shared Forge Search boundary — independently accepted.**
   The 2026-10-21 instruction to continue with the next immediate item, together
   with standing authorization to use recommended choices, selects the already
-  specified shared-search dependency before Assistant integration. Accepted
+  specified shared-search dependency before Assistant integration. Task-entry accepted
   baseline `c71d65e189387684aac89ca9994acf8a9ff865c1`; entry checkout
   `661eedc70f3c3f8a4290449303438d391fe97755`, branch `v2`, push `origin/v2`.
 
@@ -8805,8 +8805,19 @@ needs direction on scope before building.*
   All166PostgreSQL cases, build/type/all50cells and115hash-reconciled images passed;
   separate locale9pass/1standingfail remains. All4653evidence files/106PPTXs plus
   5canonical originals were restored/hash-verified;13fresh actual originals retained.
-  The exact owned service remains for the required separate independent execution
-  and decision. No acceptance is claimed, and no next feature is authorized.
+  Exact source `0cab854` was independently [accepted](reviews/V2-8F-0cab854.json)
+  on 2026-10-21. The reviewer executed 595/595 primary leaves: 588 inventory repeats,
+  4 native repeats and 3 additional probes; 592 overlap the packet and are not added
+  to 2,786. Locale independently remains 9 pass / 1 standing failure. An initial
+  unacknowledged 477-leaf report after outer exit 143 is retained and excluded;
+  all 477 were rerun with recorded exit 0. The reviewer inspected 115 packet / 54
+  fresh images and 16 native ZIPs, restored all 4,918 evidence files / 119 PPTXs plus
+  5 canonical originals, and preserved 10 fresh actual originals. Build, typecheck
+  and actual 50 cells (409 ms) passed independently. Exact owned-service cleanup
+  saved/fsynced a fresh actual zero-project-DB observation before removal;
+  exact-ID absence and port 5544 closure are
+  [verified](v2-8f-evidence/owned-postgres-cleanup.json). No parent completion,
+  next feature or deployment is authorized.
 
   **Initial source audit:** the separate reviewer ran0tests/edited0files and found
   timer starvation on infinite empty chunks and forbidden package imports in9d2a659.
@@ -8815,8 +8826,17 @@ needs direction on scope before building.*
   and corrected. Refrozen3e38f24 passed80/80expanded checks plus typecheck before
   full regression; none of these preliminary findings supplies acceptance.
 
-  Require one separate high-effort exact-source ACCEPT/HOLD; stop after this slice's
-  review, cleanup and handoff. Do not advance the parent or a dependent feature.
+  Review, exact cleanup and handoff complete this slice; the parent and dependent
+  features remain unchecked.
+
+  > **Learned.** Citation identity must describe bounded citation content, not query,
+  > rank, backend or retrieval time; it does not prove full-page integrity. A byte
+  > cap alone does not bound immediately resolved empty reads: monotonic deadlines,
+  > event-loop yielding, fixed storage and cancellation before reader unlock each
+  > cover a separate failure. Keep Node/schema/HTML work behind host adapters so
+  > the pure package contract respects the unchanged dependency graph. Shared
+  > search now supplies a primitive for later canonical tools without introducing
+  > another document or making provider/Assistant integration implicit.
 
 <a id="v2-8-remaining"></a>
 
@@ -8829,17 +8849,20 @@ accepts scoped single-turn preparation, atomic preflight and explicit opaque-pro
 queueing through the existing durable core. V2-8E independently accepts bounded
 host-instance tool conversations with correlated semantic read rounds and explicit
 proposal enqueue. Its ephemeral history/approval lifetime seam remains explicit
-above. The remaining parent milestone defines hosted user-turn and cross-request
-approval ownership, qualifies live providers and integrates the visible Assistant
-and common search/source orchestration; its full done-when gate is still pending. Any later
+above. V2-8F independently accepts the provider-neutral web-search boundary and
+SearXNG transport/normalization. The remaining parent milestone defines hosted
+user-turn and cross-request approval ownership, qualifies live providers and
+integrates the visible Assistant and canonical search/source tools with that
+boundary; its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing
 resolved layout as model input.
 
 The accepted `ModelProvider` supports bounded text/client tools and context limits;
 structured output, vision, reasoning, files and streaming currently refuse explicitly.
 Expand those capabilities only in later approved contracts. A separate
-`SearchProvider` with SearXNG as the default implementation —
-`web_search` is a Forge tool, never a vendor feature. Academic
+`SearchProvider` with SearXNG as the default implementation is accepted in V2-8F;
+its canonical `web_search` tool integration remains unimplemented. `web_search`
+is a Forge tool, never a vendor feature. Academic
 (`paper_search`: arXiv/Crossref) and project (`project_search`) tools
 stay separate; all produce normalized sources that blocks cite by stable
 ID. The agent is one capable runtime with strong tools, not a giant

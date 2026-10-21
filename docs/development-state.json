@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+    "sha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8E-c71d65e.json"
+    "source": "docs/reviews/V2-8F-0cab854.json"
   },
   "implementationHead": {
     "sha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
-    "note": "Corrected frozen shared search boundary after source-audit findings; complete current-source regression and independent review pending."
+    "note": "Independently accepted shared search boundary; complete final-source validation, preserved originals and exact owned-service cleanup are recorded in V2-8F evidence."
   },
   "activeMilestone": {
     "id": "V2-8F",
@@ -15,65 +15,65 @@
     "evalDoc": "docs/V2-8F-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8F-0cab854.json",
+    "accepted": true
   },
   "validation": [
     {
       "id": "search-provider",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/search-provider.json",
-      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
+      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
     },
     {
       "id": "non-browser-bulk",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/non-browser-bulk.json",
-      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
+      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
     },
     {
       "id": "serial-browser",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/serial-browser.json",
-      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
+      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
     },
     {
       "id": "postgres-contract",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/postgres-contract.json",
-      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
+      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
     },
     {
       "id": "cross-process-faults",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/cross-process-faults.json",
-      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
+      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
     },
     {
       "id": "production-build",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/production-build.json",
-      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
+      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
     },
     {
       "id": "typecheck",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/typecheck.json",
-      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
+      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
     },
     {
       "id": "benchmark-50",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/benchmark-50.json",
-      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
+      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
     },
     {
       "id": "frontend-visual",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/frontend-visual.json",
-      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
+      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
     }
   ],
   "knownBlockers": [],
