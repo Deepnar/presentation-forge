@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
-    "note": "Frozen bounded tool-conversation implementation. The human stopped the session during validation; partial passing results, original restoration and owned cleanup are retained. No acceptance."
+    "note": "Frozen bounded tool-conversation implementation. Authorized continuation is completing remaining validation with fresh snapshots/service identity and retained exact-source results. Independent acceptance remains pending."
   },
   "activeMilestone": {
     "id": "V2-8E",

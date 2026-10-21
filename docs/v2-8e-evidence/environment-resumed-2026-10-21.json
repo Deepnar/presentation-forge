@@ -1,0 +1,48 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "observedAtUtc": "2026-10-21T11:03:06.902661+00:00",
+  "tools": {
+    "node": {
+      "path": "/run/user/1000/fnm_multishells/9833_1792580257303/bin/node",
+      "args": [
+        "--version"
+      ],
+      "exitCode": 0,
+      "version": "v24.16.0"
+    },
+    "python3": {
+      "path": "/usr/bin/python3",
+      "args": [
+        "--version"
+      ],
+      "exitCode": 0,
+      "version": "Python 3.14.7"
+    },
+    "google-chrome-stable": {
+      "path": "/usr/bin/google-chrome-stable",
+      "args": [
+        "--version"
+      ],
+      "exitCode": 0,
+      "version": "Google Chrome 151.0.7922.173 "
+    },
+    "soffice": {
+      "path": "/home/deepnar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+      "args": [
+        "--version"
+      ],
+      "exitCode": 0,
+      "version": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5"
+    },
+    "pdftoppm": {
+      "path": "/home/deepnar/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override/pdftoppm",
+      "args": [
+        "-v"
+      ],
+      "exitCode": 0,
+      "version": "pdftoppm version 26.05.0"
+    }
+  },
+  "limitation": "Resumed local HTTP fixtures/owned backends; no live Auto quality or interactive Microsoft PowerPoint claim. Global I/O PSI/iowait provenance remains unresolved.",
+  "hostRebootSincePausedAttempt": true
+}

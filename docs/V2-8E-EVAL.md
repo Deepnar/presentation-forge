@@ -107,3 +107,15 @@ Resume restrictions are in the roadmap/runbook: fresh service identity, headroom
 and all-current-evidence snapshots first; preserve/merge the saved fresh captures
 and actual originals or rerun affected generators. Do not blindly resume the old
 coordinator or run finish-evidence.py against restored canonical originals.
+
+## Authorized resumed validation
+
+The human resumed the task on2026-10-21 after a host restart. Product/test source
+still matches exactc71d65e. [The resumed environment](v2-8e-evidence/environment-resumed-2026-10-21.json)
+records actual matching tool versions; prior observations are retained separately.
+The committed recovery harness uses a fresh output/snapshot namespace, verifies
+complete paused records and hashes, and merges actual saved captures/PPTXs before
+executing remaining jobs. It does not relax any product assertion or timeout.
+The same required matrix and independent acceptance remain pending. A new single
+high-effort reviewer performs read-only source inspection; its heavy slot remains
+withheld until the complete implementer packet is ready.

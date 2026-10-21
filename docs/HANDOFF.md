@@ -1,8 +1,16 @@
-# Handoff — V2-8E paused at human request
+# Handoff — V2-8E validation resumed
 
-2026-10-21, branch `v2`, authorized push `origin/v2`. The human ended the session
-for the night. No validation process, background continuation or owned PostgreSQL
-service remains running. Resume only after a new continuation instruction.
+2026-10-21, branch `v2`, authorized push `origin/v2`. The human resumed the same
+approved slice. Exec session7232 runs `resume-validation.py`, with execution log
+`out/v2-8e-resume-execution.log` and fresh output
+`out/v2-8e-validation-resumed-2026-10-21`. Inspect actual process/log state before
+continuing. The old stopped-session facts below are historical; its service was
+removed. The new harness qualifies180seconds, creates/records its own service,
+snapshots ALL current evidence/originals and merges hash-verified saved outputs.
+Root owns the exclusive heavy slot. One new high-effort reviewer context
+`/root/v28e_independent_review` performs a read-only source audit with0tests/0edits;
+independent execution is not released. The old reviewer context did not survive
+the host restart. No acceptance or further feature is implied.
 
 Accepted baseline remains `8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c` (V2-8D).
 V2-8E implementation is frozen at `c71d65e189387684aac89ca9994acf8a9ff865c1`;
