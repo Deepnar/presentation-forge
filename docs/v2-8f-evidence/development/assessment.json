@@ -1,0 +1,46 @@
+{
+  "firstSearchAttempt": {
+    "tests": 32,
+    "pass": 31,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "log": "docs/v2-8f-evidence/development/search-first.log",
+    "classification": "new configuration type validation defect; numeric ID coerced by regex",
+    "shellExitLimitation": "Trailing tail masked the test child nonzero status; raw failing summary retained, never credited passing."
+  },
+  "correction": "Require string backend IDs; unchanged assertion passes. AJV-validated request uses an explicit generated-type narrowing to correct initial TS2698. Initial compiler diagnostic exists in tool transcript, not a saved raw log.",
+  "correctedSearch": {
+    "total": 32,
+    "pass": 32,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "exitCode": 0,
+    "log": "docs/v2-8f-evidence/development/search-corrected.log"
+  },
+  "correctedTypecheck": {
+    "exitCode": 0,
+    "log": "docs/v2-8f-evidence/development/typecheck-corrected.log"
+  },
+  "finalSourceFrozen": false,
+  "expandedFirst": {
+    "total": 71,
+    "pass": 70,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "exitCode": 1,
+    "log": "docs/v2-8f-evidence/development/expanded.log",
+    "classification": "Incorrect test expectation matched legitimate canonical bound projectId containing private. Corrected to reject each exact upstream marker and assert the bound projectId remains intact; no product change."
+  },
+  "expandedCorrected": {
+    "total": 71,
+    "pass": 71,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "exitCode": 0,
+    "log": "docs/v2-8f-evidence/development/expanded-corrected.log"
+  }
+}

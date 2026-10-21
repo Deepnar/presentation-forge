@@ -1,0 +1,60 @@
+✔ search requests and trusted project binding stay separate (1.812968ms)
+✔ executable, cyclic and non-plain boundary objects refuse without invocation (0.637094ms)
+✔ normalized sources satisfy the canonical source schema and exclude backend payloads (14.64393ms)
+✔ source identity is stable across retrieval times, query order and provider metadata (2.048167ms)
+✔ canonical URL identity removes fragments and normalizes host/default port (0.517292ms)
+✔ rank, URL deduplication and host diversity are deterministic (1.965832ms)
+✔ malformed rows and unsafe citation URLs are discarded with an explicit warning (0.951243ms)
+✔ snippets become bounded plain text without executing or retaining executable markup (1.586143ms)
+✔ partial upstream results remain successful but distinguish backend failures from empty search (0.396041ms)
+✔ malformed envelopes and oversized candidate sets refuse rather than masquerading as empty (0.788635ms)
+✔ serialized output budget is exact and never emits an oversized partial citation set (0.644101ms)
+✔ returned citation content and nested result collections are immutable (0.38346ms)
+✔ real form POST encodes query fields while keeping project identity and limits local (32.86845ms)
+✔ invalid query, rebinding fields and executable accessors refuse before network (1.4214ms)
+✖ configuration is immutable, sanitized and never accepts URL credentials or query options (0.874372ms)
+✔ HTTP 401 is sanitized with no retry or redirect (5.123101ms)
+✔ HTTP 403 is sanitized with no retry or redirect (2.56927ms)
+✔ HTTP 429 is sanitized with no retry or redirect (2.133908ms)
+✔ HTTP 500 is sanitized with no retry or redirect (1.930434ms)
+✔ HTTP 302 is sanitized with no retry or redirect (1.906698ms)
+✔ pre-dispatch and in-flight header cancellation are bounded (2.157896ms)
+✔ body cancellation covers an incomplete JSON stream (2.335201ms)
+✔ deadline includes a stalled body without retries (41.315527ms)
+✔ declared byte overflow refuses (2.139054ms)
+✔ chunked byte overflow refuses (1.436734ms)
+✔ invalid text/html / <html>privat refuses (1.358054ms)
+✔ invalid application/json / {bad refuses (1.336641ms)
+✔ invalid application/json / UTF8 refuses (1.326451ms)
+✔ invalid application/json / {} refuses (1.299697ms)
+✔ non-cooperating injected fetch cannot defeat timeout or start a late body read (20.845965ms)
+✔ request inputs are snapshotted before network waits (22.675406ms)
+✔ transport errors never expose endpoint details or raw failure text (0.234623ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 31
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 344.674011
+
+✖ failing tests:
+
+test at test/v2-search-http-8f.test.js:41:1
+✖ configuration is immutable, sanitized and never accepts URL credentials or query options (0.874372ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-search-http-8f.test.js:46:90)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1306:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+      at Test.postRun (node:internal/test_runner/test:1447:19)
+      at Test.run (node:internal/test_runner/test:1372:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

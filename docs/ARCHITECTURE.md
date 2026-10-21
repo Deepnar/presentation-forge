@@ -2677,3 +2677,13 @@ and [evaluation](V2-8E-EVAL.md) identify source `c71d65e` and its independent
 [acceptance](reviews/V2-8E-c71d65e.json). Native exports preserve the inherited
 [nonvisual shape-ID limitation](ROADMAP.md#native-pptx-shape-id-uniqueness);
 interactive PowerPoint consumer behavior remains unverified.
+
+
+### V2-8F shared search boundary
+
+The internal SearchProvider contract normalizes SearXNG web results into the existing
+project-scoped SourceRef representation, independently of model adapters. The
+bounded form-POST transport keeps host binding/configuration out of semantic query
+arguments; no model tools, routes, source store or legacy rewiring are added.
+[The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary-implementation-under-review)
+and [evaluation](V2-8F-EVAL.md) index the frozen implementation under review.

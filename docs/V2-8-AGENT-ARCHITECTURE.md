@@ -267,3 +267,41 @@ hosted cross-request approval contract or live provider/content qualification.
 Exact source `c71d65e` is [independently accepted](reviews/V2-8E-c71d65e.json).
 [Evaluation](V2-8E-EVAL.md) and state index complete validation, independent
 execution and preserved limitations; future work remains only in the roadmap.
+
+
+## V2-8F shared search boundary (implementation under review)
+
+`packages/agent/search.ts` defines SearchProvider separately from ModelProvider;
+`src/agent/search-provider.js` supplies the SearXNG implementation. The host owns
+project binding and backend configuration. Strict generated SearchRequest arguments
+contain only query, result/diversity counts, language and optional time range.
+The adapter posts form data to the configured /search JSON endpoint; project
+identity and result/output budgets remain local. No legacy pipeline or public
+surface is automatically rewired, and no new model-tool catalog entry is exposed.
+
+Ranked candidates normalize to existing SourceRef objects: plain text title/excerpt,
+HTTP(S) URL, optional publication and retrieval/provenance metadata. Script/style /
+template/embedded markup is removed without page fetching or execution. URL
+credentials and non-HTTP(S) schemes refuse; fragments are removed for page-level
+deduplication, while query semantics remain intact. Duplicate canonical URLs and
+per-host limits preserve first-ranked eligible results. Malformed rows, partial
+upstream results and result-limit truncation have explicit bounded warning codes.
+Malformed envelopes refuse rather than appearing as successful empty searches.
+
+Citation IDs hash a versioned tuple of project identity, normalized URL, title,
+excerpt and publication value. Query, rank, backend identity and retrieval timestamp
+are excluded: identical bounded citation content keeps its identity across search
+requests, while content/project changes mint another ID. This is a snippet identity,
+not a full-page integrity or freshness claim. Source objects/results are frozen;
+there is no new source persistence or transcript journal.
+
+The operator-configured endpoint accepts HTTPS or loopback HTTP, no URL userinfo,
+query or fragment. Redirects are rejected. One operation bounds header/body time,
+UTF-8 response bytes and complete serialized normalized output, with no retry.
+Cancellation/timeout fences late fetches and body reads, including non-cooperating
+injected transports. Failure messages contain no raw upstream body, endpoint or
+credentials. Snippets remain untrusted data, not instructions or HTML to render.
+
+Exact source/evidence/review are indexed in [the evaluation](V2-8F-EVAL.md) and state;
+implementation is not yet accepted. [The roadmap](ROADMAP.md#v2-8-remaining) owns
+later tool/source/Assistant scope and the separate hosted approval-lifetime seam.

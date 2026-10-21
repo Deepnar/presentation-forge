@@ -1,0 +1,453 @@
+TAP version 13
+# Subtest: repository state, document references and real Git ancestry validate
+ok 1 - repository state, document references and real Git ancestry validate
+  ---
+  duration_ms: 58.728672
+  type: 'test'
+  ...
+# Subtest: missing required role document fails closed
+ok 2 - missing required role document fails closed
+  ---
+  duration_ms: 27.215333
+  type: 'test'
+  ...
+# Subtest: malformed state JSON returns diagnostics instead of crashing
+ok 3 - malformed state JSON returns diagnostics instead of crashing
+  ---
+  duration_ms: 1.805972
+  type: 'test'
+  ...
+# Subtest: unknown review state, malformed SHA and extra properties are rejected
+ok 4 - unknown review state, malformed SHA and extra properties are rejected
+  ---
+  duration_ms: 11.819573
+  type: 'test'
+  ...
+# Subtest: known pending validation cannot disappear or be duplicated
+ok 5 - known pending validation cannot disappear or be duplicated
+  ---
+  duration_ms: 30.185023
+  type: 'test'
+  ...
+# Subtest: unaccepted implementation cannot replace the accepted baseline
+ok 6 - unaccepted implementation cannot replace the accepted baseline
+  ---
+  duration_ms: 20.947122
+  type: 'test'
+  ...
+# Subtest: passed validation needs existing matching evidence and its output log
+ok 7 - passed validation needs existing matching evidence and its output log
+  ---
+  duration_ms: 67.785141
+  type: 'test'
+  ...
+# Subtest: stale evidence from another implementation SHA is refused
+ok 8 - stale evidence from another implementation SHA is refused
+  ---
+  duration_ms: 16.000596
+  type: 'test'
+  ...
+# Subtest: self-reported totals must match the retained test output
+ok 9 - self-reported totals must match the retained test output
+  ---
+  duration_ms: 19.781631
+  type: 'test'
+  ...
+# Subtest: nonzero, cancelled, skipped and inconsistent totals never become passes
+ok 10 - nonzero, cancelled, skipped and inconsistent totals never become passes
+  ---
+  duration_ms: 59.866778
+  type: 'test'
+  ...
+# Subtest: existing output cannot substitute for actual visual inspection or 50 benchmark cells
+ok 11 - existing output cannot substitute for actual visual inspection or 50 benchmark cells
+  ---
+  duration_ms: 42.767878
+  type: 'test'
+  ...
+# Subtest: renaming a reviewer cannot substitute for a separate decision record
+ok 12 - renaming a reviewer cannot substitute for a separate decision record
+  ---
+  duration_ms: 28.308304
+  type: 'test'
+  ...
+# Subtest: legitimate recorded acceptance can advance the baseline after completed validation
+ok 13 - legitimate recorded acceptance can advance the baseline after completed validation
+  ---
+  duration_ms: 72.542277
+  type: 'test'
+  ...
+# Subtest: document paths, anchors and symlinks cannot leave the repository or point nowhere
+ok 14 - document paths, anchors and symlinks cannot leave the repository or point nowhere
+  ---
+  duration_ms: 43.844603
+  type: 'test'
+  ...
+# Subtest: Git verification rejects well-shaped nonexistent commits
+ok 15 - Git verification rejects well-shaped nonexistent commits
+  ---
+  duration_ms: 10.545082
+  type: 'test'
+  ...
+# Subtest: a passing subset cannot substitute for the full required file scope
+ok 16 - a passing subset cannot substitute for the full required file scope
+  ---
+  duration_ms: 14.345712
+  type: 'test'
+  ...
+# Subtest: name-filtered runs and implausibly small suite counts fail closed
+ok 17 - name-filtered runs and implausibly small suite counts fail closed
+  ---
+  duration_ms: 26.471964
+  type: 'test'
+  ...
+# Subtest: the TAP inventory records entry files without imported contract helpers
+ok 18 - the TAP inventory records entry files without imported contract helpers
+  ---
+  duration_ms: 74.455763
+  type: 'test'
+  ...
+# Subtest: new milestone keeps its own focused gate and rejects old evidence inventory
+ok 19 - new milestone keeps its own focused gate and rejects old evidence inventory
+  ---
+  duration_ms: 55.523406
+  type: 'test'
+  ...
+# Subtest: browser handoff requires its own complete focused evidence
+ok 20 - browser handoff requires its own complete focused evidence
+  ---
+  duration_ms: 57.222391
+  type: 'test'
+  ...
+# Subtest: project covers require their own unit, HTTP and complete Chrome evidence
+ok 21 - project covers require their own unit, HTTP and complete Chrome evidence
+  ---
+  duration_ms: 54.270495
+  type: 'test'
+  ...
+# Subtest: project discovery requires its own complete unit, HTTP and Chrome evidence
+ok 22 - project discovery requires its own complete unit, HTTP and Chrome evidence
+  ---
+  duration_ms: 53.954866
+  type: 'test'
+  ...
+# Subtest: production toolbar evidence includes its complete Chrome file and full shell regression
+ok 23 - production toolbar evidence includes its complete Chrome file and full shell regression
+  ---
+  duration_ms: 62.83163
+  type: 'test'
+  ...
+# Subtest: agent foundation requires complete tool and context behavioral evidence
+ok 24 - agent foundation requires complete tool and context behavioral evidence
+  ---
+  duration_ms: 60.568777
+  type: 'test'
+  ...
+# Subtest: provider boundary requires both protocol and durable backend files
+ok 25 - provider boundary requires both protocol and durable backend files
+  ---
+  duration_ms: 64.674574
+  type: 'test'
+  ...
+# Subtest: provider-run preparation requires both storage backends and boundary cases
+ok 26 - provider-run preparation requires both storage backends and boundary cases
+  ---
+  duration_ms: 66.074374
+  type: 'test'
+  ...
+# Subtest: bounded conversation requires both storage backends and boundary cases
+ok 27 - bounded conversation requires both storage backends and boundary cases
+  ---
+  duration_ms: 58.701391
+  type: 'test'
+  ...
+# Subtest: shared search requires normalization and complete HTTP transport evidence
+ok 28 - shared search requires normalization and complete HTTP transport evidence
+  ---
+  duration_ms: 58.94915
+  type: 'test'
+  ...
+# Subtest: search requests and trusted project binding stay separate
+ok 29 - search requests and trusted project binding stay separate
+  ---
+  duration_ms: 2.177464
+  type: 'test'
+  ...
+# Subtest: executable, cyclic and non-plain boundary objects refuse without invocation
+ok 30 - executable, cyclic and non-plain boundary objects refuse without invocation
+  ---
+  duration_ms: 0.729682
+  type: 'test'
+  ...
+# Subtest: normalized sources satisfy the canonical source schema and exclude backend payloads
+ok 31 - normalized sources satisfy the canonical source schema and exclude backend payloads
+  ---
+  duration_ms: 16.662886
+  type: 'test'
+  ...
+# Subtest: source identity is stable across retrieval times, query order and provider metadata
+ok 32 - source identity is stable across retrieval times, query order and provider metadata
+  ---
+  duration_ms: 2.370163
+  type: 'test'
+  ...
+# Subtest: canonical URL identity removes fragments and normalizes host/default port
+ok 33 - canonical URL identity removes fragments and normalizes host/default port
+  ---
+  duration_ms: 0.624472
+  type: 'test'
+  ...
+# Subtest: rank, URL deduplication and host diversity are deterministic
+ok 34 - rank, URL deduplication and host diversity are deterministic
+  ---
+  duration_ms: 2.459579
+  type: 'test'
+  ...
+# Subtest: malformed rows and unsafe citation URLs are discarded with an explicit warning
+ok 35 - malformed rows and unsafe citation URLs are discarded with an explicit warning
+  ---
+  duration_ms: 1.247744
+  type: 'test'
+  ...
+# Subtest: snippets become bounded plain text without executing or retaining executable markup
+ok 36 - snippets become bounded plain text without executing or retaining executable markup
+  ---
+  duration_ms: 1.792162
+  type: 'test'
+  ...
+# Subtest: partial upstream results remain successful but distinguish backend failures from empty search
+ok 37 - partial upstream results remain successful but distinguish backend failures from empty search
+  ---
+  duration_ms: 0.47285
+  type: 'test'
+  ...
+# Subtest: malformed envelopes and oversized candidate sets refuse rather than masquerading as empty
+ok 38 - malformed envelopes and oversized candidate sets refuse rather than masquerading as empty
+  ---
+  duration_ms: 0.790981
+  type: 'test'
+  ...
+# Subtest: serialized output budget is exact and never emits an oversized partial citation set
+ok 39 - serialized output budget is exact and never emits an oversized partial citation set
+  ---
+  duration_ms: 0.71476
+  type: 'test'
+  ...
+# Subtest: returned citation content and nested result collections are immutable
+ok 40 - returned citation content and nested result collections are immutable
+  ---
+  duration_ms: 0.415196
+  type: 'test'
+  ...
+# Subtest: malformed normalization options cannot execute getters or supply backend fields
+ok 41 - malformed normalization options cannot execute getters or supply backend fields
+  ---
+  duration_ms: 0.25197
+  type: 'test'
+  ...
+# Subtest: normalization handles malformed Unicode and excessive fields within canonical bounds
+ok 42 - normalization handles malformed Unicode and excessive fields within canonical bounds
+  ---
+  duration_ms: 0.479864
+  type: 'test'
+  ...
+# Subtest: real form POST encodes query fields while keeping project identity and limits local
+ok 43 - real form POST encodes query fields while keeping project identity and limits local
+  ---
+  duration_ms: 28.791797
+  type: 'test'
+  ...
+# Subtest: invalid query, rebinding fields and executable accessors refuse before network
+ok 44 - invalid query, rebinding fields and executable accessors refuse before network
+  ---
+  duration_ms: 1.433157
+  type: 'test'
+  ...
+# Subtest: configuration is immutable, sanitized and never accepts URL credentials or query options
+ok 45 - configuration is immutable, sanitized and never accepts URL credentials or query options
+  ---
+  duration_ms: 0.555496
+  type: 'test'
+  ...
+# Subtest: HTTP 401 is sanitized with no retry or redirect
+ok 46 - HTTP 401 is sanitized with no retry or redirect
+  ---
+  duration_ms: 4.431549
+  type: 'test'
+  ...
+# Subtest: HTTP 403 is sanitized with no retry or redirect
+ok 47 - HTTP 403 is sanitized with no retry or redirect
+  ---
+  duration_ms: 2.404905
+  type: 'test'
+  ...
+# Subtest: HTTP 429 is sanitized with no retry or redirect
+ok 48 - HTTP 429 is sanitized with no retry or redirect
+  ---
+  duration_ms: 2.218965
+  type: 'test'
+  ...
+# Subtest: HTTP 500 is sanitized with no retry or redirect
+ok 49 - HTTP 500 is sanitized with no retry or redirect
+  ---
+  duration_ms: 2.14587
+  type: 'test'
+  ...
+# Subtest: HTTP 302 is sanitized with no retry or redirect
+ok 50 - HTTP 302 is sanitized with no retry or redirect
+  ---
+  duration_ms: 2.152202
+  type: 'test'
+  ...
+# Subtest: pre-dispatch and in-flight header cancellation are bounded
+ok 51 - pre-dispatch and in-flight header cancellation are bounded
+  ---
+  duration_ms: 2.343272
+  type: 'test'
+  ...
+# Subtest: body cancellation covers an incomplete JSON stream
+ok 52 - body cancellation covers an incomplete JSON stream
+  ---
+  duration_ms: 2.763442
+  type: 'test'
+  ...
+# Subtest: deadline includes a stalled body without retries
+ok 53 - deadline includes a stalled body without retries
+  ---
+  duration_ms: 41.09619
+  type: 'test'
+  ...
+# Subtest: declared byte overflow refuses
+ok 54 - declared byte overflow refuses
+  ---
+  duration_ms: 2.402494
+  type: 'test'
+  ...
+# Subtest: chunked byte overflow refuses
+ok 55 - chunked byte overflow refuses
+  ---
+  duration_ms: 1.612095
+  type: 'test'
+  ...
+# Subtest: invalid text/html / <html>privat refuses
+ok 56 - invalid text/html / <html>privat refuses
+  ---
+  duration_ms: 1.470616
+  type: 'test'
+  ...
+# Subtest: invalid application/json / {bad refuses
+ok 57 - invalid application/json / {bad refuses
+  ---
+  duration_ms: 1.419198
+  type: 'test'
+  ...
+# Subtest: invalid application/json / UTF8 refuses
+ok 58 - invalid application/json / UTF8 refuses
+  ---
+  duration_ms: 1.375201
+  type: 'test'
+  ...
+# Subtest: invalid application/json / {} refuses
+ok 59 - invalid application/json / {} refuses
+  ---
+  duration_ms: 1.347959
+  type: 'test'
+  ...
+# Subtest: non-cooperating injected fetch cannot defeat timeout or start a late body read
+ok 60 - non-cooperating injected fetch cannot defeat timeout or start a late body read
+  ---
+  duration_ms: 20.884114
+  type: 'test'
+  ...
+# Subtest: request inputs are snapshotted before network waits
+ok 61 - request inputs are snapshotted before network waits
+  ---
+  duration_ms: 22.701202
+  type: 'test'
+  ...
+# Subtest: transport errors never expose endpoint details or raw failure text
+ok 62 - transport errors never expose endpoint details or raw failure text
+  ---
+  duration_ms: 0.256495
+  type: 'test'
+  ...
+# Subtest: configuration accessors refuse without invoking them
+ok 63 - configuration accessors refuse without invoking them
+  ---
+  duration_ms: 0.100844
+  type: 'test'
+  ...
+# Subtest: header deadline is bounded before the backend sends a response
+ok 64 - header deadline is bounded before the backend sends a response
+  ---
+  duration_ms: 41.051757
+  type: 'test'
+  ...
+# Subtest: response bytes count UTF8 encoding rather than string characters
+ok 65 - response bytes count UTF8 encoding rather than string characters
+  ---
+  duration_ms: 3.718949
+  type: 'test'
+  ...
+# Subtest: exact byte boundary passes
+ok 66 - exact byte boundary passes
+  ---
+  duration_ms: 1.729016
+  type: 'test'
+  ...
+# Subtest: exact byte boundary overflow
+ok 67 - exact byte boundary overflow
+  ---
+  duration_ms: 1.1605
+  type: 'test'
+  ...
+# Subtest: normalized output budget remains distinct from HTTP response bytes
+ok 68 - normalized output budget remains distinct from HTTP response bytes
+  ---
+  duration_ms: 1.677565
+  type: 'test'
+  ...
+# Subtest: non-cooperating fetch cancellation fences a later response
+ok 69 - non-cooperating fetch cancellation fences a later response
+  ---
+  duration_ms: 0.445138
+  type: 'test'
+  ...
+# Subtest: non-cooperating body stream is cancelled on the whole-operation deadline
+ok 70 - non-cooperating body stream is cancelled on the whole-operation deadline
+  ---
+  duration_ms: 20.286669
+  type: 'test'
+  ...
+# Subtest: an actual partial-engine HTTP response exposes only normalized data and warning codes
+not ok 71 - an actual partial-engine HTTP response exposes only normalized data and warning codes
+  ---
+  duration_ms: 16.073576
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-search-http-8f.test.js:156:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(!JSON.stringify(result).includes('private'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-search-http-8f.test.js:160:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..71
+# tests 71
+# suites 0
+# pass 70
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1291.887439

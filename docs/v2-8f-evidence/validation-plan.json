@@ -1,7 +1,7 @@
 {
-  "implementationSha": "661eedc70f3c3f8a4290449303438d391fe97755",
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
-  "inventoryMethod": "All221 accepted files plus two focused search files;189bulk/26serial/8PostgreSQL=223distinct. Preliminary pointer is task-entry source until implementation freeze.",
+  "implementationSha": "9d2a659af55cc9148724f39ace1a5bbe387ab428",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
+  "inventoryMethod": "Frozen source: all221 accepted files plus two search files;189bulk/26serial/8PostgreSQL=223distinct. Complete on-disk inventory asserted by coordinator.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",
