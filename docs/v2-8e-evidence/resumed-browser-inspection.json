@@ -1,0 +1,244 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "inspectedAtUtc": "2026-10-21T11:15:00.648912+00:00",
+  "images": [
+    {
+      "source": "docs/v2-7c-1-evidence/covers-content.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-content.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "b9ca076bb4e74deb50067c399dbd2162e7362e3da6622e6571c469475d111d39"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-desktop.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-desktop.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "fa5fdb3a1d61ef9bdcd1a378fea0018943379aabf50f2ad8039165d162d1e945"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-development.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-development.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "d17bfba30ec66773c0c85edd67c807175cf19855ac5c5897fdac542eaecde212"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-font-failure.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-failure.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "711263ef7cfa32e9f98fcee992bfa5b25f0f0ed81af8dcc249b3b6c45909c10d"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-font-http-failure.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-failure.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "63cb2e75bc3ca65f80c90bd38bd5157633eba48a0125d59406766e513dd94c40"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-font-http-recovered.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-recovered.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "230ea9a03bbf716a8db9074916f663ae4d8b5d8f6dce7c630f2e117bad83402a"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-font-static-failure.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-failure.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "64c879792fe1c0a9fba5afcfcc39a6674a94e6fd7f737c732d15b57b3ba8ab9c"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-font-static-recovered.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-recovered.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "f126acdcaa89024a6cbb8ccd6fc3a465bcfe74f7738f72327fdbbe668f39e75b"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-loading.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-loading.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "e45c732c5fe3e26c9c939de5b35b99ef074d3e1bd1110b9da4263cc9c64f1e10"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-narrow-dark.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-narrow-dark.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "53b0e012949402b543d3102a46c6c6ebc8bac5ba99aacc44f78450094b42bd92"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-network-failure.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-network-failure.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "beb0679663b518bee8ea2afaabfde2f520139ce438ed8175278a76cd0b87fae1"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-restored.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-restored.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "18c16f5c1155a9eec528598db54c6e6c9a6ad6fb853d75f947bd9d0204158fdd"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-session-cross-tab.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-cross-tab.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "8ad8f3e0d207ef9a5cbed4cd9f0578272dc47e5bb6222d57cf0b5f8d1a737e2b"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-session-pending.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-pending.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "6d39aad6c7a91ac2912331e6657efc41f2cd424a146e5f1c32be30a6e6be6389"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-session-settled.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-settled.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "eafba7867b83c4e8a25eb2d57ee24f979bac082f825f384b133da6e92e58f293"
+    },
+    {
+      "source": "docs/v2-7c-1-evidence/covers-timeout.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-1-evidence--covers-timeout.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "27e4af919ab6216d41e534772fe6341022a5ead2f144e18d84c34844a8d22b93"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-delete-generated-failure.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated-failure.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "cc337d95cd849b3f2f8cb3af6d8332811b5c77ae81625229593409eab0758e85"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-delete-generated.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "435b9071c37693d0a19bc82f2d7afe31ccce1279c144e6d0dead4b488270200d"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-delete-pending.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-pending.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "de1cbde7d5423c48f98a6e2f1d1384725d79b675e980bee99bd1596c0da59955"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-delete-saved-failure.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-saved-failure.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "da1f9f50a0e5cdd79722ec00ec0ab53f1d785273abf4063de501045539aa7c20"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-desktop.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-desktop.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "5881fb162849cad36bdeece140e7546d89058b544f8c5416aa8174c867dd0563"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-development.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-development.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "58f21473e4af5d7057b79b128a05772a00d6456028719d7ca1cdb6337577cf75"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-empty.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-empty.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "10e9b2700ec8400b100e0f9a408f31615628160859dbe59594f713631e800854"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-generated-error.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-generated-error.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "60de4eb2efc74a8c47d129dc4fe468c3d285696c738e85c690e52b7b6705e2f7"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-narrow-dark.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dark.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "bba8af498f5ccab9aa3f32b60db0253d605c99251d8596150435dabfbacddd2f"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-narrow-dialog.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dialog.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "368b6d2da001d0e2fedad3b32f9958990cb605a2eead89c4734d2dbd8985d44b"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-no-matches.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-no-matches.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "06565743705e670e6bdc6dc6cd89844d756348429820987335a345a56507e04e"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-saved-error.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-saved-error.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "1df8083190cf24e446a7954caf8393d40c405d4a196df5fe916a410da80099b9"
+    },
+    {
+      "source": "docs/v2-7c-2-evidence/catalog-signed-out.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-2-evidence--catalog-signed-out.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "0288cbaf6ba16f2101ed81a19d3c6195350e216f9d645e4c75c049e6b108d5a0"
+    },
+    {
+      "source": "docs/v2-7c-3-evidence/editor-chart.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-chart.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "052614d015a10664144858cc3a72820dc29fa3fae8ae61e3abc9ee0b25af838d"
+    },
+    {
+      "source": "docs/v2-7c-3-evidence/editor-readonly.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-readonly.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "38899725b0e0eea147f2c7ad4f70ad3bbf43fdb5c7b8461df70f08d67354b48a"
+    },
+    {
+      "source": "docs/v2-7c-3-evidence/editor-narrow-light.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-light.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "b7b1c9001cccd3d60f9861abe793ae7392cfc1f5d734c24b2d0fbff1248cbdba"
+    },
+    {
+      "source": "docs/v2-7c-3-evidence/editor-narrow-dark.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-dark.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "3d40113f2f2cb79302af90b7a4951c180fed9bb77466f6003b83ea2e194c254e"
+    },
+    {
+      "source": "docs/v2-7c-3-evidence/editor-blank-history.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-blank-history.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "55f96d872f4942d3c739dfb9687300a365105baae929ea81facd179e5f162ede"
+    },
+    {
+      "source": "docs/v2-7c-3-evidence/editor-desktop.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-desktop.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "7ad360b99a39df194d0edc58a2f1d886015efd4c0d3efdd891b9f2040a860044"
+    },
+    {
+      "source": "docs/v2-7c-3-evidence/editor-table.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--editor-table.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "c8e8a9cdc2115fbea245a631de1a500b834cd175227754f775ccb28c325c14bf"
+    },
+    {
+      "source": "docs/v2-7c-3-evidence/standalone-live.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--standalone-live.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "136f637d42e677545a7990e8b2fa5549f1f9cf9d77328d6c56bf0a7efca7aa13"
+    },
+    {
+      "source": "docs/v2-7c-3-evidence/standalone-projects.png",
+      "file": "docs/v2-8e-evidence/regression-images/docs--v2-7c-3-evidence--standalone-projects.png",
+      "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+      "sha256": "c71df8442457212e3e323c12b61eee1eb1ac444965118bb64677519301369a7c"
+    }
+  ],
+  "inspectedImages": 38,
+  "method": "Viewed all seven resumed-browser contact sheets and full-resolution narrow dark catalog confirmation and preview-card captures.",
+  "observations": [
+    "First-slide previews, loading/unavailable/retry/recovered states and detached/blank/chart/table covers are legible.",
+    "Saved/generated catalog entries remain distinct; partial source errors, signed-out and session-invalidated states retain truthful actions.",
+    "Narrow dark confirmation retains Cancel and Delete fully within the viewport. Card actions remain visible.",
+    "Editor chart/table, read-only, blank history and standalone Live/Projects captures agree with the passing toolbar suite.",
+    "Known horizontal/narrow canvas and source-loading stability limitations remain; no new foreground overlap or clipped dialog found."
+  ],
+  "final115ImageInspection": "pending native output and final hash reconciliation"
+}

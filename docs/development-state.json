@@ -35,9 +35,9 @@
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Human-requested stop after23of26files171/171;3files unexecuted. Partial evidence is not a complete gate pass."
+      "status": "passed",
+      "evidence": "docs/v2-8e-evidence/serial-browser.json",
+      "reason": "Complete frozen-source26-file208/208 passed;0fail/skip/cancel.23complete records retained,3remaining browser files executed after resumption. Other gates/review pending."
     },
     {
       "id": "postgres-contract",
