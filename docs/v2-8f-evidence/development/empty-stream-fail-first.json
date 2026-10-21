@@ -1,0 +1,11 @@
+{
+  "implementationSha": "9d2a659af55cc9148724f39ace1a5bbe387ab428",
+  "case": "Infinite immediately resolved empty chunks starve deadline timer",
+  "status": null,
+  "signal": "SIGKILL",
+  "errorCode": "ETIMEDOUT",
+  "stdout": "",
+  "stderr": "",
+  "durationMs": 1548.394115,
+  "classification": "Product lifetime defect; child watchdog terminated the non-terminating operation; not a passing/cancelled test leaf"
+}

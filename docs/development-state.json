@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-8E-c71d65e.json"
   },
   "implementationHead": {
-    "sha": "9d2a659af55cc9148724f39ace1a5bbe387ab428",
-    "note": "Frozen shared search boundary; final current-source regression and independent review pending."
+    "sha": "3e38f24043bffad0a137c321aefd68a4381024ce",
+    "note": "Corrected frozen shared search boundary after source-audit findings; complete current-source regression and independent review pending."
   },
   "activeMilestone": {
     "id": "V2-8F",

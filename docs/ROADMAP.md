@@ -8800,6 +8800,13 @@ needs direction on scope before building.*
   service. Missing PostgreSQL is unexecuted. Keep locale and inherited visual /
   native identity / provenance limitations separate. Exact commands/totals/source,
   failed attempts, corrections and performance belong in [the evaluation](V2-8F-EVAL.md).
+  **Initial source audit:** the separate reviewer ran0tests/edited0files and found
+  timer starvation on infinite empty chunks and forbidden package imports in9d2a659.
+  Root retained fail-first reproductions and corrected both without changing the
+  accepted dependency matrix. Adjacent-block word concatenation was also reproduced
+  and corrected. Refrozen3e38f24 passed80/80expanded checks plus typecheck before
+  full regression; none of these preliminary findings supplies acceptance.
+
   Require one separate high-effort exact-source ACCEPT/HOLD; stop after this slice's
   review, cleanup and handoff. Do not advance the parent or a dependent feature.
 

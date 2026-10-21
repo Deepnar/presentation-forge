@@ -1,0 +1,123 @@
+TAP version 13
+# Subtest: search requests and trusted project binding stay separate
+ok 1 - search requests and trusted project binding stay separate
+  ---
+  duration_ms: 1.535677
+  type: 'test'
+  ...
+# Subtest: executable, cyclic and non-plain boundary objects refuse without invocation
+ok 2 - executable, cyclic and non-plain boundary objects refuse without invocation
+  ---
+  duration_ms: 0.570129
+  type: 'test'
+  ...
+# Subtest: normalized sources satisfy the canonical source schema and exclude backend payloads
+ok 3 - normalized sources satisfy the canonical source schema and exclude backend payloads
+  ---
+  duration_ms: 12.304862
+  type: 'test'
+  ...
+# Subtest: source identity is stable across retrieval times, query order and provider metadata
+ok 4 - source identity is stable across retrieval times, query order and provider metadata
+  ---
+  duration_ms: 1.691305
+  type: 'test'
+  ...
+# Subtest: canonical URL identity removes fragments and normalizes host/default port
+ok 5 - canonical URL identity removes fragments and normalizes host/default port
+  ---
+  duration_ms: 0.427723
+  type: 'test'
+  ...
+# Subtest: rank, URL deduplication and host diversity are deterministic
+ok 6 - rank, URL deduplication and host diversity are deterministic
+  ---
+  duration_ms: 1.608556
+  type: 'test'
+  ...
+# Subtest: malformed rows and unsafe citation URLs are discarded with an explicit warning
+ok 7 - malformed rows and unsafe citation URLs are discarded with an explicit warning
+  ---
+  duration_ms: 0.748497
+  type: 'test'
+  ...
+# Subtest: snippets become bounded plain text without executing or retaining executable markup
+ok 8 - snippets become bounded plain text without executing or retaining executable markup
+  ---
+  duration_ms: 1.274373
+  type: 'test'
+  ...
+# Subtest: partial upstream results remain successful but distinguish backend failures from empty search
+ok 9 - partial upstream results remain successful but distinguish backend failures from empty search
+  ---
+  duration_ms: 0.288375
+  type: 'test'
+  ...
+# Subtest: malformed envelopes and oversized candidate sets refuse rather than masquerading as empty
+ok 10 - malformed envelopes and oversized candidate sets refuse rather than masquerading as empty
+  ---
+  duration_ms: 0.671473
+  type: 'test'
+  ...
+# Subtest: serialized output budget is exact and never emits an oversized partial citation set
+ok 11 - serialized output budget is exact and never emits an oversized partial citation set
+  ---
+  duration_ms: 0.505001
+  type: 'test'
+  ...
+# Subtest: returned citation content and nested result collections are immutable
+ok 12 - returned citation content and nested result collections are immutable
+  ---
+  duration_ms: 0.321253
+  type: 'test'
+  ...
+# Subtest: malformed normalization options cannot execute getters or supply backend fields
+ok 13 - malformed normalization options cannot execute getters or supply backend fields
+  ---
+  duration_ms: 0.159821
+  type: 'test'
+  ...
+# Subtest: normalization handles malformed Unicode and excessive fields within canonical bounds
+ok 14 - normalization handles malformed Unicode and excessive fields within canonical bounds
+  ---
+  duration_ms: 0.363609
+  type: 'test'
+  ...
+# Subtest: plain snippets preserve block and line-break word boundaries without splitting inline words
+not ok 15 - plain snippets preserve block and line-break word boundaries without splitting inline words
+  ---
+  duration_ms: 0.889299
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-search-8f.test.js:125:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'FirstSecond'
+    - 'First Second'
+            ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'First Second'
+  actual: 'FirstSecond'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-search-8f.test.js:132:13)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+    Test.postRun (node:internal/test_runner/test:1447:19)
+    Test.run (node:internal/test_runner/test:1372:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 14
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 176.39417

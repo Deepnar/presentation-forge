@@ -4,7 +4,7 @@ Accepted baseline: `c71d65e189387684aac89ca9994acf8a9ff865c1`.
 Entry checkout: `661eedc70f3c3f8a4290449303438d391fe97755`; branch `v2`, push
 `origin/v2`. The [approved contract](ROADMAP.md#v2-8f-shared-search-boundary) is the
 sole work entry. Implementation and validation are in progress; no acceptance is
-claimed. Frozen implementation: `9d2a659af55cc9148724f39ace1a5bbe387ab428`; later docs/harness commits have no product/test/tooling delta.
+claimed. Frozen implementation: `3e38f24043bffad0a137c321aefd68a4381024ce`; later docs/harness commits have no product/test/tooling delta.
 
 Correctness, authorization isolation, regression, backward compatibility, native /
 browser preservation and documentation gates apply. Existing editor, storage,
@@ -49,3 +49,25 @@ independent execution remain pending. No assertion/timeout was relaxed. One reus
 separate high-effort reviewer is performing read-only source inspection with no
 heavy slot or acceptance yet. Shared-machine resource qualification is pending;
 raw global I/O pressure retains unresolved provenance.
+
+## Source-audit corrections before full validation
+
+The separate reviewer identified two blockers in initial source9d2a659, running
+0tests and making0edits. Root reproduced both before expensive validation:
+
+- An infinite stream of immediately resolved empty chunks starved the timer. The
+  isolated child exceeded its1500ms watchdog and was killed; this is a failed
+  development probe, not a cancelled/passing test leaf. Monotonic deadline checks,
+  periodic event-loop yielding and a post-normalization check now bound it. Two
+  child/watchdog regressions exercise timeout and timer-driven caller cancellation.
+- New Node/HTML/model imports crossed the unchanged package dependency matrix.
+  The accepted6-case core-boundary suite failed5pass/1fail. The agent contract now
+  stays pure through the allowed tools type facade; Node/schema/HTML/hash work
+  lives in the src host adapter. No dependency rule or boundary assertion changed.
+
+The reviewer also identified block-text concatenation. A fail-first normalizer run
+passed14/15; adjacent paragraphs/BR/list/table boundaries now preserve spaces,
+while inline words remain joined. Final expanded checks passed80/80,0fail/skip/cancel
+across both search files, unchanged package boundary, governance and type drift;
+typecheck passed. The corrected frozen source is3e38f24. Earlier source pointers
+remain in failed-attempt evidence; they do not stand in for final validation.

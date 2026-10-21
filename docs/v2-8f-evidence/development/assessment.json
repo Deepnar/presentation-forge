@@ -42,5 +42,25 @@
     "cancelled": 0,
     "exitCode": 0,
     "log": "docs/v2-8f-evidence/development/expanded-corrected.log"
+  },
+  "sourceAuditCorrections": {
+    "emptyStream": "Isolated first-source child was killed after1500ms watchdog; deadline was starved. Added monotonic checks, periodic event-loop yielding and two isolated watchdog regressions without weakening bounds.",
+    "packageBoundary": "Unchanged accepted boundary suite failed5pass/1fail. Kept agent contract pure, moved Node/schema/HTML/hash normalization to src adapter, reused allowed tools type facade; no dependency-matrix exception or assertion change.",
+    "blockText": "Fail-first14pass/1fail reproduced adjacent blocks concatenating words. Preserve block/BR boundaries while retaining inline word continuity.",
+    "correctedBeforeBlockText": {
+      "total": 79,
+      "pass": 79,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "finalExpanded": {
+      "total": 80,
+      "pass": 80,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0,
+      "log": "docs/v2-8f-evidence/development/final-expanded.log"
+    }
   }
 }

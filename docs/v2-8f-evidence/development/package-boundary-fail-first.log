@@ -1,0 +1,84 @@
+TAP version 13
+# Subtest: v2 core boundary
+    # Subtest: detects static, re-export, and literal dynamic imports
+    ok 1 - detects static, re-export, and literal dynamic imports
+      ---
+      duration_ms: 6.092362
+      type: 'test'
+      ...
+    # Subtest: fails closed on require() and non-literal dynamic import
+    ok 2 - fails closed on require() and non-literal dynamic import
+      ---
+      duration_ms: 0.745434
+      type: 'test'
+      ...
+    # Subtest: enforces package directions on synthetic edges
+    ok 3 - enforces package directions on synthetic edges
+      ---
+      duration_ms: 0.341441
+      type: 'test'
+      ...
+    # Subtest: confines node builtins to the named renderer adapter
+    ok 4 - confines node builtins to the named renderer adapter
+      ---
+      duration_ms: 0.178657
+      type: 'test'
+      ...
+    # Subtest: allows jszip only in renderer-docx
+    ok 5 - allows jszip only in renderer-docx
+      ---
+      duration_ms: 0.178137
+      type: 'test'
+      ...
+    # Subtest: repository packages contain zero boundary violations
+    not ok 6 - repository packages contain zero boundary violations
+      ---
+      duration_ms: 193.663668
+      type: 'test'
+      location: '/home/deepnar/Programs/presentations/test/v2-core-boundary.test.js:222:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'packages/agent/search.ts: node builtin "node:fs/promises" not allowed in agent (only named adapter files)',
+        +   'packages/agent/search.ts: node builtin "node:crypto" not allowed in agent (only named adapter files)',
+        +   'packages/agent/search.ts: bare specifier "linkedom" not allowed in agent',
+        +   'packages/agent/search.ts: forbidden direction: agent -> packages/model/source.generated.ts'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'packages/agent/search.ts: node builtin "node:fs/promises" not allowed in agent (only named adapter files)'
+        1: 'packages/agent/search.ts: node builtin "node:crypto" not allowed in agent (only named adapter files)'
+        2: 'packages/agent/search.ts: bare specifier "linkedom" not allowed in agent'
+        3: 'packages/agent/search.ts: forbidden direction: agent -> packages/model/source.generated.ts'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-core-boundary.test.js:225:12)
+        async Test.run (node:internal/test_runner/test:1313:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:897:7)
+      ...
+    1..6
+not ok 1 - v2 core boundary
+  ---
+  duration_ms: 202.750533
+  type: 'suite'
+  location: '/home/deepnar/Programs/presentations/test/v2-core-boundary.test.js:170:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 5
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 472.534767

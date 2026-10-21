@@ -272,7 +272,10 @@ execution and preserved limitations; future work remains only in the roadmap.
 ## V2-8F shared search boundary (implementation under review)
 
 `packages/agent/search.ts` defines SearchProvider separately from ModelProvider;
-`src/agent/search-provider.js` supplies the SearXNG implementation. The host owns
+`src/agent/search-provider.js` supplies the SearXNG implementation and
+`src/agent/search-sources.js` owns Node/schema/HTML/hash normalization. The pure
+agent contract reaches SourceRef types through the existing tools facade; the
+accepted package dependency matrix remains unchanged. The host owns
 project binding and backend configuration. Strict generated SearchRequest arguments
 contain only query, result/diversity counts, language and optional time range.
 The adapter posts form data to the configured /search JSON endpoint; project
@@ -299,7 +302,9 @@ The operator-configured endpoint accepts HTTPS or loopback HTTP, no URL userinfo
 query or fragment. Redirects are rejected. One operation bounds header/body time,
 UTF-8 response bytes and complete serialized normalized output, with no retry.
 Cancellation/timeout fences late fetches and body reads, including non-cooperating
-injected transports. Failure messages contain no raw upstream body, endpoint or
+injected transports. Monotonic deadline checks and periodic event-loop yielding
+prevent immediately resolved empty chunks from starving timers or caller aborts.
+Visible block/BR boundaries remain spaces while inline word fragments stay joined. Failure messages contain no raw upstream body, endpoint or
 credentials. Snippets remain untrusted data, not instructions or HTML to render.
 
 Exact source/evidence/review are indexed in [the evaluation](V2-8F-EVAL.md) and state;
