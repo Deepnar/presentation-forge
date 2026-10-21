@@ -3,17 +3,17 @@
   "method": "Sustained180-second duration-weighted CPU/memory/backing-device headroom, then two fresh15-second acceptable samples before each job; ongoing monitoring and process-group watchdogs.",
   "qualification": {
     "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
-    "sampleSeconds": 180.41996653399838,
+    "sampleSeconds": 180.48829945499995,
     "samples": 12,
-    "cpuBusyMeanPercent": 5.172350005634149,
-    "cpuIoWaitMeanPercent": 8.154124230444948,
+    "cpuBusyMeanPercent": 10.555424098767205,
+    "cpuIoWaitMeanPercent": 8.657735833756258,
     "diskMeans": {
       "nvme0n1": {
-        "busyPercent": 2.205410008902865,
-        "weightedQueue": 0.0999279644395822
+        "busyPercent": 2.277709974781479,
+        "weightedQueue": 0.14152163922608446
       }
     },
-    "freshConsecutiveReadySamples": 7,
+    "freshConsecutiveReadySamples": 4,
     "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
   },
   "mountEvidence": "docs/v2-8e-evidence/storage-environment.json",
@@ -37,5 +37,27 @@
   "backingStorage": "Repository/output and Docker data on btrfs subvolumes on nvme0n1p5; /tmp and owned PostgreSQL data tmpfs.",
   "limitation": "Raw global I/O PSI/iowait remains elevated with unresolved provenance. No graphics-causality, zero-pressure or production-percentile claim. Competing work was neither stopped nor reused.",
   "watchdogs": "nice10/ionice2priority7,15minutes per job (bulk30minutes),10second TERM-to-KILL grace; browser/build owners never overlap.",
-  "resourceStreamNote": "Raw stream retains development entries labeled15e357c (with working-tree implementation) and final-source entries labeledc71d65e. Final qualification and gate observations refer only to the frozen source; no prior rows are relabeled."
+  "resourceStreamNote": "Final stream is the resumed host session, all taggedc71d65e. Prior complete execution/qualification and mixed development stream remain archived in paused-2026-10-21/logs; no old samples are relabeled as current.",
+  "priorQualification": {
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+    "sampleSeconds": 180.41996653399838,
+    "samples": 12,
+    "cpuBusyMeanPercent": 5.172350005634149,
+    "cpuIoWaitMeanPercent": 8.154124230444948,
+    "diskMeans": {
+      "nvme0n1": {
+        "busyPercent": 2.205410008902865,
+        "weightedQueue": 0.0999279644395822
+      }
+    },
+    "freshConsecutiveReadySamples": 7,
+    "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+  },
+  "resumedObservations": {
+    "samples": 84,
+    "withheldPreJobSamples": 15,
+    "criticalSamples": 3,
+    "criticalRunningSamples": 0
+  },
+  "resumedMountEvidence": "docs/v2-8e-evidence/storage-resumed-2026-10-21.json"
 }

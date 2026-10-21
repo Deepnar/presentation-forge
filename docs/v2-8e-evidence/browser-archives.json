@@ -1,0 +1,85 @@
+[
+  {
+    "source": "out/v2-7b-1-validation/browser/imported-chart.pptx",
+    "backend": "SQLite; authenticated current serial B1/B2 browser exports",
+    "sha256": "928183965ccf78147cf7e03c817f1e00ff54c0adcd0ac7faff2f8c4e9cdadaaf",
+    "bytes": 92783,
+    "slideCount": 3,
+    "chartParts": 1,
+    "nativeTable": true,
+    "nativeAssertions": "passed",
+    "rasters": [
+      "docs/v2-8e-evidence/native/chart-2.png"
+    ],
+    "originalArchive": "docs/v2-8e-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-chart.pptx",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+    "retainedOriginalFrom": "docs/v2-8e-evidence/paused-2026-10-21/browser-archives/out--v2-7b-1-validation--browser--imported-chart.pptx",
+    "provenance": "Actual frozen-source browser export from completed paused suite; bytes preserved before stop and reused for fresh resumed OOXML/raster inspection."
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/imported-table.pptx",
+    "backend": "SQLite; authenticated current serial B1/B2 browser exports",
+    "sha256": "9ddd7964b311f872c9f267fc89bbee52a8c21d2ffa22507730782fe17877df35",
+    "bytes": 92770,
+    "slideCount": 3,
+    "chartParts": 1,
+    "nativeTable": true,
+    "nativeAssertions": "passed",
+    "rasters": [
+      "docs/v2-8e-evidence/native/table-3.png"
+    ],
+    "originalArchive": "docs/v2-8e-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-table.pptx",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+    "retainedOriginalFrom": "docs/v2-8e-evidence/paused-2026-10-21/browser-archives/out--v2-7b-1-validation--browser--imported-table.pptx",
+    "provenance": "Actual frozen-source browser export from completed paused suite; bytes preserved before stop and reused for fresh resumed OOXML/raster inspection."
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/handoff.pptx",
+    "backend": "SQLite; authenticated current serial B1/B2 browser exports",
+    "sha256": "21728990e03c5a5b778cc1f1da6c8d378b3beeb4391150e299ad1c69ee5c56b9",
+    "bytes": 92763,
+    "slideCount": 3,
+    "chartParts": 1,
+    "nativeTable": true,
+    "nativeAssertions": "passed",
+    "rasters": [
+      "docs/v2-8e-evidence/native/handoff-1.png",
+      "docs/v2-8e-evidence/native/handoff-2.png",
+      "docs/v2-8e-evidence/native/handoff-3.png"
+    ],
+    "originalArchive": "docs/v2-8e-evidence/browser-archives/out--v2-7b-2-validation--browser--handoff.pptx",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+    "retainedOriginalFrom": "docs/v2-8e-evidence/paused-2026-10-21/browser-archives/out--v2-7b-2-validation--browser--handoff.pptx",
+    "provenance": "Actual frozen-source browser export from completed paused suite; bytes preserved before stop and reused for fresh resumed OOXML/raster inspection."
+  },
+  {
+    "source": "out/v2-7a-validation/shell-chart.pptx",
+    "sha256": "7e2d98ac9643bd1265dc1241dc3658b77306b67bcc163124722fbdef99f9328f",
+    "bytes": 70668,
+    "slideCount": 1,
+    "nativeAssertions": "passed",
+    "backend": "SQLite; authenticated actual embedded editor save/export from complete7A suite",
+    "rasters": [
+      "docs/v2-8e-evidence/native/shell-chart.png"
+    ],
+    "originalArchive": "docs/v2-8e-evidence/browser-archives/out--v2-7a-validation--shell-chart.pptx",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+    "retainedOriginalFrom": "docs/v2-8e-evidence/paused-2026-10-21/browser-archives/out--v2-7a-validation--shell-chart.pptx",
+    "provenance": "Actual frozen-source browser export from completed paused suite; bytes preserved before stop and reused for fresh resumed OOXML/raster inspection."
+  },
+  {
+    "source": "out/v2-7a-validation/shell-table.pptx",
+    "sha256": "a789a6e2b9922d7ad101b32b84256d1beb7987f63179d24552ce0e5067e877ab",
+    "bytes": 72451,
+    "slideCount": 1,
+    "nativeAssertions": "passed",
+    "backend": "SQLite; authenticated actual embedded editor save/export from complete7A suite",
+    "rasters": [
+      "docs/v2-8e-evidence/native/shell-table.png"
+    ],
+    "originalArchive": "docs/v2-8e-evidence/browser-archives/out--v2-7a-validation--shell-table.pptx",
+    "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+    "retainedOriginalFrom": "docs/v2-8e-evidence/paused-2026-10-21/browser-archives/out--v2-7a-validation--shell-table.pptx",
+    "provenance": "Actual frozen-source browser export from completed paused suite; bytes preserved before stop and reused for fresh resumed OOXML/raster inspection."
+  }
+]

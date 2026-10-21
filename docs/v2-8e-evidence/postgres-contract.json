@@ -2,7 +2,7 @@
   "id": "postgres-contract",
   "kind": "tests",
   "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
-  "command": "python3 docs/v2-8e-evidence/resume-validation.py; exact isolated commands retained in final coordinator",
+  "command": "python3 docs/v2-8e-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8e-evidence/logs/postgres-contract.tap",
   "exitCode": 0,
   "tests": {
@@ -16,5 +16,5 @@
     "test/v2-projects-6c-postgres.test.js",
     "test/v2-import-postgres-7b.test.js"
   ],
-  "backend": "Owned resumed PostgreSQL15.18; designated project/import contract"
+  "backend": "Owned isolated PostgreSQL15.18; designated23-case project/import contract gate"
 }

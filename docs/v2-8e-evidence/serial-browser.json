@@ -2,7 +2,7 @@
   "id": "serial-browser",
   "kind": "tests",
   "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
-  "command": "python3 docs/v2-8e-evidence/resume-validation.py; exact retained/current commands in coordinator",
+  "command": "python3 docs/v2-8e-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8e-evidence/logs/serial-browser.tap",
   "exitCode": 0,
   "tests": {
@@ -40,5 +40,5 @@
     "test/v2-project-catalog-chrome-7c.test.js",
     "test/v2-editor-toolbar-chrome-7c.test.js"
   ],
-  "backend": "Temporary SQLite and isolated owned PostgreSQL;23complete paused records retained and3remaining files executed in resumed session."
+  "backend": "Temporary SQLite production routes, isolated PostgreSQL browser suite and standalone fixtures"
 }

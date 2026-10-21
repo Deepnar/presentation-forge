@@ -1,0 +1,108 @@
+TAP version 13
+# catalog browser backend: sqlite; actual production server/CSP
+# Subtest: one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+ok 1 - one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+  ---
+  duration_ms: 3731.777377
+  type: 'test'
+  ...
+# Subtest: report-only sources open the report, retain companion routes and return to Projects
+ok 2 - report-only sources open the report, retain companion routes and return to Projects
+  ---
+  duration_ms: 4056.606611
+  type: 'test'
+  ...
+# Subtest: title, generated content and type filters give honest results and can clear an empty search
+ok 3 - title, generated content and type filters give honest results and can clear an empty search
+  ---
+  duration_ms: 2218.644512
+  type: 'test'
+  ...
+# Subtest: partial source failures retain the healthy kind and retry only the failed catalog
+ok 4 - partial source failures retain the healthy kind and retry only the failed catalog
+  ---
+  duration_ms: 4037.155495
+  type: 'test'
+  ...
+# Subtest: stale content responses cannot overwrite newer queries or survive query clearing
+ok 5 - stale content responses cannot overwrite newer queries or survive query clearing
+  ---
+  duration_ms: 2396.729967
+  type: 'test'
+  ...
+# Subtest: generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+ok 6 - generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+  ---
+  duration_ms: 2563.698765
+  type: 'test'
+  ...
+# Subtest: saved deletion retains the generated original and its existing destination
+ok 7 - saved deletion retains the generated original and its existing destination
+  ---
+  duration_ms: 2610.818361
+  type: 'test'
+  ...
+# Subtest: account changes clear settled cards, cancel pending search and block a stale destructive action
+ok 8 - account changes clear settled cards, cancel pending search and block a stale destructive action
+  ---
+  duration_ms: 2935.332986
+  type: 'test'
+  ...
+# Subtest: keyboard project search respects pending text navigation guards and restores focus on entry
+ok 9 - keyboard project search respects pending text navigation guards and restores focus on entry
+  ---
+  duration_ms: 2515.87461
+  type: 'test'
+  ...
+# Subtest: settled narrow dark cards, filter controls and deletion dialog remain unobscured
+ok 10 - settled narrow dark cards, filter controls and deletion dialog remain unobscured
+  ---
+  duration_ms: 2513.232077
+  type: 'test'
+  ...
+# Subtest: empty and signed-out hosted catalogs show truthful recovery without false empty success
+ok 11 - empty and signed-out hosted catalogs show truthful recovery without false empty success
+  ---
+  duration_ms: 4012.656957
+  type: 'test'
+  ...
+# Subtest: content-search failure preserves title matches and has an independent retry
+ok 12 - content-search failure preserves title matches and has an independent retry
+  ---
+  duration_ms: 2441.850168
+  type: 'test'
+  ...
+# Subtest: leaving discovery aborts pending search and remounting starts a fresh lifetime
+ok 13 - leaving discovery aborts pending search and remounting starts a fresh lifetime
+  ---
+  duration_ms: 2921.013184
+  type: 'test'
+  ...
+# Subtest: pending deletion keeps focus inside the busy dialog and suppresses navigation shortcuts
+ok 14 - pending deletion keeps focus inside the busy dialog and suppresses navigation shortcuts
+  ---
+  duration_ms: 2843.382281
+  type: 'test'
+  ...
+# Subtest: failed deletions show a focused visible error within the selected-copy dialog and retry safely
+ok 15 - failed deletions show a focused visible error within the selected-copy dialog and retry safely
+  ---
+  duration_ms: 5469.678742
+  type: 'test'
+  ...
+# Subtest: development StrictMode discovery and modal cancellation restore the real invoker
+ok 16 - development StrictMode discovery and modal cancellation restore the real invoker
+  ---
+  duration_ms: 2599.80794
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 50609.458176
+# forge-test-file "test/v2-project-catalog-chrome-7c.test.js"

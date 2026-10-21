@@ -1,0 +1,15 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "command": "Inspect115final hashed images via retained/resumed-browser andheadless sheets, final sheets19/20 andfull-resolution risk cases; reconcile all hashes andsixcanvas measurements",
+  "log": "docs/v2-8e-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": "docs/v2-8e-evidence/images.json",
+  "imageCount": 115,
+  "browserImages": 76,
+  "nativeRasters": 23,
+  "svgRasters": 16,
+  "limitations": "Inherited Fit/narrow/capture/mixed-run SVG limits remain. Native rasterization is not interactive PowerPoint or live model quality. Elevated PSI/iowait cause remains unknown."
+}

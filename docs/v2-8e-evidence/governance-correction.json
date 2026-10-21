@@ -1,0 +1,12 @@
+{
+  "scope": "Documentation/state metadata only; no test/product/source correction",
+  "initialResult": {
+    "exitCode": 1,
+    "errors": 1,
+    "warnings": 0,
+    "diagnostic": "implementationStatus must be equal to an allowed enum; attempted implemented-pending-review is unsupported"
+  },
+  "correction": "Use existing validated enum and retain reviewStatus pending,acceptedfalse and8Dbaseline. Schema/checker unchanged.",
+  "correctedExitCode": 0,
+  "correctedLog": "docs/v2-8e-evidence/logs/final-packet-protocol.log"
+}
