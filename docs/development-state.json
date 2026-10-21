@@ -14,7 +14,7 @@
     "roadmapRef": "docs/ROADMAP.md#v2-8f-shared-search-boundary",
     "evalDoc": "docs/V2-8F-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -25,55 +25,55 @@
       "id": "search-provider",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/search-provider.json",
-      "reason": "Complete current-source gate executed0fail/skip/cancel; remaining gates and independent review still pending."
+      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
     },
     {
       "id": "non-browser-bulk",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/non-browser-bulk.json",
-      "reason": "Complete current-source gate executed0fail/skip/cancel; remaining gates and independent review still pending."
+      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
     },
     {
       "id": "serial-browser",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/serial-browser.json",
-      "reason": "Complete current-source gate executed0fail/skip/cancel; remaining gates and independent review still pending."
+      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
     },
     {
       "id": "postgres-contract",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/postgres-contract.json",
-      "reason": "Complete current-source gate executed0fail/skip/cancel; remaining gates and independent review still pending."
+      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
     },
     {
       "id": "cross-process-faults",
       "status": "passed",
       "evidence": "docs/v2-8f-evidence/cross-process-faults.json",
-      "reason": "Complete current-source gate executed0fail/skip/cancel; remaining gates and independent review still pending."
+      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
     },
     {
       "id": "production-build",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required current-source execution/inspection remains pending; prior accepted evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8f-evidence/production-build.json",
+      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required current-source execution/inspection remains pending; prior accepted evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8f-evidence/typecheck.json",
+      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required current-source execution/inspection remains pending; prior accepted evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8f-evidence/benchmark-50.json",
+      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required current-source execution/inspection remains pending; prior accepted evidence is historical."
+      "status": "passed",
+      "evidence": "docs/v2-8f-evidence/frontend-visual.json",
+      "reason": "Complete frozen-source execution/inspection passed with0unexpectedfail/skip/cancel. Separate exact-source independent review pending."
     }
   ],
   "knownBlockers": [],

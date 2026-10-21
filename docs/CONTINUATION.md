@@ -121,10 +121,12 @@ are complete. No further feature is authorized; future scope is only in the road
 The latest continuation authorizes only the
 [V2-8F shared search boundary](ROADMAP.md#v2-8f-shared-search-boundary), frozen at
 0cab854 for final validation. [Evaluation](V2-8F-EVAL.md) records development
-corrections and pending gates. Accepted baseline remains V2-8E c71d65e. Use
+corrections and complete final-source gates, with separate acceptance pending. Accepted baseline remains V2-8E c71d65e. Use
 [the8F runbook](v2-8f-evidence/RUNBOOK.md) for current reproduction: its223-file
 inventory and all-current evidence/original snapshots replace no historical proof.
-No acceptance, owned-service cleanup or final validation is yet claimed for8F.
+Final validation passed2786primary distinct checks plus48separate focused repeats,
+all commands and115inspected images. Exact owned service remains for independent
+review; cleanup and acceptance are pending. Read current HANDOFF before any job.
 Complete only this approved slice through independent review and handoff.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for

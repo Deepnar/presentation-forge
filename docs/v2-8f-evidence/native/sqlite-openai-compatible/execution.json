@@ -1,0 +1,98 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "backend": "sqlite",
+  "family": "openai-compatible",
+  "providerExchangesMs": [
+    26.642665000000022,
+    4.978759000000025,
+    4.050560000000019
+  ],
+  "conversationTrace": {
+    "exchanges": 3,
+    "toolCalls": 3,
+    "reservedOutputTokens": 6144,
+    "reportedInputTokens": 126,
+    "reportedOutputTokens": 60,
+    "steps": [
+      {
+        "step": 1,
+        "providerId": "fixture-provider",
+        "family": "openai-compatible",
+        "model": "operator-model",
+        "wireChars": 4008,
+        "reservedOutputTokens": 2048,
+        "durationMs": 27.077639000000033,
+        "outcome": "read-results",
+        "toolNames": [
+          "get_selected_elements"
+        ]
+      },
+      {
+        "step": 2,
+        "providerId": "fixture-provider",
+        "family": "openai-compatible",
+        "model": "operator-model",
+        "wireChars": 4631,
+        "reservedOutputTokens": 2048,
+        "durationMs": 5.266395999999986,
+        "outcome": "read-results",
+        "toolNames": [
+          "get_selected_elements"
+        ]
+      },
+      {
+        "step": 3,
+        "providerId": "fixture-provider",
+        "family": "openai-compatible",
+        "model": "operator-model",
+        "wireChars": 5254,
+        "reservedOutputTokens": 2048,
+        "durationMs": 4.295224999999959,
+        "outcome": "tool-calls",
+        "toolNames": [
+          "edit_content"
+        ]
+      }
+    ]
+  },
+  "conversationTraceBytes": 817,
+  "runId": "16e44956-9178-4b5a-b6f9-fe42bd823e5f",
+  "timings": {
+    "prepareMs": 60.17364599999996,
+    "queueMs": 1.566992999999968,
+    "claimMs": 2.0208560000000375,
+    "commitMs": 5.3998450000000275,
+    "reopenMs": 0.5814320000000066
+  },
+  "traceBytes": 1306,
+  "trace": {
+    "run": {
+      "id": "16e44956-9178-4b5a-b6f9-fe42bd823e5f",
+      "projectId": "p-a164670d765dc42cc807b21f",
+      "projectRevision": 1,
+      "status": "succeeded",
+      "code": null,
+      "revision": 3,
+      "cursor": 1,
+      "attempts": 1,
+      "failures": 0,
+      "createdAt": 1792603306502,
+      "updatedAt": 1792603306508,
+      "deadlineAt": 1792603366440,
+      "stepCount": 1
+    },
+    "receipts": [
+      {
+        "step": 0,
+        "tool": "edit_content",
+        "ok": true,
+        "code": null,
+        "changed": true,
+        "projectRevision": 1,
+        "engineRevision": 1,
+        "runRevision": 3
+      }
+    ]
+  },
+  "limits": "Local samples, not production percentiles. Reopen after closing the pool/connection; actual kill recovery is tested separately. Mixed-run SVG inherits its first-run-style limitation."
+}

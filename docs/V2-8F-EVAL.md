@@ -3,8 +3,8 @@
 Accepted baseline: `c71d65e189387684aac89ca9994acf8a9ff865c1`.
 Entry checkout: `661eedc70f3c3f8a4290449303438d391fe97755`; branch `v2`, push
 `origin/v2`. The [approved contract](ROADMAP.md#v2-8f-shared-search-boundary) is the
-sole work entry. Implementation and validation are in progress; no acceptance is
-claimed. Frozen implementation: `0cab854bce04b862060829812a9ab6ff0b765fd9`; later docs/harness commits have no product/test/tooling delta.
+sole work entry. Implementation and final validation are complete; independent exact-source
+acceptance remains pending. No acceptance is claimed by the implementer. Frozen implementation: `0cab854bce04b862060829812a9ab6ff0b765fd9`; later docs/harness commits have no product/test/tooling delta.
 
 Correctness, authorization isolation, regression, backward compatibility, native /
 browser preservation and documentation gates apply. Existing editor, storage,
@@ -24,6 +24,83 @@ The existing stack is retained. The current
 /search, form-encoded POST fields, JSON format, language and day/month/year filters.
 Local HTTP fixtures qualify this protocol; they do not qualify upstream search
 relevance or live provider/Auto output. Search result snippets remain untrusted data.
+
+## Complete final-source results
+
+Exact source `0cab854bce04b862060829812a9ab6ff0b765fd9` passed the complete
+223-file inventory and four distinct persisted/native regression scenarios:
+**2,786 primary distinct checks, 0 failures, 0 skips, 0 cancellations and 0 required
+implementer cases unexecuted**. The 48 focused search checks repeat inventory
+leaves and are excluded from that distinct total. Development runs remain separate.
+
+| Executed group | Files/scenarios | Pass | Fail | Skip | Cancelled |
+|---|---:|---:|---:|---:|---:|
+| Non-browser bulk | 189 | 2408 | 0 | 0 | 0 |
+| Serial browser/build owners | 26 | 208 | 0 | 0 | 0 |
+| Complete PostgreSQL inventory | 8 | 166 | 0 | 0 | 0 |
+| Distinct persisted/native supplements | 4 | 4 | 0 | 0 | 0 |
+| Separate focused repeats | 2 | 48 | 0 | 0 | 0 |
+| Separate standing locale probe | 1 | 9 | 1 | 0 | 0 |
+
+[Full matrix](v2-8f-evidence/full-matrix.json) and raw
+[coordinator records](v2-8f-evidence/logs/coordinator.json) retain actual commands,
+UTC exits, source/backend and complete file markers. PostgreSQL's designated
+23-case contract and 19-case concurrency/fault gates overlap its complete 166 cases.
+The separate en_IN locale failure is exactly the established 5,000,000 versus
+50,00,000 assertion; it is not relabeled passing. All nine required gates passed.
+
+Production build and final typecheck passed in 0.514591 s / 1.365154 s command wall
+time. Actual 50 cells completed in 495 ms compiler/ZIP time (0.665763 s wall).
+The benchmark records documentation HEAD 7b6b140; product/test/tooling source matches
+frozen 0cab854. [Performance](v2-8f-evidence/performance.json) records 120-slide opening
+in 1,541 ms with 120 thumbnails and maximum measured canvas displacement
+0.06939697265625 px across six cases, below 1 px.
+
+The new [search timing run](v2-8f-evidence/search-performance.json) made 30 actual
+loopback HTTP requests, ten each with 1 / 20 / 1,000 candidates. Observed ranges were
+1.275–21.713 ms, 1.946–3.094 ms and 34.473–81.220 ms respectively. Complete serialized
+outputs were 372 / 6,320 / 6,339 characters, with result-limit warnings for 1,000
+candidates. Citation IDs stayed identical across repeated retrievals. These local
+fixtures qualify protocol and bounds, not live SearXNG relevance, Auto/provider
+quality or production percentiles.
+
+All 115 final hashed images were inspected: 76 browser, 23 native and 16 SVG.
+[Visual report](v2-8f-evidence/VISUAL-REVIEW.md) and
+[hash reconciliation](v2-8f-evidence/visual-hash-reconciliation.json) distinguish
+21 grouped inspection sheets plus full-size risk cases from the 20 generated final
+combined sheets, which were not separately all opened. No new foreground dialog
+regression was observed. Inherited narrow canvas/toolbar overflow, inspector
+occlusion, C1 transition and C2 pending-search capture limits remain explicit.
+Native output keeps the edited text/chart/table values and italic final run;
+SVG retains its known first-run-style limitation. The repeated native shape IDs
+remain in all eight fresh headless archives, with a
+[separate observation](v2-8f-evidence/native-identity-observation.json) and
+[roadmap correction](ROADMAP.md#native-pptx-shape-id-uniqueness).
+
+Before generators, all 4,653 current evidence files, including 106 original PPTXs,
+and five canonical browser originals were copied/hash-verified. All were restored
+and rechecked after execution. Eight fresh headless plus five actual fresh browser
+original PPTXs were preserved before restoration; no archive bytes were reconstructed.
+[Restoration recheck](v2-8f-evidence/restoration-recheck.json) retains exact counts.
+No validation job remains running. The exact owned PostgreSQL service remains for
+independent review; its final saved/fsynced count and cleanup are still required.
+
+Sustained qualification lasted 180.410 s: mean CPU 5.232%, iowait 8.783%, backing
+NVMe busy 1.267%, weighted queue 0.11526 and 11 fresh ready samples. Across 213
+resource observations, 82 pre-job samples withheld work; none was critical during
+execution. CPU peaks and storage bursts happened between files and were held.
+[Resource assessment](v2-8f-evidence/resource-assessment.json) preserves the unchanged
+thresholds and unresolved global PSI/iowait provenance; no unrelated work was stopped.
+
+No final-source product regression was found. The development and source-review
+corrections below were completed before this frozen run without weakening
+assertions, dependency rules or timeouts. Historical archive/service provenance
+limits remain historical. Interactive PowerPoint, live search/provider/Auto quality,
+new search tools, hosted approval lifetime and Assistant qualification are outside
+this bounded contract and unexecuted. The implementer recommends exact-source
+independent acceptance review; parent V2-8 remains incomplete. The
+[older model-stream audit](ROADMAP.md#model-provider-stream-resource-bounds) is a
+separate source-inspected risk, not a reported executed failure or this slice's scope.
 
 ## Development execution and corrections
 
@@ -89,7 +166,7 @@ raw samples are [retained](v2-8f-evidence/development/pre-matrix-interruption.js
 No test leaf was cancelled and no test is credited from that wait. The final run
 uses a fresh scratch namespace, preserving the preliminary resource observations.
 
-## Current full-run checkpoint (not final acceptance)
+## Earlier full-run checkpoint (superseded by complete results)
 
 Exact0cab854 focused search48/48 (separate overlapping repeat), non-browser bulk
 2408/2408 and all26serial browser/build files208/208 passed with0fail/skip/cancel.

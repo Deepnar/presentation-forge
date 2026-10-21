@@ -1,0 +1,66 @@
+TAP version 13
+# toolbar browser backend: sqlite; actual production server/CSP
+# Subtest: saved-project editor excludes fixture/compiler/discovery diagnostics while preserving normal controls
+ok 1 - saved-project editor excludes fixture/compiler/discovery diagnostics while preserving normal controls
+  ---
+  duration_ms: 2175.634816
+  type: 'test'
+  ...
+# Subtest: standalone viewer retains fixture selection, Live panel and Projects dialog with Escape focus return
+ok 2 - standalone viewer retains fixture selection, Live panel and Projects dialog with Escape focus return
+  ---
+  duration_ms: 2644.533764
+  type: 'test'
+  ...
+# Subtest: text and all existing shape insertions persist with exact undo/redo and reopen behavior
+ok 3 - text and all existing shape insertions persist with exact undo/redo and reopen behavior
+  ---
+  duration_ms: 15494.944136
+  type: 'test'
+  ...
+# Subtest: pending text uses guarded workspace navigation with Cancel and Save-and-leave preserving the draft
+ok 4 - pending text uses guarded workspace navigation with Cancel and Save-and-leave preserving the draft
+  ---
+  duration_ms: 2672.116737
+  type: 'test'
+  ...
+# Subtest: Cancel during an in-flight Save-and-leave cannot later navigate away
+ok 5 - Cancel during an in-flight Save-and-leave cannot later navigate away
+  ---
+  duration_ms: 4008.218879
+  type: 'test'
+  ...
+# Subtest: chart/table selection keeps the canvas stable and production inspector labels descriptive
+ok 6 - chart/table selection keeps the canvas stable and production inspector labels descriptive
+  ---
+  duration_ms: 2354.095045
+  type: 'test'
+  ...
+# Subtest: read-only mode keeps navigation and inspection usable without insertion or mutation
+ok 7 - read-only mode keeps navigation and inspection usable without insertion or mutation
+  ---
+  duration_ms: 2492.779191
+  type: 'test'
+  ...
+# Subtest: narrow light/dark controls remain reachable without toolbar height changes and History returns focus
+ok 8 - narrow light/dark controls remain reachable without toolbar height changes and History returns focus
+  ---
+  duration_ms: 5903.891309
+  type: 'test'
+  ...
+# Subtest: blank-slide history uses a human slide label rather than an internal scene identity
+ok 9 - blank-slide history uses a human slide label rather than an internal scene identity
+  ---
+  duration_ms: 2492.1784
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40807.96321
+# forge-test-file "test/v2-editor-toolbar-chrome-7c.test.js"

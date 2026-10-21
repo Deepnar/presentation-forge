@@ -1,0 +1,73 @@
+TAP version 13
+# Subtest: v2-6c transaction faults
+    # Subtest: terminated backend mid-transaction rolls back with nothing saved
+    ok 1 - terminated backend mid-transaction rolls back with nothing saved
+      ---
+      duration_ms: 202.602749
+      type: 'test'
+      ...
+    # Subtest: history-insert failure rolls back the project write
+    ok 2 - history-insert failure rolls back the project write
+      ---
+      duration_ms: 21.398415
+      type: 'test'
+      ...
+    # Subtest: prune failure rolls back the whole save
+    ok 3 - prune failure rolls back the whole save
+      ---
+      duration_ms: 84.510222
+      type: 'test'
+      ...
+    # Subtest: unreachable database reports storage-unavailable and never saved
+    ok 4 - unreachable database reports storage-unavailable and never saved
+      ---
+      duration_ms: 1.826993
+      type: 'test'
+      ...
+    # Subtest: pool exhaustion fails loudly instead of hanging or half-writing
+    ok 5 - pool exhaustion fails loudly instead of hanging or half-writing
+      ---
+      duration_ms: 5530.402689
+      type: 'test'
+      ...
+    # Subtest: killed writer processes leave consistent history
+    ok 6 - killed writer processes leave consistent history
+      ---
+      duration_ms: 2018.644314
+      type: 'test'
+      ...
+    1..6
+ok 1 - v2-6c transaction faults
+  ---
+  duration_ms: 7879.178472
+  type: 'suite'
+  ...
+# Subtest: v2-6c misconfiguration over HTTP
+    # Subtest: postgres selected without a URL answers 503 honestly, never sqlite
+    ok 1 - postgres selected without a URL answers 503 honestly, never sqlite
+      ---
+      duration_ms: 306.40284
+      type: 'test'
+      ...
+    # Subtest: aborted HTTP saves leave consistent history
+    ok 2 - aborted HTTP saves leave consistent history
+      ---
+      duration_ms: 2677.753934
+      type: 'test'
+      ...
+    1..2
+ok 2 - v2-6c misconfiguration over HTTP
+  ---
+  duration_ms: 3784.645623
+  type: 'suite'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11839.80787
+# forge-test-file "test/v2-projects-6c-faults.test.js"

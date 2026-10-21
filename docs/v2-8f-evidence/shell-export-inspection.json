@@ -1,0 +1,29 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "renderer": "src/preview.js through LibreOffice/Poppler",
+  "records": [
+    {
+      "source": "out/v2-7a-validation/shell-chart.pptx",
+      "sha256": "a5b06d035612e098ea7dcf021d745d6d581269930421a6192c0143823107d504",
+      "bytes": 70668,
+      "slideCount": 1,
+      "nativeAssertions": "passed",
+      "backend": "SQLite; authenticated actual embedded editor save/export from complete7A suite",
+      "rasters": [
+        "docs/v2-8f-evidence/native/shell-chart.png"
+      ]
+    },
+    {
+      "source": "out/v2-7a-validation/shell-table.pptx",
+      "sha256": "b1d9aa05a17ddfa0117a4311f19e283d9ae9dbac98c8f6e4c12371d8a05870dd",
+      "bytes": 72451,
+      "slideCount": 1,
+      "nativeAssertions": "passed",
+      "backend": "SQLite; authenticated actual embedded editor save/export from complete7A suite",
+      "rasters": [
+        "docs/v2-8f-evidence/native/shell-table.png"
+      ]
+    }
+  ],
+  "limitation": "Raster inspection does not establish interactive Microsoft PowerPoint behavior."
+}

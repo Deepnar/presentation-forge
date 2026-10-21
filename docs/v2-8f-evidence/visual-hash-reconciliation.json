@@ -1,0 +1,12 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "finalImages": 115,
+  "browserInspected": 76,
+  "headlessNativeAndSvgInspected": 32,
+  "browserExportRastersInspected": 7,
+  "method": "5preliminary browser sheets30images +8remaining browser sheets46images +6headless sheets32images +2export sheets7images; full-size narrow dialog/inspector and native rich-text risk cases. The20final combined sheets were generated but not separately all opened.",
+  "allInspectedHashesPresentInFinalManifest": true,
+  "allFinalImageHashesMatch": true,
+  "nativeRichTextFullSize": "docs/v2-8f-evidence/native/sqlite-openai-compatible/after-1.png",
+  "interactivePowerPointExecuted": false
+}

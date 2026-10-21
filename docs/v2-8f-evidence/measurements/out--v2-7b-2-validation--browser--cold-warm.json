@@ -1,0 +1,17 @@
+{
+  "backend": "sqlite",
+  "cold": {
+    "handoffMs": 555,
+    "timings": {
+      "compileMs": 3.887698000000455,
+      "persistMs": 0.552719999999681,
+      "totalMs": 8.32897899999989
+    }
+  },
+  "warm": {
+    "handoffMs": 641,
+    "timings": {
+      "totalMs": 3.7707329999975627
+    }
+  }
+}

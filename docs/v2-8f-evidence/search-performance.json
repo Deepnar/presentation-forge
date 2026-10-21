@@ -1,0 +1,268 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "backend": "Actual loopback SearXNG HTTP protocol fixture",
+  "requests": 30,
+  "samples": [
+    {
+      "candidates": 1,
+      "iteration": 1,
+      "durationMs": 21.71324899999999,
+      "sources": 1,
+      "resultChars": 372,
+      "warnings": []
+    },
+    {
+      "candidates": 1,
+      "iteration": 2,
+      "durationMs": 2.7475499999999897,
+      "sources": 1,
+      "resultChars": 372,
+      "warnings": []
+    },
+    {
+      "candidates": 1,
+      "iteration": 3,
+      "durationMs": 1.719713000000013,
+      "sources": 1,
+      "resultChars": 372,
+      "warnings": []
+    },
+    {
+      "candidates": 1,
+      "iteration": 4,
+      "durationMs": 1.4833239999999819,
+      "sources": 1,
+      "resultChars": 372,
+      "warnings": []
+    },
+    {
+      "candidates": 1,
+      "iteration": 5,
+      "durationMs": 1.6459789999999828,
+      "sources": 1,
+      "resultChars": 372,
+      "warnings": []
+    },
+    {
+      "candidates": 1,
+      "iteration": 6,
+      "durationMs": 1.376733999999999,
+      "sources": 1,
+      "resultChars": 372,
+      "warnings": []
+    },
+    {
+      "candidates": 1,
+      "iteration": 7,
+      "durationMs": 1.4032399999999825,
+      "sources": 1,
+      "resultChars": 372,
+      "warnings": []
+    },
+    {
+      "candidates": 1,
+      "iteration": 8,
+      "durationMs": 1.2753759999999943,
+      "sources": 1,
+      "resultChars": 372,
+      "warnings": []
+    },
+    {
+      "candidates": 1,
+      "iteration": 9,
+      "durationMs": 1.3771600000000035,
+      "sources": 1,
+      "resultChars": 372,
+      "warnings": []
+    },
+    {
+      "candidates": 1,
+      "iteration": 10,
+      "durationMs": 1.4331229999999948,
+      "sources": 1,
+      "resultChars": 372,
+      "warnings": []
+    },
+    {
+      "candidates": 20,
+      "iteration": 1,
+      "durationMs": 2.801287000000002,
+      "sources": 20,
+      "resultChars": 6320,
+      "warnings": []
+    },
+    {
+      "candidates": 20,
+      "iteration": 2,
+      "durationMs": 2.677179999999993,
+      "sources": 20,
+      "resultChars": 6320,
+      "warnings": []
+    },
+    {
+      "candidates": 20,
+      "iteration": 3,
+      "durationMs": 2.8180699999999774,
+      "sources": 20,
+      "resultChars": 6320,
+      "warnings": []
+    },
+    {
+      "candidates": 20,
+      "iteration": 4,
+      "durationMs": 2.184420000000017,
+      "sources": 20,
+      "resultChars": 6320,
+      "warnings": []
+    },
+    {
+      "candidates": 20,
+      "iteration": 5,
+      "durationMs": 2.7814480000000117,
+      "sources": 20,
+      "resultChars": 6320,
+      "warnings": []
+    },
+    {
+      "candidates": 20,
+      "iteration": 6,
+      "durationMs": 2.7355639999999823,
+      "sources": 20,
+      "resultChars": 6320,
+      "warnings": []
+    },
+    {
+      "candidates": 20,
+      "iteration": 7,
+      "durationMs": 3.094290000000001,
+      "sources": 20,
+      "resultChars": 6320,
+      "warnings": []
+    },
+    {
+      "candidates": 20,
+      "iteration": 8,
+      "durationMs": 1.9646400000000028,
+      "sources": 20,
+      "resultChars": 6320,
+      "warnings": []
+    },
+    {
+      "candidates": 20,
+      "iteration": 9,
+      "durationMs": 1.9459640000000036,
+      "sources": 20,
+      "resultChars": 6320,
+      "warnings": []
+    },
+    {
+      "candidates": 20,
+      "iteration": 10,
+      "durationMs": 2.4203880000000026,
+      "sources": 20,
+      "resultChars": 6320,
+      "warnings": []
+    },
+    {
+      "candidates": 1000,
+      "iteration": 1,
+      "durationMs": 56.08291400000002,
+      "sources": 20,
+      "resultChars": 6339,
+      "warnings": [
+        "results-truncated"
+      ]
+    },
+    {
+      "candidates": 1000,
+      "iteration": 2,
+      "durationMs": 43.029597000000024,
+      "sources": 20,
+      "resultChars": 6339,
+      "warnings": [
+        "results-truncated"
+      ]
+    },
+    {
+      "candidates": 1000,
+      "iteration": 3,
+      "durationMs": 42.811094000000026,
+      "sources": 20,
+      "resultChars": 6339,
+      "warnings": [
+        "results-truncated"
+      ]
+    },
+    {
+      "candidates": 1000,
+      "iteration": 4,
+      "durationMs": 44.027354,
+      "sources": 20,
+      "resultChars": 6339,
+      "warnings": [
+        "results-truncated"
+      ]
+    },
+    {
+      "candidates": 1000,
+      "iteration": 5,
+      "durationMs": 39.367575999999985,
+      "sources": 20,
+      "resultChars": 6339,
+      "warnings": [
+        "results-truncated"
+      ]
+    },
+    {
+      "candidates": 1000,
+      "iteration": 6,
+      "durationMs": 81.22043500000001,
+      "sources": 20,
+      "resultChars": 6339,
+      "warnings": [
+        "results-truncated"
+      ]
+    },
+    {
+      "candidates": 1000,
+      "iteration": 7,
+      "durationMs": 70.71936199999993,
+      "sources": 20,
+      "resultChars": 6339,
+      "warnings": [
+        "results-truncated"
+      ]
+    },
+    {
+      "candidates": 1000,
+      "iteration": 8,
+      "durationMs": 41.45642299999997,
+      "sources": 20,
+      "resultChars": 6339,
+      "warnings": [
+        "results-truncated"
+      ]
+    },
+    {
+      "candidates": 1000,
+      "iteration": 9,
+      "durationMs": 39.60969299999999,
+      "sources": 20,
+      "resultChars": 6339,
+      "warnings": [
+        "results-truncated"
+      ]
+    },
+    {
+      "candidates": 1000,
+      "iteration": 10,
+      "durationMs": 34.473045999999954,
+      "sources": 20,
+      "resultChars": 6339,
+      "warnings": [
+        "results-truncated"
+      ]
+    }
+  ],
+  "limitation": "Local sequential samples, not live SearXNG relevance/provider quality or production percentiles; retrieval metadata excluded from citation identity."
+}

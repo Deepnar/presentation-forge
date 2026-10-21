@@ -2,7 +2,7 @@
   "id": "non-browser-bulk",
   "kind": "tests",
   "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
-  "command": "python3 docs/v2-8f-evidence/run-validation.py; individual commands remain in active out/v2-8f-validation-final-20261021/coordinator.json until complete packet assembly",
+  "command": "python3 docs/v2-8f-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8f-evidence/logs/non-browser-bulk.tap",
   "exitCode": 0,
   "tests": {
@@ -203,6 +203,5 @@
     "test/vision-role.test.js",
     "test/vocabulary.test.js"
   ],
-  "backend": "Pure domain and isolated temporary stores",
-  "checkpoint": "Complete acknowledged gate; no credit for remaining files/commands or visual/native work"
+  "backend": "Pure domain and temporary SQLite stores; selected tests use their isolated backends"
 }

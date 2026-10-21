@@ -2,7 +2,7 @@
   "id": "serial-browser",
   "kind": "tests",
   "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
-  "command": "python3 docs/v2-8f-evidence/run-validation.py; individual commands remain in active out/v2-8f-validation-final-20261021/coordinator.json until complete packet assembly",
+  "command": "python3 docs/v2-8f-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8f-evidence/logs/serial-browser.tap",
   "exitCode": 0,
   "tests": {
@@ -40,6 +40,5 @@
     "test/v2-project-catalog-chrome-7c.test.js",
     "test/v2-editor-toolbar-chrome-7c.test.js"
   ],
-  "backend": "Actual Chrome/production routes; temporary SQLite and exact owned PostgreSQL browser backend",
-  "checkpoint": "Complete acknowledged gate; no credit for remaining files/commands or visual/native work"
+  "backend": "Temporary SQLite production routes, isolated PostgreSQL browser suite and standalone fixtures"
 }

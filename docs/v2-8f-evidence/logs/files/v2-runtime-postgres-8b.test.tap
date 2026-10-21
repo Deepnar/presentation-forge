@@ -1,0 +1,215 @@
+TAP version 13
+# Subtest: PostgreSQL: project, history and receipt commit once with distinct revisions
+ok 1 - PostgreSQL: project, history and receipt commit once with distinct revisions
+  ---
+  duration_ms: 106.949331
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: request identity reopens exact state and refuses changed plans
+ok 2 - PostgreSQL: request identity reopens exact state and refuses changed plans
+  ---
+  duration_ms: 15.087895
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: input and output snapshots do not mutate durable authority
+ok 3 - PostgreSQL: input and output snapshots do not mutate durable authority
+  ---
+  duration_ms: 25.5872
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act
+ok 4 - PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act
+  ---
+  duration_ms: 8.473115
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: local ownerless projects retain local authority without widening scope
+ok 5 - PostgreSQL: local ownerless projects retain local authority without widening scope
+  ---
+  duration_ms: 13.699707
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: read and noop receipts never invent durable project history
+ok 6 - PostgreSQL: read and noop receipts never invent durable project history
+  ---
+  duration_ms: 17.435078
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+ok 7 - PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+  ---
+  duration_ms: 26.102311
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: human changes after start cause stale refusal without rebasing
+ok 8 - PostgreSQL: human changes after start cause stale refusal without rebasing
+  ---
+  duration_ms: 16.309925
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools
+ok 9 - PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools
+  ---
+  duration_ms: 57.103256
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: failure budgets and concise traces survive a new runtime instance
+ok 10 - PostgreSQL: failure budgets and concise traces survive a new runtime instance
+  ---
+  duration_ms: 25.208079
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: cancellation before work and after commit preserves transaction order
+ok 11 - PostgreSQL: cancellation before work and after commit preserves transaction order
+  ---
+  duration_ms: 24.716055
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: lease takeover fences the previous worker even with reused worker name
+ok 12 - PostgreSQL: lease takeover fences the previous worker even with reused worker name
+  ---
+  duration_ms: 156.464358
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: deadlines persist across restart and expire before effects
+ok 13 - PostgreSQL: deadlines persist across restart and expire before effects
+  ---
+  duration_ms: 197.700777
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: after-project failure rolls project/history/receipt back together
+ok 14 - PostgreSQL: after-project failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1047.456492
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: after-receipt failure rolls project/history/receipt back together
+ok 15 - PostgreSQL: after-receipt failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1045.969318
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: final-fence failure rolls project/history/receipt back together
+ok 16 - PostgreSQL: final-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 163.521841
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: deadline-fence failure rolls project/history/receipt back together
+ok 17 - PostgreSQL: deadline-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 157.064276
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: records and traces are bounded and omit raw document/read contents
+ok 18 - PostgreSQL: records and traces are bounded and omit raw document/read contents
+  ---
+  duration_ms: 7.659264
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused
+ok 19 - PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused
+  ---
+  duration_ms: 4.586565
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: concurrent advances sharing one lease reserve only one attempt
+ok 20 - PostgreSQL: concurrent advances sharing one lease reserve only one attempt
+  ---
+  duration_ms: 23.437048
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: unsupported or corrupt durable records fail closed
+ok 21 - PostgreSQL: unsupported or corrupt durable records fail closed
+  ---
+  duration_ms: 6.626929
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: renewal extends the current lease without changing its fence
+ok 22 - PostgreSQL: renewal extends the current lease without changing its fence
+  ---
+  duration_ms: 201.585399
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project deletion cascades runs and all step receipts
+ok 23 - PostgreSQL: project deletion cascades runs and all step receipts
+  ---
+  duration_ms: 15.292675
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: corrupt receipt checkpoints refuse resume instead of skipping work
+ok 24 - PostgreSQL: corrupt receipt checkpoints refuse resume instead of skipping work
+  ---
+  duration_ms: 9.118734
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: CLI start exits and a separate worker completes the saved project
+ok 25 - PostgreSQL: CLI start exits and a separate worker completes the saved project
+  ---
+  duration_ms: 856.881963
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: schema-valid contradictory receipts and counters fail closed
+ok 26 - PostgreSQL: schema-valid contradictory receipts and counters fail closed
+  ---
+  duration_ms: 41.468222
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: two processes race for one lease and only one can claim
+ok 27 - PostgreSQL process: two processes race for one lease and only one can claim
+  ---
+  duration_ms: 307.705529
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill reserved then restart cannot lose or replay an edit
+ok 28 - PostgreSQL process: kill reserved then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1855.202565
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill after-project then restart cannot lose or replay an edit
+ok 29 - PostgreSQL process: kill after-project then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1847.664466
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit
+ok 30 - PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1835.285648
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill committed then restart cannot lose or replay an edit
+ok 31 - PostgreSQL process: kill committed then restart cannot lose or replay an edit
+  ---
+  duration_ms: 304.147382
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: restart resumes after a committed checkpoint without repeating it
+ok 32 - PostgreSQL process: restart resumes after a committed checkpoint without repeating it
+  ---
+  duration_ms: 1826.401007
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: crashed reservations exhaust the persisted step budget
+ok 33 - PostgreSQL process: crashed reservations exhaust the persisted step budget
+  ---
+  duration_ms: 1041.47502
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next
+ok 34 - PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next
+  ---
+  duration_ms: 540.070609
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14052.6349
+# forge-test-file "test/v2-runtime-postgres-8b.test.js"

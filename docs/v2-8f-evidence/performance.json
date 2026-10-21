@@ -1,0 +1,329 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "localProtocolAndBackendSamples": {
+    "sqlite-openai-compatible": {
+      "timingsMs": {
+        "prepareMs": 60.17364599999996,
+        "queueMs": 1.566992999999968,
+        "claimMs": 2.0208560000000375,
+        "commitMs": 5.3998450000000275,
+        "reopenMs": 0.5814320000000066
+      },
+      "providerExchangesMs": [
+        26.642665000000022,
+        4.978759000000025,
+        4.050560000000019
+      ],
+      "traceBytes": 1306,
+      "conversationTraceBytes": 817,
+      "conversationTrace": {
+        "exchanges": 3,
+        "toolCalls": 3,
+        "reservedOutputTokens": 6144,
+        "reportedInputTokens": 126,
+        "reportedOutputTokens": 60,
+        "steps": [
+          {
+            "step": 1,
+            "providerId": "fixture-provider",
+            "family": "openai-compatible",
+            "model": "operator-model",
+            "wireChars": 4008,
+            "reservedOutputTokens": 2048,
+            "durationMs": 27.077639000000033,
+            "outcome": "read-results",
+            "toolNames": [
+              "get_selected_elements"
+            ]
+          },
+          {
+            "step": 2,
+            "providerId": "fixture-provider",
+            "family": "openai-compatible",
+            "model": "operator-model",
+            "wireChars": 4631,
+            "reservedOutputTokens": 2048,
+            "durationMs": 5.266395999999986,
+            "outcome": "read-results",
+            "toolNames": [
+              "get_selected_elements"
+            ]
+          },
+          {
+            "step": 3,
+            "providerId": "fixture-provider",
+            "family": "openai-compatible",
+            "model": "operator-model",
+            "wireChars": 5254,
+            "reservedOutputTokens": 2048,
+            "durationMs": 4.295224999999959,
+            "outcome": "tool-calls",
+            "toolNames": [
+              "edit_content"
+            ]
+          }
+        ]
+      },
+      "protocolFixture": true
+    },
+    "postgres-openai-compatible": {
+      "timingsMs": {
+        "prepareMs": 38.45785000000001,
+        "queueMs": 4.5399569999999585,
+        "claimMs": 4.281480999999985,
+        "commitMs": 10.298980000000029,
+        "reopenMs": 10.018204999999853
+      },
+      "providerExchangesMs": [
+        3.881556000000046,
+        3.498250999999982,
+        3.2405220000000554
+      ],
+      "traceBytes": 1306,
+      "conversationTraceBytes": 817,
+      "conversationTrace": {
+        "exchanges": 3,
+        "toolCalls": 3,
+        "reservedOutputTokens": 6144,
+        "reportedInputTokens": 126,
+        "reportedOutputTokens": 60,
+        "steps": [
+          {
+            "step": 1,
+            "providerId": "fixture-provider",
+            "family": "openai-compatible",
+            "model": "operator-model",
+            "wireChars": 4008,
+            "reservedOutputTokens": 2048,
+            "durationMs": 4.067074000000048,
+            "outcome": "read-results",
+            "toolNames": [
+              "get_selected_elements"
+            ]
+          },
+          {
+            "step": 2,
+            "providerId": "fixture-provider",
+            "family": "openai-compatible",
+            "model": "operator-model",
+            "wireChars": 4631,
+            "reservedOutputTokens": 2048,
+            "durationMs": 3.742815000000064,
+            "outcome": "read-results",
+            "toolNames": [
+              "get_selected_elements"
+            ]
+          },
+          {
+            "step": 3,
+            "providerId": "fixture-provider",
+            "family": "openai-compatible",
+            "model": "operator-model",
+            "wireChars": 5254,
+            "reservedOutputTokens": 2048,
+            "durationMs": 3.4674320000001444,
+            "outcome": "tool-calls",
+            "toolNames": [
+              "edit_content"
+            ]
+          }
+        ]
+      },
+      "protocolFixture": true
+    },
+    "sqlite-anthropic": {
+      "timingsMs": {
+        "prepareMs": 19.266905999999835,
+        "queueMs": 0.8956189999998969,
+        "claimMs": 1.0692699999999604,
+        "commitMs": 3.2302020000001903,
+        "reopenMs": 0.43687899999986257
+      },
+      "providerExchangesMs": [
+        3.3493170000001555,
+        2.887199000000237,
+        5.085395999999946
+      ],
+      "traceBytes": 1306,
+      "conversationTraceBytes": 794,
+      "conversationTrace": {
+        "exchanges": 3,
+        "toolCalls": 3,
+        "reservedOutputTokens": 6144,
+        "reportedInputTokens": 147,
+        "reportedOutputTokens": 60,
+        "steps": [
+          {
+            "step": 1,
+            "providerId": "fixture-provider",
+            "family": "anthropic",
+            "model": "operator-model",
+            "wireChars": 3870,
+            "reservedOutputTokens": 2048,
+            "durationMs": 3.5053710000001956,
+            "outcome": "read-results",
+            "toolNames": [
+              "get_selected_elements"
+            ]
+          },
+          {
+            "step": 2,
+            "providerId": "fixture-provider",
+            "family": "anthropic",
+            "model": "operator-model",
+            "wireChars": 4490,
+            "reservedOutputTokens": 2048,
+            "durationMs": 3.0579750000001695,
+            "outcome": "read-results",
+            "toolNames": [
+              "get_selected_elements"
+            ]
+          },
+          {
+            "step": 3,
+            "providerId": "fixture-provider",
+            "family": "anthropic",
+            "model": "operator-model",
+            "wireChars": 5110,
+            "reservedOutputTokens": 2048,
+            "durationMs": 5.279866000000311,
+            "outcome": "tool-calls",
+            "toolNames": [
+              "edit_content"
+            ]
+          }
+        ]
+      },
+      "protocolFixture": true
+    },
+    "postgres-anthropic": {
+      "timingsMs": {
+        "prepareMs": 26.99243800000022,
+        "queueMs": 4.178936000000249,
+        "claimMs": 3.8005339999999705,
+        "commitMs": 11.026890000000094,
+        "reopenMs": 7.308208999999806
+      },
+      "providerExchangesMs": [
+        3.2031309999993027,
+        4.699859999999717,
+        2.322166000000834
+      ],
+      "traceBytes": 1306,
+      "conversationTraceBytes": 794,
+      "conversationTrace": {
+        "exchanges": 3,
+        "toolCalls": 3,
+        "reservedOutputTokens": 6144,
+        "reportedInputTokens": 147,
+        "reportedOutputTokens": 60,
+        "steps": [
+          {
+            "step": 1,
+            "providerId": "fixture-provider",
+            "family": "anthropic",
+            "model": "operator-model",
+            "wireChars": 3870,
+            "reservedOutputTokens": 2048,
+            "durationMs": 3.3655560000006517,
+            "outcome": "read-results",
+            "toolNames": [
+              "get_selected_elements"
+            ]
+          },
+          {
+            "step": 2,
+            "providerId": "fixture-provider",
+            "family": "anthropic",
+            "model": "operator-model",
+            "wireChars": 4490,
+            "reservedOutputTokens": 2048,
+            "durationMs": 4.881469999999354,
+            "outcome": "read-results",
+            "toolNames": [
+              "get_selected_elements"
+            ]
+          },
+          {
+            "step": 3,
+            "providerId": "fixture-provider",
+            "family": "anthropic",
+            "model": "operator-model",
+            "wireChars": 5110,
+            "reservedOutputTokens": 2048,
+            "durationMs": 2.4807959999998275,
+            "outcome": "tool-calls",
+            "toolNames": [
+              "edit_content"
+            ]
+          }
+        ]
+      },
+      "protocolFixture": true
+    }
+  },
+  "actualExistingRuntimeProcessRecovery": [
+    {
+      "backend": "SQLite",
+      "source": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 208.64866899999924,
+      "excludesLeaseWait": true
+    },
+    {
+      "backend": "PostgreSQL",
+      "source": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 286.5878509999984,
+      "excludesLeaseWait": true
+    }
+  ],
+  "largeDeck": {
+    "project": "p-afbf6f6f0f3f7803a84f011c",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1541
+  },
+  "canvasMeasurements": [
+    {
+      "file": "docs/v2-8f-evidence/measurements/docs--v2-7a-evidence--canvas-chart.json",
+      "kind": null,
+      "maxDeltaPx": 0.018890380859375
+    },
+    {
+      "file": "docs/v2-8f-evidence/measurements/docs--v2-7a-evidence--canvas-table.json",
+      "kind": null,
+      "maxDeltaPx": 0.01902008056640625
+    },
+    {
+      "file": "docs/v2-8f-evidence/measurements/out--v2-7b-1-validation--browser--canvas-table.json",
+      "kind": null,
+      "maxDeltaPx": 0.06934356689453125
+    },
+    {
+      "file": "docs/v2-8f-evidence/measurements/out--v2-7b-1-validation--browser--canvas-chart.json",
+      "kind": null,
+      "maxDeltaPx": 0.06939697265625
+    },
+    {
+      "file": "docs/v2-8f-evidence/measurements/out--v2-7c-3-validation--browser--canvas.json",
+      "kind": "chart",
+      "maxDeltaPx": 0
+    },
+    {
+      "file": "docs/v2-8f-evidence/measurements/out--v2-7c-3-validation--browser--canvas.json",
+      "kind": "table",
+      "maxDeltaPx": 0
+    }
+  ],
+  "maximumCanvasDeltaPx": 0.06939697265625,
+  "limitation": "Local fixtures, not live provider latency/content quality or production percentiles. Existing runtime recovery excludes lease wait; no conversational network exactly-once claim.",
+  "benchmark": {
+    "cells": 50,
+    "compilerAndZipMs": 495,
+    "recordedGitHead": "7b6b140"
+  },
+  "resourceAssessment": "docs/v2-8f-evidence/resource-assessment.json",
+  "resourceSamples": "docs/v2-8f-evidence/resource-window.jsonl",
+  "environmentLimitation": "Elevated global I/O PSI/iowait has unresolved provenance; all local latency measurements retain that limitation."
+}

@@ -1,0 +1,42 @@
+TAP version 13
+# Subtest: v2-5d chrome text editing
+    # Subtest: double-click opens the overlay and typed text commits once
+    ok 1 - double-click opens the overlay and typed text commits once
+      ---
+      duration_ms: 1683.710052
+      type: 'test'
+      ...
+    # Subtest: Escape cancels without mutation
+    ok 2 - Escape cancels without mutation
+      ---
+      duration_ms: 2078.734865
+      type: 'test'
+      ...
+    # Subtest: caret keys never navigate while editing; Ctrl+Enter commits
+    ok 3 - caret keys never navigate while editing; Ctrl+Enter commits
+      ---
+      duration_ms: 2322.231704
+      type: 'test'
+      ...
+    # Subtest: inserted text and shapes select, drag, undo, and redo
+    ok 4 - inserted text and shapes select, drag, undo, and redo
+      ---
+      duration_ms: 2312.182496
+      type: 'test'
+      ...
+    1..4
+ok 1 - v2-5d chrome text editing
+  ---
+  duration_ms: 8404.5171
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8991.708467
+# forge-test-file "test/v2-edit-chrome-5d.test.js"

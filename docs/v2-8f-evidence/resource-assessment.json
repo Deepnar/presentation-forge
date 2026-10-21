@@ -1,0 +1,13 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "samples": 213,
+  "preJobSamples": 186,
+  "withheldPreJobSamples": 82,
+  "criticalPreJobSamples": 0,
+  "runningSamples": 27,
+  "criticalRunningSamples": 0,
+  "maximumCpuBusyPercent": 59.232547896939,
+  "maximumBackingStorageBusyPercent": 27.459505236465496,
+  "sustainedQualification": "docs/v2-8f-evidence/sustained-window.json",
+  "limitation": "Global I/O PSI/iowait cause remains unresolved; physical backing-device and CPU/memory headroom gated every new job with unchanged thresholds. Long jobs monitored; no unrelated process stopped. Local latency samples are not production percentiles."
+}

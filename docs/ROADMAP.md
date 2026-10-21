@@ -8800,6 +8800,14 @@ needs direction on scope before building.*
   service. Missing PostgreSQL is unexecuted. Keep locale and inherited visual /
   native identity / provenance limitations separate. Exact commands/totals/source,
   failed attempts, corrections and performance belong in [the evaluation](V2-8F-EVAL.md).
+  **Complete validation:** frozen0cab854 passed223files/2782leaves plus4distinct
+  persisted/native scenarios (2786primary distinct);48focused repeats stay separate.
+  All166PostgreSQL cases, build/type/all50cells and115hash-reconciled images passed;
+  separate locale9pass/1standingfail remains. All4653evidence files/106PPTXs plus
+  5canonical originals were restored/hash-verified;13fresh actual originals retained.
+  The exact owned service remains for the required separate independent execution
+  and decision. No acceptance is claimed, and no next feature is authorized.
+
   **Initial source audit:** the separate reviewer ran0tests/edited0files and found
   timer starvation on infinite empty chunks and forbidden package imports in9d2a659.
   Root retained fail-first reproductions and corrected both without changing the
