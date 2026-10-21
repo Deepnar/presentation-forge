@@ -1,0 +1,22 @@
+{
+  "observedAtUtc": "2026-10-21T12:02:05.398220+00:00",
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "decision": "docs/reviews/V2-8E-c71d65e.json",
+  "decisionCommit": "8dc691d51e50ca36eb8c6a25cd9e5e8cf90c63c2",
+  "postReviewSourceDelta": [],
+  "protectedFiles": {
+    "snapshot-manifest.json": {
+      "files": 4443,
+      "pptx": 96,
+      "allHashesMatch": true
+    },
+    "canonical-manifest.json": {
+      "files": 5,
+      "pptx": 5,
+      "allHashesMatch": true
+    }
+  },
+  "protectedTotal": 4448,
+  "cleanup": "docs/v2-8e-evidence/owned-postgres-cleanup.json",
+  "noProductTestsRerunForDocumentationOnlyPropagation": true
+}
