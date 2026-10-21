@@ -1,5 +1,7 @@
 import { cloneJson } from '../../packages/tools/json.ts';
-import { searchBinding, searchRequest, normalizeWebResults, searchFailure } from '../../packages/agent/search.ts';
+import { searchFailure } from '../../packages/agent/search.ts';
+import { searchBinding, searchRequest, normalizeWebResults } from './search-sources.js';
+import { setImmediate as yieldEventLoop } from 'node:timers/promises';
 
 export function createSearxngSearchProvider(config = {}, { fetch: request = globalThis.fetch } = {}) {
   let id, endpoint, timeoutMs, maxResponseBytes, maxOutputChars;
@@ -32,8 +34,12 @@ export function createSearxngSearchProvider(config = {}, { fetch: request = glob
       } catch { return searchFailure('invalid-request'); }
       if (!bound || !query) return searchFailure('invalid-request');
       if (signal?.aborted) return searchFailure('cancelled');
-      const controller = new AbortController();
+      const controller = new AbortController(), deadline = performance.now() + timeoutMs;
       let code = 'timeout', timer, reader, onAbort;
+      const interrupted = () => {
+        if (!controller.signal.aborted && performance.now() >= deadline) controller.abort();
+        return controller.signal.aborted;
+      };
       const aborted = new Promise(resolve => {
         onAbort = () => { code = 'cancelled'; controller.abort(); resolve(searchFailure(code)); };
         signal?.addEventListener('abort', onAbort, { once: true });
@@ -46,7 +52,7 @@ export function createSearxngSearchProvider(config = {}, { fetch: request = glob
           // Only the query reaches the configured backend; project identity stays local.
           const response = await request(endpoint, { method: 'POST', redirect: 'error', signal: controller.signal,
             headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'PresentationForge/2' }, body: body.toString() });
-          if (controller.signal.aborted) { void response.body?.cancel().catch(() => {}); return searchFailure(code); }
+          if (interrupted()) { void response.body?.cancel().catch(() => {}); return searchFailure(code); }
           if (!response.ok) {
             await response.body?.cancel();
             return searchFailure([401,403].includes(response.status) ? 'search-denied' : response.status === 429 ? 'rate-limited' : 'search-unavailable');
@@ -57,22 +63,25 @@ export function createSearxngSearchProvider(config = {}, { fetch: request = glob
             await response.body?.cancel(); return searchFailure('invalid-response');
           }
           reader = response.body.getReader();
-          const chunks = []; let bytes = 0;
+          const chunks = []; let bytes = 0, chunksRead = 0;
           while (true) {
-            if (controller.signal.aborted) return searchFailure(code);
+            if (interrupted()) return searchFailure(code);
+            // Empty/immediately resolved chunks must not starve timers and caller aborts.
+            if (++chunksRead % 64 === 0) { await yieldEventLoop(); if (interrupted()) return searchFailure(code); }
             const { done, value } = await reader.read();
             if (done) break;
             bytes += value.byteLength;
             if (bytes > maxResponseBytes) { await reader.cancel(); return searchFailure('response-too-large'); }
             chunks.push(value);
           }
-          if (controller.signal.aborted) return searchFailure(code);
+          if (interrupted()) return searchFailure(code);
           const joined = new Uint8Array(bytes); let offset = 0;
           for (const chunk of chunks) { joined.set(chunk, offset); offset += chunk.byteLength; }
           let decoded;
           try { decoded = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(joined)); }
           catch { return searchFailure('invalid-response'); }
-          return normalizeWebResults(id, bound, query, decoded, { maxOutputChars });
+          const normalized = normalizeWebResults(id, bound, query, decoded, { maxOutputChars });
+          return interrupted() ? searchFailure(code) : normalized;
         } catch { return searchFailure(controller.signal.aborted ? code : 'search-unavailable'); }
         finally { reader?.releaseLock(); }
       })();

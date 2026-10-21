@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeWebResults, searchRequest, searchBinding } from '../packages/agent/search.ts';
+import { normalizeWebResults, searchRequest, searchBinding } from '../src/agent/search-sources.js';
 import { validateSourceRef } from '../packages/model/validate.ts';
 
 const binding = { projectId: 'project-safe' };
@@ -120,4 +120,14 @@ test('normalization handles malformed Unicode and excessive fields within canoni
   const result = normalize([row(undefined, 'Hello\ud800', 'world\udc00')]);
   assert.equal(result.sources[0].title, 'Hello\ufffd'); assert.equal(result.sources[0].excerpt, 'world\ufffd');
   assert.deepEqual(normalize([row(undefined, 'x'.repeat(20001))]).warnings, ['invalid-results']);
+});
+
+test('plain snippets preserve block and line-break word boundaries without splitting inline words', () => {
+  for (const [markup, expected] of [
+    ['<p>First</p><p>Second</p>', 'First Second'],
+    ['First<br>Second', 'First Second'],
+    ['<ul><li>First</li><li>Second</li></ul>', 'First Second'],
+    ['<table><tr><td>First</td><td>Second</td></tr></table>', 'First Second'],
+    ['inter<em>op</em>erability', 'interoperability'],
+  ]) assert.equal(normalize([row(undefined, undefined, markup)]).sources[0].excerpt, expected);
 });

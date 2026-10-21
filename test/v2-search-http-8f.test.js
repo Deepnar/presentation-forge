@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
+import { spawnSync } from 'node:child_process';
 import { createSearxngSearchProvider } from '../src/agent/search-provider.js';
 
 const binding = { projectId: 'private-project-id' }, query = { query: 'battery & safety', language: 'en-IN', timeRange: 'year', limit: 3 };
@@ -159,4 +160,15 @@ test('an actual partial-engine HTTP response exposes only normalized data and wa
   const result = await provider.search(binding, query); assert.equal(result.ok, true); assert.deepEqual(result.warnings, ['partial-results']);
   for (const raw of ['private-engine', 'private-diagnostic', 'untrusted private answer']) assert.ok(!JSON.stringify(result).includes(raw));
   assert.equal(result.sources[0].projectId, binding.projectId);
+});
+
+for (const cancel of [false, true]) test(`infinite empty chunks cannot starve ${cancel ? 'caller cancellation' : 'the deadline'}`, () => {
+  const code = `import {createSearxngSearchProvider} from './src/agent/search-provider.js';
+    const stream=new ReadableStream({pull(controller){controller.enqueue(new Uint8Array(0));}});
+    const provider=createSearxngSearchProvider({timeoutMs:${cancel ? 300 : 20}},{fetch:async()=>new Response(stream,{headers:{'content-type':'application/json'}})});
+    const controller=new AbortController();${cancel ? 'setTimeout(()=>controller.abort(),5);' : ''}
+    const result=await provider.search({projectId:'p'},{query:'x'},{signal:controller.signal});console.log(JSON.stringify(result));`;
+  const result = spawnSync(process.execPath, ['--input-type=module', '-e', code], { cwd: new URL('..', import.meta.url), encoding: 'utf8', timeout: 1500, killSignal: 'SIGKILL' });
+  assert.equal(result.error, undefined); assert.equal(result.signal, null); assert.equal(result.status, 0, result.stderr);
+  assert.equal(JSON.parse(result.stdout).code, cancel ? 'cancelled' : 'timeout');
 });
