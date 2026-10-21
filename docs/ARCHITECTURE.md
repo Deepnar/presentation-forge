@@ -2685,5 +2685,7 @@ The internal SearchProvider contract normalizes SearXNG web results into the exi
 project-scoped SourceRef representation, independently of model adapters. The
 bounded form-POST transport keeps host binding/configuration out of semantic query
 arguments; no model tools, routes, source store or legacy rewiring are added.
-[The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary-implementation-under-review)
-and [evaluation](V2-8F-EVAL.md) index the frozen implementation under review.
+[The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary) and
+[evaluation](V2-8F-EVAL.md) identify exact source `0cab854` and its independent
+[acceptance](reviews/V2-8F-0cab854.json). The model search-tool catalog and Assistant
+remain outside this accepted boundary.

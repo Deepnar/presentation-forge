@@ -70,6 +70,10 @@ Scoped provider turns propose canonical semantic edits; an explicit trusted host
 action queues the opaque proposal and the editor/runtime retains authority.
 [The V2-8E evaluation](V2-8E-EVAL.md) distinguishes local protocol/persistence
 evidence from live content qualification and hosted cross-request approval.
+The shared web-search provider boundary is also independently accepted: SearXNG
+results normalize to project-scoped citation sources, separately from model
+providers. [V2-8F evidence](V2-8F-EVAL.md) qualifies the bounded local protocol;
+model search-tool integration and live relevance retain their roadmap gates.
 The Assistant remains a placeholder.
 The sole work registry is [ROADMAP.md](ROADMAP.md); AI editing integration,
 native assets/imports, frontend polish and deployment operations retain their

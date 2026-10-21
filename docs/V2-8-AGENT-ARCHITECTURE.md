@@ -269,7 +269,9 @@ Exact source `c71d65e` is [independently accepted](reviews/V2-8E-c71d65e.json).
 execution and preserved limitations; future work remains only in the roadmap.
 
 
-## V2-8F shared search boundary (implementation under review)
+<a id="v2-8f-shared-search-boundary-implementation-under-review"></a>
+
+## V2-8F shared search boundary
 
 `packages/agent/search.ts` defines SearchProvider separately from ModelProvider;
 `src/agent/search-provider.js` supplies the SearXNG implementation and
@@ -309,6 +311,7 @@ before the reader lock is released on self-detected or timer-driven expiry.
 Visible block/BR boundaries remain spaces while inline word fragments stay joined. Failure messages contain no raw upstream body, endpoint or
 credentials. Snippets remain untrusted data, not instructions or HTML to render.
 
-Exact source/evidence/review are indexed in [the evaluation](V2-8F-EVAL.md) and state;
-implementation is not yet accepted. [The roadmap](ROADMAP.md#v2-8-remaining) owns
+Exact source `0cab854` is [independently accepted](reviews/V2-8F-0cab854.json).
+[The evaluation](V2-8F-EVAL.md) and state index complete validation, independent
+execution, preservation and limitations. [The roadmap](ROADMAP.md#v2-8-remaining) owns
 later tool/source/Assistant scope and the separate hosted approval-lifetime seam.

@@ -308,9 +308,11 @@ and [V2-8E evidence](docs/V2-8E-EVAL.md).
 An internal shared-search boundary normalizes SearXNG results into project-scoped
 citation sources independently of the model provider. Operator configuration stays
 outside query arguments; transport, output and cancellation limits are explicit.
-Its [contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary-implementation-under-review)
-and [pending validation](docs/V2-8F-EVAL.md) identify current qualification. Legacy
-research retains its existing entry points.
+Its independently accepted
+[contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary) and
+[evidence](docs/V2-8F-EVAL.md) identify the exact scope and limitations. Legacy
+research retains its existing entry points; model search-tool integration remains
+in the [roadmap](docs/ROADMAP.md#v2-8-remaining).
 
 A written `.pptx` proves the file parsed and nothing else. `pres.writeFile()`
 succeeds for decks with text off the canvas and invisible-on-invisible colour
