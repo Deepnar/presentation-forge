@@ -41,15 +41,15 @@
     },
     {
       "id": "postgres-contract",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required project/import contract files unexecuted in the final matrix. The new38-casePGconversation contract passed focused; it does not supply this gate. Owned service removed after savedzero."
+      "status": "passed",
+      "evidence": "docs/v2-8e-evidence/postgres-contract.json",
+      "reason": "Complete designated gate passed23/23;0fail/skip/cancel. Broader PostgreSQL inventory/other validation/review still pending."
     },
     {
       "id": "cross-process-faults",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required final-source PostgreSQL concurrency/fault files unexecuted before the human-requested stop."
+      "status": "passed",
+      "evidence": "docs/v2-8e-evidence/cross-process-faults.json",
+      "reason": "Complete designated gate passed19/19;0fail/skip/cancel. Broader PostgreSQL inventory/other validation/review still pending."
     },
     {
       "id": "production-build",
