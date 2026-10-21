@@ -1,0 +1,16 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "containerId": "6e62a7609dc0355ef8ef65fc61d87d1ebbaf6cb76dd92dd858cefb6a96d3beaa",
+  "name": "forge-v28f-validation",
+  "stopExitCode": 0,
+  "stopStdout": "6e62a7609dc0355ef8ef65fc61d87d1ebbaf6cb76dd92dd858cefb6a96d3beaa\n",
+  "stopStderr": "",
+  "preRemovalObservation": "docs/v2-8f-evidence/pre-removal-observation.json",
+  "stoppedOnlyExactOwnedId": true,
+  "observedAtUtc": "2026-10-21T18:00:10.810800+00:00",
+  "inspectExitCode": 1,
+  "inspectError": "error: no such object: 6e62a7609dc0355ef8ef65fc61d87d1ebbaf6cb76dd92dd858cefb6a96d3beaa",
+  "exactIdList": "",
+  "containerAbsent": true,
+  "port5544Closed": true
+}

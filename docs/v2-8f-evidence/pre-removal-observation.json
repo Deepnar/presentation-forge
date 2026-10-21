@@ -1,0 +1,14 @@
+{
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "reviewRecord": "docs/reviews/V2-8F-0cab854.json",
+  "containerId": "6e62a7609dc0355ef8ef65fc61d87d1ebbaf6cb76dd92dd858cefb6a96d3beaa",
+  "name": "forge-v28f-validation",
+  "observedAtUtc": "2026-10-21T18:00:09.948343+00:00",
+  "query": "SELECT count(*) FROM pg_database WHERE NOT datistemplate AND datname <> 'postgres';",
+  "exitCode": 0,
+  "stdout": "0\n",
+  "stderr": "",
+  "projectDatabaseCount": 0,
+  "fileAndParentFsyncedBeforeStop": true,
+  "exactIdentityAndLoopbackPortVerified": true
+}
