@@ -120,7 +120,7 @@ are complete. No further feature is authorized; future scope is only in the road
 
 The latest continuation authorizes only the
 [V2-8F shared search boundary](ROADMAP.md#v2-8f-shared-search-boundary), frozen at
-3e38f24 for final validation. [Evaluation](V2-8F-EVAL.md) records development
+0cab854 for final validation. [Evaluation](V2-8F-EVAL.md) records development
 corrections and pending gates. Accepted baseline remains V2-8E c71d65e. Use
 [the8F runbook](v2-8f-evidence/RUNBOOK.md) for current reproduction: its223-file
 inventory and all-current evidence/original snapshots replace no historical proof.

@@ -2,7 +2,7 @@ import datetime, hashlib, json, os, pathlib, shutil, socket, subprocess, sys, ti
 from quiet_window import Window
 
 root = pathlib.Path('docs/v2-8f-evidence')
-out = pathlib.Path('out/v2-8f-validation')
+out = pathlib.Path(os.environ.get('FORGE_VALIDATION_OUT', 'out/v2-8f-validation'))
 sha = json.loads((root / 'validation-plan.json').read_text())['implementationSha']
 subprocess.run(['git', 'merge-base', '--is-ancestor', sha, 'HEAD'], check=True)
 subprocess.run(['git', 'diff', '--quiet', sha, '--', 'packages', 'src', 'test', 'app', 'tools', 'schema', 'themes'], check=True)

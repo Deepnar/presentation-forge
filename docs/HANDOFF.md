@@ -3,12 +3,12 @@
 2026-10-21, branch v2, push origin/v2. Latest continuation authorizes the
 [V2-8F shared search boundary](ROADMAP.md#v2-8f-shared-search-boundary).
 Accepted baseline remains c71d65e (independently accepted V2-8E). New frozen
-implementation is3e38f24043bffad0a137c321aefd68a4381024ce; docs/harness commits
+implementation is0cab854bce04b862060829812a9ab6ff0b765fd9; docs/harness commits
 must retain source equality. State/[evaluation](V2-8F-EVAL.md) record pending
 final checks and independent review, not acceptance.
 
 Typed source normalization, stable citation IDs and bounded SearXNG form-POST
-transport are implemented. Expanded lightweight development checks passed80/80,
+transport are implemented. Expanded lightweight development checks passed82/82,
 with initial configuration/privacy-expectation and independent lifetime/package/word-boundary findings retained
 and classified in evidence. Typecheck/protocol pass; these development checks do
 not replace the planned final matrix. The old3untracked paths remain untouched.

@@ -15,9 +15,9 @@ canonical browser out/ originals, into a fresh output namespace before generator
 Never overwrite or rerun a completed namespace.
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 nice -n10 ionice -c2 -n7 python3 -u docs/v2-8f-evidence/prepare-full-validation.py
-PYTHONDONTWRITEBYTECODE=1 python3 docs/v2-8f-evidence/assemble-results.py
-PYTHONDONTWRITEBYTECODE=1 python3 docs/v2-8f-evidence/finish-evidence.py
+FORGE_VALIDATION_OUT=out/v2-8f-validation-final-20261021 PYTHONDONTWRITEBYTECODE=1 nice -n10 ionice -c2 -n7 python3 -u docs/v2-8f-evidence/prepare-full-validation.py
+FORGE_VALIDATION_OUT=out/v2-8f-validation-final-20261021 PYTHONDONTWRITEBYTECODE=1 python3 docs/v2-8f-evidence/assemble-results.py
+FORGE_VALIDATION_OUT=out/v2-8f-validation-final-20261021 PYTHONDONTWRITEBYTECODE=1 python3 docs/v2-8f-evidence/finish-evidence.py
 npm run dev:protocol
 ```
 

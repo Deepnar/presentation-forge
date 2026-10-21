@@ -1,0 +1,12 @@
+{
+  "implementationSha": "3e38f24043bffad0a137c321aefd68a4381024ce",
+  "phase": "Initial resource qualification only",
+  "ownedProcessId": 93382,
+  "exitCode": 143,
+  "reason": "Stop only owned preparation to complete additional independent source-review corrections before any expensive validation.",
+  "testJobsStarted": 0,
+  "testLeavesCancelled": 0,
+  "snapshotCreated": false,
+  "ownedPostgresCreated": false,
+  "resourceLog": "docs/v2-8f-evidence/development/pre-matrix-resource-window.jsonl"
+}

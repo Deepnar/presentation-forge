@@ -23,7 +23,7 @@
     "exitCode": 0,
     "log": "docs/v2-8f-evidence/development/typecheck-corrected.log"
   },
-  "finalSourceFrozen": false,
+  "finalSourceFrozen": true,
   "expandedFirst": {
     "total": 71,
     "pass": 70,
@@ -62,5 +62,26 @@
       "cancelled": 0,
       "log": "docs/v2-8f-evidence/development/final-expanded.log"
     }
+  },
+  "resourceFollowup": {
+    "previousImplementationSha": "3e38f24043bffad0a137c321aefd68a4381024ce",
+    "httpFailFirst": {
+      "total": 33,
+      "pass": 32,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0,
+      "log": "docs/v2-8f-evidence/development/reader-cleanup-fail-first.log"
+    },
+    "correction": "One fixed-size response-byte buffer; cancel aborted source before reader-lock release. No assertion or timeout relaxed.",
+    "correctedExpanded": {
+      "total": 82,
+      "pass": 82,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0,
+      "log": "docs/v2-8f-evidence/development/resource-corrected.log"
+    },
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9"
   }
 }

@@ -4,7 +4,7 @@ Accepted baseline: `c71d65e189387684aac89ca9994acf8a9ff865c1`.
 Entry checkout: `661eedc70f3c3f8a4290449303438d391fe97755`; branch `v2`, push
 `origin/v2`. The [approved contract](ROADMAP.md#v2-8f-shared-search-boundary) is the
 sole work entry. Implementation and validation are in progress; no acceptance is
-claimed. Frozen implementation: `3e38f24043bffad0a137c321aefd68a4381024ce`; later docs/harness commits have no product/test/tooling delta.
+claimed. Frozen implementation: `0cab854bce04b862060829812a9ab6ff0b765fd9`; later docs/harness commits have no product/test/tooling delta.
 
 Correctness, authorization isolation, regression, backward compatibility, native /
 browser preservation and documentation gates apply. Existing editor, storage,
@@ -71,3 +71,20 @@ while inline words remain joined. Final expanded checks passed80/80,0fail/skip/c
 across both search files, unchanged package boundary, governance and type drift;
 typecheck passed. The corrected frozen source is3e38f24. Earlier source pointers
 remain in failed-attempt evidence; they do not stand in for final validation.
+
+## Final buffering and reader-cleanup correction
+
+Read-only follow-up found empty chunks still retained individually outside the
+byte budget and cancellation occurring after reader-lock release on a self-detected
+deadline. The source now uses one fixed-size response buffer and requests reader
+cancellation before releasing its lock. A mocked monotonic-clock regression first
+passed32/33 in the HTTP file (source cancellation count0 versus expected1); the
+unchanged assertion passes after correction. A valid response after5000empty chunks
+also passes the256-byte allowance. Final expanded checks passed82/82,0fail/skip/cancel;
+typecheck passed. Corrected frozen implementation is0cab854.
+
+The initial preparation process was stopped during resource qualification after
+four samples, before any snapshot, service creation or test job. Its exit143 and
+raw samples are [retained](v2-8f-evidence/development/pre-matrix-interruption.json).
+No test leaf was cancelled and no test is credited from that wait. The final run
+uses a fresh scratch namespace, preserving the preliminary resource observations.

@@ -304,6 +304,8 @@ UTF-8 response bytes and complete serialized normalized output, with no retry.
 Cancellation/timeout fences late fetches and body reads, including non-cooperating
 injected transports. Monotonic deadline checks and periodic event-loop yielding
 prevent immediately resolved empty chunks from starving timers or caller aborts.
+Response storage uses one fixed-size byte buffer, and cancellation is requested
+before the reader lock is released on self-detected or timer-driven expiry.
 Visible block/BR boundaries remain spaces while inline word fragments stay joined. Failure messages contain no raw upstream body, endpoint or
 credentials. Snippets remain untrusted data, not instructions or HTML to render.
 

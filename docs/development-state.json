@@ -6,7 +6,7 @@
     "source": "docs/reviews/V2-8E-c71d65e.json"
   },
   "implementationHead": {
-    "sha": "3e38f24043bffad0a137c321aefd68a4381024ce",
+    "sha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
     "note": "Corrected frozen shared search boundary after source-audit findings; complete current-source regression and independent review pending."
   },
   "activeMilestone": {
