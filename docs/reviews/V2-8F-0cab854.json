@@ -1,0 +1,337 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "acceptedBaselineCompared": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "taskEntryCommit": "661eedc70f3c3f8a4290449303438d391fe97755",
+  "reviewedEvidenceCommit": "34b4b005ca2b81bf86f3cb90d2b203fb8b5d2498",
+  "independentEvidenceCommit": "f3115e210577e3195ee727ee9d9b57017d8edd5f",
+  "reviewer": "/root/v28e_independent_review",
+  "context": "/root/v28e_independent_review",
+  "implementedBy": "/root",
+  "date": "2026-10-21",
+  "evidence": "docs/reviews/V2-8F-0cab854.md",
+  "independentEvidence": "docs/v2-8f-evidence/independent/assessment.json",
+  "scope": "Approved provider-neutral typed shared web-search boundary and SearXNG Node transport/normalization only",
+  "sourceDeltaAfterImplementation": [],
+  "sourceEqualityEvidence": "docs/v2-8f-evidence/independent/source-equality.json",
+  "currentSourceExecutions": {
+    "total": 595,
+    "pass": 595,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "groups": {
+    "search-boundaries": {
+      "total": 83,
+      "pass": 83,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "accepted-domain": {
+      "total": 477,
+      "pass": 477,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "adversarial": {
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "full-7a": {
+      "total": 28,
+      "pass": 28,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "headless-native": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "allAcknowledgedLeavesIncludingStandingLocale": {
+    "total": 605,
+    "pass": 604,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "id": "byok-locale",
+    "source": "docs/ROADMAP.md#byok-locale-standing-failure",
+    "independentlyRepeated": true,
+    "evidence": "docs/v2-8f-evidence/independent/locale.log",
+    "classification": "Acknowledged inherited assertion, reported separately; not relabeled passing or included in successful primary totals"
+  },
+  "interruptedUnacknowledgedExecution": {
+    "outerExitCode": 143,
+    "atObservedUtc": "2026-10-21T17:44:24.190390+00:00",
+    "acknowledgedJobs": [
+      "search-boundaries"
+    ],
+    "unacknowledgedJob": "accepted-domain",
+    "rawLog": "docs/v2-8f-evidence/independent/interrupted-accepted-domain.log",
+    "rawSha256": "af477deb0a05960fafc7f2aeed216dd1d76998c2d0a070f078bbac724ee79020",
+    "rawReportedLeaves": 477,
+    "rawReportedPass": 477,
+    "countedAsAcknowledgedPass": false,
+    "monitorCriticalStop": false,
+    "cause": "Unresolved external termination of outer runner; no SIGTERM handler or outer completion record survived. Child raw output completed, without acknowledged outer exit. Rerun required.",
+    "noJobsAliveAtDiagnosis": true,
+    "acknowledgedRerun": {
+      "exitCode": 0,
+      "tests": {
+        "total": 477,
+        "pass": 477,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    "remainingIncompleteCasesAfterRerun": 0
+  },
+  "commands": {
+    "production-build": {
+      "exitCode": 0,
+      "durationSeconds": 0.515422
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "durationSeconds": 1.316119
+    },
+    "benchmark-50": {
+      "exitCode": 0,
+      "durationSeconds": 0.565319
+    },
+    "browser-native": {
+      "exitCode": 0,
+      "durationSeconds": 2.518278
+    },
+    "search-timing": {
+      "exitCode": 0,
+      "durationSeconds": 0.666603
+    },
+    "protocol": {
+      "command": "npm run dev:protocol",
+      "exitCode": 0,
+      "log": "docs/v2-8f-evidence/independent/protocol.log"
+    }
+  },
+  "benchmark": {
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "cells": 50,
+    "compilerAndZipMs": 409,
+    "recordedDocumentationHead": "34b4b00",
+    "allCellResultsMatchPacket": true,
+    "allInvarianceAndCounterfactualsMatchPacket": true,
+    "invariance": {
+      "research-defense": {
+        "agree": true
+      },
+      "source-of-truth-project": {
+        "agree": true
+      },
+      "technical-explainer": {
+        "agree": true
+      },
+      "decision-recommendation": {
+        "agree": true
+      },
+      "data-heavy-analytical": {
+        "agree": true
+      }
+    },
+    "raster": "none; visuals supplied separately",
+    "comparisonMetadataExcluded": [
+      "commit",
+      "generatedAt",
+      "ms"
+    ],
+    "auditNote": "Initial comparison also compared elapsed ms and rejected the expected409-vs495 difference. Result cell/invariance/counterfactual assertions were unchanged; only run metadata excluded."
+  },
+  "executionOverlap": {
+    "inventoryFiles": 29,
+    "inventoryLeaves": 588,
+    "packetNativeSupplement": 4,
+    "additionalReviewerProbes": 3,
+    "allReexecutionsOfPacketPrimaryCases": 592,
+    "notAddedToPacketDistinctTotal": true
+  },
+  "inspectedImplementerEvidence": {
+    "files": 223,
+    "inventoryLeaves": 2782,
+    "nativeSupplement": 4,
+    "primaryDistinct": 2786,
+    "fullMatrixIndependentlyDuplicated": false,
+    "notIndependentlyReexecuted": {
+      "files": 194,
+      "leaves": 2194
+    },
+    "focusedRepeatsExcluded": 48,
+    "rawJobsAudited": 44,
+    "images": 115,
+    "originalArchiveHashes": 13,
+    "primaryPass": 2786,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "unexecuted": 0,
+    "all44RawLogsMatchDurablePacketBytes": true
+  },
+  "searchTiming": {
+    "requests": 30,
+    "testLeafCount": 0,
+    "localTiming": {
+      "1": {
+        "samples": 10,
+        "minMs": 1.1823459999999955,
+        "medianMs": 1.4769900000000007,
+        "maxMs": 19.490488
+      },
+      "20": {
+        "samples": 10,
+        "minMs": 1.837192999999985,
+        "medianMs": 2.6473510000000147,
+        "maxMs": 3.416999000000004
+      },
+      "1000": {
+        "samples": 10,
+        "minMs": 28.707602000000065,
+        "medianMs": 36.940886999999975,
+        "maxMs": 77.272741
+      }
+    },
+    "limitation": "Local sequential samples, not live SearXNG relevance/provider quality or production percentiles; retrieval metadata excluded from citation identity."
+  },
+  "visuals": {
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "packetImagesInspected": 115,
+    "packetContactSheetsOpened": 20,
+    "freshImagesInspected": 54,
+    "freshBrowser": 11,
+    "freshNative": 27,
+    "freshSvg": 16,
+    "freshContactSheetsOpened": 10,
+    "additionalOriginalResolutionNativeDetailOpened": true,
+    "fullSizeRiskCasesInspected": true,
+    "allManifestHashesVerified": true,
+    "maximumFreshCanvasDeltaPx": 0.029327392578125,
+    "largeDeck": {
+      "project": "p-fbb4d6075a4c27c64fb349da",
+      "slides": 120,
+      "thumbs": 120,
+      "openMs": 1542
+    },
+    "noNewForegroundClippingOrOverlap": true,
+    "inheritedNarrowCanvasAndSvgStyleLimitsVisible": true,
+    "interactivePowerPointExecuted": false,
+    "retainedBrowserArchivesIndependentlyRerenderedNotRegenerated": 3
+  },
+  "preservation": {
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "atUtc": "2026-10-21T17:56:23.999961+00:00",
+    "snapshots": {
+      "backup": {
+        "restored": 4918,
+        "pptx": 119,
+        "changedBeforeRestoration": 14,
+        "allHashesMatch": true
+      },
+      "canonical": {
+        "restored": 5,
+        "pptx": 5,
+        "changedBeforeRestoration": 2,
+        "allHashesMatch": true
+      }
+    },
+    "preservedFreshBrowserCaptures": 11,
+    "preservedFreshMeasurements": 3,
+    "freshHeadlessOriginalArchives": 8,
+    "freshShellOriginalArchives": 2,
+    "archiveBytesReconstructed": false,
+    "serviceStopped": false
+  },
+  "finalIntegrityEvidence": "docs/v2-8f-evidence/independent/final-integrity.json",
+  "resourceAssessment": {
+    "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "samples": 60,
+    "withheldPreJob": 7,
+    "runningSamples": 12,
+    "criticalRunningSamples": 0,
+    "thresholdsChanged": false,
+    "qualifier": "sustained-window.json",
+    "provenance": "Global PSI/iowait remains unresolved; no causal attribution or production percentile claim."
+  },
+  "ownedPostgres": {
+    "id": "6e62a7609dc0355ef8ef65fc61d87d1ebbaf6cb76dd92dd858cefb6a96d3beaa",
+    "name": "forge-v28f-validation",
+    "runningAtCompletion": true,
+    "stoppedByReviewer": false,
+    "cleanupOwner": "/root; save/fsync fresh actual database count then remove exact owned service"
+  },
+  "nativeArchiveAudit": {
+    "archives": 16,
+    "geometryStylesWorkbookAndUnrelatedSlideVerified": true
+  },
+  "inheritedNativeIdentityFinding": {
+    "ids": [
+      "1",
+      "2",
+      "3",
+      "2"
+    ],
+    "duplicateId": "2",
+    "names": [
+      "Text 0",
+      "Table 0"
+    ],
+    "accepted8dWitness": {
+      "archive": "docs/v2-8d-evidence/native/sqlite-openai-compatible/before.pptx",
+      "sha256": "17148c07acfc2996588a6e8cc351423d2127f81849cc0cb980528084a55bbf2b",
+      "ids": [
+        "1",
+        "2",
+        "3",
+        "2"
+      ]
+    },
+    "current8fBeforeAndAfter": true,
+    "introducedByThisSlice": false,
+    "evidence": "docs/v2-8f-evidence/independent/native-audit.json",
+    "roadmap": "docs/ROADMAP.md#native-pptx-shape-id-uniqueness",
+    "interactiveConsumerBehavior": "unexecuted; raster success does not establish identity/editing behavior"
+  },
+  "blockingFindings": [],
+  "independentPlannedJobsUnexecuted": 0,
+  "residuals": [
+    "Separate locale probe retains9pass/1standingfail. No skipped,cancelled or unexecuted required final job is waived.",
+    "One outer runner ended143 without acknowledged completion; its477-leaf raw report is retained/excluded and all477cases were subsequently acknowledged passing. Cause unresolved; no resource-pressure attribution.",
+    "Inherited nonvisual shape-ID collisions remain; interactive Microsoft PowerPoint consumer behavior is unexecuted.",
+    "Known Fit/narrow toolbar/inspector occlusion,C1transition,C2pending-search/loading and mixed-runSVG/native-chart differences remain.",
+    "GlobalPSI/iowait provenance is unresolved; local timings are not production percentiles.",
+    "Historical missing-original/reboot-lost service-count provenance limitations remain; actual archive bytes were preserved, not reconstructed.",
+    "Live SearXNG relevance,Auto content quality,hosted deployment,legacy rewiring,model search-tool/catalog,Assistant and interactive PowerPoint are outside this contract and unexecuted.",
+    "Older model-provider stream resource concern remains a source-level roadmap follow-up; no executed model-transport failure or correction is claimed here.",
+    "Owned test service remains alive for root fresh count/fsync/exact cleanup."
+  ],
+  "implementationTestsStateRoadmapEdited": false,
+  "originalUntrackedPreserved": true,
+  "heavySlotReleased": true,
+  "parentV28MarkedComplete": false,
+  "nextFeatureAuthorized": false
+}
