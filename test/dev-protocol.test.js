@@ -287,3 +287,16 @@ test('bounded conversation requires both storage backends and boundary cases', t
   writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-conversation-postgres-8e.test.js"\n', ''));
   hasError(f.check(), /complete required scope/);
 });
+
+
+test('shared search requires normalization and complete HTTP transport evidence', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8f-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8f-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8f-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8F'; hasError(f.check(), /inventory.*contract/);
+  f.state.validation[0].id = 'search-provider'; assert.deepEqual(f.check().errors, []);
+  f.evidence(); assert.deepEqual(f.check().errors, []);
+  const log = path.join(f.dir, 'docs/output.tap');
+  writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-search-http-8f.test.js"\n', ''));
+  hasError(f.check(), /complete required scope/);
+});

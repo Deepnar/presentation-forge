@@ -138,7 +138,8 @@
               "durable-runtime",
               "model-provider",
               "provider-run",
-              "tool-conversation"
+              "tool-conversation",
+              "search-provider"
             ]
           },
           "status": {

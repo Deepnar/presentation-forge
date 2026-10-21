@@ -16,13 +16,18 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
-  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
   'postgres-contract': 'tests', 'cross-process-faults': 'tests',
   'production-build': 'command', typecheck: 'command',
   'benchmark-50': 'benchmark', 'frontend-visual': 'visual',
 };
 
 const MILESTONES = {
+  'V2-8F': {
+    plan: 'docs/v2-8f-evidence/validation-plan.json',
+    focused: 'search-provider',
+    files: ['test/v2-search-8f.test.js', 'test/v2-search-http-8f.test.js'],
+  },
   'V2-8E': {
     plan: 'docs/v2-8e-evidence/validation-plan.json',
     focused: 'tool-conversation',
