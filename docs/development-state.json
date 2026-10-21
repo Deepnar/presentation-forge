@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8 conversational orchestration, Assistant and shared search",
-    "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
+    "id": "V2-8F shared Forge Search boundary",
+    "authorized": true,
+    "roadmapRef": "docs/ROADMAP.md#v2-8f-shared-search-boundary"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

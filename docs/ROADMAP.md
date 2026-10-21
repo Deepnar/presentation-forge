@@ -8749,6 +8749,60 @@ needs direction on scope before building.*
   > or durable transcript; explicit queued plans retain existing recovery. The
   > hosted user-turn/approval lifetime seam remains in the parent scope below.
 
+<a id="v2-8f-shared-search-boundary"></a>
+
+- [ ] **V2-8F shared Forge Search boundary — approved implementation in progress.**
+  The 2026-10-21 instruction to continue with the next immediate item, together
+  with standing authorization to use recommended choices, selects the already
+  specified shared-search dependency before Assistant integration. Accepted
+  baseline `c71d65e189387684aac89ca9994acf8a9ff865c1`; entry checkout
+  `661eedc70f3c3f8a4290449303438d391fe97755`, branch `v2`, push `origin/v2`.
+
+  **Bounded contract:** introduce a typed provider-neutral web-search boundary and
+  a SearXNG HTTP adapter. Trusted host binding supplies the project identity and
+  operator configuration; the query cannot select endpoints, credentials, owner
+  grants or layout. Strict schema-backed requests constrain query, result count,
+  host diversity, language and time range. Normalize ranked web results into the
+  existing SourceRef contract, with project-scoped content-derived IDs: unchanged
+  citation content keeps its identity across retrievals; changed content mints an
+  ID. Return bounded plain-text title/excerpt and HTTP(S) citation URLs, removing
+  credentials and executable markup. Duplicate URLs and per-host selection are
+  deterministic. Surface discarded malformed rows and partial upstream results.
+
+  The HTTP operation bounds headers/body time, bytes and normalized output, honors
+  cancellation before dispatch and throughout body reading, rejects redirects and
+  never retries automatically. Failures contain stable sanitized codes, never raw
+  response bodies or operator endpoint details. Model providers do not own search;
+  local fixture requests exercise the real SearXNG protocol. Existing legacy
+  search/research behavior remains supported without automatic rewiring.
+
+  **Look-ahead:** later web_search tool integration consumes this boundary through
+  canonical scoped authority; paper_search/project_search retain separate adapters
+  and source kinds. Shared SourceRef identity supports later source persistence,
+  citations and file intelligence without a second document. Hosted user-turn /
+  approval lifetime remains the separate seam in the parent scope. No vendor
+  search, framework replacement or provider-specific result shape enters context.
+
+  **Non-goals:** no Assistant/UI, public route, model-tool catalog expansion,
+  automatic live research, page fetching, source/transcript persistence, owner or
+  data-policy change, credentials setup, new infrastructure/deployment, academic /
+  project search adapters, or accepted layout/native-renderer corrections. Live
+  SearXNG availability and hosted Auto quality remain distinct from protocol tests.
+
+  **Acceptance/evidence:** strict input/result and identity tests; real local HTTP
+  success/error/redirect/malformed/partial/oversize/stalled-body/cancellation and
+  non-cooperating transport cases; immutable configuration and no raw leakage.
+  Retain the complete accepted 221-file inventory plus two focused search files:
+  189 bulk, 26 bounded serial browser/build owners and 8 PostgreSQL files. Execute
+  build/typecheck/all 50 benchmark cells and inspect current browser/native
+  regression evidence. Preserve all-current evidence/originals before generators,
+  wait for measured sustained headroom, and isolate an explicitly owned PostgreSQL
+  service. Missing PostgreSQL is unexecuted. Keep locale and inherited visual /
+  native identity / provenance limitations separate. Exact commands/totals/source,
+  failed attempts, corrections and performance belong in [the evaluation](V2-8F-EVAL.md).
+  Require one separate high-effort exact-source ACCEPT/HOLD; stop after this slice's
+  review, cleanup and handoff. Do not advance the parent or a dependent feature.
+
 <a id="v2-8-remaining"></a>
 
 The accepted foundation supplies real scoped content tools, schemas, instruction

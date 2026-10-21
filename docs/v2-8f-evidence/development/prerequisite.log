@@ -1,0 +1,35 @@
+✔ openai-compatible: canonical read result reaches the next real HTTP exchange (51.016841ms)
+✔ anthropic: canonical read result reaches the next real HTTP exchange (10.627066ms)
+✔ conversation rejects zero exchange allowance before storage or HTTP (0.38493ms)
+✔ conversation rejects excessive exchange allowance before storage or HTTP (0.198506ms)
+✔ conversation rejects invalid tool allowance before storage or HTTP (0.191391ms)
+✔ conversation rejects fractional output allowance before storage or HTTP (0.175209ms)
+✔ conversation rejects unknown authority metadata before storage or HTTP (0.169106ms)
+✔ conversation rejects untrusted message history before storage or HTTP (0.161316ms)
+✔ conversation rejects layout inside a read before storage or HTTP (0.176708ms)
+✔ conversation refuses nested live accessors without invoking them (0.25375ms)
+✔ deadline returns while initial storage is pending and late storage cannot issue HTTP (251.173425ms)
+✔ the single 120s timer starts before the first storage await (0.74087ms)
+✔ failed provider usage remains unknown and returned trace cannot change after late completion (1.493152ms)
+✔ binding, nested scope and limits are copied before the first asynchronous boundary (1.25071ms)
+✔ openai-compatible: history validates semantic results and actual wire budget (4.128777ms)
+✔ anthropic: history validates semantic results and actual wire budget (4.832154ms)
+✔ conversation scope and initial reads keep the accepted canonical contract (2.897299ms)
+▶ v2 sourceref
+  ✔ accepts a minimal project source (25.306877ms)
+  ✔ accepts all supported kinds (0.229106ms)
+  ✔ rejects invalid kinds and missing projectId (0.159724ms)
+  ✔ accepts a web source with URL (0.120216ms)
+  ✔ accepts a paper source with DOI (0.101269ms)
+  ✔ accepts a project-file source with fileId and locator (0.102606ms)
+  ✔ accepts searchProvider as an opaque string without enumerating vendors (0.122305ms)
+  ✔ rejects unknown fields (0.198217ms)
+✔ v2 sourceref (27.24665ms)
+ℹ tests 25
+ℹ suites 1
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 554.065388
