@@ -1,0 +1,17 @@
+{
+  "id": "f9cf7b71e1dabc410944a90d81e9b30d4d42de1ab6a0dd47ae230fbac134b8c9",
+  "name": "forge-v28e-resumed-20261021",
+  "port": 5544,
+  "createdAtUtc": "2026-10-21T11:07:05.810812793Z",
+  "image": "postgres:15-alpine",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "autoRemove": true,
+  "cpus": 1.0,
+  "memoryBytes": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=192m"
+  },
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "purpose": "Owned isolated resumed V2-8E validation/review; original service already removed.",
+  "version": "15.18"
+}

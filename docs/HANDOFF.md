@@ -7,6 +7,11 @@ approved slice. Exec session7232 runs `resume-validation.py`, with execution log
 continuing. The old stopped-session facts below are historical; its service was
 removed. The new harness qualifies180seconds, creates/records its own service,
 snapshots ALL current evidence/originals and merges hash-verified saved outputs.
+The fresh4183-file/83-PPTX and5canonical-out snapshot is verified;25complete
+records and38saved images are retained. The resumed owned PostgreSQL15.18 service
+is `f9cf7b71e1dabc410944a90d81e9b30d4d42de1ab6a0dd47ae230fbac134b8c9`,
+`forge-v28e-resumed-20261021`,127.0.0.1:5544,1CPU/512MiB/192MiBtmpfs. Keep it for
+validation/review; save/fsync its actual database count before exact cleanup.
 Root owns the exclusive heavy slot. One new high-effort reviewer context
 `/root/v28e_independent_review` performs a read-only source audit with0tests/0edits;
 independent execution is not released. The old reviewer context did not survive

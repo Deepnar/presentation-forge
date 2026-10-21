@@ -1,0 +1,17 @@
+{
+  "implementationSha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
+  "atUtc": "2026-10-21T11:07:08.740786+00:00",
+  "output": "out/v2-8e-validation-resumed-2026-10-21",
+  "ownedPostgres": "docs/v2-8e-evidence/owned-postgres-resumed-2026-10-21.json",
+  "retainedCompleteJobs": 25,
+  "retainedSource": "docs/v2-8e-evidence/paused-2026-10-21/logs/coordinator.json",
+  "retainedLogHashesVerified": true,
+  "snapshotFiles": 4183,
+  "snapshotOriginalPptx": 83,
+  "canonicalOriginalsPreserved": 5,
+  "retainedFreshImages": 38,
+  "actualPausedBrowserOriginalsRestoredForInspection": 5,
+  "noArchiveReconstruction": true,
+  "sourceDelta": "None in product/test/tools/schema/themes/app",
+  "method": "Fresh sustained qualification and full current-evidence snapshot; retain complete exact-source execution, merge saved fresh captures/originals, execute every remaining job serially."
+}
