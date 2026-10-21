@@ -93,10 +93,10 @@ provenance limits remain. Do not rerun finish-evidence.py against restored canon
 out/ originals. Next-candidate status remains unauthorized; stop after this closeout,
 and keep all future work in the roadmap.
 
-The new continuation authorizes only
-[V2-8E bounded tool-conversation preparation](ROADMAP.md#v2-8e-bounded-tool-conversation).
-State/[evaluation](V2-8E-EVAL.md) index frozen source c71d65e and complete final-source
-validation, with independent acceptance pending. After the human resumed, the
+[V2-8E bounded tool-conversation preparation](ROADMAP.md#v2-8e-bounded-tool-conversation)
+is independently accepted at c71d65e in the
+[exact-source decision](reviews/V2-8E-c71d65e.json).
+State/[evaluation](V2-8E-EVAL.md) index complete final-source validation and acceptance. After the human resumed, the
 221-file matrix passed2733/2733 plus4distinct persisted/native scenarios,110separate
 repeats, build/type/50cells and115inspected images. Locale remains9pass/1fail separately.
 The paused4067-file and resumed4183-file evidence snapshots and5canonical originals
@@ -105,14 +105,18 @@ from newly produced headless originals. Historical paused results are retained i
 the [assessment](v2-8e-evidence/paused-2026-10-21/assessment.json); their old unexecuted
 status is resolved by the later complete packet, not erased.
 
-The old service was removed after savedzero; the resumed owned service is indexed
-in owned-postgres-resumed-2026-10-21.json and remains for review. Read actual current
-handoff/process state before acting. The new high-effort reviewer source audit ran
-0tests/0edits and issued no acceptance; independent execution requires its own full
-snapshot, fresh headroom and explicit exclusive-slot release. Prior8Dacceptance
-remains the baseline. [The runbook](v2-8e-evidence/RUNBOOK.md) defines reproduction;
-never rerun finish-evidence.py against restored canonical originals. Complete only
-independent review, exact owned cleanup and handoff; no further feature is authorized.
+The independent reviewer executed504/504successful checks plus the separate
+9pass/1standing locale failure, inspected115packet/54fresh images and verified
+16native archives. Its498packet repeats and6new probes are not added to2737.
+All4443evidence files/96PPTXs plus5canonical originals were restored/hash-verified;
+10fresh original PPTXs were preserved. The inherited
+[native shape-ID issue](ROADMAP.md#native-pptx-shape-id-uniqueness) remains explicit.
+The resumed owned service was removed after its fresh saved/fsynced actual0-project-
+database observation; exact absence/5544closure are proved in
+[cleanup evidence](v2-8e-evidence/owned-postgres-cleanup.json).
+[The runbook](v2-8e-evidence/RUNBOOK.md) defines fresh reproduction; never rerun
+finish-evidence.py against restored canonical originals. Acceptance and cleanup
+are complete. No further feature is authorized; future scope is only in the roadmap.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
@@ -133,12 +137,12 @@ node --test test/v2-projects-6c-concurrency.test.js
 node --test test/v2-projects-6c-faults.test.js
 node_modules/.bin/vite build --config app/web/vite.config.js
 npm run typecheck
-node tools/v2-benchmark.mjs --out out/v2-8d-benchmark --raster none
+node tools/v2-benchmark.mjs --out out/v2-8e-benchmark --raster none
 ```
 
 Use a process-group watchdog for each browser file and run browser files strictly
 serially; each may rebuild shared dist. Bulk inventory and exact bounded runner
-commands are in [the provider-boundary validation runbook](v2-8c-evidence/RUNBOOK.md) and its linked
+commands are in [the current validation runbook](v2-8e-evidence/RUNBOOK.md) and its linked
 `validation-plan.json`. Do not run plain npm test
 concurrently with browser/build validation. The benchmark must report all 50
 cells, not merely the 12 benchmark assertion tests. Render/preview and inspect

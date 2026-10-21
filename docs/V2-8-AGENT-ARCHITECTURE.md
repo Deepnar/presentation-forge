@@ -233,7 +233,7 @@ or conversational runtime claim is made. Exact source8c1e5c4 is independently
 index validation/review; later scope lives in the roadmap.
 
 
-## V2-8E bounded tool-conversation preparation (implementation under review)
+## V2-8E bounded tool-conversation preparation
 
 The existing provider runner now offers `converse` beside unchanged single-exchange
 `prepare`. Its generated request reuses the accepted scope/read contract and adds
@@ -264,5 +264,6 @@ execution/recovery. No durable transcript, new schema/table, public route, UI or
 provider-default/configuration change is introduced. Conversations/proposals are
 host-instance ephemeral; queued runs retain accepted durability. This is not the
 hosted cross-request approval contract or live provider/content qualification.
-[Evaluation](V2-8E-EVAL.md) and state identify complete validation and pending
-independent review; future work remains only in the roadmap.
+Exact source `c71d65e` is [independently accepted](reviews/V2-8E-c71d65e.json).
+[Evaluation](V2-8E-EVAL.md) and state index complete validation, independent
+execution and preserved limitations; future work remains only in the roadmap.

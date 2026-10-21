@@ -285,8 +285,8 @@ through OpenAI-compatible Chat Completions and Anthropic Messages. They use expl
 capabilities and injected credentials, validate semantic proposals and leave editing
 authority with the canonical tools. [The accepted exchange contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8c-provider-exchange-boundary)
 and [evidence](docs/V2-8C-EVAL.md) distinguish local protocol fixtures from live
-provider qualification. Conversational integration and the Assistant remain in the
-[roadmap](docs/ROADMAP.md#v2-8-remaining).
+provider qualification. Hosted conversational integration and the Assistant remain
+in the [roadmap](docs/ROADMAP.md#v2-8-remaining).
 
 Trusted host callers can now prepare a single scoped provider turn against an exact
 saved project revision and explicitly queue its opaque edit proposal through the
@@ -296,6 +296,14 @@ A proposal belongs to one host instance; queued runs retain durable recovery. Se
 the [preparation contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8d-provider-backed-run-preparation)
 and [independent validation](docs/V2-8D-EVAL.md). This internal boundary adds no new
 public route, credential setup or Assistant interface.
+
+The same runner also supports bounded `converse` invocations: canonical scoped
+reads return correlated semantic results to subsequent exchanges until text,
+refusal or one atomic edit proposal. Explicit enqueue retains the same authority;
+history and proposals remain ephemeral to one host instance. Exchange/tool/output
+budgets and cancellation bound the whole invocation. See the independently accepted
+[conversation contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8e-bounded-tool-conversation-preparation)
+and [V2-8E evidence](docs/V2-8E-EVAL.md).
 
 A written `.pptx` proves the file parsed and nothing else. `pres.writeFile()`
 succeeds for decks with text off the canvas and invisible-on-invisible colour

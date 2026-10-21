@@ -8070,6 +8070,22 @@ unexplained beyond its observed wrong Delete action; controlled evidence is dist
   against real native rasters without flattening styles. This is separate renderer
   scope, not a V2-8A tool rewrite or an implicit feature authorization.
 
+<a id="native-pptx-shape-id-uniqueness"></a>
+
+- [ ] Audit and correct native PPTX nonvisual shape-ID collisions. Independent
+  V2-8E review found slide 1 IDs `[1,2,3,2]`, with Text 0 and Table 0 sharing ID 2,
+  in both accepted V2-8D and current V2-8E originals. The collision predates the
+  conversation slice; successful rasters do not establish interactive PowerPoint
+  identity or load behavior. Preserve scene geometry, styles, relationships and
+  editable content while making IDs unique within their required scope. Agree a
+  bounded correction contract, cover mixed native objects with an OOXML uniqueness
+  regression and inspect actual exports; record interactive PowerPoint checks as
+  unexecuted when unavailable. This is separate native-renderer work, with no
+  implementation authorized by V2-8E acceptance.
+  [Exact archive/XML evidence](v2-8e-evidence/independent/native-audit.json),
+  [independent finding](reviews/V2-8E-c71d65e.md),
+  [Open XML identifier reference](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.presentation.nonvisualdrawingproperties.id?view=openxml-3.0.1).
+
 - [ ] Remaining slide-management direction — explicit relayout/reset policy
   beyond the accepted V2-5I insert/duplicate/delete/reorder/multiselect/detach
   surface. Agree preservation rules before implementation; persistence is already
@@ -8622,7 +8638,7 @@ needs direction on scope before building.*
 
 <a id="v2-8e-bounded-tool-conversation"></a>
 
-- [ ] **V2-8E bounded tool-conversation preparation — validated; independent review pending.**
+- [x] **V2-8E bounded tool-conversation preparation — independently accepted, 2026-10-21.**
   Accepted baseline `8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`; entry checkout
   `15e357c93bf301fd61867dd10e06a8921286568f`, branch `v2`, push `origin/v2`.
   The new instruction to start the next immediate work, with the standing direction
@@ -8713,10 +8729,25 @@ needs direction on scope before building.*
   4distinct persisted/native conversation scenarios (2737primary distinct).
   Focused93 and resumption17 are separate repeats. Build/type/actual50cells and
   inspection of115hashed images passed; the separate locale probe remains9pass/1fail.
-  All9evidence gates passed with0required implementer cases unexecuted. Current
-  service remains for independent review; its cleanup is still required. The
-  accepted baseline remains8Duntil a separate exact-source decision. See evaluation
-  for resource qualification, actual retained/resumed provenance and limitations.
+  All9evidence gates passed with0required implementer cases unexecuted. The separate
+  reviewer [accepted exact c71d65e](reviews/V2-8E-c71d65e.json), executing504/504
+  successful checks and separately9pass/1standing locale failure. Its498packet
+  repeats and6additional probes are not added to2737distinct primary cases.
+  Build/type/50cells,115packet images and54fresh images were independently checked.
+  All4443evidence files/96PPTXs plus5canonical originals were restored/hash-verified;
+  10fresh original archives were preserved. The owned service was removed after a
+  saved/fsynced actual0-project-database count; exact absence/5544closure verified.
+  [Evaluation](V2-8E-EVAL.md) retains resource, provenance and residual limits,
+  including the inherited [native shape-ID collision](#native-pptx-shape-id-uniqueness).
+  Parent V2-8 remains incomplete; no further feature is authorized by this decision.
+
+  > **Learned.** Conversation budgets must include serialized protocol wrappers and
+  > accumulated read results; reserving requested output and recording known usage
+  > are separate obligations. Immutable trace metadata must be attached before the
+  > exact opaque proposal is frozen/registered. This bounded host-instance loop
+  > supplies the next orchestration primitive without inventing another document
+  > or durable transcript; explicit queued plans retain existing recovery. The
+  > hosted user-turn/approval lifetime seam remains in the parent scope below.
 
 <a id="v2-8-remaining"></a>
 
@@ -8726,11 +8757,12 @@ V2-8C independently accepts bounded Chat Completions/Anthropic Messages exchange
 explicit capability profiles and canonical proposal validation. Local HTTP fixtures
 prove both protocols and persisted edits, not live model quality. V2-8D independently
 accepts scoped single-turn preparation, atomic preflight and explicit opaque-proposal
-queueing through the existing durable core. Its host-instance lifetime seam remains
-explicit above. The remaining parent milestone connects these primitives to bounded
-conversational execution,
-qualifies live providers and integrates the visible Assistant and common
-search/source orchestration; its full done-when gate is still pending. Any later
+queueing through the existing durable core. V2-8E independently accepts bounded
+host-instance tool conversations with correlated semantic read rounds and explicit
+proposal enqueue. Its ephemeral history/approval lifetime seam remains explicit
+above. The remaining parent milestone defines hosted user-turn and cross-request
+approval ownership, qualifies live providers and integrates the visible Assistant
+and common search/source orchestration; its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing
 resolved layout as model input.
 

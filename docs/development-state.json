@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c",
+    "sha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8D-8c1e5c4.json"
+    "source": "docs/reviews/V2-8E-c71d65e.json"
   },
   "implementationHead": {
     "sha": "c71d65e189387684aac89ca9994acf8a9ff865c1",
-    "note": "Frozen bounded tool-conversation implementation. Complete final-source validation and inspected evidence passed across retained/resumed execution. Independent exact-source acceptance remains pending."
+    "note": "Frozen bounded tool-conversation implementation independently accepted on 2026-10-21; later commits retain evidence and propagate acceptance without product-source changes."
   },
   "activeMilestone": {
     "id": "V2-8E",
@@ -15,65 +15,65 @@
     "evalDoc": "docs/V2-8E-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8E-c71d65e.json",
+    "accepted": true
   },
   "validation": [
     {
       "id": "tool-conversation",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/tool-conversation.json",
-      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence; 0 unexpected failures, skips or cancellations. Exact-source independent ACCEPT recorded separately."
     },
     {
       "id": "non-browser-bulk",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/non-browser-bulk.json",
-      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence; 0 unexpected failures, skips or cancellations. Exact-source independent ACCEPT recorded separately."
     },
     {
       "id": "serial-browser",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/serial-browser.json",
-      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence; 0 unexpected failures, skips or cancellations. Exact-source independent ACCEPT recorded separately."
     },
     {
       "id": "postgres-contract",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/postgres-contract.json",
-      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence; 0 unexpected failures, skips or cancellations. Exact-source independent ACCEPT recorded separately."
     },
     {
       "id": "cross-process-faults",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/cross-process-faults.json",
-      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence; 0 unexpected failures, skips or cancellations. Exact-source independent ACCEPT recorded separately."
     },
     {
       "id": "production-build",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/production-build.json",
-      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence; 0 unexpected failures, skips or cancellations. Exact-source independent ACCEPT recorded separately."
     },
     {
       "id": "typecheck",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/typecheck.json",
-      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence; 0 unexpected failures, skips or cancellations. Exact-source independent ACCEPT recorded separately."
     },
     {
       "id": "benchmark-50",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/benchmark-50.json",
-      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence; 0 unexpected failures, skips or cancellations. Exact-source independent ACCEPT recorded separately."
     },
     {
       "id": "frontend-visual",
       "status": "passed",
       "evidence": "docs/v2-8e-evidence/frontend-visual.json",
-      "reason": "Complete required frozen-source gate passed with retained/current-source evidence;0unexpectedfail/skip/cancel. Independent acceptance pending."
+      "reason": "Complete required frozen-source gate passed with retained/current-source evidence; 0 unexpected failures, skips or cancellations. Exact-source independent ACCEPT recorded separately."
     }
   ],
   "knownBlockers": [],

@@ -48,8 +48,9 @@ templates are editable scene skeletons, separate from AI composition families.
 Preserve human modifications, ownership flags, tombstones and detached scenes
 during regeneration. Human and future agent changes share validated commands,
 stale-revision checks and history. The headless durable run core, bounded provider
-exchanges and explicit provider-backed preparation/queue boundary are independently
-accepted. Conversational execution, live-provider qualification and Assistant
+exchanges, explicit provider-backed preparation/queue boundary and bounded
+host-instance tool conversations are independently accepted. Hosted user-turn and
+cross-request approval ownership, live-provider qualification and Assistant
 integration remain in the
 [roadmap](docs/ROADMAP.md#v2-8-remaining). Resolve exact accepted
 scope through development-state.json and its independent review record.

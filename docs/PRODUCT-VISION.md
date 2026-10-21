@@ -64,10 +64,12 @@ merging documents or importing on reads. C3 separates standalone developer
 controls/diagnostics from normal saved-project editing; its current validation
 and independent-review state are indexed in development-state.json.
 The headless tool/context foundation, durable run core, bounded provider exchanges
-and explicit preparation/queue boundary are independently accepted. Scoped provider
-turns propose canonical semantic edits; an explicit trusted host action queues the
-opaque proposal and the editor/runtime retains authority. [The V2-8D evaluation](V2-8D-EVAL.md)
-distinguishes local protocol/persistence evidence from live content qualification.
+and explicit preparation/queue boundary are independently accepted, including
+bounded host-instance tool conversations with correlated semantic read rounds.
+Scoped provider turns propose canonical semantic edits; an explicit trusted host
+action queues the opaque proposal and the editor/runtime retains authority.
+[The V2-8E evaluation](V2-8E-EVAL.md) distinguishes local protocol/persistence
+evidence from live content qualification and hosted cross-request approval.
 The Assistant remains a placeholder.
 The sole work registry is [ROADMAP.md](ROADMAP.md); AI editing integration,
 native assets/imports, frontend polish and deployment operations retain their

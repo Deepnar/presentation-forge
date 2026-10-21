@@ -238,6 +238,13 @@ readiness-placeholder skip remains archived with unknown original cause; complet
 34-case rerun and independent execution passed. Remaining live qualification and
 hosted proposal-lifetime scope stay in the [roadmap](ROADMAP.md#v2-8-remaining).
 
+V2-8E bounded tool-conversation preparation is independently accepted atc71d65e;
+[evaluation](V2-8E-EVAL.md) and [decision](reviews/V2-8E-c71d65e.json) record complete
+required execution and no blocking finding. Exact owned-service cleanup saved/fsynced
+actual0project databases and verified removal/5544closure. The inherited native
+identity limitation and remaining parent scope stay in the
+[roadmap](ROADMAP.md#native-pptx-shape-id-uniqueness).
+
 Two are worth naming because they look like engineering and are not:
 
 - **The turn grammar's unscoped case** (options 2 and 3). The selection-scoped

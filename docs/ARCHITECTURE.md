@@ -2672,5 +2672,8 @@ The provider runner's `converse` operation reuses the accepted scoped preparatio
 explicit queue path, adding bounded read-result exchanges and metadata-only traces.
 Provider adapters translate canonical read rounds into their own message protocols;
 network work remains outside project transactions. No public surface or durable
-conversation store is added. [The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8e-bounded-tool-conversation-preparation-implementation-under-review)
-and [evaluation](V2-8E-EVAL.md) identify the implementation-under-review status.
+conversation store is added. [The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8e-bounded-tool-conversation-preparation)
+and [evaluation](V2-8E-EVAL.md) identify source `c71d65e` and its independent
+[acceptance](reviews/V2-8E-c71d65e.json). Native exports preserve the inherited
+[nonvisual shape-ID limitation](ROADMAP.md#native-pptx-shape-id-uniqueness);
+interactive PowerPoint consumer behavior remains unverified.
