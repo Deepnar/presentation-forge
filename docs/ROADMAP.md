@@ -8622,7 +8622,7 @@ needs direction on scope before building.*
 
 <a id="v2-8e-bounded-tool-conversation"></a>
 
-- [ ] **V2-8E bounded tool-conversation preparation — implemented; validation paused.**
+- [ ] **V2-8E bounded tool-conversation preparation — implemented; validation resuming.**
   Accepted baseline `8c1e5c4e193340dd64ef3e68cd27bfe8ac55e23c`; entry checkout
   `15e357c93bf301fd61867dd10e06a8921286568f`, branch `v2`, push `origin/v2`.
   The new instruction to start the next immediate work, with the standing direction
@@ -8702,6 +8702,12 @@ needs direction on scope before building.*
   The old coordinator cannot blindly resume after restoration: merge saved fresh
   captures/originals or rerun affected serial generators before final assembly.
   Independent source audit found no confirmed blocker but ran0tests/issuednoacceptance.
+
+  **2026-10-21 continuation:** the human resumed the same approved slice. Retain
+  complete frozen-source results and merge the hash-verified paused captures/actual
+  PPTXs using a fresh full-current-evidence snapshot and a newly recorded owned
+  service. [The runbook](v2-8e-evidence/RUNBOOK.md) gives the bounded recovery command;
+  no product source change, acceptance or parent milestone advance is implied.
 
 <a id="v2-8-remaining"></a>
 

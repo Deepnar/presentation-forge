@@ -6,7 +6,7 @@ import JSZip from 'jszip';
 import { preview } from '../../src/preview.js';
 
 const root = 'docs/v2-8e-evidence';
-const scratch = 'out/v2-8e-validation';
+const scratch = process.env.FORGE_VALIDATION_OUT ?? 'out/v2-8e-validation';
 await mkdir(`${root}/native`, { recursive: true });
 const records = [];
 for (const [name, source, selected] of [

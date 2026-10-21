@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import JSZip from 'jszip';
 import {preview} from '../../src/preview.js';
-const root='docs/v2-8e-evidence',out='out/v2-8e-validation',records=[];
+const root='docs/v2-8e-evidence',out=process.env.FORGE_VALIDATION_OUT??'out/v2-8e-validation',records=[];
 const serial=JSON.parse(await readFile(`${out}/coordinator.json`,'utf8')).find(run=>run.name==='v2-edit-chrome-7a.test');assert.ok(serial&&serial.exitCode===0);
 for(const kind of ['chart','table']){
  const source=`out/v2-7a-validation/shell-${kind}.pptx`;

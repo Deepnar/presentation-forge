@@ -17,7 +17,7 @@ import { conversationInput, calls, respond } from "../../test/v2-conversation-co
 import { endpoint, wire } from "../../test/v2-provider-fixture.js";
 import { createProviderRunner } from "../../packages/agent/provider-run.ts";
 const root = "docs/v2-8e-evidence",
-  output = "out/v2-8e-validation";
+  output = process.env.FORGE_VALIDATION_OUT ?? "out/v2-8e-validation";
 const sha = JSON.parse(
   await readFile(`${root}/validation-plan.json`, "utf8"),
 ).implementationSha;

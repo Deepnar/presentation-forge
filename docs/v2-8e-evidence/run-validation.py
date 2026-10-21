@@ -1,6 +1,6 @@
 import datetime, hashlib, json, os, pathlib, re, shutil, subprocess, time, sys, signal
 from quiet_window import Window
-root=pathlib.Path('docs/v2-8e-evidence');out=pathlib.Path('out/v2-8e-validation');out.mkdir(exist_ok=True)
+root=pathlib.Path('docs/v2-8e-evidence');out=pathlib.Path(os.environ.get('FORGE_VALIDATION_OUT','out/v2-8e-validation'));out.mkdir(exist_ok=True)
 class Tee:
  def __init__(self,stream,file):self.stream,self.file=stream,file
  def write(self,text):self.stream.write(text);self.stream.flush();self.file.write(text);self.file.flush()
@@ -68,14 +68,18 @@ run('headless',['node','--test','--test-reporter=tap',str(root/'headless-check.m
 tests('byok-locale',['test/byok-budget.test.js'],changes={'LC_ALL':'en_IN.UTF-8'},expected=1)
 run('native-review',['node',str(root/'native-review.mjs')])
 run('shell-native',['node',str(root/'shell-native.mjs')])
-images=[]
+seed=out/'seed-captures.json'
+images=json.loads(seed.read_text()) if seed.exists() else []
+images={row['source']:row for row in images}
 for folder in pathlib.Path('docs').glob('v2-*-evidence'):
  if folder==root:continue
  for source in folder.rglob('*.png'):
   if source.is_relative_to(root):continue
   if source.stat().st_mtime<start:continue
   destination=root/'regression-images'/str(source).replace('/','--');destination.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source,destination)
-  images.append({'source':str(source),'file':str(destination),'implementationSha':sha,'sha256':hashlib.sha256(source.read_bytes()).hexdigest()})
+  images[str(source)]={'source':str(source),'file':str(destination),'implementationSha':sha,'sha256':hashlib.sha256(source.read_bytes()).hexdigest()}
+images=list(images.values())
+assert all(row['implementationSha']==sha and hashlib.sha256(pathlib.Path(row['file']).read_bytes()).hexdigest()==row['sha256'] for row in images)
 (root/'regression-images.json').write_text(json.dumps(images,indent=2)+'\n')
 measure=root/'measurements';measure.mkdir(exist_ok=True);sources=list(pathlib.Path('docs/v2-7a-evidence').glob('*.json'))
 for folder in pathlib.Path('out').glob('v2-7*-validation/browser'):sources+=list(folder.glob('*.json'))

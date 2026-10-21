@@ -1,5 +1,30 @@
 # V2-8E validation reproduction
 
+## Authorized continuation on2026-10-21
+
+The human resumed the task. `resume-validation.py` uses fresh output
+`out/v2-8e-validation-resumed-2026-10-21`; it refuses overwriting that directory.
+It verifies the25complete exact-source records, qualifies180seconds of measured
+headroom, creates/records a fresh isolated service and snapshots ALL current
+evidence/originals before generators. The paused38images and5actual fresh PPTXs
+are hash-verified and reused, with explicit provenance; untouched historical
+originals have their own fresh backup. Only complete zero-exit records are retained.
+Every remaining job and the17-case resumption qualification run behind fresh
+readiness/watchdogs. Later independent execution still needs its own full snapshot.
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 nice -n10 ionice -c2 -n7 python3 -u docs/v2-8e-evidence/resume-validation.py
+FORGE_VALIDATION_OUT=out/v2-8e-validation-resumed-2026-10-21 PYTHONDONTWRITEBYTECODE=1 python3 docs/v2-8e-evidence/assemble-results.py
+FORGE_VALIDATION_OUT=out/v2-8e-validation-resumed-2026-10-21 PYTHONDONTWRITEBYTECODE=1 python3 docs/v2-8e-evidence/finish-evidence.py
+```
+
+Run assembly only after complete recorded execution/restoration; finish runs once
+while saved current-source browser originals are still in canonical out/ paths.
+All final images still require inspection. The environment variable selects only
+the harness scratch directory; no product/test source or assertion changes.
+
+## Paused attempt and uninterrupted reproduction
+
 **Session stopped at the human's request on2026-10-21.** See
 [the paused assessment](paused-2026-10-21/assessment.json) and current state/evaluation.
 The old coordinator stopped between files after25complete jobs. Original evidence

@@ -1,5 +1,5 @@
-import json,pathlib,re,shutil
-root=pathlib.Path('docs/v2-8e-evidence');out=pathlib.Path('out/v2-8e-validation');plan=json.loads((root/'validation-plan.json').read_text());sha=plan['implementationSha'];runs=json.loads((out/'coordinator.json').read_text());byname={r['name']:r for r in runs};logs=root/'logs';logs.mkdir(exist_ok=True)
+import json,os,pathlib,re,shutil
+root=pathlib.Path('docs/v2-8e-evidence');out=pathlib.Path(os.environ.get('FORGE_VALIDATION_OUT','out/v2-8e-validation'));plan=json.loads((root/'validation-plan.json').read_text());sha=plan['implementationSha'];runs=json.loads((out/'coordinator.json').read_text());byname={r['name']:r for r in runs};logs=root/'logs';logs.mkdir(exist_ok=True)
 assert all(r['implementationSha']==sha for r in runs)
 def write(name,data):(root/name).write_text(json.dumps(data,indent=2)+'\n')
 def group(id,selected,backend):

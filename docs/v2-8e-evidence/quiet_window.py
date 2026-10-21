@@ -1,6 +1,6 @@
-import datetime, json, pathlib, re, subprocess, time
+import datetime, json, os, pathlib, re, subprocess, time
 
-OUT = pathlib.Path('out/v2-8e-validation')
+OUT = pathlib.Path(os.environ.get('FORGE_VALIDATION_OUT', 'out/v2-8e-validation'))
 SHA = json.loads(pathlib.Path('docs/v2-8e-evidence/validation-plan.json').read_text())['implementationSha']
 DEVICES = [p.name for p in pathlib.Path('/sys/block').iterdir() if (p / 'device').exists()]
 assert 'nvme0n1' in DEVICES

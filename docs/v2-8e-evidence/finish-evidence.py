@@ -1,7 +1,7 @@
 from pathlib import Path
-import json,hashlib,shutil
+import json,hashlib,os,shutil
 from PIL import Image,ImageDraw
-root=Path('docs/v2-8e-evidence');out=Path('out/v2-8e-validation');sha=json.loads((root/'validation-plan.json').read_text())['implementationSha']
+root=Path('docs/v2-8e-evidence');out=Path(os.environ.get('FORGE_VALIDATION_OUT','out/v2-8e-validation'));sha=json.loads((root/'validation-plan.json').read_text())['implementationSha']
 for name in ['sustained-window.json','snapshot-owned-script-adjustment.json','pre-resume-visual.json']:
  if (out/name).exists():shutil.copy2(out/name,root/name)
 records=[]
