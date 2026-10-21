@@ -172,3 +172,25 @@ for (const cancel of [false, true]) test(`infinite empty chunks cannot starve ${
   assert.equal(result.error, undefined); assert.equal(result.signal, null); assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(result.stdout).code, cancel ? 'cancelled' : 'timeout');
 });
+
+test('monotonic timeout cancels the source before releasing its reader lock', async t => {
+  let now = 0, pulls = 0, cancelled = 0;
+  t.mock.method(performance, 'now', () => now);
+  const stream = new ReadableStream({
+    pull(controller) { if (++pulls >= 2) now = 100; controller.enqueue(new Uint8Array(0)); },
+    cancel() { cancelled++; },
+  });
+  const provider = createSearxngSearchProvider({ timeoutMs: 20 }, { fetch: async () => new Response(stream, { headers: { 'content-type': 'application/json' } }) });
+  assert.equal((await provider.search(binding, query)).code, 'timeout');
+  await new Promise(resolve => setImmediate(resolve)); assert.equal(cancelled, 1);
+});
+
+test('many empty chunks do not consume the response-byte allowance of a valid result', async () => {
+  let count = 0;
+  const stream = new ReadableStream({ pull(controller) {
+    if (++count <= 5000) controller.enqueue(new Uint8Array(0));
+    else { controller.enqueue(new TextEncoder().encode(JSON.stringify(response))); controller.close(); }
+  } });
+  const provider = createSearxngSearchProvider({ maxResponseBytes: 256 }, { fetch: async () => new Response(stream, { headers: { 'content-type': 'application/json' } }) });
+  assert.equal((await provider.search(binding, query)).ok, true);
+});

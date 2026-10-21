@@ -63,7 +63,7 @@ export function createSearxngSearchProvider(config = {}, { fetch: request = glob
             await response.body?.cancel(); return searchFailure('invalid-response');
           }
           reader = response.body.getReader();
-          const chunks = []; let bytes = 0, chunksRead = 0;
+          const joined = new Uint8Array(maxResponseBytes); let bytes = 0, chunksRead = 0;
           while (true) {
             if (interrupted()) return searchFailure(code);
             // Empty/immediately resolved chunks must not starve timers and caller aborts.
@@ -72,18 +72,19 @@ export function createSearxngSearchProvider(config = {}, { fetch: request = glob
             if (done) break;
             bytes += value.byteLength;
             if (bytes > maxResponseBytes) { await reader.cancel(); return searchFailure('response-too-large'); }
-            chunks.push(value);
+            if (value.byteLength) joined.set(value, bytes - value.byteLength);
           }
           if (interrupted()) return searchFailure(code);
-          const joined = new Uint8Array(bytes); let offset = 0;
-          for (const chunk of chunks) { joined.set(chunk, offset); offset += chunk.byteLength; }
           let decoded;
-          try { decoded = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(joined)); }
+          try { decoded = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(joined.subarray(0, bytes))); }
           catch { return searchFailure('invalid-response'); }
           const normalized = normalizeWebResults(id, bound, query, decoded, { maxOutputChars });
           return interrupted() ? searchFailure(code) : normalized;
         } catch { return searchFailure(controller.signal.aborted ? code : 'search-unavailable'); }
-        finally { reader?.releaseLock(); }
+        finally {
+          if (controller.signal.aborted) void reader?.cancel().catch(() => {});
+          reader?.releaseLock();
+        }
       })();
       try { return await Promise.race([operation, aborted]); }
       finally {
