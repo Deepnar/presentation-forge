@@ -1,0 +1,38 @@
+{
+  "milestone": "V2-PPTX-ID",
+  "acceptedBaseline": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "taskEntry": "7f4c1e8b97a2e1b7987d9c089910f7323610a41d",
+  "implementationSha": null,
+  "focused": [
+    "test/dev-protocol.test.js",
+    "test/v2-native-ids.test.js",
+    "test/v2-renderer-pptx.test.js",
+    "test/v2-scene-pptx.test.js",
+    "test/v2-export-preflight-5a.test.js",
+    "test/v2-chart-edit.test.js",
+    "test/v2-table-edit.test.js",
+    "test/v2-tables-3f4.test.js",
+    "test/v2-typography-4b.test.js",
+    "test/v2-engine-5b.test.js",
+    "test/v2-style-5e.test.js",
+    "test/v2-text-5d.test.js",
+    "test/v2-textformat-5f.test.js",
+    "test/v2-layers-5j.test.js",
+    "test/v2-layers-5j1.test.js",
+    "test/v2-slides-5i.test.js",
+    "test/v2-projects-6a.test.js",
+    "test/v2-projects-6b.test.js",
+    "test/v2-tools-8a.test.js"
+  ],
+  "required": [
+    "native-pptx",
+    "typecheck",
+    "benchmark-50",
+    "frontend-visual"
+  ],
+  "bulk": [],
+  "serial": [],
+  "postgres": [],
+  "scopeRationale": "Canonical native renderer correction only. Full affected export-consumer files, strict typecheck, 50 benchmark cells, native archive and raster equivalence. No server/client/storage implementation changes; browser/build/PostgreSQL/fault suites not rerun. No real model API/local inference.",
+  "stop": "Independent review of exact implementation; no further features."
+}

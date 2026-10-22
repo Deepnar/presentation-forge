@@ -8083,7 +8083,10 @@ unexplained beyond its observed wrong Delete action; controlled evidence is dist
   bounded correction contract, cover mixed native objects with an OOXML uniqueness
   regression and inspect actual exports; record interactive PowerPoint checks as
   unexecuted when unavailable. This is separate native-renderer work, with no
-  implementation authorized by V2-8E acceptance.
+  implementation authorized by V2-8E acceptance. The 2026-10-22 explicit request
+  now authorizes the narrow correction, tracked as **V2-PPTX-ID** in
+  [its bounded contract/evaluation](V2-PPTX-ID-EVAL.md). Implementation and
+  independent review are pending; Assistant scope remains separate.
   [Exact archive/XML evidence](v2-8e-evidence/independent/native-audit.json),
   [independent finding](reviews/V2-8E-c71d65e.md),
   [Open XML identifier reference](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.presentation.nonvisualdrawingproperties.id?view=openxml-3.0.1).
