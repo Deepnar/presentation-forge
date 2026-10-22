@@ -1,0 +1,27 @@
+[
+  {
+    "name": "shell-native",
+    "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "5m",
+      "node",
+      "docs/v2-8g-evidence/independent/shell-native.mjs"
+    ],
+    "exitCode": 0,
+    "atUtc": "2026-10-22T16:58:53.371241+00:00",
+    "durationSeconds": 0.9657403389974206,
+    "log": "docs/v2-8g-evidence/independent/logs/shell-native.log",
+    "logSha256": "223f061a6a603fa03e03758dbe27f04ecf0df653cdf3e178a452cc5bcffb104a"
+  }
+]

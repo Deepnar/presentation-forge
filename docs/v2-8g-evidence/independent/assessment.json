@@ -1,0 +1,347 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "acceptedBaselineCompared": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "reviewedEvidenceCommit": "66a98665fba0213ec12e9fba1a1782b11297afc6",
+  "reviewer": "/root/v28g_source_review",
+  "context": "/root/v28g_source_review",
+  "implementedBy": "/root",
+  "atUtc": "2026-10-22T17:00:57.495202+00:00",
+  "scope": "Model HTTP response lifetime/buffering correction only; both protocols, configuration, canonical tool/usage/privacy/authority and accepted error boundaries preserved.",
+  "sourceDeltaAfterImplementation": [],
+  "sourceEqualityEvidence": "docs/v2-8g-evidence/independent/source-equality.json",
+  "currentSourceExecutions": {
+    "total": 668,
+    "pass": 668,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "groups": {
+    "affected-domain": {
+      "total": 443,
+      "pass": 443,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "postgres-all-eight": {
+      "total": 166,
+      "pass": 166,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "full-shell-7a": {
+      "total": 28,
+      "pass": 28,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "full-import-7b": {
+      "total": 5,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "full-handoff-sqlite": {
+      "total": 11,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "full-handoff-postgres": {
+      "total": 11,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "headless-native": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "allAcknowledgedLeavesIncludingStandingLocale": {
+    "total": 678,
+    "pass": 677,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "id": "byok-locale",
+    "source": "docs/ROADMAP.md#byok-locale-standing-failure",
+    "independentlyRepeated": true,
+    "evidence": "docs/v2-8g-evidence/independent/logs/standing-locale.log",
+    "classification": "Acknowledged inherited en_IN grouping assertion; not relabeled passing or included in successful primary totals."
+  },
+  "executionOverlap": {
+    "uniqueInventoryFilesRepeated": 32,
+    "inventoryLeavesRepeated": 653,
+    "remainingInventoryFilesNotIndependentlyRepeated": 192,
+    "remainingInventoryLeavesNotIndependentlyRepeated": 2148,
+    "nativeSupplementRepeated": 4,
+    "additionalPostgreSqlHandoffBackendExecutions": 11,
+    "notAddedToImplementerDistinctTotal": true
+  },
+  "inspectedImplementerEvidence": {
+    "inventoryFiles": 224,
+    "primaryLeaves": 2801,
+    "nativeSupplements": 4,
+    "fullMatrixIndependentlyDuplicated": false,
+    "all47RawCoordinatorLogsEqualDurableBytes": true,
+    "imagesHashVerifiedAndInspected": 115,
+    "retainedArchivesHashVerified": 13,
+    "failedAttemptsRetained": true,
+    "original14AssertionsUnchanged": true
+  },
+  "commands": {
+    "production-build": {
+      "exitCode": 0,
+      "durationSeconds": 0.4660210760002883,
+      "log": "docs/v2-8g-evidence/independent/logs/production-build.log"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "durationSeconds": 0.9669301020003331,
+      "log": "docs/v2-8g-evidence/independent/logs/typecheck.log"
+    },
+    "benchmark-50": {
+      "exitCode": 0,
+      "durationSeconds": 0.5653669979992628,
+      "log": "docs/v2-8g-evidence/independent/logs/benchmark-50.log"
+    },
+    "memory-openai-compatible-5000": {
+      "exitCode": 0,
+      "durationSeconds": 0.2643924820004031,
+      "log": "docs/v2-8g-evidence/independent/logs/memory-openai-compatible-5000.log"
+    },
+    "memory-openai-compatible-200000": {
+      "exitCode": 0,
+      "durationSeconds": 0.3152370060006433,
+      "log": "docs/v2-8g-evidence/independent/logs/memory-openai-compatible-200000.log"
+    },
+    "memory-anthropic-5000": {
+      "exitCode": 0,
+      "durationSeconds": 0.265050975000122,
+      "log": "docs/v2-8g-evidence/independent/logs/memory-anthropic-5000.log"
+    },
+    "memory-anthropic-200000": {
+      "exitCode": 0,
+      "durationSeconds": 0.31420477600022423,
+      "log": "docs/v2-8g-evidence/independent/logs/memory-anthropic-200000.log"
+    },
+    "browser-native": {
+      "exitCode": 0,
+      "durationSeconds": 1.4678783190001923,
+      "log": "docs/v2-8g-evidence/independent/logs/browser-native.log"
+    },
+    "protocol": {
+      "exitCode": 0,
+      "durationSeconds": 0.16423443900021084,
+      "log": "docs/v2-8g-evidence/independent/logs/protocol.log"
+    },
+    "shell-native": {
+      "exitCode": 0,
+      "durationSeconds": 0.9657403389974206,
+      "log": "docs/v2-8g-evidence/independent/logs/shell-native.log"
+    }
+  },
+  "benchmark": {
+    "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+    "cells": 50,
+    "cellsCounterfactualsInvarianceMatchPacket": true,
+    "recordedDocumentationHead": "66a9866",
+    "compilerAndZipMs": 429,
+    "excludedRunMetadata": [
+      "commit",
+      "generatedAt",
+      "ms"
+    ]
+  },
+  "memory": {
+    "freshProcesses": 4,
+    "allSampledArrayBufferDeltaBytes": 262144,
+    "maximumSampledRssDeltaBytes": 589824,
+    "limitation": "Full-GC sampled retained memory/RSS, not process peak memory, general ceilings, live-model timings or production percentiles.",
+    "evidence": "docs/v2-8g-evidence/independent/memory-observations.json"
+  },
+  "visuals": {
+    "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+    "packetImagesInspected": 115,
+    "packetContactSheetsOpened": 20,
+    "freshImagesInspected": 71,
+    "freshContactSheetsOpened": 14,
+    "freshKinds": {
+      "browser": 32,
+      "native": 16,
+      "native-svg": 16,
+      "browser-export": 7
+    },
+    "fullSizeRiskCasesInspected": [
+      "packet narrow catalog delete dialog",
+      "packet native after-edit slides",
+      "fresh narrow shell history dialog",
+      "fresh imported chart and narrow inspector",
+      "fresh PostgreSQL handoff refusal",
+      "fresh PostgreSQL/Anthropic after-edit native slide",
+      "fresh shell native table"
+    ],
+    "allManifestHashesVerified": true,
+    "noNewForegroundClippingOrOverlapObserved": true,
+    "inheritedNarrowInspectorOcclusionAndSvgStylingVisible": true,
+    "interactivePowerPointExecuted": false,
+    "largeDeck": {
+      "slides": 120,
+      "thumbs": 120,
+      "openMs": 1543
+    },
+    "maximumFreshCanvasDeltaPx": 0.17173004150390625
+  },
+  "preservation": {
+    "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+    "atUtc": "2026-10-22T16:58:56.472508+00:00",
+    "snapshots": {
+      "all-current": {
+        "files": 5422,
+        "pptx": 142,
+        "changedBeforeRestore": 27,
+        "allHashesMatch": true
+      },
+      "canonical": {
+        "files": 5,
+        "pptx": 5,
+        "changedBeforeRestore": 5,
+        "allHashesMatch": true
+      }
+    },
+    "freshImages": 71,
+    "freshBrowserArchives": 5,
+    "archiveBytesReconstructed": false,
+    "serviceStopped": false
+  },
+  "nativeArchiveAudit": {
+    "archives": 16,
+    "geometryRunAndTableStylesPreserved": true,
+    "unrelatedSlideXmlByteIdentical": true,
+    "chartAndEmbeddedWorkbookValuesVerified": true,
+    "inheritedDuplicateNonvisualId": "2",
+    "accepted8dWitnessRetained": true,
+    "evidence": "docs/v2-8g-evidence/independent/native-audit.json"
+  },
+  "resourceAssessment": {
+    "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+    "samples": 81,
+    "withheldPreJobSamples": 1,
+    "runningSamples": 17,
+    "criticalRunningSamples": 0,
+    "thresholdsChanged": false,
+    "initialQualification": {
+      "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+      "sampleSeconds": 180.53121049499987,
+      "samples": 12,
+      "cpuBusyMeanPercent": 7.173700305289007,
+      "cpuIoWaitMeanPercent": 9.870544189665505,
+      "diskMeans": {
+        "nvme0n1": {
+          "busyPercent": 1.182067075354322,
+          "weightedQueue": 0.08031852198986725
+        }
+      },
+      "freshConsecutiveReadySamples": 12,
+      "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+    },
+    "resumedQualification": {
+      "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+      "sampleSeconds": 180.44569870299893,
+      "samples": 12,
+      "cpuBusyMeanPercent": 2.4886257217430643,
+      "cpuIoWaitMeanPercent": 8.919725467923513,
+      "diskMeans": {
+        "nvme0n1": {
+          "busyPercent": 1.4536229008801567,
+          "weightedQueue": 0.07385601372485645
+        }
+      },
+      "freshConsecutiveReadySamples": 12,
+      "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+    },
+    "limitation": "Global I/O PSI/iowait provenance unresolved; no attribution to any competing worker or production-percentile claim."
+  },
+  "ownedPostgres": {
+    "id": "2776cb64a2b09255d751aab5c4c8a5e95ac26bd74e68325e7196dc9a4b9dffd7",
+    "name": "forge-v28g-validation",
+    "runningAtCompletion": true,
+    "ports": {
+      "5432/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "5544"
+        }
+      ]
+    },
+    "actualProjectDatabasesAtReviewClose": 0,
+    "stoppedByReviewer": false,
+    "cleanupOwner": "/root; fresh saved/fsynced count, exact-owned removal and port-closure check remain required"
+  },
+  "interruption": {
+    "atUtc": "2026-10-22T16:55:18.838898+00:00",
+    "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+    "reviewedPacket": "66a98665fba0213ec12e9fba1a1782b11297afc6",
+    "interruption": "Assistant usage-limit interruption; resumed on direct user instruction.",
+    "runnerAliveAtRecovery": false,
+    "oldExecSessionLookup": "Unknown process id 46179",
+    "acknowledgedMainJobs": 17,
+    "allRecordedExitCodesAndLogHashesVerified": true,
+    "incompleteOrUnacknowledgedProductJobs": 0,
+    "remainingSteps": [
+      "fresh unchanged-threshold resource qualification",
+      "shell export raster supplement",
+      "preserve fresh archives/images",
+      "full snapshot and five canonical original restoration",
+      "fresh visual inspection",
+      "independent decision and scoped commits"
+    ],
+    "snapshotReplaced": false,
+    "backupFileHashesVerified": 5422,
+    "canonicalBackupHashesVerified": 5,
+    "productChecksRestarted": false,
+    "ownedPostgresIdentityPortAndVersionReverified": true
+  },
+  "reviewerHarnessCorrections": {
+    "parserAttempts": "docs/v2-8g-evidence/independent/packet-audit-parser-corrections.json",
+    "backendMetadata": "Raw raster-helper backend labels were corrected against independently executed SQLite import/PostgreSQL handoff source hashes; raw output retained.",
+    "productValidatorOrTestAssertionsChanged": false
+  },
+  "blockingFindings": [],
+  "independentPlannedJobsUnexecuted": 0,
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0,
+  "productTestsValidatorStateRoadmapHandoffEdited": false,
+  "originalUntrackedPreserved": true,
+  "heavySlotReleased": true,
+  "parentV28MarkedComplete": false,
+  "nextFeatureAuthorized": false,
+  "residuals": [
+    "Standing en_IN locale assertion remains9pass/1fail separately; no skipped,cancelled or unexecuted required final job is waived.",
+    "Native nonvisual shape-ID collision remains inherited; interactive Microsoft PowerPoint editing/consumer behavior is unexecuted.",
+    "Inherited Fit/narrow toolbar/inspector occlusion,SVG mixed-run styling,capture/timeout and historical original-byte provenance limits remain.",
+    "Sampled retained memory is not peak memory; shared-machine PSI/iowait attribution and production percentiles remain unqualified.",
+    "Usage-limit interruption halted reviewer orchestration after17durably acknowledged jobs; no incomplete product job was counted passing, and only missing guarded supplements/restoration resumed.",
+    "Live provider/search quality,Auto content quality,Assistant/hosted orchestration,new features,deployment and migrations are outside this review and unexecuted.",
+    "Owned PostgreSQL remains alive for root fresh-count/fsync/exact-ID cleanup."
+  ]
+}

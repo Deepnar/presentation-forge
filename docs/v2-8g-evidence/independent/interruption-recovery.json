@@ -1,0 +1,24 @@
+{
+  "atUtc": "2026-10-22T16:55:18.838898+00:00",
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "reviewedPacket": "66a98665fba0213ec12e9fba1a1782b11297afc6",
+  "interruption": "Assistant usage-limit interruption; resumed on direct user instruction.",
+  "runnerAliveAtRecovery": false,
+  "oldExecSessionLookup": "Unknown process id 46179",
+  "acknowledgedMainJobs": 17,
+  "allRecordedExitCodesAndLogHashesVerified": true,
+  "incompleteOrUnacknowledgedProductJobs": 0,
+  "remainingSteps": [
+    "fresh unchanged-threshold resource qualification",
+    "shell export raster supplement",
+    "preserve fresh archives/images",
+    "full snapshot and five canonical original restoration",
+    "fresh visual inspection",
+    "independent decision and scoped commits"
+  ],
+  "snapshotReplaced": false,
+  "backupFileHashesVerified": 5422,
+  "canonicalBackupHashesVerified": 5,
+  "productChecksRestarted": false,
+  "ownedPostgresIdentityPortAndVersionReverified": true
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "source": "out/v2-7a-validation/shell-chart.pptx",
+    "file": "docs/v2-8g-evidence/independent/current-browser-archives/out/v2-7a-validation/shell-chart.pptx",
+    "sha256": "9567a9aa1bd488e4a18faef8cb43e2be9b03b6dc713e9c51d17ee68df76e91e9",
+    "bytes": 70668
+  },
+  {
+    "source": "out/v2-7a-validation/shell-table.pptx",
+    "file": "docs/v2-8g-evidence/independent/current-browser-archives/out/v2-7a-validation/shell-table.pptx",
+    "sha256": "0238ee7415c861884cdcdfbe3ebe55eaaf185723b8f16606710252da79cf59b4",
+    "bytes": 72451
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/imported-chart.pptx",
+    "file": "docs/v2-8g-evidence/independent/current-browser-archives/out/v2-7b-1-validation/browser/imported-chart.pptx",
+    "sha256": "ed352957f8c990b26a113bb35c34aca37a3ffd9f53f0fce1725494773f35f997",
+    "bytes": 92783
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/imported-table.pptx",
+    "file": "docs/v2-8g-evidence/independent/current-browser-archives/out/v2-7b-1-validation/browser/imported-table.pptx",
+    "sha256": "293acb9f9d95121db57d9da90f0bdb735798171e0f063e71322523732cb265a5",
+    "bytes": 92770
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/handoff.pptx",
+    "file": "docs/v2-8g-evidence/independent/current-browser-archives/out/v2-7b-2-validation/browser/handoff.pptx",
+    "sha256": "d0df935ddd5b26fbeef65cfce93b2914ed7a2d2e2e4761630b18c6f1ebe8d278",
+    "bytes": 92763
+  }
+]

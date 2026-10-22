@@ -1,0 +1,12 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "cells": 50,
+  "cellsCounterfactualsInvarianceMatchPacket": true,
+  "recordedDocumentationHead": "66a9866",
+  "compilerAndZipMs": 429,
+  "excludedRunMetadata": [
+    "commit",
+    "generatedAt",
+    "ms"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "failedReviewerParserAttempts": 5,
+  "productCheckFailures": 0,
+  "initialScript": "docs/v2-8g-evidence/independent/audit-packet.py",
+  "finalScript": "docs/v2-8g-evidence/independent/audit-packet-v2.py",
+  "corrections": [
+    "Sum every complete run footer in concatenated serial/PostgreSQL logs rather than using only the final file totals.",
+    "Resolve the explicitly retained invalid-configuration attempt and locale logs at their actual durable paths.",
+    "Verify retained browser archives rather than canonical paths already restored to older originals."
+  ],
+  "finalAuditPassed": true,
+  "validatorProductOrTestAssertionsChanged": false
+}

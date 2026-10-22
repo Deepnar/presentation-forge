@@ -1,0 +1,67 @@
+[
+  {
+    "source": "docs/v2-7b-2-evidence/ambiguous-response.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/ambiguous-response.png",
+    "sha256": "0d82613f55429c2aa7b76c1e0f834583fb8fcc789657b5b2e077e53565cc42ef"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/boundary-narrow.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/boundary-narrow.png",
+    "sha256": "b8a1a5dae8b1df2782c159acb546ce7069145b6046a24525f5d4a0a597e9d947"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/completed-chat.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/completed-chat.png",
+    "sha256": "9c5c3eee88182961f74844eb228265ca94fbcb662d2f8554bfa95c3897f19837"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/deck-page-action.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/deck-page-action.png",
+    "sha256": "04c8fc0f14c045270d2be81cc7feb9b4465075a2eacb95a2973d89abe84a4aa6"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/handoff-history.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/handoff-history.png",
+    "sha256": "bad0acd91ec0ba3fc3f0d5cc955b1cdedd0a5902ba85230a1ec078428adbba41"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/opening-project.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/opening-project.png",
+    "sha256": "79d725bfa9d49d5df7e8396d6356a6c9cf3380d581dfac1b55de016e73268a6f"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/refusal-narrow.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/refusal-narrow.png",
+    "sha256": "b88f2515c72be0cdae14c655091953d891be9266b34157f09e842c14c6c195f3"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/session-changed.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/session-changed.png",
+    "sha256": "cd396c3bf67ff39cdba74b8e99b09aab9d1c26bbd0fda8e87eb659c1fe6637eb"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/boundary-60.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/out/v2-7b-2-validation/browser/boundary-60.json",
+    "sha256": "2ba38e7808f7a5550ae78715b6adee8ded5cf0ad90a7bd18d6c3678287cecd36"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/cold-warm.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/out/v2-7b-2-validation/browser/cold-warm.json",
+    "sha256": "a7b6da51fc0d7609e767dea1b84b5135c4146c3e6fa49b20be759117eab751a3"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/handoff.pptx",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/out/v2-7b-2-validation/browser/handoff.pptx",
+    "sha256": "d0df935ddd5b26fbeef65cfce93b2914ed7a2d2e2e4761630b18c6f1ebe8d278"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/refusal-narrow.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/out/v2-7b-2-validation/browser/refusal-narrow.json",
+    "sha256": "45ec228c98632572dde6cdce92cff4b4f06d7d1813706a07527e3025a451e6bd"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/save-states.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/out/v2-7b-2-validation/browser/save-states.json",
+    "sha256": "0fa6aa1ca35c5ad65840b8d183573bbc117d42108808be911ee41787e14cec3a"
+  }
+]

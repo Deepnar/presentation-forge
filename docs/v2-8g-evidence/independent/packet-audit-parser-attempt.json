@@ -1,0 +1,1 @@
+{"initialExitCode":1,"initialScript":"docs/v2-8g-evidence/independent/audit-packet.py","classification":"Reviewer parser incorrectly used the final file totals in concatenated serial/PostgreSQL logs. Corrected parser sums all complete run footers and independently checks their per-job records. No product test, assertion, validator or packet artifact changed."}

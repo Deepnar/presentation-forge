@@ -1,0 +1,32 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "packetImagesInspected": 115,
+  "packetContactSheetsOpened": 20,
+  "freshImagesInspected": 71,
+  "freshContactSheetsOpened": 14,
+  "freshKinds": {
+    "browser": 32,
+    "native": 16,
+    "native-svg": 16,
+    "browser-export": 7
+  },
+  "fullSizeRiskCasesInspected": [
+    "packet narrow catalog delete dialog",
+    "packet native after-edit slides",
+    "fresh narrow shell history dialog",
+    "fresh imported chart and narrow inspector",
+    "fresh PostgreSQL handoff refusal",
+    "fresh PostgreSQL/Anthropic after-edit native slide",
+    "fresh shell native table"
+  ],
+  "allManifestHashesVerified": true,
+  "noNewForegroundClippingOrOverlapObserved": true,
+  "inheritedNarrowInspectorOcclusionAndSvgStylingVisible": true,
+  "interactivePowerPointExecuted": false,
+  "largeDeck": {
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1543
+  },
+  "maximumFreshCanvasDeltaPx": 0.17173004150390625
+}

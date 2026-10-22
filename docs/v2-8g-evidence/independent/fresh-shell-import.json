@@ -1,0 +1,137 @@
+[
+  {
+    "source": "docs/v2-7a-evidence/canvas-chart.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/canvas-chart.json",
+    "sha256": "4b7cb36e23512f35c8a0ceb47bd9a852d84d7cb884aa95e69fb9a0703afb0922"
+  },
+  {
+    "source": "docs/v2-7a-evidence/canvas-table.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/canvas-table.json",
+    "sha256": "60bcb7be8d168fb732719ff28f75298fa90f4191bdd66fdef348e8056f0879b8"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-empty.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/dashboard-empty.png",
+    "sha256": "b064a950733ce99e04ef8092776848e6fc585a1e94cd8a96877175efbdbfb783"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/dashboard-hosted-anon.png",
+    "sha256": "f5b8a292abe01cbbf5a572e299248608cc400f03e2152c175a92496af65afc88"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/dashboard.png",
+    "sha256": "bb82293f9ffbaeba6bca1f234a4d3417672238bdb3259f20d07ff40296dff571"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-blank.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-blank.png",
+    "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-chart.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-chart.png",
+    "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-history.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-history.png",
+    "sha256": "3d035019c05de5afdb41ee58e6543f7ee28e25085fcbbb7ee212154420944b98"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-narrow-projects.png",
+    "sha256": "da48987f579d170e2fd78c1a32387a19390feda81360fc2363fc1da908a98ea3"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-narrow.png",
+    "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-readonly.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-readonly.png",
+    "sha256": "965724375cc9f9a3f8fd69007f03d489b975aeae4e571f6fafcd5f92c1205cb4"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-shell.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-shell.png",
+    "sha256": "00ab1779241d35c87be6be791018a1d7359dcbc772215469dea8c3572cb0e29b"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-table.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-table.png",
+    "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9"
+  },
+  {
+    "source": "docs/v2-7a-evidence/large-deck.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/large-deck.json",
+    "sha256": "e758906ed68c0db2a35cb47cc9f7d2ebf13ece7f420109836adfd055dd8fcda1"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-chart.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-chart.png",
+    "sha256": "2adc698b8b3681c4631365f341c6a401533731bb0520d9063d3cef0d4926f3ec"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-narrow.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-narrow.png",
+    "sha256": "765ef5bbc43097e89de61e059df3d870937505882948e1e55d2fbfc1765e3e48"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-stats.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-stats.png",
+    "sha256": "be4270d5d197ba6f80b69b9277ce37dd1c5d3d05531fa789b070bc927d21ca56"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-table.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-table.png",
+    "sha256": "5986dedaca9e3f751953b5ad3d3ca821eb697f1739603e3da44c157229249866"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-transition.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-transition.png",
+    "sha256": "d375efc975ddd3f8ed05a2079c572b000dc455e8d1f33ae57f23ff55807862a6"
+  },
+  {
+    "source": "out/v2-7a-validation/shell-chart.pptx",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7a-validation/shell-chart.pptx",
+    "sha256": "9567a9aa1bd488e4a18faef8cb43e2be9b03b6dc713e9c51d17ee68df76e91e9"
+  },
+  {
+    "source": "out/v2-7a-validation/shell-table.pptx",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7a-validation/shell-table.pptx",
+    "sha256": "0238ee7415c861884cdcdfbe3ebe55eaaf185723b8f16606710252da79cf59b4"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/boundary-60.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7b-1-validation/browser/boundary-60.json",
+    "sha256": "9050e37ca37a294f2f11fbdff7ccfd512cb6475efc288830cb8e7bdc3800cbea"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/canvas-chart.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7b-1-validation/browser/canvas-chart.json",
+    "sha256": "1b9f69c66b000d7db6810156f8f8c354597d722a0efd4b3efcae7c9a4e009079"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/canvas-table.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7b-1-validation/browser/canvas-table.json",
+    "sha256": "401d37eaa56cc566460f0916098fab6aef684004c3848013ab884724aeff1496"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/imported-chart.pptx",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7b-1-validation/browser/imported-chart.pptx",
+    "sha256": "ed352957f8c990b26a113bb35c34aca37a3ffd9f53f0fce1725494773f35f997"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/imported-table.pptx",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7b-1-validation/browser/imported-table.pptx",
+    "sha256": "293acb9f9d95121db57d9da90f0bdb735798171e0f063e71322523732cb265a5"
+  },
+  {
+    "source": "out/v2-7b-1-validation/browser/narrow.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7b-1-validation/browser/narrow.json",
+    "sha256": "3f365a26c976e3ebc097e6c11acef277749876bb1ff2e78e9dd7f20a532c5b2b"
+  }
+]

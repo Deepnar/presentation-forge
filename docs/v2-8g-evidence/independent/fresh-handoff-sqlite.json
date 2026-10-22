@@ -1,0 +1,67 @@
+[
+  {
+    "source": "docs/v2-7b-2-evidence/ambiguous-response.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/ambiguous-response.png",
+    "sha256": "9304df3145db5c2e6c40baf31efce5844002b216fb540d075781553a2e936013"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/boundary-narrow.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/boundary-narrow.png",
+    "sha256": "a62c079413580621ef64c64ada2fb1d06794292804639f3402c527480c8f5521"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/completed-chat.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/completed-chat.png",
+    "sha256": "c1e96d0f0269a79886c5a7c7544728e352c18dd67da07813baa50efc9f7f8138"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/deck-page-action.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/deck-page-action.png",
+    "sha256": "acccc92048ad7c743a839ddf4501c16b4dcae2771bd7da49e67fec0b9736bfe6"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/handoff-history.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/handoff-history.png",
+    "sha256": "96ba98edf620a19d33dec2343e5f5638861e699a4e85d79f80493d12dcd747de"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/opening-project.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/opening-project.png",
+    "sha256": "6998ab808d87c980f2538bf4930ab07aad9d217d54ddd7ab00897fae5d57af8f"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/refusal-narrow.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/refusal-narrow.png",
+    "sha256": "e839c9f5ce1f832e539060d22e010c642a214f6988f8ae6cdeebc9d2220537e5"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/session-changed.png",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/session-changed.png",
+    "sha256": "a0b03f292fc6ddaa55e7f62aab5bd407c7cab248c46d7d5aea6a309aa7924a76"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/boundary-60.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/out/v2-7b-2-validation/browser/boundary-60.json",
+    "sha256": "b2a5a40322c4ecfbd576a85bfbb0b191a4e2ed4ce9e0fea4384846f3a99a1ed8"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/cold-warm.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/out/v2-7b-2-validation/browser/cold-warm.json",
+    "sha256": "fa6229940d4e18a20989d7fee126a21de64715e8a80b1ffa63afe5c87b816554"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/handoff.pptx",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/out/v2-7b-2-validation/browser/handoff.pptx",
+    "sha256": "92f75d561b0fbee4b36acce79827adcf5651d378b9294175dab8dfbd7c4c1428"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/refusal-narrow.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/out/v2-7b-2-validation/browser/refusal-narrow.json",
+    "sha256": "45ec228c98632572dde6cdce92cff4b4f06d7d1813706a07527e3025a451e6bd"
+  },
+  {
+    "source": "out/v2-7b-2-validation/browser/save-states.json",
+    "file": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/out/v2-7b-2-validation/browser/save-states.json",
+    "sha256": "0fa6aa1ca35c5ad65840b8d183573bbc117d42108808be911ee41787e14cec3a"
+  }
+]

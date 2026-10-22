@@ -1,0 +1,22 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "atUtc": "2026-10-22T16:58:56.472508+00:00",
+  "snapshots": {
+    "all-current": {
+      "files": 5422,
+      "pptx": 142,
+      "changedBeforeRestore": 27,
+      "allHashesMatch": true
+    },
+    "canonical": {
+      "files": 5,
+      "pptx": 5,
+      "changedBeforeRestore": 5,
+      "allHashesMatch": true
+    }
+  },
+  "freshImages": 71,
+  "freshBrowserArchives": 5,
+  "archiveBytesReconstructed": false,
+  "serviceStopped": false
+}

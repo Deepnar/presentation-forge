@@ -1,0 +1,22 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "acceptedBaseline": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "reviewedPacket": "66a98665fba0213ec12e9fba1a1782b11297afc6",
+  "sourceSubtrees": [
+    "packages",
+    "src",
+    "test",
+    "app",
+    "tools",
+    "schema",
+    "themes",
+    "config",
+    "package.json",
+    "package-lock.json"
+  ],
+  "sourceDeltaAfterFreeze": [],
+  "workingTreeSourceDelta": [],
+  "adapterEqualsEarlierStaticReview": true,
+  "adapterSha256": "d85b7fcec6bd0272209aafc05234afafb20b312e2a9a969b3c7afbe4bf2f7d59",
+  "streamTestsSha256": "be0a388560c5ef97ce71aca4bded54f96b84da3baef40f0568378bfa6acdb165"
+}

@@ -1,0 +1,157 @@
+[
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/browser-01.jpg",
+    "sha256": "5530c33a3a3e5b25ffa4d42b5ff56e883881fce60d87fd72f1ec5fcbae48a300",
+    "images": [
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/dashboard-empty.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/dashboard-hosted-anon.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/dashboard.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-blank.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-chart.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-history.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/browser-02.jpg",
+    "sha256": "71fc4e16149484bb1a3eca5c8c0e88e9c541e7c51f79fd7c482cee8c4ff8ea39",
+    "images": [
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-narrow-projects.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-narrow.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-readonly.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-shell.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-table.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-chart.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/browser-03.jpg",
+    "sha256": "3d9709f6bc5932104df59f498c59ab51231de0316364338be0af5cdc83c50867",
+    "images": [
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-narrow.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-stats.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-table.png",
+      "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-transition.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/ambiguous-response.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/boundary-narrow.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/browser-04.jpg",
+    "sha256": "c9a13956a5eab38de357c4b64f936f68b73274de56fe3acf0cc7142c1867191e",
+    "images": [
+      "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/completed-chat.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/deck-page-action.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/handoff-history.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/opening-project.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/refusal-narrow.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/session-changed.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/browser-05.jpg",
+    "sha256": "c7b39497229c03cf64bd9ac7f0aa49f32f856c160a341d1d1eb78b072eaba994",
+    "images": [
+      "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/ambiguous-response.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/boundary-narrow.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/completed-chat.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/deck-page-action.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/handoff-history.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/opening-project.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/browser-06.jpg",
+    "sha256": "932f1162078d59e1e526aa8c37bbecbbf3088b6ffaeac899d31c512237f981ae",
+    "images": [
+      "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/refusal-narrow.png",
+      "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/session-changed.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/native-01.jpg",
+    "sha256": "df4d36dc6b239b1b5d14d597ed68d0774b698e46c2528f7179a00a390d18395c",
+    "images": [
+      "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-1.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-2.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-1.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-2.png",
+      "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-1.png",
+      "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-2.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/native-02.jpg",
+    "sha256": "94c8471f755113ccd567e16d0a47c6f086a7e42072fa067c912414105fb5e4dc",
+    "images": [
+      "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-1.png",
+      "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-2.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-1.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-2.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-1.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-2.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/native-03.jpg",
+    "sha256": "2b8d77a8297c73b171891b08227f67b4cf6564ef451f50a6fda61587e572bab5",
+    "images": [
+      "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-1.png",
+      "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-2.png",
+      "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-1.png",
+      "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-2.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/native-svg-01.jpg",
+    "sha256": "dc8fa35ef83db2db6533782d61141024a72d5ec5e66aeea9a896fa0f6fe5d0a9",
+    "images": [
+      "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-1-svg.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-2-svg.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-1-svg.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-2-svg.png",
+      "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-1-svg.png",
+      "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-2-svg.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/native-svg-02.jpg",
+    "sha256": "96f33acd4fe8959b131ba76f32e3caa45199cf87789e485adb3c4ef5023316e2",
+    "images": [
+      "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-1-svg.png",
+      "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-2-svg.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-1-svg.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-2-svg.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-1-svg.png",
+      "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-2-svg.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/native-svg-03.jpg",
+    "sha256": "be0ef29da16f6900d45ffcd65e9040dad09670cf54eb4ba8e1766b987694430d",
+    "images": [
+      "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-1-svg.png",
+      "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-2-svg.png",
+      "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-1-svg.png",
+      "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-2-svg.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/browser-export-01.jpg",
+    "sha256": "bd3fd06954c22b93342dcc3688d65df9031587e7af777d094e51872f2f45b503",
+    "images": [
+      "docs/v2-8g-evidence/independent/native/chart-2.png",
+      "docs/v2-8g-evidence/independent/native/table-3.png",
+      "docs/v2-8g-evidence/independent/native/handoff-1.png",
+      "docs/v2-8g-evidence/independent/native/handoff-2.png",
+      "docs/v2-8g-evidence/independent/native/handoff-3.png",
+      "docs/v2-8g-evidence/independent/native/shell-chart.png"
+    ]
+  },
+  {
+    "file": "docs/v2-8g-evidence/independent/fresh-contact/browser-export-02.jpg",
+    "sha256": "eb44ce96ea47c65071c1ea8941235bcca13cc09e7cd06deacb9ed0421753475a",
+    "images": [
+      "docs/v2-8g-evidence/independent/native/shell-table.png"
+    ]
+  }
+]

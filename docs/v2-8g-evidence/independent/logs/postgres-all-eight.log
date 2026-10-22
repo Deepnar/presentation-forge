@@ -1,0 +1,1119 @@
+TAP version 13
+# Subtest: PostgreSQL/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 1 - PostgreSQL/openai-compatible: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 438.952066
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-to-answer never creates an edit run
+ok 2 - PostgreSQL/openai-compatible: read-to-answer never creates an edit run
+  ---
+  duration_ms: 25.05137
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-to-refusal never creates an edit run
+ok 3 - PostgreSQL/openai-compatible: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 22.046963
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+ok 4 - PostgreSQL/openai-compatible: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 122.706331
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: exchange exhaustion refuses without effects or refunds
+ok 5 - PostgreSQL/openai-compatible: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 24.828903
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: output exhaustion refuses without effects or refunds
+ok 6 - PostgreSQL/openai-compatible: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 19.235718
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: tools exhaustion refuses without effects or refunds
+ok 7 - PostgreSQL/openai-compatible: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 15.193353
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a repeated call ID across exchanges refuses before another read
+ok 8 - PostgreSQL/openai-compatible: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 28.340809
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: mixed reads and edits cannot partially execute
+ok 9 - PostgreSQL/openai-compatible: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 19.831551
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: an out-of-scope model read stops before another exchange
+ok 10 - PostgreSQL/openai-compatible: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 17.894496
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: human save during exchange 1 invalidates the invocation
+ok 11 - PostgreSQL/openai-compatible: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 22.093182
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: human save during exchange 3 invalidates the invocation
+ok 12 - PostgreSQL/openai-compatible: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 37.892781
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancellation during the second provider request aborts the entire invocation
+ok 13 - PostgreSQL/openai-compatible: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 15.050558
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 14 - PostgreSQL/openai-compatible: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 26.397436
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: foreign ownership refuses before any provider call
+ok 15 - PostgreSQL/openai-compatible: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 8.534298
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: protected edits refuse the entire terminal batch after investigation
+ok 16 - PostgreSQL/openai-compatible: protected edits refuse the entire terminal batch after investigation
+  ---
+  duration_ms: 27.347505
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deletion while a provider response is pending stops further exchanges
+ok 17 - PostgreSQL/openai-compatible: deletion while a provider response is pending stops further exchanges
+  ---
+  duration_ms: 11.37036
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancelled at queue commit rolls back a traced proposal
+ok 18 - PostgreSQL/openai-compatible: cancelled at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 47.521463
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deadline at queue commit rolls back a traced proposal
+ok 19 - PostgreSQL/openai-compatible: deadline at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 37.466467
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+ok 20 - PostgreSQL/anthropic: multiple read rounds produce a preserved explicit proposal with durable restart/history
+  ---
+  duration_ms: 356.716125
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-to-answer never creates an edit run
+ok 21 - PostgreSQL/anthropic: read-to-answer never creates an edit run
+  ---
+  duration_ms: 15.158284
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-to-refusal never creates an edit run
+ok 22 - PostgreSQL/anthropic: read-to-refusal never creates an edit run
+  ---
+  duration_ms: 15.013823
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+ok 23 - PostgreSQL/anthropic: 32 model reads retain their allowance in addition to four initial context reads
+  ---
+  duration_ms: 56.421856
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: exchange exhaustion refuses without effects or refunds
+ok 24 - PostgreSQL/anthropic: exchange exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 12.660167
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: output exhaustion refuses without effects or refunds
+ok 25 - PostgreSQL/anthropic: output exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 16.390387
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: tools exhaustion refuses without effects or refunds
+ok 26 - PostgreSQL/anthropic: tools exhaustion refuses without effects or refunds
+  ---
+  duration_ms: 8.936778
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a repeated call ID across exchanges refuses before another read
+ok 27 - PostgreSQL/anthropic: a repeated call ID across exchanges refuses before another read
+  ---
+  duration_ms: 17.773458
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: mixed reads and edits cannot partially execute
+ok 28 - PostgreSQL/anthropic: mixed reads and edits cannot partially execute
+  ---
+  duration_ms: 11.524842
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: an out-of-scope model read stops before another exchange
+ok 29 - PostgreSQL/anthropic: an out-of-scope model read stops before another exchange
+  ---
+  duration_ms: 16.890581
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: human save during exchange 1 invalidates the invocation
+ok 30 - PostgreSQL/anthropic: human save during exchange 1 invalidates the invocation
+  ---
+  duration_ms: 17.748032
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: human save during exchange 3 invalidates the invocation
+ok 31 - PostgreSQL/anthropic: human save during exchange 3 invalidates the invocation
+  ---
+  duration_ms: 27.500216
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancellation during the second provider request aborts the entire invocation
+ok 32 - PostgreSQL/anthropic: cancellation during the second provider request aborts the entire invocation
+  ---
+  duration_ms: 20.426653
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+ok 33 - PostgreSQL/anthropic: proposal lifetime retains its trusted deadline and copied authority is refused
+  ---
+  duration_ms: 29.409058
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: foreign ownership refuses before any provider call
+ok 34 - PostgreSQL/anthropic: foreign ownership refuses before any provider call
+  ---
+  duration_ms: 5.968252
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: protected edits refuse the entire terminal batch after investigation
+ok 35 - PostgreSQL/anthropic: protected edits refuse the entire terminal batch after investigation
+  ---
+  duration_ms: 27.895609
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deletion while a provider response is pending stops further exchanges
+ok 36 - PostgreSQL/anthropic: deletion while a provider response is pending stops further exchanges
+  ---
+  duration_ms: 13.389606
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancelled at queue commit rolls back a traced proposal
+ok 37 - PostgreSQL/anthropic: cancelled at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 30.082952
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deadline at queue commit rolls back a traced proposal
+ok 38 - PostgreSQL/anthropic: deadline at queue commit rolls back a traced proposal
+  ---
+  duration_ms: 33.93109
+  type: 'test'
+  ...
+# Subtest: cold cross-process creation races initialize safely and commit one project/history/receipt
+ok 39 - cold cross-process creation races initialize safely and commit one project/history/receipt
+  ---
+  duration_ms: 584.625438
+  type: 'test'
+  ...
+# Subtest: same-process concurrent imports return one current project without extra history
+ok 40 - same-process concurrent imports return one current project without extra history
+  ---
+  duration_ms: 234.261074
+  type: 'test'
+  ...
+# Subtest: changed sources, deleted targets and owner mismatches refuse without overwrites
+ok 41 - changed sources, deleted targets and owner mismatches refuse without overwrites
+  ---
+  duration_ms: 32.981491
+  type: 'test'
+  ...
+# Subtest: a history trigger fault rolls back reservation and project; retry can create
+ok 42 - a history trigger fault rolls back reservation and project; retry can create
+  ---
+  duration_ms: 29.937535
+  type: 'test'
+  ...
+# Subtest: a lost response and pool restart replay the committed current project
+ok 43 - a lost response and pool restart replay the committed current project
+  ---
+  duration_ms: 22.145717
+  type: 'test'
+  ...
+# Subtest: a terminated backend during history insertion rolls back every creation row
+ok 44 - a terminated backend during history insertion rolls back every creation row
+  ---
+  duration_ms: 67.095996
+  type: 'test'
+  ...
+# Subtest: v2-6c two processes, one postgres
+    # Subtest: same-base saves across instances yield one 200 and one 409
+    ok 1 - same-base saves across instances yield one 200 and one 409
+      ---
+      duration_ms: 360.632657
+      type: 'test'
+      ...
+    # Subtest: save versus rename across instances keeps one winner
+    ok 2 - save versus rename across instances keeps one winner
+      ---
+      duration_ms: 36.877239
+      type: 'test'
+      ...
+    # Subtest: save versus restore across instances keeps one winner
+    ok 3 - save versus restore across instances keeps one winner
+      ---
+      duration_ms: 33.498282
+      type: 'test'
+      ...
+    # Subtest: restore versus restore across instances keeps one winner
+    ok 4 - restore versus restore across instances keeps one winner
+      ---
+      duration_ms: 51.749045
+      type: 'test'
+      ...
+    # Subtest: rename versus rename across instances keeps one winner
+    ok 5 - rename versus rename across instances keeps one winner
+      ---
+      duration_ms: 22.571814
+      type: 'test'
+      ...
+    # Subtest: delete during a concurrent save leaves exactly one consistent outcome
+    ok 6 - delete during a concurrent save leaves exactly one consistent outcome
+      ---
+      duration_ms: 16.157954
+      type: 'test'
+      ...
+    # Subtest: history initialization racing with saves yields one baseline
+    ok 7 - history initialization racing with saves yields one baseline
+      ---
+      duration_ms: 33.557808
+      type: 'test'
+      ...
+    # Subtest: concurrent mixed mutations keep prune accounting exact
+    ok 8 - concurrent mixed mutations keep prune accounting exact
+      ---
+      duration_ms: 18.439843
+      type: 'test'
+      ...
+    # Subtest: same owner email works across instances; cross-owner denied
+    ok 9 - same owner email works across instances; cross-owner denied
+      ---
+      duration_ms: 24.780941
+      type: 'test'
+      ...
+    # Subtest: rapid creates mint distinct ids across instances
+    ok 10 - rapid creates mint distinct ids across instances
+      ---
+      duration_ms: 48.591165
+      type: 'test'
+      ...
+    1..10
+ok 45 - v2-6c two processes, one postgres
+  ---
+  duration_ms: 1319.052639
+  type: 'suite'
+  ...
+# Subtest: v2-6c two processes, one sqlite file
+    # Subtest: same-base saves across sqlite processes yield one 200 and one 409
+    ok 1 - same-base saves across sqlite processes yield one 200 and one 409
+      ---
+      duration_ms: 119.314267
+      type: 'test'
+      ...
+    1..1
+ok 46 - v2-6c two processes, one sqlite file
+  ---
+  duration_ms: 1584.723487
+  type: 'suite'
+  ...
+# Subtest: v2-6c transaction faults
+    # Subtest: terminated backend mid-transaction rolls back with nothing saved
+    ok 1 - terminated backend mid-transaction rolls back with nothing saved
+      ---
+      duration_ms: 226.649642
+      type: 'test'
+      ...
+    # Subtest: history-insert failure rolls back the project write
+    ok 2 - history-insert failure rolls back the project write
+      ---
+      duration_ms: 16.321535
+      type: 'test'
+      ...
+    # Subtest: prune failure rolls back the whole save
+    ok 3 - prune failure rolls back the whole save
+      ---
+      duration_ms: 83.894694
+      type: 'test'
+      ...
+    # Subtest: unreachable database reports storage-unavailable and never saved
+    ok 4 - unreachable database reports storage-unavailable and never saved
+      ---
+      duration_ms: 2.609983
+      type: 'test'
+      ...
+    # Subtest: pool exhaustion fails loudly instead of hanging or half-writing
+    ok 5 - pool exhaustion fails loudly instead of hanging or half-writing
+      ---
+      duration_ms: 5528.659093
+      type: 'test'
+      ...
+    # Subtest: killed writer processes leave consistent history
+    ok 6 - killed writer processes leave consistent history
+      ---
+      duration_ms: 2021.838007
+      type: 'test'
+      ...
+    1..6
+ok 47 - v2-6c transaction faults
+  ---
+  duration_ms: 7906.025077
+  type: 'suite'
+  ...
+# Subtest: v2-6c misconfiguration over HTTP
+    # Subtest: postgres selected without a URL answers 503 honestly, never sqlite
+    ok 1 - postgres selected without a URL answers 503 honestly, never sqlite
+      ---
+      duration_ms: 341.010933
+      type: 'test'
+      ...
+    # Subtest: aborted HTTP saves leave consistent history
+    ok 2 - aborted HTTP saves leave consistent history
+      ---
+      duration_ms: 2662.40598
+      type: 'test'
+      ...
+    1..2
+ok 48 - v2-6c misconfiguration over HTTP
+  ---
+  duration_ms: 3804.228772
+  type: 'suite'
+  ...
+# Subtest: v2-6c contract over postgres
+    # Subtest: adapter answers before the shared suite runs
+    ok 1 - adapter answers before the shared suite runs
+      ---
+      duration_ms: 8.360698
+      type: 'test'
+      ...
+    1..1
+ok 49 - v2-6c contract over postgres
+  ---
+  duration_ms: 26.779327
+  type: 'suite'
+  ...
+# Subtest: [postgres] CRUD and summaries
+    # Subtest: creates, loads, lists without scene bytes, renames, deletes
+    ok 1 - creates, loads, lists without scene bytes, renames, deletes
+      ---
+      duration_ms: 78.379719
+      type: 'test'
+      ...
+    # Subtest: no-op saves and renames advance nothing and record nothing
+    ok 2 - no-op saves and renames advance nothing and record nothing
+      ---
+      duration_ms: 11.43227
+      type: 'test'
+      ...
+    1..2
+ok 50 - [postgres] CRUD and summaries
+  ---
+  duration_ms: 89.997473
+  type: 'suite'
+  ...
+# Subtest: [postgres] schema validation
+    # Subtest: refuses malformed ids, titles, scenes, and provenance
+    ok 1 - refuses malformed ids, titles, scenes, and provenance
+      ---
+      duration_ms: 9.448438
+      type: 'test'
+      ...
+    1..1
+ok 51 - [postgres] schema validation
+  ---
+  duration_ms: 9.574335
+  type: 'suite'
+  ...
+# Subtest: [postgres] owner isolation
+    # Subtest: exact-match reads, lists, writes, and history without leaks
+    ok 1 - exact-match reads, lists, writes, and history without leaks
+      ---
+      duration_ms: 39.216022
+      type: 'test'
+      ...
+    1..1
+ok 52 - [postgres] owner isolation
+  ---
+  duration_ms: 39.379562
+  type: 'suite'
+  ...
+# Subtest: [postgres] revision conflicts
+    # Subtest: same-base saves serialize to one winner and one stale
+    ok 1 - same-base saves serialize to one winner and one stale
+      ---
+      duration_ms: 15.477495
+      type: 'test'
+      ...
+    # Subtest: save versus rename on one base keeps exactly one winner
+    ok 2 - save versus rename on one base keeps exactly one winner
+      ---
+      duration_ms: 11.80232
+      type: 'test'
+      ...
+    # Subtest: concurrent same-base renames yield one winner and one stale
+    ok 3 - concurrent same-base renames yield one winner and one stale
+      ---
+      duration_ms: 9.293748
+      type: 'test'
+      ...
+    1..3
+ok 53 - [postgres] revision conflicts
+  ---
+  duration_ms: 36.835765
+  type: 'suite'
+  ...
+# Subtest: [postgres] atomic history
+    # Subtest: every committed revision has a validated history row; failures add none
+    ok 1 - every committed revision has a validated history row; failures add none
+      ---
+      duration_ms: 11.379746
+      type: 'test'
+      ...
+    1..1
+ok 54 - [postgres] atomic history
+  ---
+  duration_ms: 11.480963
+  type: 'suite'
+  ...
+# Subtest: [postgres] retention
+    # Subtest: stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+    ok 1 - stays bounded: newest 20 recoverable, older audit-only, pruned unrestorable
+      ---
+      duration_ms: 91.018926
+      type: 'test'
+      ...
+    1..1
+ok 55 - [postgres] retention
+  ---
+  duration_ms: 91.148117
+  type: 'suite'
+  ...
+# Subtest: [postgres] restore
+    # Subtest: restores as a new revision, preserves rows, refuses stale
+    ok 1 - restores as a new revision, preserves rows, refuses stale
+      ---
+      duration_ms: 17.959969
+      type: 'test'
+      ...
+    # Subtest: restore versus restore on one base keeps one winner
+    ok 2 - restore versus restore on one base keeps one winner
+      ---
+      duration_ms: 11.003445
+      type: 'test'
+      ...
+    1..2
+ok 56 - [postgres] restore
+  ---
+  duration_ms: 29.13362
+  type: 'suite'
+  ...
+# Subtest: [postgres] migration and corruption
+    # Subtest: history-less projects gain exactly one baseline without rewrites
+    ok 1 - history-less projects gain exactly one baseline without rewrites
+      ---
+      duration_ms: 10.313365
+      type: 'test'
+      ...
+    # Subtest: future schema versions refuse; corrupt rows refuse with current intact
+    ok 2 - future schema versions refuse; corrupt rows refuse with current intact
+      ---
+      duration_ms: 11.654221
+      type: 'test'
+      ...
+    1..2
+ok 57 - [postgres] migration and corruption
+  ---
+  duration_ms: 22.11219
+  type: 'suite'
+  ...
+# Subtest: [postgres] round-trip and export
+    # Subtest: mixed decks survive byte-identical with identity intact
+    ok 1 - mixed decks survive byte-identical with identity intact
+      ---
+      duration_ms: 7.62458
+      type: 'test'
+      ...
+    # Subtest: stored and restored documents export native and order-exact
+    ok 2 - stored and restored documents export native and order-exact
+      ---
+      duration_ms: 42.093233
+      type: 'test'
+      ...
+    1..2
+ok 58 - [postgres] round-trip and export
+  ---
+  duration_ms: 49.874639
+  type: 'suite'
+  ...
+# Subtest: [postgres] deletion
+    # Subtest: delete removes the project and its history together
+    ok 1 - delete removes the project and its history together
+      ---
+      duration_ms: 6.731464
+      type: 'test'
+      ...
+    1..1
+ok 59 - [postgres] deletion
+  ---
+  duration_ms: 6.822407
+  type: 'suite'
+  ...
+# Subtest: PostgreSQL/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+ok 60 - PostgreSQL/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 149.657623
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save during HTTP prevents stale plan execution
+ok 61 - PostgreSQL/openai-compatible: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 21.964087
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: protected content remains protected after a valid proposal
+ok 62 - PostgreSQL/openai-compatible: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 25.237319
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a normalized response grants no foreign-owner authority
+ok 63 - PostgreSQL/openai-compatible: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 8.998806
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: inspection scope cannot receive an edit proposal
+ok 64 - PostgreSQL/openai-compatible: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 9.075183
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+ok 65 - PostgreSQL/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 39.594784
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save during HTTP prevents stale plan execution
+ok 66 - PostgreSQL/anthropic: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 13.598193
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: protected content remains protected after a valid proposal
+ok 67 - PostgreSQL/anthropic: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 20.755959
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a normalized response grants no foreign-owner authority
+ok 68 - PostgreSQL/anthropic: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 8.829266
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: inspection scope cannot receive an edit proposal
+ok 69 - PostgreSQL/anthropic: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 7.031688
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+ok 70 - PostgreSQL/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 524.125278
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: text returns bounded information without a queue or edit
+ok 71 - PostgreSQL/openai-compatible: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 17.191764
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refusal returns bounded information without a queue or edit
+ok 72 - PostgreSQL/openai-compatible: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 13.990377
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-results returns bounded information without a queue or edit
+ok 73 - PostgreSQL/openai-compatible: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 15.25433
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 74 - PostgreSQL/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 22.845075
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+ok 75 - PostgreSQL/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 27.12649
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses protected batches without partial edits
+ok 76 - PostgreSQL/openai-compatible: refuses protected batches without partial edits
+  ---
+  duration_ms: 17.237365
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: uses engine revision zero independently of an advanced durable revision
+ok 77 - PostgreSQL/openai-compatible: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 30.095283
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save while HTTP is pending invalidates preparation
+ok 78 - PostgreSQL/openai-compatible: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 17.59681
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save after preparation prevents queuing
+ok 79 - PostgreSQL/openai-compatible: a human save after preparation prevents queuing
+  ---
+  duration_ms: 19.164701
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses foreign owners and invalid scopes before network
+ok 80 - PostgreSQL/openai-compatible: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 9.426756
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancellation covers both preparation and pending HTTP
+ok 81 - PostgreSQL/openai-compatible: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 16.691799
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: an expired deadline refuses before HTTP
+ok 82 - PostgreSQL/openai-compatible: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 8.241213
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: the absolute deadline also bounds pending provider HTTP
+ok 83 - PostgreSQL/openai-compatible: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 507.735764
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancelled at final queue commit rolls back the run insert
+ok 84 - PostgreSQL/openai-compatible: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 15.876322
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deadline at final queue commit rolls back the run insert
+ok 85 - PostgreSQL/openai-compatible: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 10.952659
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: only the original proposal instance can queue its private plan
+ok 86 - PostgreSQL/openai-compatible: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 14.80501
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: conflicting proposals cannot reuse a queued request identity
+ok 87 - PostgreSQL/openai-compatible: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 38.466665
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-only grants cannot receive edit proposals
+ok 88 - PostgreSQL/openai-compatible: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 12.53925
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deleting a project invalidates its ephemeral proposals
+ok 89 - PostgreSQL/openai-compatible: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 16.788478
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+ok 90 - PostgreSQL/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 10.519022
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+ok 91 - PostgreSQL/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 349.429441
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: text returns bounded information without a queue or edit
+ok 92 - PostgreSQL/anthropic: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 9.943757
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refusal returns bounded information without a queue or edit
+ok 93 - PostgreSQL/anthropic: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 11.777486
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-results returns bounded information without a queue or edit
+ok 94 - PostgreSQL/anthropic: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 11.852354
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 95 - PostgreSQL/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 15.409251
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+ok 96 - PostgreSQL/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 11.316634
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses protected batches without partial edits
+ok 97 - PostgreSQL/anthropic: refuses protected batches without partial edits
+  ---
+  duration_ms: 8.378462
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: uses engine revision zero independently of an advanced durable revision
+ok 98 - PostgreSQL/anthropic: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 28.3235
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save while HTTP is pending invalidates preparation
+ok 99 - PostgreSQL/anthropic: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 19.690911
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save after preparation prevents queuing
+ok 100 - PostgreSQL/anthropic: a human save after preparation prevents queuing
+  ---
+  duration_ms: 17.6839
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses foreign owners and invalid scopes before network
+ok 101 - PostgreSQL/anthropic: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 6.006822
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancellation covers both preparation and pending HTTP
+ok 102 - PostgreSQL/anthropic: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 9.926868
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: an expired deadline refuses before HTTP
+ok 103 - PostgreSQL/anthropic: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 4.29152
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: the absolute deadline also bounds pending provider HTTP
+ok 104 - PostgreSQL/anthropic: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 504.956001
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancelled at final queue commit rolls back the run insert
+ok 105 - PostgreSQL/anthropic: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 11.805539
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deadline at final queue commit rolls back the run insert
+ok 106 - PostgreSQL/anthropic: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 12.868305
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: only the original proposal instance can queue its private plan
+ok 107 - PostgreSQL/anthropic: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 8.530918
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: conflicting proposals cannot reuse a queued request identity
+ok 108 - PostgreSQL/anthropic: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 15.204238
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-only grants cannot receive edit proposals
+ok 109 - PostgreSQL/anthropic: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 5.548936
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deleting a project invalidates its ephemeral proposals
+ok 110 - PostgreSQL/anthropic: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 9.297897
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+ok 111 - PostgreSQL/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 9.094883
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project, history and receipt commit once with distinct revisions
+ok 112 - PostgreSQL: project, history and receipt commit once with distinct revisions
+  ---
+  duration_ms: 103.396125
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: request identity reopens exact state and refuses changed plans
+ok 113 - PostgreSQL: request identity reopens exact state and refuses changed plans
+  ---
+  duration_ms: 22.110241
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: input and output snapshots do not mutate durable authority
+ok 114 - PostgreSQL: input and output snapshots do not mutate durable authority
+  ---
+  duration_ms: 34.045859
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act
+ok 115 - PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act
+  ---
+  duration_ms: 14.022894
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: local ownerless projects retain local authority without widening scope
+ok 116 - PostgreSQL: local ownerless projects retain local authority without widening scope
+  ---
+  duration_ms: 18.716705
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: read and noop receipts never invent durable project history
+ok 117 - PostgreSQL: read and noop receipts never invent durable project history
+  ---
+  duration_ms: 11.763641
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+ok 118 - PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+  ---
+  duration_ms: 23.857205
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: human changes after start cause stale refusal without rebasing
+ok 119 - PostgreSQL: human changes after start cause stale refusal without rebasing
+  ---
+  duration_ms: 10.151765
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools
+ok 120 - PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools
+  ---
+  duration_ms: 28.065773
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: failure budgets and concise traces survive a new runtime instance
+ok 121 - PostgreSQL: failure budgets and concise traces survive a new runtime instance
+  ---
+  duration_ms: 17.61995
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: cancellation before work and after commit preserves transaction order
+ok 122 - PostgreSQL: cancellation before work and after commit preserves transaction order
+  ---
+  duration_ms: 20.669743
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: lease takeover fences the previous worker even with reused worker name
+ok 123 - PostgreSQL: lease takeover fences the previous worker even with reused worker name
+  ---
+  duration_ms: 146.751824
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: deadlines persist across restart and expire before effects
+ok 124 - PostgreSQL: deadlines persist across restart and expire before effects
+  ---
+  duration_ms: 199.697403
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: after-project failure rolls project/history/receipt back together
+ok 125 - PostgreSQL: after-project failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1042.142007
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: after-receipt failure rolls project/history/receipt back together
+ok 126 - PostgreSQL: after-receipt failure rolls project/history/receipt back together
+  ---
+  duration_ms: 1033.169658
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: final-fence failure rolls project/history/receipt back together
+ok 127 - PostgreSQL: final-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 159.135677
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: deadline-fence failure rolls project/history/receipt back together
+ok 128 - PostgreSQL: deadline-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 166.125973
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: records and traces are bounded and omit raw document/read contents
+ok 129 - PostgreSQL: records and traces are bounded and omit raw document/read contents
+  ---
+  duration_ms: 13.496892
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused
+ok 130 - PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused
+  ---
+  duration_ms: 10.707941
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: concurrent advances sharing one lease reserve only one attempt
+ok 131 - PostgreSQL: concurrent advances sharing one lease reserve only one attempt
+  ---
+  duration_ms: 21.354839
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: unsupported or corrupt durable records fail closed
+ok 132 - PostgreSQL: unsupported or corrupt durable records fail closed
+  ---
+  duration_ms: 5.225333
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: renewal extends the current lease without changing its fence
+ok 133 - PostgreSQL: renewal extends the current lease without changing its fence
+  ---
+  duration_ms: 195.219098
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project deletion cascades runs and all step receipts
+ok 134 - PostgreSQL: project deletion cascades runs and all step receipts
+  ---
+  duration_ms: 13.47639
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: corrupt receipt checkpoints refuse resume instead of skipping work
+ok 135 - PostgreSQL: corrupt receipt checkpoints refuse resume instead of skipping work
+  ---
+  duration_ms: 11.184335
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: CLI start exits and a separate worker completes the saved project
+ok 136 - PostgreSQL: CLI start exits and a separate worker completes the saved project
+  ---
+  duration_ms: 1060.561245
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: schema-valid contradictory receipts and counters fail closed
+ok 137 - PostgreSQL: schema-valid contradictory receipts and counters fail closed
+  ---
+  duration_ms: 65.989654
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: two processes race for one lease and only one can claim
+ok 138 - PostgreSQL process: two processes race for one lease and only one can claim
+  ---
+  duration_ms: 420.451309
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill reserved then restart cannot lose or replay an edit
+ok 139 - PostgreSQL process: kill reserved then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1872.264444
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill after-project then restart cannot lose or replay an edit
+ok 140 - PostgreSQL process: kill after-project then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1872.55612
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit
+ok 141 - PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1870.467931
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill committed then restart cannot lose or replay an edit
+ok 142 - PostgreSQL process: kill committed then restart cannot lose or replay an edit
+  ---
+  duration_ms: 319.62311
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: restart resumes after a committed checkpoint without repeating it
+ok 143 - PostgreSQL process: restart resumes after a committed checkpoint without repeating it
+  ---
+  duration_ms: 1842.354527
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: crashed reservations exhaust the persisted step budget
+ok 144 - PostgreSQL process: crashed reservations exhaust the persisted step budget
+  ---
+  duration_ms: 1041.994816
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next
+ok 145 - PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next
+  ---
+  duration_ms: 639.633794
+  type: 'test'
+  ...
+1..145
+# tests 166
+# suites 15
+# pass 166
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 37332.083376
+# forge-test-file "test/v2-conversation-postgres-8e.test.js"
+# forge-test-file "test/v2-import-postgres-7b.test.js"
+# forge-test-file "test/v2-projects-6c-concurrency.test.js"
+# forge-test-file "test/v2-projects-6c-faults.test.js"
+# forge-test-file "test/v2-projects-6c-postgres.test.js"
+# forge-test-file "test/v2-provider-postgres-8c.test.js"
+# forge-test-file "test/v2-provider-run-postgres-8d.test.js"
+# forge-test-file "test/v2-runtime-postgres-8b.test.js"

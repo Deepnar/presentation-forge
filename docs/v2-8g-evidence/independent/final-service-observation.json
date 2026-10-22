@@ -1,0 +1,16 @@
+{
+  "id": "2776cb64a2b09255d751aab5c4c8a5e95ac26bd74e68325e7196dc9a4b9dffd7",
+  "name": "forge-v28g-validation",
+  "runningAtCompletion": true,
+  "ports": {
+    "5432/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "5544"
+      }
+    ]
+  },
+  "actualProjectDatabasesAtReviewClose": 0,
+  "stoppedByReviewer": false,
+  "cleanupOwner": "/root; fresh saved/fsynced count, exact-owned removal and port-closure check remain required"
+}

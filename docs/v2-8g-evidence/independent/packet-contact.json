@@ -1,0 +1,102 @@
+[
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-01.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-01.jpg",
+    "sha256": "2e4a3e1429ac4914b540b7ea99601e35e7398ed0b1f9eb3b507a16db965f2b7b"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-02.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-02.jpg",
+    "sha256": "6594eac806460a105c706cef76b97c3db4e91fd161a2269c37e6f626c8e6b734"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-03.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-03.jpg",
+    "sha256": "8e20dabbe07fb1268d34dadaa9f1d8c281e2ff238ef7ae674dd2eae1671920d9"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-04.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-04.jpg",
+    "sha256": "c484fba48a6f2212f3ded1e7a2b5f7c669f74022f61fcac94c49bf4a080968ff"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-05.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-05.jpg",
+    "sha256": "4272fb351462328cee001659c4ee329d5154f4a1e206e991d36f9305fa80179b"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-06.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-06.jpg",
+    "sha256": "5edd15ba7b3ba848ce8a0f2cbf808baed6cd22762b0f496489e3c8466c3e75ba"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-07.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-07.jpg",
+    "sha256": "3326f49e4e476b925122691edd38d322f893f15180a3d65683a4500a1d458ff4"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-08.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-08.jpg",
+    "sha256": "3a3eeae7ed775042ec95ce0d9eb911e3d45755af5fdccc1769f7b1cc414c647c"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-09.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-09.jpg",
+    "sha256": "93c4f42ed9ed40d5d976649c97887d4e084e88707262ae33ae2e4f5f9fb33168"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-10.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-10.jpg",
+    "sha256": "75f1ad8959f3ce088f197ae4e49a821814b4fe052d7964289899f44ecf99c07f"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-11.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-11.jpg",
+    "sha256": "502ab2542d972776f2c4513f86e5d1161f3bce1bcb7579874091bc7a293c25e7"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-12.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-12.jpg",
+    "sha256": "b4fc285397cd40ef97e8dd62081e676d2ad41fba2f2ad39b0759382a3250295f"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-13.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-13.jpg",
+    "sha256": "2a5a952540e70fd233a68da950d43639cb5a99589a35360a953df5137a3630bb"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-14.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-14.jpg",
+    "sha256": "ee69e8f89c5d8196f809d6449ef7076f9c19d7f069f68ae5b95338dffdb886b8"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-15.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-15.jpg",
+    "sha256": "4e9056290fe5328ff303a2b57280c04027677bf0187914cb348f764e7dc35fb0"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-16.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-16.jpg",
+    "sha256": "2c59dadf7b59e0bc540f95bd4d4ac5af2648c4420d96084269a2c84a69e5169e"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-17.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-17.jpg",
+    "sha256": "ba7bacf54b7e767a7905c9423d7d8d7b10ee793b815c55c91cac3b69a3d56684"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-18.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-18.jpg",
+    "sha256": "14b9881525e192a7c52d8c1a5d893f2b98c5102ee284d4e212e5b704ea63ea12"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-19.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-19.jpg",
+    "sha256": "a6ee43e4ef90cc6e5974f0675bdfa5e0281be15d992ba6311574b8f927875083"
+  },
+  {
+    "source": "out/v2-8g-validation-20261022/contact/sheet-20.jpg",
+    "file": "docs/v2-8g-evidence/independent/packet-contact/sheet-20.jpg",
+    "sha256": "c9164bb88b911cdd4a497d7af072120e0dcd287a0d9e15547bf5120c999f236d"
+  }
+]

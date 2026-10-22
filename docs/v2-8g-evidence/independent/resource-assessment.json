@@ -1,0 +1,39 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "samples": 81,
+  "withheldPreJobSamples": 1,
+  "runningSamples": 17,
+  "criticalRunningSamples": 0,
+  "thresholdsChanged": false,
+  "initialQualification": {
+    "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+    "sampleSeconds": 180.53121049499987,
+    "samples": 12,
+    "cpuBusyMeanPercent": 7.173700305289007,
+    "cpuIoWaitMeanPercent": 9.870544189665505,
+    "diskMeans": {
+      "nvme0n1": {
+        "busyPercent": 1.182067075354322,
+        "weightedQueue": 0.08031852198986725
+      }
+    },
+    "freshConsecutiveReadySamples": 12,
+    "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+  },
+  "resumedQualification": {
+    "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+    "sampleSeconds": 180.44569870299893,
+    "samples": 12,
+    "cpuBusyMeanPercent": 2.4886257217430643,
+    "cpuIoWaitMeanPercent": 8.919725467923513,
+    "diskMeans": {
+      "nvme0n1": {
+        "busyPercent": 1.4536229008801567,
+        "weightedQueue": 0.07385601372485645
+      }
+    },
+    "freshConsecutiveReadySamples": 12,
+    "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+  },
+  "limitation": "Global I/O PSI/iowait provenance unresolved; no attribution to any competing worker or production-percentile claim."
+}
