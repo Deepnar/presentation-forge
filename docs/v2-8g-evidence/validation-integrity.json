@@ -30,18 +30,27 @@
   },
   "unexecutedInventoryFiles": 0,
   "fullValidationGatesPassed": 9,
-  "reviewStatus": "pending",
-  "accepted": false,
+  "reviewStatus": "accepted",
+  "accepted": true,
   "imagesHashedAndInspected": 115,
   "sourceIntegrity": "docs/v2-8g-evidence/source-integrity.json",
   "protocolExitCode": 0,
   "protocolLog": "docs/v2-8g-evidence/validation-protocol.log",
   "realModelApiCalls": 0,
   "localInferenceCalls": 0,
-  "ownedService": "Retained for independent review; cleanup pending.",
+  "ownedService": "Removed exact owned ID after saved/fsynced fresh zero-project-database count; port5544 closed.",
   "failedAttempts": [
     "Prior fail-first product tests and earlier metadata checkpoint retained",
     "Measurement configuration command exited 1 before provider exchange",
     "Metadata reason/scope checks failed and were corrected without changing validator/assertions"
-  ]
+  ],
+  "reviewRecord": "docs/reviews/V2-8G-f3e784a.json",
+  "independentSuccessfulExecutions": {
+    "total": 668,
+    "pass": 668,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "ownedServiceCleanup": "docs/v2-8g-evidence/owned-postgres-cleanup.json"
 }

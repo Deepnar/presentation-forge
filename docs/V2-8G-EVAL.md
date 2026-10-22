@@ -1,8 +1,8 @@
 # V2-8G model-transport resource bounds evaluation
 
-2026-10-22 · complete validation; independent acceptance pending.
+2026-10-22 · independently accepted; owned-service cleanup complete.
 Frozen implementation `f3e784ac6227f46628dc99a54762f6a861eeed64`; later documentation/evidence commits do not change code.
-Accepted baseline `0cab854bce04b862060829812a9ab6ff0b765fd9`; audit-entry checkout
+Task baseline `0cab854bce04b862060829812a9ab6ff0b765fd9`; audit-entry checkout
 `ee52b50bac2ce5704eda39a89ae959259497f331`; correction planning checkout `44377b0`.
 Branch `v2`, scoped push `origin/v2`. The [bounded contract](ROADMAP.md#model-provider-stream-resource-bounds)
 is separately authorized by the clarification permitting code but forbidding API-backed
@@ -27,8 +27,8 @@ All 224 planned files executed on frozen source f3e784a: **2,801 pass / 0 fail /
 0 skip / 0 cancelled**, with no unexecuted inventory file. The four distinct
 persisted native cases also passed. Build, typecheck, all 50 canonical benchmark
 cells, native/browser export checks, memory observations and visual inspection
-completed. All nine validation gates have evidence; independent acceptance is
-pending and accepted baseline remains 0cab854.
+completed. All nine validation gates have evidence; exact source f3e784a is
+[independently accepted](reviews/V2-8G-f3e784a.json) and is the current accepted baseline.
 
 | Primary group | Files | Pass | Fail | Skip | Cancelled |
 |---|---:|---:|---:|---:|---:|
@@ -165,16 +165,44 @@ job was relabeled passing. The standing locale failure remains separate.
   The explicit owned harness adjustment preserves its earlier bytes; historical
   evidence and original archives were not reconstructed or replaced.
 
-## Remaining limitations and recommendation
+## Independent acceptance and closeout
 
-Independent exact-source acceptance remains pending. The owned PostgreSQL service
-is retained only for that review and requires saved-count/exact-ID cleanup afterward.
+Separate context `/root/v28g_source_review` issued **ACCEPT** for exact source
+f3e784a against baseline 0cab854 in [the committed decision](reviews/V2-8G-f3e784a.json)
+and [review report](reviews/V2-8G-f3e784a.md). Evidence commit 5abf393 and decision
+commit 59c1fcd contain no product/test/validator changes. Independent execution
+passed **668/668**, 0 fail/skip/cancel: 443 affected/domain, 166 PostgreSQL,
+28 shell, 5 import, 11 SQLite handoff, 11 additional PostgreSQL handoff and
+4 persisted native cases. The separate locale probe again retained 9 pass /
+1 inherited failure. These repeat 653 primary leaves in 32 inventory files;
+192 files / 2,148 primary leaves were inspected through the exact-source packet,
+not independently rerun. Never add reviewer executions to the implementer's
+2,801 primary / 4 native distinct coverage.
+
+Independent build/typecheck/50 cells passed; all benchmark cell, invariance and
+counterfactual values match the packet, with 429 ms local compiler/ZIP time.
+Four independent fresh memory processes again sampled exactly 262,144 bytes of
+ArrayBuffer growth. The reviewer inspected all 115 packet and 71 fresh images;
+its opening/canvas samples were 1,543 ms / 0.171730 px. No blocking finding exists.
+A usage-limit interruption left all 17 main jobs durably acknowledged. Recovery
+verified exit/log hashes and intact backups, found no incomplete product job,
+and resumed only missing guarded export/preservation/visual work. Reviewer-only
+parser/backend-label corrections are retained separately from product checks.
+
+All 5,422 review snapshot files, including 142 PPTXs, and all five canonical
+originals were restored/hash-verified before release. Root then saved/fsynced a
+fresh actual zero-project-database observation and removed only the exact owned
+PostgreSQL ID. [Cleanup](v2-8g-evidence/owned-postgres-cleanup.json) verifies absence
+and port 5544 closure. No validation job or owned service remains. Original three
+untracked paths remain untouched. Implementation source is unchanged after review.
+
 No live model/provider quality or interactive Microsoft PowerPoint check executed;
 no such pass is claimed. Sampled memory is not a process peak measurement. Standing
 BYOK locale, native shape-ID, mixed-run SVG, Fit/narrow/capture/timeout and historical
 original-byte provenance limitations remain separate in the roadmap/prior records.
+The architecture audit's zero-execution phase remains distinct from later execution.
 
-Recommendation: the complete evidence supports independent acceptance of this narrow
-transport correction, subject to the reviewer's own checks and decision. The
-implementer does not accept it. Parent V2-8 and other audit proposals retain their
-roadmap approval boundaries; stop after review, owned-resource cleanup and handoff.
+The independent recommendation is acceptance of this bounded correction, now
+recorded in state. Parent V2-8 and other audit proposals retain their approval
+boundaries. Stop after this cleanup/handoff; no dependent feature, framework
+migration, real model call, infrastructure change or deployment was started.

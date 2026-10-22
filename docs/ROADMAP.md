@@ -8843,7 +8843,7 @@ needs direction on scope before building.*
 <a id="v2-8-audit-followups"></a>
 
 **2026-10-22 architecture gap audit — documentation-only assessment completed.**
-Entry checkout `ee52b50bac2ce5704eda39a89ae959259497f331`; accepted source remains
+Entry checkout `ee52b50bac2ce5704eda39a89ae959259497f331`; accepted source at audit entry was
 `0cab854bce04b862060829812a9ab6ff0b765fd9`. The
 [audit](V2-8-ARCHITECTURE-GAP-AUDIT.md) inspected current source, schemas, test
 contracts and retained evaluation/review records. It executed zero tests/evaluations,
@@ -8864,7 +8864,7 @@ remains inspection-only and every other proposal still needs its own approval.
 
 | Priority | Canonical work entry | Intent / rationale |
 |---|---|---|
-| P0 | [Model transport resource bounds](#model-provider-stream-resource-bounds) | Qualify the existing source-inspected read-loop/cleanup concern before live Assistant work; preserve accepted wire/error/usage/tool contracts. |
+| P0 — complete | [Model transport resource bounds](#model-provider-stream-resource-bounds) | V2-8G independently accepted at f3e784a; qualified the read-loop/cleanup correction while preserving wire/error/usage/tool contracts. |
 | P0 | [Turn and approval ownership](#assistant-turn-approval-contract) | Resolve cross-request/restart/multi-instance continuity and minimum durable private data before adding a user-facing approval flow. |
 | P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | Connect accepted SearchProvider through canonical authority and preserve verifiable project-scoped citations; do not merely add a catalog name. |
 | P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
@@ -9129,7 +9129,7 @@ Done when: the legacy paths are gone and old projects still open.
 
 <a id="model-provider-stream-resource-bounds"></a>
 
-### [ ] Model-provider stream lifetime and buffering audit
+### [x] Model-provider stream lifetime and buffering audit and correction
 
 V2-8F source review reproduced timer starvation and reader-cleanup/resource defects
 in the new search adapter and corrected that bounded slice. At architecture-audit entry, the accepted
@@ -9137,14 +9137,15 @@ src/agent/model-provider.js transport had the similar timer-only read loop,
 accumulated chunk array and release-before-outer-cancel pattern. The subsequent
 separately authorized V2-8G correction reproduced12failures/14injected cases and
 corrected the transport at `ec67315`; unchanged assertions then passed14/14.
-No live-model failure is claimed. Full regression and independent acceptance remain
-pending in [the correction evaluation](V2-8G-EVAL.md); this item remains unchecked.
+No live-model failure is claimed. Full regression and independent acceptance are
+complete in [the correction evaluation](V2-8G-EVAL.md) and
+[exact-source decision](reviews/V2-8G-f3e784a.json).
 Preserve both real HTTP protocols, normalized usage, canonical result/privacy gates
 and existing assertions. Any correction needs its own bounded contract, unchanged
 regression coverage and exact-source independent review. Do not absorb provider
 changes into the shared-search slice or infer a live-provider failure from a fixture.
 
-**Current validation checkpoint:** frozen `f3e784a` retains adapter bytes from
+**Accepted implementation:** frozen `f3e784a` retains adapter bytes from
 `ec67315` and four later coverage cases. Complete 224-file validation passed
 2,801/2,801 (190 bulk / 26 serial / 8 PostgreSQL), plus four distinct persisted
 native cases, build/typecheck/50 cells and current visual/resource observations.
@@ -9154,9 +9155,16 @@ empty reads; this is sampled retained memory, not process peak RSS. The separate
 locale run remains 9 pass / 1 standing failure. A measurement configuration and
 state/evidence grouping errors were corrected without product/assertion changes;
 failed attempts remain retained. No real model API or local inference occurred.
-Independent acceptance is pending; accepted baseline remains 0cab854. Do not tick
-this item or begin dependent work before the exact-source decision. The owned
-PostgreSQL service is retained only for review and subsequent verified cleanup.
+A separate high-effort reviewer accepted exact source f3e784a after 668 successful
+executions and inspecting all 115 packet / 71 fresh images. Its 32 repeated primary
+files cover 653 leaves; four native cases and 11 additional PostgreSQL handoff
+backend executions complete the 668. Remaining primary coverage was inspected,
+not independently rerun. The usage interruption preserved 17 acknowledged jobs;
+only missing supplements/restoration resumed. All 5,422 review snapshot files and
+five canonical originals were restored/hash-verified. The exact owned PostgreSQL
+service was removed after a fresh saved/fsynced zero-project-database observation;
+5544 is closed. Accepted baseline is now f3e784a. Parent V2-8 and the remaining
+audit proposals retain their own direction/authorization gates.
 
 **V2-8G model-transport resource bounds — separately authorized, 2026-10-22.**
 The follow-up permits writing code and deterministic fixtures, with no API-backed
@@ -9176,22 +9184,33 @@ scoped push `origin/v2`. Keep existing ModelProvider and both real HTTP protocol
   schemas, scope, redirects, no automatic retries, sanitized diagnostics, response
   allowance and timeout settings. No provider defaults, SDK/framework, UI/routes,
   credentials, storage/data policy, search rewiring, visual changes or new feature.
-- **Future required evidence:** retain fail-first isolated child/watchdog results
+- **Required evidence (completed):** retain fail-first isolated child/watchdog results
   and affected two-protocol HTTP tests; cover late/non-cooperating header/body work,
   deadline and caller cancellation, exact byte/UTF-8 boundaries and reader cleanup.
   Run provider/preparation/conversation/preservation/runtime and unchanged package
   boundary tests. Complete the then-current full regression inventory (currently
-  224 files, including the new stream regression file), bounded serial browser/build owners, owned PostgreSQL contracts/
+  224 files, including the new stream regression file), bounded serial browser/build
+  owners, owned PostgreSQL contracts/
   process/fault checks, build/typecheck/50 cells and native/visual regression evidence
   behind quiet-window guards. Preserve all-current evidence and original archives
   before generators. Missing PostgreSQL is unexecuted; keep BYOK locale separate.
 - **Acceptance/stop:** exact frozen source, commands, actual backend, honest test
   totals, bounded-memory/time observations, failed attempts and performance go in
-  its future evaluation. One separate high-effort reviewer or human supplies ACCEPT/
+  its correction evaluation. One separate high-effort reviewer or human supplies ACCEPT/
   HOLD; never self-accept. Stop at review/cleanup/handoff, without dependent features.
   No test, service, live provider call or implementation starts during the audit.
   Subsequent correction tests use deterministic fake/injected transports only; no
   live API-backed model, local inference or automatic provider qualification.
+
+> **Learned.** A response-byte ceiling alone does not bound empty-read count,
+> timer starvation or retained chunk objects. A fixed buffer, monotonic checks,
+> periodic yielding and cancellation while the reader is still locked address
+> distinct lifetimes. Full-GC samples demonstrate retained storage, not process
+> peak memory. Exact gate file sets and per-job exit/hash acknowledgments prevent
+> broad passing logs or interrupted orchestration from overstating coverage.
+> Look-ahead preserved the accepted provider/conversation/queue boundary; durable
+> turn/approval, source integration and Assistant work can reuse it without a
+> protocol, authority or document migration. All other audit proposals remain gated.
 
 <a id="postgres-availability-diagnostics"></a>
 

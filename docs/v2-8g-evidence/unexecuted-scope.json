@@ -14,12 +14,13 @@
     "shell-native"
   ],
   "visualInspection": "Complete 115-image contact inspection plus full-size risk cases; see VISUAL-REVIEW.md",
-  "independentAcceptance": "pending",
+  "independentAcceptance": "ACCEPT exact f3e784ac6227f46628dc99a54762f6a861eeed64 in docs/reviews/V2-8G-f3e784a.json",
   "outOfScopeUnexecuted": [
     "Interactive Microsoft PowerPoint",
     "Live model/provider qualification and quality",
     "Process peak RSS profiling"
   ],
   "realModelApiCalls": 0,
-  "localInferenceCalls": 0
+  "localInferenceCalls": 0,
+  "ownedServiceCleanup": "docs/v2-8g-evidence/owned-postgres-cleanup.json"
 }

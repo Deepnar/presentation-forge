@@ -1,11 +1,21 @@
 {
   "taskEntry": "ee52b50bac2ce5704eda39a89ae959259497f331",
   "continuationEntry": "004e17156b779fb2888cbc5ddd8fb10a640ba221",
-  "acceptedBaseline": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "comparisonBaseline": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "acceptedBaseline": "f3e784ac6227f46628dc99a54762f6a861eeed64",
   "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
-  "comparison": "Task entry to staged validation/review packet; original accepted baseline; manifest excludes itself.",
-  "changedFilesExcludingManifest": 304,
+  "independentDecision": "docs/reviews/V2-8G-f3e784a.json",
+  "comparison": "Task entry to staged accepted closeout, including independent evidence and exact-owned cleanup; manifest excludes itself.",
+  "changedFilesExcludingManifest": 533,
   "files": [
+    {
+      "status": "M",
+      "path": "docs/ARCHITECTURE.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/BLOCKED.md"
+    },
     {
       "status": "M",
       "path": "docs/CONTINUATION.md"
@@ -17,6 +27,10 @@
     {
       "status": "M",
       "path": "docs/ROADMAP.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/TRAPS.md"
     },
     {
       "status": "M",
@@ -33,6 +47,14 @@
     {
       "status": "M",
       "path": "docs/development-state.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/reviews/V2-8G-f3e784a.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/reviews/V2-8G-f3e784a.md"
     },
     {
       "status": "A",
@@ -120,6 +142,14 @@
     },
     {
       "status": "A",
+      "path": "docs/v2-8g-evidence/closeout-integrity.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/closeout-protocol.log"
+    },
+    {
+      "status": "A",
       "path": "docs/v2-8g-evidence/corrected-stream.json"
     },
     {
@@ -201,6 +231,886 @@
     {
       "status": "A",
       "path": "docs/v2-8g-evidence/images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/VISUAL-REVIEW.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/assemble-assessment.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/assessment.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/audit-packet-v2.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/audit-packet.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/backup-manifest.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/benchmark-comparison.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/benchmark-results.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/browser-archives.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/browser-native.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/canonical-manifest.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/current-browser-archives/out/v2-7a-validation/shell-chart.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/current-browser-archives/out/v2-7a-validation/shell-table.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/current-browser-archives/out/v2-7b-1-validation/browser/imported-chart.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/current-browser-archives/out/v2-7b-1-validation/browser/imported-table.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/current-browser-archives/out/v2-7b-2-validation/browser/handoff.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/execution-source.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/executions.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/export-inspection.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/export-inspection.raw.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/final-integrity.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/final-service-observation.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/browser-01.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/browser-02.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/browser-03.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/browser-04.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/browser-05.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/browser-06.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/browser-export-01.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/browser-export-02.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/native-01.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/native-02.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/native-03.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/native-svg-01.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/native-svg-02.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-contact/native-svg-03.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-postgres.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/ambiguous-response.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/boundary-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/completed-chat.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/deck-page-action.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/handoff-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/opening-project.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/refusal-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/docs/v2-7b-2-evidence/session-changed.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-postgres/out/v2-7b-2-validation/browser/handoff.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/ambiguous-response.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/boundary-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/completed-chat.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/deck-page-action.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/handoff-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/opening-project.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/refusal-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/docs/v2-7b-2-evidence/session-changed.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-handoff-sqlite/out/v2-7b-2-validation/browser/handoff.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/canvas-chart.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/canvas-table.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/dashboard-empty.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/dashboard-hosted-anon.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/dashboard.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-blank.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-history.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-narrow-projects.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-readonly.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-shell.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/editor-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7a-evidence/large-deck.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-narrow.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-stats.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/docs/v2-7b-1-evidence/imported-transition.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7a-validation/shell-chart.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7a-validation/shell-table.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7b-1-validation/browser/imported-chart.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/fresh-shell-import/out/v2-7b-1-validation/browser/imported-table.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/headless-check.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/initial-resource-window.jsonl"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/initial-sustained-window.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/interruption-recovery.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/affected-domain.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/benchmark-50.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/browser-native.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/full-handoff-postgres.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/full-handoff-sqlite.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/full-import-7b.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/full-shell-7a.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/headless-native.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/memory-anthropic-200000.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/memory-anthropic-5000.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/memory-openai-compatible-200000.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/memory-openai-compatible-5000.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/postgres-all-eight.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/production-build.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/protocol.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/shell-native.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/standing-locale.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/logs/typecheck.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/memory-observations.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native-archive-audit.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native-archives.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native-audit.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native-images.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/chart-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/handoff-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/handoff-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/handoff-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-anthropic/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/postgres-openai-compatible/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/shell-chart.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/shell-table.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-anthropic/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/after.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-1-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-1.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-1.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-2-svg.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-2.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-2.svg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before-scenes.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/before.pptx"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/sqlite-openai-compatible/execution.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/native/table-3.png"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/owned-service-observation.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-audit-parser-attempt.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-audit-parser-corrections.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-audit.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-01.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-02.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-03.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-04.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-05.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-06.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-07.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-08.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-09.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-10.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-11.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-12.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-13.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-14.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-15.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-16.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-17.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-18.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-19.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/packet-contact/sheet-20.jpg"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/post-executions.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/post-review.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/preservation.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/resource-assessment.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/resource-window.jsonl"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/run-review.py"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/shell-export-inspection.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/shell-native.mjs"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/source-equality.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/sustained-window.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/independent/visual-inspection.json"
     },
     {
       "status": "A",
@@ -797,6 +1707,14 @@
     {
       "status": "A",
       "path": "docs/v2-8g-evidence/non-browser-bulk.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/owned-postgres-before-removal.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/owned-postgres-cleanup.json"
     },
     {
       "status": "A",

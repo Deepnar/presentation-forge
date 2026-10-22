@@ -2652,6 +2652,13 @@ and [evidence](V2-8C-EVAL.md). Source `e41d509` is independently
 [accepted](reviews/V2-8C-e41d509.json). No Assistant or provider loop is introduced
 by this boundary.
 
+V2-8G hardens that same model HTTP adapter with response-byte-bounded storage,
+monotonic deadlines, periodic yielding and cancellation before reader release.
+Both protocols and their authority/privacy/usage/configuration contracts remain
+unchanged. Exact source `f3e784a` is [independently accepted](reviews/V2-8G-f3e784a.json);
+[the evaluation](V2-8G-EVAL.md) records complete fixture/native/visual validation,
+sampled retained-memory bounds and the live-quality/peak-memory limitations.
+
 
 ### V2-8D provider-backed run preparation
 

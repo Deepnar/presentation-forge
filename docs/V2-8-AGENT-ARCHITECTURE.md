@@ -317,7 +317,7 @@ execution, preservation and limitations. [The roadmap](ROADMAP.md#v2-8-remaining
 later tool/source/Assistant scope and the separate hosted approval-lifetime seam.
 
 
-## V2-8G model response stream bounds (implementation under review)
+## V2-8G model response stream bounds
 
 Exact implementation `f3e784a` retains both accepted model protocols and existing
 configuration, tool normalization, usage, privacy and no-retry contracts. The Node
@@ -327,5 +327,7 @@ It fences late header/body results and requests cancellation before releasing th
 reader on expiry/abort. This is a transport correction, not model streaming output,
 new provider capability, conversation persistence or framework adoption.
 [Evaluation](V2-8G-EVAL.md) records failed probes, unchanged assertions, complete
-224-file validation and current native/visual/resource observations. Independent
-acceptance remains pending; accepted baseline stays V2-8F `0cab854`.
+224-file validation and current native/visual/resource observations. Exact source
+`f3e784a` is [independently accepted](reviews/V2-8G-f3e784a.json); 668 independent
+executions and retained-image inspection found no blocking issue. No live-model
+quality or process peak-memory claim follows from these bounded fixture checks.

@@ -1900,5 +1900,7 @@ yielding and bounded response storage. On a self-detected deadline, request sour
 cancellation before releasing its reader lock; cancelling a released reader can
 reject without stopping the source. Isolated child/watchdog cases and a mocked
 monotonic-clock cleanup case caught these distinct failures in V2-8F. The separate
-[older model-transport audit](ROADMAP.md#model-provider-stream-resource-bounds)
-remains outside that correction.
+[older model-transport correction](ROADMAP.md#model-provider-stream-resource-bounds)
+is independently accepted in V2-8G. Fresh-process full-GC samples can demonstrate
+retained response storage across many empty reads; they must not be called peak
+process memory or production latency measurements.

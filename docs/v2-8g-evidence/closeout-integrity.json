@@ -1,0 +1,51 @@
+{
+  "atUtc": "2026-10-22T17:08:42.789853+00:00",
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "acceptedBaseline": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "reviewRecord": "docs/reviews/V2-8G-f3e784a.json",
+  "reviewerContext": "/root/v28g_source_review",
+  "reviewCommit": "59c1fcd28a8b06d905020de003d37103afd9e25a",
+  "productSourceDeltaAfterAcceptedFreeze": [],
+  "historicalTrackedEvidenceDelta": [],
+  "packetImagesHashVerified": 115,
+  "independentFreshImagesHashVerified": 71,
+  "canonicalOriginalsHashVerified": 5,
+  "primary": {
+    "total": 2801,
+    "pass": 2801,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "distinctNativeCases": 4,
+  "independentExecutions": {
+    "total": 668,
+    "pass": 668,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "id": "byok-locale",
+    "source": "docs/ROADMAP.md#byok-locale-standing-failure",
+    "independentlyRepeated": true,
+    "evidence": "docs/v2-8g-evidence/independent/logs/standing-locale.log",
+    "classification": "Acknowledged inherited en_IN grouping assertion; not relabeled passing or included in successful primary totals."
+  },
+  "requiredInventoryFilesUnexecuted": 0,
+  "allNineGatesPassed": true,
+  "reviewStatus": "accepted",
+  "accepted": true,
+  "cleanupEvidence": "docs/v2-8g-evidence/owned-postgres-cleanup.json",
+  "port5544Closed": true,
+  "protocolExitCode": 0,
+  "protocolLog": "docs/v2-8g-evidence/closeout-protocol.log",
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0,
+  "parentOrNextFeatureAuthorized": false
+}

@@ -27,9 +27,12 @@ expanded-focused-offline.json records current source, actual command and200/200;
 runs. Initial failures remain in separate raw logs. Source inspection does not
 measure peak retained memory and supplies no milestone acceptance.
 
-The complete224-file inventory and all nine acceptance gates remain unexecuted as
-complete gates. unexecuted-scope.json names216remaining files and other missing
-checks. Reproduction of intensive acceptance uses the existing governance/isolation
+The focused checkpoint above originally left 216 files and complete acceptance
+gates unexecuted. The continuation completed all 224 files (2,801/2,801), four
+native cases and all nine gates. Independent review accepted exact f3e784a after
+668 successful executions; the separate locale probe remains 9 pass / 1 inherited
+failure. unexecuted-scope.json records the current completed inventory and explicit
+out-of-scope limitations. Reproduction uses the existing governance/isolation
 contract, an appropriate sustained quiet window, fresh ALL-current evidence/original
 snapshots before generators, serial browser/build owners, exact owned PostgreSQL
 identity and saved-count cleanup, and a separate reviewer. Do not run old8F finish
@@ -46,6 +49,12 @@ its explicitly owned cached PostgreSQL container and snapshots all current
 evidence, ignored native originals and five canonical browser archives. An
 occupied port 5544 is a refusal to reuse or stop another service.
 
+The commands below record the completed sequence. Do not rerun that namespace or
+overwrite its retained owned-service identity. For a new reproduction, preserve
+the current artifacts and adapt a copied harness to fresh evidence/output/identity
+paths before execution. The recorded service has been removed; its absence does
+not count as a new PostgreSQL pass.
+
 ```sh
 FORGE_VALIDATION_OUT=out/v2-8g-validation-20261022 PYTHONDONTWRITEBYTECODE=1 nice -n 10 ionice -c 2 -n 7 python3 -u docs/v2-8g-evidence/quiet_window.py
 FORGE_VALIDATION_OUT=out/v2-8g-validation-20261022 PYTHONDONTWRITEBYTECODE=1 nice -n 10 ionice -c 2 -n 7 python3 -u docs/v2-8g-evidence/prepare-full-validation.py
@@ -57,8 +66,9 @@ Every job requires fresh headroom, low CPU/I/O priority and a process-group
 watchdog; long jobs monitor contention. Browser files and builds stay serial.
 All provider exchanges are injected or actual loopback fixture HTTP, with no
 real model API or local inference. The stream resource supplement uses four
-fresh Node processes, the accepted 256 KiB allowance, full-GC observations and 5,000/200,000 empty reads per
-protocol; sampled retained memory must not be described as process peak RSS.
+fresh Node processes, the accepted 256 KiB allowance, full-GC observations and
+5,000/200,000 empty reads per protocol; sampled retained memory must not be
+described as process peak RSS.
 
 Finish once while the fresh canonical browser archives still exist, preserve
 their bytes, then restore/hash-check the historical originals. Never rerun the

@@ -144,10 +144,13 @@ using code and deterministic fixtures, with no API-backed model or local inferen
 The correction at `f3e784a` now has complete 224-file validation: 2,801/2,801,
 plus four distinct persisted native cases, build/typecheck/all 50 cells and current
 visual/resource observations. The separate locale run remains 9 pass / 1 standing
-failure. [Its evaluation](V2-8G-EVAL.md) and state record exact gate evidence and
-independent acceptance pending. Source-only review found no confirmed defect but
-issued no acceptance. Read current handoff/state before work; the audit itself
-supplies no acceptance.
+failure. Exact source is [independently accepted](reviews/V2-8G-f3e784a.json), with
+668 successful independent executions, current visual/native inspection and no
+blocking finding. [Its evaluation](V2-8G-EVAL.md) and state record exact evidence.
+The owned service was removed after a fresh saved/fsynced zero-project-database
+count and verified 5544 closure; [cleanup](v2-8g-evidence/owned-postgres-cleanup.json)
+is complete. Read current handoff/state before work; audit proposals retain their
+roadmap gates and acceptance authorizes planning only.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
