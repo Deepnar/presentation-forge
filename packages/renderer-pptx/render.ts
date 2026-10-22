@@ -17,6 +17,7 @@ import type { SlideScene, SceneElement, BackgroundDecor } from "../model/scene.g
 import { validateScene } from "../model/scene.ts";
 import { runBold, visibleText } from "../core/text-run.ts";
 import { maxColumns, padTableRows } from "../core/table.ts";
+import { uniquePptxShapeIds } from "./shape-ids.ts";
 
 // The library's default-export typing does not expose its constructor
 // under nodenext module resolution. This narrow structural interface
@@ -384,5 +385,5 @@ export async function renderPptx(
   if (!(out instanceof Uint8Array)) {
     throw new Error(`renderPptx expected uint8array output, received ${typeof out}`);
   }
-  return out;
+  return uniquePptxShapeIds(out);
 }
