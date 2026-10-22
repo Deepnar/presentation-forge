@@ -54,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8 hosted orchestration, shared-search tools and Assistant",
+    "id": "V2-8H durable conversations and approval ownership",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
+    "roadmapRef": "docs/ROADMAP.md#assistant-turn-approval-contract"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

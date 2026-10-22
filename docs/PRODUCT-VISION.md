@@ -28,6 +28,11 @@ authority. Native PowerPoint matters because recipients must be able to correct,
 present and reuse the exported text, shapes, chart series and tables. Raster
 plates may supply decoration; they must not replace editable slide content.
 
+The primary authoring workspace runs in the browser: canvas changes are immediately
+editable there, without requiring Microsoft PowerPoint. Opening/editing an exported
+`.pptx` in Microsoft's application is a separate native-consumer compatibility
+check. Browser and native export continue to consume the same authoritative scene.
+
 ## Human work survives assistance
 
 Human and future agent edits use validated revisioned commands, with atomic

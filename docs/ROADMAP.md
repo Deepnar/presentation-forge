@@ -8877,7 +8877,10 @@ research-and-creation parent is complete. The request to start the immediate nex
 thing was prepared as the concrete transport correction contract below. The later
 2026-10-22 clarification permits writing code but forbids API-backed models and
 local inference. Only that separate transport correction is authorized; this audit
-remains inspection-only and every other proposal still needs its own approval.
+  remains inspection-only. Later explicit requests authorized the separately
+  accepted native-ID correction and now preparation of the durable turn/approval
+  contract below. Its new private-data policy still requires human direction
+  before implementation; acceptance of a prior slice does not supply that choice.
 
 | Priority | Canonical work entry | Intent / rationale |
 |---|---|---|
@@ -8894,6 +8897,16 @@ remains inspection-only and every other proposal still needs its own approval.
 <a id="assistant-turn-approval-contract"></a>
 
 - [ ] **Durable user-turn and approval ownership — direction required.**
+  The 2026-10-22 continuation starts **V2-8H contract preparation**, from accepted
+  `45c2c4c` and planning HEAD `2e0e40d`. The concrete recommended policy, atomic
+  queue/cancel seams, recovery behavior and required evidence are prepared in
+  [the bounded contract](V2-8H-EVAL.md); implementation remains unapproved.
+  Recommend project-linked owner-only visible chat until explicit clear/project
+  deletion, bounded storage and proposals, no raw provider/tool transcript, and
+  existing deck/history preserved when chat is cleared. A rolling chat lifetime
+  is the alternative. Choose that retention direction before new stored data.
+  The browser remains the primary editor; native PowerPoint qualification concerns
+  exported files and is not a requirement to edit a project in the browser.
   Existing runtime plans/receipts are durable; `converse` histories and WeakMap
   proposals are deliberately host-instance ephemeral. Specify conversation/turn,
   proposal/decision and provider-attempt records over the existing project backend,
