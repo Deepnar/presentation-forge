@@ -1,0 +1,2012 @@
+TAP version 13
+# Subtest: root zero, lexical first IDs, later reservations and repeated duplicates are preserved deterministically
+ok 1 - root zero, lexical first IDs, later reservations and repeated duplicates are preserved deterministically
+  ---
+  duration_ms: 0.869796
+  type: 'test'
+  ...
+# Subtest: valid boundary IDs and empty shape parts remain byte-identical
+ok 2 - valid boundary IDs and empty shape parts remain byte-identical
+  ---
+  duration_ms: 0.109465
+  type: 'test'
+  ...
+# Subtest: all duplicate-target lexical spellings refuse while unique-target references survive
+ok 3 - all duplicate-target lexical spellings refuse while unique-target references survive
+  ---
+  duration_ms: 0.440278
+  type: 'test'
+  ...
+# Subtest: missing and non-integer identities fail closed
+ok 4 - missing and non-integer identities fail closed
+  ---
+  duration_ms: 0.131974
+  type: 'test'
+  ...
+# Subtest: a duplicate reference anywhere in one part rejects the whole archive
+ok 5 - a duplicate reference anywhere in one part rejects the whole archive
+  ---
+  duration_ms: 6.026429
+  type: 'test'
+  ...
+# Subtest: repository state, document references and real Git ancestry validate
+ok 6 - repository state, document references and real Git ancestry validate
+  ---
+  duration_ms: 48.617341
+  type: 'test'
+  ...
+# Subtest: missing required role document fails closed
+ok 7 - missing required role document fails closed
+  ---
+  duration_ms: 20.105548
+  type: 'test'
+  ...
+# Subtest: malformed state JSON returns diagnostics instead of crashing
+ok 8 - malformed state JSON returns diagnostics instead of crashing
+  ---
+  duration_ms: 1.129922
+  type: 'test'
+  ...
+# Subtest: unknown review state, malformed SHA and extra properties are rejected
+ok 9 - unknown review state, malformed SHA and extra properties are rejected
+  ---
+  duration_ms: 8.330657
+  type: 'test'
+  ...
+# Subtest: known pending validation cannot disappear or be duplicated
+ok 10 - known pending validation cannot disappear or be duplicated
+  ---
+  duration_ms: 21.608567
+  type: 'test'
+  ...
+# Subtest: unaccepted implementation cannot replace the accepted baseline
+ok 11 - unaccepted implementation cannot replace the accepted baseline
+  ---
+  duration_ms: 14.099385
+  type: 'test'
+  ...
+# Subtest: passed validation needs existing matching evidence and its output log
+ok 12 - passed validation needs existing matching evidence and its output log
+  ---
+  duration_ms: 54.489027
+  type: 'test'
+  ...
+# Subtest: stale evidence from another implementation SHA is refused
+ok 13 - stale evidence from another implementation SHA is refused
+  ---
+  duration_ms: 19.449275
+  type: 'test'
+  ...
+# Subtest: self-reported totals must match the retained test output
+ok 14 - self-reported totals must match the retained test output
+  ---
+  duration_ms: 13.901228
+  type: 'test'
+  ...
+# Subtest: nonzero, cancelled, skipped and inconsistent totals never become passes
+ok 15 - nonzero, cancelled, skipped and inconsistent totals never become passes
+  ---
+  duration_ms: 60.453459
+  type: 'test'
+  ...
+# Subtest: existing output cannot substitute for actual visual inspection or 50 benchmark cells
+ok 16 - existing output cannot substitute for actual visual inspection or 50 benchmark cells
+  ---
+  duration_ms: 40.600906
+  type: 'test'
+  ...
+# Subtest: renaming a reviewer cannot substitute for a separate decision record
+ok 17 - renaming a reviewer cannot substitute for a separate decision record
+  ---
+  duration_ms: 29.475071
+  type: 'test'
+  ...
+# Subtest: legitimate recorded acceptance can advance the baseline after completed validation
+ok 18 - legitimate recorded acceptance can advance the baseline after completed validation
+  ---
+  duration_ms: 68.432047
+  type: 'test'
+  ...
+# Subtest: document paths, anchors and symlinks cannot leave the repository or point nowhere
+ok 19 - document paths, anchors and symlinks cannot leave the repository or point nowhere
+  ---
+  duration_ms: 43.191032
+  type: 'test'
+  ...
+# Subtest: Git verification rejects well-shaped nonexistent commits
+ok 20 - Git verification rejects well-shaped nonexistent commits
+  ---
+  duration_ms: 9.225356
+  type: 'test'
+  ...
+# Subtest: a passing subset cannot substitute for the full required file scope
+ok 21 - a passing subset cannot substitute for the full required file scope
+  ---
+  duration_ms: 14.88659
+  type: 'test'
+  ...
+# Subtest: name-filtered runs and implausibly small suite counts fail closed
+ok 22 - name-filtered runs and implausibly small suite counts fail closed
+  ---
+  duration_ms: 29.023473
+  type: 'test'
+  ...
+# Subtest: the TAP inventory records entry files without imported contract helpers
+ok 23 - the TAP inventory records entry files without imported contract helpers
+  ---
+  duration_ms: 73.695787
+  type: 'test'
+  ...
+# Subtest: new milestone keeps its own focused gate and rejects old evidence inventory
+ok 24 - new milestone keeps its own focused gate and rejects old evidence inventory
+  ---
+  duration_ms: 54.750453
+  type: 'test'
+  ...
+# Subtest: browser handoff requires its own complete focused evidence
+ok 25 - browser handoff requires its own complete focused evidence
+  ---
+  duration_ms: 56.721519
+  type: 'test'
+  ...
+# Subtest: project covers require their own unit, HTTP and complete Chrome evidence
+ok 26 - project covers require their own unit, HTTP and complete Chrome evidence
+  ---
+  duration_ms: 55.051896
+  type: 'test'
+  ...
+# Subtest: project discovery requires its own complete unit, HTTP and Chrome evidence
+ok 27 - project discovery requires its own complete unit, HTTP and Chrome evidence
+  ---
+  duration_ms: 52.091666
+  type: 'test'
+  ...
+# Subtest: production toolbar evidence includes its complete Chrome file and full shell regression
+ok 28 - production toolbar evidence includes its complete Chrome file and full shell regression
+  ---
+  duration_ms: 55.968552
+  type: 'test'
+  ...
+# Subtest: agent foundation requires complete tool and context behavioral evidence
+ok 29 - agent foundation requires complete tool and context behavioral evidence
+  ---
+  duration_ms: 55.746595
+  type: 'test'
+  ...
+# Subtest: provider boundary requires both protocol and durable backend files
+ok 30 - provider boundary requires both protocol and durable backend files
+  ---
+  duration_ms: 44.396891
+  type: 'test'
+  ...
+# Subtest: provider-run preparation requires both storage backends and boundary cases
+ok 31 - provider-run preparation requires both storage backends and boundary cases
+  ---
+  duration_ms: 42.246721
+  type: 'test'
+  ...
+# Subtest: bounded conversation requires both storage backends and boundary cases
+ok 32 - bounded conversation requires both storage backends and boundary cases
+  ---
+  duration_ms: 47.206169
+  type: 'test'
+  ...
+# Subtest: shared search requires normalization and complete HTTP transport evidence
+ok 33 - shared search requires normalization and complete HTTP transport evidence
+  ---
+  duration_ms: 48.479822
+  type: 'test'
+  ...
+# Subtest: model-stream correction requires new lifetime cases and both durable backends
+ok 34 - model-stream correction requires new lifetime cases and both durable backends
+  ---
+  duration_ms: 47.189317
+  type: 'test'
+  ...
+# Subtest: native identity correction has explicit scoped gates and complete export files
+ok 35 - native identity correction has explicit scoped gates and complete export files
+  ---
+  duration_ms: 64.168833
+  type: 'test'
+  ...
+# Subtest: v2-3e3 no-input compatibility
+    # Subtest: compileDeck stays a scenes-only facade with optional chrome
+    ok 1 - compileDeck stays a scenes-only facade with optional chrome
+      ---
+      duration_ms: 13.187588
+      type: 'test'
+      ...
+    # Subtest: chrome plan lookup resolves per-slide decisions
+    ok 2 - chrome plan lookup resolves per-slide decisions
+      ---
+      duration_ms: 4.963448
+      type: 'test'
+      ...
+    # Subtest: no ChromeInput means chrome-free scenes and a null chrome plan
+    ok 3 - no ChromeInput means chrome-free scenes and a null chrome plan
+      ---
+      duration_ms: 8.525138
+      type: 'test'
+      ...
+    # Subtest: analyzeDeck without chrome reports no chrome findings
+    ok 4 - analyzeDeck without chrome reports no chrome findings
+      ---
+      duration_ms: 45.880577
+      type: 'test'
+      ...
+    1..4
+ok 36 - v2-3e3 no-input compatibility
+  ---
+  duration_ms: 73.346968
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 title and content emission
+    # Subtest: full title emits exactly the canonical banner
+    ok 1 - full title emits exactly the canonical banner
+      ---
+      duration_ms: 3.183064
+      type: 'test'
+      ...
+    # Subtest: minimal and none title surfaces emit no banner
+    ok 2 - minimal and none title surfaces emit no banner
+      ---
+      duration_ms: 2.600026
+      type: 'test'
+      ...
+    # Subtest: full content emits crest, presenter, and number
+    ok 3 - full content emits crest, presenter, and number
+      ---
+      duration_ms: 2.146509
+      type: 'test'
+      ...
+    # Subtest: branding none keeps the number but drops crest and presenter
+    ok 4 - branding none keeps the number but drops crest and presenter
+      ---
+      duration_ms: 1.764262
+      type: 'test'
+      ...
+    # Subtest: slide numbers and presenter suppression stay independent
+    ok 5 - slide numbers and presenter suppression stay independent
+      ---
+      duration_ms: 2.019362
+      type: 'test'
+      ...
+    1..5
+ok 37 - v2-3e3 title and content emission
+  ---
+  duration_ms: 12.045029
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 dark and light footer
+    # Subtest: dark presenter is translucent white, dark number fully opaque
+    ok 1 - dark presenter is translucent white, dark number fully opaque
+      ---
+      duration_ms: 2.206274
+      type: 'test'
+      ...
+    # Subtest: light presenter and number are opaque muted ink
+    ok 2 - light presenter and number are opaque muted ink
+      ---
+      duration_ms: 1.95404
+      type: 'test'
+      ...
+    1..2
+ok 38 - v2-3e3 dark and light footer
+  ---
+  duration_ms: 4.286998
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 crest reservation
+    # Subtest: primary crest narrows the standard title before fitting
+    ok 1 - primary crest narrows the standard title before fitting
+      ---
+      duration_ms: 2.521015
+      type: 'test'
+      ...
+    # Subtest: no crest and branding none mean zero reservation
+    ok 2 - no crest and branding none mean zero reservation
+      ---
+      duration_ms: 1.894584
+      type: 'test'
+      ...
+    # Subtest: fallback-only crest renders while reservation stays zero
+    ok 3 - fallback-only crest renders while reservation stays zero
+      ---
+      duration_ms: 2.161295
+      type: 'test'
+      ...
+    # Subtest: divider composition keeps full-bleed titles despite crest chrome
+    ok 4 - divider composition keeps full-bleed titles despite crest chrome
+      ---
+      duration_ms: 1.83337
+      type: 'test'
+      ...
+    1..4
+ok 39 - v2-3e3 crest reservation
+  ---
+  duration_ms: 8.58641
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 footer reserve geometry
+    # Subtest: the reserve has one canonical source with exact historical value
+    ok 1 - the reserve has one canonical source with exact historical value
+      ---
+      duration_ms: 0.151773
+      type: 'test'
+      ...
+    # Subtest: compiler content never enters the footer band
+    ok 2 - compiler content never enters the footer band
+      ---
+      duration_ms: 21.462404
+      type: 'test'
+      ...
+    1..2
+ok 40 - v2-3e3 footer reserve geometry
+  ---
+  duration_ms: 21.754807
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 locked commands
+    # Subtest: text chrome rejects move, resize, text edit, and delete
+    ok 1 - text chrome rejects move, resize, text edit, and delete
+      ---
+      duration_ms: 4.979432
+      type: 'test'
+      ...
+    # Subtest: image chrome rejects move, resize, and delete
+    ok 2 - image chrome rejects move, resize, and delete
+      ---
+      duration_ms: 2.25406
+      type: 'test'
+      ...
+    1..2
+ok 41 - v2-3e3 locked commands
+  ---
+  duration_ms: 7.379784
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 recompile with chrome
+    # Subtest: same chrome recompiles without duplication, twice stable
+    ok 1 - same chrome recompiles without duplication, twice stable
+      ---
+      duration_ms: 3.537594
+      type: 'test'
+      ...
+    # Subtest: policy removal drops stale compiler chrome
+    ok 2 - policy removal drops stale compiler chrome
+      ---
+      duration_ms: 2.576738
+      type: 'test'
+      ...
+    # Subtest: human geometry and orphans survive chrome recompiles
+    ok 3 - human geometry and orphans survive chrome recompiles
+      ---
+      duration_ms: 4.656767
+      type: 'test'
+      ...
+    # Subtest: detached scenes return the exact object untouched
+    ok 4 - detached scenes return the exact object untouched
+      ---
+      duration_ms: 1.790037
+      type: 'test'
+      ...
+    # Subtest: chrome without a plan fails loudly instead of dropping marks
+    ok 5 - chrome without a plan fails loudly instead of dropping marks
+      ---
+      duration_ms: 2.156583
+      type: 'test'
+      ...
+    1..5
+ok 42 - v2-3e3 recompile with chrome
+  ---
+  duration_ms: 14.936615
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 chrome QA
+    # Subtest: healthy chrome realizes cleanly
+    ok 1 - healthy chrome realizes cleanly
+      ---
+      duration_ms: 2.480957
+      type: 'test'
+      ...
+    # Subtest: no plan means no chrome QA
+    ok 2 - no plan means no chrome QA
+      ---
+      duration_ms: 1.640947
+      type: 'test'
+      ...
+    # Subtest: missing chrome is L1
+    ok 3 - missing chrome is L1
+      ---
+      duration_ms: 2.499065
+      type: 'test'
+      ...
+    # Subtest: wrong chrome properties are L1 mismatches
+    ok 4 - wrong chrome properties are L1 mismatches
+      ---
+      duration_ms: 11.635308
+      type: 'test'
+      ...
+    # Subtest: stale chrome with no plan entry is L1
+    ok 5 - stale chrome with no plan entry is L1
+      ---
+      duration_ms: 1.906818
+      type: 'test'
+      ...
+    # Subtest: human elements mentioning chrome are not compiler chrome
+    ok 6 - human elements mentioning chrome are not compiler chrome
+      ---
+      duration_ms: 1.655624
+      type: 'test'
+      ...
+    # Subtest: compiler content in the footer band is L1 chrome-band-overlap
+    ok 7 - compiler content in the footer band is L1 chrome-band-overlap
+      ---
+      duration_ms: 1.730825
+      type: 'test'
+      ...
+    # Subtest: analyzeDeck consumes the same chrome plan as compilation
+    ok 8 - analyzeDeck consumes the same chrome plan as compilation
+      ---
+      duration_ms: 1.795479
+      type: 'test'
+      ...
+    1..8
+ok 43 - v2-3e3 chrome QA
+  ---
+  duration_ms: 25.641823
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 PPTX chrome projection
+    # Subtest: presenter projects family, size, and 55 transparency as native text
+    ok 1 - presenter projects family, size, and 55 transparency as native text
+      ---
+      duration_ms: 17.880576
+      type: 'test'
+      ...
+    # Subtest: slide number stays fully opaque apart from the presenter
+    ok 2 - slide number stays fully opaque apart from the presenter
+      ---
+      duration_ms: 6.374688
+      type: 'test'
+      ...
+    # Subtest: crest renders as a native image relationship, never a slide raster
+    ok 3 - crest renders as a native image relationship, never a slide raster
+      ---
+      duration_ms: 4.304802
+      type: 'test'
+      ...
+    # Subtest: path-style image sources still embed
+    ok 4 - path-style image sources still embed
+      ---
+      duration_ms: 3.025115
+      type: 'test'
+      ...
+    1..4
+ok 44 - v2-3e3 PPTX chrome projection
+  ---
+  duration_ms: 31.802757
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 SVG chrome projection
+    # Subtest: presenter exposes identity, text, family, and opacity
+    ok 1 - presenter exposes identity, text, family, and opacity
+      ---
+      duration_ms: 2.813299
+      type: 'test'
+      ...
+    # Subtest: slide number never inherits presenter translucency
+    ok 2 - slide number never inherits presenter translucency
+      ---
+      duration_ms: 3.113752
+      type: 'test'
+      ...
+    # Subtest: chrome image keeps stable identity and geometry
+    ok 3 - chrome image keeps stable identity and geometry
+      ---
+      duration_ms: 1.685631
+      type: 'test'
+      ...
+    1..3
+ok 45 - v2-3e3 SVG chrome projection
+  ---
+  duration_ms: 7.797565
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 themes and purity
+    # Subtest: five themes share chrome semantics with correct dark/light behavior
+    ok 1 - five themes share chrome semantics with correct dark/light behavior
+      ---
+      duration_ms: 9.851287
+      type: 'test'
+      ...
+    # Subtest: compiler chrome derives from input and policy, never theme names
+    ok 2 - compiler chrome derives from input and policy, never theme names
+      ---
+      duration_ms: 1.45642
+      type: 'test'
+      ...
+    # Subtest: core and compiler chrome name no forbidden concerns
+    ok 3 - core and compiler chrome name no forbidden concerns
+      ---
+      duration_ms: 1.41427
+      type: 'test'
+      ...
+    1..3
+ok 46 - v2-3e3 themes and purity
+  ---
+  duration_ms: 12.862096
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 chrome coverage validation
+    # Subtest: exact coverage succeeds
+    ok 1 - exact coverage succeeds
+      ---
+      duration_ms: 2.350037
+      type: 'test'
+      ...
+    # Subtest: one missing slide throws, identifying it
+    ok 2 - one missing slide throws, identifying it
+      ---
+      duration_ms: 1.645716
+      type: 'test'
+      ...
+    # Subtest: missing first, middle, and last slides each fail
+    ok 3 - missing first, middle, and last slides each fail
+      ---
+      duration_ms: 1.625825
+      type: 'test'
+      ...
+    # Subtest: duplicate slide entries throw, identifying the ID
+    ok 4 - duplicate slide entries throw, identifying the ID
+      ---
+      duration_ms: 1.670979
+      type: 'test'
+      ...
+    # Subtest: unknown extra slide entries throw, identifying the ID
+    ok 5 - unknown extra slide entries throw, identifying the ID
+      ---
+      duration_ms: 2.054331
+      type: 'test'
+      ...
+    # Subtest: empty ChromeInput for a nonempty deck fails
+    ok 6 - empty ChromeInput for a nonempty deck fails
+      ---
+      duration_ms: 1.776222
+      type: 'test'
+      ...
+    # Subtest: no ChromeInput remains valid and chrome-free
+    ok 7 - no ChromeInput remains valid and chrome-free
+      ---
+      duration_ms: 2.251666
+      type: 'test'
+      ...
+    # Subtest: analyzeDeck cannot stay clean when explicit chrome lacks a slide
+    ok 8 - analyzeDeck cannot stay clean when explicit chrome lacks a slide
+      ---
+      duration_ms: 2.426595
+      type: 'test'
+      ...
+    # Subtest: recompile with chrome missing this slide throws
+    ok 9 - recompile with chrome missing this slide throws
+      ---
+      duration_ms: 3.477814
+      type: 'test'
+      ...
+    1..9
+ok 47 - v2-3e3 chrome coverage validation
+  ---
+  duration_ms: 19.649539
+  type: 'suite'
+  ...
+# Subtest: v2-3e3 reservation follows emission
+    # Subtest: minimal branding reserves exactly like full when the crest draws
+    ok 1 - minimal branding reserves exactly like full when the crest draws
+      ---
+      duration_ms: 2.537103
+      type: 'test'
+      ...
+    # Subtest: disabled crest returns to full width with identical fit evidence
+    ok 2 - disabled crest returns to full width with identical fit evidence
+      ---
+      duration_ms: 1.940734
+      type: 'test'
+      ...
+    # Subtest: absent crest asset reserves nothing and emits no mark
+    ok 3 - absent crest asset reserves nothing and emits no mark
+      ---
+      duration_ms: 2.397887
+      type: 'test'
+      ...
+    1..3
+ok 48 - v2-3e3 reservation follows emission
+  ---
+  duration_ms: 7.055224
+  type: 'suite'
+  ...
+# Subtest: v2-5a export preflight
+    # Subtest: valid single-series pie and doughnut render with exact values
+    ok 1 - valid single-series pie and doughnut render with exact values
+      ---
+      duration_ms: 70.603654
+      type: 'test'
+      ...
+    # Subtest: direct multi-series pie is refused with slide and element identity
+    ok 2 - direct multi-series pie is refused with slide and element identity
+      ---
+      duration_ms: 0.629876
+      type: 'test'
+      ...
+    # Subtest: direct multi-series doughnut is refused the same way
+    ok 3 - direct multi-series doughnut is refused the same way
+      ---
+      duration_ms: 0.178582
+      type: 'test'
+      ...
+    # Subtest: multi-series cartesian charts stay valid with exact values
+    ok 4 - multi-series cartesian charts stay valid with exact values
+      ---
+      duration_ms: 9.799415
+      type: 'test'
+      ...
+    # Subtest: malformed scenes and bad chart payloads are refused as contract failures
+    ok 5 - malformed scenes and bad chart payloads are refused as contract failures
+      ---
+      duration_ms: 0.456421
+      type: 'test'
+      ...
+    # Subtest: empty tables are refused instead of rendering nothing
+    ok 6 - empty tables are refused instead of rendering nothing
+      ---
+      duration_ms: 0.204557
+      type: 'test'
+      ...
+    # Subtest: a later unsafe slide fails the whole export with its own identity
+    ok 7 - a later unsafe slide fails the whole export with its own identity
+      ---
+      duration_ms: 0.201611
+      type: 'test'
+      ...
+    # Subtest: rejection writes no file and preserves existing ones
+    ok 8 - rejection writes no file and preserves existing ones
+      ---
+      duration_ms: 0.355413
+      type: 'test'
+      ...
+    # Subtest: valid exports stay native-editable and deterministic
+    ok 9 - valid exports stay native-editable and deterministic
+      ---
+      duration_ms: 14.113355
+      type: 'test'
+      ...
+    # Subtest: compiler-generated fallback scenes export with every value
+    ok 10 - compiler-generated fallback scenes export with every value
+      ---
+      duration_ms: 46.847064
+      type: 'test'
+      ...
+    1..10
+ok 49 - v2-5a export preflight
+  ---
+  duration_ms: 144.657167
+  type: 'suite'
+  ...
+# Subtest: v2-5k registry contracts
+    # Subtest: template ids are unique, stable, and exactly the curated 15
+    ok 1 - template ids are unique, stable, and exactly the curated 15
+      ---
+      duration_ms: 0.780748
+      type: 'test'
+      ...
+    # Subtest: every template carries category metadata, copy, and support status
+    ok 2 - every template carries category metadata, copy, and support status
+      ---
+      duration_ms: 0.214958
+      type: 'test'
+      ...
+    # Subtest: legacy aliases cover distinct names without collisions
+    ok 3 - legacy aliases cover distinct names without collisions
+      ---
+      duration_ms: 0.126863
+      type: 'test'
+      ...
+    # Subtest: scene generation is deterministic under an injected id factory
+    ok 4 - scene generation is deterministic under an injected id factory
+      ---
+      duration_ms: 3.177038
+      type: 'test'
+      ...
+    # Subtest: unknown template ids throw before touching state
+    ok 5 - unknown template ids throw before touching state
+      ---
+      duration_ms: 0.268436
+      type: 'test'
+      ...
+    # Subtest: the registry imports nothing from the AI composition selector
+    ok 6 - the registry imports nothing from the AI composition selector
+      ---
+      duration_ms: 0.298389
+      type: 'test'
+      ...
+    1..6
+ok 50 - v2-5k registry contracts
+  ---
+  duration_ms: 6.485008
+  type: 'suite'
+  ...
+# Subtest: v2-5k skeleton validity and geometry
+    # Subtest: every skeleton validates against the Layer-C schema (empty sibling)
+    ok 1 - every skeleton validates against the Layer-C schema (empty sibling)
+      ---
+      duration_ms: 29.474191
+      type: 'test'
+      ...
+    # Subtest: every skeleton validates against the Layer-C schema (light sibling)
+    ok 2 - every skeleton validates against the Layer-C schema (light sibling)
+      ---
+      duration_ms: 0.610804
+      type: 'test'
+      ...
+    # Subtest: every skeleton validates against the Layer-C schema (dark sibling)
+    ok 3 - every skeleton validates against the Layer-C schema (dark sibling)
+      ---
+      duration_ms: 0.718698
+      type: 'test'
+      ...
+    # Subtest: geometry is finite, positive, on-slide, with array-mirroring z ranks
+    ok 4 - geometry is finite, positive, on-slide, with array-mirroring z ranks
+      ---
+      duration_ms: 0.682619
+      type: 'test'
+      ...
+    # Subtest: element ids are unique per scene and every placeholder fits its box
+    ok 5 - element ids are unique per scene and every placeholder fits its box
+      ---
+      duration_ms: 1.33402
+      type: 'test'
+      ...
+    # Subtest: no skeleton ships locked elements or chrome-claiming identity
+    ok 6 - no skeleton ships locked elements or chrome-claiming identity
+      ---
+      duration_ms: 0.412189
+      type: 'test'
+      ...
+    1..6
+ok 51 - v2-5k skeleton validity and geometry
+  ---
+  duration_ms: 33.466779
+  type: 'suite'
+  ...
+# Subtest: v2-5k theme fallback
+    # Subtest: light grounds earn dark ink, dark grounds earn light ink
+    ok 1 - light grounds earn dark ink, dark grounds earn light ink
+      ---
+      duration_ms: 0.155289
+      type: 'test'
+      ...
+    # Subtest: sibling background, typeface, and table/chart presentation carry over
+    ok 2 - sibling background, typeface, and table/chart presentation carry over
+      ---
+      duration_ms: 23.337889
+      type: 'test'
+      ...
+    # Subtest: a dark run sampled off a card never becomes ink on a dark ground
+    ok 3 - a dark run sampled off a card never becomes ink on a dark ground
+      ---
+      duration_ms: 0.154752
+      type: 'test'
+      ...
+    # Subtest: every placeholder holds at least 3:1 against its effective ground
+    ok 4 - every placeholder holds at least 3:1 against its effective ground
+      ---
+      duration_ms: 2.095219
+      type: 'test'
+      ...
+    # Subtest: translucent and ground-matching fills never become the accent
+    ok 5 - translucent and ground-matching fills never become the accent
+      ---
+      duration_ms: 0.108641
+      type: 'test'
+      ...
+    1..5
+ok 52 - v2-5k theme fallback
+  ---
+  duration_ms: 25.986852
+  type: 'suite'
+  ...
+# Subtest: v2-5k ownership and lifecycle
+    # Subtest: template slides are human-authored: customized, namespaced, ref-less
+    ok 1 - template slides are human-authored: customized, namespaced, ref-less
+      ---
+      duration_ms: 0.303185
+      type: 'test'
+      ...
+    # Subtest: blank slides keep their accepted behavior unchanged
+    ok 2 - blank slides keep their accepted behavior unchanged
+      ---
+      duration_ms: 8.21711
+      type: 'test'
+      ...
+    1..2
+ok 53 - v2-5k ownership and lifecycle
+  ---
+  duration_ms: 8.625591
+  type: 'suite'
+  ...
+# Subtest: v2-5k engine insertion
+    # Subtest: unknown template ids refuse with state untouched
+    ok 1 - unknown template ids refuse with state untouched
+      ---
+      duration_ms: 5.851636
+      type: 'test'
+      ...
+    # Subtest: insert lands after the active slide as one revision and one undo entry
+    ok 2 - insert lands after the active slide as one revision and one undo entry
+      ---
+      duration_ms: 11.219063
+      type: 'test'
+      ...
+    # Subtest: repeated insertion of one template never collides deck-wide
+    ok 3 - repeated insertion of one template never collides deck-wide
+      ---
+      duration_ms: 10.116767
+      type: 'test'
+      ...
+    # Subtest: duplicate, delete, and reorder work on template slides afterward
+    ok 4 - duplicate, delete, and reorder work on template slides afterward
+      ---
+      duration_ms: 14.448559
+      type: 'test'
+      ...
+    # Subtest: template ids cannot overlap AI-generated identity
+    ok 5 - template ids cannot overlap AI-generated identity
+      ---
+      duration_ms: 49.178302
+      type: 'test'
+      ...
+    1..5
+ok 54 - v2-5k engine insertion
+  ---
+  duration_ms: 91.09724
+  type: 'suite'
+  ...
+# Subtest: v2-5k editability after insertion
+    # Subtest: placeholder text edits through the existing text command
+    ok 1 - placeholder text edits through the existing text command
+      ---
+      duration_ms: 8.293566
+      type: 'test'
+      ...
+    # Subtest: shape fills restyle and chart/table starters edit natively
+    ok 2 - shape fills restyle and chart/table starters edit natively
+      ---
+      duration_ms: 12.477352
+      type: 'test'
+      ...
+    # Subtest: Layers labels name every template element
+    ok 3 - Layers labels name every template element
+      ---
+      duration_ms: 1.041439
+      type: 'test'
+      ...
+    1..3
+ok 55 - v2-5k editability after insertion
+  ---
+  duration_ms: 21.961459
+  type: 'suite'
+  ...
+# Subtest: v2-5k previews and regeneration boundaries
+    # Subtest: the preview is the authoritative scene: every text element renders by id
+    ok 1 - the preview is the authoritative scene: every text element renders by id
+      ---
+      duration_ms: 2.293509
+      type: 'test'
+      ...
+    # Subtest: single-slide recompile carries human template elements as orphans
+    ok 2 - single-slide recompile carries human template elements as orphans
+      ---
+      duration_ms: 7.024492
+      type: 'test'
+      ...
+    # Subtest: a template slide never vanishes by id overlap with generated content
+    ok 3 - a template slide never vanishes by id overlap with generated content
+      ---
+      duration_ms: 5.14713
+      type: 'test'
+      ...
+    1..3
+ok 56 - v2-5k previews and regeneration boundaries
+  ---
+  duration_ms: 14.617179
+  type: 'suite'
+  ...
+# Subtest: v2-5k native PowerPoint fidelity
+    # Subtest: a deck of template slides exports natively: count, order, charts, tables
+    ok 1 - a deck of template slides exports natively: count, order, charts, tables
+      ---
+      duration_ms: 25.228941
+      type: 'test'
+      ...
+    1..1
+ok 57 - v2-5k native PowerPoint fidelity
+  ---
+  duration_ms: 25.348278
+  type: 'suite'
+  ...
+# Subtest: mixed native objects have unique unsigned nonvisual IDs per slide
+ok 58 - mixed native objects have unique unsigned nonvisual IDs per slide
+  ---
+  duration_ms: 70.80679
+  type: 'test'
+  ...
+# Subtest: collision repair preserves all bytes except later duplicate ID attributes
+ok 59 - collision repair preserves all bytes except later duplicate ID attributes
+  ---
+  duration_ms: 0.203684
+  type: 'test'
+  ...
+# Subtest: numeric identity reserves later valid IDs and handles the uint32 boundary
+ok 60 - numeric identity reserves later valid IDs and handles the uint32 boundary
+  ---
+  duration_ms: 0.359246
+  type: 'test'
+  ...
+# Subtest: ambiguous animation, build and connector targets refuse instead of guessing
+ok 61 - ambiguous animation, build and connector targets refuse instead of guessing
+  ---
+  duration_ms: 0.196756
+  type: 'test'
+  ...
+# Subtest: archive correction preserves other parts and leaves a valid archive byte-identical
+ok 62 - archive correction preserves other parts and leaves a valid archive byte-identical
+  ---
+  duration_ms: 2.680238
+  type: 'test'
+  ...
+# Subtest: v2-3f-5 theme audit
+    # Subtest: classifies all 34 themes: 10 plate, 12 decor, 7 declared cardFill
+    ok 1 - classifies all 34 themes: 10 plate, 12 decor, 7 declared cardFill
+      ---
+      duration_ms: 92.163049
+      type: 'test'
+      ...
+    # Subtest: every plate template interpolates fully against mode-resolved tokens
+    ok 2 - every plate template interpolates fully against mode-resolved tokens
+      ---
+      duration_ms: 67.822102
+      type: 'test'
+      ...
+    # Subtest: plate templates reference only embedded data: assets
+    ok 3 - plate templates reference only embedded data: assets
+      ---
+      duration_ms: 13.435414
+      type: 'test'
+      ...
+    1..3
+ok 63 - v2-3f-5 theme audit
+  ---
+  duration_ms: 174.241115
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 native resolution
+    # Subtest: solid-only themes keep the legacy background shape exactly
+    ok 1 - solid-only themes keep the legacy background shape exactly
+      ---
+      duration_ms: 27.460224
+      type: 'test'
+      ...
+    # Subtest: decor themes resolve fills with alpha into the scene background
+    ok 2 - decor themes resolve fills with alpha into the scene background
+      ---
+      duration_ms: 4.423759
+      type: 'test'
+      ...
+    # Subtest: translucent cardFill survives with its declared opacity
+    ok 3 - translucent cardFill survives with its declared opacity
+      ---
+      duration_ms: 5.485008
+      type: 'test'
+      ...
+    # Subtest: undeclared cardFill stays opaque with no new keys
+    ok 4 - undeclared cardFill stays opaque with no new keys
+      ---
+      duration_ms: 2.741666
+      type: 'test'
+      ...
+    # Subtest: surface mapping follows composition family, never theme names
+    ok 5 - surface mapping follows composition family, never theme names
+      ---
+      duration_ms: 0.185295
+      type: 'test'
+      ...
+    # Subtest: flat backgrounds omit absent keys for byte-identical legacy scenes
+    ok 6 - flat backgrounds omit absent keys for byte-identical legacy scenes
+      ---
+      duration_ms: 1.600554
+      type: 'test'
+      ...
+    # Subtest: dividers read surface ink only when their surface plate is present
+    ok 7 - dividers read surface ink only when their surface plate is present
+      ---
+      duration_ms: 3.398838
+      type: 'test'
+      ...
+    1..7
+ok 64 - v2-3f-5 native resolution
+  ---
+  duration_ms: 45.745484
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 adapter seam
+    # Subtest: native themes resolve no assets
+    ok 1 - native themes resolve no assets
+      ---
+      duration_ms: 3.349461
+      type: 'test'
+      ...
+    # Subtest: plate themes resolve three hashed assets with sampled contrast
+    ok 2 - plate themes resolve three hashed assets with sampled contrast
+      ---
+      duration_ms: 2571.411167
+      type: 'test'
+      ...
+    # Subtest: resolution is deterministic across runs
+    ok 3 - resolution is deterministic across runs
+      ---
+      duration_ms: 27.868539
+      type: 'test'
+      ...
+    # Subtest: missing or hostile plates fail explicitly
+    ok 4 - missing or hostile plates fail explicitly
+      ---
+      duration_ms: 2.533238
+      type: 'test'
+      ...
+    # Subtest: corner sampling reads pixels, not declarations
+    ok 5 - corner sampling reads pixels, not declarations
+      ---
+      duration_ms: 15.93504
+      type: 'test'
+      ...
+    1..5
+ok 65 - v2-3f-5 adapter seam
+  ---
+  duration_ms: 2621.669881
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 scene integration
+    # Subtest: plate assets land on scenes by planned surface
+    ok 1 - plate assets land on scenes by planned surface
+      ---
+      duration_ms: 7.954074
+      type: 'test'
+      ...
+    # Subtest: plated dividers stay readable while content text is untouched
+    ok 2 - plated dividers stay readable while content text is untouched
+      ---
+      duration_ms: 1.777927
+      type: 'test'
+      ...
+    # Subtest: backgrounds never alter authored semantics or identity
+    ok 3 - backgrounds never alter authored semantics or identity
+      ---
+      duration_ms: 4.292761
+      type: 'test'
+      ...
+    # Subtest: every authored block stays represented with native charts on plates
+    ok 4 - every authored block stays represented with native charts on plates
+      ---
+      duration_ms: 1.173174
+      type: 'test'
+      ...
+    # Subtest: historical scenes without the new fields remain valid
+    ok 5 - historical scenes without the new fields remain valid
+      ---
+      duration_ms: 0.122748
+      type: 'test'
+      ...
+    # Subtest: recompile preserves customized geometry over dressed backgrounds
+    ok 6 - recompile preserves customized geometry over dressed backgrounds
+      ---
+      duration_ms: 1.883236
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay authoritative
+    ok 7 - detached scenes stay authoritative
+      ---
+      duration_ms: 0.861978
+      type: 'test'
+      ...
+    # Subtest: decision-deck capacity is resolved on dressed themes
+    ok 8 - decision-deck capacity is resolved on dressed themes
+      ---
+      duration_ms: 27.406131
+      type: 'test'
+      ...
+    1..8
+ok 66 - v2-3f-5 scene integration
+  ---
+  duration_ms: 2780.177162
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 renderer projection
+    # Subtest: embeds the plate as the slide background image
+    ok 1 - embeds the plate as the slide background image
+      ---
+      duration_ms: 0.581324
+      type: 'test'
+      ...
+    # Subtest: keeps text, charts, and tables native above the plate
+    ok 2 - keeps text, charts, and tables native above the plate
+      ---
+      duration_ms: 0.18192
+      type: 'test'
+      ...
+    # Subtest: projects card translucency as OOXML transparency
+    ok 3 - projects card translucency as OOXML transparency
+      ---
+      duration_ms: 0.060185
+      type: 'test'
+      ...
+    # Subtest: draws decor dressing behind content on decor themes
+    ok 4 - draws decor dressing behind content on decor themes
+      ---
+      duration_ms: 11.829388
+      type: 'test'
+      ...
+    # Subtest: SVG projects the same resolved background above the flat fill
+    ok 5 - SVG projects the same resolved background above the flat fill
+      ---
+      duration_ms: 2.870104
+      type: 'test'
+      ...
+    # Subtest: SVG carries decor on decor themes
+    ok 6 - SVG carries decor on decor themes
+      ---
+      duration_ms: 0.985939
+      type: 'test'
+      ...
+    # Subtest: dark plates keep the accepted chrome opacities
+    ok 7 - dark plates keep the accepted chrome opacities
+      ---
+      duration_ms: 3923.836028
+      type: 'test'
+      ...
+    1..7
+ok 67 - v2-3f-5 renderer projection
+  ---
+  duration_ms: 6715.997202
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 background layer parity
+    # Subtest: accepts the combined scene as valid
+    ok 1 - accepts the combined scene as valid
+      ---
+      duration_ms: 0.19561
+      type: 'test'
+      ...
+    # Subtest: orders SVG flat fill, plate image, decor, then elements
+    ok 2 - orders SVG flat fill, plate image, decor, then elements
+      ---
+      duration_ms: 0.1739
+      type: 'test'
+      ...
+    # Subtest: keeps the PPTX background-before-decor order
+    ok 3 - keeps the PPTX background-before-decor order
+      ---
+      duration_ms: 3.95893
+      type: 'test'
+      ...
+    # Subtest: renders the combined scene deterministically
+    ok 4 - renders the combined scene deterministically
+      ---
+      duration_ms: 4.726099
+      type: 'test'
+      ...
+    1..4
+ok 68 - v2-3f-5 background layer parity
+  ---
+  duration_ms: 9.217769
+  type: 'suite'
+  ...
+# Subtest: v2-6a project schema and version
+    # Subtest: envelope requires identity, version 1, revision, timestamps, scenes
+    ok 1 - envelope requires identity, version 1, revision, timestamps, scenes
+      ---
+      duration_ms: 66.717375
+      type: 'test'
+      ...
+    # Subtest: rejects unknown future versions, missing fields, bad ids
+    ok 2 - rejects unknown future versions, missing fields, bad ids
+      ---
+      duration_ms: 9.061832
+      type: 'test'
+      ...
+    # Subtest: refuses prototype-pollution keys and functions without silent repair
+    ok 3 - refuses prototype-pollution keys and functions without silent repair
+      ---
+      duration_ms: 4.004857
+      type: 'test'
+      ...
+    # Subtest: minted ids are unique and stable across a save/load cycle
+    ok 4 - minted ids are unique and stable across a save/load cycle
+      ---
+      duration_ms: 0.202639
+      type: 'test'
+      ...
+    1..4
+ok 69 - v2-6a project schema and version
+  ---
+  duration_ms: 81.817925
+  type: 'suite'
+  ...
+# Subtest: v2-6a create/save/load/list/rename/delete
+    # Subtest: creates, loads, lists, renames, deletes
+    ok 1 - creates, loads, lists, renames, deletes
+      ---
+      duration_ms: 12.817136
+      type: 'test'
+      ...
+    # Subtest: saving identical state reports noop without advancing the revision
+    ok 2 - saving identical state reports noop without advancing the revision
+      ---
+      duration_ms: 4.886026
+      type: 'test'
+      ...
+    # Subtest: reopens after store reinitialization (real durability, not a Map)
+    ok 3 - reopens after store reinitialization (real durability, not a Map)
+      ---
+      duration_ms: 4.099173
+      type: 'test'
+      ...
+    # Subtest: rejects path-traversal and malformed ids at every entry
+    ok 4 - rejects path-traversal and malformed ids at every entry
+      ---
+      duration_ms: 0.583883
+      type: 'test'
+      ...
+    # Subtest: rejects malformed projects and oversized payloads
+    ok 5 - rejects malformed projects and oversized payloads
+      ---
+      duration_ms: 13.039432
+      type: 'test'
+      ...
+    1..5
+ok 70 - v2-6a create/save/load/list/rename/delete
+  ---
+  duration_ms: 35.780387
+  type: 'suite'
+  ...
+# Subtest: v2-6a complete scene round-trip
+    # Subtest: preserves text runs, shapes, charts, tables, order, locks, tombstones, detachment
+    ok 1 - preserves text runs, shapes, charts, tables, order, locks, tombstones, detachment
+      ---
+      duration_ms: 66.660377
+      type: 'test'
+      ...
+    1..1
+ok 71 - v2-6a complete scene round-trip
+  ---
+  duration_ms: 66.792176
+  type: 'suite'
+  ...
+# Subtest: v2-6a autosave lane
+    # Subtest: coalesces rapid edits into one save without overlapping
+    ok 1 - coalesces rapid edits into one save without overlapping
+      ---
+      duration_ms: 121.924768
+      type: 'test'
+      ...
+    # Subtest: retries one transient failure, then surfaces persistent failure
+    ok 2 - retries one transient failure, then surfaces persistent failure
+      ---
+      duration_ms: 2500.232276
+      type: 'test'
+      ...
+    1..2
+ok 72 - v2-6a autosave lane
+  ---
+  duration_ms: 2622.3621
+  type: 'suite'
+  ...
+# Subtest: v2-6a revision conflicts and atomicity
+    # Subtest: second writer on a stale base loses without overwriting
+    ok 1 - second writer on a stale base loses without overwriting
+      ---
+      duration_ms: 7.370231
+      type: 'test'
+      ...
+    # Subtest: concurrent saves serialize to exactly one winner
+    ok 2 - concurrent saves serialize to exactly one winner
+      ---
+      duration_ms: 6.070508
+      type: 'test'
+      ...
+    # Subtest: a broken save never destroys the last good version
+    ok 3 - a broken save never destroys the last good version
+      ---
+      duration_ms: 6.098655
+      type: 'test'
+      ...
+    1..3
+ok 73 - v2-6a revision conflicts and atomicity
+  ---
+  duration_ms: 19.736596
+  type: 'suite'
+  ...
+# Subtest: v2-6a reopened editing, undo policy, and native export
+    # Subtest: loaded scenes feed the engine directly and stay editable
+    ok 1 - loaded scenes feed the engine directly and stay editable
+      ---
+      duration_ms: 4.569534
+      type: 'test'
+      ...
+    # Subtest: export from the stored document is native and order-exact
+    ok 2 - export from the stored document is native and order-exact
+      ---
+      duration_ms: 31.942093
+      type: 'test'
+      ...
+    1..2
+ok 74 - v2-6a reopened editing, undo policy, and native export
+  ---
+  duration_ms: 36.682215
+  type: 'suite'
+  ...
+# Subtest: v2-6b history creation and per-save records
+    # Subtest: create commits a recoverable rev-0 baseline atomically
+    ok 1 - create commits a recoverable rev-0 baseline atomically
+      ---
+      duration_ms: 72.12169
+      type: 'test'
+      ...
+    # Subtest: every successful save produces a required, validated history row
+    ok 2 - every successful save produces a required, validated history row
+      ---
+      duration_ms: 12.042798
+      type: 'test'
+      ...
+    # Subtest: no-op saves and no-op renames write no history
+    ok 3 - no-op saves and no-op renames write no history
+      ---
+      duration_ms: 6.678149
+      type: 'test'
+      ...
+    # Subtest: renames record audit rows without touching scenes
+    ok 4 - renames record audit rows without touching scenes
+      ---
+      duration_ms: 6.352393
+      type: 'test'
+      ...
+    # Subtest: failed saves leave history and the document untouched
+    ok 5 - failed saves leave history and the document untouched
+      ---
+      duration_ms: 5.581308
+      type: 'test'
+      ...
+    1..5
+ok 75 - v2-6b history creation and per-save records
+  ---
+  duration_ms: 106.202419
+  type: 'suite'
+  ...
+# Subtest: v2-6b command provenance
+    # Subtest: coalesced commands ride one save as envelope ids, never op payloads
+    ok 1 - coalesced commands ride one save as envelope ids, never op payloads
+      ---
+      duration_ms: 10.36869
+      type: 'test'
+      ...
+    # Subtest: undo then save and redo then save each advance with honest provenance
+    ok 2 - undo then save and redo then save each advance with honest provenance
+      ---
+      duration_ms: 7.970038
+      type: 'test'
+      ...
+    # Subtest: unknown-origin saves store an honest empty envelope list
+    ok 3 - unknown-origin saves store an honest empty envelope list
+      ---
+      duration_ms: 5.675966
+      type: 'test'
+      ...
+    1..3
+ok 76 - v2-6b command provenance
+  ---
+  duration_ms: 24.304981
+  type: 'suite'
+  ...
+# Subtest: v2-6b retrieval and full round-trip
+    # Subtest: prior revisions read back byte-identical with scene identity intact
+    ok 1 - prior revisions read back byte-identical with scene identity intact
+      ---
+      duration_ms: 6.521318
+      type: 'test'
+      ...
+    # Subtest: unknown revisions 404 without leaking, malformed revisions 422
+    ok 2 - unknown revisions 404 without leaking, malformed revisions 422
+      ---
+      duration_ms: 3.96633
+      type: 'test'
+      ...
+    # Subtest: corrupt payloads refuse loudly while the current document stands
+    ok 3 - corrupt payloads refuse loudly while the current document stands
+      ---
+      duration_ms: 5.350671
+      type: 'test'
+      ...
+    1..3
+ok 77 - v2-6b retrieval and full round-trip
+  ---
+  duration_ms: 16.054517
+  type: 'suite'
+  ...
+# Subtest: v2-6b safe restore
+    # Subtest: restore advances the counter and preserves every row
+    ok 1 - restore advances the counter and preserves every row
+      ---
+      duration_ms: 7.104425
+      type: 'test'
+      ...
+    # Subtest: stale restores refuse with 409 shape and change nothing
+    ok 2 - stale restores refuse with 409 shape and change nothing
+      ---
+      duration_ms: 5.010748
+      type: 'test'
+      ...
+    # Subtest: concurrent restore versus save yields one winner and one stale
+    ok 3 - concurrent restore versus save yields one winner and one stale
+      ---
+      duration_ms: 5.926537
+      type: 'test'
+      ...
+    # Subtest: restored documents reopen, edit, and save normally
+    ok 4 - restored documents reopen, edit, and save normally
+      ---
+      duration_ms: 7.264779
+      type: 'test'
+      ...
+    1..4
+ok 78 - v2-6b safe restore
+  ---
+  duration_ms: 25.564637
+  type: 'suite'
+  ...
+# Subtest: v2-6b retention and compaction
+    # Subtest: history stays bounded: 20 recoverable, audit-only beyond, current never pruned
+    ok 1 - history stays bounded: 20 recoverable, audit-only beyond, current never pruned
+      ---
+      duration_ms: 29.333329
+      type: 'test'
+      ...
+    # Subtest: payload sizes stay small enough that snapshots need no compression
+    ok 2 - payload sizes stay small enough that snapshots need no compression
+      ---
+      duration_ms: 2.589237
+      type: 'test'
+      ...
+    1..2
+ok 79 - v2-6b retention and compaction
+  ---
+  duration_ms: 32.068002
+  type: 'suite'
+  ...
+# Subtest: v2-6b migration of pre-history projects
+    # Subtest: a V2-6A row opens normally and gains a baseline on first history touch
+    ok 1 - a V2-6A row opens normally and gains a baseline on first history touch
+      ---
+      duration_ms: 4.742085
+      type: 'test'
+      ...
+    # Subtest: unknown future schema versions still refuse instead of migrating
+    ok 2 - unknown future schema versions still refuse instead of migrating
+      ---
+      duration_ms: 4.183234
+      type: 'test'
+      ...
+    1..2
+ok 80 - v2-6b migration of pre-history projects
+  ---
+  duration_ms: 9.057808
+  type: 'suite'
+  ...
+# Subtest: v2-6b history survives process restart
+    # Subtest: close/reopen keeps revisions, audits, and the current document
+    ok 1 - close/reopen keeps revisions, audits, and the current document
+      ---
+      duration_ms: 5.261873
+      type: 'test'
+      ...
+    1..1
+ok 81 - v2-6b history survives process restart
+  ---
+  duration_ms: 5.352693
+  type: 'suite'
+  ...
+# Subtest: v2-6b owner isolation for history
+    # Subtest: cross-owner history reads refuse without leaking existence
+    ok 1 - cross-owner history reads refuse without leaking existence
+      ---
+      duration_ms: 4.091738
+      type: 'test'
+      ...
+    # Subtest: ownerless rows serve history to local anonymous callers only
+    ok 2 - ownerless rows serve history to local anonymous callers only
+      ---
+      duration_ms: 4.083942
+      type: 'test'
+      ...
+    # Subtest: delete removes revision rows with the project
+    ok 3 - delete removes revision rows with the project
+      ---
+      duration_ms: 3.286278
+      type: 'test'
+      ...
+    1..3
+ok 82 - v2-6b owner isolation for history
+  ---
+  duration_ms: 11.63823
+  type: 'suite'
+  ...
+# Subtest: v2-6b internal command boundary
+    # Subtest: restore-shaped envelopes face the same validators as forward edits
+    ok 1 - restore-shaped envelopes face the same validators as forward edits
+      ---
+      duration_ms: 3.555043
+      type: 'test'
+      ...
+    # Subtest: system chrome cannot be unlocked from any envelope path
+    ok 2 - system chrome cannot be unlocked from any envelope path
+      ---
+      duration_ms: 4.348155
+      type: 'test'
+      ...
+    # Subtest: browser-supplied actor strings never authorize; audit is descriptive only
+    ok 3 - browser-supplied actor strings never authorize; audit is descriptive only
+      ---
+      duration_ms: 5.839798
+      type: 'test'
+      ...
+    1..3
+ok 83 - v2-6b internal command boundary
+  ---
+  duration_ms: 13.926831
+  type: 'suite'
+  ...
+# Subtest: v2-6b native export after restore
+    # Subtest: restored mixed decks export native, order-exact, identity-stable
+    ok 1 - restored mixed decks export native, order-exact, identity-stable
+      ---
+      duration_ms: 36.830852
+      type: 'test'
+      ...
+    1..1
+ok 84 - v2-6b native export after restore
+  ---
+  duration_ms: 36.964972
+  type: 'suite'
+  ...
+# Subtest: v2-6b HTTP history endpoints
+    # Subtest: list/get/restore round-trip over HTTP with consistent shapes
+    ok 1 - list/get/restore round-trip over HTTP with consistent shapes
+      ---
+      duration_ms: 110.479106
+      type: 'test'
+      ...
+    # Subtest: history endpoints refuse traversal, oversize, disabled-host, and hosted anonymous
+    ok 2 - history endpoints refuse traversal, oversize, disabled-host, and hosted anonymous
+      ---
+      duration_ms: 1161.190187
+      type: 'test'
+      ...
+    1..2
+ok 85 - v2-6b HTTP history endpoints
+  ---
+  duration_ms: 3479.878285
+  type: 'suite'
+  ...
+# Subtest: v2 renderer pptx bytes
+    # Subtest: returns a non-empty Uint8Array with a ZIP signature
+    ok 1 - returns a non-empty Uint8Array with a ZIP signature
+      ---
+      duration_ms: 0.540687
+      type: 'test'
+      ...
+    # Subtest: rejects empty scene input loudly
+    ok 2 - rejects empty scene input loudly
+      ---
+      duration_ms: 0.356276
+      type: 'test'
+      ...
+    # Subtest: contains the expected slide parts
+    ok 3 - contains the expected slide parts
+      ---
+      duration_ms: 0.76219
+      type: 'test'
+      ...
+    # Subtest: keeps text, shape, chart, table, and line native
+    ok 4 - keeps text, shape, chart, table, and line native
+      ---
+      duration_ms: 6.819128
+      type: 'test'
+      ...
+    # Subtest: writes document metadata into OOXML properties
+    ok 5 - writes document metadata into OOXML properties
+      ---
+      duration_ms: 0.999278
+      type: 'test'
+      ...
+    # Subtest: renders fresh presentations per call
+    ok 6 - renders fresh presentations per call
+      ---
+      duration_ms: 14.891625
+      type: 'test'
+      ...
+    1..6
+ok 86 - v2 renderer pptx bytes
+  ---
+  duration_ms: 107.551663
+  type: 'suite'
+  ...
+# Subtest: v2 renderer node adapter
+    # Subtest: writes its rendered bytes to a path
+    ok 1 - writes its rendered bytes to a path
+      ---
+      duration_ms: 12.159937
+      type: 'test'
+      ...
+    1..1
+ok 87 - v2 renderer node adapter
+  ---
+  duration_ms: 12.412157
+  type: 'suite'
+  ...
+# Subtest: v2 scene counterfactual sensitivity
+    # Subtest: all six structured pairs are visibly scene-sensitive
+    ok 1 - all six structured pairs are visibly scene-sensitive
+      ---
+      duration_ms: 29.00281
+      type: 'test'
+      ...
+    # Subtest: historical indifference baselines remain untouched
+    ok 2 - historical indifference baselines remain untouched
+      ---
+      duration_ms: 2.019166
+      type: 'test'
+      ...
+    1..2
+ok 88 - v2 scene counterfactual sensitivity
+  ---
+  duration_ms: 31.724112
+  type: 'suite'
+  ...
+# Subtest: v2 free-text scene invariance
+    # Subtest: rationale-only deltas leave scene geometry unchanged
+    ok 1 - rationale-only deltas leave scene geometry unchanged
+      ---
+      duration_ms: 5.431433
+      type: 'test'
+      ...
+    1..1
+ok 89 - v2 free-text scene invariance
+  ---
+  duration_ms: 5.566214
+  type: 'suite'
+  ...
+# Subtest: v2 theme scene invariance
+    # Subtest: five themes preserve semantic meaning
+    ok 1 - five themes preserve semantic meaning
+      ---
+      duration_ms: 23.799821
+      type: 'test'
+      ...
+    1..1
+ok 90 - v2 theme scene invariance
+  ---
+  duration_ms: 23.956631
+  type: 'suite'
+  ...
+# Subtest: v2 mechanism PPTX nativeness
+    # Subtest: mechanism scenes export as native editable elements
+    ok 1 - mechanism scenes export as native editable elements
+      ---
+      duration_ms: 66.551723
+      type: 'test'
+      ...
+    1..1
+ok 91 - v2 mechanism PPTX nativeness
+  ---
+  duration_ms: 66.735995
+  type: 'suite'
+  ...
+# Subtest: v2 scene pptx
+    # Subtest: writes six slides
+    ok 1 - writes six slides
+      ---
+      duration_ms: 0.574953
+      type: 'test'
+      ...
+    # Subtest: headline text survives in slide XML
+    ok 2 - headline text survives in slide XML
+      ---
+      duration_ms: 0.15853
+      type: 'test'
+      ...
+    # Subtest: list items survive in slide XML
+    ok 3 - list items survive in slide XML
+      ---
+      duration_ms: 0.073703
+      type: 'test'
+      ...
+    # Subtest: chart data survives as a chart part
+    ok 4 - chart data survives as a chart part
+      ---
+      duration_ms: 1.767747
+      type: 'test'
+      ...
+    # Subtest: the same scene renders to browser SVG with stable element ids
+    ok 5 - the same scene renders to browser SVG with stable element ids
+      ---
+      duration_ms: 5.328772
+      type: 'test'
+      ...
+    1..5
+ok 92 - v2 scene pptx
+  ---
+  duration_ms: 92.891511
+  type: 'suite'
+  ...
+# Subtest: unauthorized caller cannot inspect project state
+ok 93 - unauthorized caller cannot inspect project state
+  ---
+  duration_ms: 22.774279
+  type: 'test'
+  ...
+# Subtest: project index pages expose only allowed slides and no content/style
+ok 94 - project index pages expose only allowed slides and no content/style
+  ---
+  duration_ms: 10.49612
+  type: 'test'
+  ...
+# Subtest: slide and selection projections preserve exact content without renderer or authority fields
+ok 95 - slide and selection projections preserve exact content without renderer or authority fields
+  ---
+  duration_ms: 1.137384
+  type: 'test'
+  ...
+# Subtest: pagination is explicit and slide grants cannot be bypassed
+ok 96 - pagination is explicit and slide grants cannot be bypassed
+  ---
+  duration_ms: 0.719343
+  type: 'test'
+  ...
+# Subtest: empty and invalid selections never widen scope
+ok 97 - empty and invalid selections never widen scope
+  ---
+  duration_ms: 0.791807
+  type: 'test'
+  ...
+# Subtest: rejects raw command as untrusted input without mutation
+ok 98 - rejects raw command as untrusted input without mutation
+  ---
+  duration_ms: 0.48732
+  type: 'test'
+  ...
+# Subtest: rejects geometry as untrusted input without mutation
+ok 99 - rejects geometry as untrusted input without mutation
+  ---
+  duration_ms: 0.369995
+  type: 'test'
+  ...
+# Subtest: rejects owner override as untrusted input without mutation
+ok 100 - rejects owner override as untrusted input without mutation
+  ---
+  duration_ms: 0.422901
+  type: 'test'
+  ...
+# Subtest: rejects text style as untrusted input without mutation
+ok 101 - rejects text style as untrusted input without mutation
+  ---
+  duration_ms: 0.391569
+  type: 'test'
+  ...
+# Subtest: rejects nonfinite as untrusted input without mutation
+ok 102 - rejects nonfinite as untrusted input without mutation
+  ---
+  duration_ms: 0.329631
+  type: 'test'
+  ...
+# Subtest: rejects missing args as untrusted input without mutation
+ok 103 - rejects missing args as untrusted input without mutation
+  ---
+  duration_ms: 0.245713
+  type: 'test'
+  ...
+# Subtest: rejects unknown tool as untrusted input without mutation
+ok 104 - rejects unknown tool as untrusted input without mutation
+  ---
+  duration_ms: 0.251428
+  type: 'test'
+  ...
+# Subtest: rejects sparse array as untrusted input without mutation
+ok 105 - rejects sparse array as untrusted input without mutation
+  ---
+  duration_ms: 0.242299
+  type: 'test'
+  ...
+# Subtest: rejects function as untrusted input without mutation
+ok 106 - rejects function as untrusted input without mutation
+  ---
+  duration_ms: 0.228145
+  type: 'test'
+  ...
+# Subtest: rejects pollution as untrusted input without mutation
+ok 107 - rejects pollution as untrusted input without mutation
+  ---
+  duration_ms: 0.215954
+  type: 'test'
+  ...
+# Subtest: accessors and cycles are refused without invoking accessors
+ok 108 - accessors and cycles are refused without invoking accessors
+  ---
+  duration_ms: 0.215122
+  type: 'test'
+  ...
+# Subtest: text edits preserve all runs, styling and geometry with exact undo/redo
+ok 109 - text edits preserve all runs, styling and geometry with exact undo/redo
+  ---
+  duration_ms: 2.445582
+  type: 'test'
+  ...
+# Subtest: text, chart and table changes commit as one native batch
+ok 110 - text, chart and table changes commit as one native batch
+  ---
+  duration_ms: 33.937831
+  type: 'test'
+  ...
+# Subtest: invalid later chart or table edit rolls back every earlier valid edit
+ok 111 - invalid later chart or table edit rolls back every earlier valid edit
+  ---
+  duration_ms: 0.967705
+  type: 'test'
+  ...
+# Subtest: duplicate text run is refused atomically
+ok 112 - duplicate text run is refused atomically
+  ---
+  duration_ms: 0.300894
+  type: 'test'
+  ...
+# Subtest: duplicate data is refused atomically
+ok 113 - duplicate data is refused atomically
+  ---
+  duration_ms: 0.241952
+  type: 'test'
+  ...
+# Subtest: wrong kind is refused atomically
+ok 114 - wrong kind is refused atomically
+  ---
+  duration_ms: 0.208334
+  type: 'test'
+  ...
+# Subtest: invalid run is refused atomically
+ok 115 - invalid run is refused atomically
+  ---
+  duration_ms: 0.209337
+  type: 'test'
+  ...
+# Subtest: stale revisions and duplicate applied calls cannot overwrite
+ok 116 - stale revisions and duplicate applied calls cannot overwrite
+  ---
+  duration_ms: 0.65045
+  type: 'test'
+  ...
+# Subtest: parallel calls with the same revision have only one winner
+ok 117 - parallel calls with the same revision have only one winner
+  ---
+  duration_ms: 0.571222
+  type: 'test'
+  ...
+# Subtest: noop edits retain revision, history and redo state
+ok 118 - noop edits retain revision, history and redo state
+  ---
+  duration_ms: 0.890642
+  type: 'test'
+  ...
+# Subtest: read-only mode and absent grants cannot be widened by a tool request
+ok 119 - read-only mode and absent grants cannot be widened by a tool request
+  ---
+  duration_ms: 0.883604
+  type: 'test'
+  ...
+# Subtest: editing outside the grant or outside readable slides is refused
+ok 120 - editing outside the grant or outside readable slides is refused
+  ---
+  duration_ms: 0.477905
+  type: 'test'
+  ...
+# Subtest: locked targets are refused even with an explicit grant
+ok 121 - locked targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.273397
+  type: 'test'
+  ...
+# Subtest: hidden targets are refused even with an explicit grant
+ok 122 - hidden targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.177725
+  type: 'test'
+  ...
+# Subtest: ancestor locks and hidden groups protect nested targets
+ok 123 - ancestor locks and hidden groups protect nested targets
+  ---
+  duration_ms: 0.445837
+  type: 'test'
+  ...
+# Subtest: detached content stays editable and existing tombstones/human additions survive
+ok 124 - detached content stays editable and existing tombstones/human additions survive
+  ---
+  duration_ms: 1.103856
+  type: 'test'
+  ...
+# Subtest: input is snapshotted and output/catalog/grants cannot mutate authoritative state
+ok 125 - input is snapshotted and output/catalog/grants cannot mutate authoritative state
+  ---
+  duration_ms: 1.104876
+  type: 'test'
+  ...
+# Subtest: calls, oversized reads, input and pre-commit acknowledgements obey budgets
+ok 126 - calls, oversized reads, input and pre-commit acknowledgements obey budgets
+  ---
+  duration_ms: 0.554343
+  type: 'test'
+  ...
+# Subtest: unexpected document failures do not echo private exception text
+ok 127 - unexpected document failures do not echo private exception text
+  ---
+  duration_ms: 0.250869
+  type: 'test'
+  ...
+# Subtest: an oversized acknowledgement refuses before the real engine can commit
+ok 128 - an oversized acknowledgement refuses before the real engine can commit
+  ---
+  duration_ms: 1.031346
+  type: 'test'
+  ...
+# Subtest: result schemas reject missing fields and renderer/credential escapes in projected data
+ok 129 - result schemas reject missing fields and renderer/credential escapes in projected data
+  ---
+  duration_ms: 0.69591
+  type: 'test'
+  ...
+# Subtest: table content tools refuse dimension changes without committing any batch part
+ok 130 - table content tools refuse dimension changes without committing any batch part
+  ---
+  duration_ms: 0.555557
+  type: 'test'
+  ...
+# Subtest: tool wording and human placement survive deterministic regeneration together
+ok 131 - tool wording and human placement survive deterministic regeneration together
+  ---
+  duration_ms: 41.583218
+  type: 'test'
+  ...
+1..131
+# tests 271
+# suites 52
+# pass 271
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23125.979978
+# forge-test-file "test/dev-protocol.test.js"
+# forge-test-file "test/v2-chrome-scene-3e3.test.js"
+# forge-test-file "test/v2-export-preflight-5a.test.js"
+# forge-test-file "test/v2-layouts-5k.test.js"
+# forge-test-file "test/v2-native-ids.test.js"
+# forge-test-file "test/v2-plate-3f5.test.js"
+# forge-test-file "test/v2-projects-6a.test.js"
+# forge-test-file "test/v2-projects-6b.test.js"
+# forge-test-file "test/v2-renderer-pptx.test.js"
+# forge-test-file "test/v2-scene-composition.test.js"
+# forge-test-file "test/v2-scene-pptx.test.js"
+# forge-test-file "test/v2-tools-8a.test.js"

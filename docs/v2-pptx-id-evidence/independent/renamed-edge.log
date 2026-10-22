@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: root zero, lexical first IDs, later reservations and repeated duplicates are preserved deterministically
+ok 1 - root zero, lexical first IDs, later reservations and repeated duplicates are preserved deterministically
+  ---
+  duration_ms: 0.915912
+  type: 'test'
+  ...
+# Subtest: valid boundary IDs and empty shape parts remain byte-identical
+ok 2 - valid boundary IDs and empty shape parts remain byte-identical
+  ---
+  duration_ms: 0.111507
+  type: 'test'
+  ...
+# Subtest: all duplicate-target lexical spellings refuse while unique-target references survive
+ok 3 - all duplicate-target lexical spellings refuse while unique-target references survive
+  ---
+  duration_ms: 0.476201
+  type: 'test'
+  ...
+# Subtest: missing and non-integer identities fail closed
+ok 4 - missing and non-integer identities fail closed
+  ---
+  duration_ms: 0.14194
+  type: 'test'
+  ...
+# Subtest: a duplicate reference anywhere in one part rejects the whole archive
+ok 5 - a duplicate reference anywhere in one part rejects the whole archive
+  ---
+  duration_ms: 6.278124
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90.104519

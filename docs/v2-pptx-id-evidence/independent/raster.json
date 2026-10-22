@@ -1,0 +1,60 @@
+{
+  "scenesUnchanged": true,
+  "freshRenderMilliseconds": 56.505053000000004,
+  "comparisons": [
+    {
+      "slide": 1,
+      "phase": "repaired",
+      "width": 1467,
+      "height": 825,
+      "changedChannels": 0
+    },
+    {
+      "slide": 1,
+      "phase": "fresh",
+      "width": 1467,
+      "height": 825,
+      "changedChannels": 0
+    },
+    {
+      "slide": 2,
+      "phase": "repaired",
+      "width": 1467,
+      "height": 825,
+      "changedChannels": 0
+    },
+    {
+      "slide": 2,
+      "phase": "fresh",
+      "width": 1467,
+      "height": 825,
+      "changedChannels": 0
+    },
+    {
+      "slide": 3,
+      "phase": "repaired",
+      "width": 1467,
+      "height": 825,
+      "changedChannels": 0
+    },
+    {
+      "slide": 3,
+      "phase": "fresh",
+      "width": 1467,
+      "height": 825,
+      "changedChannels": 0
+    }
+  ],
+  "images": [
+    "/home/deepnar/Programs/presentations/out/v2-pptx-id-review/before-preview/slide-1.png",
+    "/home/deepnar/Programs/presentations/out/v2-pptx-id-review/before-preview/slide-2.png",
+    "/home/deepnar/Programs/presentations/out/v2-pptx-id-review/before-preview/slide-3.png",
+    "/home/deepnar/Programs/presentations/out/v2-pptx-id-review/repaired-preview/slide-1.png",
+    "/home/deepnar/Programs/presentations/out/v2-pptx-id-review/repaired-preview/slide-2.png",
+    "/home/deepnar/Programs/presentations/out/v2-pptx-id-review/repaired-preview/slide-3.png",
+    "/home/deepnar/Programs/presentations/out/v2-pptx-id-review/fresh-preview/slide-1.png",
+    "/home/deepnar/Programs/presentations/out/v2-pptx-id-review/fresh-preview/slide-2.png",
+    "/home/deepnar/Programs/presentations/out/v2-pptx-id-review/fresh-preview/slide-3.png"
+  ],
+  "interactivePowerPointExecuted": false
+}

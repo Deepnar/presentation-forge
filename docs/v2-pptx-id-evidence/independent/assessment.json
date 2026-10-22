@@ -1,0 +1,140 @@
+{
+  "implementationSha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "reviewedHead": "5087c73113c9fca72b97bd4a69b46f21cd28023a",
+  "sourceDeltaAfterCandidate": [],
+  "rootPacketInspected": {
+    "tests": {
+      "total": 376,
+      "pass": 376,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "completeFiles": 19,
+    "typecheck": "passed evidence inspected; not independently rerun",
+    "benchmark": {
+      "cells": 50,
+      "l1Findings": 0,
+      "allQualityFieldsExceptArchiveByteLengthMatchAcceptedV28G": true,
+      "counterfactualsAndInvarianceEqual": true
+    },
+    "nativeArchiveAndRasterRecords": "passed; independently challenged with fresh and same-archive evidence"
+  },
+  "independentPrimaryTests": {
+    "total": 271,
+    "pass": 271,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentPrimaryEntryFiles": 13,
+  "renamedSupplementalScriptRepeat": {
+    "tests": 5,
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "overlap": 5,
+    "reason": "edge.test.mjs renamed edge-check.mjs to avoid default test discovery; unchanged five-case script rerun; original271log and command retained"
+  },
+  "renamedScriptSha256": "9726ccf524a53fe7aaf51f1c629f45f9e10feb0ef1592c667ac13d2f7f4d3673",
+  "allAcknowledgedIndependentLeafExecutions": 276,
+  "independentDistinctChecksReported": 271,
+  "nativeCommandSeconds": 2.0178897810001217,
+  "archiveCommandSeconds": 0.11423051600286271,
+  "visualInspection": {
+    "freshRasters": 9,
+    "distinctPixelImagesInspected": 3,
+    "pixelComparisons": 6,
+    "changedChannels": 0,
+    "dimensions": [
+      1467,
+      825
+    ],
+    "details": "All three full-size fresh pages inspected; exact pixel equality establishes same views for all nine variants. Existing enlarged left-table detail and PDF text resolve a mistaken initial full-slide interpretation; both tables on slides2/3 are present. No new clipping, overlap or shift observed."
+  },
+  "headroom": {
+    "guardSamples": 7,
+    "allSamplesNoncritical": true,
+    "allPreJobSamplesReady": true,
+    "maxCpuBusyPercent": 23.03158695238871,
+    "minAvailableKiB": 42429132,
+    "globalIoPsiProvenance": "unresolved; raw observations retained"
+  },
+  "exclusions": [
+    "PostgreSQL, fault, browser and production build not rerun under explicit renderer-only applicability",
+    "Interactive Microsoft PowerPoint selection/edit/save/reopen unexecuted",
+    "Standing BYOK en_IN locale9pass/1fail historical, not rerun and not waived",
+    "Legacy renderer identity risk and mixed-run SVG fidelity remain separate roadmap entries",
+    "No real model API call, local inference, content-quality evaluation, service or deployment"
+  ],
+  "originalUntrackedPathsUntouched": [
+    ".agents/",
+    "PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md",
+    "PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md"
+  ],
+  "findings": [],
+  "decisionRecommendation": "ACCEPT the bounded canonical-renderer shape-ID correction only",
+  "evidenceHashes": [
+    {
+      "path": "docs/v2-pptx-id-evidence/native-pptx.json",
+      "sha256": "0744cfd28fc4cbcc47f11ec7de0a7aa27b21b52e2931578c8e54f55591a574a5"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/logs/native-pptx.log",
+      "sha256": "dc4e8baae4b70b5386ac7d53935e670f7457b98f4aabd55cf987471d4ffb866b"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/typecheck.json",
+      "sha256": "4da7174d1fab70076b5549883e545fb9f2b793714c7d0aa7cb7d05ab3e50e3b1"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/benchmark-50.json",
+      "sha256": "9e50ca9cce575a08c322db28784a4c54eac2f4d2068242c363de016c6aa7b1bb"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/benchmark-results.json",
+      "sha256": "d1fa8310b8e7865dd6f090919308fdb244fbd7297ed2f2d1ccaba77bb4cf8dc2"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/archive-comparison.json",
+      "sha256": "f10e0c258923b3d03e5db47175de1fe307bc8cfe6735ae638857a32d02f78d5d"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/raster-comparison.json",
+      "sha256": "e0d75f5257d03458500a0aa5107b134173b7514133ad1b04c794285ad6456142"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/independent/execution.json",
+      "sha256": "dfd4dcdae27673a63c366d9a507310f6cb39fbcc4580debda47b771efe0cd272"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/independent/archive.json",
+      "sha256": "c145615e406f3dfc0ffdec0bcefa9765178bbbf77bb8a2267903ff5efc2f15f7"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/independent/raster.json",
+      "sha256": "aebf601cb3335552388ad9ba584b348e9a47e376f3833145a0e15c9716c7cd91"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/independent/tests.log",
+      "sha256": "a375721b6f77a8dc264d0189ccb6a264b55c906736c9f77cc32a0ad92d531572"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/independent/native.log",
+      "sha256": "a52fc423d5842fbce9351eccd6507cbb46587cd18221fcdc6f18745bea736ccc"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/independent/archive.log",
+      "sha256": "31111790dde169f73652dd71b0fc0495113bd03a0fc201f9357d78fc3e4539bc"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/independent/renamed-edge.log",
+      "sha256": "5b314d482d00be8ec296fb61be3ae3d50f2d958f8d32da9a26be6c1aff62f591"
+    },
+    {
+      "path": "docs/v2-pptx-id-evidence/independent/protocol.log",
+      "sha256": "e39dd3318881110ea2a56d115a9146c73ae490e659de219a3dd4d549e0b10f3e"
+    }
+  ]
+}

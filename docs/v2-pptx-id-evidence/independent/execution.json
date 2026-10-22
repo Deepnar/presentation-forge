@@ -1,0 +1,53 @@
+{
+  "implementationSha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "atUtc": "2026-10-22T17:37:20.860196+00:00",
+  "backend": "in-memory renderer; temporary isolated SQLite consumers; PostgreSQL not rerun",
+  "records": [
+    {
+      "name": "tests",
+      "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 5m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/dev-protocol.test.js test/v2-native-ids.test.js test/v2-renderer-pptx.test.js test/v2-scene-pptx.test.js test/v2-export-preflight-5a.test.js test/v2-projects-6a.test.js test/v2-projects-6b.test.js test/v2-tools-8a.test.js test/v2-layouts-5k.test.js test/v2-chrome-scene-3e3.test.js test/v2-plate-3f5.test.js test/v2-scene-composition.test.js docs/v2-pptx-id-evidence/independent/edge.test.mjs",
+      "exitCode": 0,
+      "seconds": 23.178922914001305,
+      "log": "docs/v2-pptx-id-evidence/independent/tests.log",
+      "sha256": "a375721b6f77a8dc264d0189ccb6a264b55c906736c9f77cc32a0ad92d531572",
+      "tests": {
+        "total": 271,
+        "pass": 271,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "files": [
+        "test/dev-protocol.test.js",
+        "test/v2-native-ids.test.js",
+        "test/v2-renderer-pptx.test.js",
+        "test/v2-scene-pptx.test.js",
+        "test/v2-export-preflight-5a.test.js",
+        "test/v2-projects-6a.test.js",
+        "test/v2-projects-6b.test.js",
+        "test/v2-tools-8a.test.js",
+        "test/v2-layouts-5k.test.js",
+        "test/v2-chrome-scene-3e3.test.js",
+        "test/v2-plate-3f5.test.js",
+        "test/v2-scene-composition.test.js",
+        "docs/v2-pptx-id-evidence/independent/edge.test.mjs"
+      ]
+    },
+    {
+      "name": "native",
+      "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 5m node docs/v2-pptx-id-evidence/independent/export.mjs",
+      "exitCode": 0,
+      "seconds": 2.0178897810001217,
+      "log": "docs/v2-pptx-id-evidence/independent/native.log",
+      "sha256": "a52fc423d5842fbce9351eccd6507cbb46587cd18221fcdc6f18745bea736ccc"
+    },
+    {
+      "name": "archive",
+      "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 5m python docs/v2-pptx-id-evidence/independent/audit.py",
+      "exitCode": 0,
+      "seconds": 0.11423051600286271,
+      "log": "docs/v2-pptx-id-evidence/independent/archive.log",
+      "sha256": "31111790dde169f73652dd71b0fc0495113bd03a0fc201f9357d78fc3e4539bc"
+    }
+  ]
+}
