@@ -1,0 +1,12 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "id": "2776cb64a2b09255d751aab5c4c8a5e95ac26bd74e68325e7196dc9a4b9dffd7",
+  "name": "forge-v28g-validation",
+  "atUtc": "2026-10-22T17:04:18.104598+00:00",
+  "actualProjectDatabases": 0,
+  "databaseNames": [],
+  "query": "SELECT datname FROM pg_database WHERE datname NOT IN ('postgres','template0','template1') ORDER BY datname",
+  "queryExitCode": 0,
+  "identityAndLoopbackPortVerified": true,
+  "savedBeforeRemoval": true
+}
