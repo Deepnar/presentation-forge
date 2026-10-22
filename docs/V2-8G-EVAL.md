@@ -1,6 +1,7 @@
 # V2-8G model-transport resource bounds evaluation
 
-2026-10-22 · implementation in progress; no independent acceptance.
+2026-10-22 · implemented; complete validation and independent review pending.
+Frozen implementation `ec6731546ddfe8e0a47516b49b7aee5b510ed589`; later documentation/evidence commits do not change code.
 Accepted baseline `0cab854bce04b862060829812a9ab6ff0b765fd9`; audit-entry checkout
 `ee52b50bac2ce5704eda39a89ae959259497f331`; correction planning checkout `44377b0`.
 Branch `v2`, scoped push `origin/v2`. The [bounded contract](ROADMAP.md#model-provider-stream-resource-bounds)
@@ -38,10 +39,34 @@ qualify an intensive run. No competing process was altered.
 
 ## Execution record
 
-No correction tests have executed at this planning checkpoint. Required final
-checks are pending, not skipped or green. Failing attempts and corrections will
-be retained separately from frozen-source execution. The architecture audit remains
-a separate documentation-only task and its zero-execution statement is unchanged.
+The new injected-stream file failed2pass/12fail out of14 on the prerequisite
+adapter, with0skip/cancel. Four immediate-empty-stream child probes exceeded their
+1500ms process watchdogs; their Node leaves failed, not cancelled. Other cases
+exposed monotonic expiry, late-fetch fencing and late-body continued consumption.
+These are reproduced transport resource defects, not live-model failures. Both
+fragmented UTF-8/5000empty-chunk success cases already passed. Raw attempts and
+exact test/adapter hashes are retained in fail-first-stream.{json,log}.
+
+After the narrow correction, the same14assertions passed14/14 with0fail/skip/cancel;
+the test hash is identical. The adapter now uses one fixed response-byte buffer,
+monotonic checks, periodic event-loop yielding, late-response fencing and source
+cancellation before reader unlock. Settings, canonical result/tool/usage rules,
+protocols, credentials and no-retry behavior are unchanged.
+
+The first expanded8-file offline run on ec67315 passed195/196,0skip/cancel. The sole
+failure was the repository-state governance check: implementationHead still pointed
+to the accepted prerequisite while the new milestone was unaccepted. Updating that
+tracking pointer and the plan to the actual frozen ec67315 corrects the metadata;
+no test assertion, validator rule or product source changed. The initial failure
+remains in focused-offline.{json,log}; a separate rerun will supply corrected totals.
+The same8-file rerun passed196/196,0fail/skip/cancel on exact frozen ec67315 in
+9.133s wall time, using injected transports and loopback HTTP fixtures only.
+Final-focused-offline.{json,log} retain complete file markers and command/exit/hash.
+These196checks overlap the full inventory; the earlier14-case corrected repeat is
+not additional distinct coverage. The lightweight protocol checker reports0errors/
+0warnings after pointer correction. No live model call or local inference occurred.
+Required full gates remain pending, not skipped or green. The architecture audit's
+zero-execution record is separate.
 
 Stop after this correction's independent review, owned-resource cleanup and handoff.
 Parent V2-8 and the other audit proposals remain unapproved for implementation.

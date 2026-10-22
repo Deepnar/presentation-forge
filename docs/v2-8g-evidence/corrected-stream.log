@@ -1,0 +1,95 @@
+TAP version 13
+# Subtest: openai-compatible: empty chunks cannot starve deadline
+ok 1 - openai-compatible: empty chunks cannot starve deadline
+  ---
+  duration_ms: 290.359488
+  type: 'test'
+  ...
+# Subtest: openai-compatible: empty chunks cannot starve caller cancellation
+ok 2 - openai-compatible: empty chunks cannot starve caller cancellation
+  ---
+  duration_ms: 288.116965
+  type: 'test'
+  ...
+# Subtest: openai-compatible: monotonic expiry cancels before reader unlock
+ok 3 - openai-compatible: monotonic expiry cancels before reader unlock
+  ---
+  duration_ms: 53.510016
+  type: 'test'
+  ...
+# Subtest: openai-compatible: elapsed header deadline cannot start a body reader
+ok 4 - openai-compatible: elapsed header deadline cannot start a body reader
+  ---
+  duration_ms: 3.574572
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancelled non-cooperating fetch fences its late body
+ok 5 - openai-compatible: cancelled non-cooperating fetch fences its late body
+  ---
+  duration_ms: 3.367131
+  type: 'test'
+  ...
+# Subtest: openai-compatible: timed-out non-cooperating read cannot continue consuming
+ok 6 - openai-compatible: timed-out non-cooperating read cannot continue consuming
+  ---
+  duration_ms: 22.240972
+  type: 'test'
+  ...
+# Subtest: openai-compatible: empty chunks and fragmented UTF8 fit the exact byte allowance
+ok 7 - openai-compatible: empty chunks and fragmented UTF8 fit the exact byte allowance
+  ---
+  duration_ms: 28.177562
+  type: 'test'
+  ...
+# Subtest: anthropic: empty chunks cannot starve deadline
+ok 8 - anthropic: empty chunks cannot starve deadline
+  ---
+  duration_ms: 362.819172
+  type: 'test'
+  ...
+# Subtest: anthropic: empty chunks cannot starve caller cancellation
+ok 9 - anthropic: empty chunks cannot starve caller cancellation
+  ---
+  duration_ms: 332.867336
+  type: 'test'
+  ...
+# Subtest: anthropic: monotonic expiry cancels before reader unlock
+ok 10 - anthropic: monotonic expiry cancels before reader unlock
+  ---
+  duration_ms: 3.472652
+  type: 'test'
+  ...
+# Subtest: anthropic: elapsed header deadline cannot start a body reader
+ok 11 - anthropic: elapsed header deadline cannot start a body reader
+  ---
+  duration_ms: 2.24473
+  type: 'test'
+  ...
+# Subtest: anthropic: cancelled non-cooperating fetch fences its late body
+ok 12 - anthropic: cancelled non-cooperating fetch fences its late body
+  ---
+  duration_ms: 2.47652
+  type: 'test'
+  ...
+# Subtest: anthropic: timed-out non-cooperating read cannot continue consuming
+ok 13 - anthropic: timed-out non-cooperating read cannot continue consuming
+  ---
+  duration_ms: 22.471322
+  type: 'test'
+  ...
+# Subtest: anthropic: empty chunks and fragmented UTF8 fit the exact byte allowance
+ok 14 - anthropic: empty chunks and fragmented UTF8 fit the exact byte allowance
+  ---
+  duration_ms: 23.092995
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1722.044268
+# forge-test-file "test/v2-provider-stream-8g.test.js"

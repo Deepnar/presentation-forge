@@ -1,0 +1,38 @@
+{
+  "atUtc": "2026-10-22T11:50:26.614889+00:00",
+  "sourceHead": "f031879953a03d7957b54355e6a49405fe596190",
+  "workingTreeDelta": [
+    "src/agent/model-provider.js",
+    "test/v2-provider-stream-8g.test.js"
+  ],
+  "modelAdapterSha256": "d85b7fcec6bd0272209aafc05234afafb20b312e2a9a969b3c7afbe4bf2f7d59",
+  "testSha256": "2b00226a7d5159dda12731961f8b451972dc945ad6cdf66475e713f12e1f3593",
+  "assertionsUnchangedFromFailFirst": true,
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-provider-stream-8g.test.js"
+  ],
+  "exitCode": 0,
+  "outerWatchdogKilled": false,
+  "wallSeconds": 1.769914530999813,
+  "totals": {
+    "total": 14,
+    "pass": 14,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "liveModelCalls": 0,
+  "localInferenceCalls": 0
+}

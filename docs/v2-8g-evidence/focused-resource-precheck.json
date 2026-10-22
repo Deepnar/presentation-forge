@@ -1,0 +1,41 @@
+{
+  "purpose": "Precheck for14small bounded injected-stream cases only, not qualification of intensive/full validation",
+  "sourceHead": "f031879953a03d7957b54355e6a49405fe596190",
+  "samples": [
+    {
+      "atUtc": "2026-10-22T11:47:33.182802+00:00",
+      "sampleSeconds": 2.00037932500004,
+      "cpuBusyPercent": 12.630501535312181,
+      "iowaitPercent": 9.969293756397134,
+      "availableKiB": 32617148,
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 0.0,
+          "weightedQueue": 0.0
+        }
+      },
+      "ioPressure": "some avg10=39.65 avg60=39.83 avg300=41.07 total=621750287\nfull avg10=37.58 avg60=36.57 avg300=36.99 total=569501141\n",
+      "memoryPressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1514\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1505\n"
+    },
+    {
+      "atUtc": "2026-10-22T11:47:35.183218+00:00",
+      "sampleSeconds": 2.0004386860000523,
+      "cpuBusyPercent": 12.484624846248462,
+      "iowaitPercent": 9.758097580975809,
+      "availableKiB": 32595608,
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 0.0,
+          "weightedQueue": 0.0
+        }
+      },
+      "ioPressure": "some avg10=39.53 avg60=39.80 avg300=41.06 total=622583325\nfull avg10=37.47 avg60=36.59 avg300=36.99 total=570250855\n",
+      "memoryPressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1514\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1505\n"
+    }
+  ],
+  "noCompetingProcessModified": true,
+  "limitation": "Global I/O PSI provenance unresolved; no attribution to competing inference.",
+  "workingTreeDelta": [
+    "test/v2-provider-stream-8g.test.js"
+  ]
+}

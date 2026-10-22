@@ -9132,11 +9132,13 @@ Done when: the legacy paths are gone and old projects still open.
 ### [ ] Model-provider stream lifetime and buffering audit
 
 V2-8F source review reproduced timer starvation and reader-cleanup/resource defects
-in the new search adapter and corrected that bounded slice. The accepted
-src/agent/model-provider.js transport still has the similar timer-only read loop,
-accumulated chunk array and release-before-outer-cancel pattern. Audit it with
-isolated bounded reproductions before claiming those edge cases are qualified;
-this is a source-inspected risk, not an executed failure of the model adapter.
+in the new search adapter and corrected that bounded slice. At architecture-audit entry, the accepted
+src/agent/model-provider.js transport had the similar timer-only read loop,
+accumulated chunk array and release-before-outer-cancel pattern. The subsequent
+separately authorized V2-8G correction reproduced12failures/14injected cases and
+corrected the transport at `ec67315`; unchanged assertions then passed14/14.
+No live-model failure is claimed. Full regression and independent acceptance remain
+pending in [the correction evaluation](V2-8G-EVAL.md); this item remains unchecked.
 Preserve both real HTTP protocols, normalized usage, canonical result/privacy gates
 and existing assertions. Any correction needs its own bounded contract, unchanged
 regression coverage and exact-source independent review. Do not absorb provider

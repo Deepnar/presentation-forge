@@ -1,0 +1,459 @@
+TAP version 13
+# Subtest: openai-compatible: empty chunks cannot starve deadline
+not ok 1 - openai-compatible: empty chunks cannot starve deadline
+  ---
+  duration_ms: 1544.438231
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:24:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    isolated stream must finish before its process watchdog
+    + actual - expected
+    
+    + Error: spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node ETIMEDOUT
+    +     at Object.spawnSync (node:internal/child_process:1143:20)
+    +     at spawnSync (node:child_process:911:24)
+    +     at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:34:19)
+    +     at Test.runInAsyncScope (node:async_hooks:227:14)
+    +     at Test.run (node:internal/test_runner/test:1306:25)
+    +     at Test.start (node:internal/test_runner/test:1177:17)
+    +     at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    +   code: 'ETIMEDOUT',
+    +   errno: -110,
+    +   path: '/home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node',
+    +   spawnargs: [
+    +     '--input-type=module',
+    +     '-e',
+    +     "import {createModelProvider} from './src/agent/model-provider.js';\n" +
+    +       "      import {context,caps} from './test/v2-provider-fixture.js';\n" +
+    +       '      const {context:ctx}=await context();\n' +
+    +       '      const stream=new ReadableStream({pull(c){c.enqueue(new Uint8Array(0));}});\n' +
+    +       `      const provider=createModelProvider({family:"openai-compatible",id:'fixture',model:'fixture',\n` +
+    +       "        baseURL:'https://fixture.invalid/v1',apiKey:'fixture-key',capabilities:caps(),timeoutMs:20},\n" +
+    +       "        {fetch:async()=>new Response(stream,{headers:{'content-type':'application/json'}})});\n" +
+    +       '      const controller=new AbortController();\n' +
+    +       '      console.log(JSON.stringify(await provider.exchange(ctx,{signal:controller.signal})));'
+    +   ],
+    +   syscall: 'spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node'
+    + }
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: 'spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1143:20)
+    spawnSync (node:child_process:911:24)
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:34:19)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    Test.start (node:internal/test_runner/test:1177:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17)
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:37:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    Test.start (node:internal/test_runner/test:1177:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17)
+  ...
+# Subtest: openai-compatible: empty chunks cannot starve caller cancellation
+not ok 2 - openai-compatible: empty chunks cannot starve caller cancellation
+  ---
+  duration_ms: 1536.626875
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:24:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    isolated stream must finish before its process watchdog
+    + actual - expected
+    
+    + Error: spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node ETIMEDOUT
+    +     at Object.spawnSync (node:internal/child_process:1143:20)
+    +     at spawnSync (node:child_process:911:24)
+    +     at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:34:19)
+    +     at Test.runInAsyncScope (node:async_hooks:227:14)
+    +     at Test.run (node:internal/test_runner/test:1306:25)
+    +     at Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+    +     at Test.postRun (node:internal/test_runner/test:1447:19)
+    +     at Test.run (node:internal/test_runner/test:1372:12)
+    +     at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    +   code: 'ETIMEDOUT',
+    +   errno: -110,
+    +   path: '/home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node',
+    +   spawnargs: [
+    +     '--input-type=module',
+    +     '-e',
+    +     "import {createModelProvider} from './src/agent/model-provider.js';\n" +
+    +       "      import {context,caps} from './test/v2-provider-fixture.js';\n" +
+    +       '      const {context:ctx}=await context();\n' +
+    +       '      const stream=new ReadableStream({pull(c){c.enqueue(new Uint8Array(0));}});\n' +
+    +       `      const provider=createModelProvider({family:"openai-compatible",id:'fixture',model:'fixture',\n` +
+    +       "        baseURL:'https://fixture.invalid/v1',apiKey:'fixture-key',capabilities:caps(),timeoutMs:300},\n" +
+    +       "        {fetch:async()=>new Response(stream,{headers:{'content-type':'application/json'}})});\n" +
+    +       '      const controller=new AbortController();setTimeout(()=>controller.abort(),5);\n' +
+    +       '      console.log(JSON.stringify(await provider.exchange(ctx,{signal:controller.signal})));'
+    +   ],
+    +   syscall: 'spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node'
+    + }
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: 'spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1143:20)
+    spawnSync (node:child_process:911:24)
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:34:19)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+    Test.postRun (node:internal/test_runner/test:1447:19)
+    Test.run (node:internal/test_runner/test:1372:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:37:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+    Test.postRun (node:internal/test_runner/test:1447:19)
+    Test.run (node:internal/test_runner/test:1372:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: openai-compatible: monotonic expiry cancels before reader unlock
+not ok 3 - openai-compatible: monotonic expiry cancels before reader unlock
+  ---
+  duration_ms: 38.524295
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:42:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'timeout'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'timeout'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:51:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: openai-compatible: elapsed header deadline cannot start a body reader
+not ok 4 - openai-compatible: elapsed header deadline cannot start a body reader
+  ---
+  duration_ms: 2.247821
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:55:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'provider-unavailable'
+    - 'timeout'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'timeout'
+  actual: 'provider-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:64:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: openai-compatible: cancelled non-cooperating fetch fences its late body
+not ok 5 - openai-compatible: cancelled non-cooperating fetch fences its late body
+  ---
+  duration_ms: 7.212752
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:68:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:77:26)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: openai-compatible: timed-out non-cooperating read cannot continue consuming
+not ok 6 - openai-compatible: timed-out non-cooperating read cannot continue consuming
+  ---
+  duration_ms: 22.008684
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:80:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:89:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: openai-compatible: empty chunks and fragmented UTF8 fit the exact byte allowance
+ok 7 - openai-compatible: empty chunks and fragmented UTF8 fit the exact byte allowance
+  ---
+  duration_ms: 19.833121
+  type: 'test'
+  ...
+# Subtest: anthropic: empty chunks cannot starve deadline
+not ok 8 - anthropic: empty chunks cannot starve deadline
+  ---
+  duration_ms: 1537.908886
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:24:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    isolated stream must finish before its process watchdog
+    + actual - expected
+    
+    + Error: spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node ETIMEDOUT
+    +     at Object.spawnSync (node:internal/child_process:1143:20)
+    +     at spawnSync (node:child_process:911:24)
+    +     at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:34:19)
+    +     at Test.runInAsyncScope (node:async_hooks:227:14)
+    +     at Test.run (node:internal/test_runner/test:1306:25)
+    +     at Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+    +     at Test.postRun (node:internal/test_runner/test:1447:19)
+    +     at Test.run (node:internal/test_runner/test:1372:12)
+    +     at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    +   code: 'ETIMEDOUT',
+    +   errno: -110,
+    +   path: '/home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node',
+    +   spawnargs: [
+    +     '--input-type=module',
+    +     '-e',
+    +     "import {createModelProvider} from './src/agent/model-provider.js';\n" +
+    +       "      import {context,caps} from './test/v2-provider-fixture.js';\n" +
+    +       '      const {context:ctx}=await context();\n' +
+    +       '      const stream=new ReadableStream({pull(c){c.enqueue(new Uint8Array(0));}});\n' +
+    +       `      const provider=createModelProvider({family:"anthropic",id:'fixture',model:'fixture',\n` +
+    +       "        baseURL:'https://fixture.invalid/v1',apiKey:'fixture-key',capabilities:caps(),timeoutMs:20},\n" +
+    +       "        {fetch:async()=>new Response(stream,{headers:{'content-type':'application/json'}})});\n" +
+    +       '      const controller=new AbortController();\n' +
+    +       '      console.log(JSON.stringify(await provider.exchange(ctx,{signal:controller.signal})));'
+    +   ],
+    +   syscall: 'spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node'
+    + }
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: 'spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1143:20)
+    spawnSync (node:child_process:911:24)
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:34:19)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+    Test.postRun (node:internal/test_runner/test:1447:19)
+    Test.run (node:internal/test_runner/test:1372:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:37:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+    Test.postRun (node:internal/test_runner/test:1447:19)
+    Test.run (node:internal/test_runner/test:1372:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: anthropic: empty chunks cannot starve caller cancellation
+not ok 9 - anthropic: empty chunks cannot starve caller cancellation
+  ---
+  duration_ms: 1535.913815
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:24:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    isolated stream must finish before its process watchdog
+    + actual - expected
+    
+    + Error: spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node ETIMEDOUT
+    +     at Object.spawnSync (node:internal/child_process:1143:20)
+    +     at spawnSync (node:child_process:911:24)
+    +     at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:34:19)
+    +     at Test.runInAsyncScope (node:async_hooks:227:14)
+    +     at Test.run (node:internal/test_runner/test:1306:25)
+    +     at Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+    +     at Test.postRun (node:internal/test_runner/test:1447:19)
+    +     at Test.run (node:internal/test_runner/test:1372:12)
+    +     at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    +   code: 'ETIMEDOUT',
+    +   errno: -110,
+    +   path: '/home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node',
+    +   spawnargs: [
+    +     '--input-type=module',
+    +     '-e',
+    +     "import {createModelProvider} from './src/agent/model-provider.js';\n" +
+    +       "      import {context,caps} from './test/v2-provider-fixture.js';\n" +
+    +       '      const {context:ctx}=await context();\n' +
+    +       '      const stream=new ReadableStream({pull(c){c.enqueue(new Uint8Array(0));}});\n' +
+    +       `      const provider=createModelProvider({family:"anthropic",id:'fixture',model:'fixture',\n` +
+    +       "        baseURL:'https://fixture.invalid/v1',apiKey:'fixture-key',capabilities:caps(),timeoutMs:300},\n" +
+    +       "        {fetch:async()=>new Response(stream,{headers:{'content-type':'application/json'}})});\n" +
+    +       '      const controller=new AbortController();setTimeout(()=>controller.abort(),5);\n' +
+    +       '      console.log(JSON.stringify(await provider.exchange(ctx,{signal:controller.signal})));'
+    +   ],
+    +   syscall: 'spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node'
+    + }
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: 'spawnSync /home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1143:20)
+    spawnSync (node:child_process:911:24)
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:34:19)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+    Test.postRun (node:internal/test_runner/test:1447:19)
+    Test.run (node:internal/test_runner/test:1372:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:37:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1306:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:897:18)
+    Test.postRun (node:internal/test_runner/test:1447:19)
+    Test.run (node:internal/test_runner/test:1372:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: anthropic: monotonic expiry cancels before reader unlock
+not ok 10 - anthropic: monotonic expiry cancels before reader unlock
+  ---
+  duration_ms: 2.704731
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:42:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'timeout'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'timeout'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:51:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: anthropic: elapsed header deadline cannot start a body reader
+not ok 11 - anthropic: elapsed header deadline cannot start a body reader
+  ---
+  duration_ms: 1.566129
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:55:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'provider-unavailable'
+    - 'timeout'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'timeout'
+  actual: 'provider-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:64:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: anthropic: cancelled non-cooperating fetch fences its late body
+not ok 12 - anthropic: cancelled non-cooperating fetch fences its late body
+  ---
+  duration_ms: 8.06273
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:68:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:77:26)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: anthropic: timed-out non-cooperating read cannot continue consuming
+not ok 13 - anthropic: timed-out non-cooperating read cannot continue consuming
+  ---
+  duration_ms: 22.652591
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:80:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-provider-stream-8g.test.js:89:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: anthropic: empty chunks and fragmented UTF8 fit the exact byte allowance
+ok 14 - anthropic: empty chunks and fragmented UTF8 fit the exact byte allowance
+  ---
+  duration_ms: 16.325948
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 2
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6558.774501
+# forge-test-file "test/v2-provider-stream-8g.test.js"

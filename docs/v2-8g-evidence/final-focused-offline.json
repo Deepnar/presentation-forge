@@ -1,0 +1,53 @@
+{
+  "atUtc": "2026-10-22T11:54:40.652242+00:00",
+  "implementationSha": "ec6731546ddfe8e0a47516b49b7aee5b510ed589",
+  "workingTreeProductDelta": [],
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-provider-stream-8g.test.js",
+    "test/v2-provider-8c.test.js",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-conversation-8e.test.js",
+    "test/v2-context-8a.test.js",
+    "test/v2-tools-8a.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/dev-protocol.test.js"
+  ],
+  "files": [
+    "test/v2-provider-stream-8g.test.js",
+    "test/v2-provider-8c.test.js",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-conversation-8e.test.js",
+    "test/v2-context-8a.test.js",
+    "test/v2-tools-8a.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/dev-protocol.test.js"
+  ],
+  "exitCode": 0,
+  "outerWatchdogKilled": false,
+  "wallSeconds": 9.132806256000094,
+  "totals": {
+    "total": 196,
+    "pass": 196,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8g-evidence/final-focused-offline.log",
+  "logSha256": "d53ce159037479ad9686d70996e0a7f00376a7224e7c28e5fa5307404340e0f7",
+  "liveModelCalls": 0,
+  "localInferenceCalls": 0,
+  "scope": "Injected transports and local fixture HTTP only; no build/browser/export generator/database service.",
+  "note": "Rerun after correcting only documentation tracking pointers; product/test/tooling source remains frozen ec67315."
+}

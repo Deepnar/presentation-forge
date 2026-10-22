@@ -1,7 +1,7 @@
 {
-  "implementationSha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
-  "inventoryMethod": "Planning inventory: retain223 accepted files and add provider-stream regression file;190bulk/26serial/8PostgreSQL=224distinct. implementationSha is the prerequisite until the correction freezes; no prior execution is credited.",
+  "implementationSha": "ec6731546ddfe8e0a47516b49b7aee5b510ed589",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
+  "inventoryMethod": "Frozen correction: retain223 accepted files and add stream regression file;190bulk/26serial/8PostgreSQL=224distinct. All runs must use current source; historical prerequisite execution supplies no pass.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",

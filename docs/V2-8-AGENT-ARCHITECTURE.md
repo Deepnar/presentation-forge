@@ -315,3 +315,16 @@ Exact source `0cab854` is [independently accepted](reviews/V2-8F-0cab854.json).
 [The evaluation](V2-8F-EVAL.md) and state index complete validation, independent
 execution, preservation and limitations. [The roadmap](ROADMAP.md#v2-8-remaining) owns
 later tool/source/Assistant scope and the separate hosted approval-lifetime seam.
+
+
+## V2-8G model response stream bounds (implementation under review)
+
+Exact implementation `ec67315` retains both accepted model protocols and existing
+configuration, tool normalization, usage, privacy and no-retry contracts. The Node
+adapter now reads into one fixed response-byte buffer; monotonic whole-attempt
+checks and periodic event-loop yielding bound immediately resolved empty reads.
+It fences late header/body results and requests cancellation before releasing the
+reader on expiry/abort. This is a transport correction, not model streaming output,
+new provider capability, conversation persistence or framework adoption.
+[Evaluation](V2-8G-EVAL.md) records failed probes, unchanged assertions and pending
+full validation/independent review. Accepted baseline remains V2-8F `0cab854`.

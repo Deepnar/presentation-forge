@@ -1,0 +1,35 @@
+{
+  "atUtc": "2026-10-22T11:48:06.481127+00:00",
+  "sourceHead": "f031879953a03d7957b54355e6a49405fe596190",
+  "modelAdapterSha256": "7959f9db5b98263d27718833f90e49ef94db833331284eff6cdb562e346c0bbd",
+  "workingTreeTest": "test/v2-provider-stream-8g.test.js",
+  "testSha256": "2b00226a7d5159dda12731961f8b451972dc945ad6cdf66475e713f12e1f3593",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-provider-stream-8g.test.js"
+  ],
+  "exitCode": 1,
+  "outerWatchdogKilled": false,
+  "wallSeconds": 6.626821134000011,
+  "totals": {
+    "total": 14,
+    "pass": 2,
+    "fail": 12,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "liveModelCalls": 0,
+  "localInferenceCalls": 0,
+  "transports": "Injected synthetic fetch/streams only; four child-watchdog probes are code fixtures, not model processes."
+}

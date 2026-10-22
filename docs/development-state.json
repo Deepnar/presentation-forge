@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8F-0cab854.json"
   },
   "implementationHead": {
-    "sha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
-    "note": "V2-8G correction in progress on top of accepted0cab854; working-tree delta and separate evaluation apply. No live API-backed model or local inference is authorized."
+    "sha": "ec6731546ddfe8e0a47516b49b7aee5b510ed589",
+    "note": "Frozen V2-8G model-stream resource correction; focused deterministic validation and complete regression/review pending. No live API-backed model or local inference permitted."
   },
   "activeMilestone": {
     "id": "V2-8G",
     "roadmapRef": "docs/ROADMAP.md#model-provider-stream-resource-bounds",
     "evalDoc": "docs/V2-8G-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,

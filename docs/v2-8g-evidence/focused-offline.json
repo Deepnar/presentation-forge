@@ -1,0 +1,52 @@
+{
+  "atUtc": "2026-10-22T11:53:12.663869+00:00",
+  "implementationSha": "ec6731546ddfe8e0a47516b49b7aee5b510ed589",
+  "workingTreeProductDelta": [],
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-provider-stream-8g.test.js",
+    "test/v2-provider-8c.test.js",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-conversation-8e.test.js",
+    "test/v2-context-8a.test.js",
+    "test/v2-tools-8a.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/dev-protocol.test.js"
+  ],
+  "files": [
+    "test/v2-provider-stream-8g.test.js",
+    "test/v2-provider-8c.test.js",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-conversation-8e.test.js",
+    "test/v2-context-8a.test.js",
+    "test/v2-tools-8a.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/dev-protocol.test.js"
+  ],
+  "exitCode": 1,
+  "outerWatchdogKilled": false,
+  "wallSeconds": 8.731915902999845,
+  "totals": {
+    "total": 196,
+    "pass": 195,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8g-evidence/focused-offline.log",
+  "logSha256": "934db20522135e484c0c56d465f36eb0146b85c0b3694c597c4f7858d49f598f",
+  "liveModelCalls": 0,
+  "localInferenceCalls": 0,
+  "scope": "Injected transports and local fixture HTTP only; no build/browser/export generator/database service."
+}
