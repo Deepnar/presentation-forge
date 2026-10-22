@@ -6358,6 +6358,8 @@ aborts written slides.
 > entry: underestimate and the run still completes (settlement grows the row),
 > overestimate and the user meets a false refusal — so estimates err low.
 
+<a id="legacy-source-mapped-references"></a>
+
 ### [x] Source-mapped references slide before the closing slide
 
 *Priority: medium. Needs a model to judge wording; the mapping is deterministic.*
@@ -8838,6 +8840,164 @@ needs direction on scope before building.*
   > search now supplies a primitive for later canonical tools without introducing
   > another document or making provider/Assistant integration implicit.
 
+<a id="v2-8-audit-followups"></a>
+
+**2026-10-22 architecture gap audit — documentation-only assessment completed.**
+Entry checkout `ee52b50bac2ce5704eda39a89ae959259497f331`; accepted source remains
+`0cab854bce04b862060829812a9ab6ff0b765fd9`. The
+[audit](V2-8-ARCHITECTURE-GAP-AUDIT.md) inspected current source, schemas, test
+contracts and retained evaluation/review records. It executed zero tests/evaluations,
+made no live API/inference/search calls, started no services or subagents, rendered
+nothing and changed no product code, dependencies, runtime state or accepted state.
+Keep the existing native runtime; no LangGraph/LangChain/LlamaIndex/SDK/framework
+migration is selected. Framework version compatibility remains unqualified.
+
+The following entries clarify the parent scope and newly identified missing
+contracts. They are **proposed, not authorized implementation milestones**. P0 is
+required for the claimed first Assistant capability, P1 before public/hosted release,
+and P2 conditional improvement. An editing-only interface must not claim the full
+research-and-creation parent is complete. The request to start the immediate next
+thing was prepared as the concrete transport correction contract below. The later
+2026-10-22 clarification permits writing code but forbids API-backed models and
+local inference. Only that separate transport correction is authorized; this audit
+remains inspection-only and every other proposal still needs its own approval.
+
+| Priority | Canonical work entry | Intent / rationale |
+|---|---|---|
+| P0 | [Model transport resource bounds](#model-provider-stream-resource-bounds) | Qualify the existing source-inspected read-loop/cleanup concern before live Assistant work; preserve accepted wire/error/usage/tool contracts. |
+| P0 | [Turn and approval ownership](#assistant-turn-approval-contract) | Resolve cross-request/restart/multi-instance continuity and minimum durable private data before adding a user-facing approval flow. |
+| P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | Connect accepted SearchProvider through canonical authority and preserve verifiable project-scoped citations; do not merely add a catalog name. |
+| P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
+| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Agree editing-only versus full creation surface, save/draft coordination, approval presentation and cancellation behavior. |
+| P0 basic / P1 distributed | [Trace and spend admission](#assistant-trace-budget) | Make context/tool/instruction provenance observable, preserve unknown usage, and prevent parallel requests/retries bypassing account allowances. |
+| P0 pilot / P1 release | [Assistant qualification](#assistant-live-qualification) | Separate deterministic correctness from real-model usefulness, injection resistance, grounded claims and human slide quality. |
+| P2 vision; P0 honest quality gates | [Visual feedback](#assistant-visual-feedback) | Reuse deterministic checks and native renderers; qualify optional vision behind read-only revision-bound artifacts and bounded semantic proposals. |
+| P2 conditional | [Retrieval scale and optional orchestration](#assistant-retrieval-scale) | Add derived caching/lexical/hybrid/vector/parallel work only when a real corpus or measured workload justifies it. |
+
+<a id="assistant-turn-approval-contract"></a>
+
+- [ ] **Durable user-turn and approval ownership — direction required.**
+  Existing runtime plans/receipts are durable; `converse` histories and WeakMap
+  proposals are deliberately host-instance ephemeral. Specify conversation/turn,
+  proposal/decision and provider-attempt records over the existing project backend,
+  without another scene, edit cursor or queue. Bind opaque IDs to authenticated
+  owner/project, expected revisions, immutable canonical plan digest, cancellation
+  generation, expiry, retention-policy version and existing run ID. Make decision
+  replay and approval+enqueue atomic through an explicitly reviewed host-only queue
+  transaction seam, without weakening current exact-object enqueue or nesting public
+  transactions; refuse stale/rejected/expired/superseded
+  proposals across hosts. Define recovery of pre-dispatch versus ambiguous dispatched
+  provider attempts without automatic rebilling. Choose bounded user-visible content
+  retention/deletion/export/access rules before new storage; do not persist raw model
+  transcripts, read results, reasoning or credentials by default. This is a human
+  architecture/data-handling decision, not approval supplied by the audit. See the
+  [minimum-state analysis](V2-8-ARCHITECTURE-GAP-AUDIT.md#critical-seams-and-minimum-durable-state).
+
+<a id="assistant-search-source-integrity"></a>
+
+- [ ] **Canonical search tools and project-scoped source integrity.**
+  Reuse V2-8F SearchProvider and SourceRef IDs. Extend canonical request/result/catalog,
+  provider normalization, context, budgets and receipt/plan contracts coherently;
+  general search needs an explicitly scoped network-tool boundary rather than
+  network imports in pure packages. Bind search permission/query disclosure and
+  source resolution to the trusted caller. Add separate paper/project adapters,
+  immutable source versions and locator resolution without replacing legacy paths.
+  Verify source existence/project ownership and source-to-block/slide/export mappings;
+  distinguish claim support from matching IDs/numbers and retain unsupported/uncertain
+  claim outcomes. Require prompt-injection fixtures and eventual labeled live/human
+  qualification. Source persistence/query disclosure needs an agreed data policy.
+  No page-fetch/SSRF permission, vector store or unbounded search loop is implied.
+
+<a id="assistant-semantic-creation"></a>
+
+- [ ] **Canonical semantic creation and regeneration tools.**
+  Existing tools change text runs/chart values/table wording in existing scenes;
+  compiler and preserving recompile primitives already exist. Define bounded
+  semantic intent proposals for creation, slide operations and regeneration, with
+  deterministic compilation, fit/refusal, canonical revision/history application
+  and human ownership/tombstone/detached preservation. Do not expose raw scene or
+  layout patch tools, or persist a second authoritative document. Use existing
+  accepted quality/native primitives; prove content and citation preservation.
+  This is a dependency of full parent V2-8, not permission to broaden an editing-only
+  Assistant slice or adopt a new composition family without its own contract.
+
+<a id="assistant-surface-integration"></a>
+
+- [ ] **Assistant interaction and authenticated turn orchestration — direction required.**
+  Agree the promised surface before implementation: existing-deck editing versus
+  complete conversational creation/research. Keep the current placeholder until
+  the selected contract works. Thin authenticated submit/read/decide/cancel routes
+  and equivalent CLI delegate to the same turn/run services. Settle or explicitly
+  handle pending editor drafts/saves before capturing a saved revision; preserve
+  conflict/navigation/project-switch/focus guards and never overwrite an unsaved
+  draft with a background result. Present proposal, expiry, refusal, rejected/stale
+  recovery, truthful queued/running/completed status and cancellation. Do not let
+  browser/SSE lifetime own workers. Recovery, owner revocation and multiple tabs/
+  hosts must reuse canonical revisions, existing history and explicit turn policy.
+
+<a id="assistant-trace-budget"></a>
+
+- [ ] **Versioned trace provenance and durable spend admission.**
+  Reuse existing metadata traces, nullable usage and run receipts. Add turn/run/
+  attempt correlation, instruction/skill/catalog/schema/configuration identifiers,
+  normalized error classes, context diagnostics and revision transitions without
+  logging private bodies. A plan hash is consistency evidence, not signed tamper
+  protection; define audit access and redaction. P0 requires bounded useful error/
+  progress diagnostics. P1 requires per-account concurrency, durable provider-attempt
+  reservation/settlement, unknown post-dispatch billing and price-version provenance;
+  per-invocation output limits do not bound concurrent total spend. Do not introduce
+  payload capture, raw-content hashes as public telemetry, an exporter, external
+  service or dependency without a separate policy/need. Exact live replay is not
+  promised by metadata; preserve only policy-approved fixture/redacted captures.
+
+<a id="assistant-visual-feedback"></a>
+
+- [ ] **Read-only visual feedback and bounded quality repair.**
+  Reuse deterministic geometry/fit/native checks and renderer adapters. P0 must
+  truthfully refuse or report unresolved fit defects without silent content loss or
+  redesign; geometry validity alone does not prove overlap/text fit. A later P2
+  vision contract may inspect authorized changed slides and necessary neighbors
+  through revision/hash-bound opaque artifacts with slide/pixel/byte/time/token
+  limits, expiry and ownership checks. Vision is currently unsupported explicitly;
+  qualify capability and data egress before enabling it. Suggestions remain semantic
+  proposals; no model coordinates/styles, automatic unlock/reattach, human-format
+  destruction or duplicate document. Bound repair rounds and preserve native
+  editability. Existing SVG/native-ID/fit limitations retain their separate entries.
+
+<a id="assistant-live-qualification"></a>
+
+- [ ] **Assistant offline correctness and real-model qualification — design only.**
+  Use the [audit's scenario/oracle/resource design](V2-8-ARCHITECTURE-GAP-AUDIT.md#future-evaluation-design).
+  P0: deterministic privacy, stale/replay/approval, preservation, source integrity,
+  cancellation/recovery and malformed-tool coverage plus an explicitly budgeted
+  real-model pilot before usefulness claims. P1: actual advertised-provider flows,
+  common-search research/creation, authenticated browser-to-data behavior, native
+  consumer/quality checks, account spend/admission and operational reliability.
+  Keep Auto as the hosted content-quality reference and local inference as plumbing.
+  Preserve exact pass/refusal/fail/skip/cancel/unexecuted counts and independent review.
+  No APIs, benchmarks, services, schedules or capacity reservations are authorized
+  by this planning entry. Execution requires a future approved quiet window/budget.
+
+<a id="assistant-retrieval-scale"></a>
+
+- [ ] **Measured retrieval, caching and orchestration improvements — conditional.**
+  Start V2 project retrieval with approved parsing, immutable source/version/locator,
+  deterministic chunks and bounded lexical candidates. Only a measured recall or
+  maintenance problem can justify hybrid/vector indexing, reranking or LlamaIndex.
+  Derived indexes/caches must enforce access before retrieval and propagate source
+  deletion/retention changes. Define scoped cache keys, size/TTL/freshness and query
+  privacy before caching; source IDs alone do not establish full-page integrity.
+  Keep one agent and sequential writes; parallel independent reads share snapshot,
+  authority and aggregate budgets only after measurement. LangGraph/LangChain or
+  other frameworks may be reconsidered against a concrete gap and current official
+  docs, not popularity; no second scene/workflow authority or migration is selected.
+
+> **Learned.** Accepted edit-run durability does not make provider preparation or
+> human approval durable. A provider-neutral search result is neither a canonical
+> model tool nor a persisted, claim-verified citation. Data minimization must still
+> acknowledge that queued semantic edits contain private content. Framework adoption
+> cannot resolve these authority, lifecycle and product-policy decisions by itself.
+
 <a id="v2-8-remaining"></a>
 
 The accepted foundation supplies real scoped content tools, schemas, instruction
@@ -8981,6 +9141,41 @@ Preserve both real HTTP protocols, normalized usage, canonical result/privacy ga
 and existing assertions. Any correction needs its own bounded contract, unchanged
 regression coverage and exact-source independent review. Do not absorb provider
 changes into the shared-search slice or infer a live-provider failure from a fixture.
+
+**V2-8G model-transport resource bounds — separately authorized, 2026-10-22.**
+The follow-up permits writing code and deterministic fixtures, with no API-backed
+model or local inference. Audit execution remains zero; this separate correction
+uses the contract below. Accepted baseline
+`0cab854bce04b862060829812a9ab6ff0b765fd9`, planning checkout `ee52b50`, branch `v2`,
+scoped push `origin/v2`. Keep existing ModelProvider and both real HTTP protocols.
+
+- **Scope:** reproduce the immediate-empty-read/timer-starvation, retained-chunk
+  storage and reader-release/cancellation concerns in isolated injected-transport
+  fixtures, then narrowly correct `src/agent/model-provider.js` if established.
+  Use one response-byte-bounded buffer, monotonic whole-attempt checks and periodic
+  yielding; fence late fetch/body work and request cancellation before releasing
+  the reader on self-detected timeout. Preserve valid fragmented UTF-8, many empty
+  chunks preceding a valid bounded result, and every accepted wire/error/usage rule.
+- **Invariants/non-goals:** unchanged endpoint/auth/config validation, semantic tool
+  schemas, scope, redirects, no automatic retries, sanitized diagnostics, response
+  allowance and timeout settings. No provider defaults, SDK/framework, UI/routes,
+  credentials, storage/data policy, search rewiring, visual changes or new feature.
+- **Future required evidence:** retain fail-first isolated child/watchdog results
+  and affected two-protocol HTTP tests; cover late/non-cooperating header/body work,
+  deadline and caller cancellation, exact byte/UTF-8 boundaries and reader cleanup.
+  Run provider/preparation/conversation/preservation/runtime and unchanged package
+  boundary tests. Complete the then-current full regression inventory (currently
+  223 files), bounded serial browser/build owners, owned PostgreSQL contracts/
+  process/fault checks, build/typecheck/50 cells and native/visual regression evidence
+  behind quiet-window guards. Preserve all-current evidence and original archives
+  before generators. Missing PostgreSQL is unexecuted; keep BYOK locale separate.
+- **Acceptance/stop:** exact frozen source, commands, actual backend, honest test
+  totals, bounded-memory/time observations, failed attempts and performance go in
+  its future evaluation. One separate high-effort reviewer or human supplies ACCEPT/
+  HOLD; never self-accept. Stop at review/cleanup/handoff, without dependent features.
+  No test, service, live provider call or implementation starts during the audit.
+  Subsequent correction tests use deterministic fake/injected transports only; no
+  live API-backed model, local inference or automatic provider qualification.
 
 <a id="postgres-availability-diagnostics"></a>
 
