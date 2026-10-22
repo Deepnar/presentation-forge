@@ -9144,15 +9144,19 @@ and existing assertions. Any correction needs its own bounded contract, unchange
 regression coverage and exact-source independent review. Do not absorb provider
 changes into the shared-search slice or infer a live-provider failure from a fixture.
 
-**Current bounded-code checkpoint:** refrozen `f3e784a` adds four coverage cases to
-unchanged adapter bytes from `ec67315`. All18stream cases passed within200/200 across
-8offline files,0fail/skip/cancel. A separate static reviewer ran0tests/edited0files
-and found no confirmed product defect; this is not acceptance. Empirical memory
-observation,216remaining inventory files and all complete acceptance gates are
-unexecuted. No real model/API or local inference, browser/rendering, PostgreSQL
-service, build/typecheck or benchmark was used in this follow-up. Preserve the
-failed metadata checkpoint and fail-first probes; no assertions were weakened.
-Accepted baseline remains0cab854; do not tick this item or start dependent work.
+**Current validation checkpoint:** frozen `f3e784a` retains adapter bytes from
+`ec67315` and four later coverage cases. Complete 224-file validation passed
+2,801/2,801 (190 bulk / 26 serial / 8 PostgreSQL), plus four distinct persisted
+native cases, build/typecheck/50 cells and current visual/resource observations.
+All 115 current images were inspected. The four injected memory observations
+retained exactly the accepted 256 KiB response buffer at both 5,000 and 200,000
+empty reads; this is sampled retained memory, not process peak RSS. The separate
+locale run remains 9 pass / 1 standing failure. A measurement configuration and
+state/evidence grouping errors were corrected without product/assertion changes;
+failed attempts remain retained. No real model API or local inference occurred.
+Independent acceptance is pending; accepted baseline remains 0cab854. Do not tick
+this item or begin dependent work before the exact-source decision. The owned
+PostgreSQL service is retained only for review and subsequent verified cleanup.
 
 **V2-8G model-transport resource bounds — separately authorized, 2026-10-22.**
 The follow-up permits writing code and deterministic fixtures, with no API-backed

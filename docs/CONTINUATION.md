@@ -141,11 +141,13 @@ inspection-only report; it executed no tests/models/services and changed no acce
 state. Proposed priorities live in [the roadmap](ROADMAP.md#v2-8-audit-followups).
 The later clarification permits only the separate [V2-8G transport correction](ROADMAP.md#model-provider-stream-resource-bounds)
 using code and deterministic fixtures, with no API-backed model or local inference.
-The correction is implemented at `f3e784a`, with200/200 focused offline passes;
-[its evaluation](V2-8G-EVAL.md) records216remaining inventory files and all complete
-acceptance gates unexecuted. Source-only review found no confirmed defect but issued
-no acceptance. Read the current handoff/state before work; the audit itself supplies
-no acceptance.
+The correction at `f3e784a` now has complete 224-file validation: 2,801/2,801,
+plus four distinct persisted native cases, build/typecheck/all 50 cells and current
+visual/resource observations. The separate locale run remains 9 pass / 1 standing
+failure. [Its evaluation](V2-8G-EVAL.md) and state record exact gate evidence and
+independent acceptance pending. Source-only review found no confirmed defect but
+issued no acceptance. Read current handoff/state before work; the audit itself
+supplies no acceptance.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
@@ -166,12 +168,12 @@ node --test test/v2-projects-6c-concurrency.test.js
 node --test test/v2-projects-6c-faults.test.js
 node_modules/.bin/vite build --config app/web/vite.config.js
 npm run typecheck
-node tools/v2-benchmark.mjs --out out/v2-8e-benchmark --raster none
+node tools/v2-benchmark.mjs --out out/v2-8g-benchmark --raster none
 ```
 
 Use a process-group watchdog for each browser file and run browser files strictly
 serially; each may rebuild shared dist. Bulk inventory and exact bounded runner
-commands are in [the current validation runbook](v2-8e-evidence/RUNBOOK.md) and its linked
+commands are in [the current validation runbook](v2-8g-evidence/RUNBOOK.md) and its linked
 `validation-plan.json`. Do not run plain npm test
 concurrently with browser/build validation. The benchmark must report all 50
 cells, not merely the 12 benchmark assertion tests. Render/preview and inspect

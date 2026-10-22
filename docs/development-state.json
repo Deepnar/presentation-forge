@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
-    "note": "V2-8G stream correction with additional caller-abort/processing-deadline coverage; complete acceptance validation and independent acceptance remain unexecuted. No live API-backed model or local inference permitted."
+    "note": "V2-8G exact frozen implementation: complete 224-file/2801-case matrix, build/typecheck/50 cells and native/visual/resource supplements executed; independent acceptance pending. No real model API or local inference."
   },
   "activeMilestone": {
     "id": "V2-8G",
     "roadmapRef": "docs/ROADMAP.md#model-provider-stream-resource-bounds",
     "evalDoc": "docs/V2-8G-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "model-provider",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/model-provider.json",
+      "reason": "Dedicated exact four-file gate passed 84/84 on frozen source; wider provider coverage remains supplemental and overlaps the full matrix."
     },
     {
       "id": "non-browser-bulk",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/non-browser-bulk.json",
+      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent acceptance remains pending."
     },
     {
       "id": "serial-browser",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/serial-browser.json",
+      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent acceptance remains pending."
     },
     {
       "id": "postgres-contract",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/postgres-contract.json",
+      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent acceptance remains pending."
     },
     {
       "id": "cross-process-faults",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/cross-process-faults.json",
+      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent acceptance remains pending."
     },
     {
       "id": "production-build",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/production-build.json",
+      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent acceptance remains pending."
     },
     {
       "id": "typecheck",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/typecheck.json",
+      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent acceptance remains pending."
     },
     {
       "id": "benchmark-50",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/benchmark-50.json",
+      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent acceptance remains pending."
     },
     {
       "id": "frontend-visual",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/frontend-visual.json",
+      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent acceptance remains pending."
     }
   ],
   "knownBlockers": [],

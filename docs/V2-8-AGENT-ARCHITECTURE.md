@@ -326,5 +326,6 @@ checks and periodic event-loop yielding bound immediately resolved empty reads.
 It fences late header/body results and requests cancellation before releasing the
 reader on expiry/abort. This is a transport correction, not model streaming output,
 new provider capability, conversation persistence or framework adoption.
-[Evaluation](V2-8G-EVAL.md) records failed probes, unchanged assertions and pending
-full validation/independent review. Accepted baseline remains V2-8F `0cab854`.
+[Evaluation](V2-8G-EVAL.md) records failed probes, unchanged assertions, complete
+224-file validation and current native/visual/resource observations. Independent
+acceptance remains pending; accepted baseline stays V2-8F `0cab854`.

@@ -1,71 +1,70 @@
-# Handoff — audit delivered; V2-8G code awaiting full validation
+# Handoff — V2-8G validated; independent acceptance pending
 
 2026-10-22, branch `v2`, scoped push `origin/v2`. Accepted baseline remains
 `0cab854bce04b862060829812a9ab6ff0b765fd9`, independently accepted in
-[the V2-8F decision](reviews/V2-8F-0cab854.json). V2-8G frozen implementation is
-`f3e784ac6227f46628dc99a54762f6a861eeed64`; product adapter bytes equal `ec67315`,
-with four subsequent test cases. Later documentation commits do not change source.
-Do not promote this implementation or claim completed acceptance from focused tests.
+[the V2-8F decision](reviews/V2-8F-0cab854.json). Frozen V2-8G implementation is
+`f3e784ac6227f46628dc99a54762f6a861eeed64`; adapter bytes equal `ec67315`, with four
+later test cases. Later documentation/harness commits change no product source.
+Do not infer acceptance from this handoff or passing evidence.
 
-The [architecture audit](V2-8-ARCHITECTURE-GAP-AUDIT.md), committed at `fea5b23`,
-completed the requested inspection/planning phase from entry `ee52b50`. That phase
-executed zero tests/models/services and changed no accepted state. It recommends
-keeping Forge's native runtime. Its findings, P0/P1/P2 proposals and approval gates
-are registered only in [the roadmap](ROADMAP.md#v2-8-audit-followups). Framework APIs,
-licensing/current versions and real-model quality were not externally qualified.
-No other audit proposal is approved for implementation.
+The [architecture audit](V2-8-ARCHITECTURE-GAP-AUDIT.md) is complete and remains a
+separate inspection-only phase with zero evaluations. Its priorities and proposal
+gates live only in [the roadmap](ROADMAP.md#v2-8-audit-followups). It recommends
+keeping Forge's runtime. No framework or other audit feature was implemented.
+The clarification permits the narrow transport correction and deterministic
+fixtures, with no real model API or local inference.
 
-After the report was presented, the clarification permitted writing code and
-prohibited API-backed models and local inference. The separate
-[V2-8G transport correction](ROADMAP.md#model-provider-stream-resource-bounds)
-was implemented within that scope: fixed response-byte storage, monotonic deadline
-checks and periodic yielding, late-fetch/read fencing and cancellation before reader
-unlock. Both existing model protocols/configuration/error/usage/privacy contracts
-remain unchanged. No framework, UI, routes, credentials, persistent data policy,
-model configuration, source integration or deployment was added.
+The continuation completed [the V2-8G contract](ROADMAP.md#model-provider-stream-resource-bounds)
+with unchanged product source/assertions. [Evaluation](V2-8G-EVAL.md) and
+[validation integrity](v2-8g-evidence/validation-integrity.json) record:
 
-[V2-8G evaluation](V2-8G-EVAL.md) and evidence retain:
+- All 224 inventory files: **2,801 pass / 0 fail / 0 skip / 0 cancelled**;
+  190 bulk files / 2,427 cases, 26 serial files / 208 cases, 8 PostgreSQL / 166 cases.
+- Four distinct persisted native cases passed across both backends/protocols.
+  Build, typecheck, all 50 benchmark cells and native export inspection completed.
+- Exact four-file provider gate: 84/84. Wider focused 196/196 and resumed resource
+  qualification 17/17 are overlapping repeats, not additional distinct coverage.
+- Separate en_IN locale: 9 pass / 1 acknowledged standing failure, 0 skip/cancel.
+- Four fresh injected memory observations: 5,000/200,000 empty reads for both
+  protocols, retained ArrayBuffer growth exactly 256 KiB. This is sampled retained
+  memory, not peak RSS. No real model calls or local inference occurred.
+- 115 hashed images inspected through 20 contact sheets and full-size risk cases.
+  The 120-slide opening sample was 1,537 ms; maximum canvas delta was 0.171753 px.
+  Native archives/OOXML/scene history checks passed. Interactive PowerPoint and
+  live-model quality are unexecuted and outside this correction.
 
-- Initial 14 injected-stream cases: 2 pass / 12 fail, 0 skip/cancel. Four synthetic
-  child probes hit their 1500ms watchdogs; Node leaves failed, not cancelled.
-- Same 14 assertions after correction: 14/14. First expanded run: 195/196, with
-  a tracking-only state-pointer failure; its unchanged rerun passed 196/196.
-- Final tests-only extension: **200/200** across eight complete offline files,
-  including all 18 stream cases, 0 failures/skips/cancellations, 5.625s wall time.
-  Earlier runs overlap; never add their totals. Exact frozen source, command,
-  file markers, hashes and failed attempts remain in the new evidence namespace.
-- Separate high-effort static reviewer `/root/v28g_source_review`: 0 tests / 0 edits,
-  no confirmed product defect, no ACCEPT/HOLD. It inspected ec67315/bf2c6b3; the
-  product adapter is unchanged afterward. Subsequent caller-abort/processing-deadline
-  tests address two coverage gaps. Empirical retained-memory observation remains
-  unexecuted; source inspection of one fixed buffer is not an RSS/heap measurement.
+All nine required validation gates have current evidence; state remains validated,
+review pending and accepted false. The repository checker reports zero errors/
+warnings. The measurement fixture initially exceeded the unchanged 256 KiB limit;
+its raw failure/original script was retained and only that harness corrected.
+The evidence checker also caught missing required state reasons and a provider log
+with extra files. The reasons/grouping were corrected and exact gate rerun; neither
+validator nor assertions changed. Earlier fail-first and tracking failures remain.
 
-All current full acceptance gates are explicitly **unexecuted**. The 224-file plan
-has 216 remaining files: 182 bulk, 26 serial browser/build owners and 8 PostgreSQL.
-[Unexecuted scope](v2-8g-evidence/unexecuted-scope.json) and
-[runbook](v2-8g-evidence/RUNBOOK.md) index exact coverage and missing command/native/
-visual checks. Current-source typecheck/build/all50cells/native preservation/full
-independent acceptance have not run. No exact leaf count is asserted for unrun files.
-The protocol checker validates metadata only, never behavioral acceptance.
+An initial 180-second sustained window and fresh per-job guards qualified measured
+CPU/memory/backing-storage headroom. Contention samples were withheld when needed;
+no competing process was modified. Global I/O PSI provenance remains unresolved.
+All 5,137 snapshotted evidence files, including ignored archives, and five canonical
+browser-export originals were restored/hash-verified. The owned harness adjustment
+retains original bytes and its explicit audit record. Do not rerun the finisher
+against those restored originals. No prior native originals were reconstructed.
 
-The audit and code follow-up made **zero real model API calls and zero local
-inference calls**. New stream cases use explicitly injected synthetic transports;
-other selected cases use loopback fixture HTTP, not a model server. No browser,
-PostgreSQL/Docker service, worker, renderer, benchmark, build/typecheck or model
-process was launched. No sustained intensive-run quiet qualification was performed;
-the short CPU/memory/backing-storage precheck applies only to the focused cases.
-Elevated global I/O PSI has unresolved provenance. No competing workload was altered.
-No owned validation service or job remains. Do not start heavy jobs without measured
-headroom, current evidence/original snapshots, isolation and the existing contract.
+The only retained service is the explicitly owned `forge-v28g-validation`
+PostgreSQL 15.18 container on loopback 5544; exact ID is in
+[owned-postgres.json](v2-8g-evidence/owned-postgres.json). It is retained solely for
+independent review. The reviewer needs a fresh all-current evidence/original
+snapshot, resource qualification and exclusive heavy slot. Root runs no heavy job
+or edits while that review executes/restores. After the independent decision,
+save/fsync a fresh actual project-database count, stop only the exact owned ID,
+and verify removal plus port closure. Missing PG in future is unexecuted, not green.
 
-Existing evidence was not regenerated. Historical V2-8F execution/cleanup remains
-historical, not a new pass. BYOK locale was not rerun for V2-8G; native-ID, SVG,
-narrow/fit and provenance limits remain in their prior records. Interactive
-PowerPoint/live-quality checks remain unexecuted. Original three untracked paths
-are untouched: `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`,
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`.
+Stop after exact-source independent ACCEPT/HOLD, owned cleanup and handoff. Keep
+accepted baseline unchanged until that decision. Parent V2-8, data-policy and
+Assistant surface decisions retain their roadmap gates; no dependent feature,
+paid infrastructure, deployment or production migration is authorized.
 
-Stop at the current code/validation checkpoint. Continue only the approved transport
-contract; the parent V2-8, durable turn/data-policy decisions and Assistant surface
-retain their [roadmap gates](ROADMAP.md#v2-8-audit-followups). No self-acceptance or
-progression into another feature, infrastructure, migration or deployment.
+Original untracked paths are untouched: `.agents/`,
+`PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`, and
+`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`. Inherited BYOK locale, native-ID,
+SVG mixed-run, Fit/narrow/capture/timeout and original-byte provenance limits remain
+in the roadmap/prior evaluation records, not silently fixed by transport validation.
