@@ -48,7 +48,11 @@ Proposed limits are admission limits, not silent truncation: 128 turns in the
 current conversation generation, 4 MiB aggregate serialized UTF-8 private Assistant
 content per project, existing 16,000-character request limit, displayed reply capped
 at 16,000 characters, and 128 KiB per canonical pending plan. Existing stricter
-schema/wire/tool limits still apply. Refuse overflow before dispatch/publication;
+schema/wire/tool limits still apply, including the plan parser's 65,536-character
+limit. The provider's existing 32,000-UTF-16-unit text acceptance is unchanged;
+this new service refuses an over-limit visible reply after settling valid usage,
+without truncation or an automatic replacement call.
+Refuse storage admission overflow before dispatch/publication;
 offer authorized conversation export and explicit clear rather than deleting old
 content or secretly changing the model context. Clearing starts a new generation.
 
@@ -63,17 +67,20 @@ Owner-authorized conversation export contains the bounded visible transcript and
 published proposal/status summaries, not hidden provider/context data. Exported
 JSON never confers approval authority. Clear fences ongoing preparation, invalidates
 pending proposals, cancels nonterminal linked runs in the same project transaction,
-and removes visible conversation/unapproved proposal content. Committed deck edits,
+and removes visible conversation and duplicate canonical proposal bodies, including
+approved copies whose existing linked run already owns the plan. Committed deck edits,
 existing revision history and existing run records remain under their accepted
 policies; they may contain previously approved edit content. Clear is not an erase-
 all-project-data operation or undo. Project deletion cascades all new conversation,
 proposal and attempt records with the existing project children. Do not claim secure
 erasure of backups or physical database pages.
 
-Proposal expiry is an authorization deadline: at most 15 minutes after publication,
-also bounded by the immutable canonical plan deadline. A separate preselected plan
-deadline leaves bounded execution time after approval; approval never extends it or
-changes its digest. Expired/rejected/cancelled/superseded unapproved plan bodies are
+Freeze deadlines at submission: preparation is at most 120 seconds; the immutable
+canonical plan deadline is at most 20 minutes after submission. Proposal approval
+expiry is `min(publication + 15 minutes, plan deadline - 2 minutes)`. Refuse
+publication if no positive approval window remains. Approval never extends a
+deadline or changes the digested plan. These are authorization deadlines, not
+storage-erasure guarantees. Expired/rejected/cancelled/superseded unapproved plan bodies are
 removed when that terminal transition is reconciled; logical expiry is enforced at
 every read/decision even before physical cleanup. No background-erasure deadline
 is promised while the host is stopped.
@@ -96,25 +103,64 @@ Conceptual records:
 | Proposal | Server ID, turn/generation, immutable canonical plan/digest, expected project/proposal revisions, expiry, terminal decision and existing run ID |
 | Provider attempt | Turn/generation, exchange ID/fence, reserved output allowance, provider/config/instruction/catalog versions, dispatch state, known/unknown usage and sanitized error |
 
-Bound metadata separately from message bytes. Exact record/count/byte admissions
-are checked under the project lock, including attempt/decision rows. Retention
-tombstones and attempt receipts cannot grow without a cap or be dropped to reset
-billing/approval admission. Conversation generation fences allow old cleared
-request keys to be refused without keeping cleared private text. Before coding,
-name the exact metadata caps in the implementation plan and test their boundaries.
+Bound serialized UTF-8 metadata separately from the 4 MiB private-content budget:
+at most 4 MiB metadata per project, a single 16 KiB conversation header,
+128 current-generation turns, 128 proposals (one per turn), 1,024 current-generation
+attempts (eight exchanges per turn), and one in-place decision per proposal.
+Turn/proposal metadata is at most 4 KiB each; attempt metadata is at most 2 KiB.
+Trusted scope/preparation input belongs in private-content admission, never an
+uncapped metadata field. Count and byte caps apply simultaneously and may admit
+fewer turns. Existing run/history payloads retain their prior policy and are not
+misrepresented as covered by these new Assistant budgets.
+
+Reserve sufficient private-content and metadata capacity for a bounded final
+reply/proposal and usage/status write **before dispatch**. Release unused storage
+reservation after the terminal outcome. Output-token reservation is separate:
+retain its full admitted amount irrespective of smaller output, rejection or clear.
+Full admission caps must not prevent status/expiry/cancel/clear reconciliation.
+
+Submit, decision and clear require the server-issued conversation generation and
+expected revision. Never substitute the current generation for a missing or old
+one. Clear advances generation atomically and deletes old turn/proposal/decision
+rows without indefinite private tombstones. A fixed set of safe-integer cumulative
+reservation/known-usage/unknown-attempt counters survives clear in the header;
+no map keyed by provider/model/generation is allowed to grow without a bound.
+Exactly-once accounting is guarded by attempt state/fence under the project lock,
+not re-added whenever rows are cleared. These counters are not a pricing ledger
+or proof of per-account spend admission.
+
+Allow at most 128 content-free unresolved settlement slots **across generations**,
+at most 2 KiB each and within the metadata cap. Reserve a slot before dispatch;
+clear strips its private content and retains that existing slot without allocating
+another. Its immutable settlement deadline is at most 120 seconds after dispatch,
+also bounded by the preparation deadline. A valid known receipt or deadline-
+unknown outcome settles once, rolls into the fixed counters and releases the slot.
+After compaction a stale callback cannot settle again or publish; unknown never
+becomes zero or a refund. At slot exhaustion refuse new dispatch temporarily;
+reads/export/clear/deck edits remain available, and expiry reconciliation releases
+slots. Reconcile on startup and before admission/read/decision; no separate service
+or stopped-host cleanup guarantee. Project deletion removes every new child.
 
 Existing user content edits stay on the canonical revisioned command path. A turn
 can publish a bounded clarification/final result or one edit proposal; a proposal
 never executes merely because a provider returned it. Saved conversation is not
 automatically unbounded cross-turn model context: the existing provider/context
 contract stays intact until its separately scoped integration is approved.
+Permit at most one preparing or awaiting-decision turn per project. Another fresh
+submit returns busy until explicit decision/cancellation; identical replay remains
+idempotent. This is a service admission rule, not a new UI wizard or question flow.
+Later browser orchestration can make follow-up intent explicit through the same
+cancel/submit contracts. A linked run's status remains canonical; every new turn
+still binds its own saved revision. Preparation uses an expiring lease, monotonically
+increasing fence and compare-and-swap turn revision; project revision alone cannot
+fence a stale preparation worker on another host.
 
 ## Atomicity and recovery contract
 
 1. Derive owner/project authority from the trusted caller. Browser/model arguments
    never supply grants. SQLite local-owner behavior stays local; no admin bypass
    is added to the runtime binding. Every read/export/clear/decision rechecks access.
-2. Submit deduplicates within the current conversation generation. Identical replay
+2. Submit deduplicates within the explicitly supplied current generation. Identical replay
    returns the existing turn; conflicting content/scope/revision is refused. Allocate
    a server turn ID as the stable canonical run request ID. Serialize races through
    the existing project transaction, not a process mutex or second queue.
@@ -132,7 +178,14 @@ contract stays intact until its separately scoped integration is approved.
    ownership, generation, expected revisions/expiry and scope, then writes approval
    and queues the existing run in **one transaction**. Crash before commit writes
    neither; crash after commit leaves one recoverable run. No nested public `start`.
-6. Duplicate identical decisions return their recorded outcome/run. Conflicting
+   Backend `beforeCommit` currently retains one callback: collect and register one
+   composed guard, including internal queue guards and a final database-time
+   approval/plan expiry check. Registering independent guards would overwrite one.
+6. Recheck current ownership/generation first, then return an identical committed
+   decision and existing run identity before fresh expiry/project/proposal-revision
+   checks. Its own run may already have edited the saved revision or finished;
+   replay is not new approval. Cleared generations still refuse. Use internal
+   transaction-scoped run lookup, not nested public `inspect`. Conflicting
    decisions, stale revisions, cleared generations and expired/rejected proposals
    refuse. Approval never automatically rebases. A single proposal cannot create
    multiple runs across hosts. The run's existing cursor/receipts remain authoritative.
@@ -143,11 +196,20 @@ contract stays intact until its separately scoped integration is approved.
    rollback. No public cancel call nested inside the clear transaction.
 8. Persist attempt reservation and a dispatch marker before each external exchange.
    A marker-to-network crash is conservatively ambiguous; exactly-once billing
-   cannot be inferred. Reserved-but-undispatched work can recover under a new fence;
-   a dispatched attempt without a recorded response becomes needs-user-action.
-   Never automatically re-dispatch/rebill it. A late result cannot publish after
+   cannot be inferred. Automatic preparation recovery is allowed only if **no
+   exchange in the entire turn was ever dispatched**, with fresh scope/revision
+   checks and a new lease fence. After any dispatch, lost volatile continuation
+   becomes needs-user-action even if a later exchange was only reserved: its prior
+   hidden history/read results were deliberately not persisted. Preserve known
+   prior usage; never automatically rerun/reconstruct/rebill that conversation.
+   A dispatched attempt without a recorded response remains unknown.
+   A late result cannot publish after
    cancellation/generation change. Reconstruct no hidden transcript/read results.
-9. Preserve known usage when later tool/admission/publication fails; an ambiguous
+9. Persist validated usage before later tool/admission/publication refusal. Final
+   attempt status and visible turn/proposal publication should commit together;
+   if only a usage receipt committed before a crash, recovery is needs-user-action,
+   not a second provider call. A refusal may settle usage without a proposal; do
+   not roll that receipt back merely because publication was refused. An ambiguous
    attempt remains unknown, not zero. An explicit retry is a new authorized turn,
    refreshed from the current saved revision, subject to the same bounds. Per-account
    spend admission remains its separately registered contract.
