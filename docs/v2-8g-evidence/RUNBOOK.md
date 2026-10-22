@@ -36,3 +36,32 @@ identity and saved-count cleanup, and a separate reviewer. Do not run old8F fini
 scripts against restored canonical originals. Never infer unavailable checks green
 or bypass the no-live-model/no-local-inference constraint. Future work is only in
 the roadmap; do not start the other audit proposals.
+
+## Complete offline validation continuation
+
+The continuation retains the established resource thresholds and 224-file plan.
+First qualify 180 seconds of sustained headroom. The preparation script requires
+that fresh qualification, checks two further 15-second samples, then creates only
+its explicitly owned cached PostgreSQL container and snapshots all current
+evidence, ignored native originals and five canonical browser archives. An
+occupied port 5544 is a refusal to reuse or stop another service.
+
+```sh
+FORGE_VALIDATION_OUT=out/v2-8g-validation-20261022 PYTHONDONTWRITEBYTECODE=1 nice -n 10 ionice -c 2 -n 7 python3 -u docs/v2-8g-evidence/quiet_window.py
+FORGE_VALIDATION_OUT=out/v2-8g-validation-20261022 PYTHONDONTWRITEBYTECODE=1 nice -n 10 ionice -c 2 -n 7 python3 -u docs/v2-8g-evidence/prepare-full-validation.py
+FORGE_VALIDATION_OUT=out/v2-8g-validation-20261022 PYTHONDONTWRITEBYTECODE=1 python3 docs/v2-8g-evidence/assemble-results.py
+FORGE_VALIDATION_OUT=out/v2-8g-validation-20261022 PYTHONDONTWRITEBYTECODE=1 python3 docs/v2-8g-evidence/finish-evidence.py
+```
+
+Every job requires fresh headroom, low CPU/I/O priority and a process-group
+watchdog; long jobs monitor contention. Browser files and builds stay serial.
+All provider exchanges are injected or actual loopback fixture HTTP, with no
+real model API or local inference. The stream resource supplement uses four
+fresh Node processes, full-GC observations and 5,000/200,000 empty reads per
+protocol; sampled retained memory must not be described as process peak RSS.
+
+Finish once while the fresh canonical browser archives still exist, preserve
+their bytes, then restore/hash-check the historical originals. Never rerun the
+finisher against restored archives. Inspect current screenshots/native rasters
+separately; green tests do not establish visual quality or independent acceptance.
+Record actual execution and remaining checks before updating any gate.

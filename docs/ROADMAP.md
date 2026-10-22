@@ -9177,7 +9177,7 @@ scoped push `origin/v2`. Keep existing ModelProvider and both real HTTP protocol
   deadline and caller cancellation, exact byte/UTF-8 boundaries and reader cleanup.
   Run provider/preparation/conversation/preservation/runtime and unchanged package
   boundary tests. Complete the then-current full regression inventory (currently
-  223 files), bounded serial browser/build owners, owned PostgreSQL contracts/
+  224 files, including the new stream regression file), bounded serial browser/build owners, owned PostgreSQL contracts/
   process/fault checks, build/typecheck/50 cells and native/visual regression evidence
   behind quiet-window guards. Preserve all-current evidence and original archives
   before generators. Missing PostgreSQL is unexecuted; keep BYOK locale separate.
