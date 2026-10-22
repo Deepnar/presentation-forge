@@ -7,73 +7,73 @@
   },
   "implementationHead": {
     "sha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
-    "note": "Independently accepted shared search boundary; complete final-source validation, preserved originals and exact owned-service cleanup are recorded in V2-8F evidence."
+    "note": "V2-8G correction in progress on top of accepted0cab854; working-tree delta and separate evaluation apply. No live API-backed model or local inference is authorized."
   },
   "activeMilestone": {
-    "id": "V2-8F",
-    "roadmapRef": "docs/ROADMAP.md#v2-8f-shared-search-boundary",
-    "evalDoc": "docs/V2-8F-EVAL.md",
+    "id": "V2-8G",
+    "roadmapRef": "docs/ROADMAP.md#model-provider-stream-resource-bounds",
+    "evalDoc": "docs/V2-8G-EVAL.md",
     "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8F-0cab854.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "search-provider",
-      "status": "passed",
-      "evidence": "docs/v2-8f-evidence/search-provider.json",
-      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
+      "id": "model-provider",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8f-evidence/non-browser-bulk.json",
-      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8f-evidence/serial-browser.json",
-      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8f-evidence/postgres-contract.json",
-      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8f-evidence/cross-process-faults.json",
-      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8f-evidence/production-build.json",
-      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8f-evidence/typecheck.json",
-      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8f-evidence/benchmark-50.json",
-      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8f-evidence/frontend-visual.json",
-      "reason": "Complete frozen-source validation passed; exact-source independent ACCEPT is recorded in docs/reviews/V2-8F-0cab854.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
     }
   ],
   "knownBlockers": [],
@@ -103,5 +103,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-21"
+  "updated": "2026-10-22"
 }

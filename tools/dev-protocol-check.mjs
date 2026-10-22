@@ -23,6 +23,11 @@ const KINDS = {
 };
 
 const MILESTONES = {
+  'V2-8G': {
+    plan: 'docs/v2-8g-evidence/validation-plan.json',
+    focused: 'model-provider',
+    files: ['test/v2-provider-stream-8g.test.js', 'test/v2-provider-8c.test.js', 'test/v2-provider-durable-8c.test.js', 'test/v2-provider-postgres-8c.test.js'],
+  },
   'V2-8F': {
     plan: 'docs/v2-8f-evidence/validation-plan.json',
     focused: 'search-provider',
