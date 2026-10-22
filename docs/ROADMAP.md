@@ -8091,6 +8091,15 @@ unexplained beyond its observed wrong Delete action; controlled evidence is dist
   [independent finding](reviews/V2-8E-c71d65e.md),
   [Open XML identifier reference](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.presentation.nonvisualdrawingproperties.id?view=openxml-3.0.1).
 
+- [ ] Audit legacy generation exports for the same upstream shape-ID formula.
+  V2-PPTX-ID deliberately corrects the canonical scene renderer; legacy
+  `src/layouts/core.js` and `src/layouts/special.js` still call PptxGenJS native
+  tables directly. Shared library behavior makes collisions a concrete risk,
+  but no legacy consumer failure has been established by the V2 fixture.
+  Reproduce against representative legacy decks and apply the same generated-
+  output identity contract if affected, with preserved native parts/rasters.
+  Do not infer legacy fidelity from the V2 correction or rewrite legacy layouts.
+
 - [ ] Remaining slide-management direction — explicit relayout/reset policy
   beyond the accepted V2-5I insert/duplicate/delete/reorder/multiselect/detach
   surface. Agree preservation rules before implementation; persistence is already

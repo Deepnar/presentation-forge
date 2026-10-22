@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: mixed native objects have unique unsigned nonvisual IDs per slide
+not ok 1 - mixed native objects have unique unsigned nonvisual IDs per slide
+  ---
+  duration_ms: 71.820262
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-native-ids.test.js:7:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    slide 1: 1,2,3,2
+    
+    3 !== 4
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 4
+  actual: 3
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-ids.test.js:16:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 185.2517

@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: mixed native objects have unique unsigned nonvisual IDs per slide
+ok 1 - mixed native objects have unique unsigned nonvisual IDs per slide
+  ---
+  duration_ms: 67.903833
+  type: 'test'
+  ...
+# Subtest: collision repair preserves all bytes except later duplicate ID attributes
+ok 2 - collision repair preserves all bytes except later duplicate ID attributes
+  ---
+  duration_ms: 0.27186
+  type: 'test'
+  ...
+# Subtest: numeric identity reserves later valid IDs and handles the uint32 boundary
+ok 3 - numeric identity reserves later valid IDs and handles the uint32 boundary
+  ---
+  duration_ms: 0.477912
+  type: 'test'
+  ...
+# Subtest: ambiguous animation, build and connector targets refuse instead of guessing
+ok 4 - ambiguous animation, build and connector targets refuse instead of guessing
+  ---
+  duration_ms: 0.262307
+  type: 'test'
+  ...
+# Subtest: archive correction preserves other parts and leaves a valid archive byte-identical
+ok 5 - archive correction preserves other parts and leaves a valid archive byte-identical
+  ---
+  duration_ms: 3.594749
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 179.753949

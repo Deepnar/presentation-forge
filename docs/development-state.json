@@ -6,74 +6,44 @@
     "source": "docs/reviews/V2-8G-f3e784a.json"
   },
   "implementationHead": {
-    "sha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
-    "note": "V2-8G independently accepted: complete 224-file/2801-case matrix plus four native cases, 668 independent successful executions, build/typecheck/50 cells and visual/resource evidence. Exact owned PostgreSQL removed after saved/fsynced zero-database count;5544 closed. No real model API/local inference."
+    "sha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+    "note": "Native PPTX shape identity correction; scoped verification and independent review pending. No model API/local inference."
   },
   "activeMilestone": {
-    "id": "V2-8G",
-    "roadmapRef": "docs/ROADMAP.md#model-provider-stream-resource-bounds",
-    "evalDoc": "docs/V2-8G-EVAL.md",
-    "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "id": "V2-PPTX-ID",
+    "roadmapRef": "docs/ROADMAP.md#native-pptx-shape-id-uniqueness",
+    "evalDoc": "docs/V2-PPTX-ID-EVAL.md",
+    "architectureDoc": "docs/ARCHITECTURE.md",
+    "implementationStatus": "implemented-pending-validation",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8G-f3e784a.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "model-provider",
-      "status": "passed",
-      "evidence": "docs/v2-8g-evidence/model-provider.json",
-      "reason": "Dedicated exact four-file gate passed 84/84 on frozen source; wider provider coverage remains supplemental and overlaps the full matrix."
-    },
-    {
-      "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8g-evidence/non-browser-bulk.json",
-      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent exact-source acceptance is committed in docs/reviews/V2-8G-f3e784a.json."
-    },
-    {
-      "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8g-evidence/serial-browser.json",
-      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent exact-source acceptance is committed in docs/reviews/V2-8G-f3e784a.json."
-    },
-    {
-      "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8g-evidence/postgres-contract.json",
-      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent exact-source acceptance is committed in docs/reviews/V2-8G-f3e784a.json."
-    },
-    {
-      "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8g-evidence/cross-process-faults.json",
-      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent exact-source acceptance is committed in docs/reviews/V2-8G-f3e784a.json."
-    },
-    {
-      "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8g-evidence/production-build.json",
-      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent exact-source acceptance is committed in docs/reviews/V2-8G-f3e784a.json."
+      "id": "native-pptx",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required by the renderer-only correction contract; execution pending."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8g-evidence/typecheck.json",
-      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent exact-source acceptance is committed in docs/reviews/V2-8G-f3e784a.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required by the renderer-only correction contract; execution pending."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8g-evidence/benchmark-50.json",
-      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent exact-source acceptance is committed in docs/reviews/V2-8G-f3e784a.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required by the renderer-only correction contract; execution pending."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8g-evidence/frontend-visual.json",
-      "reason": "Completed on exact frozen source; current command/log/backend and actual totals are recorded in the linked evidence. Independent exact-source acceptance is committed in docs/reviews/V2-8G-f3e784a.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Required by the renderer-only correction contract; execution pending."
     }
   ],
   "knownBlockers": [],

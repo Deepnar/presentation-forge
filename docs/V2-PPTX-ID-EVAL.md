@@ -60,4 +60,14 @@ evidence and push; no dependent roadmap slice is authorized by its acceptance.
 
 ## Execution
 
-Pending. Planning and source inspection do not establish successful exports.
+Frozen implementation: `282ed6d`. Product correction: `a141fae`; subsequent
+governance commits define explicit four-gate applicability for this renderer-only
+slice while retaining the prior nine-gate contracts. The first schema check
+reported a missing conditional object type; explicit types corrected that
+governance authoring error before required regression execution.
+
+Fail-first: the original implementation failed the mixed-object uniqueness
+assertion with slide 1 IDs `[1,2,3,2]` (0 pass / 1 fail). The unchanged assertion
+plus four focused cases then passed 5/5, 0 fail/skip/cancelled. Raw attempts are
+retained under `v2-pptx-id-evidence/attempts/`. This is an inherited product defect;
+no assertion was weakened. Complete required execution and review are pending.

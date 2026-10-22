@@ -1369,6 +1369,13 @@ paths yet, `packages/` holds the first agent-native primitive:
   pie/doughnut, and empty chart/table payloads before any byte is
   generated — the renderer projects valid scenes or refuses, never
   silently drops data.
+  The V2-PPTX-ID correction normalizes nonvisual IDs after library serialization:
+  it preserves each first occurrence and reserves all valid IDs before assigning
+  unused numeric IDs to later duplicates. Native XML/content/relationships remain
+  unchanged; an ambiguous connector/animation shape target refuses export.
+  Already-unique archives retain their original bytes. This is generated-output
+  correction, not an imported-PPTX repair service; [validation and review](V2-PPTX-ID-EVAL.md)
+  determine its acceptance. The scene remains the only document authority.
 - `packages/renderer-docx/` — `renderDocx(report, donorBytes, options)
   -> Uint8Array` (strict TS): deterministic OOXML body builders,
   donor-bytes surgery preserving package chrome, pure pagination-text
@@ -2681,9 +2688,10 @@ Provider adapters translate canonical read rounds into their own message protoco
 network work remains outside project transactions. No public surface or durable
 conversation store is added. [The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8e-bounded-tool-conversation-preparation)
 and [evaluation](V2-8E-EVAL.md) identify source `c71d65e` and its independent
-[acceptance](reviews/V2-8E-c71d65e.json). Native exports preserve the inherited
-[nonvisual shape-ID limitation](ROADMAP.md#native-pptx-shape-id-uniqueness);
-interactive PowerPoint consumer behavior remains unverified.
+[acceptance](reviews/V2-8E-c71d65e.json). Its historical exports retain the inherited
+[nonvisual shape-ID limitation](ROADMAP.md#native-pptx-shape-id-uniqueness), now
+addressed separately by V2-PPTX-ID above. Interactive Microsoft PowerPoint
+consumer behavior remains unverified.
 
 
 ### V2-8F shared search boundary

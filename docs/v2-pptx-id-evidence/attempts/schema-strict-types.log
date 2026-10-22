@@ -1,0 +1,3 @@
+Initial governance validation exited 1 before regression execution.
+error: state schema: strict mode: missing type "object" for keyword "properties" at "#/allOf/0/if/properties/activeMilestone" (strictTypes)
+Classification: schema authoring error in new scoped contract; corrected explicit conditional types. Existing nine-gate contracts unchanged.
