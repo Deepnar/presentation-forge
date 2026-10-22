@@ -59,6 +59,7 @@ def run(name,args,files=None,changes=None,expected=0):
 def tests(name,selected,concurrency=1,changes=None,expected=0):
  return run(name,['node','--test',f'--test-concurrency={concurrency}','--test-reporter=./tools/validated-tap.mjs',*selected],selected,changes,expected)
 tests('focused',['test/v2-provider-stream-8g.test.js','test/v2-provider-8c.test.js','test/v2-provider-durable-8c.test.js','test/v2-provider-run-8d.test.js','test/v2-provider-run-sqlite-8d.test.js','test/v2-conversation-8e.test.js','test/v2-conversation-sqlite-8e.test.js'])
+tests('model-provider-gate',['test/v2-provider-stream-8g.test.js','test/v2-provider-8c.test.js','test/v2-provider-durable-8c.test.js','test/v2-provider-postgres-8c.test.js'])
 tests('bulk',plan['bulk'],4)
 if resume:tests('window-qualification',['test/v2-conversation-8e.test.js'])
 for file in plan['serial']:tests(pathlib.Path(file).stem,[file])

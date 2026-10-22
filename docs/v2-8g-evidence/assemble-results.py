@@ -8,7 +8,7 @@ def group(id,selected,backend):
  totals={key:sum(r['tests'][key] for r in rows) for key in ['total','pass','fail','skip','cancelled']};assert not any(totals[k] for k in ['fail','skip','cancelled'])
  write(id+'.json',{'id':id,'kind':'tests','implementationSha':sha,'command':'python3 docs/v2-8g-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json','log':str(log),'exitCode':0,'tests':totals,'files':[f for row in rows for f in row['files']],'backend':backend})
 group('model-provider-focused',['focused'],'Injected transports, actual loopback protocol fixtures and temporary SQLite; no real model API or local inference')
-group('model-provider',['focused','v2-provider-postgres-8c.test'],'Both provider families through injected/loopback fixtures and temporary SQLite/owned PostgreSQL durable contracts; repeats overlap the full matrix')
+group('model-provider',['model-provider-gate'],'Both provider families through the exact four-file injected/loopback/SQLite/owned PostgreSQL gate; repeats overlap the full matrix')
 group('non-browser-bulk',['bulk'],'Pure domain and temporary SQLite stores; selected tests use their isolated backends')
 group('serial-browser',[pathlib.Path(f).stem for f in plan['serial']],'Temporary SQLite production routes, isolated PostgreSQL browser suite and standalone fixtures')
 group('postgres-contract',['v2-projects-6c-postgres.test','v2-import-postgres-7b.test'],'Owned isolated PostgreSQL15.18; designated23-case project/import contract gate')
