@@ -1,40 +1,41 @@
-# Handoff — V2-8H contract prepared, data policy unapproved
+# Handoff — V2-8H approved, implementation deferred by explicit stop
 
 2026-10-22 · branch `v2`; authorized push `origin/v2`.
-Accepted baseline remains `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`, independently
-accepted in [the native-ID decision](reviews/V2-PPTX-ID-45c2c4c.json). Its
-[evaluation](V2-PPTX-ID-EVAL.md) retains completed tests and native evidence.
-Planning-entry HEAD: `2e0e40d4007be462c111bc2a0fe38398a048f7ba`.
+Accepted product baseline remains `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`,
+[independently accepted](reviews/V2-PPTX-ID-45c2c4c.json). Its
+[evaluation](V2-PPTX-ID-EVAL.md) retains completed implementation validation.
+This session's entry HEAD was `2e0e40d4007be462c111bc2a0fe38398a048f7ba`;
+subsequent commits contain planning/documentation only.
 
-The current request continues the next immediate task and clarifies that browser
-editing is the main product. Browser authoring already uses editable Layer-C
-objects; Microsoft PowerPoint interaction checks concern exported files, not an
-Office dependency for editing browser projects. PRODUCT-VISION now states this.
+The primary authoring workspace is the browser: immediate editing of real scene
+objects, not a dependency on Microsoft PowerPoint. Microsoft interaction checks
+qualify the exported file. This distinction is now explicit in PRODUCT-VISION.
 
-The next [roadmap contract](ROADMAP.md#assistant-turn-approval-contract) is prepared
-in [V2-8H-EVAL.md](V2-8H-EVAL.md). It is a proposed headless durable conversation/
-turn/proposal boundary, atomic approval+enqueue/cancel over the existing project
-transaction, and conservative provider-attempt recovery. No second scene, queue,
-edit cursor or automatic retry of ambiguous billed requests is proposed.
+The [V2-8H contract](V2-8H-EVAL.md), plan commit `9ead920`, passed a separate
+read-only [planning review](reviews/V2-8H-plan-9ead920.json) at `8599638`.
+It preserves one scene/command engine/run authority and defines durable turn/
+proposal state, atomic decision/queue/cancel, bounded retention and conservative
+restart/provider-attempt recovery. This is plan readiness, not product acceptance.
 
-The recommendation is owner-only visible chat stored with the project until
-explicit clear/project deletion, bounded records/content, no raw provider/tool
-transcripts or hidden reasoning. Clearing chat preserves already committed deck
-content/history and existing run records. The human data-policy direction remains
-unapproved; a technical review cannot supply it. Do not add storage, migrate data
-or implement the new architecture from the planning document alone.
+**Human decision:** the prepared implementation contract and recommended owner-only
+visible chat retained with the project until clear/deletion are APPROVED. Clearing
+chat preserves existing committed deck/history/run data; no raw provider/tool
+transcript or hidden reasoning is added. Exact scope/approval live only in
+[the roadmap](ROADMAP.md#assistant-turn-approval-contract).
 
-State still indexes the accepted native-ID implementation and its four completed
-historical gates. Only nextCandidate points at V2-8H, authorized false. Planning
-creates no new product acceptance or passing implementation evidence. Future work
-and approval state live only in the roadmap; the contract describes proposed
-acceptance evidence, not executed tests.
+**Explicit stop:** the human then said not to start now and to stop for the night.
+No V2-8H implementation may begin until an explicit human resume. Do not schedule
+work or re-ask the approved policy choice. A later resume lifts this deferral;
+offline-only validation, bounded scope and separate implementation review remain.
 
-No product/test/schema changes, tests, builds, browsers, benchmarks, services,
-model API calls or local inference have been executed for V2-8H. Lightweight
-planning/governance results and any plan-only review are recorded in its evaluation.
-No owned validation job or service remains. Preserve historical originals; never
-rerun old evidence scripts into their existing namespaces.
+State keeps the accepted product and its historical gates unchanged. nextCandidate
+is authorized false to enforce the current stop, with its approved/deferred status
+explicit in the name and roadmap. Do not misread it as missing policy approval.
+
+No product/test/schema code, database operations, provider calls, local inference,
+services, builds, browsers or benchmarks were run for V2-8H. Only source/prose
+inspection, plan review, `dev:protocol` (zero errors/warnings) and diff checks.
+No owned job or service remains. Original evidence archives remain untouched.
 
 Original untracked paths remain untouched: `.agents/`,
 `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`,

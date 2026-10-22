@@ -2,10 +2,12 @@
 
 ## Status and authority
 
-Prepared contract, **not approved implementation or a data-retention policy**.
-The 2026-10-22 continuation authorizes recovering state and preparing the immediate
-next contract. Its remaining human decision is recorded only in
-[the roadmap](ROADMAP.md#assistant-turn-approval-contract).
+**Contract and recommended data-retention direction approved; implementation
+explicitly deferred until human resume.** The 2026-10-22 continuation produced
+this prepared contract; the subsequent human reply approved it and requested
+an immediate stop before implementation. Approval and deferral authority are in
+[the roadmap](ROADMAP.md#assistant-turn-approval-contract). No implementation
+acceptance is implied.
 
 Branch/push: `v2` / `origin/v2`. Planning-entry HEAD:
 `2e0e40d4007be462c111bc2a0fe38398a048f7ba`. Accepted source:
@@ -35,7 +37,7 @@ opens its own transaction, so calling it inside an approval transaction would no
 make approval and enqueue atomic. Existing run/receipt tables are project children
 with cascade deletion. Scene/history private content already persists separately.
 
-## Proposed product and data decision
+## Approved product and data direction — not implemented
 
 Recommendation: **project-linked, owner-only visible conversation**, retained until
 the owner clears it or deletes the project. Store bounded user requests, displayed
@@ -85,7 +87,7 @@ removed when that terminal transition is reconciled; logical expiry is enforced 
 every read/decision even before physical cleanup. No background-erasure deadline
 is promised while the host is stopped.
 
-## Bounded implementation contract, conditional on that decision
+## Approved implementation contract — deferred until resume
 
 Deliver a complete headless conversation/turn/proposal service over both existing
 backends, with authenticated-equivalent host bindings, bounded reads/export/clear,
@@ -247,10 +249,11 @@ undo/history/native/browser behavior needs preservation evidence. No new browser
 surface means no new accessibility/responsive design claim; existing interactions
 still need regression. Deployment safety means no production deployment/migration.
 
-Before implementation, freeze the exact file/gate inventory and update the state
-schema/checker for V2-8H together. Stop on missing human policy direction. After
-implementation stop for separate exact-source ACCEPT/HOLD; do not self-accept or
-start Assistant UI. A technical design review cannot approve the human data policy.
+On explicit human resume, freeze the exact file/gate inventory and update the
+state schema/checker for V2-8H together. The policy/contract approval is already
+recorded; do not re-ask it. After implementation stop for separate exact-source
+ACCEPT/HOLD; do not self-accept or start Assistant UI. The human's explicit deferral
+currently prohibits implementation or scheduled work.
 
 ## Planning evidence
 
@@ -258,3 +261,42 @@ Source inspection only against planning-entry HEAD. Product/test source unchange
 zero tests, builds, browsers, benchmarks, services or provider calls executed for
 this contract. Lightweight governance/document checks and any separate plan review
 are recorded after completion, distinct from implementation acceptance.
+
+
+### Independent planning review and current gate
+
+Plan `9ead920004a6c6b83678ccc25852ad69d05395fe` was independently reviewed by
+`/root/native_id_review` (separate from author `/root`). Decision:
+**READY_FOR_POLICY_DECISION**, committed at `8599638` in
+[the review](reviews/V2-8H-plan-9ead920.json) and its supporting report.
+No implementation or human policy approval was granted. No code or user data
+was changed by review; its test/provider/database/service/build/browser/benchmark
+execution counts are all zero.
+
+The review corrected the initial preparation-recovery hole after a completed
+read round, required generation/revision on every state-changing request, fixed
+metadata/settlement caps and clear compaction, decision replay precedence,
+composed pre-commit guards, exact deadlines, stale-worker leases and reservation
+ordering. Those corrections are incorporated above; no remaining plan-readiness
+finding was reported. This is source-backed design review, not executed failure
+reproduction or implementation acceptance.
+
+The prepared retention choice and implementation contract were presented for
+human direction. The subsequent reply explicitly approves the recommendation,
+then says not to start now and to stop. The approved scope is preserved for the
+next explicit resume; no implementation or scheduling is authorized during this
+stop. The accepted product source and historical validation remain unchanged.
+Lightweight `npm run dev:protocol` reports zero errors/warnings and `git diff
+--check` passes; these do not validate the proposed implementation. No tests were
+run for prose-only changes, and no resource-intensive validation was started.
+
+
+### Human decision and session stop
+
+On 2026-10-22 the human approved the prepared V2-8H implementation contract with
+project-linked visible-chat retention, then explicitly deferred implementation
+and ended the session. No further policy confirmation is needed for this scope.
+The next session must wait for an explicit resume before starting implementation;
+that resume lifts the deferral, not the offline-only, scope or independent-review
+constraints. No V2-8H implementation, data writes or resource-intensive validation
+were started before stopping.

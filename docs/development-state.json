@@ -54,7 +54,7 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8H durable conversations and approval ownership",
+    "id": "V2-8H approved contract; implementation deferred until explicit resume",
     "authorized": false,
     "roadmapRef": "docs/ROADMAP.md#assistant-turn-approval-contract"
   },

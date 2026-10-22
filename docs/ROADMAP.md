@@ -8879,8 +8879,8 @@ thing was prepared as the concrete transport correction contract below. The late
 local inference. Only that separate transport correction is authorized; this audit
   remains inspection-only. Later explicit requests authorized the separately
   accepted native-ID correction and now preparation of the durable turn/approval
-  contract below. Its new private-data policy still requires human direction
-  before implementation; acceptance of a prior slice does not supply that choice.
+  contract below. Its subsequent human approval and explicit implementation
+  deferral are recorded there; prior-slice acceptance did not supply that choice.
 
 | Priority | Canonical work entry | Intent / rationale |
 |---|---|---|
@@ -8896,15 +8896,23 @@ local inference. Only that separate transport correction is authorized; this aud
 
 <a id="assistant-turn-approval-contract"></a>
 
-- [ ] **Durable user-turn and approval ownership — direction required.**
+- [ ] **Durable user-turn and approval ownership — approved, awaiting resume.**
   The 2026-10-22 continuation starts **V2-8H contract preparation**, from accepted
   `45c2c4c` and planning HEAD `2e0e40d`. The concrete recommended policy, atomic
   queue/cancel seams, recovery behavior and required evidence are prepared in
-  [the bounded contract](V2-8H-EVAL.md); implementation remains unapproved.
-  Recommend project-linked owner-only visible chat until explicit clear/project
-  deletion, bounded storage and proposals, no raw provider/tool transcript, and
-  existing deck/history preserved when chat is cleared. A rolling chat lifetime
-  is the alternative. Choose that retention direction before new stored data.
+  [the bounded contract](V2-8H-EVAL.md).
+  Plan `9ead920` passed a separate read-only
+  [readiness review](reviews/V2-8H-plan-9ead920.json) at `8599638`; this grants
+  no implementation acceptance or human data-policy approval by itself.
+  **Human approval received on 2026-10-22:** the prepared V2-8H contract and
+  recommended project-linked owner-only visible chat until explicit clear/project
+  deletion, bounded storage/proposals, no raw provider/tool transcript or hidden
+  reasoning, and existing deck/history preserved when chat is cleared.
+  **Explicit stop:** implementation is deferred until the human resumes; do not
+  start it tonight, schedule it, or re-ask this already approved retention choice.
+  No V2-8H code or stored user data exists yet. On explicit resume, freeze the
+  implementation inventory and proceed within this approved headless contract,
+  preserving offline-only validation and the later independent acceptance gate.
   The browser remains the primary editor; native PowerPoint qualification concerns
   exported files and is not a requirement to edit a project in the browser.
   Existing runtime plans/receipts are durable; `converse` histories and WeakMap
