@@ -23,14 +23,16 @@ must be snapshotted before any later generator/browser/native run.
 
 ## Required inventory and status
 
-Planning inventory retains all223 accepted files plus one stream regression file:
-190bulk/26bounded serial browser-build owners/8PostgreSQL =224files. New focused
-cases, full matrix, build/type/actual50cells, native/visual evidence and exact-source
-independent review are pending. No prerequisite pass is execution of this correction.
-Missing PostgreSQL is unexecuted, not passing. Keep the BYOK locale failure and
-accepted native-ID/SVG/narrow/fit/provenance limits separate. No final-source totals
-or performance measurements are available yet. Implementation SHA will be frozen
-in a later evidence commit, with all tested working-tree deltas identified.
+The inventory retains all 223 accepted files plus one stream regression file:
+190 bulk / 26 bounded serial browser-build owners / 8 PostgreSQL = 224 files.
+Frozen implementation f3e784a passed 200 focused cases across eight complete files;
+216 files remain unexecuted. The full matrix, build, typecheck, all 50 benchmark
+cells, native/visual evidence and independent acceptance remain pending. No
+prerequisite pass counts as execution of this correction. PostgreSQL checks were
+not run or probed; unavailable checks would remain unexecuted, not passing. Keep
+the standing BYOK locale failure and accepted native-ID/SVG/narrow/fit/provenance
+limits separate. Focused timings below are not full performance qualification;
+retained memory has not been measured.
 
 The shared machine has unrelated active workloads. The first lightweight read-only
 sample showed CPU7.29%, iowait8.33%, available memory about33.2GiB and elevated
@@ -58,7 +60,7 @@ failure was the repository-state governance check: implementationHead still poin
 to the accepted prerequisite while the new milestone was unaccepted. Updating that
 tracking pointer and the plan to the actual frozen ec67315 corrects the metadata;
 no test assertion, validator rule or product source changed. The initial failure
-remains in focused-offline.{json,log}; a separate rerun will supply corrected totals.
+remains in focused-offline.{json,log}; the separate rerun below supplies corrected totals.
 The same8-file rerun passed196/196,0fail/skip/cancel on exact frozen ec67315 in
 9.133s wall time, using injected transports and loopback HTTP fixtures only.
 Final-focused-offline.{json,log} retain complete file markers and command/exit/hash.
