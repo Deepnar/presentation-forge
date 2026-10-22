@@ -57,7 +57,7 @@ Every job requires fresh headroom, low CPU/I/O priority and a process-group
 watchdog; long jobs monitor contention. Browser files and builds stay serial.
 All provider exchanges are injected or actual loopback fixture HTTP, with no
 real model API or local inference. The stream resource supplement uses four
-fresh Node processes, full-GC observations and 5,000/200,000 empty reads per
+fresh Node processes, the accepted 256 KiB allowance, full-GC observations and 5,000/200,000 empty reads per
 protocol; sampled retained memory must not be described as process peak RSS.
 
 Finish once while the fresh canonical browser archives still exist, preserve

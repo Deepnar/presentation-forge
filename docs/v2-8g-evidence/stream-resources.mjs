@@ -10,7 +10,7 @@ const [, , mode, family, count] = process.argv;
 
 if (mode === '--sample') {
   assert.equal(typeof global.gc, 'function');
-  const emptyChunks = Number(count), maxResponseBytes = 1024 * 1024;
+  const emptyChunks = Number(count), maxResponseBytes = 256 * 1024;
   assert.ok(['openai-compatible', 'anthropic'].includes(family));
   assert.ok([5000, 200000].includes(emptyChunks));
   const { context: ctx } = await context();
@@ -69,7 +69,7 @@ if (mode === '--sample') {
   }
   const result = { implementationSha: sha, fixtureRuns: records.length, records,
     realModelApiCalls: 0, localInferenceCalls: 0,
-    method: 'Fresh isolated Node process per scenario; 1MiB response allowance; injected reader; full-GC memory observations before, during and after 5,000/200,000 empty chunks, followed by a valid response.',
+    method: 'Fresh isolated Node process per scenario; accepted 256KiB response allowance; injected reader; full-GC memory observations before, during and after 5,000/200,000 empty chunks, followed by a valid response.',
     limitation: 'Observed sampled retained memory and RSS only; sampling/GC changes timing. These are not process peak RSS, allocator limits, production percentiles or live-model performance. Functional stream tests separately exercise deadlines and cancellation.' };
   await writeFile(`${root}/stream-resources.json`, `${JSON.stringify(result, null, 2)}\n`);
   console.log(JSON.stringify({ fixtureRuns: records.length, records: records.map(({ samples, command, ...record }) => record) }, null, 2));
