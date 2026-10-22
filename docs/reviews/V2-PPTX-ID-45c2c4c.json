@@ -1,0 +1,92 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "acceptedBaselineCompared": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "taskEntrySha": "7f4c1e8b97a2e1b7987d9c089910f7323610a41d",
+  "reviewedEvidenceCommit": "a369067",
+  "independentEvidenceCommits": [
+    "94920cf",
+    "43cbd3d"
+  ],
+  "reviewer": "/root/native_id_review",
+  "context": "/root/native_id_review",
+  "implementedBy": "/root",
+  "atUtc": "2026-10-22T17:43:22.114578+00:00",
+  "scope": "Canonical generated scene-to-PPTX nonvisual shape-ID correction only; preserve first IDs, native payloads and scenes, refuse ambiguous duplicate references.",
+  "sourceDeltaAfterImplementation": [],
+  "evidence": "docs/reviews/V2-PPTX-ID-45c2c4c.md",
+  "assessment": "docs/v2-pptx-id-evidence/independent/assessment.json",
+  "independentPrimaryTests": {
+    "total": 271,
+    "pass": 271,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentPrimaryEntryFiles": 13,
+  "overlappingSupplementalRepeat": {
+    "tests": 5,
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "overlap": 5,
+    "reason": "edge.test.mjs renamed edge-check.mjs to avoid default test discovery; unchanged five-case script rerun; original271log and command retained"
+  },
+  "allAcknowledgedIndependentLeafExecutions": 276,
+  "rootRequiredTestsInspected": {
+    "total": 376,
+    "pass": 376,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "files": 19
+  },
+  "otherRootRequiredEvidenceInspected": {
+    "typecheck": "passed",
+    "benchmarkCells": 50,
+    "benchmarkQualityAndInvarianceMatchAcceptedV28G": true,
+    "unexecutedRequiredChecks": 0
+  },
+  "nativeAudit": {
+    "parts": 54,
+    "identityParts": 9,
+    "changedIdentityParts": 3,
+    "sameArchiveNonIdentityPartsByteExact": 45,
+    "allFirstLexicalIdsPreserved": true,
+    "allNonIdXmlBytesPreserved": true,
+    "charts": 2,
+    "embeddedWorkbooks": 2,
+    "nativeTables": 5,
+    "allRelationshipTargetsValid": true,
+    "historicalOriginalsUnchanged": 161,
+    "freshRasterPages": 9,
+    "pixelComparisons": 6,
+    "changedPixelChannels": 0,
+    "scenesUnchanged": true
+  },
+  "timings": {
+    "testsSeconds": 23.178922914001305,
+    "nativeCommandSeconds": 2.0178897810001217,
+    "archiveCommandSeconds": 0.11423051600286271,
+    "freshThreeSlideRenderMilliseconds": 56.505053000000004,
+    "limitation": "Single local observations, not production percentiles or interactive PowerPoint timings."
+  },
+  "findings": [],
+  "waivers": [],
+  "limitations": [
+    "PostgreSQL, fault, browser and production build not rerun under explicit renderer-only applicability",
+    "Interactive Microsoft PowerPoint selection/edit/save/reopen unexecuted",
+    "Standing BYOK en_IN locale9pass/1fail historical, not rerun and not waived",
+    "Legacy renderer identity risk and mixed-run SVG fidelity remain separate roadmap entries",
+    "No real model API call, local inference, content-quality evaluation, service or deployment"
+  ],
+  "originalUntrackedPathsUntouched": [
+    ".agents/",
+    "PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md",
+    "PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md"
+  ],
+  "noOwnedJobOrServiceRemains": true,
+  "nextAuthorizedAction": "Planning only; no dependent implementation, infrastructure, migration or deployment."
+}
