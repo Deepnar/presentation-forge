@@ -312,3 +312,21 @@ test('model-stream correction requires new lifetime cases and both durable backe
   writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-provider-stream-8g.test.js"\n', ''));
   hasError(f.check(), /complete required scope/);
 });
+
+test('native identity correction has explicit scoped gates and complete export files', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-pptx-id-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-pptx-id-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-pptx-id-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-PPTX-ID';
+  hasError(f.check(), /inventory.*contract/);
+  f.state.validation = [
+    { id: 'native-pptx', status: 'unexecuted', evidence: null, reason: 'Fixture pending' },
+    ...f.state.validation.filter(item => ['typecheck', 'benchmark-50', 'frontend-visual'].includes(item.id)),
+  ];
+  assert.deepEqual(f.check().errors, []);
+  f.evidence(); assert.deepEqual(f.check().errors, []);
+  const log = path.join(f.dir, 'docs/output.tap');
+  writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-native-ids.test.js"\n', ''));
+  hasError(f.check(), /complete required scope/);
+  f.state.validation.pop(); hasError(f.check(), /inventory.*contract/);
+});

@@ -16,13 +16,19 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
-  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'native-pptx': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
   'postgres-contract': 'tests', 'cross-process-faults': 'tests',
   'production-build': 'command', typecheck: 'command',
   'benchmark-50': 'benchmark', 'frontend-visual': 'visual',
 };
 
 const MILESTONES = {
+  'V2-PPTX-ID': {
+    plan: 'docs/v2-pptx-id-evidence/validation-plan.json',
+    focused: 'native-pptx',
+    files: ['test/dev-protocol.test.js', 'test/v2-native-ids.test.js', 'test/v2-renderer-pptx.test.js', 'test/v2-scene-pptx.test.js', 'test/v2-export-preflight-5a.test.js', 'test/v2-chart-edit.test.js', 'test/v2-table-edit.test.js', 'test/v2-tables-3f4.test.js', 'test/v2-typography-4b.test.js', 'test/v2-engine-5b.test.js', 'test/v2-style-5e.test.js', 'test/v2-text-5d.test.js', 'test/v2-textformat-5f.test.js', 'test/v2-layers-5j.test.js', 'test/v2-layers-5j1.test.js', 'test/v2-slides-5i.test.js', 'test/v2-projects-6a.test.js', 'test/v2-projects-6b.test.js', 'test/v2-tools-8a.test.js'],
+    required: ['native-pptx', 'typecheck', 'benchmark-50', 'frontend-visual'],
+  },
   'V2-8G': {
     plan: 'docs/v2-8g-evidence/validation-plan.json',
     focused: 'model-provider',
@@ -220,7 +226,7 @@ export function checkSemantics(root, state) {
   else {
     reference(root, contract.plan, errors, 'validation plan');
     const focusedIds = Object.values(MILESTONES).map(value => value.focused);
-    const requiredIds = Object.keys(KINDS).filter(id => !focusedIds.includes(id)).concat(contract.focused);
+    const requiredIds = contract.required ?? Object.keys(KINDS).filter(id => !focusedIds.includes(id)).concat(contract.focused);
     if (requiredIds.some(id => !ids.includes(id)) || ids.some(id => !requiredIds.includes(id))) {
       errors.push('validation inventory does not match the milestone contract');
     }

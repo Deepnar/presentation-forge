@@ -114,7 +114,7 @@
     },
     "validation": {
       "type": "array",
-      "minItems": 9,
+      "minItems": 4,
       "items": {
         "type": "object",
         "properties": {
@@ -139,7 +139,8 @@
               "model-provider",
               "provider-run",
               "tool-conversation",
-              "search-provider"
+              "search-provider",
+              "native-pptx"
             ]
           },
           "status": {
@@ -314,5 +315,28 @@
     "docs",
     "updated"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "activeMilestone": {
+            "properties": {
+              "id": {
+                "const": "V2-PPTX-ID"
+              }
+            }
+          }
+        }
+      },
+      "then": {},
+      "else": {
+        "properties": {
+          "validation": {
+            "minItems": 9
+          }
+        }
+      }
+    }
+  ]
 }
