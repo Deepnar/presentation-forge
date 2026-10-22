@@ -9144,6 +9144,16 @@ and existing assertions. Any correction needs its own bounded contract, unchange
 regression coverage and exact-source independent review. Do not absorb provider
 changes into the shared-search slice or infer a live-provider failure from a fixture.
 
+**Current bounded-code checkpoint:** refrozen `f3e784a` adds four coverage cases to
+unchanged adapter bytes from `ec67315`. All18stream cases passed within200/200 across
+8offline files,0fail/skip/cancel. A separate static reviewer ran0tests/edited0files
+and found no confirmed product defect; this is not acceptance. Empirical memory
+observation,216remaining inventory files and all complete acceptance gates are
+unexecuted. No real model/API or local inference, browser/rendering, PostgreSQL
+service, build/typecheck or benchmark was used in this follow-up. Preserve the
+failed metadata checkpoint and fail-first probes; no assertions were weakened.
+Accepted baseline remains0cab854; do not tick this item or start dependent work.
+
 **V2-8G model-transport resource bounds — separately authorized, 2026-10-22.**
 The follow-up permits writing code and deterministic fixtures, with no API-backed
 model or local inference. Audit execution remains zero; this separate correction

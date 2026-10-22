@@ -319,7 +319,7 @@ later tool/source/Assistant scope and the separate hosted approval-lifetime seam
 
 ## V2-8G model response stream bounds (implementation under review)
 
-Exact implementation `ec67315` retains both accepted model protocols and existing
+Exact implementation `f3e784a` retains both accepted model protocols and existing
 configuration, tool normalization, usage, privacy and no-retry contracts. The Node
 adapter now reads into one fixed response-byte buffer; monotonic whole-attempt
 checks and periodic event-loop yielding bound immediately resolved empty reads.

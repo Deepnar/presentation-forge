@@ -1,7 +1,7 @@
 # V2-8G model-transport resource bounds evaluation
 
 2026-10-22 · implemented; complete validation and independent review pending.
-Frozen implementation `ec6731546ddfe8e0a47516b49b7aee5b510ed589`; later documentation/evidence commits do not change code.
+Frozen implementation `f3e784ac6227f46628dc99a54762f6a861eeed64`; later documentation/evidence commits do not change code.
 Accepted baseline `0cab854bce04b862060829812a9ab6ff0b765fd9`; audit-entry checkout
 `ee52b50bac2ce5704eda39a89ae959259497f331`; correction planning checkout `44377b0`.
 Branch `v2`, scoped push `origin/v2`. The [bounded contract](ROADMAP.md#model-provider-stream-resource-bounds)
@@ -70,3 +70,44 @@ zero-execution record is separate.
 
 Stop after this correction's independent review, owned-resource cleanup and handoff.
 Parent V2-8 and the other audit proposals remain unapproved for implementation.
+
+
+## Separate source inspection and coverage additions
+
+One separate high-effort context `/root/v28g_source_review` performed static source
+inspection of ec67315 and its pushed bf2c6b3 packet, with0tests/0edits and no
+ACCEPT/HOLD. It found no confirmed actionable product defect. It identified
+unmeasured retained-memory bounds and missing targeted late caller-abort/response-
+processing deadline coverage. Four additional injected cases now cover the latter
+two situations on both protocols; the original14cases/assertions remain intact.
+The new freeze adds tests only; adapter bytes are identical to reviewed ec67315.
+Peak retained memory has not been measured. Single-buffer capacity is source-
+inspected evidence, not an empirical RSS/heap bound. Full validation and independent
+acceptance remain unexecuted. No browser, PostgreSQL service, build/typecheck,
+benchmark or native generator has been launched in this bounded code follow-up.
+
+
+## Current bounded-code checkpoint
+
+Final frozen source f3e784a passed **200/200** across8complete offline files,
+0fail/skip/cancel, in5.625s wall time. Its18stream cases are included in200; earlier
+14/14and196/196 repeats are not added. Raw command, exact SHA, file markers and
+log hash are retained in [expanded-focused-offline.json](v2-8g-evidence/expanded-focused-offline.json).
+All sources remain synthetic/injected or loopback fixtures:0real model API calls
+and0local inference. The adapter is byte-identical to the separately inspected
+ec67315; subsequent source delta adds only4test cases.
+
+[Unexecuted scope](v2-8g-evidence/unexecuted-scope.json) lists216remaining inventory
+files:182bulk,26browser/build owners and8PostgreSQL. Full gates (including complete
+model-provider backend coverage), build, typecheck, all50benchmark cells, native/
+visual supplements, empirical retained-memory observation and independent acceptance
+are unexecuted. Exact current leaf counts in unrun files are not asserted. No
+sustained intensive-run quiet qualification was performed; the short resource
+precheck applies only to the small focused cases. No PostgreSQL service was created
+or probed, browser launched, native archive rendered or historical evidence changed.
+Standing BYOK locale was not rerun for8G and is not counted as a new failure/pass.
+
+The code-only follow-up is pushed as an implementation awaiting complete validation,
+not an accepted milestone. Accepted baseline stays0cab854. The separate static
+[source-review summary](v2-8g-evidence/static-source-review.json) explicitly has
+0tests/0edits and no acceptance decision. No remaining audit proposal is authorized.

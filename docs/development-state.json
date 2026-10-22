@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-8F-0cab854.json"
   },
   "implementationHead": {
-    "sha": "ec6731546ddfe8e0a47516b49b7aee5b510ed589",
-    "note": "Frozen V2-8G model-stream resource correction; focused deterministic validation and complete regression/review pending. No live API-backed model or local inference permitted."
+    "sha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+    "note": "V2-8G stream correction with additional caller-abort/processing-deadline coverage; complete acceptance validation and independent acceptance remain unexecuted. No live API-backed model or local inference permitted."
   },
   "activeMilestone": {
     "id": "V2-8G",
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "model-provider",
-      "status": "pending",
+      "status": "unexecuted",
       "evidence": null,
-      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
+      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
+      "status": "unexecuted",
       "evidence": null,
-      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
+      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
     },
     {
       "id": "serial-browser",
-      "status": "pending",
+      "status": "unexecuted",
       "evidence": null,
-      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
+      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
     },
     {
       "id": "postgres-contract",
-      "status": "pending",
+      "status": "unexecuted",
       "evidence": null,
-      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
+      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
     },
     {
       "id": "cross-process-faults",
-      "status": "pending",
+      "status": "unexecuted",
       "evidence": null,
-      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
+      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
     },
     {
       "id": "production-build",
-      "status": "pending",
+      "status": "unexecuted",
       "evidence": null,
-      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
+      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
     },
     {
       "id": "typecheck",
-      "status": "pending",
+      "status": "unexecuted",
       "evidence": null,
-      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
+      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
+      "status": "unexecuted",
       "evidence": null,
-      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
+      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
+      "status": "unexecuted",
       "evidence": null,
-      "reason": "Separate correction gate not executed on frozen V2-8G source; prerequisite evidence is historical only."
+      "reason": "Complete acceptance gate not executed in the bounded code-only follow-up; focused offline coverage is supplemental, not this full gate."
     }
   ],
   "knownBlockers": [],

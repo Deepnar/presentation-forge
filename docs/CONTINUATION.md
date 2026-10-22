@@ -141,7 +141,11 @@ inspection-only report; it executed no tests/models/services and changed no acce
 state. Proposed priorities live in [the roadmap](ROADMAP.md#v2-8-audit-followups).
 The later clarification permits only the separate [V2-8G transport correction](ROADMAP.md#model-provider-stream-resource-bounds)
 using code and deterministic fixtures, with no API-backed model or local inference.
-Read the current handoff/state before work; the audit itself supplies no acceptance.
+The correction is implemented at `f3e784a`, with200/200 focused offline passes;
+[its evaluation](V2-8G-EVAL.md) records216remaining inventory files and all complete
+acceptance gates unexecuted. Source-only review found no confirmed defect but issued
+no acceptance. Read the current handoff/state before work; the audit itself supplies
+no acceptance.
 
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL

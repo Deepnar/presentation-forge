@@ -1,0 +1,53 @@
+{
+  "atUtc": "2026-10-22T12:00:52.624832+00:00",
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "workingTreeProductDelta": [],
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-provider-stream-8g.test.js",
+    "test/v2-provider-8c.test.js",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-conversation-8e.test.js",
+    "test/v2-context-8a.test.js",
+    "test/v2-tools-8a.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/dev-protocol.test.js"
+  ],
+  "files": [
+    "test/v2-provider-stream-8g.test.js",
+    "test/v2-provider-8c.test.js",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-conversation-8e.test.js",
+    "test/v2-context-8a.test.js",
+    "test/v2-tools-8a.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/dev-protocol.test.js"
+  ],
+  "exitCode": 0,
+  "outerWatchdogKilled": false,
+  "wallSeconds": 5.6250536259999535,
+  "totals": {
+    "total": 200,
+    "pass": 200,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8g-evidence/expanded-focused-offline.log",
+  "logSha256": "b79e265a7de7f0e12edde591ee5d024d89d3e1466acbd474e75c4d90f3dfa93a",
+  "liveModelCalls": 0,
+  "localInferenceCalls": 0,
+  "scope": "Injected transports and local fixture HTTP only; no build/browser/export generator/database service.",
+  "note": "Current tests-only extension;18stream cases, with the original14assertions unchanged. No product source delta since ec67315."
+}
