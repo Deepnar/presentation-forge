@@ -1,0 +1,9 @@
+{
+  "id": "native-raster",
+  "implementationSha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 5m node docs/v2-pptx-id-evidence/export-check.mjs",
+  "log": "docs/v2-pptx-id-evidence/logs/native-raster.log",
+  "exitCode": 0,
+  "durationSeconds": 1.4159746279983665,
+  "kind": "command"
+}

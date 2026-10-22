@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/deepnar/Programs/presentations/docs/v2-pptx-id-evidence/archive-check.py", line 21, in <module>
+    assert ob.namelist()==nb.namelist() and all(ob.read(n)==nb.read(n) for n in ob.namelist()),name
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx

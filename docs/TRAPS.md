@@ -1904,3 +1904,12 @@ monotonic-clock cleanup case caught these distinct failures in V2-8F. The separa
 is independently accepted in V2-8G. Fresh-process full-GC samples can demonstrate
 retained response storage across many empty reads; they must not be called peak
 process memory or production latency measurements.
+
+**A native raster does not validate native shape identity.** PptxGenJS 4.0.1
+numbers tables separately from text/shapes/pictures/charts, so one slide can
+contain duplicate `p:cNvPr` IDs while LibreOffice still paints it correctly.
+Audit numeric uniqueness within each generated part, including its root group;
+different slides may reuse IDs. Preserve valid identities and relationships,
+reserve IDs appearing later before allocating repairs, and refuse ambiguous
+connector/animation targets. Raster equality proves visual preservation, not
+Microsoft PowerPoint selection, load/repair or interactive editability.

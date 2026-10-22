@@ -1,0 +1,10 @@
+{
+  "id": "benchmark-50",
+  "implementationSha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 5m node tools/v2-benchmark.mjs --out out/v2-pptx-id-benchmark --raster none",
+  "log": "docs/v2-pptx-id-evidence/logs/benchmark-50.log",
+  "exitCode": 0,
+  "durationSeconds": 0.7153286329994444,
+  "kind": "benchmark",
+  "cells": 50
+}

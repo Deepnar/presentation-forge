@@ -34,6 +34,15 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
+The current explicit request prioritizes the inherited native shape-ID defect.
+**V2-PPTX-ID**, frozen `45c2c4c`, is the bounded canonical-renderer correction;
+read [its evaluation](V2-PPTX-ID-EVAL.md), state and
+[four-gate validation inventory](v2-pptx-id-evidence/validation-plan.json) first.
+The older full-matrix sequences below are historical reproduction guidance,
+not this correction's required inventory. Do not rerun completed evidence
+scripts or overwrite their namespaces; reproduce in fresh paths while preserving
+all historical originals. Existing model-call/local-inference restrictions remain.
+
 The approved [V2-8A foundation](ROADMAP.md#v2-8a-scope-proposal) is independently
 accepted atd4f446c in [the decision](reviews/V2-8A-d4f446c.json).
 State/[evaluation](V2-8A-EVAL.md) index exact source,209-file2393/2393 plus1distinct

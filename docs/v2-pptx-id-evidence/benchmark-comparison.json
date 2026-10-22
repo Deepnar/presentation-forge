@@ -1,0 +1,9 @@
+{
+  "implementationSha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "baseline": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "cells": 50,
+  "allCompilerQualityFieldsUnchanged": true,
+  "counterfactualsAndInvarianceUnchanged": true,
+  "excludedField": "pptxBytes: changed ZIP content reflects corrected IDs; semantic/native payload equivalence audited separately",
+  "compilerAndZipMilliseconds": 515
+}

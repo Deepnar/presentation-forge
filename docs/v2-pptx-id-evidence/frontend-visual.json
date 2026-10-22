@@ -1,0 +1,44 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "command": "node docs/v2-pptx-id-evidence/export-check.mjs; inspect all six native rasters and enlarged left-table detail",
+  "log": "docs/v2-pptx-id-evidence/logs/native-raster.log",
+  "exitCode": 0,
+  "inspected": true,
+  "scope": "Native export rasters only. No browser source changes; no new browser execution or interaction claim.",
+  "evidence": [
+    "docs/v2-pptx-id-evidence/raster-comparison.json",
+    "docs/v2-pptx-id-evidence/archive-comparison.json"
+  ],
+  "images": [
+    {
+      "file": "docs/v2-pptx-id-evidence/images/after-1.png",
+      "sha256": "fbe5f050fb5114be7d999fe3204a7a920b08ec7de42e94fc645d9260c3314f3d"
+    },
+    {
+      "file": "docs/v2-pptx-id-evidence/images/after-2.png",
+      "sha256": "b219ac07d8e8007fa391300de3a15463441731ff1f34716e7799caa688093f8c"
+    },
+    {
+      "file": "docs/v2-pptx-id-evidence/images/after-3.png",
+      "sha256": "a9dd56a616636c2ec71f117aec0bff2964a431e64e7223b3b3fa78dc0d883dbb"
+    },
+    {
+      "file": "docs/v2-pptx-id-evidence/images/before-1.png",
+      "sha256": "fbe5f050fb5114be7d999fe3204a7a920b08ec7de42e94fc645d9260c3314f3d"
+    },
+    {
+      "file": "docs/v2-pptx-id-evidence/images/before-2.png",
+      "sha256": "b219ac07d8e8007fa391300de3a15463441731ff1f34716e7799caa688093f8c"
+    },
+    {
+      "file": "docs/v2-pptx-id-evidence/images/before-3.png",
+      "sha256": "a9dd56a616636c2ec71f117aec0bff2964a431e64e7223b3b3fa78dc0d883dbb"
+    }
+  ],
+  "detailImage": {
+    "file": "docs/v2-pptx-id-evidence/images/left-table-detail.png",
+    "sha256": "ce6e96d177968eb28b1afe3e5dee67091720af0e4082511a96e45130912f9096"
+  }
+}

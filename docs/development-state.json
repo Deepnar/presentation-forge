@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
-    "note": "Native PPTX shape identity correction; scoped verification and independent review pending. No model API/local inference."
+    "note": "Canonical PPTX shape-ID correction:376/376 across19affectedfiles, typecheck,50cells,54nativeparts and3pixel-identical raster pairs; independent review pending."
   },
   "activeMilestone": {
     "id": "V2-PPTX-ID",
     "roadmapRef": "docs/ROADMAP.md#native-pptx-shape-id-uniqueness",
     "evalDoc": "docs/V2-PPTX-ID-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,27 +23,27 @@
   "validation": [
     {
       "id": "native-pptx",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required by the renderer-only correction contract; execution pending."
+      "status": "passed",
+      "evidence": "docs/v2-pptx-id-evidence/native-pptx.json",
+      "reason": "Executed and recorded on frozen source; see bounded gate applicability in V2-PPTX-ID-EVAL.md. Independent review pending."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required by the renderer-only correction contract; execution pending."
+      "status": "passed",
+      "evidence": "docs/v2-pptx-id-evidence/typecheck.json",
+      "reason": "Executed and recorded on frozen source; see bounded gate applicability in V2-PPTX-ID-EVAL.md. Independent review pending."
     },
     {
       "id": "benchmark-50",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required by the renderer-only correction contract; execution pending."
+      "status": "passed",
+      "evidence": "docs/v2-pptx-id-evidence/benchmark-50.json",
+      "reason": "Executed and recorded on frozen source; see bounded gate applicability in V2-PPTX-ID-EVAL.md. Independent review pending."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Required by the renderer-only correction contract; execution pending."
+      "status": "passed",
+      "evidence": "docs/v2-pptx-id-evidence/frontend-visual.json",
+      "reason": "Executed and recorded on frozen source; see bounded gate applicability in V2-PPTX-ID-EVAL.md. Independent review pending."
     }
   ],
   "knownBlockers": [],

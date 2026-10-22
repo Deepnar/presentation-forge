@@ -18,7 +18,9 @@ with zipfile.ZipFile('out/v2-pptx-id-validation/native/before.pptx') as b,zipfil
   elif name=='docProps/core.xml':assert without_times(old)==without_times(new),name
   elif name.endswith('.xlsx'):
    with zipfile.ZipFile(io.BytesIO(old)) as ob,zipfile.ZipFile(io.BytesIO(new)) as nb:
-    assert ob.namelist()==nb.namelist() and all(ob.read(n)==nb.read(n) for n in ob.namelist()),name
+    assert ob.namelist()==nb.namelist(),name
+    for n in ob.namelist():
+     assert (without_times(ob.read(n))==without_times(nb.read(n)) if n=='docProps/core.xml' else ob.read(n)==nb.read(n)),(name,n)
   else:assert old==new,name
   if name.endswith('.rels'):
    owner=posixpath.dirname(posixpath.dirname(name))
@@ -35,6 +37,6 @@ witness='docs/v2-8d-evidence/native/sqlite-openai-compatible/before.pptx'
 assert h(witness)=='17148c07acfc2996588a6e8cc351423d2127f81849cc0cb980528084a55bbf2b'
 rows=json.loads(pathlib.Path('out/v2-pptx-id-validation/historical-hashes.json').read_text())
 assert all(h(r['path'])==r['sha256'] for r in rows)
-result={'implementationSha':plan['implementationSha'],'backend':'in-memory canonical renderer; SQLite saved-export consumers exercised in required tests; no PostgreSQL rerun','beforeSource':'7f4c1e8b97a2e1b7987d9c089910f7323610a41d renderer plus new fixture only','beforeSha256':h('out/v2-pptx-id-validation/native/before.pptx'),'afterSha256':h('out/v2-pptx-id-validation/native/after.pptx'),'partsAudited':len(b.namelist()),'identityParts':records,'allNonIdXmlPreserved':True,'allRelationshipsAndMediaPreserved':True,'nativeChartsAndWorkbooks':2,'historicalOriginalsUnchanged':len(rows),'historicalOriginals':rows,'interactivePowerPointExecuted':False}
+result={'implementationSha':plan['implementationSha'],'backend':'in-memory canonical renderer; SQLite saved-export consumers exercised in required tests; no PostgreSQL rerun','beforeSource':'7f4c1e8b97a2e1b7987d9c089910f7323610a41d renderer plus new fixture only','beforeSha256':h('out/v2-pptx-id-validation/native/before.pptx'),'afterSha256':h('out/v2-pptx-id-validation/native/after.pptx'),'partsAudited':len(b.namelist()),'identityParts':records,'projectionXmlPreservedExceptDuplicateIds':True,'corePropertiesPreservedExceptGeneratedCreatedModifiedTimes':True,'allRelationshipsAndMediaPreserved':True,'nativeChartsAndWorkbooks':2,'historicalOriginalsUnchanged':len(rows),'historicalOriginals':rows,'interactivePowerPointExecuted':False}
 (root/'archive-comparison.json').write_text(json.dumps(result,indent=2)+'\n')
 print(json.dumps({'partsAudited':result['partsAudited'],'historicalOriginalsUnchanged':len(rows),'changedIdentityParts':sum(bool(r['changes']) for r in records)}))

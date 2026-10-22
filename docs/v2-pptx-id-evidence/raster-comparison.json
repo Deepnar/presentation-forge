@@ -1,0 +1,33 @@
+{
+  "implementationSha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "renderMilliseconds": 59.83990399999999,
+  "pptxBytes": 132892,
+  "scenesUnchanged": true,
+  "comparisons": [
+    {
+      "slide": 1,
+      "width": 1467,
+      "height": 825,
+      "changedChannels": 0,
+      "before": "docs/v2-pptx-id-evidence/images/before-1.png",
+      "after": "docs/v2-pptx-id-evidence/images/after-1.png"
+    },
+    {
+      "slide": 2,
+      "width": 1467,
+      "height": 825,
+      "changedChannels": 0,
+      "before": "docs/v2-pptx-id-evidence/images/before-2.png",
+      "after": "docs/v2-pptx-id-evidence/images/after-2.png"
+    },
+    {
+      "slide": 3,
+      "width": 1467,
+      "height": 825,
+      "changedChannels": 0,
+      "before": "docs/v2-pptx-id-evidence/images/before-3.png",
+      "after": "docs/v2-pptx-id-evidence/images/after-3.png"
+    }
+  ],
+  "interactivePowerPointExecuted": false
+}
