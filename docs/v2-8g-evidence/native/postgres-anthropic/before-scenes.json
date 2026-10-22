@@ -1,0 +1,158 @@
+[
+  {
+    "id": "s1",
+    "width": 13.333,
+    "height": 7.5,
+    "background": {
+      "fill": "FFFFFF"
+    },
+    "layoutState": "customized",
+    "elements": [
+      {
+        "id": "text",
+        "kind": "text",
+        "x": 1,
+        "y": 0.5,
+        "w": 10,
+        "h": 1.5,
+        "z": 0,
+        "provenance": "compiler",
+        "semanticRef": "text-block",
+        "customized": true,
+        "paragraphs": [
+          {
+            "align": "left",
+            "runs": [
+              {
+                "text": "Measured ",
+                "size": 24,
+                "family": "Inter",
+                "color": "112233",
+                "bold": true
+              },
+              {
+                "text": "results",
+                "size": 20,
+                "family": "Inter",
+                "color": "445566",
+                "italic": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "chart",
+        "kind": "chart",
+        "x": 1,
+        "y": 2.5,
+        "w": 5,
+        "h": 3.5,
+        "z": 1,
+        "provenance": "compiler",
+        "semanticRef": "chart-block",
+        "chart": {
+          "chartKind": "bar",
+          "categories": [
+            "A",
+            "B"
+          ],
+          "series": [
+            {
+              "name": "Score",
+              "values": [
+                1.25,
+                12.5
+              ]
+            }
+          ],
+          "labels": {
+            "family": "Inter",
+            "size": 12,
+            "color": "778899"
+          }
+        }
+      },
+      {
+        "id": "table",
+        "kind": "table",
+        "x": 7,
+        "y": 2.5,
+        "w": 5,
+        "h": 1.5,
+        "z": 2,
+        "provenance": "compiler",
+        "semanticRef": "table-block",
+        "table": {
+          "header": true,
+          "rows": [
+            [
+              "Cell",
+              "Score"
+            ],
+            [
+              "A",
+              "1.25"
+            ],
+            [
+              "B",
+              "12.5"
+            ]
+          ],
+          "layout": {
+            "rowHeights": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "colWidths": [
+              2.5,
+              2.5
+            ],
+            "headerFill": "EEEEEE",
+            "headerColor": "111111",
+            "headerSize": 14,
+            "headerBold": true,
+            "bodyColor": "222222",
+            "bodySize": 12,
+            "fontFamily": "Inter",
+            "padding": 0.05,
+            "gridColor": "999999"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "s2",
+    "width": 13.333,
+    "height": 7.5,
+    "background": {
+      "fill": "FFFFFF"
+    },
+    "layoutState": "managed",
+    "elements": [
+      {
+        "id": "other",
+        "kind": "text",
+        "x": 1,
+        "y": 1,
+        "w": 8,
+        "h": 2,
+        "z": 0,
+        "provenance": "human",
+        "paragraphs": [
+          {
+            "runs": [
+              {
+                "text": "Unrelated private slide",
+                "size": 24,
+                "family": "Inter"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

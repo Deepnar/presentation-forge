@@ -1,0 +1,27 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: file:///home/deepnar/Programs/presentations/src/agent/model-provider.js:22
+  } catch { throw new Error('Invalid provider transport configuration.'); }
+                  ^
+
+Error: Invalid provider transport configuration.
+    at createModelProvider (file:///home/deepnar/Programs/presentations/src/agent/model-provider.js:22:19)
+    at file:///home/deepnar/Programs/presentations/docs/v2-8g-evidence/stream-resources.mjs:44:20
+
+Node.js v24.16.0
+
+
+1 !== 0
+
+    at file:///home/deepnar/Programs/presentations/docs/v2-8g-evidence/stream-resources.mjs:67:12 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.16.0

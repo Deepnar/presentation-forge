@@ -1,0 +1,12 @@
+npm notice run presentation-forge@0.1.0 dev:protocol
+npm notice run node tools/dev-protocol-check.mjs
+error: schema /validation/0: must have required property 'reason'
+error: schema /validation/1: must have required property 'reason'
+error: schema /validation/2: must have required property 'reason'
+error: schema /validation/3: must have required property 'reason'
+error: schema /validation/4: must have required property 'reason'
+error: schema /validation/5: must have required property 'reason'
+error: schema /validation/6: must have required property 'reason'
+error: schema /validation/7: must have required property 'reason'
+error: schema /validation/8: must have required property 'reason'
+dev-protocol-check: 9 error(s), 0 warning(s)

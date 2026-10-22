@@ -1,0 +1,10 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "exitCode": 1,
+  "errors": 9,
+  "warnings": 0,
+  "classification": "Documentation/state assembly error: required reason strings omitted while setting passed gates. Validator and behavioral tests unchanged.",
+  "correctedFiles": [
+    "docs/development-state.json"
+  ]
+}

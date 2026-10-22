@@ -1,0 +1,39 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "atUtc": "2026-10-22T12:50:21.413997+00:00",
+  "classification": "measurement harness configuration error: 1MiB allowance exceeds accepted 256KiB maximum; no product change",
+  "failedCommand": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "15m",
+    "node",
+    "docs/v2-8g-evidence/stream-resources.mjs"
+  ],
+  "exitCode": 1,
+  "log": "out/v2-8g-validation-20261022/attempts/invalid-resource-fixture/stream-resources.log",
+  "logSha256": "bff5549b3eeb8fa5ecddfba9d4d82e7460d87525ea4f6247966ea69076530d87",
+  "changedSnapshotEntries": [
+    {
+      "path": "docs/v2-8g-evidence/stream-resources.mjs",
+      "beforeSha256": "d563377868d61022da571368455763640627d2a177695188b64b01aa261aa11d",
+      "afterSha256": "c415162d0a052109617f6136c1bddd9cb837e0257dacf2d9ac9878800830bfde"
+    },
+    {
+      "path": "docs/v2-8g-evidence/RUNBOOK.md",
+      "beforeSha256": "b420cce6d4ca316ac309bdc5d95679979c62395a46295409146418f23908b594",
+      "afterSha256": "3883525f7894b04bcd066288e69ee1d4412df6d4a4590a983ded67233a9cfcf7"
+    }
+  ],
+  "scope": "Only current-session owned measurement harness/runbook adjusted; old bytes and original index retained; all historical evidence/original entries unchanged.",
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0
+}

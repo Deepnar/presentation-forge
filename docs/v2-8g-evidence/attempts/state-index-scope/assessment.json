@@ -1,0 +1,7 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "exitCode": 1,
+  "errors": 1,
+  "warnings": 0,
+  "classification": "Evidence grouping error: provider log included extra files beyond the exact four-file gate; all four already executed, dedicated exact-scope rerun required. Validator and test assertions unchanged."
+}

@@ -1,0 +1,113 @@
+TAP version 13
+# Subtest: openai-compatible: canonical read result reaches the next real HTTP exchange
+ok 1 - openai-compatible: canonical read result reaches the next real HTTP exchange
+  ---
+  duration_ms: 75.454747
+  type: 'test'
+  ...
+# Subtest: anthropic: canonical read result reaches the next real HTTP exchange
+ok 2 - anthropic: canonical read result reaches the next real HTTP exchange
+  ---
+  duration_ms: 16.480336
+  type: 'test'
+  ...
+# Subtest: conversation rejects zero exchange allowance before storage or HTTP
+ok 3 - conversation rejects zero exchange allowance before storage or HTTP
+  ---
+  duration_ms: 0.608567
+  type: 'test'
+  ...
+# Subtest: conversation rejects excessive exchange allowance before storage or HTTP
+ok 4 - conversation rejects excessive exchange allowance before storage or HTTP
+  ---
+  duration_ms: 0.303241
+  type: 'test'
+  ...
+# Subtest: conversation rejects invalid tool allowance before storage or HTTP
+ok 5 - conversation rejects invalid tool allowance before storage or HTTP
+  ---
+  duration_ms: 0.360936
+  type: 'test'
+  ...
+# Subtest: conversation rejects fractional output allowance before storage or HTTP
+ok 6 - conversation rejects fractional output allowance before storage or HTTP
+  ---
+  duration_ms: 0.279383
+  type: 'test'
+  ...
+# Subtest: conversation rejects unknown authority metadata before storage or HTTP
+ok 7 - conversation rejects unknown authority metadata before storage or HTTP
+  ---
+  duration_ms: 0.257594
+  type: 'test'
+  ...
+# Subtest: conversation rejects untrusted message history before storage or HTTP
+ok 8 - conversation rejects untrusted message history before storage or HTTP
+  ---
+  duration_ms: 0.258531
+  type: 'test'
+  ...
+# Subtest: conversation rejects layout inside a read before storage or HTTP
+ok 9 - conversation rejects layout inside a read before storage or HTTP
+  ---
+  duration_ms: 0.296531
+  type: 'test'
+  ...
+# Subtest: conversation refuses nested live accessors without invoking them
+ok 10 - conversation refuses nested live accessors without invoking them
+  ---
+  duration_ms: 0.400984
+  type: 'test'
+  ...
+# Subtest: deadline returns while initial storage is pending and late storage cannot issue HTTP
+ok 11 - deadline returns while initial storage is pending and late storage cannot issue HTTP
+  ---
+  duration_ms: 250.157299
+  type: 'test'
+  ...
+# Subtest: the single 120s timer starts before the first storage await
+ok 12 - the single 120s timer starts before the first storage await
+  ---
+  duration_ms: 1.204356
+  type: 'test'
+  ...
+# Subtest: failed provider usage remains unknown and returned trace cannot change after late completion
+ok 13 - failed provider usage remains unknown and returned trace cannot change after late completion
+  ---
+  duration_ms: 2.376675
+  type: 'test'
+  ...
+# Subtest: binding, nested scope and limits are copied before the first asynchronous boundary
+ok 14 - binding, nested scope and limits are copied before the first asynchronous boundary
+  ---
+  duration_ms: 1.939035
+  type: 'test'
+  ...
+# Subtest: openai-compatible: history validates semantic results and actual wire budget
+ok 15 - openai-compatible: history validates semantic results and actual wire budget
+  ---
+  duration_ms: 7.511755
+  type: 'test'
+  ...
+# Subtest: anthropic: history validates semantic results and actual wire budget
+ok 16 - anthropic: history validates semantic results and actual wire budget
+  ---
+  duration_ms: 8.569776
+  type: 'test'
+  ...
+# Subtest: conversation scope and initial reads keep the accepted canonical contract
+ok 17 - conversation scope and initial reads keep the accepted canonical contract
+  ---
+  duration_ms: 2.451391
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 675.438348
+# forge-test-file "test/v2-conversation-8e.test.js"

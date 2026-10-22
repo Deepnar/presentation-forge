@@ -1,0 +1,13 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "command": "Inspect all 115 hash-reconciled current browser/native/SVG captures through 20 contact sheets and full-size risk cases; exact commands in logs/coordinator.json",
+  "log": "docs/v2-8g-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": 115,
+  "maximumCanvasDeltaPx": 0.1717529296875,
+  "largeDeckOpenMs": 1537,
+  "interactivePowerPointExecuted": false
+}

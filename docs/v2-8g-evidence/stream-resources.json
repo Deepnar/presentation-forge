@@ -1,0 +1,410 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "fixtureRuns": 4,
+  "records": [
+    {
+      "command": [
+        "/home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node",
+        "--expose-gc",
+        "/home/deepnar/Programs/presentations/docs/v2-8g-evidence/stream-resources.mjs",
+        "--sample",
+        "openai-compatible",
+        "5000"
+      ],
+      "exitCode": 0,
+      "family": "openai-compatible",
+      "emptyChunks": 5000,
+      "maxResponseBytes": 262144,
+      "durationMs": 11.578758000000022,
+      "fetches": 1,
+      "result": {
+        "ok": true,
+        "outcome": "text"
+      },
+      "observedMaximumDeltaBytes": {
+        "rss": 0,
+        "heapUsed": -77624,
+        "external": 262184,
+        "arrayBuffers": 262144
+      },
+      "samples": [
+        {
+          "phase": "before-exchange",
+          "reads": 0,
+          "rss": 132657152,
+          "heapTotal": 37380096,
+          "heapUsed": 14339488,
+          "external": 10816347,
+          "arrayBuffers": 40293
+        },
+        {
+          "phase": "empty-read",
+          "reads": 1,
+          "rss": 132657152,
+          "heapTotal": 32661504,
+          "heapUsed": 14204816,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "before-payload",
+          "reads": 5000,
+          "rss": 132657152,
+          "heapTotal": 32923648,
+          "heapUsed": 14261864,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "after-exchange",
+          "reads": 5000,
+          "rss": 132657152,
+          "heapTotal": 32923648,
+          "heapUsed": 14192648,
+          "external": 11078531,
+          "arrayBuffers": 40293
+        }
+      ]
+    },
+    {
+      "command": [
+        "/home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node",
+        "--expose-gc",
+        "/home/deepnar/Programs/presentations/docs/v2-8g-evidence/stream-resources.mjs",
+        "--sample",
+        "openai-compatible",
+        "200000"
+      ],
+      "exitCode": 0,
+      "family": "openai-compatible",
+      "emptyChunks": 200000,
+      "maxResponseBytes": 262144,
+      "durationMs": 66.130367,
+      "fetches": 1,
+      "result": {
+        "ok": true,
+        "outcome": "text"
+      },
+      "observedMaximumDeltaBytes": {
+        "rss": 589824,
+        "heapUsed": -56824,
+        "external": 262184,
+        "arrayBuffers": 262144
+      },
+      "samples": [
+        {
+          "phase": "before-exchange",
+          "reads": 0,
+          "rss": 129425408,
+          "heapTotal": 37904384,
+          "heapUsed": 14331880,
+          "external": 10816347,
+          "arrayBuffers": 40293
+        },
+        {
+          "phase": "empty-read",
+          "reads": 1,
+          "rss": 129818624,
+          "heapTotal": 32661504,
+          "heapUsed": 14203288,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "empty-read",
+          "reads": 25000,
+          "rss": 129818624,
+          "heapTotal": 32661504,
+          "heapUsed": 14275056,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "empty-read",
+          "reads": 50000,
+          "rss": 129818624,
+          "heapTotal": 32661504,
+          "heapUsed": 14269312,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "empty-read",
+          "reads": 75000,
+          "rss": 129818624,
+          "heapTotal": 32661504,
+          "heapUsed": 14262032,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "empty-read",
+          "reads": 100000,
+          "rss": 129818624,
+          "heapTotal": 32661504,
+          "heapUsed": 14262224,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "empty-read",
+          "reads": 125000,
+          "rss": 129818624,
+          "heapTotal": 32661504,
+          "heapUsed": 14265480,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "empty-read",
+          "reads": 150000,
+          "rss": 129818624,
+          "heapTotal": 32661504,
+          "heapUsed": 14265720,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "empty-read",
+          "reads": 175000,
+          "rss": 129818624,
+          "heapTotal": 32661504,
+          "heapUsed": 14265912,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "empty-read",
+          "reads": 200000,
+          "rss": 129818624,
+          "heapTotal": 32661504,
+          "heapUsed": 14266416,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "before-payload",
+          "reads": 200000,
+          "rss": 129818624,
+          "heapTotal": 32661504,
+          "heapUsed": 14249432,
+          "external": 11078531,
+          "arrayBuffers": 302437
+        },
+        {
+          "phase": "after-exchange",
+          "reads": 200000,
+          "rss": 130015232,
+          "heapTotal": 32661504,
+          "heapUsed": 14223824,
+          "external": 11078531,
+          "arrayBuffers": 40293
+        }
+      ]
+    },
+    {
+      "command": [
+        "/home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node",
+        "--expose-gc",
+        "/home/deepnar/Programs/presentations/docs/v2-8g-evidence/stream-resources.mjs",
+        "--sample",
+        "anthropic",
+        "5000"
+      ],
+      "exitCode": 0,
+      "family": "anthropic",
+      "emptyChunks": 5000,
+      "maxResponseBytes": 262144,
+      "durationMs": 11.264823000000007,
+      "fetches": 1,
+      "result": {
+        "ok": true,
+        "outcome": "text"
+      },
+      "observedMaximumDeltaBytes": {
+        "rss": 393216,
+        "heapUsed": -78560,
+        "external": 262184,
+        "arrayBuffers": 262144
+      },
+      "samples": [
+        {
+          "phase": "before-exchange",
+          "reads": 0,
+          "rss": 128782336,
+          "heapTotal": 36855808,
+          "heapUsed": 14339504,
+          "external": 10816389,
+          "arrayBuffers": 40335
+        },
+        {
+          "phase": "empty-read",
+          "reads": 1,
+          "rss": 129175552,
+          "heapTotal": 32399360,
+          "heapUsed": 14203872,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "before-payload",
+          "reads": 5000,
+          "rss": 129175552,
+          "heapTotal": 32399360,
+          "heapUsed": 14260944,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "after-exchange",
+          "reads": 5000,
+          "rss": 129175552,
+          "heapTotal": 32661504,
+          "heapUsed": 14193000,
+          "external": 11078573,
+          "arrayBuffers": 40335
+        }
+      ]
+    },
+    {
+      "command": [
+        "/home/deepnar/.local/share/fnm/node-versions/v24.16.0/installation/bin/node",
+        "--expose-gc",
+        "/home/deepnar/Programs/presentations/docs/v2-8g-evidence/stream-resources.mjs",
+        "--sample",
+        "anthropic",
+        "200000"
+      ],
+      "exitCode": 0,
+      "family": "anthropic",
+      "emptyChunks": 200000,
+      "maxResponseBytes": 262144,
+      "durationMs": 73.82358900000003,
+      "fetches": 1,
+      "result": {
+        "ok": true,
+        "outcome": "text"
+      },
+      "observedMaximumDeltaBytes": {
+        "rss": 786432,
+        "heapUsed": -58000,
+        "external": 262184,
+        "arrayBuffers": 262144
+      },
+      "samples": [
+        {
+          "phase": "before-exchange",
+          "reads": 0,
+          "rss": 128692224,
+          "heapTotal": 36855808,
+          "heapUsed": 14326672,
+          "external": 10816389,
+          "arrayBuffers": 40335
+        },
+        {
+          "phase": "empty-read",
+          "reads": 1,
+          "rss": 128692224,
+          "heapTotal": 32923648,
+          "heapUsed": 14191232,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "empty-read",
+          "reads": 25000,
+          "rss": 128692224,
+          "heapTotal": 32923648,
+          "heapUsed": 14262064,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "empty-read",
+          "reads": 50000,
+          "rss": 128692224,
+          "heapTotal": 32923648,
+          "heapUsed": 14268672,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "empty-read",
+          "reads": 75000,
+          "rss": 128692224,
+          "heapTotal": 32923648,
+          "heapUsed": 14261064,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "empty-read",
+          "reads": 100000,
+          "rss": 129478656,
+          "heapTotal": 32923648,
+          "heapUsed": 14264296,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "empty-read",
+          "reads": 125000,
+          "rss": 129478656,
+          "heapTotal": 33185792,
+          "heapUsed": 14264584,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "empty-read",
+          "reads": 150000,
+          "rss": 129478656,
+          "heapTotal": 33185792,
+          "heapUsed": 14264728,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "empty-read",
+          "reads": 175000,
+          "rss": 129478656,
+          "heapTotal": 33185792,
+          "heapUsed": 14264920,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "empty-read",
+          "reads": 200000,
+          "rss": 129478656,
+          "heapTotal": 33185792,
+          "heapUsed": 14265424,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "before-payload",
+          "reads": 200000,
+          "rss": 129478656,
+          "heapTotal": 33185792,
+          "heapUsed": 14248440,
+          "external": 11078573,
+          "arrayBuffers": 302479
+        },
+        {
+          "phase": "after-exchange",
+          "reads": 200000,
+          "rss": 129478656,
+          "heapTotal": 33185792,
+          "heapUsed": 14223968,
+          "external": 11078573,
+          "arrayBuffers": 40335
+        }
+      ]
+    }
+  ],
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0,
+  "method": "Fresh isolated Node process per scenario; accepted 256KiB response allowance; injected reader; full-GC memory observations before, during and after 5,000/200,000 empty chunks, followed by a valid response.",
+  "limitation": "Observed sampled retained memory and RSS only; sampling/GC changes timing. These are not process peak RSS, allocator limits, production percentiles or live-model performance. Functional stream tests separately exercise deadlines and cancellation."
+}

@@ -1,0 +1,106 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "records": [
+    {
+      "source": "docs/v2-7a-evidence/editor-narrow.png",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+      "inspectedBy": "/root",
+      "inspection": "Current complete 7A Chrome run; full-size image inspection."
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-history.png",
+      "sha256": "1f9e5a22437fb326a57264749250cc82e0f952b32237f76eb1e883b6572c26a8",
+      "inspectedBy": "/root",
+      "inspection": "Current complete 7A Chrome run; full-size image inspection."
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+      "sha256": "07d9d7b2171b521d1468d81b90ae32b930dd9d6aa964964f286079194bc93256",
+      "inspectedBy": "/root",
+      "inspection": "Current complete 7A Chrome run; full-size image inspection."
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-chart.png",
+      "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027",
+      "inspectedBy": "/root",
+      "inspection": "Current complete 7A Chrome run; full-size image inspection."
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-table.png",
+      "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9",
+      "inspectedBy": "/root",
+      "inspection": "Current complete 7A Chrome run; full-size image inspection."
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-readonly.png",
+      "sha256": "c9f7548027ee90671b013fea12086786a5070f704c919a85e0c67e0509578a61",
+      "inspectedBy": "/root",
+      "inspection": "Current complete 7A Chrome run; full-size image inspection."
+    },
+    {
+      "source": "docs/v2-7a-evidence/dashboard.png",
+      "sha256": "c512c07c9a86bb769076ca4cf2ea8d220cae929c8902d27310cddf7da1838802",
+      "inspectedBy": "/root",
+      "inspection": "Current complete 7A Chrome run; full-size image inspection."
+    },
+    {
+      "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+      "sha256": "d442c13d0401d96979c8eecdafaf290f551f98a0db5b9ff1834f42d67524a478",
+      "inspectedBy": "/root",
+      "inspection": "Current complete 7A Chrome run; full-size image inspection."
+    }
+  ],
+  "observations": [
+    "Dashboard actions, authentication and history dialog visible; no newly observed dialog overlap or clipping.",
+    "Chart/table data visible on canvas and Saved rev1 states; read-only screen exposes no editing toolbar.",
+    "500px inspector overlays much of the canvas and the toolbar scrolls horizontally; inherited narrow/pan limitations remain, not a new transport regression.",
+    "Wide canvas retains its inherited horizontal overflow, recorded by the existing canvas-hosted measurement."
+  ],
+  "largeDeck": {
+    "project": "p-d4a4d8116653a2553cabe72c",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1537
+  },
+  "canvasChart": {
+    "before": [
+      456,
+      108.25117492675781,
+      719.99169921875,
+      404.9925537109375
+    ],
+    "after": [
+      456,
+      108.20165252685547,
+      719.99169921875,
+      404.9925537109375
+    ],
+    "delta": [
+      0,
+      -0.04952239990234375,
+      0,
+      0
+    ]
+  },
+  "canvasTable": {
+    "before": [
+      456,
+      108.22057342529297,
+      719.99169921875,
+      404.9925537109375
+    ],
+    "after": [
+      456,
+      108.19129180908203,
+      719.99169921875,
+      404.9925537109375
+    ],
+    "delta": [
+      0,
+      -0.0292816162109375,
+      0,
+      0
+    ]
+  },
+  "note": "Early full-size inspection before restoration; final image manifest must verify these hashes. Later full contact/native inspection remains pending."
+}

@@ -1,0 +1,26 @@
+{
+  "id": "model-provider",
+  "kind": "tests",
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "command": "python3 docs/v2-8g-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
+  "log": "docs/v2-8g-evidence/logs/model-provider.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 206,
+    "pass": 206,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-provider-stream-8g.test.js",
+    "test/v2-provider-8c.test.js",
+    "test/v2-provider-durable-8c.test.js",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-provider-run-sqlite-8d.test.js",
+    "test/v2-conversation-8e.test.js",
+    "test/v2-conversation-sqlite-8e.test.js",
+    "test/v2-provider-postgres-8c.test.js"
+  ],
+  "backend": "Both provider families through injected/loopback fixtures and temporary SQLite/owned PostgreSQL durable contracts; repeats overlap the full matrix"
+}

@@ -1,0 +1,4 @@
+npm notice run presentation-forge@0.1.0 dev:protocol
+npm notice run node tools/dev-protocol-check.mjs
+error: model-provider: executed test files do not cover the complete required scope
+dev-protocol-check: 1 error(s), 0 warning(s)

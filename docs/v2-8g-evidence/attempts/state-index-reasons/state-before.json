@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "acceptedBaseline": {
+    "sha": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+    "provenance": "independent-review",
+    "source": "docs/reviews/V2-8F-0cab854.json"
+  },
+  "implementationHead": {
+    "sha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+    "note": "V2-8G exact frozen implementation: complete 224-file/2801-case matrix, build/typecheck/50 cells and native/visual/resource supplements executed; independent acceptance pending. No real model API or local inference."
+  },
+  "activeMilestone": {
+    "id": "V2-8G",
+    "roadmapRef": "docs/ROADMAP.md#model-provider-stream-resource-bounds",
+    "evalDoc": "docs/V2-8G-EVAL.md",
+    "architectureDoc": "docs/V2-8-AGENT-ARCHITECTURE.md",
+    "implementationStatus": "validated",
+    "reviewStatus": "pending",
+    "implementedBy": "/root",
+    "reviewRecord": null,
+    "accepted": false
+  },
+  "validation": [
+    {
+      "id": "model-provider",
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/model-provider.json"
+    },
+    {
+      "id": "non-browser-bulk",
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/non-browser-bulk.json"
+    },
+    {
+      "id": "serial-browser",
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/serial-browser.json"
+    },
+    {
+      "id": "postgres-contract",
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/postgres-contract.json"
+    },
+    {
+      "id": "cross-process-faults",
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/cross-process-faults.json"
+    },
+    {
+      "id": "production-build",
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/production-build.json"
+    },
+    {
+      "id": "typecheck",
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/typecheck.json"
+    },
+    {
+      "id": "benchmark-50",
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/benchmark-50.json"
+    },
+    {
+      "id": "frontend-visual",
+      "status": "passed",
+      "evidence": "docs/v2-8g-evidence/frontend-visual.json"
+    }
+  ],
+  "knownBlockers": [],
+  "standingFailures": [
+    {
+      "id": "byok-locale",
+      "source": "docs/ROADMAP.md#byok-locale-standing-failure"
+    }
+  ],
+  "nextCandidate": {
+    "id": "V2-8 hosted orchestration, shared-search tools and Assistant",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
+  },
+  "docs": {
+    "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
+    "vision": "docs/PRODUCT-VISION.md",
+    "acceptance": "docs/ACCEPTANCE-CRITERIA.md",
+    "decisions": "docs/DECISIONS.md",
+    "continuation": "docs/CONTINUATION.md",
+    "planner": "docs/agents/PLANNER.md",
+    "implementer": "docs/agents/IMPLEMENTER.md",
+    "reviewer": "docs/agents/REVIEWER.md",
+    "roadmap": "docs/ROADMAP.md",
+    "architecture": "docs/ARCHITECTURE.md",
+    "handoff": "docs/HANDOFF.md",
+    "blockers": "docs/BLOCKED.md",
+    "traps": "docs/TRAPS.md"
+  },
+  "updated": "2026-10-22"
+}

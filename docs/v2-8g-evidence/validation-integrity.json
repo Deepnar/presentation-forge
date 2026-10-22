@@ -1,0 +1,47 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "acceptedBaseline": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "primary": {
+    "total": 2801,
+    "pass": 2801,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "distinctNativeSupplements": 4,
+  "exactProviderGate": {
+    "total": 84,
+    "pass": 84,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "overlappingRepeats": {
+    "focused": 196,
+    "resourceQualification": 17,
+    "providerGate": 84
+  },
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "unexecutedInventoryFiles": 0,
+  "fullValidationGatesPassed": 9,
+  "reviewStatus": "pending",
+  "accepted": false,
+  "imagesHashedAndInspected": 115,
+  "sourceIntegrity": "docs/v2-8g-evidence/source-integrity.json",
+  "protocolExitCode": 0,
+  "protocolLog": "docs/v2-8g-evidence/validation-protocol.log",
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0,
+  "ownedService": "Retained for independent review; cleanup pending.",
+  "failedAttempts": [
+    "Prior fail-first product tests and earlier metadata checkpoint retained",
+    "Measurement configuration command exited 1 before provider exchange",
+    "Metadata reason/scope checks failed and were corrected without changing validator/assertions"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "acceptedBaseline": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "continuationEntry": "004e17156b779fb2888cbc5ddd8fb10a640ba221",
+  "harnessHead": "a21c8a30ab3bed6509042bbc85e823cfa280ae4b",
+  "sourceSubtrees": [
+    "packages",
+    "src",
+    "test",
+    "app",
+    "tools",
+    "schema",
+    "themes",
+    "config",
+    "package.json",
+    "package-lock.json"
+  ],
+  "sourceDeltaAfterFreeze": [],
+  "workingTreeSourceDelta": [],
+  "historicalTrackedEvidenceDelta": [],
+  "allTestFileMarkersMatchRecordedCommands": true,
+  "all115ImageHashesVerified": true,
+  "earlyEightFullSizeShellImagesReconciled": true,
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0
+}

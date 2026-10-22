@@ -1,0 +1,13 @@
+{
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "samples": 152,
+  "preJobSamples": 126,
+  "withheldPreJobSamples": 11,
+  "criticalPreJobSamples": 0,
+  "runningSamples": 26,
+  "criticalRunningSamples": 0,
+  "maximumCpuBusyPercent": 53.297472349534814,
+  "maximumBackingStorageBusyPercent": 14.772559062237589,
+  "sustainedQualification": "docs/v2-8g-evidence/sustained-window.json",
+  "limitation": "Global I/O PSI/iowait provenance remains unresolved; unchanged measured CPU/memory/backing-storage thresholds gate every job. Peaks include withheld pre-job observations. No unrelated workload was stopped."
+}

@@ -1,0 +1,77 @@
+{
+  "fixtureRuns": 4,
+  "records": [
+    {
+      "exitCode": 0,
+      "family": "openai-compatible",
+      "emptyChunks": 5000,
+      "maxResponseBytes": 262144,
+      "durationMs": 11.578758000000022,
+      "fetches": 1,
+      "result": {
+        "ok": true,
+        "outcome": "text"
+      },
+      "observedMaximumDeltaBytes": {
+        "rss": 0,
+        "heapUsed": -77624,
+        "external": 262184,
+        "arrayBuffers": 262144
+      }
+    },
+    {
+      "exitCode": 0,
+      "family": "openai-compatible",
+      "emptyChunks": 200000,
+      "maxResponseBytes": 262144,
+      "durationMs": 66.130367,
+      "fetches": 1,
+      "result": {
+        "ok": true,
+        "outcome": "text"
+      },
+      "observedMaximumDeltaBytes": {
+        "rss": 589824,
+        "heapUsed": -56824,
+        "external": 262184,
+        "arrayBuffers": 262144
+      }
+    },
+    {
+      "exitCode": 0,
+      "family": "anthropic",
+      "emptyChunks": 5000,
+      "maxResponseBytes": 262144,
+      "durationMs": 11.264823000000007,
+      "fetches": 1,
+      "result": {
+        "ok": true,
+        "outcome": "text"
+      },
+      "observedMaximumDeltaBytes": {
+        "rss": 393216,
+        "heapUsed": -78560,
+        "external": 262184,
+        "arrayBuffers": 262144
+      }
+    },
+    {
+      "exitCode": 0,
+      "family": "anthropic",
+      "emptyChunks": 200000,
+      "maxResponseBytes": 262144,
+      "durationMs": 73.82358900000003,
+      "fetches": 1,
+      "result": {
+        "ok": true,
+        "outcome": "text"
+      },
+      "observedMaximumDeltaBytes": {
+        "rss": 786432,
+        "heapUsed": -58000,
+        "external": 262184,
+        "arrayBuffers": 262144
+      }
+    }
+  ]
+}
