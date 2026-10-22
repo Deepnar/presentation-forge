@@ -1,0 +1,121 @@
+{
+  "taskEntry": "ee52b50bac2ce5704eda39a89ae959259497f331",
+  "acceptedBaseline": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "comparison": "Task entry to staged final checkpoint; manifest excludes itself.",
+  "changedFilesExcludingManifest": 28,
+  "files": [
+    {
+      "status": "M",
+      "path": "docs/CONTINUATION.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/HANDOFF.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/ROADMAP.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/V2-8-AGENT-ARCHITECTURE.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/V2-8-ARCHITECTURE-GAP-AUDIT.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/V2-8G-EVAL.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/development-state.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/RUNBOOK.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/checkpoint-integrity.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/checkpoint-protocol.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/corrected-stream.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/corrected-stream.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/expanded-focused-offline.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/expanded-focused-offline.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/fail-first-stream.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/fail-first-stream.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/final-focused-offline.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/final-focused-offline.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/focused-offline.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/focused-offline.log"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/focused-resource-precheck.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/static-source-review.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/unexecuted-scope.json"
+    },
+    {
+      "status": "A",
+      "path": "docs/v2-8g-evidence/validation-plan.json"
+    },
+    {
+      "status": "M",
+      "path": "src/agent/model-provider.js"
+    },
+    {
+      "status": "M",
+      "path": "test/dev-protocol.test.js"
+    },
+    {
+      "status": "A",
+      "path": "test/v2-provider-stream-8g.test.js"
+    },
+    {
+      "status": "M",
+      "path": "tools/dev-protocol-check.mjs"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "atUtc": "2026-10-22T12:04:29.855866+00:00",
+  "taskEntry": "ee52b50bac2ce5704eda39a89ae959259497f331",
+  "implementationSha": "f3e784ac6227f46628dc99a54762f6a861eeed64",
+  "acceptedBaseline": "0cab854bce04b862060829812a9ab6ff0b765fd9",
+  "sourceDeltaAfterFreeze": [],
+  "productAdapterDeltaAfterStaticInspection": [],
+  "historicalTrackedEvidenceDelta": [],
+  "focusedResults": {
+    "total": 200,
+    "pass": 200,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "allEightFileMarkersAndLogHashVerified": true,
+  "fullAcceptanceGatesUnexecuted": 9,
+  "accepted": false,
+  "reviewStatus": "pending",
+  "protocolExitCode": 0,
+  "protocolLog": "docs/v2-8g-evidence/checkpoint-protocol.log",
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0,
+  "unexecutedScope": "docs/v2-8g-evidence/unexecuted-scope.json",
+  "note": "Focused deterministic validation and static source inspection do not supply milestone acceptance."
+}
