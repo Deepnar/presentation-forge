@@ -1,0 +1,52 @@
+{
+  "decision": "READY_FOR_POLICY_DECISION",
+  "kind": "planning-review",
+  "reviewer": "/root/native_id_review",
+  "context": "/root/native_id_review",
+  "planAuthor": "/root",
+  "reviewedPlanSha": "9ead920004a6c6b83678ccc25852ad69d05395fe",
+  "productBaseline": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "planningEntrySha": "2e0e40d4007be462c111bc2a0fe38398a048f7ba",
+  "atUtc": "2026-10-22T18:13:43.559162+00:00",
+  "noImplementationApproval": true,
+  "noHumanPolicyApproval": true,
+  "scope": "Read-only readiness review of proposed durable conversation and approval contract; human retention direction remains pending.",
+  "evidence": "docs/reviews/V2-8H-plan-9ead920.md",
+  "plan": "docs/V2-8H-EVAL.md",
+  "humanDecisionRegistry": "docs/ROADMAP.md#assistant-turn-approval-contract",
+  "findings": [],
+  "correctionsVerified": [
+    "Automatic preparation recovery only before any exchange in the entire turn was dispatched; lost continuation after dispatch requires user action without automatic rebilling.",
+    "Exact metadata caps: 4MiB aggregate, 16KiB header, 128 current turns, 128 proposals, 1024 current attempts, in-place decisions, 128 bounded cross-generation settlement slots.",
+    "Required server-issued generation and revision inputs replace indefinite cleared-key tombstones; fixed safe-integer cumulative counters survive clear.",
+    "Clear removes duplicate approved proposal bodies while existing canonical run/history payloads retain their prior policy and are explicitly outside new Assistant content caps.",
+    "Decision replay checks current ownership/generation before returning committed outcomes, ahead of fresh expiry/revision checks.",
+    "Approval+enqueue and cancellation+clear use internal transaction-scoped runtime seams; one composed database-time beforeCommit guard preserves every applicable fence.",
+    "Preparation is at most120s; plan deadline at most20min from submission; approval expiry is min(publication+15min,planDeadline-2min).",
+    "One preparing/awaiting-decision turn per project, expiring preparation lease/fence and turn revision prevent stale-worker publication.",
+    "Storage reservation precedes dispatch and is separate from retained provider output-token admission; terminal usage/status reconciliation cannot be blocked by full admission caps.",
+    "New16000-character visible-reply and128KiB UTF-8 plan caps apply alongside unchanged32000-UTF-16-unit provider acceptance and65536-character plan parser limits.",
+    "Browser authoring and native PowerPoint export qualification are distinguished; existing scene/command/run authority remains singular."
+  ],
+  "sourceDeltaFromProductBaseline": [],
+  "executionCounts": {
+    "tests": 0,
+    "databaseOperations": 0,
+    "providerCalls": 0,
+    "localInference": 0,
+    "services": 0,
+    "builds": 0,
+    "browsers": 0,
+    "benchmarks": 0,
+    "governanceChecks": 0
+  },
+  "verification": "Source/prose and read-only Git inspection only; no implementation behavior was executed or accepted.",
+  "productAcceptanceUnchanged": true,
+  "stateUnchanged": true,
+  "historicalArchivesUnchanged": true,
+  "originalUntrackedPathsUntouched": [
+    ".agents/",
+    "PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md",
+    "PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md"
+  ]
+}
