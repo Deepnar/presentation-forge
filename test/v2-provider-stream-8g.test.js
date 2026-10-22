@@ -101,3 +101,32 @@ for (const family of ['openai-compatible', 'anthropic']) {
     assert.equal(result.ok, true); assert.equal(result.text, 'Café 🧪'); assert.equal(result.outcome, 'text');
   });
 }
+
+for (const family of ['openai-compatible', 'anthropic']) {
+  test(`${family}: caller cancellation fences a non-cooperating late read`, async () => {
+    const { context: ctx } = await context(); let complete, reads = 0, released = 0, cancelled = 0;
+    const controller = new AbortController();
+    const reader = {
+      read() { return ++reads === 1 ? new Promise(resolve => { complete = resolve; }) : Promise.resolve({ done: true }); },
+      cancel: async () => { cancelled++; }, releaseLock() { released++; },
+    };
+    const p = provider(family, async () => ({ ok: true, headers: headers(), body: { getReader: () => reader } }));
+    const pending = p.exchange(ctx, { signal: controller.signal }); await tick();
+    controller.abort(); assert.equal((await pending).code, 'cancelled');
+    complete({ done: false, value: bytes(family) }); await tick();
+    assert.equal(reads, 1); assert.equal(released, 1); assert.ok(cancelled >= 1);
+  });
+
+  test(`${family}: response processing cannot publish success after its deadline`, async t => {
+    const { context: ctx } = await context(); let now = 0;
+    const encoded = bytes(family), parse = JSON.parse;
+    t.mock.method(performance, 'now', () => now);
+    t.mock.method(JSON, 'parse', function (text, ...args) {
+      const value = Reflect.apply(parse, this, [text, ...args]);
+      if (typeof text === 'string' && text.includes('Café 🧪')) now = 100;
+      return value;
+    });
+    const p = provider(family, async () => new Response(encoded, { headers: headers() }), { timeoutMs: 20 });
+    assert.equal((await p.exchange(ctx)).code, 'timeout');
+  });
+}
