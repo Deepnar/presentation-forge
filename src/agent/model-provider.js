@@ -1,4 +1,5 @@
 import { providerProfile, prepareExchange, parseProviderExchange, providerFailure } from '../../packages/agent/provider.ts';
+import { setImmediate as yieldEventLoop } from 'node:timers/promises';
 
 // Credentials live only in this operator-owned transport closure, outside context and trace.
 export function createModelProvider(config, { fetch: request = globalThis.fetch } = {}) {
@@ -38,9 +39,13 @@ export function createModelProvider(config, { fetch: request = globalThis.fetch 
       } catch { return providerFailure('invalid-request'); }
       if (prepared.ok === false) return prepared;
       if (signal?.aborted) return providerFailure('cancelled');
-      const controller = new AbortController();
+      const controller = new AbortController(), deadline = performance.now() + timeoutMs;
       let code = 'timeout', timer, reader;
       let onAbort;
+      const interrupted = () => {
+        if (!controller.signal.aborted && performance.now() >= deadline) controller.abort();
+        return controller.signal.aborted;
+      };
       const aborted = new Promise(resolve => {
         onAbort = () => { code = 'cancelled'; controller.abort(); resolve(providerFailure(code)); };
         signal?.addEventListener('abort', onAbort, { once: true });
@@ -58,6 +63,7 @@ export function createModelProvider(config, { fetch: request = globalThis.fetch 
               ? { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' }
               : { Authorization: `Bearer ${apiKey}` }) }, body: JSON.stringify(body),
           });
+          if (interrupted()) { void response.body?.cancel().catch(() => {}); return providerFailure(code); }
           if (!response.ok) {
             await response.body?.cancel();
             return providerFailure(response.status === 401 || response.status === 403 ? 'unauthorized' : response.status === 429 ? 'rate-limited' : 'provider-unavailable');
@@ -67,23 +73,28 @@ export function createModelProvider(config, { fetch: request = globalThis.fetch 
           const contentType = response.headers.get('content-type')?.split(';')[0].trim().toLowerCase();
           if (contentType !== 'application/json' || !response.body) { await response.body?.cancel(); return providerFailure('invalid-response'); }
           reader = response.body.getReader();
-          const chunks = []; let bytes = 0;
+          const joined = new Uint8Array(maxResponseBytes); let bytes = 0, chunksRead = 0;
           while (true) {
+            if (interrupted()) return providerFailure(code);
+            // Immediate empty reads must not starve the caller's abort or timeout.
+            if (++chunksRead % 64 === 0) { await yieldEventLoop(); if (interrupted()) return providerFailure(code); }
             const { done, value } = await reader.read();
             if (done) break;
             bytes += value.byteLength;
             if (bytes > maxResponseBytes) { await reader.cancel(); return providerFailure('response-too-large'); }
-            chunks.push(value);
+            if (value.byteLength) joined.set(value, bytes - value.byteLength);
           }
-          const joined = new Uint8Array(bytes); let offset = 0;
-          for (const chunk of chunks) { joined.set(chunk, offset); offset += chunk.byteLength; }
-          if (controller.signal.aborted) return providerFailure(code);
+          if (interrupted()) return providerFailure(code);
           let decoded;
-          try { decoded = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(joined)); }
+          try { decoded = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(joined.subarray(0, bytes))); }
           catch { return providerFailure('invalid-response'); }
-          return parseProviderExchange(profile, prepared, decoded);
+          const normalized = parseProviderExchange(profile, prepared, decoded);
+          return interrupted() ? providerFailure(code) : normalized;
         } catch { return providerFailure(controller.signal.aborted ? code : 'provider-unavailable'); }
-        finally { reader?.releaseLock(); }
+        finally {
+          if (controller.signal.aborted) void reader?.cancel().catch(() => {});
+          reader?.releaseLock();
+        }
       })();
       try { return await Promise.race([operation, aborted]); }
       finally {
