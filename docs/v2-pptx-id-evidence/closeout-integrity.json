@@ -1,0 +1,34 @@
+{
+  "implementationSha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "accepted": true,
+  "independentDecision": "docs/reviews/V2-PPTX-ID-45c2c4c.json",
+  "decisionCommit": "7d24aa24f00519bc86c9df1a72b6f5e4deda1b9b",
+  "sourceDeltaAfterAcceptedImplementation": [],
+  "requiredGates": 4,
+  "allPassed": true,
+  "primaryTests": {
+    "total": 376,
+    "pass": 376,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentPrimaryTests": {
+    "total": 271,
+    "pass": 271,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentOverlappingRepeats": 5,
+  "historicalOriginalHashesVerified": 161,
+  "rootImageHashesVerified": 6,
+  "protocolErrors": 0,
+  "protocolWarnings": 0,
+  "noOwnedJobOrServiceRemains": true,
+  "newServiceProvisioned": false,
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0,
+  "interactivePowerPointExecuted": false,
+  "nextFeatureAuthorized": false
+}

@@ -1374,8 +1374,10 @@ paths yet, `packages/` holds the first agent-native primitive:
   unused numeric IDs to later duplicates. Native XML/content/relationships remain
   unchanged; an ambiguous connector/animation shape target refuses export.
   Already-unique archives retain their original bytes. This is generated-output
-  correction, not an imported-PPTX repair service; [validation and review](V2-PPTX-ID-EVAL.md)
-  determine its acceptance. The scene remains the only document authority.
+  correction, not an imported-PPTX repair service; source `45c2c4c` is
+  [independently accepted](reviews/V2-PPTX-ID-45c2c4c.json), with
+  [native/visual preservation evidence](V2-PPTX-ID-EVAL.md). The scene remains
+  the only document authority.
 - `packages/renderer-docx/` — `renderDocx(report, donorBytes, options)
   -> Uint8Array` (strict TS): deterministic OOXML body builders,
   donor-bytes surgery preserving package chrome, pure pagination-text

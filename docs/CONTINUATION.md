@@ -35,7 +35,8 @@ because old eval wording predates review.
 ## Active task and reproduction
 
 The current explicit request prioritizes the inherited native shape-ID defect.
-**V2-PPTX-ID**, frozen `45c2c4c`, is the bounded canonical-renderer correction;
+**V2-PPTX-ID**, frozen `45c2c4c`, is independently accepted in
+[the exact-source decision](reviews/V2-PPTX-ID-45c2c4c.json);
 read [its evaluation](V2-PPTX-ID-EVAL.md), state and
 [four-gate validation inventory](v2-pptx-id-evidence/validation-plan.json) first.
 The older full-matrix sequences below are historical reproduction guidance,

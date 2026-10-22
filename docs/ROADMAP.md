@@ -7242,29 +7242,27 @@ scale); charts structurally exact without axes (V2-4C).
 - [x] V2-4F live scenes — server compiles deck scenes on
   demand; viewer leaves fixtures. (Landed as the V2-4F slice
   and gate entries above.)
-- [ ] Export-validation seam at the PPTX boundary (V2-4 gate
-  P2-4, V2-5 prerequisite) — hand-authored Layer-C scenes
-  sent straight to the raw renderer still drop multi-series
-  pie data silently; the live API is safe (it always
-  compiles), but no future caller should reach the file
-  without the fallback. Refuse or fallback at `renderPptx*`
-  time before editor-driven export exists.
-- [ ] Browser-suite build parallelism (V2-4 gate P2-1,
-  V2-5A audit, V2-5C hang data) — browser CDP gates can time
-  out under full `node --test` parallelism while serial runs
-  stay green. Measured alibi: `vite build` takes 0.4s solo,
-  0.5s doubled, so build contention is NOT the mechanism;
-  prime suspects are LibreOffice CPU hunger and Chrome
-  multiplicity. New signature in V2-5C: a Chrome file wedged
-  75 minutes with a live browser and zero output — every CDP
-  wait has a timeout except `send()` itself, which awaits a
-  matching message id forever; a never-answered dispatch
-  under load hangs the file, not just the test. Fix
-  direction: bound `send()` in `tools/chrome-shot.mjs`
-  (fail-fast with the in-flight expression attached) and/or
-  serialize browser files. Isolate with process-level
-  measurement before locking the wrong resource, ahead of
-  further browser suites.
+- [x] Export-validation seam at the PPTX boundary (V2-4 gate P2-4) — resolved
+  by independently accepted V2-5A `06a0211`, not deferred work. Direct
+  `renderPptx` and its filesystem adapter refuse unsafe multi-series
+  pie/doughnut and invalid/empty native payloads before writing bytes. The full
+  `test/v2-export-preflight-5a.test.js` file passed again in V2-PPTX-ID's 376-case
+  matrix. Later [shape-identity correction](#native-pptx-shape-id-uniqueness)
+  preserves this refusal contract; it does not replace semantic preflight.
+
+  > **Learned.** Caller compilation cannot protect direct scene exporters;
+  > the canonical byte renderer owns loss-prevention checks. This older pending
+  > duplicate entry had survived after its accepted implementation and tests.
+- [ ] Browser-suite parallelism investigation (V2-4 gate P2-1, V2-5A audit,
+  V2-5C hang data). The historical unbounded `send()` diagnosis is resolved:
+  `tools/chrome-shot.mjs` now has a 30-second CDP dispatch timeout with cleanup.
+  Current acceptance uses serial browser files, process watchdogs and no shared
+  Vite-dist build overlap; V2-8G executed all 26 serial files successfully.
+  Retain this isolation strategy. Any later attempt to permit parallel execution
+  must measure process/build/output contention and LibreOffice/Chrome load;
+  the old 0.4s/0.5s build-duration comparison did not rule out shared-output races.
+  This entry does not require new parallelism or another harness rewrite before
+  current bounded serial validation can run.
 
 ### [~] V2-5 real editor, commands, autosave
 
@@ -8074,22 +8072,29 @@ unexplained beyond its observed wrong Delete action; controlled evidence is dist
 
 <a id="native-pptx-shape-id-uniqueness"></a>
 
-- [ ] Audit and correct native PPTX nonvisual shape-ID collisions. Independent
-  V2-8E review found slide 1 IDs `[1,2,3,2]`, with Text 0 and Table 0 sharing ID 2,
-  in both accepted V2-8D and current V2-8E originals. The collision predates the
-  conversation slice; successful rasters do not establish interactive PowerPoint
-  identity or load behavior. Preserve scene geometry, styles, relationships and
-  editable content while making IDs unique within their required scope. Agree a
-  bounded correction contract, cover mixed native objects with an OOXML uniqueness
-  regression and inspect actual exports; record interactive PowerPoint checks as
-  unexecuted when unavailable. This is separate native-renderer work, with no
-  implementation authorized by V2-8E acceptance. The 2026-10-22 explicit request
-  now authorizes the narrow correction, tracked as **V2-PPTX-ID** in
-  [its bounded contract/evaluation](V2-PPTX-ID-EVAL.md). Implementation and
-  independent review are pending; Assistant scope remains separate.
-  [Exact archive/XML evidence](v2-8e-evidence/independent/native-audit.json),
-  [independent finding](reviews/V2-8E-c71d65e.md),
+- [x] Audit and correct canonical native PPTX nonvisual shape-ID collisions.
+  Independently accepted on 2026-10-22 at `45c2c4c`, following the explicit narrow
+  correction request. The inherited V2-8D/E slide 1 IDs `[1,2,3,2]` now export as
+  `[1,2,3,4]`. The canonical renderer reserves all existing IDs, retains first
+  lexical identities and changes only later duplicates; ambiguous shape-target
+  references refuse export. Scene geometry/styles/native content and relationships
+  remain exact. Already-valid archives retain their bytes; old exports are not
+  silently rewritten. [Contract/results](V2-PPTX-ID-EVAL.md),
+  [independent ACCEPT](reviews/V2-PPTX-ID-45c2c4c.json).
+  Required 376/376 across 19 files, typecheck and 50 cells passed; independent 271/271
+  plus 5 overlapping repeats, 54-part audit, 161 original hashes and nine fresh raster
+  pages/six pixel-identical comparisons establish the bounded correction.
+  Interactive Microsoft PowerPoint remains unexecuted; no full interactive-
+  fidelity claim. Legacy generation retains its separate audit below.
+  [Original discovery](v2-8e-evidence/independent/native-audit.json),
   [Open XML identifier reference](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.presentation.nonvisualdrawingproperties.id?view=openxml-3.0.1).
+
+  > **Learned.** Independent table and ordinary-shape counters can collide despite
+  > valid-looking rasters. Reserve later IDs before allocating replacements, and
+  > never guess an ambiguous reference target. Same-archive auditing proves native
+  > payload preservation without fresh-export timestamp exceptions. Look-ahead:
+  > imported/grouped/connected/animated objects must preserve their identity graph;
+  > this generated-output adapter is not a general imported-file repair API.
 
 - [ ] Audit legacy generation exports for the same upstream shape-ID formula.
   V2-PPTX-ID deliberately corrects the canonical scene renderer; legacy
@@ -8974,7 +8979,8 @@ remains inspection-only and every other proposal still needs its own approval.
   qualify capability and data egress before enabling it. Suggestions remain semantic
   proposals; no model coordinates/styles, automatic unlock/reattach, human-format
   destruction or duplicate document. Bound repair rounds and preserve native
-  editability. Existing SVG/native-ID/fit limitations retain their separate entries.
+  editability. Existing SVG/fit limitations and native consumer qualification retain separate
+  entries; the canonical native-ID correction is independently accepted above.
 
 <a id="assistant-live-qualification"></a>
 

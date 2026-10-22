@@ -4,7 +4,7 @@
 
 2026-10-22, branch `v2`, push `origin/v2`. The current request prioritizes the
 inherited duplicate nonvisual shape IDs before any interactive-fidelity claim.
-Accepted baseline: `f3e784ac6227f46628dc99a54762f6a861eeed64`;
+Accepted baseline at entry: `f3e784ac6227f46628dc99a54762f6a861eeed64`;
 task-entry HEAD: `7f4c1e8b97a2e1b7987d9c089910f7323610a41d`.
 
 Correct collisions in the canonical scene-to-PPTX export only. PptxGenJS 4.0.1
@@ -70,11 +70,11 @@ governance authoring error before required regression execution.
 Fail-first: the original implementation failed the mixed-object uniqueness
 assertion with slide 1 IDs `[1,2,3,2]` (0 pass / 1 fail). The unchanged assertion
 plus four focused cases then passed 5/5, 0 fail/skip/cancelled. The first complete
-19-file gate passed375/failed1: its new governance negative expected an inventory
+19-file gate passed 375 / failed 1: its new governance negative expected an inventory
 error where the schema correctly rejected fewer than four gates first. The test
 now checks that schema refusal and separately verifies a wrong inventory with
 four entries. No export assertion or validator requirement was weakened.
-The complete rerun on frozen source passed376/376, 0 fail/skip/cancelled.
+The complete rerun on frozen source passed 376/376, 0 fail/skip/cancelled.
 Raw attempts remain under `v2-pptx-id-evidence/attempts/`.
 
 ### Completed required execution
@@ -84,7 +84,7 @@ Raw attempts remain under `v2-pptx-id-evidence/attempts/`.
 | Full affected export/governance inventory | **376 pass / 0 fail / 0 skip / 0 cancelled**, 19 complete files, serial, 13.439s |
 | Typecheck | exit0, 1.168s |
 | Canonical benchmark | **50 cells**, zero L1 findings, 515ms compiler/ZIP; all compiler quality fields, invariance and counterfactuals match accepted V2-8G |
-| Native archive/raster inspection | 54 parts, all three slide identity scopes unique; three before/after pairs at1467×825, **zero changed pixel channels** |
+| Native archive/raster inspection | 54 parts, all three slide identity scopes unique; three before/after pairs at 1467×825, **zero changed pixel channels** |
 
 [Plan and exact file inventory](v2-pptx-id-evidence/validation-plan.json),
 [test record](v2-pptx-id-evidence/native-pptx.json),
@@ -92,10 +92,10 @@ Raw attempts remain under `v2-pptx-id-evidence/attempts/`.
 [archive audit](v2-pptx-id-evidence/archive-comparison.json),
 [raster comparison](v2-pptx-id-evidence/raster-comparison.json) and
 [inspection manifest](v2-pptx-id-evidence/frontend-visual.json) retain commands,
-logs, hashes and full implementation identity. Tests execute Node24.16.0 against
+logs, hashes and full implementation identity. Tests execute Node 24.16.0 against
 the in-memory renderer and isolated temporary SQLite saved-project consumers;
-PptxGenJS4.0.1, LibreOffice and Poppler produce native exports and rasters.
-The three-slide export measured59.840ms and132,892bytes on this host. These are
+PptxGenJS 4.0.1, LibreOffice and Poppler produce native exports and rasters.
+The three-slide export measured 59.840ms and 132,892 bytes on this host. These are
 single local observations, not production percentiles or an interactive-PowerPoint
 measurement. Repeated focused5/5 overlap the376 primary leaves and are not added.
 
@@ -115,8 +115,8 @@ no clipping, overlap or canvas shift was introduced. **161 existing original
 PPTX archives**, including five canonical outputs and the exact accepted V2-8D
 collision witness, retained their hashes. No historical generator was rerun.
 
-The initial180.448s headroom window averaged4.64% busy CPU,8.13% I/O wait,
-1.24% physical-disk busy and0.071weighted queue, with ample memory and no userspace
+The initial 180.448s headroom window averaged 4.64% busy CPU, 8.13% I/O wait,
+1.24% physical-disk busy and 0.071 weighted queue, with ample memory and no userspace
 blocked threads. Fresh pre-job guards withheld validation during transient disk/
 userspace blocking and then admitted bounded low-priority work. Elevated global
 I/O PSI retains unresolved provenance, recorded in the raw observations. No
@@ -124,11 +124,11 @@ unrelated process was stopped and no service/database was provisioned.
 
 ### Limitations and recommendation
 
-There are **zero unexecuted required checks**. The206 unrelated test files,
+There are **zero unexecuted required checks**. The 206 unrelated test files,
 PostgreSQL/fault/browser suites and UI production build were not rerun for this
 renderer-only correction; [the applicability record](v2-pptx-id-evidence/unexecuted-scope.json)
 does not count them as passing. The separate standing en_IN BYOK failure remains
-historically9pass/1fail and was not rerun. V2-8G's complete matrix remains historical
+historically 9 pass / 1 fail and was not rerun. V2-8G's complete matrix remains historical
 prerequisite evidence, not a new execution on this source.
 
 Interactive Microsoft PowerPoint selection/edit/save/reopen is **unexecuted**.
@@ -137,6 +137,19 @@ canonical renderer creates corrected IDs. Legacy generation identity risk and
 mixed-run SVG fidelity retain separate roadmap entries. No real model API call,
 local inference, search, Assistant feature or content-quality evaluation occurred.
 
-Implementer recommendation: accept the bounded identifier correction after
-independent exact-source review; no full interactive-fidelity claim. Review is
-pending and the accepted baseline remains `f3e784a` until a separate decision.
+Independent decision: **ACCEPT** exact source `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`,
+reviewer/context `/root/native_id_review`, decision commit `7d24aa2`.
+[Decision](reviews/V2-PPTX-ID-45c2c4c.json) and
+[report](reviews/V2-PPTX-ID-45c2c4c.md) record no blocking findings.
+Independent execution passed 271/271, plus 5 explicitly overlapping script-rename
+repeats; it inspected the complete 376-case/typecheck/50-cell root packet.
+Its 54-part same-archive audit preserves 45 non-identity parts byte-for-byte,
+including embedded workbooks with no timestamp exception; only three of nine
+identity parts changed. All first lexical IDs and other XML are exact.
+Nine fresh raster pages produced six zero-difference comparisons. All 161original
+hashes remain unchanged. Single independent render observation 56.505ms; no owned
+job/service remains. Exact source is unchanged through the evidence commits.
+
+State advances the accepted baseline only from that separate decision. This
+acceptance closes the bounded identifier correction and authorizes planning only;
+no full interactive-fidelity claim or dependent feature implementation.
