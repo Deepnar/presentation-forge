@@ -136,6 +136,13 @@ for reproduction; do not run generators against restored canonical originals.
 Read current HANDOFF before any job. Acceptance and cleanup are complete; no next
 feature or parent V2-8 completion is authorized by this decision.
 
+The 2026-10-22 [architecture audit](V2-8-ARCHITECTURE-GAP-AUDIT.md) is a separate
+inspection-only report; it executed no tests/models/services and changed no accepted
+state. Proposed priorities live in [the roadmap](ROADMAP.md#v2-8-audit-followups).
+The later clarification permits only the separate [V2-8G transport correction](ROADMAP.md#model-provider-stream-resource-bounds)
+using code and deterministic fixtures, with no API-backed model or local inference.
+Read the current handoff/state before work; the audit itself supplies no acceptance.
+
 On a shared machine inspect load, free memory and `/proc/pressure/io` and wait for
 an appropriate quiet window. Do not interrupt unrelated work. Forge PostgreSQL
 uses TEST_PG_URL or the isolated default on port 5544; other projects' databases
