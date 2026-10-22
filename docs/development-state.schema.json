@@ -325,17 +325,21 @@
               "id": {
                 "const": "V2-PPTX-ID"
               }
-            }
+            },
+            "type": "object"
           }
-        }
+        },
+        "type": "object"
       },
       "then": {},
       "else": {
         "properties": {
           "validation": {
-            "minItems": 9
+            "minItems": 9,
+            "type": "array"
           }
-        }
+        },
+        "type": "object"
       }
     }
   ]
