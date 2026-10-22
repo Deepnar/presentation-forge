@@ -328,5 +328,7 @@ test('native identity correction has explicit scoped gates and complete export f
   const log = path.join(f.dir, 'docs/output.tap');
   writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-native-ids.test.js"\n', ''));
   hasError(f.check(), /complete required scope/);
-  f.state.validation.pop(); hasError(f.check(), /inventory.*contract/);
+  f.state.validation.pop(); hasError(f.check(), /schema.*fewer than 4/);
+  f.state.validation.push({ id: 'production-build', status: 'unexecuted', evidence: null, reason: 'Wrong gate' });
+  hasError(f.check(), /inventory.*contract/);
 });
