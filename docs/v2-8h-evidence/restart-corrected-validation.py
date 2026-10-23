@@ -26,4 +26,4 @@ for name in ['backup','prior-generated-backup']:
  target=out/name
  assert not target.exists(), 'Preserve existing snapshot link'
  target.symlink_to(original.resolve(),target_is_directory=True)
-raise SystemExit(subprocess.run([sys.executable,'-u',str(root/'run-validation.py')]).returncode)
+raise SystemExit(subprocess.run([sys.executable,'-u',str(root/'run-validation.py'),*sys.argv[1:]]).returncode)

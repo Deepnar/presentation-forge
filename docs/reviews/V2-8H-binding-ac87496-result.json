@@ -1,0 +1,70 @@
+{
+  "implementationSha": "ac8749613bfbd927dab629f479d3d05f10a99195",
+  "sourceSha256": "723f6e44d4ca4757ebd8f2e9547e496489b38b41b1e6ff1e969d3bb16a5dee95",
+  "backend": "serialized transactional in-memory fixture",
+  "mode": "correction verification",
+  "modelApiCalls": 0,
+  "localInference": 0,
+  "databaseOperations": 0,
+  "services": 0,
+  "total": 7,
+  "pass": 7,
+  "results": [
+    {
+      "operation": "read",
+      "ok": true,
+      "aVisibleTurns": 1,
+      "bVisibleTurns": 1,
+      "bRowsUnchanged": true,
+      "providerFixtureCalls": 1
+    },
+    {
+      "operation": "export",
+      "ok": true,
+      "aVisibleTurns": 1,
+      "bVisibleTurns": 1,
+      "bRowsUnchanged": true,
+      "providerFixtureCalls": 1
+    },
+    {
+      "operation": "submit",
+      "ok": true,
+      "aVisibleTurns": 1,
+      "bVisibleTurns": 1,
+      "bRowsUnchanged": true,
+      "providerFixtureCalls": 0
+    },
+    {
+      "operation": "clear",
+      "ok": true,
+      "aVisibleTurns": 0,
+      "bVisibleTurns": 1,
+      "bRowsUnchanged": true,
+      "providerFixtureCalls": 0
+    },
+    {
+      "operation": "cancel",
+      "ok": true,
+      "aVisibleTurns": 1,
+      "bVisibleTurns": 1,
+      "bRowsUnchanged": true,
+      "providerFixtureCalls": 1
+    },
+    {
+      "operation": "decide",
+      "ok": true,
+      "aVisibleTurns": 1,
+      "bVisibleTurns": 1,
+      "bRowsUnchanged": true,
+      "providerFixtureCalls": 1
+    },
+    {
+      "operation": "prepare",
+      "ok": true,
+      "aVisibleTurns": 1,
+      "bVisibleTurns": 1,
+      "bRowsUnchanged": true,
+      "providerFixtureCalls": 1
+    }
+  ]
+}

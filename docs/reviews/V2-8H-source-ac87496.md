@@ -33,7 +33,8 @@ node docs/reviews/V2-8H-binding-probe.mjs
 ```
 
 Exit 0; **7/7 independent in-memory cases passed**, zero failures, in one
-invocation. The [probe](V2-8H-binding-probe.mjs) guards execution by comparing the
+invocation. Exact stdout is [preserved](V2-8H-binding-ac87496-result.json).
+The [probe](V2-8H-binding-probe.mjs) guards execution by comparing the
 actual service source bytes with the named Git commit. Its serialized
 transactional backend applies commit guards and preserves separate project
 rows. It uses the real turn service, canonical scene/tool fixtures and
