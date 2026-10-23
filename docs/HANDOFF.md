@@ -25,3 +25,16 @@ service/job must be recorded by its exact identity and cleaned up after use.
 
 Original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`,
 `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched.
+
+Current validation execution: first `b095bba` attempt stopped after focused76/76
+and bulk2473/2474; retained logs classify/fix its one boundary failure. Source
+`cc3ed18` is frozen for a fresh run in `out/v2-8h-validation-r2`. The owned
+PostgreSQL15.18 container is still running, ID
+`d89e445e3e9ac94460781fbe5932cc35b7ed8752814e1146ee7fa751e467d4b2`,
+name `forge-v28h-validation`, local port5544; authoritative identity is
+`v2-8h-evidence/owned-postgres.json`. Never reuse other PostgreSQL instances.
+The original5725-file/164-PPTX snapshot and five canonical output originals
+remain at `out/v2-8h-validation/{backup,prior-generated-backup}`. The corrected
+launcher verifies the exact service and zero leftover databases, then links those
+snapshots. It must not resnapshot potentially rewritten originals. Full replacement
+execution is awaiting its fresh sustained quiet window; no browser/build is running.
