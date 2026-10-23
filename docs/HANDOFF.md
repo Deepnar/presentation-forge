@@ -17,8 +17,9 @@ The [final fixture review](reviews/V2-8H-source-22e7c97.md) is readiness only.
 Full independent acceptance is pending; never infer it from passing tests.
 
 Current exact-source gates: focused **90/90**, nonbrowser bulk **2481/2481**, zero
-fail/skip/cancel. Chrome7A is running; other serial/PG/build/type/50-cell/visual gates
-remain pending. Current execution is `out/v2-8h-validation-r4`, with the frozen
+fail/skip/cancel. Serial browser/build regression is in progress; at this checkpoint
+15 of26 files passed 99 cases, including fullChrome7A28/28. The complete
+serial/PG/build/type/50-cell/visual gates remain pending. Current execution is `out/v2-8h-validation-r4`, with the frozen
 229-file inventory and all nine gates. It qualified a fresh180.61-second window;
 bulk uses file concurrency1, browser/build files remain strictly serial.
 Do not start a second coordinator or any overlapping build/browser job.
