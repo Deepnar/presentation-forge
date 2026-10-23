@@ -155,6 +155,11 @@ for (const [backend, store] of [
         JSON.stringify(doc.scenes, null, 2) + "\n",
       );
       const slide = await zip.file("ppt/slides/slide1.xml").async("string");
+      for(const part of Object.keys(zip.files).filter(f=>/^ppt\/slides\/slide\d+\.xml$/.test(f))) {
+        const xml=await zip.file(part).async('string');
+        const ids=[...xml.matchAll(/<p:cNvPr\b[^>]*\bid="(\d+)"/g)].map(m=>m[1]);
+        assert.ok(ids.length>0);assert.equal(new Set(ids).size,ids.length,part);
+      }
       assert.ok(slide.includes("<a:tbl>"));
       assert.ok(slide.includes(label === "after" ? "Reviewed " : "Measured "));
       assert.ok(slide.includes("results"));
