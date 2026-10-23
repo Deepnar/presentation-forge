@@ -6,6 +6,9 @@ class Tee:
  def write(self,text):self.stream.write(text);self.stream.flush();self.file.write(text);self.file.flush()
  def flush(self):self.stream.flush();self.file.flush()
 resume='--resume' in sys.argv
+max_new_jobs=int(sys.argv[sys.argv.index('--max-new-jobs')+1]) if '--max-new-jobs' in sys.argv else None
+assert max_new_jobs is None or 1<=max_new_jobs<=8
+new_jobs=0
 sys.stdout=Tee(sys.stdout,(out/'coordinator.log').open('a' if resume else 'w'))
 signal.signal(signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
 plan=json.loads((root/'validation-plan.json').read_text());sha=plan['implementationSha'];runs=json.loads((out/'coordinator.json').read_text()) if resume else []
@@ -20,12 +23,16 @@ start=datetime.datetime.fromisoformat(runs[0]['atUtc']).timestamp() if runs else
 def quiet_window():
  Window().wait()
 def run(name,args,files=None,changes=None,expected=0):
+ global new_jobs
  previous=next((r for r in runs if r['name']==name),None)
  if previous:
   assert previous['exitCode']==expected and previous['files']==(files or [])
   assert pathlib.Path(previous['log']).exists()
   if files and expected==0:assert not any(previous['tests'][k] for k in ['fail','skip','cancelled'])
   print(name,'RETAINED recorded complete execution',previous.get('tests',''),flush=True);return previous
+ if max_new_jobs is not None and new_jobs>=max_new_jobs:
+  (out/'coordinator-yield.json').write_text(json.dumps({'implementationSha':sha,'nextJob':name,'newCompleteJobs':new_jobs,'reason':'Intentional bounded coordinator handoff; no test process active'},indent=2)+'\n')
+  print('COORDINATOR YIELD before',name,'with no active test process',flush=True);raise SystemExit(0)
  quiet_window()
  cmd=['nice','-n','10','ionice','-c','2','-n','7','timeout','--signal=TERM','--kill-after=10s','30m' if name=='bulk' else '15m',*args]
  log=out/(name+'.log');at=datetime.datetime.now(datetime.timezone.utc);print(name,'START',flush=True)
@@ -54,6 +61,7 @@ def run(name,args,files=None,changes=None,expected=0):
  runs.append(record);(out/'coordinator.json').write_text(json.dumps(runs,indent=2)+'\n');print(name,'EXIT',result.returncode,record.get('tests',''),flush=True)
  if result.returncode!=expected or files and expected==0 and (record['tests']['fail'] or record['tests']['skip'] or record['tests']['cancelled']):
   print(text[-7000:],flush=True);raise SystemExit(result.returncode or 1)
+ new_jobs+=1
  return record
 
 def tests(name,selected,concurrency=1,changes=None,expected=0):
@@ -89,4 +97,5 @@ for row in index:
  source=backup/row['path'];assert hashlib.sha256(source.read_bytes()).hexdigest()==row['sha256'];shutil.copy2(source,row['path'])
 assert all(hashlib.sha256(pathlib.Path(row['path']).read_bytes()).hexdigest()==row['sha256'] for row in index)
 (root/'historical-evidence-restoration.json').write_text(json.dumps({'implementationSha':sha,'restored':len(index),'includesIgnoredFiles':True,'allHashesMatch':True},indent=2)+'\n')
+(out/'coordinator-complete.json').write_text(json.dumps({'implementationSha':sha,'runs':len(runs),'orderedExecutionComplete':True},indent=2)+'\n')
 print('Ordered execution complete; visual inspection and independent review remain.',flush=True)

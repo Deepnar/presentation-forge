@@ -1,0 +1,11 @@
+{
+  "implementationSha": "cc3ed185afda2058afa6f9b177f2d497fe30719c",
+  "atUtc": "2026-10-23T10:56:02.925488+00:00",
+  "coordinatorExitCode": 143,
+  "classification": "Environment/process interruption between jobs; cause unresolved. No test job active; completed recorded executions retained.",
+  "lastCompleted": "plate.test",
+  "completedRuns": 5,
+  "cancelledLeafTests": 0,
+  "unexecutedPrimaryFilesAtInterruption": 31,
+  "resumeStrategy": "Bounded batches of at most three new complete jobs; no test filters, changed assertions or concurrent builds."
+}

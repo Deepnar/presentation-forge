@@ -55,3 +55,10 @@ Its snapshots and owned backend were retained. The corrected cc3ed18 run uses
 180-second command, then `restart-corrected-validation.py`. This verifies the exact
 recorded service and zero leftover databases and links the original immutable
 snapshots; it never resnapshots possibly rewritten originals or erases failed logs.
+
+A later coordinator process exited143 between suites, after three complete browser
+files. No leaf was cancelled. Resume is now bounded with `--resume --max-new-jobs 3`
+so each invocation hands off between complete jobs; repeat until
+`coordinator-complete.json` exists. Complete recorded jobs are retained, and every
+new job still gets its resource window, watchdog and unfiltered test command.
+The final assembler still requires the complete 229-file inventory.
