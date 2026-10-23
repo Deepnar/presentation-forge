@@ -178,6 +178,15 @@ export function createTurnService(backend: RuntimeBackend) {
       });
       if(!claimed.ok)return claimed;
       const fence=claimed.meta.fence;
+      async function cancelOutcome(tx:RuntimeTransaction,s:State,now:number) {
+        const t=s.turns.find(t=>t.meta.id===turnId);
+        if(!t || s.header.generation!==g || t.meta.fence!==fence)return refuse('lease-lost');
+        if(t.meta.state==='cancelled')return result(tx,binding,s,t);
+        if(!['submitted','preparing','needs-user-action','expired'].includes(t.meta.state))return refuse('lease-lost');
+        endTurn(t.meta,'cancelled','cancelled',now);touch(s,now);
+        return result(tx,binding,s,t);
+      }
+
       let plan:RunPlan|null=null,hostCode:string|null=null;
       const deny=(code:string):never=>{hostCode=code;return hostFailure(code);};
       const renew=()=>transaction(binding,async(tx,s,now)=>{
@@ -242,6 +251,7 @@ export function createTurnService(backend: RuntimeBackend) {
         const output=await runner.converse(binding,{...base,requestId:turnId,deadlineAt:claimed.meta.prepDeadline},options);
         return await transaction(binding,async(tx,s,now)=>{
           const t=s.turns.find(t=>t.meta.id===turnId);
+          if(options.signal?.aborted)return cancelOutcome(tx,s,now);
           if(!owns(s,t,g,fence,worker,now))return refuse('lease-lost');
           const until=t.meta.lease!.until,deadline=t.meta.prepDeadline;
           tx.beforeCommit(async()=>{
@@ -270,6 +280,12 @@ export function createTurnService(backend: RuntimeBackend) {
           touch(s,now);
           return result(tx,binding,s,t);
         });
+      } catch(error) {
+        // A publication abort rolls back its visible result, then records the
+        // matching turn's cancellation separately so recovery cannot retry it.
+        if((error as {turnCode?:string})?.turnCode==='cancelled')
+          return transaction(binding,cancelOutcome);
+        throw error;
       } finally {clearInterval(timer);}
     },
   });

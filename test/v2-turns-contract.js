@@ -305,9 +305,30 @@ export function cancellationContract(label,setup) {
       query:async(sql,args)=>{const rows=await tx.query(sql,args);if(trip && sql.startsWith('INSERT INTO v2_agent_proposals'))controller.abort();return rows;},
     }))})});
     const sub=await e.service.submit(e.binding,submission(e,e.state));trip=true;
-    await assert.rejects(()=>e.service.prepare(e.binding,{generation:sub.generation,revision:sub.turn.revision,turnId:sub.turn.id,workerId:'host'},e.provider,{signal:controller.signal}),{code:'invalid-document'});
+    const cancelled=await e.service.prepare(e.binding,{generation:sub.generation,revision:sub.turn.revision,turnId:sub.turn.id,workerId:'host'},e.provider,{signal:controller.signal});
+    assert.equal(cancelled.turn.state,'cancelled');
     trip=false;const stored=await rows(e);assert.equal(stored.proposals.length,0);assert.equal(stored.runs.length,1);
     const state=await e.service.read(e.binding);assert.equal(state.accounting.knownAttempts,1);assert.equal(state.turns[0].reply,null);
     assert.equal((await e.service.cancel(e.binding,{generation:state.generation,revision:state.revision,turnId:sub.turn.id})).turn.state,'cancelled');
+  });
+}
+
+export function abortRecoveryContract(label,setup) {
+  for(const point of ['after-claim','during-provider'])test(`${label}: abort ${point} is durable and cannot recover into an automatic retry`,{timeout:30000},async t=>{
+    const controller=new AbortController();let trip=false,clock;
+    const e=await fixture(t,setup,{backend:store=>{
+      const c=clockBackend(store);clock=c.clock;
+      return {withRuntimeTransaction:(binding,job)=>c.backend.withRuntimeTransaction(binding,tx=>job({...tx,
+        query:async(sql,args)=>{const rows=await tx.query(sql,args);if(trip && point==='after-claim' && sql.startsWith('INSERT INTO v2_agent_turns') && JSON.parse(args[4]).state==='preparing')controller.abort();return rows;},
+      }))};
+    },handler:(_req,res)=>{
+      controller.abort();res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify(wire('openai-compatible',[reviewedEdit()])));
+    }});
+    const sub=await e.service.submit(e.binding,submission(e,e.state));trip=true;
+    const done=await e.service.prepare(e.binding,{generation:sub.generation,revision:sub.turn.revision,turnId:sub.turn.id,workerId:'host'},e.provider,{signal:controller.signal});
+    assert.equal(done.turn.state,'cancelled');clock.offset=31000;
+    const state=await e.service.read(e.binding);assert.equal(state.turns[0].state,'cancelled');
+    assert.equal((await e.service.prepare(e.binding,{generation:state.generation,revision:state.turns[0].revision,turnId:sub.turn.id,workerId:'retry'},e.provider)).code,'needs-user-action');
+    assert.equal(e.seen.length,point==='after-claim'?0:1);
   });
 }
