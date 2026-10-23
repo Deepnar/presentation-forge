@@ -1,0 +1,48 @@
+▶ v2 core boundary
+  ✔ detects static, re-export, and literal dynamic imports (5.072252ms)
+  ✔ fails closed on require() and non-literal dynamic import (0.631957ms)
+  ✔ enforces package directions on synthetic edges (0.307237ms)
+  ✔ confines node builtins to the named renderer adapter (0.141823ms)
+  ✔ confines jszip to renderer-docx and the generated PPTX identity normalizer (0.212992ms)
+  ✔ repository packages contain zero boundary violations (188.388927ms)
+✔ v2 core boundary (195.705006ms)
+✔ mixed native objects have unique unsigned nonvisual IDs per slide (80.83193ms)
+✔ collision repair preserves all bytes except later duplicate ID attributes (0.276697ms)
+✔ numeric identity reserves later valid IDs and handles the uint32 boundary (0.434569ms)
+✔ ambiguous animation, build and connector targets refuse instead of guessing (0.240668ms)
+✔ archive correction preserves other parts and leaves a valid archive byte-identical (3.968484ms)
+✔ turn submission requires explicit generation and revision; authority fields refuse (3.950365ms)
+✔ turn admission preserves existing stricter bounds and refuses oversized visible input (0.759584ms)
+✔ submission rejects accessors, executable objects and duplicate scope without invoking them (0.416511ms)
+✔ metadata schemas reject unbounded accounting maps and inconsistent attempt settlements (2.052953ms)
+✔ SQLite: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate (79.706145ms)
+✔ SQLite: host reload approves stored canonical plan once, then replay survives own saved revision (79.280424ms)
+✔ SQLite: all read/export/mutation operations recheck owner; copied export confers no authority (33.602485ms)
+✔ SQLite: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting (38.109785ms)
+✔ SQLite: human save refuses new approval and preserves the pending visible proposal (30.846907ms)
+✔ SQLite: reject is durable/idempotent, removes private plan and permits an explicit fresh turn (34.486559ms)
+✔ SQLite: visible reply overflow settles usage, refuses without truncation and never retries (25.724575ms)
+✔ SQLite: publication loses to clear, but valid late usage settles once across generations (31.002367ms)
+✔ SQLite: database-time expiry removes unapproved body and blocks approval at the boundary (28.421748ms)
+✔ SQLite: precommit approval expiry rolls back both decision and canonical queue (28.547964ms)
+✔ SQLite: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once (31.050191ms)
+✔ SQLite: project deletion cascades all new private and metadata child records (26.424167ms)
+✔ SQLite: escaped controls and multibyte text remain readable/exportable/clearable after publication (68.245034ms)
+✔ SQLite: final publication rechecks preparation lease after row writes; settled usage is preserved (23.959323ms)
+✔ SQLite: turn-count admission refuses before dispatch while read/export/clear remain available (155.574239ms)
+✔ SQLite: private-bytes admission refuses before dispatch while read/export/clear remain available (486.042795ms)
+✔ SQLite: corrupt canonical digest refuses read/approve rather than executing a replacement plan (22.885221ms)
+✔ SQLite: reusing a committed decision key with different expected revisions is a conflict (26.169208ms)
+✔ SQLite: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear (75.342794ms)
+✔ SQLite: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits (43.583081ms)
+✔ SQLite: caller abort during publication row writes cannot commit a visible result (21.953142ms)
+✔ SQLite: abort after-claim is durable and cannot recover into an automatic retry (11.168057ms)
+✔ SQLite: abort during-provider is durable and cannot recover into an automatic retry (17.050161ms)
+ℹ tests 38
+ℹ suites 1
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2702.33764

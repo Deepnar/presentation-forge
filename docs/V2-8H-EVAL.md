@@ -360,3 +360,26 @@ Independent [correction review](reviews/V2-8H-source-b095bba.md) reports
 covering the three abort timings plus replacement generation/fence safety. It
 grants no final acceptance. The historical [HOLD JSON](reviews/V2-8H-source-464c6d7.json)
 remains attached to its rejected source; current implementation acceptance is pending.
+
+### First complete-matrix attempt and boundary correction
+
+On `b095bba`, the focused four-file gate passed **76/76** (SQLite, owned
+PostgreSQL15.18, CLI and real independent-process race/fault cases). Bulk ran
+**2,474** leaves: **2,473 pass, one fail, zero skips/cancellations**, then the
+coordinator stopped before browsers/build. Logs and records are preserved in
+`v2-8h-evidence/prior-attempt-b095bba/`; these are not replacement-source passes.
+
+The one boundary-test leaf reported two violations. The new turn-state module
+introduced filesystem schema reads outside the named Node record adapter: a
+product boundary regression, corrected by lazy fixed-name loading in existing
+`run-state.ts`. The accepted baseline's PPTX identity helper already imports
+JSZip; its stale boundary test policy was corrected with an exact-file exception,
+preserving global bans and the denial in render.ts/core/model/turn service.
+No assertion was weakened to accept general filesystem/archive dependencies.
+
+Replacement source **`cc3ed185afda2058afa6f9b177f2d497fe30719c`** passes 38 affected
+boundary/unit/SQLite/native cases and typecheck. Separate review checked the
+three-file delta and ran 10/10 boundary/unit leaves (no skips/cancellations), with
+no blocker or broad assertion weakening. The full nine-gate matrix will execute
+afresh on this source using the recorded owned PostgreSQL instance and the
+original verified pre-test snapshot. Prior partial results are retained separately.

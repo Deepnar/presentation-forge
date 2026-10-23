@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-PPTX-ID-45c2c4c.json"
   },
   "implementationHead": {
-    "sha": "b095bbac40ccbe0be7a38724f7854b9e8e15d313",
-    "note": "V2-8H cancellation correction after independent source HOLD on464c6d7. Forty focused SQLite/unit/process cases pass; all nine complete exact-source gates and independent acceptance remain pending."
+    "sha": "cc3ed185afda2058afa6f9b177f2d497fe30719c",
+    "note": "V2-8H boundary correction: reuse named Node record schema adapter; exact-file test policy for accepted PPTX ID helper.38 affected cases and10 independent boundary/unit cases pass. Complete replacement-source nine gates and acceptance pending."
   },
   "activeMilestone": {
     "id": "V2-8H",

@@ -48,3 +48,10 @@ remove only the recorded container after verifying its ID/name/image/port. Confi
 port 5544 is closed. Commit bounded evidence, exact totals, inspected visuals,
 performance and limitations. Separate exact-source ACCEPT/HOLD is mandatory; the
 implementer cannot accept or start dependent Assistant work.
+
+The first b095bba attempt stopped at a boundary assertion before any browser work.
+Its snapshots and owned backend were retained. The corrected cc3ed18 run uses
+`FORGE_VALIDATION_OUT=out/v2-8h-validation-r2`: qualify that directory with the same
+180-second command, then `restart-corrected-validation.py`. This verifies the exact
+recorded service and zero leftover databases and links the original immutable
+snapshots; it never resnapshots possibly rewritten originals or erases failed logs.

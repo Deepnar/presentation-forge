@@ -1,5 +1,5 @@
 {
-  "implementationSha": "b095bbac40ccbe0be7a38724f7854b9e8e15d313",
+  "implementationSha": "cc3ed185afda2058afa6f9b177f2d497fe30719c",
   "inventoryIncludesWorkingTreeGovernanceTests": false,
   "inventoryMethod": "Freeze at approved resume: all 225 existing test files plus four V2-8H files; no live models. Browser/build owners remain serial; PostgreSQL files require owned isolated backend. New source corrections require fresh exact-SHA evidence.",
   "bulk": [

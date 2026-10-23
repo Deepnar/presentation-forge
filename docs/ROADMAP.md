@@ -8925,6 +8925,12 @@ local inference. Only that separate transport correction is authorized; this aud
   matching turn's cancellation, with fail-first reproduction and 40 corrected
   unit/SQLite/process passes. Complete exact-source gates and acceptance remain
   pending on the replacement source; no dependent work is authorized.
+  The first `b095bba` matrix attempt passed76 focused and2473/2474 bulk; its one
+  boundary-test failure exposed new schema I/O outside the named adapter and a
+  stale test policy for the accepted PPTX ID helper. Correction `cc3ed18` reuses
+  the adapter and grants JSZip only to that exact helper; affected38 cases and
+  independent10 boundary/unit cases pass. Complete replacement-source gates and
+  final acceptance remain pending; partial prior results remain historical.
   The browser remains the primary editor; native PowerPoint qualification concerns
   exported files and is not a requirement to edit a project in the browser.
   Existing runtime plans/receipts are durable; `converse` histories and WeakMap

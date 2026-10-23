@@ -1,0 +1,470 @@
+TAP version 13
+# Subtest: turn submission requires explicit generation and revision; authority fields refuse
+ok 1 - turn submission requires explicit generation and revision; authority fields refuse
+  ---
+  duration_ms: 3.355512
+  type: 'test'
+  ...
+# Subtest: turn admission preserves existing stricter bounds and refuses oversized visible input
+ok 2 - turn admission preserves existing stricter bounds and refuses oversized visible input
+  ---
+  duration_ms: 0.59974
+  type: 'test'
+  ...
+# Subtest: submission rejects accessors, executable objects and duplicate scope without invoking them
+ok 3 - submission rejects accessors, executable objects and duplicate scope without invoking them
+  ---
+  duration_ms: 0.336676
+  type: 'test'
+  ...
+# Subtest: metadata schemas reject unbounded accounting maps and inconsistent attempt settlements
+ok 4 - metadata schemas reject unbounded accounting maps and inconsistent attempt settlements
+  ---
+  duration_ms: 1.643399
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate
+ok 5 - PostgreSQL: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate
+  ---
+  duration_ms: 126.758294
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: host reload approves stored canonical plan once, then replay survives own saved revision
+ok 6 - PostgreSQL: host reload approves stored canonical plan once, then replay survives own saved revision
+  ---
+  duration_ms: 184.290796
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: all read/export/mutation operations recheck owner; copied export confers no authority
+ok 7 - PostgreSQL: all read/export/mutation operations recheck owner; copied export confers no authority
+  ---
+  duration_ms: 75.261676
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting
+ok 8 - PostgreSQL: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting
+  ---
+  duration_ms: 129.893511
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: human save refuses new approval and preserves the pending visible proposal
+ok 9 - PostgreSQL: human save refuses new approval and preserves the pending visible proposal
+  ---
+  duration_ms: 68.772952
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: reject is durable/idempotent, removes private plan and permits an explicit fresh turn
+ok 10 - PostgreSQL: reject is durable/idempotent, removes private plan and permits an explicit fresh turn
+  ---
+  duration_ms: 102.191091
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: visible reply overflow settles usage, refuses without truncation and never retries
+ok 11 - PostgreSQL: visible reply overflow settles usage, refuses without truncation and never retries
+  ---
+  duration_ms: 34.161129
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: publication loses to clear, but valid late usage settles once across generations
+ok 12 - PostgreSQL: publication loses to clear, but valid late usage settles once across generations
+  ---
+  duration_ms: 38.168873
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: database-time expiry removes unapproved body and blocks approval at the boundary
+ok 13 - PostgreSQL: database-time expiry removes unapproved body and blocks approval at the boundary
+  ---
+  duration_ms: 38.928359
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: precommit approval expiry rolls back both decision and canonical queue
+ok 14 - PostgreSQL: precommit approval expiry rolls back both decision and canonical queue
+  ---
+  duration_ms: 40.029322
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once
+ok 15 - PostgreSQL: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once
+  ---
+  duration_ms: 44.732387
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project deletion cascades all new private and metadata child records
+ok 16 - PostgreSQL: project deletion cascades all new private and metadata child records
+  ---
+  duration_ms: 34.907136
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: escaped controls and multibyte text remain readable/exportable/clearable after publication
+ok 17 - PostgreSQL: escaped controls and multibyte text remain readable/exportable/clearable after publication
+  ---
+  duration_ms: 81.795264
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: final publication rechecks preparation lease after row writes; settled usage is preserved
+ok 18 - PostgreSQL: final publication rechecks preparation lease after row writes; settled usage is preserved
+  ---
+  duration_ms: 33.974502
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: turn-count admission refuses before dispatch while read/export/clear remain available
+ok 19 - PostgreSQL: turn-count admission refuses before dispatch while read/export/clear remain available
+  ---
+  duration_ms: 292.305682
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: private-bytes admission refuses before dispatch while read/export/clear remain available
+ok 20 - PostgreSQL: private-bytes admission refuses before dispatch while read/export/clear remain available
+  ---
+  duration_ms: 609.519909
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: corrupt canonical digest refuses read/approve rather than executing a replacement plan
+ok 21 - PostgreSQL: corrupt canonical digest refuses read/approve rather than executing a replacement plan
+  ---
+  duration_ms: 29.017701
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: reusing a committed decision key with different expected revisions is a conflict
+ok 22 - PostgreSQL: reusing a committed decision key with different expected revisions is a conflict
+  ---
+  duration_ms: 46.330611
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear
+ok 23 - PostgreSQL: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear
+  ---
+  duration_ms: 376.383452
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits
+ok 24 - PostgreSQL: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits
+  ---
+  duration_ms: 87.618684
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: caller abort during publication row writes cannot commit a visible result
+ok 25 - PostgreSQL: caller abort during publication row writes cannot commit a visible result
+  ---
+  duration_ms: 50.060429
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: abort after-claim is durable and cannot recover into an automatic retry
+ok 26 - PostgreSQL: abort after-claim is durable and cannot recover into an automatic retry
+  ---
+  duration_ms: 16.525912
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: abort during-provider is durable and cannot recover into an automatic retry
+ok 27 - PostgreSQL: abort during-provider is durable and cannot recover into an automatic retry
+  ---
+  duration_ms: 21.577368
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: local CLI exposes the same generation-bound submit, read, decision and clear contracts
+ok 28 - PostgreSQL process: local CLI exposes the same generation-bound submit, read, decision and clear contracts
+  ---
+  duration_ms: 2550.794738
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: approve/approve across independent processes links exactly one canonical run
+ok 29 - PostgreSQL process: approve/approve across independent processes links exactly one canonical run
+  ---
+  duration_ms: 566.697024
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: reject/approve across independent processes has one terminal winner
+ok 30 - PostgreSQL process: reject/approve across independent processes has one terminal winner
+  ---
+  duration_ms: 528.91527
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: approve-before crash leaves neither decision/run or exactly one recoverable pair
+ok 31 - PostgreSQL process: approve-before crash leaves neither decision/run or exactly one recoverable pair
+  ---
+  duration_ms: 449.271541
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: approve-after crash leaves neither decision/run or exactly one recoverable pair
+ok 32 - PostgreSQL process: approve-after crash leaves neither decision/run or exactly one recoverable pair
+  ---
+  duration_ms: 416.353749
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: reserve-after crash observes conservative recovery and accounting
+ok 33 - PostgreSQL process: reserve-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 461.431564
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: dispatch-after crash observes conservative recovery and accounting
+ok 34 - PostgreSQL process: dispatch-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 413.865931
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: receipt-after crash observes conservative recovery and accounting
+ok 35 - PostgreSQL process: receipt-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 413.949492
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: reserve-after-read crash observes conservative recovery and accounting
+ok 36 - PostgreSQL process: reserve-after-read crash observes conservative recovery and accounting
+  ---
+  duration_ms: 434.812284
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: publication-before crash never reruns a dispatched provider conversation
+ok 37 - PostgreSQL process: publication-before crash never reruns a dispatched provider conversation
+  ---
+  duration_ms: 407.388603
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: publication-after crash never reruns a dispatched provider conversation
+ok 38 - PostgreSQL process: publication-after crash never reruns a dispatched provider conversation
+  ---
+  duration_ms: 438.712553
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: clear in another process fences pending publication and settles late receipt once
+ok 39 - PostgreSQL process: clear in another process fences pending publication and settles late receipt once
+  ---
+  duration_ms: 819.457502
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: cancel/commit serialization reports committed winner without duplicate edits
+ok 40 - PostgreSQL process: cancel/commit serialization reports committed winner without duplicate edits
+  ---
+  duration_ms: 579.521721
+  type: 'test'
+  ...
+# Subtest: SQLite process: local CLI exposes the same generation-bound submit, read, decision and clear contracts
+ok 41 - SQLite process: local CLI exposes the same generation-bound submit, read, decision and clear contracts
+  ---
+  duration_ms: 2093.826045
+  type: 'test'
+  ...
+# Subtest: SQLite process: approve/approve across independent processes links exactly one canonical run
+ok 42 - SQLite process: approve/approve across independent processes links exactly one canonical run
+  ---
+  duration_ms: 452.211992
+  type: 'test'
+  ...
+# Subtest: SQLite process: reject/approve across independent processes has one terminal winner
+ok 43 - SQLite process: reject/approve across independent processes has one terminal winner
+  ---
+  duration_ms: 449.110236
+  type: 'test'
+  ...
+# Subtest: SQLite process: approve-before crash leaves neither decision/run or exactly one recoverable pair
+ok 44 - SQLite process: approve-before crash leaves neither decision/run or exactly one recoverable pair
+  ---
+  duration_ms: 352.120072
+  type: 'test'
+  ...
+# Subtest: SQLite process: approve-after crash leaves neither decision/run or exactly one recoverable pair
+ok 45 - SQLite process: approve-after crash leaves neither decision/run or exactly one recoverable pair
+  ---
+  duration_ms: 328.059112
+  type: 'test'
+  ...
+# Subtest: SQLite process: reserve-after crash observes conservative recovery and accounting
+ok 46 - SQLite process: reserve-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 336.358028
+  type: 'test'
+  ...
+# Subtest: SQLite process: dispatch-after crash observes conservative recovery and accounting
+ok 47 - SQLite process: dispatch-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 332.916342
+  type: 'test'
+  ...
+# Subtest: SQLite process: receipt-after crash observes conservative recovery and accounting
+ok 48 - SQLite process: receipt-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 324.467242
+  type: 'test'
+  ...
+# Subtest: SQLite process: reserve-after-read crash observes conservative recovery and accounting
+ok 49 - SQLite process: reserve-after-read crash observes conservative recovery and accounting
+  ---
+  duration_ms: 335.337866
+  type: 'test'
+  ...
+# Subtest: SQLite process: publication-before crash never reruns a dispatched provider conversation
+ok 50 - SQLite process: publication-before crash never reruns a dispatched provider conversation
+  ---
+  duration_ms: 394.017059
+  type: 'test'
+  ...
+# Subtest: SQLite process: publication-after crash never reruns a dispatched provider conversation
+ok 51 - SQLite process: publication-after crash never reruns a dispatched provider conversation
+  ---
+  duration_ms: 385.736553
+  type: 'test'
+  ...
+# Subtest: SQLite process: clear in another process fences pending publication and settles late receipt once
+ok 52 - SQLite process: clear in another process fences pending publication and settles late receipt once
+  ---
+  duration_ms: 805.439556
+  type: 'test'
+  ...
+# Subtest: SQLite process: cancel/commit serialization reports committed winner without duplicate edits
+ok 53 - SQLite process: cancel/commit serialization reports committed winner without duplicate edits
+  ---
+  duration_ms: 523.306761
+  type: 'test'
+  ...
+# Subtest: SQLite: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate
+ok 54 - SQLite: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate
+  ---
+  duration_ms: 89.320939
+  type: 'test'
+  ...
+# Subtest: SQLite: host reload approves stored canonical plan once, then replay survives own saved revision
+ok 55 - SQLite: host reload approves stored canonical plan once, then replay survives own saved revision
+  ---
+  duration_ms: 78.270627
+  type: 'test'
+  ...
+# Subtest: SQLite: all read/export/mutation operations recheck owner; copied export confers no authority
+ok 56 - SQLite: all read/export/mutation operations recheck owner; copied export confers no authority
+  ---
+  duration_ms: 29.197567
+  type: 'test'
+  ...
+# Subtest: SQLite: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting
+ok 57 - SQLite: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting
+  ---
+  duration_ms: 34.196611
+  type: 'test'
+  ...
+# Subtest: SQLite: human save refuses new approval and preserves the pending visible proposal
+ok 58 - SQLite: human save refuses new approval and preserves the pending visible proposal
+  ---
+  duration_ms: 24.800924
+  type: 'test'
+  ...
+# Subtest: SQLite: reject is durable/idempotent, removes private plan and permits an explicit fresh turn
+ok 59 - SQLite: reject is durable/idempotent, removes private plan and permits an explicit fresh turn
+  ---
+  duration_ms: 28.430727
+  type: 'test'
+  ...
+# Subtest: SQLite: visible reply overflow settles usage, refuses without truncation and never retries
+ok 60 - SQLite: visible reply overflow settles usage, refuses without truncation and never retries
+  ---
+  duration_ms: 20.661301
+  type: 'test'
+  ...
+# Subtest: SQLite: publication loses to clear, but valid late usage settles once across generations
+ok 61 - SQLite: publication loses to clear, but valid late usage settles once across generations
+  ---
+  duration_ms: 21.03726
+  type: 'test'
+  ...
+# Subtest: SQLite: database-time expiry removes unapproved body and blocks approval at the boundary
+ok 62 - SQLite: database-time expiry removes unapproved body and blocks approval at the boundary
+  ---
+  duration_ms: 28.155526
+  type: 'test'
+  ...
+# Subtest: SQLite: precommit approval expiry rolls back both decision and canonical queue
+ok 63 - SQLite: precommit approval expiry rolls back both decision and canonical queue
+  ---
+  duration_ms: 26.931726
+  type: 'test'
+  ...
+# Subtest: SQLite: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once
+ok 64 - SQLite: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once
+  ---
+  duration_ms: 25.39408
+  type: 'test'
+  ...
+# Subtest: SQLite: project deletion cascades all new private and metadata child records
+ok 65 - SQLite: project deletion cascades all new private and metadata child records
+  ---
+  duration_ms: 21.295199
+  type: 'test'
+  ...
+# Subtest: SQLite: escaped controls and multibyte text remain readable/exportable/clearable after publication
+ok 66 - SQLite: escaped controls and multibyte text remain readable/exportable/clearable after publication
+  ---
+  duration_ms: 58.794329
+  type: 'test'
+  ...
+# Subtest: SQLite: final publication rechecks preparation lease after row writes; settled usage is preserved
+ok 67 - SQLite: final publication rechecks preparation lease after row writes; settled usage is preserved
+  ---
+  duration_ms: 23.695922
+  type: 'test'
+  ...
+# Subtest: SQLite: turn-count admission refuses before dispatch while read/export/clear remain available
+ok 68 - SQLite: turn-count admission refuses before dispatch while read/export/clear remain available
+  ---
+  duration_ms: 149.485553
+  type: 'test'
+  ...
+# Subtest: SQLite: private-bytes admission refuses before dispatch while read/export/clear remain available
+ok 69 - SQLite: private-bytes admission refuses before dispatch while read/export/clear remain available
+  ---
+  duration_ms: 399.551768
+  type: 'test'
+  ...
+# Subtest: SQLite: corrupt canonical digest refuses read/approve rather than executing a replacement plan
+ok 70 - SQLite: corrupt canonical digest refuses read/approve rather than executing a replacement plan
+  ---
+  duration_ms: 20.842768
+  type: 'test'
+  ...
+# Subtest: SQLite: reusing a committed decision key with different expected revisions is a conflict
+ok 71 - SQLite: reusing a committed decision key with different expected revisions is a conflict
+  ---
+  duration_ms: 21.567528
+  type: 'test'
+  ...
+# Subtest: SQLite: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear
+ok 72 - SQLite: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear
+  ---
+  duration_ms: 72.190106
+  type: 'test'
+  ...
+# Subtest: SQLite: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits
+ok 73 - SQLite: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits
+  ---
+  duration_ms: 40.859953
+  type: 'test'
+  ...
+# Subtest: SQLite: caller abort during publication row writes cannot commit a visible result
+ok 74 - SQLite: caller abort during publication row writes cannot commit a visible result
+  ---
+  duration_ms: 20.460671
+  type: 'test'
+  ...
+# Subtest: SQLite: abort after-claim is durable and cannot recover into an automatic retry
+ok 75 - SQLite: abort after-claim is durable and cannot recover into an automatic retry
+  ---
+  duration_ms: 10.33497
+  type: 'test'
+  ...
+# Subtest: SQLite: abort during-provider is durable and cannot recover into an automatic retry
+ok 76 - SQLite: abort during-provider is durable and cannot recover into an automatic retry
+  ---
+  duration_ms: 16.193811
+  type: 'test'
+  ...
+1..76
+# tests 76
+# suites 0
+# pass 76
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 20651.347006
+# forge-test-file "test/v2-turns-8h.test.js"
+# forge-test-file "test/v2-turns-postgres-8h.test.js"
+# forge-test-file "test/v2-turns-process-8h.test.js"
+# forge-test-file "test/v2-turns-sqlite-8h.test.js"
