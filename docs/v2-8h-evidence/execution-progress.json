@@ -1,8 +1,7 @@
 {
   "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-  "atUtc": "2026-10-23T15:42:20.158146+00:00",
-  "status": "partial; no acceptance",
-  "completedRuns": [
+  "complete": false,
+  "runs": [
     {
       "name": "turn-approval-gate",
       "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
@@ -1504,10 +1503,81 @@
         "skip": 0,
         "cancelled": 0
       }
+    },
+    {
+      "name": "v2-projects-6c-faults.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-projects-6c-faults.test.js"
+      ],
+      "files": [
+        "test/v2-projects-6c-faults.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:45:52.964396+00:00",
+      "durationSeconds": 20.62319,
+      "log": "out/v2-8h-validation-r4/v2-projects-6c-faults.test.log",
+      "tests": {
+        "total": 8,
+        "pass": 8,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-import-postgres-7b.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-import-postgres-7b.test.js"
+      ],
+      "files": [
+        "test/v2-import-postgres-7b.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:47:43.886652+00:00",
+      "durationSeconds": 1.366517,
+      "log": "out/v2-8h-validation-r4/v2-import-postgres-7b.test.log",
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
     }
   ],
-  "serialFilesCompleted": 26,
-  "serialPasses": 208,
-  "completeInventoryFiles": 229,
-  "note": "Successful complete runs only. Admission may wait for shared-machine headroom; current coordinator remains authoritative. Focused cases overlap primary matrix."
+  "note": "Only completed recorded jobs; final full-matrix assembly still pending."
 }

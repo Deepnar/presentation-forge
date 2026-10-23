@@ -12,9 +12,35 @@ Branch/push: `v2` / `origin/v2`. Planning-entry HEAD:
 `2e0e40d4007be462c111bc2a0fe38398a048f7ba`. Accepted source:
 `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`, independently accepted in
 [the native-ID decision](reviews/V2-PPTX-ID-45c2c4c.json).
-No product source, schema, database or provider configuration changes in this
-planning phase. No model API, local inference, service, build, browser or benchmark
-execution. Prior accepted tests remain historical, not executions of V2-8H.
+The original planning phase made no product changes or validation runs. Implementation
+and offline validation were subsequently resumed below; prior accepted results remain
+historical and are never substituted for current-source execution.
+
+### Current exact-source checkpoint
+
+Frozen implementation/tests: **`22e7c9749865f3e7c2d62fb8724136e0f19048b0`**.
+Later commits contain documentation and evidence only. The accepted baseline remains
+`45c2c4c`; final independent acceptance is pending.
+
+| Check | Current result |
+|---|---|
+| Four-file turn/approval gate | 90/90 pass; overlaps the complete inventory |
+| Nonbrowser bulk,194 files | 2481/2481 pass |
+| Serial browser/build suites,26 files | 208/208 pass; Chrome7A28/28 |
+| Designated PostgreSQL project/import contracts | 23/23 pass |
+| Designated PostgreSQL cross-process/faults | 19/19 pass |
+| Remaining complete PostgreSQL inventory | In progress; not counted as passed |
+| Production build/typecheck/50-cell benchmark | Pending |
+| Persisted/native scenarios and export inspection | Pending |
+| Browser imagery | 76 captures inspected by root and separate reviewer; no new blocker |
+| Final independent ACCEPT/HOLD and owned-service cleanup | Pending |
+
+Every completed test row has zero failures, skips or cancellations. The focused gate
+and designated PostgreSQL subsets must not be added to the full matrix again.
+The229-file inventory remains the complete primary denominator. No real model API
+or local inference has been used. Two between-job coordinator interruptions retain
+their raw records; neither interrupted an active test or cancelled a leaf case.
+The separate standing BYOK locale probe and complete final totals await execution.
 
 ## Observed boundary
 
