@@ -1,0 +1,269 @@
+TAP version 13
+# Subtest: PostgreSQL: read retains its original project when the caller reuses the binding
+ok 1 - PostgreSQL: read retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 209.723093
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: export retains its original project when the caller reuses the binding
+ok 2 - PostgreSQL: export retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 70.453987
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: submit retains its original project when the caller reuses the binding
+ok 3 - PostgreSQL: submit retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 18.776653
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: clear retains its original project when the caller reuses the binding
+ok 4 - PostgreSQL: clear retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 22.849805
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: cancel retains its original project when the caller reuses the binding
+ok 5 - PostgreSQL: cancel retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 46.29699
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: decide retains its original project when the caller reuses the binding
+ok 6 - PostgreSQL: decide retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 53.093539
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: prepare retains its original project when the caller reuses the binding
+ok 7 - PostgreSQL: prepare retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 44.095057
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate
+ok 8 - PostgreSQL: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate
+  ---
+  duration_ms: 22.509556
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: host reload approves stored canonical plan once, then replay survives own saved revision
+ok 9 - PostgreSQL: host reload approves stored canonical plan once, then replay survives own saved revision
+  ---
+  duration_ms: 54.456417
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: all read/export/mutation operations recheck owner; copied export confers no authority
+ok 10 - PostgreSQL: all read/export/mutation operations recheck owner; copied export confers no authority
+  ---
+  duration_ms: 45.23367
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting
+ok 11 - PostgreSQL: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting
+  ---
+  duration_ms: 77.81886
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: human save refuses new approval and preserves the pending visible proposal
+ok 12 - PostgreSQL: human save refuses new approval and preserves the pending visible proposal
+  ---
+  duration_ms: 73.322975
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: reject is durable/idempotent, removes private plan and permits an explicit fresh turn
+ok 13 - PostgreSQL: reject is durable/idempotent, removes private plan and permits an explicit fresh turn
+  ---
+  duration_ms: 80.825704
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: visible reply overflow settles usage, refuses without truncation and never retries
+ok 14 - PostgreSQL: visible reply overflow settles usage, refuses without truncation and never retries
+  ---
+  duration_ms: 38.701926
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: publication loses to clear, but valid late usage settles once across generations
+ok 15 - PostgreSQL: publication loses to clear, but valid late usage settles once across generations
+  ---
+  duration_ms: 41.949163
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: database-time expiry removes unapproved body and blocks approval at the boundary
+ok 16 - PostgreSQL: database-time expiry removes unapproved body and blocks approval at the boundary
+  ---
+  duration_ms: 63.52253
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: precommit approval expiry rolls back both decision and canonical queue
+ok 17 - PostgreSQL: precommit approval expiry rolls back both decision and canonical queue
+  ---
+  duration_ms: 48.562349
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once
+ok 18 - PostgreSQL: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once
+  ---
+  duration_ms: 38.991163
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project deletion cascades all new private and metadata child records
+ok 19 - PostgreSQL: project deletion cascades all new private and metadata child records
+  ---
+  duration_ms: 26.337583
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: escaped controls and multibyte text remain readable/exportable/clearable after publication
+ok 20 - PostgreSQL: escaped controls and multibyte text remain readable/exportable/clearable after publication
+  ---
+  duration_ms: 73.782104
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: final publication rechecks preparation lease after row writes; settled usage is preserved
+ok 21 - PostgreSQL: final publication rechecks preparation lease after row writes; settled usage is preserved
+  ---
+  duration_ms: 28.652862
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: turn-count admission refuses before dispatch while read/export/clear remain available
+ok 22 - PostgreSQL: turn-count admission refuses before dispatch while read/export/clear remain available
+  ---
+  duration_ms: 233.299919
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: private-bytes admission refuses before dispatch while read/export/clear remain available
+ok 23 - PostgreSQL: private-bytes admission refuses before dispatch while read/export/clear remain available
+  ---
+  duration_ms: 512.91754
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: corrupt canonical digest refuses read/approve rather than executing a replacement plan
+ok 24 - PostgreSQL: corrupt canonical digest refuses read/approve rather than executing a replacement plan
+  ---
+  duration_ms: 32.287727
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: reusing a committed decision key with different expected revisions is a conflict
+ok 25 - PostgreSQL: reusing a committed decision key with different expected revisions is a conflict
+  ---
+  duration_ms: 35.273971
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear
+ok 26 - PostgreSQL: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear
+  ---
+  duration_ms: 222.6718
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits
+ok 27 - PostgreSQL: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits
+  ---
+  duration_ms: 54.999065
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: caller abort during publication row writes cannot commit a visible result
+ok 28 - PostgreSQL: caller abort during publication row writes cannot commit a visible result
+  ---
+  duration_ms: 23.798494
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: abort after-claim is durable and cannot recover into an automatic retry
+ok 29 - PostgreSQL: abort after-claim is durable and cannot recover into an automatic retry
+  ---
+  duration_ms: 9.848905
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: abort during-provider is durable and cannot recover into an automatic retry
+ok 30 - PostgreSQL: abort during-provider is durable and cannot recover into an automatic retry
+  ---
+  duration_ms: 21.605677
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: local CLI exposes the same generation-bound submit, read, decision and clear contracts
+ok 31 - PostgreSQL process: local CLI exposes the same generation-bound submit, read, decision and clear contracts
+  ---
+  duration_ms: 2279.283499
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: approve/approve across independent processes links exactly one canonical run
+ok 32 - PostgreSQL process: approve/approve across independent processes links exactly one canonical run
+  ---
+  duration_ms: 480.749811
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: reject/approve across independent processes has one terminal winner
+ok 33 - PostgreSQL process: reject/approve across independent processes has one terminal winner
+  ---
+  duration_ms: 460.42313
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: approve-before crash leaves neither decision/run or exactly one recoverable pair
+ok 34 - PostgreSQL process: approve-before crash leaves neither decision/run or exactly one recoverable pair
+  ---
+  duration_ms: 401.374618
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: approve-after crash leaves neither decision/run or exactly one recoverable pair
+ok 35 - PostgreSQL process: approve-after crash leaves neither decision/run or exactly one recoverable pair
+  ---
+  duration_ms: 392.033248
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: reserve-after crash observes conservative recovery and accounting
+ok 36 - PostgreSQL process: reserve-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 441.261103
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: dispatch-after crash observes conservative recovery and accounting
+ok 37 - PostgreSQL process: dispatch-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 415.995039
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: receipt-after crash observes conservative recovery and accounting
+ok 38 - PostgreSQL process: receipt-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 383.093217
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: reserve-after-read crash observes conservative recovery and accounting
+ok 39 - PostgreSQL process: reserve-after-read crash observes conservative recovery and accounting
+  ---
+  duration_ms: 413.39838
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: publication-before crash never reruns a dispatched provider conversation
+ok 40 - PostgreSQL process: publication-before crash never reruns a dispatched provider conversation
+  ---
+  duration_ms: 402.492715
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: publication-after crash never reruns a dispatched provider conversation
+ok 41 - PostgreSQL process: publication-after crash never reruns a dispatched provider conversation
+  ---
+  duration_ms: 424.692532
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: clear in another process fences pending publication and settles late receipt once
+ok 42 - PostgreSQL process: clear in another process fences pending publication and settles late receipt once
+  ---
+  duration_ms: 8347.052238
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: cancel/commit serialization reports committed winner without duplicate edits
+ok 43 - PostgreSQL process: cancel/commit serialization reports committed winner without duplicate edits
+  ---
+  duration_ms: 507.411241
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18010.151139
+# forge-test-file "test/v2-turns-postgres-8h.test.js"

@@ -2,7 +2,7 @@
   "id": "postgres-contract",
   "kind": "tests",
   "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-  "command": "Bounded serial coordinator; exact commands retained in execution-progress.json and final logs/coordinator.json",
+  "command": "python3 docs/v2-8h-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8h-evidence/logs/postgres-contract.tap",
   "exitCode": 0,
   "tests": {
@@ -16,5 +16,5 @@
     "test/v2-projects-6c-postgres.test.js",
     "test/v2-import-postgres-7b.test.js"
   ],
-  "backend": "Owned isolated PostgreSQL15.18; designated project/import contracts. Broader nine-file PostgreSQL inventory remains in progress."
+  "backend": "Owned isolated PostgreSQL15.18; designated23-case project/import contract gate"
 }

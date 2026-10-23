@@ -2,7 +2,7 @@
   "id": "serial-browser",
   "kind": "tests",
   "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-  "command": "Bounded serial coordinator; exact commands retained in execution-progress.json and final logs/coordinator.json",
+  "command": "python3 docs/v2-8h-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8h-evidence/logs/serial-browser.tap",
   "exitCode": 0,
   "tests": {
@@ -40,5 +40,5 @@
     "test/v2-project-catalog-chrome-7c.test.js",
     "test/v2-editor-toolbar-chrome-7c.test.js"
   ],
-  "backend": "Temporary SQLite and owned isolated PostgreSQL browser fixtures; strictly serial shared Vite builds"
+  "backend": "Temporary SQLite production routes, isolated PostgreSQL browser suite and standalone fixtures"
 }

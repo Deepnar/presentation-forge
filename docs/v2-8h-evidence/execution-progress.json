@@ -1,6 +1,6 @@
 {
   "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-  "complete": false,
+  "complete": true,
   "runs": [
     {
       "name": "turn-approval-gate",
@@ -1577,7 +1577,389 @@
         "skip": 0,
         "cancelled": 0
       }
+    },
+    {
+      "name": "v2-runtime-postgres-8b.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-runtime-postgres-8b.test.js"
+      ],
+      "files": [
+        "test/v2-runtime-postgres-8b.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:57:17.974816+00:00",
+      "durationSeconds": 11.939423,
+      "log": "out/v2-8h-validation-r4/v2-runtime-postgres-8b.test.log",
+      "tests": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-provider-postgres-8c.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-provider-postgres-8c.test.js"
+      ],
+      "files": [
+        "test/v2-provider-postgres-8c.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:58:05.730470+00:00",
+      "durationSeconds": 0.665292,
+      "log": "out/v2-8h-validation-r4/v2-provider-postgres-8c.test.log",
+      "tests": {
+        "total": 10,
+        "pass": 10,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-provider-run-postgres-8d.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-provider-run-postgres-8d.test.js"
+      ],
+      "files": [
+        "test/v2-provider-run-postgres-8d.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:58:36.489646+00:00",
+      "durationSeconds": 2.67378,
+      "log": "out/v2-8h-validation-r4/v2-provider-run-postgres-8d.test.log",
+      "tests": {
+        "total": 42,
+        "pass": 42,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-conversation-postgres-8e.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-conversation-postgres-8e.test.js"
+      ],
+      "files": [
+        "test/v2-conversation-postgres-8e.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:59:09.256845+00:00",
+      "durationSeconds": 2.167523,
+      "log": "out/v2-8h-validation-r4/v2-conversation-postgres-8e.test.log",
+      "tests": {
+        "total": 38,
+        "pass": 38,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-turns-postgres-8h.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-turns-postgres-8h.test.js"
+      ],
+      "files": [
+        "test/v2-turns-postgres-8h.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T16:00:41.567157+00:00",
+      "durationSeconds": 18.068472,
+      "log": "out/v2-8h-validation-r4/v2-turns-postgres-8h.test.log",
+      "tests": {
+        "total": 43,
+        "pass": 43,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "production-build",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node_modules/.bin/vite",
+        "build",
+        "--config",
+        "app/web/vite.config.js"
+      ],
+      "files": [],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T16:03:00.100972+00:00",
+      "durationSeconds": 0.515682,
+      "log": "out/v2-8h-validation-r4/production-build.log"
+    },
+    {
+      "name": "typecheck",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "files": [],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T16:03:30.703631+00:00",
+      "durationSeconds": 1.165846,
+      "log": "out/v2-8h-validation-r4/typecheck.log"
+    },
+    {
+      "name": "benchmark-50",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "tools/v2-benchmark.mjs",
+        "--out",
+        "out/v2-8h-benchmark",
+        "--raster",
+        "none"
+      ],
+      "files": [],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T16:04:26.639940+00:00",
+      "durationSeconds": 0.767799,
+      "log": "out/v2-8h-validation-r4/benchmark-50.log"
+    },
+    {
+      "name": "headless",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "docs/v2-8h-evidence/headless-check.mjs"
+      ],
+      "files": [],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T16:05:42.635283+00:00",
+      "durationSeconds": 5.125095,
+      "log": "out/v2-8h-validation-r4/headless.log"
+    },
+    {
+      "name": "byok-locale",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/byok-budget.test.js"
+      ],
+      "files": [
+        "test/byok-budget.test.js"
+      ],
+      "exitCode": 1,
+      "atUtc": "2026-10-23T16:06:17.853456+00:00",
+      "durationSeconds": 0.16504,
+      "log": "out/v2-8h-validation-r4/byok-locale.log",
+      "tests": {
+        "total": 10,
+        "pass": 9,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "native-review",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "docs/v2-8h-evidence/native-review.mjs"
+      ],
+      "files": [],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T16:08:46.069195+00:00",
+      "durationSeconds": 1.618198,
+      "log": "out/v2-8h-validation-r4/native-review.log"
+    },
+    {
+      "name": "shell-native",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "docs/v2-8h-evidence/shell-native.mjs"
+      ],
+      "files": [],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T16:09:17.784127+00:00",
+      "durationSeconds": 0.915903,
+      "log": "out/v2-8h-validation-r4/shell-native.log"
     }
   ],
-  "note": "Only completed recorded jobs; final full-matrix assembly still pending."
+  "finalMatrix": "docs/v2-8h-evidence/full-matrix.json",
+  "note": "Complete ordered execution; independent acceptance and owned cleanup remain pending."
 }

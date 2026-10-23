@@ -2,7 +2,7 @@
   "id": "turn-approval",
   "kind": "tests",
   "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-turns-8h.test.js test/v2-turns-sqlite-8h.test.js test/v2-turns-postgres-8h.test.js test/v2-turns-process-8h.test.js",
+  "command": "python3 docs/v2-8h-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8h-evidence/logs/turn-approval.tap",
   "exitCode": 0,
   "tests": {
@@ -18,6 +18,5 @@
     "test/v2-turns-postgres-8h.test.js",
     "test/v2-turns-process-8h.test.js"
   ],
-  "backend": "SQLite and owned PostgreSQL15.18 for focused; isolated domain/SQLite fixtures for bulk",
-  "durationSeconds": 21.840672
+  "backend": "SQLite and owned PostgreSQL; injected/loopback providers, CLI and independent-process races/faults. Overlaps the complete matrix."
 }

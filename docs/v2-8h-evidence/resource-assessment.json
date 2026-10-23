@@ -1,0 +1,1535 @@
+{
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "atUtc": "2026-10-23T16:10:30.004450+00:00",
+  "resourceSamples": "docs/v2-8h-evidence/resource-window.jsonl",
+  "resourceSamplesSha256": "2f0f3aeb7f3d9910057d3c2a725984557908a20ca9b53e9df30506674e02452f",
+  "qualification": {
+    "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+    "sampleSeconds": 180.60524518999955,
+    "samples": 12,
+    "cpuBusyMeanPercent": 12.065885348647427,
+    "cpuIoWaitMeanPercent": 9.854801634576567,
+    "diskMeans": {
+      "nvme0n1": {
+        "busyPercent": 1.4047211072585608,
+        "weightedQueue": 0.06793822619654134
+      }
+    },
+    "freshConsecutiveReadySamples": 12,
+    "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+  },
+  "allRecordedJobAdmissionsVerified": true,
+  "jobAdmissions": [
+    {
+      "job": "turn-approval-gate",
+      "startedAtUtc": "2026-10-23T14:39:48.599946+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T14:39:33.545705+00:00",
+        "2026-10-23T14:39:48.599751+00:00"
+      ],
+      "readySampleSeconds": 30.06674105699858,
+      "lastSampleAgeSeconds": 0.000195
+    },
+    {
+      "job": "bulk",
+      "startedAtUtc": "2026-10-23T14:40:40.549334+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T14:40:25.494788+00:00",
+        "2026-10-23T14:40:40.549128+00:00"
+      ],
+      "readySampleSeconds": 30.053633631003322,
+      "lastSampleAgeSeconds": 0.000206
+    },
+    {
+      "job": "v2-edit-chrome-7a.test",
+      "startedAtUtc": "2026-10-23T14:43:04.746215+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T14:42:49.694052+00:00",
+        "2026-10-23T14:43:04.746008+00:00"
+      ],
+      "readySampleSeconds": 30.051556698999775,
+      "lastSampleAgeSeconds": 0.000207
+    },
+    {
+      "job": "freeform.test",
+      "startedAtUtc": "2026-10-23T14:46:28.138418+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T14:46:13.087713+00:00",
+        "2026-10-23T14:46:28.138219+00:00"
+      ],
+      "readySampleSeconds": 30.046000637998077,
+      "lastSampleAgeSeconds": 0.000199
+    },
+    {
+      "job": "plate.test",
+      "startedAtUtc": "2026-10-23T14:46:59.040243+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T14:46:44.000354+00:00",
+        "2026-10-23T14:46:59.040076+00:00"
+      ],
+      "readySampleSeconds": 30.045334001999436,
+      "lastSampleAgeSeconds": 0.000167
+    },
+    {
+      "job": "v2-edit-chrome-5c.test",
+      "startedAtUtc": "2026-10-23T14:47:59.895755+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T14:47:44.843485+00:00",
+        "2026-10-23T14:47:59.895584+00:00"
+      ],
+      "readySampleSeconds": 30.08967817300072,
+      "lastSampleAgeSeconds": 0.000171
+    },
+    {
+      "job": "v2-edit-chrome-5d.test",
+      "startedAtUtc": "2026-10-23T14:50:00.144480+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T14:49:45.089519+00:00",
+        "2026-10-23T14:50:00.144236+00:00"
+      ],
+      "readySampleSeconds": 30.058472126998822,
+      "lastSampleAgeSeconds": 0.000244
+    },
+    {
+      "job": "v2-edit-chrome-5e.test",
+      "startedAtUtc": "2026-10-23T14:54:55.837483+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T14:54:40.786832+00:00",
+        "2026-10-23T14:54:55.837310+00:00"
+      ],
+      "readySampleSeconds": 30.101200443998096,
+      "lastSampleAgeSeconds": 0.000173
+    },
+    {
+      "job": "v2-edit-chrome-5f.test",
+      "startedAtUtc": "2026-10-23T14:59:17.323140+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T14:59:02.207243+00:00",
+        "2026-10-23T14:59:17.322845+00:00"
+      ],
+      "readySampleSeconds": 30.103819640997244,
+      "lastSampleAgeSeconds": 0.000295
+    },
+    {
+      "job": "v2-edit-chrome-5i.test",
+      "startedAtUtc": "2026-10-23T15:03:47.749292+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:03:32.698187+00:00",
+        "2026-10-23T15:03:47.749106+00:00"
+      ],
+      "readySampleSeconds": 30.104402716999175,
+      "lastSampleAgeSeconds": 0.000186
+    },
+    {
+      "job": "v2-edit-chrome-5j.test",
+      "startedAtUtc": "2026-10-23T15:05:30.392714+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:05:15.293416+00:00",
+        "2026-10-23T15:05:30.392451+00:00"
+      ],
+      "readySampleSeconds": 30.147172098000738,
+      "lastSampleAgeSeconds": 0.000263
+    },
+    {
+      "job": "v2-edit-chrome-5k.test",
+      "startedAtUtc": "2026-10-23T15:07:08.736817+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:06:53.692127+00:00",
+        "2026-10-23T15:07:08.736627+00:00"
+      ],
+      "readySampleSeconds": 30.12160367300021,
+      "lastSampleAgeSeconds": 0.00019
+    },
+    {
+      "job": "v2-edit-chrome-6a.test",
+      "startedAtUtc": "2026-10-23T15:08:55.712186+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:08:40.658593+00:00",
+        "2026-10-23T15:08:55.711965+00:00"
+      ],
+      "readySampleSeconds": 30.047259005998058,
+      "lastSampleAgeSeconds": 0.000221
+    },
+    {
+      "job": "v2-edit-chrome-6b.test",
+      "startedAtUtc": "2026-10-23T15:09:49.807662+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:09:34.754677+00:00",
+        "2026-10-23T15:09:49.807446+00:00"
+      ],
+      "readySampleSeconds": 30.053854155001318,
+      "lastSampleAgeSeconds": 0.000216
+    },
+    {
+      "job": "v2-edit-chrome-6c.test",
+      "startedAtUtc": "2026-10-23T15:11:45.762671+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:11:30.669078+00:00",
+        "2026-10-23T15:11:45.762418+00:00"
+      ],
+      "readySampleSeconds": 30.10806787099864,
+      "lastSampleAgeSeconds": 0.000253
+    },
+    {
+      "job": "v2-edit-chrome-chart.test",
+      "startedAtUtc": "2026-10-23T15:14:31.425477+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:14:16.369244+00:00",
+        "2026-10-23T15:14:31.425274+00:00"
+      ],
+      "readySampleSeconds": 30.103961045002507,
+      "lastSampleAgeSeconds": 0.000203
+    },
+    {
+      "job": "v2-edit-chrome-table.test",
+      "startedAtUtc": "2026-10-23T15:19:10.113467+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:18:55.038247+00:00",
+        "2026-10-23T15:19:10.113186+00:00"
+      ],
+      "readySampleSeconds": 30.09822236099717,
+      "lastSampleAgeSeconds": 0.000281
+    },
+    {
+      "job": "v2-fontgate-4e.test",
+      "startedAtUtc": "2026-10-23T15:20:59.846468+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:20:44.795287+00:00",
+        "2026-10-23T15:20:59.846250+00:00"
+      ],
+      "readySampleSeconds": 30.10425676000159,
+      "lastSampleAgeSeconds": 0.000218
+    },
+    {
+      "job": "v2-fonts-4d.test",
+      "startedAtUtc": "2026-10-23T15:23:05.004969+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:22:49.953011+00:00",
+        "2026-10-23T15:23:05.004769+00:00"
+      ],
+      "readySampleSeconds": 30.100983699001517,
+      "lastSampleAgeSeconds": 0.0002
+    },
+    {
+      "job": "v2-live-chrome-4f.test",
+      "startedAtUtc": "2026-10-23T15:23:35.928377+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:23:20.875728+00:00",
+        "2026-10-23T15:23:35.928196+00:00"
+      ],
+      "readySampleSeconds": 30.054836539999087,
+      "lastSampleAgeSeconds": 0.000181
+    },
+    {
+      "job": "v2-plate-3f5.test",
+      "startedAtUtc": "2026-10-23T15:27:20.316670+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:27:05.269960+00:00",
+        "2026-10-23T15:27:20.316528+00:00"
+      ],
+      "readySampleSeconds": 30.102181237001787,
+      "lastSampleAgeSeconds": 0.000142
+    },
+    {
+      "job": "v2-selection-chrome.test",
+      "startedAtUtc": "2026-10-23T15:28:23.264326+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:28:08.216476+00:00",
+        "2026-10-23T15:28:23.264127+00:00"
+      ],
+      "readySampleSeconds": 30.05032186400058,
+      "lastSampleAgeSeconds": 0.000199
+    },
+    {
+      "job": "v2-viewer-smoke.test",
+      "startedAtUtc": "2026-10-23T15:29:03.510897+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:28:48.455595+00:00",
+        "2026-10-23T15:29:03.510679+00:00"
+      ],
+      "readySampleSeconds": 30.057381145001273,
+      "lastSampleAgeSeconds": 0.000218
+    },
+    {
+      "job": "v2-import-chrome-7b.test",
+      "startedAtUtc": "2026-10-23T15:29:42.316525+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:29:27.250170+00:00",
+        "2026-10-23T15:29:42.316275+00:00"
+      ],
+      "readySampleSeconds": 30.06039849700028,
+      "lastSampleAgeSeconds": 0.00025
+    },
+    {
+      "job": "v2-handoff-chrome-7b.test",
+      "startedAtUtc": "2026-10-23T15:31:59.244048+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:31:44.184854+00:00",
+        "2026-10-23T15:31:59.243790+00:00"
+      ],
+      "readySampleSeconds": 30.13393564800208,
+      "lastSampleAgeSeconds": 0.000258
+    },
+    {
+      "job": "v2-project-covers-chrome-7c.test",
+      "startedAtUtc": "2026-10-23T15:33:31.127299+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:33:16.073164+00:00",
+        "2026-10-23T15:33:31.127121+00:00"
+      ],
+      "readySampleSeconds": 30.102380533997348,
+      "lastSampleAgeSeconds": 0.000178
+    },
+    {
+      "job": "v2-project-catalog-chrome-7c.test",
+      "startedAtUtc": "2026-10-23T15:35:09.264767+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:34:54.209916+00:00",
+        "2026-10-23T15:35:09.264585+00:00"
+      ],
+      "readySampleSeconds": 30.10974583799907,
+      "lastSampleAgeSeconds": 0.000182
+    },
+    {
+      "job": "v2-editor-toolbar-chrome-7c.test",
+      "startedAtUtc": "2026-10-23T15:37:32.031025+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:37:16.981662+00:00",
+        "2026-10-23T15:37:32.030808+00:00"
+      ],
+      "readySampleSeconds": 30.05326986199725,
+      "lastSampleAgeSeconds": 0.000217
+    },
+    {
+      "job": "v2-projects-6c-postgres.test",
+      "startedAtUtc": "2026-10-23T15:38:42.168037+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:38:27.118263+00:00",
+        "2026-10-23T15:38:42.167859+00:00"
+      ],
+      "readySampleSeconds": 30.044314692000626,
+      "lastSampleAgeSeconds": 0.000178
+    },
+    {
+      "job": "v2-projects-6c-concurrency.test",
+      "startedAtUtc": "2026-10-23T15:39:12.935319+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:38:57.884808+00:00",
+        "2026-10-23T15:39:12.935103+00:00"
+      ],
+      "readySampleSeconds": 30.050834319998103,
+      "lastSampleAgeSeconds": 0.000216
+    },
+    {
+      "job": "v2-projects-6c-faults.test",
+      "startedAtUtc": "2026-10-23T15:45:52.964396+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:45:37.916181+00:00",
+        "2026-10-23T15:45:52.964224+00:00"
+      ],
+      "readySampleSeconds": 30.1889488659981,
+      "lastSampleAgeSeconds": 0.000172
+    },
+    {
+      "job": "v2-import-postgres-7b.test",
+      "startedAtUtc": "2026-10-23T15:47:43.886652+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:47:28.843875+00:00",
+        "2026-10-23T15:47:43.886477+00:00"
+      ],
+      "readySampleSeconds": 30.09774763200039,
+      "lastSampleAgeSeconds": 0.000175
+    },
+    {
+      "job": "v2-runtime-postgres-8b.test",
+      "startedAtUtc": "2026-10-23T15:57:17.974816+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:57:02.927756+00:00",
+        "2026-10-23T15:57:17.974650+00:00"
+      ],
+      "readySampleSeconds": 30.098909789998288,
+      "lastSampleAgeSeconds": 0.000166
+    },
+    {
+      "job": "v2-provider-postgres-8c.test",
+      "startedAtUtc": "2026-10-23T15:58:05.730470+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:57:50.682781+00:00",
+        "2026-10-23T15:58:05.730302+00:00"
+      ],
+      "readySampleSeconds": 30.041378278001503,
+      "lastSampleAgeSeconds": 0.000168
+    },
+    {
+      "job": "v2-provider-run-postgres-8d.test",
+      "startedAtUtc": "2026-10-23T15:58:36.489646+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:58:21.442784+00:00",
+        "2026-10-23T15:58:36.489474+00:00"
+      ],
+      "readySampleSeconds": 30.046678694001457,
+      "lastSampleAgeSeconds": 0.000172
+    },
+    {
+      "job": "v2-conversation-postgres-8e.test",
+      "startedAtUtc": "2026-10-23T15:59:09.256845+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T15:58:54.209631+00:00",
+        "2026-10-23T15:59:09.256677+00:00"
+      ],
+      "readySampleSeconds": 30.045439858000464,
+      "lastSampleAgeSeconds": 0.000168
+    },
+    {
+      "job": "v2-turns-postgres-8h.test",
+      "startedAtUtc": "2026-10-23T16:00:41.567157+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T16:00:26.518014+00:00",
+        "2026-10-23T16:00:41.566988+00:00"
+      ],
+      "readySampleSeconds": 30.093019775998982,
+      "lastSampleAgeSeconds": 0.000169
+    },
+    {
+      "job": "production-build",
+      "startedAtUtc": "2026-10-23T16:03:00.100972+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T16:02:45.055878+00:00",
+        "2026-10-23T16:03:00.100816+00:00"
+      ],
+      "readySampleSeconds": 30.10268204699969,
+      "lastSampleAgeSeconds": 0.000156
+    },
+    {
+      "job": "typecheck",
+      "startedAtUtc": "2026-10-23T16:03:30.703631+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T16:03:15.662979+00:00",
+        "2026-10-23T16:03:30.703455+00:00"
+      ],
+      "readySampleSeconds": 30.0461599429982,
+      "lastSampleAgeSeconds": 0.000176
+    },
+    {
+      "job": "benchmark-50",
+      "startedAtUtc": "2026-10-23T16:04:26.639940+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T16:04:11.587562+00:00",
+        "2026-10-23T16:04:26.639755+00:00"
+      ],
+      "readySampleSeconds": 30.045858180001233,
+      "lastSampleAgeSeconds": 0.000185
+    },
+    {
+      "job": "headless",
+      "startedAtUtc": "2026-10-23T16:05:42.635283+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T16:05:27.588244+00:00",
+        "2026-10-23T16:05:42.635122+00:00"
+      ],
+      "readySampleSeconds": 30.092369452999264,
+      "lastSampleAgeSeconds": 0.000161
+    },
+    {
+      "job": "byok-locale",
+      "startedAtUtc": "2026-10-23T16:06:17.853456+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T16:06:02.807626+00:00",
+        "2026-10-23T16:06:17.853307+00:00"
+      ],
+      "readySampleSeconds": 30.04676960999859,
+      "lastSampleAgeSeconds": 0.000149
+    },
+    {
+      "job": "native-review",
+      "startedAtUtc": "2026-10-23T16:08:46.069195+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T16:08:31.023520+00:00",
+        "2026-10-23T16:08:46.069015+00:00"
+      ],
+      "readySampleSeconds": 30.094211891999294,
+      "lastSampleAgeSeconds": 0.00018
+    },
+    {
+      "job": "shell-native",
+      "startedAtUtc": "2026-10-23T16:09:17.784127+00:00",
+      "precedingReadyAtUtc": [
+        "2026-10-23T16:09:02.734007+00:00",
+        "2026-10-23T16:09:17.783929+00:00"
+      ],
+      "readySampleSeconds": 30.046426111999608,
+      "lastSampleAgeSeconds": 0.000198
+    }
+  ],
+  "environment": {
+    "node": "v24.16.0",
+    "platform": "Linux-7.2.8-1-cachyos-x86_64-with-glibc2.44",
+    "logicalCpuCount": 24,
+    "backend": "Owned isolated PostgreSQL15.18 at127.0.0.1:5544; temporary SQLite stores"
+  },
+  "allSamples": {
+    "samples": 298,
+    "sampleSeconds": 4484.302077320994,
+    "cpuBusyPercent": {
+      "minimum": 7.768268597761685,
+      "maximum": 80.4633119652241
+    },
+    "cpuBusyDurationWeightedMeanPercent": 25.255108515154507,
+    "cpuIoWaitPercent": {
+      "minimum": 1.0672623479771655,
+      "maximum": 11.139931010508864
+    },
+    "availableGiB": {
+      "minimum": 33.209571838378906,
+      "maximum": 40.747928619384766
+    },
+    "pressureSomeAvg10": {
+      "cpu": {
+        "minimum": 0.0,
+        "maximum": 16.58
+      },
+      "memory": {
+        "minimum": 0.0,
+        "maximum": 0.19
+      },
+      "io": {
+        "minimum": 16.48,
+        "maximum": 52.98
+      }
+    },
+    "devices": {
+      "nvme0n1": {
+        "busyPercent": {
+          "minimum": 0.2989648169216793,
+          "maximum": 29.265931459645795
+        },
+        "weightedQueue": {
+          "minimum": 0.008437451499789616,
+          "maximum": 1.603729592815475
+        },
+        "inflight": {
+          "minimum": 0,
+          "maximum": 61
+        }
+      }
+    },
+    "criticalSamples": 0,
+    "samplesWithUserspaceBlockedThreads": 3
+  },
+  "phases": {
+    "pre-job": {
+      "samples": 259,
+      "sampleSeconds": 3898.0898440279852,
+      "cpuBusyPercent": {
+        "minimum": 7.768268597761685,
+        "maximum": 80.4633119652241
+      },
+      "cpuBusyDurationWeightedMeanPercent": 25.344825502032474,
+      "cpuIoWaitPercent": {
+        "minimum": 1.0672623479771655,
+        "maximum": 11.139931010508864
+      },
+      "availableGiB": {
+        "minimum": 33.209571838378906,
+        "maximum": 40.747928619384766
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.0,
+          "maximum": 16.58
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.19
+        },
+        "io": {
+          "minimum": 16.48,
+          "maximum": 52.98
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 0.2989648169216793,
+            "maximum": 26.64807480509097
+          },
+          "weightedQueue": {
+            "minimum": 0.008437451499789616,
+            "maximum": 1.603729592815475
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 2
+    },
+    "running:bulk": {
+      "samples": 7,
+      "sampleSeconds": 105.33178571000099,
+      "cpuBusyPercent": {
+        "minimum": 13.250068624759813,
+        "maximum": 19.141493573404198
+      },
+      "cpuBusyDurationWeightedMeanPercent": 16.190736873125427,
+      "cpuIoWaitPercent": {
+        "minimum": 7.97145209991765,
+        "maximum": 10.190114068441064
+      },
+      "availableGiB": {
+        "minimum": 39.17779541015625,
+        "maximum": 40.05599594116211
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 32.45,
+          "maximum": 37.9
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 1.4882198614810442,
+            "maximum": 2.0984061012137367
+          },
+          "weightedQueue": {
+            "minimum": 0.03640823589694698,
+            "maximum": 0.36390080489402776
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:turn-approval-gate": {
+      "samples": 1,
+      "sampleSeconds": 15.000334355001542,
+      "cpuBusyPercent": {
+        "minimum": 19.018571234919342,
+        "maximum": 19.018571234919342
+      },
+      "cpuBusyDurationWeightedMeanPercent": 19.018571234919342,
+      "cpuIoWaitPercent": {
+        "minimum": 9.78988748813881,
+        "maximum": 9.78988748813881
+      },
+      "availableGiB": {
+        "minimum": 39.70494842529297,
+        "maximum": 39.70494842529297
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 33.48,
+          "maximum": 33.48
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 1.619963890464727,
+            "maximum": 1.619963890464727
+          },
+          "weightedQueue": {
+            "minimum": 0.29932666124224794,
+            "maximum": 0.29932666124224794
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-edit-chrome-5c.test": {
+      "samples": 1,
+      "sampleSeconds": 15.0003255240008,
+      "cpuBusyPercent": {
+        "minimum": 13.505244755244755,
+        "maximum": 13.505244755244755
+      },
+      "cpuBusyDurationWeightedMeanPercent": 13.505244755244755,
+      "cpuIoWaitPercent": {
+        "minimum": 8.465362762237762,
+        "maximum": 8.465362762237762
+      },
+      "availableGiB": {
+        "minimum": 39.927616119384766,
+        "maximum": 39.927616119384766
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 39.15,
+          "maximum": 39.15
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 1.3533039644719458,
+            "maximum": 1.3533039644719458
+          },
+          "weightedQueue": {
+            "minimum": 0.0563321108363938,
+            "maximum": 0.0563321108363938
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-edit-chrome-5e.test": {
+      "samples": 1,
+      "sampleSeconds": 15.000339155998518,
+      "cpuBusyPercent": {
+        "minimum": 64.25034387895461,
+        "maximum": 64.25034387895461
+      },
+      "cpuBusyDurationWeightedMeanPercent": 64.25034387895461,
+      "cpuIoWaitPercent": {
+        "minimum": 3.936726272352132,
+        "maximum": 3.936726272352132
+      },
+      "availableGiB": {
+        "minimum": 39.691139221191406,
+        "maximum": 39.691139221191406
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 14.36,
+          "maximum": 14.36
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 22.01,
+          "maximum": 22.01
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 2.313281029124181,
+            "maximum": 2.313281029124181
+          },
+          "weightedQueue": {
+            "minimum": 0.2968599545443798,
+            "maximum": 0.2968599545443798
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-edit-chrome-5f.test": {
+      "samples": 1,
+      "sampleSeconds": 15.000326288001816,
+      "cpuBusyPercent": {
+        "minimum": 58.094898127299686,
+        "maximum": 58.094898127299686
+      },
+      "cpuBusyDurationWeightedMeanPercent": 58.094898127299686,
+      "cpuIoWaitPercent": {
+        "minimum": 4.374210555219946,
+        "maximum": 4.374210555219946
+      },
+      "availableGiB": {
+        "minimum": 39.42974090576172,
+        "maximum": 39.42974090576172
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 7.06,
+          "maximum": 7.06
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 27.12,
+          "maximum": 27.12
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 1.413302590421454,
+            "maximum": 1.413302590421454
+          },
+          "weightedQueue": {
+            "minimum": 0.027666064859665256,
+            "maximum": 0.027666064859665256
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-edit-chrome-5j.test": {
+      "samples": 1,
+      "sampleSeconds": 15.000333528998453,
+      "cpuBusyPercent": {
+        "minimum": 74.39812258420763,
+        "maximum": 74.39812258420763
+      },
+      "cpuBusyDurationWeightedMeanPercent": 74.39812258420763,
+      "cpuIoWaitPercent": {
+        "minimum": 2.9017117614577583,
+        "maximum": 2.9017117614577583
+      },
+      "availableGiB": {
+        "minimum": 39.34722137451172,
+        "maximum": 39.34722137451172
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 11.62,
+          "maximum": 11.62
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 22.88,
+          "maximum": 22.88
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 0.8799804334004926,
+            "maximum": 0.8799804334004926
+          },
+          "weightedQueue": {
+            "minimum": 0.02186618046631527,
+            "maximum": 0.02186618046631527
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-edit-chrome-5k.test": {
+      "samples": 1,
+      "sampleSeconds": 15.00025919700056,
+      "cpuBusyPercent": {
+        "minimum": 16.211664357699725,
+        "maximum": 16.211664357699725
+      },
+      "cpuBusyDurationWeightedMeanPercent": 16.211664357699725,
+      "cpuIoWaitPercent": {
+        "minimum": 7.788009670496836,
+        "maximum": 7.788009670496836
+      },
+      "availableGiB": {
+        "minimum": 40.04798889160156,
+        "maximum": 40.04798889160156
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.57,
+          "maximum": 0.57
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 37.68,
+          "maximum": 37.68
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 1.1933127131282686,
+            "maximum": 1.1933127131282686
+          },
+          "weightedQueue": {
+            "minimum": 0.17646361741064395,
+            "maximum": 0.17646361741064395
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-edit-chrome-6a.test": {
+      "samples": 1,
+      "sampleSeconds": 15.00039709399789,
+      "cpuBusyPercent": {
+        "minimum": 17.8357803153888,
+        "maximum": 17.8357803153888
+      },
+      "cpuBusyDurationWeightedMeanPercent": 17.8357803153888,
+      "cpuIoWaitPercent": {
+        "minimum": 8.520935290918978,
+        "maximum": 8.520935290918978
+      },
+      "availableGiB": {
+        "minimum": 39.56623458862305,
+        "maximum": 39.56623458862305
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 37.05,
+          "maximum": 37.05
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 1.7532869186858675,
+            "maximum": 1.7532869186858675
+          },
+          "weightedQueue": {
+            "minimum": 0.08393111143062765,
+            "maximum": 0.08393111143062765
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-edit-chrome-6b.test": {
+      "samples": 1,
+      "sampleSeconds": 15.000455835001048,
+      "cpuBusyPercent": {
+        "minimum": 27.0223094965363,
+        "maximum": 27.0223094965363
+      },
+      "cpuBusyDurationWeightedMeanPercent": 27.0223094965363,
+      "cpuIoWaitPercent": {
+        "minimum": 6.147384497899962,
+        "maximum": 6.147384497899962
+      },
+      "availableGiB": {
+        "minimum": 35.98167419433594,
+        "maximum": 35.98167419433594
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 2.35,
+          "maximum": 2.35
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 31.87,
+          "maximum": 31.87
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 2.5932545269213336,
+            "maximum": 2.5932545269213336
+          },
+          "weightedQueue": {
+            "minimum": 0.19446075719870257,
+            "maximum": 0.19446075719870257
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-edit-chrome-6c.test": {
+      "samples": 1,
+      "sampleSeconds": 15.000358404002327,
+      "cpuBusyPercent": {
+        "minimum": 29.118415623710632,
+        "maximum": 29.118415623710632
+      },
+      "cpuBusyDurationWeightedMeanPercent": 29.118415623710632,
+      "cpuIoWaitPercent": {
+        "minimum": 6.3099986246733595,
+        "maximum": 6.3099986246733595
+      },
+      "availableGiB": {
+        "minimum": 39.052955627441406,
+        "maximum": 39.052955627441406
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 1.57,
+          "maximum": 1.57
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 34.88,
+          "maximum": 34.88
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 0.8133139003361981,
+            "maximum": 0.8133139003361981
+          },
+          "weightedQueue": {
+            "minimum": 0.017999569925473236,
+            "maximum": 0.017999569925473236
+          },
+          "inflight": {
+            "minimum": 61,
+            "maximum": 61
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 1
+    },
+    "running:v2-edit-chrome-7a.test": {
+      "samples": 8,
+      "sampleSeconds": 120.40920268800255,
+      "cpuBusyPercent": {
+        "minimum": 13.44812672325242,
+        "maximum": 18.504033243705695
+      },
+      "cpuBusyDurationWeightedMeanPercent": 15.816614016089165,
+      "cpuIoWaitPercent": {
+        "minimum": 8.138424169646026,
+        "maximum": 10.10974752662594
+      },
+      "availableGiB": {
+        "minimum": 35.543434143066406,
+        "maximum": 39.53173828125
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.0,
+          "maximum": 0.08
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 33.11,
+          "maximum": 38.94
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 0.7305064633491659,
+            "maximum": 3.6193917338881905
+          },
+          "weightedQueue": {
+            "minimum": 0.027095148822405428,
+            "maximum": 0.18734502901465294
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-edit-chrome-table.test": {
+      "samples": 1,
+      "sampleSeconds": 15.000507209002535,
+      "cpuBusyPercent": {
+        "minimum": 62.2377044665969,
+        "maximum": 62.2377044665969
+      },
+      "cpuBusyDurationWeightedMeanPercent": 62.2377044665969,
+      "cpuIoWaitPercent": {
+        "minimum": 3.4835049843035746,
+        "maximum": 3.4835049843035746
+      },
+      "availableGiB": {
+        "minimum": 36.05284118652344,
+        "maximum": 36.05284118652344
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 7.72,
+          "maximum": 7.72
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 32.08,
+          "maximum": 32.08
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 0.966633980969513,
+            "maximum": 0.966633980969513
+          },
+          "weightedQueue": {
+            "minimum": 0.04793171257359172,
+            "maximum": 0.04793171257359172
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-editor-toolbar-chrome-7c.test": {
+      "samples": 2,
+      "sampleSeconds": 30.047535803001665,
+      "cpuBusyPercent": {
+        "minimum": 13.983788488738984,
+        "maximum": 14.04369511005096
+      },
+      "cpuBusyDurationWeightedMeanPercent": 14.013788480619256,
+      "cpuIoWaitPercent": {
+        "minimum": 8.654992952401605,
+        "maximum": 8.997932760308998
+      },
+      "availableGiB": {
+        "minimum": 39.81620788574219,
+        "maximum": 40.122188568115234
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.0,
+          "maximum": 0.14
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 35.27,
+          "maximum": 39.3
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 1.4799650860447822,
+            "maximum": 1.9339169368615092
+          },
+          "weightedQueue": {
+            "minimum": 0.06786506565736884,
+            "maximum": 0.20017037160917064
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-handoff-chrome-7b.test": {
+      "samples": 3,
+      "sampleSeconds": 45.151027878000605,
+      "cpuBusyPercent": {
+        "minimum": 20.04008016032064,
+        "maximum": 25.447079799016695
+      },
+      "cpuBusyDurationWeightedMeanPercent": 23.02744077612458,
+      "cpuIoWaitPercent": {
+        "minimum": 9.26490834975569,
+        "maximum": 9.527797287805932
+      },
+      "availableGiB": {
+        "minimum": 34.41661071777344,
+        "maximum": 38.852516174316406
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.03,
+          "maximum": 0.14
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 27.74,
+          "maximum": 31.57
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 2.1496677724717816,
+            "maximum": 2.712456499827365
+          },
+          "weightedQueue": {
+            "minimum": 0.07785877581411556,
+            "maximum": 0.25926064143209077
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-import-chrome-7b.test": {
+      "samples": 1,
+      "sampleSeconds": 15.000384880000638,
+      "cpuBusyPercent": {
+        "minimum": 16.434848239797294,
+        "maximum": 16.434848239797294
+      },
+      "cpuBusyDurationWeightedMeanPercent": 16.434848239797294,
+      "cpuIoWaitPercent": {
+        "minimum": 9.598900210253921,
+        "maximum": 9.598900210253921
+      },
+      "availableGiB": {
+        "minimum": 38.30373764038086,
+        "maximum": 38.30373764038086
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 34.74,
+          "maximum": 34.74
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 2.9999230259749234,
+            "maximum": 2.9999230259749234
+          },
+          "weightedQueue": {
+            "minimum": 0.2050614050644192,
+            "maximum": 0.2050614050644192
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-project-catalog-chrome-7c.test": {
+      "samples": 3,
+      "sampleSeconds": 45.12738389799779,
+      "cpuBusyPercent": {
+        "minimum": 16.49434309532832,
+        "maximum": 21.19239288994543
+      },
+      "cpuBusyDurationWeightedMeanPercent": 18.614756451441878,
+      "cpuIoWaitPercent": {
+        "minimum": 9.099767227846046,
+        "maximum": 9.422327996538295
+      },
+      "availableGiB": {
+        "minimum": 36.1011848449707,
+        "maximum": 39.294837951660156
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.0,
+          "maximum": 0.06
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 31.68,
+          "maximum": 33.06
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 1.5598646845347308,
+            "maximum": 2.7619962408321608
+          },
+          "weightedQueue": {
+            "minimum": 0.05111045987624437,
+            "maximum": 0.23599363684067173
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-project-covers-chrome-7c.test": {
+      "samples": 3,
+      "sampleSeconds": 45.14059007299875,
+      "cpuBusyPercent": {
+        "minimum": 15.84260236529458,
+        "maximum": 23.69115587633308
+      },
+      "cpuBusyDurationWeightedMeanPercent": 20.395726912489057,
+      "cpuIoWaitPercent": {
+        "minimum": 8.801830910070006,
+        "maximum": 9.43140916348678
+      },
+      "availableGiB": {
+        "minimum": 35.576969146728516,
+        "maximum": 39.10880661010742
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 0.01,
+          "maximum": 0.1
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 28.01,
+          "maximum": 33.06
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 2.0121514329737593,
+            "maximum": 3.878878404709274
+          },
+          "weightedQueue": {
+            "minimum": 0.055998499090891066,
+            "maximum": 0.42409070558154727
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-projects-6c-faults.test": {
+      "samples": 1,
+      "sampleSeconds": 15.000308948001475,
+      "cpuBusyPercent": {
+        "minimum": 65.6916581583377,
+        "maximum": 65.6916581583377
+      },
+      "cpuBusyDurationWeightedMeanPercent": 65.6916581583377,
+      "cpuIoWaitPercent": {
+        "minimum": 3.830127762907365,
+        "maximum": 3.830127762907365
+      },
+      "availableGiB": {
+        "minimum": 39.897804260253906,
+        "maximum": 39.897804260253906
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 13.87,
+          "maximum": 13.87
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 21.74,
+          "maximum": 21.74
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 3.3799303851508253,
+            "maximum": 3.3799303851508253
+          },
+          "weightedQueue": {
+            "minimum": 0.30132712703908743,
+            "maximum": 0.30132712703908743
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    },
+    "running:v2-turns-postgres-8h.test": {
+      "samples": 1,
+      "sampleSeconds": 15.000376823998522,
+      "cpuBusyPercent": {
+        "minimum": 44.41880271436028,
+        "maximum": 44.41880271436028
+      },
+      "cpuBusyDurationWeightedMeanPercent": 44.41880271436028,
+      "cpuIoWaitPercent": {
+        "minimum": 5.332564081430808,
+        "maximum": 5.332564081430808
+      },
+      "availableGiB": {
+        "minimum": 39.36606216430664,
+        "maximum": 39.36606216430664
+      },
+      "pressureSomeAvg10": {
+        "cpu": {
+          "minimum": 8.23,
+          "maximum": 8.23
+        },
+        "memory": {
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "io": {
+          "minimum": 29.42,
+          "maximum": 29.42
+        }
+      },
+      "devices": {
+        "nvme0n1": {
+          "busyPercent": {
+            "minimum": 29.265931459645795,
+            "maximum": 29.265931459645795
+          },
+          "weightedQueue": {
+            "minimum": 0.6151845455799804,
+            "maximum": 0.6151845455799804
+          },
+          "inflight": {
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "criticalSamples": 0,
+      "samplesWithUserspaceBlockedThreads": 0
+    }
+  },
+  "admission": {
+    "freshConsecutiveSamples": 2,
+    "minimumSeconds": 30,
+    "cpuBusyPercentBelow": 25,
+    "cpuIoWaitPercentBelow": 20,
+    "cpuSomeAvg10Below": 10,
+    "memorySomeAvg10Below": 1,
+    "availableGiBAbove": 8,
+    "storageBusyPercentBelow": 5,
+    "storageWeightedQueueBelow": 0.5,
+    "storageInflightAtMost": 1,
+    "userspaceBlockedThreads": 0
+  },
+  "isolation": {
+    "bulkFileConcurrency": 1,
+    "browserBuildConcurrency": 1,
+    "nice": 10,
+    "ionice": {
+      "class": 2,
+      "priority": 7
+    },
+    "watchdogMinutes": {
+      "bulk": 30,
+      "other": 15
+    },
+    "criticalStopAfterConsecutiveSamples": 3
+  },
+  "limitations": [
+    "Global I/O PSI and iowait have unresolved provenance; no attribution to another workload.",
+    "Running samples are periodic observations, not continuous peak or per-process profiling.",
+    "Short jobs can complete between running samples; admission samples remain available.",
+    "Local fixture/backend timing is not live-provider latency or a production percentile.",
+    "Supervisor interruptions between jobs are recorded separately and do not cancel leaf tests."
+  ]
+}

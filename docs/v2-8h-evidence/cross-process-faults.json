@@ -2,7 +2,7 @@
   "id": "cross-process-faults",
   "kind": "tests",
   "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-  "command": "Bounded serial coordinator; exact commands retained in execution-progress.json and final logs/coordinator.json",
+  "command": "python3 docs/v2-8h-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8h-evidence/logs/cross-process-faults.tap",
   "exitCode": 0,
   "tests": {
@@ -16,5 +16,5 @@
     "test/v2-projects-6c-concurrency.test.js",
     "test/v2-projects-6c-faults.test.js"
   ],
-  "backend": "Owned isolated PostgreSQL15.18; actual independent processes and injected faults."
+  "backend": "Isolated PostgreSQL15; actual independent processes and injected faults"
 }

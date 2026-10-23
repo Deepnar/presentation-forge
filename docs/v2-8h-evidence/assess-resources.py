@@ -56,12 +56,33 @@ def summarize(selected):
 phases = sorted({row['phase'] for row in rows})
 qualification = json.loads((out / 'sustained-window.json').read_text())
 assert qualification['implementationSha'] == sha
+runs = json.loads((out / 'coordinator.json').read_text())
+admissions = []
+for run in runs:
+    assert run['implementationSha'] == sha
+    started = datetime.datetime.fromisoformat(run['atUtc'])
+    preceding = [
+        row for row in rows if datetime.datetime.fromisoformat(row['atUtc']) <= started
+    ][-2:]
+    assert len(preceding) == 2 and all(
+        row['phase'] == 'pre-job' and row['ready'] for row in preceding
+    ), run['name']
+    seconds = sum(row['sampleSeconds'] for row in preceding)
+    age = (started - datetime.datetime.fromisoformat(preceding[-1]['atUtc'])).total_seconds()
+    assert seconds >= 30 and 0 <= age < 1, (run['name'], seconds, age)
+    admissions.append({
+        'job': run['name'], 'startedAtUtc': run['atUtc'],
+        'precedingReadyAtUtc': [row['atUtc'] for row in preceding],
+        'readySampleSeconds': seconds, 'lastSampleAgeSeconds': age,
+    })
 report = {
     'implementationSha': sha,
     'atUtc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
     'resourceSamples': str(root / 'resource-window.jsonl'),
     'resourceSamplesSha256': hashlib.sha256(source.read_bytes()).hexdigest(),
     'qualification': qualification,
+    'allRecordedJobAdmissionsVerified': True,
+    'jobAdmissions': admissions,
     'environment': {
         'node': subprocess.check_output(['node', '--version'], text=True).strip(),
         'platform': platform.platform(),
