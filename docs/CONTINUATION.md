@@ -34,15 +34,16 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-The current explicit request prioritizes the inherited native shape-ID defect.
-**V2-PPTX-ID**, frozen `45c2c4c`, is independently accepted in
-[the exact-source decision](reviews/V2-PPTX-ID-45c2c4c.json);
-read [its evaluation](V2-PPTX-ID-EVAL.md), state and
-[four-gate validation inventory](v2-pptx-id-evidence/validation-plan.json) first.
-The older full-matrix sequences below are historical reproduction guidance,
-not this correction's required inventory. Do not rerun completed evidence
-scripts or overwrite their namespaces; reproduce in fresh paths while preserving
-all historical originals. Existing model-call/local-inference restrictions remain.
+The approved V2-8H contract was explicitly resumed on 2026-10-23. Its headless
+implementation is committed at `464c6d7`, **pending complete validation and separate
+acceptance**. Read [the evaluation](V2-8H-EVAL.md), state and
+[nine-gate inventory](v2-8h-evidence/validation-plan.json). The prior native-ID
+correction `45c2c4c` remains the accepted baseline. The current slice adds no
+Assistant UI or HTTP route and authorizes no real model API/local inference.
+Use only the fresh `v2-8h-evidence` / `out/v2-8h-validation` namespaces. Preserve
+historical evidence, including ignored PPTX archives and five canonical out files,
+by verified snapshots before any full/browser/build validation. Do not rerun old
+finishers. Missing PostgreSQL is unexecuted, never a historical pass.
 
 The approved [V2-8A foundation](ROADMAP.md#v2-8a-scope-proposal) is independently
 accepted atd4f446c in [the decision](reviews/V2-8A-d4f446c.json).

@@ -1,6 +1,6 @@
 {
-  "implementationSha": null,
-  "inventoryIncludesWorkingTreeGovernanceTests": true,
+  "implementationSha": "464c6d787d77444b7110226d2fc14649acd8e5f1",
+  "inventoryIncludesWorkingTreeGovernanceTests": false,
   "inventoryMethod": "Freeze at approved resume: all 225 existing test files plus four V2-8H files; no live models. Browser/build owners remain serial; PostgreSQL files require owned isolated backend. New source corrections require fresh exact-SHA evidence.",
   "bulk": [
     "test/account-cleanup.test.js",

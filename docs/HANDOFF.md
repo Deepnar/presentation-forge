@@ -1,42 +1,27 @@
-# Handoff — V2-8H approved, implementation deferred by explicit stop
+# Handoff — V2-8H implemented, validation and review pending
 
-2026-10-22 · branch `v2`; authorized push `origin/v2`.
-Accepted product baseline remains `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`,
-[independently accepted](reviews/V2-PPTX-ID-45c2c4c.json). Its
-[evaluation](V2-PPTX-ID-EVAL.md) retains completed implementation validation.
-This session's entry HEAD was `2e0e40d4007be462c111bc2a0fe38398a048f7ba`;
-subsequent commits contain planning/documentation only.
+2026-10-23 · branch `v2`; authorized push `origin/v2`.
+Accepted product remains `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`.
+The explicit continuation resumes the approved contract and lifts the overnight
+stop. Scope and policy authority remain in [the roadmap](ROADMAP.md#assistant-turn-approval-contract).
 
-The primary authoring workspace is the browser: immediate editing of real scene
-objects, not a dependency on Microsoft PowerPoint. Microsoft interaction checks
-qualify the exported file. This distinction is now explicit in PRODUCT-VISION.
+Implementation/test source `464c6d787d77444b7110226d2fc14649acd8e5f1` adds the
+headless durable visible-chat/proposal service, bounded schemas, atomic approval
+with the existing run queue, cancellation/clear and conservative attempt recovery.
+CLI parity is `agent-chat`; no routes or Assistant UI are added. Read
+[the evaluation](V2-8H-EVAL.md) and [as-built boundary](V2-8-AGENT-ARCHITECTURE.md#v2-8h-durable-visible-conversations-and-approval).
 
-The [V2-8H contract](V2-8H-EVAL.md), plan commit `9ead920`, passed a separate
-read-only [planning review](reviews/V2-8H-plan-9ead920.json) at `8599638`.
-It preserves one scene/command engine/run authority and defines durable turn/
-proposal state, atomic decision/queue/cancel, bounded retention and conservative
-restart/provider-attempt recovery. This is plan readiness, not product acceptance.
+Preliminary SQLite state/process/compatibility tests pass, including actual process
+crashes and competing decisions. These are working-tree development checks, not
+complete gates. A separate draft source review led to corrections for UTF-8 body
+bounds, pre-dispatch recovery and final lease/cancellation fences. No acceptance
+has been issued. All nine exact-source gates remain pending, with 229 test files.
 
-**Human decision:** the prepared implementation contract and recommended owner-only
-visible chat retained with the project until clear/deletion are APPROVED. Clearing
-chat preserves existing committed deck/history/run data; no raw provider/tool
-transcript or hidden reasoning is added. Exact scope/approval live only in
-[the roadmap](ROADMAP.md#assistant-turn-approval-contract).
+Use the new evidence scripts only after measured quiet-window qualification;
+back up all historical evidence and the five canonical output originals first.
+No live model calls/local inference are authorized. No dependent feature,
+production deployment or production migration is authorized. Any owned validation
+service/job must be recorded by its exact identity and cleaned up after use.
 
-**Explicit stop:** the human then said not to start now and to stop for the night.
-No V2-8H implementation may begin until an explicit human resume. Do not schedule
-work or re-ask the approved policy choice. A later resume lifts this deferral;
-offline-only validation, bounded scope and separate implementation review remain.
-
-State keeps the accepted product and its historical gates unchanged. nextCandidate
-is authorized false to enforce the current stop, with its approved/deferred status
-explicit in the name and roadmap. Do not misread it as missing policy approval.
-
-No product/test/schema code, database operations, provider calls, local inference,
-services, builds, browsers or benchmarks were run for V2-8H. Only source/prose
-inspection, plan review, `dev:protocol` (zero errors/warnings) and diff checks.
-No owned job or service remains. Original evidence archives remain untouched.
-
-Original untracked paths remain untouched: `.agents/`,
-`PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`,
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`.
+Original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`,
+`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched.

@@ -331,3 +331,65 @@ new provider capability, conversation persistence or framework adoption.
 `f3e784a` is [independently accepted](reviews/V2-8G-f3e784a.json); 668 independent
 executions and retained-image inspection found no blocking issue. No live-model
 quality or process peak-memory claim follows from these bounded fixture checks.
+
+## V2-8H durable visible conversations and approval
+
+Implemented boundary, **pending complete validation and independent acceptance**.
+`packages/agent/turns.ts` is backend-injected; `src/agent/index.js:turnService`
+selects the existing project store. `agent-chat` exposes read/export, submit,
+prepare, decide, cancel and clear to trusted local operators. It adds no HTTP route
+or Assistant UI. A future authenticated transport must derive owner/project binding
+from its session; JSON never supplies authority. All future integration is tracked
+in [the roadmap](ROADMAP.md#v2-8-remaining).
+
+The project owns conversation/header, turn, proposal and attempt child tables in
+both backends. SQLite serializes through `BEGIN IMMEDIATE`; PostgreSQL uses the
+existing project row lock. Header version 1 fixes a server-issued generation,
+conversation revision and seven cumulative safe-integer counters. Visible request/
+reply and trusted preparation inputs occupy private payloads; canonical pending
+plans are stored separately from operational metadata. Both budgets are 4 MiB per
+project; simultaneous count/record limits and final-result reservations are in
+`turn-state.ts` and the [approved contract](V2-8H-EVAL.md). Schemas own runtime
+validation and generated TypeScript types. Serialized UTF-8 bounds include JSON
+escaping and multibyte text, with matching save/load bounds.
+
+Submission requires the current generation and conversation revision. It deduplicates
+an immutable request identity within that generation; one submitted/preparing/
+awaiting-decision turn is admitted per project. Every new turn binds a saved project
+revision. Preparation claims a monotonically fenced, expiring 30-second lease;
+active calls renew it every ten seconds without extending the immutable 120-second
+preparation deadline. It freezes a separate 20-minute canonical plan deadline at
+submission. The provider runner's host-only bridge reserves metadata/output allowance,
+commits a dispatch marker before each call, settles validated exchange usage before
+later tool/publication refusal, and passes internally validated plans directly to
+storage. Model/request arguments cannot install the bridge. Default `prepare`,
+`converse` and exact-object WeakMap `enqueue` retain their existing contracts.
+
+`run-transaction.ts` contains internal queue/lookup/cancel primitives shared with the
+public run wrapper. Approval reads the stored plan and verifies its digest, scope,
+saved revision, explicit generation and expected revisions. It records one decision
+and queues one existing run inside the same project transaction. One composed
+pre-commit guard rechecks database-time approval/plan expiry. Identical committed
+decision replay precedes fresh revision/expiry checks; a changed decision identity
+conflicts. Run cursors/receipts remain authoritative. No second edit queue, scene,
+command engine, persisted undo stack or provider-session authority is introduced.
+
+Only a turn with **no prior dispatched exchange** can resume preparation after lease
+loss. Old reservations remain counted, with per-fence exchange sequencing and total
+per-turn attempt/output limits. After any dispatch, lost volatile continuation
+requires explicit user action; prior hidden history/read results are never rebuilt.
+A response whose entire canonical exchange fails the inherited provider boundary
+has no validated receipt and remains conservatively unknown. Accepted exchanges
+settle usage before subsequent session/tool/admission failures. This does not infer
+zero cost or exactly-once provider billing from an ambiguous network attempt.
+
+Owner-authorized reads/exports reconcile logical expiry under the project lock.
+Clear increments generation, cancels linked nonterminal runs atomically, removes all
+visible/private conversation and duplicate proposal bodies, and keeps already
+committed scenes/history/run records under their existing policy. Up to 128 bounded
+content-free settlement slots can survive across generations. Known receipts settle
+once; deadline-unknown receipts compact into fixed counters and release their slot.
+A late receipt cannot revive a cleared turn or change an already compacted outcome.
+No raw provider transcript, instruction/context body, read result or hidden reasoning
+is persisted. Visible free text may itself be sensitive; existing project access and
+storage protections apply, without a new encryption or secure-erasure guarantee.

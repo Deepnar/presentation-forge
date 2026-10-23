@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-PPTX-ID-45c2c4c.json"
   },
   "implementationHead": {
-    "sha": "431a6fb3980c5fa28868830145ce771571d72b72",
-    "note": "Approved V2-8H resumed 2026-10-23; entry commit only, implementation and all nine current-source gates pending. Accepted baseline remains unchanged."
+    "sha": "464c6d787d77444b7110226d2fc14649acd8e5f1",
+    "note": "V2-8H headless implementation and four new test files committed; complete exact-source nine-gate validation and independent acceptance pending. Preliminary SQLite/compatibility results are not gate passes."
   },
   "activeMilestone": {
     "id": "V2-8H",
     "roadmapRef": "docs/ROADMAP.md#assistant-turn-approval-contract",
     "evalDoc": "docs/V2-8H-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "not-started",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,

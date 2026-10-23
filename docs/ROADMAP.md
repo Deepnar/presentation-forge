@@ -8914,6 +8914,12 @@ local inference. Only that separate transport correction is authorized; this aud
   and 229-file inventory are frozen in `v2-8h-evidence/validation-plan.json`;
   implement within this approved headless contract,
   preserving offline-only validation and the later independent acceptance gate.
+  The headless implementation is in progress, with bounded schemas, project-child
+  storage, the host-only proposal/receipt bridge, atomic decision/queue/cancel
+  composition and CLI parity. Draft independent source review identified UTF-8
+  load/admission symmetry, pre-dispatch recovery sequencing and final publication
+  fences; corrections are under regression. Complete both-backend, process,
+  regression and visual gates remain pending; no checkmark or acceptance yet.
   The browser remains the primary editor; native PowerPoint qualification concerns
   exported files and is not a requirement to edit a project in the browser.
   Existing runtime plans/receipts are durable; `converse` histories and WeakMap
@@ -8988,6 +8994,12 @@ local inference. Only that separate transport correction is authorized; this aud
   payload capture, raw-content hashes as public telemetry, an exporter, external
   service or dependency without a separate policy/need. Exact live replay is not
   promised by metadata; preserve only policy-approved fixture/redacted captures.
+
+  V2-8H preserves the inherited whole-exchange receipt boundary: structurally invalid
+  wire/tool calls can leave usage unknown even when token fields were present.
+  Evaluate a separate bounded receipt-validation seam here before claiming complete
+  billing observability; preserve existing refusal/privacy contracts and never infer
+  zero usage or automatically rebill an ambiguous exchange.
 
 <a id="assistant-visual-feedback"></a>
 

@@ -312,3 +312,28 @@ contains 229 files (194 bulk, 26 serial, nine PostgreSQL), including four planne
 V2-8H files. Historical results supply no current-source passes. No live provider
 or local inference is authorized. Independent exact-source acceptance remains
 required; no Assistant UI or dependent feature is authorized by this resume.
+
+### Frozen implementation and preliminary development checks
+
+Source/tests: `464c6d787d77444b7110226d2fc14649acd8e5f1`. The runtime composition
+seam was committed separately at `6a2ddf3`, service/schema/CLI at `8b544e6`,
+and focused state/process contracts at `464c6d7`. All nine acceptance gates are
+still unexecuted on the frozen source. The 229-file inventory remains unchanged.
+
+Working-tree checks during development included 35 existing runtime/process cases,
+159 focused compatibility/state/process/drift cases, then further bounded admission
+and Unicode/cancellation cases; overlapping reruns do not add distinct coverage.
+Typecheck and development-protocol checks passed. Preliminary checks used SQLite
+and deterministic injected/loopback fixtures only; PostgreSQL, full bulk/browser,
+production build, canonical benchmark and final visual preservation remain pending.
+
+Separate draft source review by `/root/turn_contract_review` identified a serialized
+body load/admission mismatch, reserved-before-dispatch recovery sequencing, and
+final publication lease/AbortSignal fences. All received narrow corrections and
+focused regression cases before source freeze. This draft review is not acceptance.
+The inherited provider boundary accepts usage only with a validated whole canonical
+exchange. Malformed wire/tool payloads therefore retain unknown usage, never zero
+or a refund; later session/tool/budget/publication refusals preserve validated usage.
+The associated trace/receipt follow-up remains only in the roadmap.
+Visible request/reply character limits follow Unicode code points (as AJV request
+limits do); the inherited provider limit of 32,000 UTF-16 units is unchanged.

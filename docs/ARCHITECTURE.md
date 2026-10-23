@@ -2706,3 +2706,16 @@ arguments; no model tools, routes, source store or legacy rewiring are added.
 [evaluation](V2-8F-EVAL.md) identify exact source `0cab854` and its independent
 [acceptance](reviews/V2-8F-0cab854.json). The model search-tool catalog and Assistant
 remain outside this accepted boundary.
+
+### V2-8H durable visible conversations and approval
+
+The backend-injected headless turn service persists bounded owner/project-linked
+visible chat, canonical pending proposals and content-free provider-attempt metadata
+in existing project child tables. Explicit generation/revision bindings, expiring
+preparation leases, atomic approval plus the existing run queue, and conservative
+provider recovery make cross-host decisions durable. Clear preserves committed deck
+history while fencing preparations and cancelling linked nonterminal runs.
+`agent-chat` provides CLI parity; no Assistant surface or HTTP route is added.
+This implementation is **pending complete validation and independent acceptance**.
+The [as-built boundary](V2-8-AGENT-ARCHITECTURE.md#v2-8h-durable-visible-conversations-and-approval)
+and [evaluation](V2-8H-EVAL.md) distinguish implemented behavior from executed evidence.
