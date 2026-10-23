@@ -1,0 +1,44 @@
+{
+  "implementationSha": "ac8749613bfbd927dab629f479d3d05f10a99195",
+  "focused": {
+    "total": 90,
+    "pass": 90,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "failedBulk": {
+    "total": 2481,
+    "pass": 2480,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "isolatedUnchangedRuntime": {
+    "total": 27,
+    "pass": 26,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "controlledClockDevelopmentBothStore": {
+    "total": 61,
+    "pass": 60,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "controlledClockAndReadyWorkerDevelopment": {
+    "total": 69,
+    "pass": 69,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "classification": "Inherited fixture wall-clock assumptions: bulk recovery returned running rather than succeeded; isolated150msdeadline failed admission; controlled-clock both-store run exposed process startup within3srecovery lease. Exact scheduling stage of running refusals unlogged; resource contention observed, not a proven causal attribution.",
+  "correction": "Freeze actual DB time for five deadline/rollback fixture cases with explicit boundary advances. Boot workers before acquiring unchanged short leases in kill/checkpoint cases. Retain all assertions, realprocesskills/expiry/races and bothbackends. Bulk next runs single-file concurrency.",
+  "developmentWorkingTreeDelta": "Controlled-clock and process-readiness fixture edits over ac87496; intermediate variants are not final exact-SHA gate passes. Recovery metric qualifier fields added after69-case development run; formal full matrix covers finalsource.",
+  "browserBuildBenchmarkNativeExecuted": false,
+  "completeGatesPending": true,
+  "historicalSnapshotHashesStillMatch": true
+}

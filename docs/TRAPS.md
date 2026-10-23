@@ -1934,3 +1934,14 @@ Copying only inside the transaction leaves closures using the original object;
 reusing it for project B can make an A-authorized clear delete B's rows. Test
 ordinary same-owner project switching across every public operation, including
 linked-run reads and approval. See the [V2-8H correction](V2-8H-EVAL.md).
+
+## Keep clock-boundary assertions independent of scheduler delay
+
+A150ms deadline can expire before test admission, and cold child bootstrap can
+consume a short recoverylease. Those failures may show correct fencing rather than
+broken rollback. For exact boundary tests, freeze one actual DB timestamp through
+the injected clock seam and advance it explicitly; preserve real storage/guards.
+For crash integration, boot a worker before acquiring its short lease and retain
+real expiry/kills/races. Worker module readiness does not warm the first database
+connection. Label changed timing boundaries and retain failed runs; do not claim
+lease refusals are product success or hide them by weakening assertions.

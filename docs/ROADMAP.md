@@ -8939,6 +8939,15 @@ local inference. Only that separate transport correction is authorized; this aud
   2474 bulk and73 browser cases remain historical in the
   [partial assessment](v2-8h-evidence/prior-attempt-cc3ed18/assessment.json).
   All nine gates must execute afresh on the correction before acceptance.
+  The ac87496 full attempt passed90 focused, then bulk2480/2481. An isolated
+  unchanged runtime file passed26/27 with a different150ms admission failure;
+  controlled-clock development passed60/61, exposing another process-startup lease
+  assumption. These remain failed evidence, not productpasses. Source `22e7c97`
+  stabilizes five deadline/rollback fixtures with controlled DB time and starts
+  process workers before unchanged short leases;69 affected both-store/process
+  cases pass. All assertions, realprocesskills/expiry and actual storage remain.
+  Complete229-file validation restarts with bulkconcurrency1. See the
+  [retained timing assessment](v2-8h-evidence/prior-attempt-ac87496/assessment.json).
   The browser remains the primary editor; native PowerPoint qualification concerns
   exported files and is not a requirement to edit a project in the browser.
   Existing runtime plans/receipts are durable; `converse` histories and WeakMap

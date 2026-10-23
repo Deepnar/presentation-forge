@@ -67,7 +67,7 @@ def run(name,args,files=None,changes=None,expected=0):
 def tests(name,selected,concurrency=1,changes=None,expected=0):
  return run(name,['node','--test',f'--test-concurrency={concurrency}','--test-reporter=./tools/validated-tap.mjs',*selected],selected,changes,expected)
 tests('turn-approval-gate',['test/v2-turns-8h.test.js','test/v2-turns-sqlite-8h.test.js','test/v2-turns-postgres-8h.test.js','test/v2-turns-process-8h.test.js'])
-tests('bulk',plan['bulk'],4)
+tests('bulk',plan['bulk'],1)
 for file in plan['serial']:tests(pathlib.Path(file).stem,[file])
 for file in plan['postgres']:tests(pathlib.Path(file).stem,[file])
 for name,args in [('production-build',['node_modules/.bin/vite','build','--config','app/web/vite.config.js']),('typecheck',['npm','run','typecheck']),('benchmark-50',['node','tools/v2-benchmark.mjs','--out','out/v2-8h-benchmark','--raster','none'])]:run(name,args)

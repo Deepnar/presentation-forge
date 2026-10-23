@@ -35,7 +35,7 @@ because old eval wording predates review.
 ## Active task and reproduction
 
 The approved V2-8H contract was explicitly resumed on 2026-10-23. Its headless
-implementation is committed at `ac87496`, **pending complete validation and separate
+implementation is committed at `22e7c97`, **pending complete validation and separate
 acceptance**. Read [the evaluation](V2-8H-EVAL.md), state and
 [nine-gate inventory](v2-8h-evidence/validation-plan.json). The prior native-ID
 correction `45c2c4c` remains the accepted baseline. The current slice adds no

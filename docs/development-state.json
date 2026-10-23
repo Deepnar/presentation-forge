@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-PPTX-ID-45c2c4c.json"
   },
   "implementationHead": {
-    "sha": "ac8749613bfbd927dab629f479d3d05f10a99195",
-    "note": "V2-8H correction snapshots all seven public bindings before asynchronous work. Seven fail-first SQLite regressions; corrected development unit/SQLite/process47/47 and typecheck pass. All nine complete replacement-source gates and independent acceptance pending."
+    "sha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+    "note": "V2-8H private binding snapshots plus deterministic deadline/rollback and ready-before-lease process fixtures.69 development both-store/process passes; allnine final exact-source gates and independent acceptance pending."
   },
   "activeMilestone": {
     "id": "V2-8H",

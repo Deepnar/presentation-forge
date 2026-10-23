@@ -72,3 +72,10 @@ The same restart launcher now saves an exclusive per-source backend recheck
 originals were restored/hash-verified before this new run; snapshot links still
 refer to the original pre-test copies. New binding cases increase case counts,
 while the complete inventory remains229 files. Prior counts are never retagged.
+
+The ac87496 attempt stopped before browser work on inherited fixture timing
+assumptions; all failed/intermediate runs are retained in `prior-attempt-ac87496/`.
+Final source `22e7c97` uses `FORGE_VALIDATION_OUT=out/v2-8h-validation-r4` with a
+fresh180-second qualification, then the same restart launcher with
+`--max-new-jobs 3`. All gates rerun; nonbrowserbulk now uses concurrency1, preserving
+all194files/assertions while reducing competition with wallclock fixtures.

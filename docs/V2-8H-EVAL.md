@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**Approved contract resumed on 2026-10-23; implementation and acceptance pending.** The 2026-10-22 continuation produced
+**Approved contract resumed on 2026-10-23; implemented, pending final validation and independent acceptance.** The 2026-10-22 continuation produced
 this prepared contract; the subsequent human reply approved it and requested
 an immediate stop before implementation. Approval and deferral authority are in
 [the roadmap](ROADMAP.md#assistant-turn-approval-contract). No implementation
@@ -422,3 +422,35 @@ remain historical. All5725 historical files (including164 PPTXs) and five canoni
 output originals were restored/hash-verified before the replacement run. All nine
 current gates are reset to unexecuted until fresh exact-source execution, and the
 accepted baseline remains `45c2c4c`.
+
+### Inherited timing assumptions and final fixture correction
+
+On `ac87496`, focused90/90 passed; fullbulk ran2481 leaves:2480pass,1fail,
+zero skip/cancel. Existing runtime after-project rollback recovery returned running
+instead of succeeded with its2slease. CPUbusy rose from12% admission to73.3%, with
+CPU PSI13.18; the exact refusal stage was unlogged and causal attribution remains
+inferred. The unchanged runtime file in isolation ran26/27; original recovery now
+passed, but admission of a150msdeadline failed correctly after it elapsed. All
+raw runs are [retained](v2-8h-evidence/prior-attempt-ac87496/assessment.json).
+
+A narrow controlled-time fixture correction then ran60/61 across SQLite/PG;
+all53 in-process contracts passed, but an inherited PGprocess recovery's3slease
+covered child bootstrap and returned running rather than succeeded. This remains
+a failed run. The correction freezes one actual DB timestamp for five deadline/
+rollback cases, advances explicit logical boundaries, and additionally proves the
+run remains active1ms before its deadline and expires at the exact boundary.
+Actual project/history/receipt transactions and every prior assertion remain.
+Process kill/checkpoint fixtures boot their child to cached module readiness before
+acquiring unchanged1500/3000msleases. Realprocesskills, wallclockleaseexpiry,
+takeover and persistence assertions remain; module readiness does not warm the
+worker's first store connection. Other realclocklease/process checks are unchanged.
+
+Corrected development checks pass69/69 across bothstores and processcases; no skips/
+cancellations. Independent source assessment found this fixture correction
+appropriate, with no productlease relaxation. Formal frozen source is
+**`22e7c9749865f3e7c2d62fb8724136e0f19048b0`**. It has no further product-source
+delta from the binding correction. Every gate executes afresh in
+`out/v2-8h-validation-r4`, with nonbrowserbulkconcurrency1 and strict serialbrowser/
+build isolation. Recovered-claim timings now explicitly exclude worker module
+bootstrap and leasewait while including store setup; they are not speedup
+comparisons with older claim-then-spawn measurements. Acceptedbaseline is unchanged.

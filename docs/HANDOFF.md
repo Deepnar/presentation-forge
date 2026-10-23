@@ -6,7 +6,7 @@ Approved H contract is resumed; [roadmap](ROADMAP.md#assistant-turn-approval-con
 and [evaluation](V2-8H-EVAL.md) define scope. No models/local inference, Assistant
 UI/routes, dependent feature, deployment or production migration are authorized.
 
-Implementation/test source `ac8749613bfbd927dab629f479d3d05f10a99195` corrects the
+Implementation/test source `22e7c9749865f3e7c2d62fb8724136e0f19048b0` corrects the
 independently found mutable binding defect by taking a private snapshot at all seven
 public entries. Fail-first7/7 fail on old product source; corrected development
 unit/SQLite/process47/47 and typecheck pass. Independent correction review and all
@@ -19,7 +19,7 @@ canonical originals were restored/hash-verified after preservation. Original
 snapshots remain `out/v2-8h-validation/{backup,prior-generated-backup}`; reuse those,
 never resnapshot rewritten outputs or run old finishers.
 
-Fresh validation uses `out/v2-8h-validation-r3` and current H scripts only, after
+Fresh validation uses `out/v2-8h-validation-r4` and current H scripts only, after
 180-second measured quiet-window qualification. Resume coordinator with `--resume
 --max-new-jobs 3` only after a complete between-job yield; never overlap browser/build
 jobs. The owned PostgreSQL15.18 instance is still running: ID
@@ -29,3 +29,12 @@ DBs before reuse. Save/fsync fresh zero-project-DB evidence before exact-ID clea
 Original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
 `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched. Independent
 acceptance is pending; stop after H.
+
+The ac87496 attempt90focusedpass/2480of2481bulk and two failed intermediate
+runtime runs are retained in `prior-attempt-ac87496/`. Finaltestcorrection freezes
+actualDBtime for deadline/rollback fixtures and boots module-ready children before
+unchangedshortleases.69 bothstore/process developmentcasespass; the complete
+newsource matrix reruns with nonbrowserbulkconcurrency1. Revised recoverytimings
+exclude leasewait/modulebootstrap and include workerstore setup; do not compare
+as speedups with old claim-then-spawn timings. No productsource changed since
+bindingcorrection; final exactsource and allninegates remain required.
