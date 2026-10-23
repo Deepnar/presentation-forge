@@ -53,6 +53,11 @@ const NODE_ALLOW = {
 // names the exact file and why it exists.
 const FILE_ALLOW = [
   {
+    file: "packages/renderer-pptx/shape-ids.ts",
+    bare: ["jszip"],
+    why: "accepted generated-archive identity normalization; no filesystem or layout authority",
+  },
+  {
     file: "packages/agent/run-state.ts",
     bare: ["node:fs/promises"],
     why: "Node-only durable record schema validation; runtime remains backend-injected",
@@ -133,6 +138,9 @@ function bareAllowed(fromPkg, spec, file) {
   for (const banned of GLOBAL_BAN) {
     if (spec === banned || spec.startsWith(`${banned}/`)) return `banned dependency "${spec}" in ${fromPkg}`;
   }
+  for (const a of FILE_ALLOW) {
+    if (file === path.join(ROOT, a.file) && a.bare.includes(spec)) return null;
+  }
   if (!(BARE_ALLOW[fromPkg] ?? []).includes(spec)) return `bare specifier "${spec}" not allowed in ${fromPkg}`;
   return null;
 }
@@ -204,12 +212,18 @@ describe("v2 core boundary", () => {
     assert.match(bareAllowed("renderer-pptx", "node:os", adapter) ?? "", /only named adapter/);
   });
 
-  it("allows jszip only in renderer-docx", () => {
+  it("confines jszip to renderer-docx and the generated PPTX identity normalizer", () => {
     const docx = path.join(ROOT, "packages/renderer-docx/render.ts");
     const pptx = path.join(ROOT, "packages/renderer-pptx/render.ts");
     const core = path.join(ROOT, "packages/core/fit.ts");
     const model = path.join(ROOT, "packages/model/validate.ts");
     assert.equal(bareAllowed("renderer-docx", "jszip", docx), null);
+    const ids = path.join(ROOT, "packages/renderer-pptx/shape-ids.ts");
+    assert.equal(bareAllowed("renderer-pptx", "jszip", ids), null);
+    assert.match(bareAllowed("renderer-pptx", "node:fs", ids) ?? "", /only named adapter/);
+    assert.match(bareAllowed("renderer-pptx", "sharp", ids) ?? "", /banned/);
+    assert.match(bareAllowed("agent", "node:fs/promises", path.join(ROOT, "packages/agent/turn-state.ts")) ?? "", /only named adapter/);
+    assert.match(bareAllowed("agent", "node:fs/promises", path.join(ROOT, "packages/agent/turns.ts")) ?? "", /only named adapter/);
     assert.match(bareAllowed("renderer-pptx", "jszip", pptx) ?? "", /not allowed/);
     assert.match(bareAllowed("core", "jszip", core) ?? "", /not allowed/);
     assert.match(bareAllowed("model", "jszip", model) ?? "", /not allowed/);

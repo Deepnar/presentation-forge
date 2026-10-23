@@ -1,7 +1,5 @@
-import { readFile } from 'node:fs/promises';
-import { Ajv } from 'ajv';
 import { cloneJson } from '../tools/json.ts';
-import { parseConversationRequest, invalidRun } from './run-state.ts';
+import { parseConversationRequest, invalidRun, loadTurnValidators } from './run-state.ts';
 import type { TurnSubmission } from './turn-submission.generated.ts';
 import type { TurnHeader } from './turn-header.generated.ts';
 import type { TurnRecord } from './turn-record.generated.ts';
@@ -13,15 +11,7 @@ export const TURN_LIMITS = Object.freeze({ privateBytes: 4*1024*1024, metadataBy
   attempts: 1024, settlements: 128, replyChars: 16000, planBytes: 131072,
   submissionBytes:262144, turnBodyBytes:262144+16000*6+128,
   finalPrivateReservation: 262144, finalMetadataReservation: 32768 });
-const ajv = new Ajv({ strict: false });
-async function validator<T>(name: string) {
-  return ajv.compile<T>(JSON.parse(await readFile(new URL(`./${name}.schema.json`, import.meta.url), 'utf8')));
-}
-const submission = await validator<TurnSubmission>('turn-submission');
-const header = await validator<TurnHeader>('turn-header');
-const turn = await validator<TurnRecord>('turn-record');
-const proposal = await validator<TurnProposal>('turn-proposal');
-const attempt = await validator<TurnAttempt>('turn-attempt');
+const {submission,header,turn,proposal,attempt}=await loadTurnValidators();
 export const characters = (value: string) => [...value].length;
 export const bytes = (value: unknown) => new TextEncoder().encode(JSON.stringify(value)).length;
 function copy(input: unknown, limit: number): unknown {

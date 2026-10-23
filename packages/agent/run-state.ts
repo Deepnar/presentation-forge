@@ -142,3 +142,18 @@ export async function planDigest(plan: RunPlan): Promise<string> {
     .map((v) => v.toString(16).padStart(2, "0"))
     .join("");
 }
+
+// Keep schema I/O in the named Node record adapter; turn admission/state code
+// remains free of filesystem and transport dependencies.
+export async function loadTurnValidators() {
+  async function schema<T>(name: string) {
+    return ajv.compile<T>(JSON.parse(await readFile(new URL(`./${name}.schema.json`, import.meta.url), 'utf8')));
+  }
+  return {
+    submission: await schema<import('./turn-submission.generated.ts').TurnSubmission>('turn-submission'),
+    header: await schema<import('./turn-header.generated.ts').TurnHeader>('turn-header'),
+    turn: await schema<import('./turn-record.generated.ts').TurnRecord>('turn-record'),
+    proposal: await schema<import('./turn-proposal.generated.ts').TurnProposal>('turn-proposal'),
+    attempt: await schema<import('./turn-attempt.generated.ts').TurnAttempt>('turn-attempt'),
+  };
+}
