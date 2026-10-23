@@ -79,3 +79,20 @@ Final source `22e7c97` uses `FORGE_VALIDATION_OUT=out/v2-8h-validation-r4` with 
 fresh180-second qualification, then the same restart launcher with
 `--max-new-jobs 3`. All gates rerun; nonbrowserbulk now uses concurrency1, preserving
 all194files/assertions while reducing competition with wallclock fixtures.
+
+After the coordinator has completed every ordered job, assemble the packet and
+preserve the actual exports before restoring their five canonical originals:
+
+```sh
+FORGE_VALIDATION_OUT=out/v2-8h-validation-r4 python3 docs/v2-8h-evidence/assemble-results.py
+FORGE_VALIDATION_OUT=out/v2-8h-validation-r4 python3 docs/v2-8h-evidence/finish-evidence.py
+node docs/v2-8h-evidence/inspect-native-ids.mjs
+```
+
+The finisher is a one-time operation against the fresh browser exports; after
+restoration its source-hash guards deliberately refuse. The identity audit reads
+the preserved eight headless and five actual browser export archives, verifies
+recorded hashes and numeric nonvisual identity uniqueness within every generated
+OOXML part. It adds archive inspection evidence, not distinct primary test cases
+or interactive Microsoft PowerPoint qualification. Inspect the generated contact
+sheets and full-size relevant images before marking the visual gate passed.
