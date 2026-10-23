@@ -5,6 +5,15 @@ import { parsePlan, parseRun } from "../packages/agent/run-state.ts";
 import { seed, target, edit, textEdit } from "./v2-tool-fixture.js";
 import { spec, sleep } from "./v2-runtime-fixture.js";
 
+async function controlledTime(store, binding) {
+  const clock = { now: await store.withRuntimeTransaction(binding, tx => tx.now()) };
+  const backend = {
+    withRuntimeTransaction: (binding, job) => store.withRuntimeTransaction(binding,
+      tx => job({ ...tx, now: async () => clock.now })),
+  };
+  return { clock, backend, runtime: createRuntime(backend) };
+}
+
 export function runtimeContract(label, setup) {
   const check = (name, fn) =>
     test(`${label}: ${name}`, async (t) => fn(t, await setup(t)));
@@ -365,14 +374,18 @@ export function runtimeContract(label, setup) {
   );
   check(
     "deadlines persist across restart and expire before effects",
-    async (t, { runtime, binding, store }) => {
+    async (t, { binding, store }) => {
+      const { clock, backend, runtime } = await controlledTime(store, binding);
       const run = await runtime.start(
         binding,
-        spec({ requestId: "deadline", deadlineAt: Date.now() + 150 }),
+        spec({ requestId: "deadline", deadlineAt: clock.now + 150 }),
       );
       const c = await runtime.claim(binding, run.id, "worker", 1000);
-      await sleep(180);
-      const reopened = createRuntime(store);
+      assert.equal(c.ok, true);
+      clock.now += 149;
+      const reopened = createRuntime(backend);
+      assert.equal((await reopened.inspect(binding, run.id)).run.status, "running");
+      clock.now++;
       assert.equal(
         (await reopened.inspect(binding, run.id)).run.status,
         "expired",
@@ -392,16 +405,17 @@ export function runtimeContract(label, setup) {
   ])
     check(
       `${point} failure rolls project/history/receipt back together`,
-      async (t, { runtime, binding, run, store }) => {
+      async (t, { binding, run, store }) => {
+        const { clock, backend: timedStore, runtime } = await controlledTime(store, binding);
         if (point === "deadline-fence")
           run = await runtime.start(
             binding,
-            spec({ requestId: "deadline-fence", deadlineAt: Date.now() + 100 }),
+            spec({ requestId: "deadline-fence", deadlineAt: clock.now + 100 }),
           );
         let injected = false;
         const backend = {
           withRuntimeTransaction: (b, fn) =>
-            store.withRuntimeTransaction(b, (tx) =>
+            timedStore.withRuntimeTransaction(b, (tx) =>
               fn({
                 ...tx,
                 async saveScenes(...args) {
@@ -431,7 +445,7 @@ export function runtimeContract(label, setup) {
                       !injected
                     ) {
                       injected = true;
-                      await sleep(140);
+                      clock.now += 140;
                     }
                     return check();
                   });
@@ -463,7 +477,7 @@ export function runtimeContract(label, setup) {
         assert.equal(state.receipts.length, 0);
         assert.equal(state.run.attempts, 1);
         if (point === "deadline-fence") return;
-        if (point !== "final-fence") await sleep(1010);
+        if (point !== "final-fence") clock.now += 1010;
         const claim = await runtime.claim(binding, run.id, "recovered", 2000);
         assert.equal(
           (await runtime.advance(binding, run.id, claim.lease)).run.status,

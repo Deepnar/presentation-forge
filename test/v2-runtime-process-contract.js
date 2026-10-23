@@ -38,6 +38,9 @@ function child(t, rig, input) {
       });
     });
   }
+  let readiness;
+  const ready = () => readiness ??= next().then(message =>
+    assert.deepEqual(message, { ready: true }));
   t.after(async () => {
     if (process.exitCode === null && process.signalCode === null) {
       process.kill("SIGKILL");
@@ -47,10 +50,12 @@ function child(t, rig, input) {
   return {
     process,
     next,
-    async start() {
-      assert.deepEqual(await next(), { ready: true });
+    ready,
+    async start(overrides = {}) {
+      await ready();
       process.send({
         ...input,
+        ...overrides,
         binding: rig.binding,
         runId: input.runId ?? rig.run.id,
       });
@@ -92,13 +97,13 @@ export function processContract(label, setup) {
       `kill ${point} then restart cannot lose or replay an edit`,
       async (t, rig) => {
         const { runtime, binding, run, store } = rig;
-        const claimed = await runtime.claim(binding, run.id, "old", 1500);
         const worker = child(t, rig, {
           action: "advance",
-          lease: claimed.lease,
           phase: point,
         });
-        await worker.start();
+        await worker.ready();
+        const claimed = await runtime.claim(binding, run.id, "old", 1500);
+        await worker.start({ lease: claimed.lease });
         assert.deepEqual(await worker.next(), { phase: point });
         await worker.kill();
         const state = await runtime.inspect(binding, run.id);
@@ -120,6 +125,8 @@ export function processContract(label, setup) {
             "terminal",
           );
         } else {
+          const recovered = child(t, rig, { action: "advance" });
+          await recovered.ready();
           await sleep(Math.max(0, claimed.lease.until - Date.now() + 30));
           const claim = await runtime.claim(binding, run.id, "next", 3000);
           assert.equal(claim.ok, true);
@@ -127,12 +134,9 @@ export function processContract(label, setup) {
             (await runtime.advance(binding, run.id, claimed.lease)).code,
             "lease-lost",
           );
-          const recovered = child(t, rig, {
-            action: "advance",
-            lease: claim.lease,
-          });
-          await recovered.start();
+          await recovered.start({ lease: claim.lease });
           const out = await recovered.next();
+          assert.equal(out.result.ok, true, JSON.stringify(out));
           assert.equal(out.result.run.status, "succeeded");
           assert.equal(out.result.run.attempts, 2);
           assert.equal(
@@ -152,27 +156,26 @@ export function processContract(label, setup) {
         binding,
         spec({ requestId: "checkpoint", steps: [edit(), edit()] }),
       );
-      const claim = await runtime.claim(binding, run.id, "old", 1500);
       const worker = child(t, rig, {
         action: "advance",
         runId: run.id,
-        lease: claim.lease,
         phase: "committed",
       });
-      await worker.start();
+      await worker.ready();
+      const claim = await runtime.claim(binding, run.id, "old", 1500);
+      await worker.start({ lease: claim.lease });
       assert.equal((await worker.next()).phase, "committed");
       await worker.kill();
       assert.equal((await runtime.inspect(binding, run.id)).run.cursor, 1);
+      const recovered = child(t, rig, { action: "advance", runId: run.id });
+      await recovered.ready();
       await sleep(Math.max(0, claim.lease.until - Date.now() + 30));
       const start = performance.now(),
         next = await runtime.claim(binding, run.id, "new", 3000);
-      const recovered = child(t, rig, {
-        action: "advance",
-        runId: run.id,
-        lease: next.lease,
-      });
-      await recovered.start();
+      await recovered.start({ lease: next.lease });
       const result = await recovered.next();
+      const recoveryMs = performance.now() - start;
+      assert.equal(result.result.ok, true, JSON.stringify(result));
       assert.equal(result.result.run.status, "succeeded");
       assert.equal(result.result.run.attempts, 2);
       const status = await runtime.inspect(binding, run.id);
@@ -188,8 +191,11 @@ export function processContract(label, setup) {
             backend: label,
             source: process.env.FORGE_RUNTIME_SOURCE,
             case: "kill-after-commit-checkpoint",
-            recoveryClaimThroughWorkerCommitMs: performance.now() - start,
+            recoveryClaimThroughWorkerCommitMs: recoveryMs,
             excludesLeaseWait: true,
+            workerReadyBeforeClaim: true,
+            excludesWorkerBootstrap: true,
+            includesWorkerStoreSetup: true,
           }) + "\n",
         );
       }
