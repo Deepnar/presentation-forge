@@ -1924,3 +1924,13 @@ without treating it as successful publication; if abort arrives during result ro
 writes, roll back the result and record only cancellation in a fresh transaction.
 Test both cancellation before dispatch and after writes, then advance the lease
 and prove no automatic retry. See the [V2-8H correction](V2-8H-EVAL.md).
+
+## Snapshot authority before asynchronous work
+
+A trusted binding can still be a mutable caller-owned object. Copy its validated
+owner/project fields synchronously at every public entry, before hashing or another
+await, then capture only that private copy in all transactions and callbacks.
+Copying only inside the transaction leaves closures using the original object;
+reusing it for project B can make an A-authorized clear delete B's rows. Test
+ordinary same-owner project switching across every public operation, including
+linked-run reads and approval. See the [V2-8H correction](V2-8H-EVAL.md).

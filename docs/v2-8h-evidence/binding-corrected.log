@@ -1,0 +1,295 @@
+TAP version 13
+# Subtest: turn submission requires explicit generation and revision; authority fields refuse
+ok 1 - turn submission requires explicit generation and revision; authority fields refuse
+  ---
+  duration_ms: 3.688794
+  type: 'test'
+  ...
+# Subtest: turn admission preserves existing stricter bounds and refuses oversized visible input
+ok 2 - turn admission preserves existing stricter bounds and refuses oversized visible input
+  ---
+  duration_ms: 0.913564
+  type: 'test'
+  ...
+# Subtest: submission rejects accessors, executable objects and duplicate scope without invoking them
+ok 3 - submission rejects accessors, executable objects and duplicate scope without invoking them
+  ---
+  duration_ms: 0.479425
+  type: 'test'
+  ...
+# Subtest: metadata schemas reject unbounded accounting maps and inconsistent attempt settlements
+ok 4 - metadata schemas reject unbounded accounting maps and inconsistent attempt settlements
+  ---
+  duration_ms: 2.474135
+  type: 'test'
+  ...
+# Subtest: SQLite process: local CLI exposes the same generation-bound submit, read, decision and clear contracts
+ok 5 - SQLite process: local CLI exposes the same generation-bound submit, read, decision and clear contracts
+  ---
+  duration_ms: 7536.517822
+  type: 'test'
+  ...
+# Subtest: SQLite process: approve/approve across independent processes links exactly one canonical run
+ok 6 - SQLite process: approve/approve across independent processes links exactly one canonical run
+  ---
+  duration_ms: 490.136226
+  type: 'test'
+  ...
+# Subtest: SQLite process: reject/approve across independent processes has one terminal winner
+ok 7 - SQLite process: reject/approve across independent processes has one terminal winner
+  ---
+  duration_ms: 490.222376
+  type: 'test'
+  ...
+# Subtest: SQLite process: approve-before crash leaves neither decision/run or exactly one recoverable pair
+ok 8 - SQLite process: approve-before crash leaves neither decision/run or exactly one recoverable pair
+  ---
+  duration_ms: 355.694787
+  type: 'test'
+  ...
+# Subtest: SQLite process: approve-after crash leaves neither decision/run or exactly one recoverable pair
+ok 9 - SQLite process: approve-after crash leaves neither decision/run or exactly one recoverable pair
+  ---
+  duration_ms: 366.166709
+  type: 'test'
+  ...
+# Subtest: SQLite process: reserve-after crash observes conservative recovery and accounting
+ok 10 - SQLite process: reserve-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 432.016811
+  type: 'test'
+  ...
+# Subtest: SQLite process: dispatch-after crash observes conservative recovery and accounting
+ok 11 - SQLite process: dispatch-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 386.997645
+  type: 'test'
+  ...
+# Subtest: SQLite process: receipt-after crash observes conservative recovery and accounting
+ok 12 - SQLite process: receipt-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 424.533117
+  type: 'test'
+  ...
+# Subtest: SQLite process: reserve-after-read crash observes conservative recovery and accounting
+ok 13 - SQLite process: reserve-after-read crash observes conservative recovery and accounting
+  ---
+  duration_ms: 415.508942
+  type: 'test'
+  ...
+# Subtest: SQLite process: publication-before crash never reruns a dispatched provider conversation
+ok 14 - SQLite process: publication-before crash never reruns a dispatched provider conversation
+  ---
+  duration_ms: 381.558455
+  type: 'test'
+  ...
+# Subtest: SQLite process: publication-after crash never reruns a dispatched provider conversation
+ok 15 - SQLite process: publication-after crash never reruns a dispatched provider conversation
+  ---
+  duration_ms: 364.473834
+  type: 'test'
+  ...
+# Subtest: SQLite process: clear in another process fences pending publication and settles late receipt once
+ok 16 - SQLite process: clear in another process fences pending publication and settles late receipt once
+  ---
+  duration_ms: 769.293896
+  type: 'test'
+  ...
+# Subtest: SQLite process: cancel/commit serialization reports committed winner without duplicate edits
+ok 17 - SQLite process: cancel/commit serialization reports committed winner without duplicate edits
+  ---
+  duration_ms: 536.594395
+  type: 'test'
+  ...
+# Subtest: SQLite: read retains its original project when the caller reuses the binding
+ok 18 - SQLite: read retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 130.868278
+  type: 'test'
+  ...
+# Subtest: SQLite: export retains its original project when the caller reuses the binding
+ok 19 - SQLite: export retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 37.054346
+  type: 'test'
+  ...
+# Subtest: SQLite: submit retains its original project when the caller reuses the binding
+ok 20 - SQLite: submit retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 14.415408
+  type: 'test'
+  ...
+# Subtest: SQLite: clear retains its original project when the caller reuses the binding
+ok 21 - SQLite: clear retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 15.776714
+  type: 'test'
+  ...
+# Subtest: SQLite: cancel retains its original project when the caller reuses the binding
+ok 22 - SQLite: cancel retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 41.203007
+  type: 'test'
+  ...
+# Subtest: SQLite: decide retains its original project when the caller reuses the binding
+ok 23 - SQLite: decide retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 30.309332
+  type: 'test'
+  ...
+# Subtest: SQLite: prepare retains its original project when the caller reuses the binding
+ok 24 - SQLite: prepare retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 30.317637
+  type: 'test'
+  ...
+# Subtest: SQLite: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate
+ok 25 - SQLite: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate
+  ---
+  duration_ms: 14.651691
+  type: 'test'
+  ...
+# Subtest: SQLite: host reload approves stored canonical plan once, then replay survives own saved revision
+ok 26 - SQLite: host reload approves stored canonical plan once, then replay survives own saved revision
+  ---
+  duration_ms: 39.02544
+  type: 'test'
+  ...
+# Subtest: SQLite: all read/export/mutation operations recheck owner; copied export confers no authority
+ok 27 - SQLite: all read/export/mutation operations recheck owner; copied export confers no authority
+  ---
+  duration_ms: 30.19337
+  type: 'test'
+  ...
+# Subtest: SQLite: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting
+ok 28 - SQLite: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting
+  ---
+  duration_ms: 32.030167
+  type: 'test'
+  ...
+# Subtest: SQLite: human save refuses new approval and preserves the pending visible proposal
+ok 29 - SQLite: human save refuses new approval and preserves the pending visible proposal
+  ---
+  duration_ms: 28.365112
+  type: 'test'
+  ...
+# Subtest: SQLite: reject is durable/idempotent, removes private plan and permits an explicit fresh turn
+ok 30 - SQLite: reject is durable/idempotent, removes private plan and permits an explicit fresh turn
+  ---
+  duration_ms: 26.705596
+  type: 'test'
+  ...
+# Subtest: SQLite: visible reply overflow settles usage, refuses without truncation and never retries
+ok 31 - SQLite: visible reply overflow settles usage, refuses without truncation and never retries
+  ---
+  duration_ms: 25.644183
+  type: 'test'
+  ...
+# Subtest: SQLite: publication loses to clear, but valid late usage settles once across generations
+ok 32 - SQLite: publication loses to clear, but valid late usage settles once across generations
+  ---
+  duration_ms: 23.593749
+  type: 'test'
+  ...
+# Subtest: SQLite: database-time expiry removes unapproved body and blocks approval at the boundary
+ok 33 - SQLite: database-time expiry removes unapproved body and blocks approval at the boundary
+  ---
+  duration_ms: 25.326597
+  type: 'test'
+  ...
+# Subtest: SQLite: precommit approval expiry rolls back both decision and canonical queue
+ok 34 - SQLite: precommit approval expiry rolls back both decision and canonical queue
+  ---
+  duration_ms: 27.659313
+  type: 'test'
+  ...
+# Subtest: SQLite: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once
+ok 35 - SQLite: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once
+  ---
+  duration_ms: 22.66572
+  type: 'test'
+  ...
+# Subtest: SQLite: project deletion cascades all new private and metadata child records
+ok 36 - SQLite: project deletion cascades all new private and metadata child records
+  ---
+  duration_ms: 20.484577
+  type: 'test'
+  ...
+# Subtest: SQLite: escaped controls and multibyte text remain readable/exportable/clearable after publication
+ok 37 - SQLite: escaped controls and multibyte text remain readable/exportable/clearable after publication
+  ---
+  duration_ms: 57.277158
+  type: 'test'
+  ...
+# Subtest: SQLite: final publication rechecks preparation lease after row writes; settled usage is preserved
+ok 38 - SQLite: final publication rechecks preparation lease after row writes; settled usage is preserved
+  ---
+  duration_ms: 22.624189
+  type: 'test'
+  ...
+# Subtest: SQLite: turn-count admission refuses before dispatch while read/export/clear remain available
+ok 39 - SQLite: turn-count admission refuses before dispatch while read/export/clear remain available
+  ---
+  duration_ms: 154.452351
+  type: 'test'
+  ...
+# Subtest: SQLite: private-bytes admission refuses before dispatch while read/export/clear remain available
+ok 40 - SQLite: private-bytes admission refuses before dispatch while read/export/clear remain available
+  ---
+  duration_ms: 387.247266
+  type: 'test'
+  ...
+# Subtest: SQLite: corrupt canonical digest refuses read/approve rather than executing a replacement plan
+ok 41 - SQLite: corrupt canonical digest refuses read/approve rather than executing a replacement plan
+  ---
+  duration_ms: 22.854372
+  type: 'test'
+  ...
+# Subtest: SQLite: reusing a committed decision key with different expected revisions is a conflict
+ok 42 - SQLite: reusing a committed decision key with different expected revisions is a conflict
+  ---
+  duration_ms: 26.352522
+  type: 'test'
+  ...
+# Subtest: SQLite: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear
+ok 43 - SQLite: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear
+  ---
+  duration_ms: 68.82912
+  type: 'test'
+  ...
+# Subtest: SQLite: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits
+ok 44 - SQLite: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits
+  ---
+  duration_ms: 42.010464
+  type: 'test'
+  ...
+# Subtest: SQLite: caller abort during publication row writes cannot commit a visible result
+ok 45 - SQLite: caller abort during publication row writes cannot commit a visible result
+  ---
+  duration_ms: 21.449049
+  type: 'test'
+  ...
+# Subtest: SQLite: abort after-claim is durable and cannot recover into an automatic retry
+ok 46 - SQLite: abort after-claim is durable and cannot recover into an automatic retry
+  ---
+  duration_ms: 11.411808
+  type: 'test'
+  ...
+# Subtest: SQLite: abort during-provider is durable and cannot recover into an automatic retry
+ok 47 - SQLite: abort during-provider is durable and cannot recover into an automatic retry
+  ---
+  duration_ms: 19.332873
+  type: 'test'
+  ...
+1..47
+# tests 47
+# suites 0
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15364.630712
+# forge-test-file "test/v2-turns-8h.test.js"
+# forge-test-file "test/v2-turns-process-8h.test.js"
+# forge-test-file "test/v2-turns-sqlite-8h.test.js"

@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: v2-5e chrome resize and style
+    # Subtest: handles align and an se drag resizes through one command
+    ok 1 - handles align and an se drag resizes through one command
+      ---
+      duration_ms: 1766.163336
+      type: 'test'
+      ...
+    # Subtest: zoomed scrolled resize converts on both axes
+    ok 2 - zoomed scrolled resize converts on both axes
+      ---
+      duration_ms: 2133.974726
+      type: 'test'
+      ...
+    # Subtest: style panel commits a fill and refreshes on undo
+    ok 3 - style panel commits a fill and refreshes on undo
+      ---
+      duration_ms: 13335.706857
+      type: 'test'
+      ...
+    # Subtest: repeated inserts cascade without stacking
+    ok 4 - repeated inserts cascade without stacking
+      ---
+      duration_ms: 2105.280932
+      type: 'test'
+      ...
+    # Subtest: double-click needs no stage jump after selection
+    ok 5 - double-click needs no stage jump after selection
+      ---
+      duration_ms: 2849.466339
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-5e chrome resize and style
+  ---
+  duration_ms: 22199.922072
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22942.410539
+# forge-test-file "test/v2-edit-chrome-5e.test.js"

@@ -1,0 +1,11 @@
+{
+  "implementationSha": "cc3ed185afda2058afa6f9b177f2d497fe30719c",
+  "recordedContainerId": "d89e445e3e9ac94460781fbe5932cc35b7ed8752814e1146ee7fa751e467d4b2",
+  "name": "forge-v28h-validation",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "port": 5544,
+  "running": true,
+  "nonMaintenanceDatabases": [],
+  "qualifiedWindow": "out/v2-8h-validation-r2/sustained-window.json",
+  "reusesOriginalPreTestSnapshot": true
+}

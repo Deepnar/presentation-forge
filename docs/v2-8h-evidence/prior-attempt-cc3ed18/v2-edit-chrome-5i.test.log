@@ -1,0 +1,54 @@
+TAP version 13
+# Subtest: slide management in real chrome
+    # Subtest: adds a blank slide and navigates to it
+    ok 1 - adds a blank slide and navigates to it
+      ---
+      duration_ms: 12865.588362
+      type: 'test'
+      ...
+    # Subtest: duplicates a slide with content preserved
+    ok 2 - duplicates a slide with content preserved
+      ---
+      duration_ms: 2069.356973
+      type: 'test'
+      ...
+    # Subtest: drags to reorder with a marker and commits once
+    ok 3 - drags to reorder with a marker and commits once
+      ---
+      duration_ms: 2583.195008
+      type: 'test'
+      ...
+    # Subtest: multiselects and bulk-deletes with two-step confirm
+    ok 4 - multiselects and bulk-deletes with two-step confirm
+      ---
+      duration_ms: 2076.403241
+      type: 'test'
+      ...
+    # Subtest: detaches a slide with a visible manual state
+    ok 5 - detaches a slide with a visible manual state
+      ---
+      duration_ms: 2054.829761
+      type: 'test'
+      ...
+    # Subtest: holds on a narrow viewport
+    ok 6 - holds on a narrow viewport
+      ---
+      duration_ms: 2066.692619
+      type: 'test'
+      ...
+    1..6
+ok 1 - slide management in real chrome
+  ---
+  duration_ms: 23724.715592
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24368.899914
+# forge-test-file "test/v2-edit-chrome-5i.test.js"

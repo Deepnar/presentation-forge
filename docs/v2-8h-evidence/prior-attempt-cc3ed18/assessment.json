@@ -1,0 +1,106 @@
+{
+  "implementationSha": "cc3ed185afda2058afa6f9b177f2d497fe30719c",
+  "classification": "Product mutable-binding regression found during independent review; partial validation retained, no acceptance. Replacement source must run every gate afresh.",
+  "completedRuns": 11,
+  "focused": {
+    "total": 76,
+    "pass": 76,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "bulk": {
+    "total": 2474,
+    "pass": 2474,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "completedSerialFiles": 9,
+  "completedSerialTests": {
+    "total": 73,
+    "pass": 73,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "incompleteGates": [
+    "serial-browser",
+    "postgres-contract",
+    "cross-process-faults",
+    "production-build",
+    "typecheck",
+    "benchmark-50",
+    "frontend-visual"
+  ],
+  "freshFiles": {
+    "docs/v2-7a-evidence/canvas-chart.json": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/canvas-chart.json",
+      "sha256": "0bc22f0a3b7504e3b7fbf7e410209fe644335bb2de33b22a102125be19278a9a"
+    },
+    "docs/v2-7a-evidence/canvas-table.json": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/canvas-table.json",
+      "sha256": "0dcbf49db5735eaa53080acca0e3f9e68e9116616705204a2a5d70f1a8dcbde8"
+    },
+    "docs/v2-7a-evidence/dashboard-empty.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/dashboard-empty.png",
+      "sha256": "c6bbf61fbffbb94d5ac73deb40067088c4760ee2d2c48259f8f616e1190999de"
+    },
+    "docs/v2-7a-evidence/dashboard-hosted-anon.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/dashboard-hosted-anon.png",
+      "sha256": "15b9c0a928ba0e2c6fa2b26c2e24a1f6e0c4a07ff9b10b98c4dbe62da8c588c1"
+    },
+    "docs/v2-7a-evidence/dashboard.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/dashboard.png",
+      "sha256": "875553676066e1dda0ae4ba6e13d4bee6044d98528458a59741308a859f4440a"
+    },
+    "docs/v2-7a-evidence/editor-blank.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/editor-blank.png",
+      "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+    },
+    "docs/v2-7a-evidence/editor-chart.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/editor-chart.png",
+      "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+    },
+    "docs/v2-7a-evidence/editor-history.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/editor-history.png",
+      "sha256": "b902327eceece0d730d3d9e954e42cef3ae6416063287e85a966e2eeeb30b1a9"
+    },
+    "docs/v2-7a-evidence/editor-narrow-projects.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/editor-narrow-projects.png",
+      "sha256": "c1beec607e4ac2810da1f12582cc8ed4ef0b49306b1d788dd836433f17dae9f8"
+    },
+    "docs/v2-7a-evidence/editor-narrow.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/editor-narrow.png",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+    },
+    "docs/v2-7a-evidence/editor-readonly.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/editor-readonly.png",
+      "sha256": "44796071cf8b6926f30af3b3d9981b9dd9eff5739c3f232903e0b087d2d6d95d"
+    },
+    "docs/v2-7a-evidence/editor-shell.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/editor-shell.png",
+      "sha256": "49ec93ca0b93e29cee696aab49a07ca9cdb399947c3bbe1d086818241fcc1a67"
+    },
+    "docs/v2-7a-evidence/editor-table.png": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/editor-table.png",
+      "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9"
+    },
+    "docs/v2-7a-evidence/large-deck.json": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/docs/v2-7a-evidence/large-deck.json",
+      "sha256": "12c415973705b9532c0f3f696748f3ff07b72da928d8c8571ff9cd572ff10e8b"
+    },
+    "out/v2-7a-validation/shell-chart.pptx": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/out/v2-7a-validation/shell-chart.pptx",
+      "sha256": "17378d8f4559dc52ef9ca112cd6e4dafe42012a91a3e636a70b89aa83e49a93a"
+    },
+    "out/v2-7a-validation/shell-table.pptx": {
+      "file": "docs/v2-8h-evidence/prior-attempt-cc3ed18/fresh-files/out/v2-7a-validation/shell-table.pptx",
+      "sha256": "c173e562db8b42a8a09b50326e7c94419194104e90da3037fba610f6869f83b0"
+    }
+  },
+  "originalEvidenceRestored": 5725,
+  "originalPptxIncluded": 164,
+  "canonicalOriginalsRestored": 5,
+  "allSnapshotHashesMatch": true
+}

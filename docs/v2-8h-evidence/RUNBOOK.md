@@ -62,3 +62,13 @@ so each invocation hands off between complete jobs; repeat until
 `coordinator-complete.json` exists. Complete recorded jobs are retained, and every
 new job still gets its resource window, watchdog and unfiltered test command.
 The final assembler still requires the complete 229-file inventory.
+
+The cc3 run subsequently stopped between complete jobs for a mutable-binding
+product correction. Its partial records/visuals are historical in
+`prior-attempt-cc3ed18/`. The corrected source `ac87496` uses
+`FORGE_VALIDATION_OUT=out/v2-8h-validation-r3`; all nine gates execute afresh.
+The same restart launcher now saves an exclusive per-source backend recheck
+`corrected-owned-backend-<sha7>.json`. The5725 historical files and five canonical
+originals were restored/hash-verified before this new run; snapshot links still
+refer to the original pre-test copies. New binding cases increase case counts,
+while the complete inventory remains229 files. Prior counts are never retagged.

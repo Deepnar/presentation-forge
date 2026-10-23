@@ -8931,6 +8931,14 @@ local inference. Only that separate transport correction is authorized; this aud
   the adapter and grants JSZip only to that exact helper; affected38 cases and
   independent10 boundary/unit cases pass. Complete replacement-source gates and
   final acceptance remain pending; partial prior results remain historical.
+  Independent review then found a mutable binding reference could switch project
+  identity after authorization: clear could delete another same-owner conversation.
+  Correction `ac87496` snapshots all seven public bindings before any await. All
+  seven new SQLite regressions fail on old product source; corrected development
+  unit/SQLite/process47/47 and typecheck pass. The prior cc3 matrix's76 focused,
+  2474 bulk and73 browser cases remain historical in the
+  [partial assessment](v2-8h-evidence/prior-attempt-cc3ed18/assessment.json).
+  All nine gates must execute afresh on the correction before acceptance.
   The browser remains the primary editor; native PowerPoint qualification concerns
   exported files and is not a requirement to edit a project in the browser.
   Existing runtime plans/receipts are durable; `converse` histories and WeakMap

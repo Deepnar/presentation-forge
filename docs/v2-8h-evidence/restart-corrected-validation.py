@@ -18,7 +18,7 @@ assert meta['NetworkSettings']['Ports']['5432/tcp']==[{'HostIp':'127.0.0.1','Hos
 databases=subprocess.check_output(['docker','exec',owned['id'],'psql','-U','postgres','-d','postgres','-At','-c',"SELECT datname FROM pg_database WHERE NOT datistemplate AND datname <> 'postgres' ORDER BY datname"],text=True).splitlines()
 assert databases==[], 'Prior attempt left databases; inspect/clean owned test data before continuing'
 record={'implementationSha':sha,'recordedContainerId':owned['id'],'name':owned['name'],'imageId':owned['imageId'],'port':owned['port'],'running':True,'nonMaintenanceDatabases':databases,'qualifiedWindow':str(out/'sustained-window.json'),'reusesOriginalPreTestSnapshot':True}
-with (root/'corrected-owned-backend.json').open('x') as stream:
+with (root/f'corrected-owned-backend-{sha[:7]}.json').open('x') as stream:
  json.dump(record,stream,indent=2);stream.write('\n');stream.flush();os.fsync(stream.fileno())
 for name in ['backup','prior-generated-backup']:
  original=pathlib.Path('out/v2-8h-validation')/name

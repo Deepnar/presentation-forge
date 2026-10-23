@@ -1,0 +1,27 @@
+{
+  "implementationSha": "ac8749613bfbd927dab629f479d3d05f10a99195",
+  "previousProductSource": "cc3ed185afda2058afa6f9b177f2d497fe30719c",
+  "failFirstProductDelta": "Only the seven new regression contracts were added over the old product source.",
+  "failFirst": {
+    "total": 7,
+    "pass": 0,
+    "fail": 7,
+    "skip": 0,
+    "cancelled": 0,
+    "log": "docs/v2-8h-evidence/binding-fail-first.log"
+  },
+  "correctedDevelopment": {
+    "total": 47,
+    "pass": 47,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "log": "docs/v2-8h-evidence/binding-corrected.log"
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "log": "docs/v2-8h-evidence/binding-typecheck.log"
+  },
+  "scope": "Private validated binding snapshot at every public entry; no host sandbox or data-policy changes. Both backends register all seven regressions; PostgreSQL executes in the complete gate.",
+  "acceptance": "pending complete gates and independent review"
+}

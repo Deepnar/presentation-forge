@@ -1,0 +1,115 @@
+✖ SQLite: read retains its original project when the caller reuses the binding (139.206813ms)
+✖ SQLite: export retains its original project when the caller reuses the binding (42.690094ms)
+✖ SQLite: submit retains its original project when the caller reuses the binding (14.546994ms)
+✖ SQLite: clear retains its original project when the caller reuses the binding (15.610856ms)
+✖ SQLite: cancel retains its original project when the caller reuses the binding (35.315692ms)
+✖ SQLite: decide retains its original project when the caller reuses the binding (29.506207ms)
+✖ SQLite: prepare retains its original project when the caller reuses the binding (22.399994ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 0
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 700.666591
+
+✖ failing tests:
+
+test at test/v2-turns-contract.js:36:5
+✖ SQLite: read retains its original project when the caller reuses the binding (139.206813ms)
+  Error: Run unavailable.
+      at load (file:///home/deepnar/Programs/presentations/packages/agent/run-transaction.ts:66:27)
+      at async inspectRun (file:///home/deepnar/Programs/presentations/packages/agent/run-transaction.ts:187:15)
+      at async turnView (file:///home/deepnar/Programs/presentations/packages/agent/turn-store.ts:180:28)
+      at async Promise.all (index 0)
+      at async file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:57:15
+      at async file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:34:19
+      at async file:///home/deepnar/Programs/presentations/src/projects/store.js:773:22 {
+    code: 'not-found'
+  }
+
+test at test/v2-turns-contract.js:36:5
+✖ SQLite: export retains its original project when the caller reuses the binding (42.690094ms)
+  Error: Run unavailable.
+      at load (file:///home/deepnar/Programs/presentations/packages/agent/run-transaction.ts:66:27)
+      at async inspectRun (file:///home/deepnar/Programs/presentations/packages/agent/run-transaction.ts:187:15)
+      at async turnView (file:///home/deepnar/Programs/presentations/packages/agent/turn-store.ts:180:28)
+      at async Promise.all (index 0)
+      at async file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:62:51
+      at async file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:34:19
+      at async file:///home/deepnar/Programs/presentations/src/projects/store.js:773:22 {
+    code: 'not-found'
+  }
+
+test at test/v2-turns-contract.js:36:5
+✖ SQLite: submit retains its original project when the caller reuses the binding (14.546994ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"stale-generation"}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-turns-contract.js:63:14)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/v2-turns-contract.js:36:5
+✖ SQLite: clear retains its original project when the caller reuses the binding (15.610856ms)
+  Error: Invalid durable run data.
+      at invalidRun (file:///home/deepnar/Programs/presentations/packages/agent/run-state.ts:60:23)
+      at loadState (file:///home/deepnar/Programs/presentations/packages/agent/turn-store.ts:84:55)
+      at async file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:32:15
+      at async file:///home/deepnar/Programs/presentations/src/projects/store.js:773:22 {
+    code: 'invalid-document'
+  }
+
+test at test/v2-turns-contract.js:36:5
+✖ SQLite: cancel retains its original project when the caller reuses the binding (35.315692ms)
+  Error: Run unavailable.
+      at load (file:///home/deepnar/Programs/presentations/packages/agent/run-transaction.ts:66:27)
+      at async cancelRun (file:///home/deepnar/Programs/presentations/packages/agent/run-transaction.ts:192:15)
+      at async file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:117:25
+      at async file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:34:19
+      at async file:///home/deepnar/Programs/presentations/src/projects/store.js:773:22 {
+    code: 'not-found'
+  }
+
+test at test/v2-turns-contract.js:36:5
+✖ SQLite: decide retains its original project when the caller reuses the binding (29.506207ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"stale-generation"}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-turns-contract.js:63:14)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/v2-turns-contract.js:36:5
+✖ SQLite: prepare retains its original project when the caller reuses the binding (22.399994ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"stale-generation"}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-turns-contract.js:63:14)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

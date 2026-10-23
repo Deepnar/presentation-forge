@@ -1,0 +1,6 @@
+{
+  "implementationSha": "cc3ed185afda2058afa6f9b177f2d497fe30719c",
+  "nextJob": "v2-edit-chrome-5k.test",
+  "newCompleteJobs": 3,
+  "reason": "Intentional bounded coordinator handoff; no test process active"
+}

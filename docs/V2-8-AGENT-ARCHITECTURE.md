@@ -353,6 +353,11 @@ project; simultaneous count/record limits and final-result reservations are in
 validation and generated TypeScript types. Serialized UTF-8 bounds include JSON
 escaping and multibyte text, with matching save/load bounds.
 
+Every public entry snapshots validated host owner/project fields synchronously
+before any await. All later transaction jobs, run lookups/queue calls and provider
+callbacks capture that private copy, so reusing a caller-owned binding cannot switch
+project identity after authorization.
+
 Submission requires the current generation and conversation revision. It deduplicates
 an immutable request identity within that generation; one submitted/preparing/
 awaiting-decision turn is admitted per project. Every new turn binds a saved project

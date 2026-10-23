@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-PPTX-ID-45c2c4c.json"
   },
   "implementationHead": {
-    "sha": "cc3ed185afda2058afa6f9b177f2d497fe30719c",
-    "note": "V2-8H boundary correction: reuse named Node record schema adapter; exact-file test policy for accepted PPTX ID helper.38 affected cases and10 independent boundary/unit cases pass. Complete replacement-source nine gates and acceptance pending."
+    "sha": "ac8749613bfbd927dab629f479d3d05f10a99195",
+    "note": "V2-8H correction snapshots all seven public bindings before asynchronous work. Seven fail-first SQLite regressions; corrected development unit/SQLite/process47/47 and typecheck pass. All nine complete replacement-source gates and independent acceptance pending."
   },
   "activeMilestone": {
     "id": "V2-8H",
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "turn-approval",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/turn-approval.json",
-      "reason": "Complete exact-source execution, no skips/cancellations. Remaining gates are still pending."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/non-browser-bulk.json",
-      "reason": "Complete exact-source execution, no skips/cancellations. Remaining gates are still pending."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
     },
     {
       "id": "serial-browser",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Approved resume; exact-source validation has not executed."
+      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
     },
     {
       "id": "postgres-contract",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Approved resume; exact-source validation has not executed."
+      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
     },
     {
       "id": "cross-process-faults",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Approved resume; exact-source validation has not executed."
+      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
     },
     {
       "id": "production-build",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Approved resume; exact-source validation has not executed."
+      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
     },
     {
       "id": "typecheck",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Approved resume; exact-source validation has not executed."
+      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
     },
     {
       "id": "benchmark-50",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Approved resume; exact-source validation has not executed."
+      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
     },
     {
       "id": "frontend-visual",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Approved resume; exact-source validation has not executed."
+      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
     }
   ],
   "knownBlockers": [],

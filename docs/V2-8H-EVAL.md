@@ -384,7 +384,7 @@ no blocker or broad assertion weakening. The full nine-gate matrix will execute
 afresh on this source using the recorded owned PostgreSQL instance and the
 original verified pre-test snapshot. Prior partial results are retained separately.
 
-### Replacement-source execution in progress
+### Superseded cc3 partial execution
 
 A fresh sustained window qualified on `cc3ed18`: 180.76 seconds, mean CPU14.99%,
 iowait9.71%, physical NVMe busy0.99%, weighted queue0.045, no observed userspace
@@ -394,7 +394,31 @@ replacement test, the [backend recheck](v2-8h-evidence/corrected-owned-backend.j
 verified the exact recorded PostgreSQL15.18 instance and zero leftover databases.
 Original pre-test snapshots were linked and preserved, not replaced.
 
-Current exact-source gates: **focused76/76**, **bulk2474/2474**, all zero fail/skip/
+At that source, completed gates: **focused76/76**, **bulk2474/2474**, all zero fail/skip/
 cancelled. The full serial browser sequence has begun; remaining PostgreSQL files,
 build/type/benchmark and fresh visual/native preservation still await completion.
 No acceptance is implied by these passing subsets.
+
+### Mutable binding HOLD and replacement-source validation
+
+Independent source inspection found ordinary caller reuse of a mutable binding
+could change the project after authorization. A tiny in-memory clear probe deleted
+B's submitted turn while advancing A's header and leaving A unreadable. Linked-run
+reads/cancel can fail closed; decision/preparation can lose stable project identity.
+This is a product correctness defect, not malicious-host behavior or a timing waiver.
+
+Correction **`ac8749613bfbd927dab629f479d3d05f10a99195`** snapshots validated binding
+fields at all seven public entries, before any await, and captures that private copy
+throughout. Seven new both-backend contracts exercise immediate same-owner project
+reuse and preserve B's entire stored conversation/run rows. All seven SQLite cases
+fail on old product source. Corrected development unit/SQLite/process **47/47** and
+typecheck pass; [raw correction evidence](v2-8h-evidence/binding-correction.json)
+is separate from complete gates.
+
+The cc3 partial run retained76 focused,2474 bulk and73 serial leaves (nine of26
+files), all passing without skips/cancellations. It stopped between jobs before
+this correction; no job was cancelled. Its [raw records and fresh partial visuals](v2-8h-evidence/prior-attempt-cc3ed18/assessment.json)
+remain historical. All5725 historical files (including164 PPTXs) and five canonical
+output originals were restored/hash-verified before the replacement run. All nine
+current gates are reset to unexecuted until fresh exact-source execution, and the
+accepted baseline remains `45c2c4c`.
