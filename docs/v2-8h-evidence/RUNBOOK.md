@@ -87,6 +87,7 @@ preserve the actual exports before restoring their five canonical originals:
 FORGE_VALIDATION_OUT=out/v2-8h-validation-r4 python3 docs/v2-8h-evidence/assemble-results.py
 FORGE_VALIDATION_OUT=out/v2-8h-validation-r4 python3 docs/v2-8h-evidence/finish-evidence.py
 node docs/v2-8h-evidence/inspect-native-ids.mjs
+FORGE_VALIDATION_OUT=out/v2-8h-validation-r4 python3 docs/v2-8h-evidence/assess-resources.py
 ```
 
 The finisher is a one-time operation against the fresh browser exports; after
@@ -96,3 +97,6 @@ recorded hashes and numeric nonvisual identity uniqueness within every generated
 OOXML part. It adds archive inspection evidence, not distinct primary test cases
 or interactive Microsoft PowerPoint qualification. Inspect the generated contact
 sheets and full-size relevant images before marking the visual gate passed.
+The resource assessment summarizes retained admission/running samples and their
+limitations after the ordered coordinator completes; it cannot manufacture a quiet
+window or supply missing test execution.
