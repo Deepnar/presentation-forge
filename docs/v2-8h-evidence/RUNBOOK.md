@@ -100,3 +100,14 @@ sheets and full-size relevant images before marking the visual gate passed.
 The resource assessment summarizes retained admission/running samples and their
 limitations after the ordered coordinator completes; it cannot manufacture a quiet
 window or supply missing test execution.
+
+After the separate reviewer confirms all database checks are finished, save/fsync
+the actual zero-database observation before stopping the exact recorded service:
+
+```sh
+FORGE_VALIDATION_OUT=out/v2-8h-validation-r4 python3 docs/v2-8h-evidence/cleanup-owned.py --after-review-database-checks
+```
+
+This requires completed execution/assembly, verifies ownership and the empty actual
+catalog, writes exclusive durable records, then checks exact-ID absence and a
+refused connection to5544. A saved script is not evidence that cleanup ran.
