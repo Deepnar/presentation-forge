@@ -49,6 +49,7 @@ export function createTurnService(backend: RuntimeBackend) {
   }
   return Object.freeze({
     async read(binding: Binding, input: unknown = {offset:0,limit:20}) {
+      binding=checkBinding(binding);
       const r=request(input,['offset','limit']);
       if (!integer(r.offset) || !integer(r.limit) || r.limit<1 || r.limit>20 || r.offset>L.turns) invalidRun();
       const offset=r.offset,limit=r.limit;
@@ -58,12 +59,14 @@ export function createTurnService(backend: RuntimeBackend) {
           .slice(offset,offset+limit).map(t=>turnView(tx,binding,s,t)))}));
     },
     async export(binding: Binding) {
+      binding=checkBinding(binding);
       return transaction(binding,async(tx,s)=>({ok:true as const,version:1,...stamp(s),policyVersion:1,
         accounting:{...s.header.accounting},turns:await Promise.all([...s.turns]
           .sort((a,b)=>a.meta.createdAt-b.meta.createdAt || a.meta.id.localeCompare(b.meta.id))
           .map(t=>turnView(tx,binding,s,t)))}));
     },
     async submit(binding: Binding,input: unknown) {
+      binding=checkBinding(binding);
       const r=parseTurnSubmission(input), {generation:g,revision:_r,...identity}=r;
       const digest=await identityDigest(identity);
       return transaction(binding,async(tx,s,now)=>{
@@ -88,6 +91,7 @@ export function createTurnService(backend: RuntimeBackend) {
       });
     },
     async clear(binding: Binding,input: unknown) {
+      binding=checkBinding(binding);
       const r=request(input,['generation','revision']);
       return transaction(binding,async(tx,s,now)=>{
         const old=generation(s,r) ?? revision(s,r);if(old)return old;
@@ -107,6 +111,7 @@ export function createTurnService(backend: RuntimeBackend) {
       });
     },
     async cancel(binding: Binding,input: unknown) {
+      binding=checkBinding(binding);
       const r=request(input,['generation','revision','turnId']);
       if(!identifier(r.turnId))invalidRun();
       return transaction(binding,async(tx,s,now)=>{
@@ -122,6 +127,7 @@ export function createTurnService(backend: RuntimeBackend) {
       });
     },
     async decide(binding: Binding,input: unknown) {
+      binding=checkBinding(binding);
       const r=request(input,['generation','revision','proposalId','proposalRevision','projectRevision','decision','decisionKey']);
       if(!identifier(r.proposalId) || !identifier(r.decisionKey) || !integer(r.proposalRevision) ||
         !integer(r.projectRevision) || !['approve','reject'].includes(String(r.decision)))invalidRun();
@@ -159,6 +165,7 @@ export function createTurnService(backend: RuntimeBackend) {
       });
     },
     async prepare(binding: Binding,input: unknown,provider: ModelProvider,options: {signal?:AbortSignal}={}) {
+      binding=checkBinding(binding);
       const r=request(input,['generation','revision','turnId','workerId']);
       if(!identifier(r.generation) || !integer(r.revision) || !identifier(r.turnId) || !identifier(r.workerId))invalidRun();
       const g=r.generation,worker=r.workerId,turnId=r.turnId;
