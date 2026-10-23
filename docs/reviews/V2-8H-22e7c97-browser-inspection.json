@@ -1,0 +1,1120 @@
+{
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "reviewer": "/root/turn_contract_review",
+  "kind": "independent-read-only-browser-image-inspection",
+  "atUtc": "2026-10-23T15:44:14.128911+00:00",
+  "status": "no-new-blocking-visual-regression-observed; final acceptance pending",
+  "captureCount": 76,
+  "contactSheetsInspected": 13,
+  "fullSizeCapturesInspected": 16,
+  "allImageHashesVerified": true,
+  "serialExecutionInspected": {
+    "files": 26,
+    "tests": {
+      "total": 208,
+      "pass": 208,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "executedBy": "implementer; not independently rerun"
+  },
+  "images": [
+    {
+      "index": 1,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6a-evidence--conflict.png",
+      "sha256": "623b908541f9d2795946add4bf2d9378bf262cc591084859f1e800327a22e821",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 1,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 2,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6a-evidence--project-list.png",
+      "sha256": "4f4eae5e900c62d35741444ed56c200c55c114d856442d7135e78025a2d4add1",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 1,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 3,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6a-evidence--recovered-banner.png",
+      "sha256": "3ebc5b5a4fe7023b5987879a9f9c0bc52973cb52b5692aa7a51edef63f83e463",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 1,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 4,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6a-evidence--reopened.png",
+      "sha256": "48c097e42dab1df37bc120e1546ca163e50c253135ab257a290b9be9b2b690a7",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 1,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 5,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6a-evidence--saved.png",
+      "sha256": "b1fa4f2587c054b8ff619e9db5f2b913339b528ca7b054b02565129d501c8b28",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 1,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 6,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6b-evidence--history-after-refresh.png",
+      "sha256": "a77ee7f52081fae3aa8432a50125fdd9ea34254703fd292a87079d20a964ef44",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 1,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 7,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6b-evidence--history-list.png",
+      "sha256": "f9e33c271aeafcf1383d1fda48c6bf63644d19f43d85b6e9a5bf757bb6760f22",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 2,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 8,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6b-evidence--history-preview.png",
+      "sha256": "fd974b56ef2648da60e195c2fe64f4a5091a2357fcb9d7a70defaced4249f9bf",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 2,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 9,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6b-evidence--history-restored.png",
+      "sha256": "8cbf9e61480d42c386f2c80ac011c0b02230cbc42b7d8dd0225b44cec24e74bc",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 2,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 10,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6b-evidence--history-three-versions.png",
+      "sha256": "4e56d2a3a8fc4b0f9a4cc87d2caccdf8064f88db3a1e660e8a7d63ec4e12ec16",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 2,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 11,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6c-evidence--hosted-after-restart.png",
+      "sha256": "540cb68d3069c3ca650ed1a1281eff15c5f7fca04aac8df9a6f7e451843c5d57",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 2,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 12,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6c-evidence--hosted-conflict.png",
+      "sha256": "9602ccdd2f2450bcc6da1064a93780c4beb98c423ce83c86909174845764f83c",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 2,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 13,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6c-evidence--hosted-history.png",
+      "sha256": "bbed53fe170abe432bdd201c227b0859813918151e5fc4f3729a302c26217ea0",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 3,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 14,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-6c-evidence--hosted-restored.png",
+      "sha256": "ad36115983c36e02b5280a6b4b049255f5eb689561f3e8618522bae80232c899",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 3,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 15,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--dashboard-empty.png",
+      "sha256": "420b39b6bd46e9e18e468327452dfbbd1818990ea361bfaad8a697cd68facf0b",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 3,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 16,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--dashboard-hosted-anon.png",
+      "sha256": "68dfd00a4e1b3b06c548774a3088af097d68971d9e737256b0ec7fabc2fe1756",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 3,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 17,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--dashboard.png",
+      "sha256": "9efdda8a9077188279e24c9f35906d8e989ef60a57da8cbe69f7e9bef5a30bcc",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 3,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 18,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-blank.png",
+      "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 3,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 19,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-chart.png",
+      "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 4,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 20,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-history.png",
+      "sha256": "f1390bea10b6c5cdf40bef3105628781d520b43cc1053fad458cdb66b54e5084",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 4,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 21,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-narrow-projects.png",
+      "sha256": "180b87710accdd031f18dde70d1ae8a414ce5eaca1c7154961096741b3dc2451",
+      "dimensions": [
+        500,
+        757
+      ],
+      "contactSheet": 4,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 22,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-narrow.png",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+      "dimensions": [
+        500,
+        757
+      ],
+      "contactSheet": 4,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 23,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-readonly.png",
+      "sha256": "7ee64bf983c1a5cc40d897767c18adb7d54a8d2192699f07cd17127d14b079c1",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 4,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 24,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-shell.png",
+      "sha256": "c3f143b753a01bedc1fa08a911a2c2f25c9ae893635aac9f0f5b7896c13e7eae",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 4,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 25,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-table.png",
+      "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 5,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 26,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-1-evidence--imported-chart.png",
+      "sha256": "2adc698b8b3681c4631365f341c6a401533731bb0520d9063d3cef0d4926f3ec",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 5,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 27,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-1-evidence--imported-narrow.png",
+      "sha256": "24169887b9dffe74183732a0001ee037a2c63ff9e5cd863fe275478c2bd098ff",
+      "dimensions": [
+        480,
+        900
+      ],
+      "contactSheet": 5,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 28,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-1-evidence--imported-stats.png",
+      "sha256": "ee364de7161c8682de0e8a2dc89efe1f573241470460c45038aa10aa733303a9",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 5,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 29,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-1-evidence--imported-table.png",
+      "sha256": "5986dedaca9e3f751953b5ad3d3ca821eb697f1739603e3da44c157229249866",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 5,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 30,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-1-evidence--imported-transition.png",
+      "sha256": "d375efc975ddd3f8ed05a2079c572b000dc455e8d1f33ae57f23ff55807862a6",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 5,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 31,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-2-evidence--ambiguous-response.png",
+      "sha256": "3530ff99d10bcf9c522703cef6ff876dbd60271dcd1bfa3070a0835fefd6759f",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 6,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 32,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-2-evidence--boundary-narrow.png",
+      "sha256": "b8a1a5dae8b1df2782c159acb546ce7069145b6046a24525f5d4a0a597e9d947",
+      "dimensions": [
+        480,
+        900
+      ],
+      "contactSheet": 6,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 33,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-2-evidence--completed-chat.png",
+      "sha256": "e213159a65f43ff99440643ac4126546f8c194fedd32e5ebdcbe4d826b273796",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 6,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 34,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-2-evidence--deck-page-action.png",
+      "sha256": "4132fa53b21ea6b965c9e322ced0d88fd58728177c556504f8d9552e017c9994",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 6,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 35,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-2-evidence--handoff-history.png",
+      "sha256": "29f9b1c6612c8f1b1316483592c17888758dcd393fe7178119cec27b18ab653d",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 6,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 36,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-2-evidence--opening-project.png",
+      "sha256": "7a30c596d123d1df1a613ea09d4fac416b0db98c4d4fda03d2e609b14208f13c",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 6,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 37,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-2-evidence--refusal-narrow.png",
+      "sha256": "7c597de7ee044e82c83dbeaed15184ec005bd43305afdaba8bef2622dae0de1b",
+      "dimensions": [
+        480,
+        900
+      ],
+      "contactSheet": 7,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 38,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7b-2-evidence--session-changed.png",
+      "sha256": "f4d423532928cdf84588714aac0687442e5d62f4ba84e8022d4517c931cbebed",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 7,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 39,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-content.png",
+      "sha256": "25985e5569e143ea56a8a06c59f5559bd6ed1cd4bf5c264c16e47bbb741ea26b",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 7,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 40,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-desktop.png",
+      "sha256": "88739006d120c3a12ad8b3deb997db7e8fcb88aa6fce49183773db8be39b810b",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 7,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 41,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-development.png",
+      "sha256": "1c106ca27f5c8116142a270fbe0701c50887e386a0d96145ff0c4e38ca9b76fa",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 7,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 42,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-failure.png",
+      "sha256": "0377dbfcc734b77796fd5647bf43743eb15ffc0f025a4ef9f53430f90ed94f86",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 7,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 43,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-failure.png",
+      "sha256": "e3f7dcc637327f5f3e8ae47ab1f93fa2111c0f6de9164f0ae535b115108b20a1",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 8,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 44,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-recovered.png",
+      "sha256": "aa9ae8992ea5ae64b028f496f34bab627d8083336085cd9d9d083f1eb5a02825",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 8,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 45,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-failure.png",
+      "sha256": "4301d1c752009972d262d80f83176a8fafc4ac946aa2a71c0493910898ef7b0c",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 8,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 46,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-recovered.png",
+      "sha256": "408ad4af8efb23ebbdcfae6193ff21054f780faa1030aebdb856d5cd7f6aefea",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 8,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 47,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-loading.png",
+      "sha256": "04ea58a35ba7e403a845b762a595219ce6974bd683b7a10edaabbddcb508c2f3",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 8,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 48,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-narrow-dark.png",
+      "sha256": "feffb623e5c243ef8f4d41cbdcde879724dcd8bd607b5c8a2b0dda34567ed859",
+      "dimensions": [
+        480,
+        900
+      ],
+      "contactSheet": 8,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 49,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-network-failure.png",
+      "sha256": "088e6411dcabef8139c43e8f693722dbb0f5c5779f3094c92e8c6cf8d1117f99",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 9,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 50,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-restored.png",
+      "sha256": "060b3573743a420b722e76d8332765a1498d69ca12a488df3c27ff8f381bb634",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 9,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 51,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-cross-tab.png",
+      "sha256": "b3d2d6d89dbea07b5d1f521f7fd5d7ef727ab3d18a2e8b922d35f8266816ed99",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 9,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 52,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-pending.png",
+      "sha256": "a56252b73ad6886b2abd44a64ba989aea5e2046739c3a2fede9fad7eaea16dcb",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 9,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 53,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-settled.png",
+      "sha256": "79c8341121090e941d1edc1456f5486a07ff19bf75eeade459ad2a368416085e",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 9,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 54,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-1-evidence--covers-timeout.png",
+      "sha256": "fbc7ee047086cd534e90b251d27ed8d9a738448188e8048fc99b3115b7241f8f",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 9,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 55,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated-failure.png",
+      "sha256": "d3e99dec1e6d0ed8b5bad983571c175eba9e4fc0a104a849316ee6dc3a880371",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 10,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 56,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated.png",
+      "sha256": "1a04d2d42b680900216fce2f22e2afa91978eb39db16f873a80324092ba7d062",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 10,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 57,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-pending.png",
+      "sha256": "0f0513ec49dac4491bde0f0318e27d089f163e0dafe0d163ac765cbc3c6eb09a",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 10,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 58,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-saved-failure.png",
+      "sha256": "ca9b01341b110e5a8fe98a03014a655d8cfe5964b63a30d2fa4dfac296d741cc",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 10,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 59,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-desktop.png",
+      "sha256": "eadcdc90a1baf6898b373fc40485dc6662615f7baddee6b3393bca3092dd8b83",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 10,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 60,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-development.png",
+      "sha256": "7681afb5f9880071d101523f24151735e82c6ce5e80c1e4b28b5053ebe0692ce",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 10,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 61,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-empty.png",
+      "sha256": "80e199ebc7dbc0474adcad0be12fa0327db53ea13d5800eae1d8649525e0e417",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 11,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 62,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-generated-error.png",
+      "sha256": "bb0dddf29f4cd3aaa19db7e1eed5eaa1c91f3e98da851c0a453aa0a835003bc0",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 11,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 63,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dark.png",
+      "sha256": "ce6236ae3cb5a4f765c83c25b5f743663d6f5fdeee125fd016aab9f03d24cade",
+      "dimensions": [
+        480,
+        900
+      ],
+      "contactSheet": 11,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 64,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dialog.png",
+      "sha256": "eb83d7fac857c2289600cdb2db86c3117b658315de904d9ad5b8287a3a1d76cd",
+      "dimensions": [
+        480,
+        900
+      ],
+      "contactSheet": 11,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 65,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-no-matches.png",
+      "sha256": "6aac6d19b7396ec3be4ad0c08e024ce7352c400c482b6ddd02be5d3a00711b54",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 11,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 66,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-saved-error.png",
+      "sha256": "c8ba80896e7e677be9c4a0047ec5863eacfe8427e5628155ead859304f100e58",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 11,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 67,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-2-evidence--catalog-signed-out.png",
+      "sha256": "1d9a7ee31b2395f5a91c377d342b2675e0e32681fd2ea9dd8376eb1528df5d21",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 12,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 68,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-3-evidence--editor-blank-history.png",
+      "sha256": "8b5968004665fd4e58691c58f979b6957375997a93149de2d65f03122a7d0e5e",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 12,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 69,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-3-evidence--editor-chart.png",
+      "sha256": "2a5278fef08bb80c8886e2dc723c5457bd995d2281e8d87d986f762c8c8914df",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 12,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 70,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-3-evidence--editor-desktop.png",
+      "sha256": "a3ba6c5534bb1ab18a699dac5cd72430000b605a88c5d4893f231ade7cbef849",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 12,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 71,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-dark.png",
+      "sha256": "3d40113f2f2cb79302af90b7a4951c180fed9bb77466f6003b83ea2e194c254e",
+      "dimensions": [
+        480,
+        900
+      ],
+      "contactSheet": 12,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 72,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-light.png",
+      "sha256": "b7b1c9001cccd3d60f9861abe793ae7392cfc1f5d734c24b2d0fbff1248cbdba",
+      "dimensions": [
+        480,
+        900
+      ],
+      "contactSheet": 12,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 73,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-3-evidence--editor-readonly.png",
+      "sha256": "38899725b0e0eea147f2c7ad4f70ad3bbf43fdb5c7b8461df70f08d67354b48a",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 13,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 74,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-3-evidence--editor-table.png",
+      "sha256": "57f373db382d16b33a6c7170d1ee2dc706accd15d255191774cc1452ebd2be5b",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 13,
+      "fullSizeInspected": true
+    },
+    {
+      "index": 75,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-3-evidence--standalone-live.png",
+      "sha256": "9260c87d399a3437fc692208f91a171cb1fe1327cc4a35be1ead2e27d4344a35",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 13,
+      "fullSizeInspected": false
+    },
+    {
+      "index": 76,
+      "file": "docs/v2-8h-evidence/regression-images/docs--v2-7c-3-evidence--standalone-projects.png",
+      "sha256": "c71df8442457212e3e323c12b61eee1eb1ac444965118bb64677519301369a7c",
+      "dimensions": [
+        1440,
+        757
+      ],
+      "contactSheet": 13,
+      "fullSizeInspected": false
+    }
+  ],
+  "contactSheets": [
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-01.jpg",
+      "sha256": "7259840cf9ddf9cf46afa3d52a42123e8c5c4d7b9faab778261bca6905206fbb",
+      "firstImage": 1,
+      "lastImage": 6,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-02.jpg",
+      "sha256": "f42a4ee9448c0db2a10f57d265f99819a9c0e9f8816f0d212eda8132bf39df99",
+      "firstImage": 7,
+      "lastImage": 12,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-03.jpg",
+      "sha256": "f60018411bb753130367b820db07d90ca04ad6d7087a63ea0bd8f4b021793f9f",
+      "firstImage": 13,
+      "lastImage": 18,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-04.jpg",
+      "sha256": "d54b48ccbc31de68edf366dcd99db691633a0845c445e581ede63a3a771870fb",
+      "firstImage": 19,
+      "lastImage": 24,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-05.jpg",
+      "sha256": "f5616ecfcba1d942d55d898c1cd6400f8582ac73d08bda41ab700ae3e55ae358",
+      "firstImage": 25,
+      "lastImage": 30,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-06.jpg",
+      "sha256": "fe95662dc64b269f447489e072ce87adc8e2ff515b197b0b1080703197ee0d8f",
+      "firstImage": 31,
+      "lastImage": 36,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-07.jpg",
+      "sha256": "7b8713cacdc827bf206606a090189a04e6c31b2a3ec499e5ced7f1b2e2675c4a",
+      "firstImage": 37,
+      "lastImage": 42,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-08.jpg",
+      "sha256": "989c521c9d01af558d26094510397f890615d01827a6d978d49e102aadf3ff99",
+      "firstImage": 43,
+      "lastImage": 48,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-09.jpg",
+      "sha256": "4d2227a615fb5418f46d8ea3afe16cf47a7a649417e1b0e9a93b4c544f50bfed",
+      "firstImage": 49,
+      "lastImage": 54,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-10.jpg",
+      "sha256": "1faa684d825f08541256e98768776b2b950540f81fae1b42c739180cff1a0493",
+      "firstImage": 55,
+      "lastImage": 60,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-11.jpg",
+      "sha256": "05b901ce9e1d31974e5123c0e00d3622f48a5cf1174ff3a65526ad5bfdd1a563",
+      "firstImage": 61,
+      "lastImage": 66,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-12.jpg",
+      "sha256": "ef6d66b23e1667bcde8f84d989eabb1816ae79c60c60a66b5ed577b1a720fdd3",
+      "firstImage": 67,
+      "lastImage": 72,
+      "inspected": true
+    },
+    {
+      "file": "out/v2-8h-validation-r4/browser-contact/sheet-13.jpg",
+      "sha256": "d1901d569182723b93cbc6fd479c78223c3f6a6aa8b025fe36b41d51a053711f",
+      "firstImage": 73,
+      "lastImage": 76,
+      "inspected": true
+    }
+  ],
+  "canvasMeasurementsInspected": [
+    {
+      "source": "docs/v2-7a-evidence/canvas-chart.json",
+      "sha256": "2e7608e2e2d6e78fd5b5eafe00e490ee872b105c48b793c6bcdd671868463194",
+      "coordinatorJob": "v2-edit-chrome-7a.test",
+      "freshWithinRecordedJobWindow": true,
+      "measurements": [
+        {
+          "before": [
+            456,
+            108.25125122070312,
+            719.99169921875,
+            404.9925231933594
+          ],
+          "after": [
+            456,
+            108.20159912109375,
+            719.99169921875,
+            404.9925537109375
+          ],
+          "delta": [
+            0,
+            -0.049652099609375,
+            0,
+            3.0517578125e-05
+          ],
+          "maxDeltaPx": 0.049652099609375
+        }
+      ]
+    },
+    {
+      "source": "docs/v2-7a-evidence/canvas-table.json",
+      "sha256": "c89fed1044e2f3da784c182f28d41223f7eda6368a1a9fa41d837ad960f88fed",
+      "coordinatorJob": "v2-edit-chrome-7a.test",
+      "freshWithinRecordedJobWindow": true,
+      "measurements": [
+        {
+          "before": [
+            456,
+            108.25122833251953,
+            719.99169921875,
+            404.9925537109375
+          ],
+          "after": [
+            456,
+            108.20167541503906,
+            719.99169921875,
+            404.9925537109375
+          ],
+          "delta": [
+            0,
+            -0.04955291748046875,
+            0,
+            0
+          ],
+          "maxDeltaPx": 0.04955291748046875
+        }
+      ]
+    },
+    {
+      "source": "out/v2-7b-1-validation/browser/canvas-chart.json",
+      "sha256": "edf767b7477670d8a08de2671f6136305f14d73384522721a76623c3cd4e5210",
+      "coordinatorJob": "v2-import-chrome-7b.test",
+      "freshWithinRecordedJobWindow": true,
+      "measurements": [
+        {
+          "before": [
+            456,
+            108.36715698242188,
+            719.99169921875,
+            404.9925842285156
+          ],
+          "after": [
+            456,
+            108.29776763916016,
+            719.99169921875,
+            404.9925842285156
+          ],
+          "openingMs": 1508,
+          "states": [
+            "dirty",
+            "saving",
+            "saved"
+          ],
+          "maxDeltaPx": 0.06938934326171875
+        }
+      ]
+    },
+    {
+      "source": "out/v2-7b-1-validation/browser/canvas-table.json",
+      "sha256": "6661e6699110f1a452334a6f40d6bce98763d00e0b782a3f027d7467231d6184",
+      "coordinatorJob": "v2-import-chrome-7b.test",
+      "freshWithinRecordedJobWindow": true,
+      "measurements": [
+        {
+          "before": [
+            456,
+            108.2978286743164,
+            719.99169921875,
+            404.9925842285156
+          ],
+          "after": [
+            456,
+            108.2206802368164,
+            719.99169921875,
+            404.9925842285156
+          ],
+          "openingMs": 1505,
+          "states": [
+            "dirty",
+            "saving",
+            "saved"
+          ],
+          "maxDeltaPx": 0.0771484375
+        }
+      ]
+    },
+    {
+      "source": "out/v2-7c-3-validation/browser/canvas.json",
+      "sha256": "00c87d262e63d3b981819f8ef1593aaf33cc49327c95d7740ce7e07ba1aa0692",
+      "coordinatorJob": "v2-editor-toolbar-chrome-7c.test",
+      "freshWithinRecordedJobWindow": true,
+      "measurements": [
+        {
+          "kind": "chart",
+          "before": [
+            256,
+            108.1875,
+            919.9892578125,
+            517.490478515625
+          ],
+          "after": [
+            256,
+            108.1875,
+            919.9892578125,
+            517.490478515625
+          ],
+          "maxDeltaPx": 0
+        },
+        {
+          "kind": "table",
+          "before": [
+            256,
+            108.1875,
+            919.9892578125,
+            517.490478515625
+          ],
+          "after": [
+            256,
+            108.1875,
+            919.9892578125,
+            517.490478515625
+          ],
+          "maxDeltaPx": 0
+        }
+      ]
+    }
+  ],
+  "maximumObservedCanvasDeltaPx": 0.0771484375,
+  "limitations": [
+    "Static image inspection cannot establish keyboard, screen-reader, hit-target or interaction behavior.",
+    "Canvas figures are inspected implementer measurements; no fresh DOM measurement was executed by reviewer.",
+    "Existing narrow horizontal toolbar/canvas scrolling, overlay inspector and Fit limitation remain.",
+    "No new V2-8H Assistant UI exists; legacy Assistant placeholder is not durable-chat integration.",
+    "No browser, tests, services, database operations, builds, models or native generation executed in this inspection.",
+    "Dedicated PostgreSQL/build/type/benchmark/native/cleanup and final acceptance remain outside this image review."
+  ]
+}
