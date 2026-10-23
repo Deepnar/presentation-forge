@@ -36,7 +36,7 @@ opens its own transaction, so calling it inside an approval transaction would no
 make approval and enqueue atomic. Existing run/receipt tables are project children
 with cascade deletion. Scene/history private content already persists separately.
 
-## Approved product and data direction — not implemented
+## Approved product and data contract
 
 Recommendation: **project-linked, owner-only visible conversation**, retained until
 the owner clears it or deletes the project. Store bounded user requests, displayed
@@ -86,7 +86,7 @@ removed when that terminal transition is reconciled; logical expiry is enforced 
 every read/decision even before physical cleanup. No background-erasure deadline
 is promised while the host is stopped.
 
-## Approved implementation contract — deferred until resume
+## Approved implementation contract
 
 Deliver a complete headless conversation/turn/proposal service over both existing
 backends, with authenticated-equivalent host bindings, bounded reads/export/clear,
@@ -251,8 +251,8 @@ still need regression. Deployment safety means no production deployment/migratio
 On explicit human resume, freeze the exact file/gate inventory and update the
 state schema/checker for V2-8H together. The policy/contract approval is already
 recorded; do not re-ask it. After implementation stop for separate exact-source
-ACCEPT/HOLD; do not self-accept or start Assistant UI. The human's explicit deferral
-currently prohibits implementation or scheduled work.
+ACCEPT/HOLD; do not self-accept or start Assistant UI. The overnight deferral prohibited implementation and scheduling until the
+explicit 2026-10-23 resume recorded below.
 
 ## Planning evidence
 
