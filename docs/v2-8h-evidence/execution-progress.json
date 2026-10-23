@@ -1,6 +1,6 @@
 {
   "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-  "atUtc": "2026-10-23T15:21:00.967626+00:00",
+  "atUtc": "2026-10-23T15:42:20.158146+00:00",
   "status": "partial; no acceptance",
   "completedRuns": [
     {
@@ -1023,10 +1023,491 @@
         "skip": 0,
         "cancelled": 0
       }
+    },
+    {
+      "name": "v2-fontgate-4e.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-fontgate-4e.test.js"
+      ],
+      "files": [
+        "test/v2-fontgate-4e.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:20:59.846468+00:00",
+      "durationSeconds": 7.376128,
+      "log": "out/v2-8h-validation-r4/v2-fontgate-4e.test.log",
+      "tests": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-fonts-4d.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-fonts-4d.test.js"
+      ],
+      "files": [
+        "test/v2-fonts-4d.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:23:05.004969+00:00",
+      "durationSeconds": 0.815075,
+      "log": "out/v2-8h-validation-r4/v2-fonts-4d.test.log",
+      "tests": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-live-chrome-4f.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-live-chrome-4f.test.js"
+      ],
+      "files": [
+        "test/v2-live-chrome-4f.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:23:35.928377+00:00",
+      "durationSeconds": 13.587239,
+      "log": "out/v2-8h-validation-r4/v2-live-chrome-4f.test.log",
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-plate-3f5.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-plate-3f5.test.js"
+      ],
+      "files": [
+        "test/v2-plate-3f5.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:27:20.316670+00:00",
+      "durationSeconds": 13.030318,
+      "log": "out/v2-8h-validation-r4/v2-plate-3f5.test.log",
+      "tests": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-selection-chrome.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-selection-chrome.test.js"
+      ],
+      "files": [
+        "test/v2-selection-chrome.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:28:23.264326+00:00",
+      "durationSeconds": 10.133362,
+      "log": "out/v2-8h-validation-r4/v2-selection-chrome.test.log",
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-viewer-smoke.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-viewer-smoke.test.js"
+      ],
+      "files": [
+        "test/v2-viewer-smoke.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:29:03.510897+00:00",
+      "durationSeconds": 8.678638,
+      "log": "out/v2-8h-validation-r4/v2-viewer-smoke.test.log",
+      "tests": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-import-chrome-7b.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-import-chrome-7b.test.js"
+      ],
+      "files": [
+        "test/v2-import-chrome-7b.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:29:42.316525+00:00",
+      "durationSeconds": 24.890028,
+      "log": "out/v2-8h-validation-r4/v2-import-chrome-7b.test.log",
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-handoff-chrome-7b.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-handoff-chrome-7b.test.js"
+      ],
+      "files": [
+        "test/v2-handoff-chrome-7b.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:31:59.244048+00:00",
+      "durationSeconds": 46.725761,
+      "log": "out/v2-8h-validation-r4/v2-handoff-chrome-7b.test.log",
+      "tests": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-project-covers-chrome-7c.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-project-covers-chrome-7c.test.js"
+      ],
+      "files": [
+        "test/v2-project-covers-chrome-7c.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:33:31.127299+00:00",
+      "durationSeconds": 52.972458,
+      "log": "out/v2-8h-validation-r4/v2-project-covers-chrome-7c.test.log",
+      "tests": {
+        "total": 12,
+        "pass": 12,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-project-catalog-chrome-7c.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-project-catalog-chrome-7c.test.js"
+      ],
+      "files": [
+        "test/v2-project-catalog-chrome-7c.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:35:09.264767+00:00",
+      "durationSeconds": 51.415988,
+      "log": "out/v2-8h-validation-r4/v2-project-catalog-chrome-7c.test.log",
+      "tests": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-editor-toolbar-chrome-7c.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-editor-toolbar-chrome-7c.test.js"
+      ],
+      "files": [
+        "test/v2-editor-toolbar-chrome-7c.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:37:32.031025+00:00",
+      "durationSeconds": 40.042386,
+      "log": "out/v2-8h-validation-r4/v2-editor-toolbar-chrome-7c.test.log",
+      "tests": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-projects-6c-postgres.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-projects-6c-postgres.test.js"
+      ],
+      "files": [
+        "test/v2-projects-6c-postgres.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:38:42.168037+00:00",
+      "durationSeconds": 0.665443,
+      "log": "out/v2-8h-validation-r4/v2-projects-6c-postgres.test.log",
+      "tests": {
+        "total": 17,
+        "pass": 17,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-projects-6c-concurrency.test",
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-projects-6c-concurrency.test.js"
+      ],
+      "files": [
+        "test/v2-projects-6c-concurrency.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-23T15:39:12.935319+00:00",
+      "durationSeconds": 3.918345,
+      "log": "out/v2-8h-validation-r4/v2-projects-6c-concurrency.test.log",
+      "tests": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
     }
   ],
-  "serialFilesCompleted": 15,
-  "serialPasses": 99,
+  "serialFilesCompleted": 26,
+  "serialPasses": 208,
   "completeInventoryFiles": 229,
   "note": "Successful complete runs only. Admission may wait for shared-machine headroom; current coordinator remains authoritative. Focused cases overlap primary matrix."
 }

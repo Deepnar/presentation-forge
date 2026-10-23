@@ -16,13 +16,15 @@ fixture corrections; assertions, actual storage and real process/lease races rem
 The [final fixture review](reviews/V2-8H-source-22e7c97.md) is readiness only.
 Full independent acceptance is pending; never infer it from passing tests.
 
-Current exact-source gates: focused **90/90**, nonbrowser bulk **2481/2481**, zero
-fail/skip/cancel. Serial browser/build regression is in progress; at this checkpoint
-15 of26 files passed 99 cases, including fullChrome7A28/28. The complete
-serial/PG/build/type/50-cell/visual gates remain pending. Current execution is `out/v2-8h-validation-r4`, with the frozen
-229-file inventory and all nine gates. It qualified a fresh180.61-second window;
-bulk uses file concurrency1, browser/build files remain strictly serial.
-Do not start a second coordinator or any overlapping build/browser job.
+Current exact-source gates: focused **90/90**, nonbrowser bulk **2481/2481**, and
+all26 serial browser/build files **208/208**, zero fail/skip/cancel. Dedicated
+PostgreSQL files are running; build/type/50-cell/native/complete visual gates remain
+pending. Current execution is `out/v2-8h-validation-r4`, with229 files and nine gates.
+All76 fresh browser captures are preserved/hash-indexed in `browser-captures.json`;
+root inspected13 contact sheets and15 selected full-size captures without a new
+regression. Native inspection and independent final acceptance remain pending.
+The run qualified180.61 seconds; bulk uses concurrency1 and browser/build files are
+strictly serial with fresh admission windows. Do not start a second coordinator or any overlapping build/browser job.
 
 After a complete between-job yield, continue with:
 

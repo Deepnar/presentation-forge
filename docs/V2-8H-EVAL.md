@@ -468,3 +468,20 @@ skip or cancelled. Bulk uses concurrency1; the full serialbrowser sequence has
 started. Remaining gates and final independent acceptance are pending. Raw commands
 and counts are indexed by state and the current coordinator; prior source results
 are retained separately, never added to these totals.
+
+### Complete browser regression and partial visual inspection
+
+All26 final-source serial files passed **208/208**, zero failure/skip/cancel. The
+[current browser packet](v2-8h-evidence/browser-captures.json) preserves76 fresh
+screenshots with hashes. Root inspected all via13 contact sheets and15 selected
+full-size images, including narrow dialogs, dark project cards, toolbar overflow,
+read-only, history/conflict/restart and imported chart/table states. No new overlap
+or clipped dialog actions were found. Existing horizontal scrollers, inspector
+overlay, Fit/100%-zoom bounds and injected failure/retry states are intentional.
+The project Assistant remains a placeholder, and the legacy question cards remain.
+No new conversational UI or live-provider quality is claimed.
+
+The120-slide/120-thumbnail shell sample opened in1545ms. Chart/table edit canvas
+movement was at most0.04966px in the7A sample; final aggregate measurements are
+still pending. Dedicated PostgreSQL, build/type/50-cell/native checks, historical
+restoration/owned cleanup and separate final acceptance remain pending.

@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-    "note": "V2-8H private binding snapshots plus deterministic deadline/rollback and ready-before-lease process fixtures.69 development both-store/process passes; allnine final exact-source gates and independent acceptance pending."
+    "note": "V2-8H durable turns/private binding snapshots with deterministic deadline and worker-readiness fixtures. Final-source focused90, bulk2481 and serial208 pass; remaining gates and independent acceptance pending."
   },
   "activeMilestone": {
     "id": "V2-8H",
@@ -35,9 +35,9 @@
     },
     {
       "id": "serial-browser",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8h-evidence/serial-browser.json",
+      "reason": "All26 serial browser/build files completed on finalsource,208/208 leaves; zero fail/skip/cancel."
     },
     {
       "id": "postgres-contract",

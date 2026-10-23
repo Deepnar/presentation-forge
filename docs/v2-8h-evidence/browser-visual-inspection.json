@@ -1,0 +1,17 @@
+{
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "inspector": "/root",
+  "captures": 76,
+  "contactSheets": 13,
+  "fullSizeCaptures": 15,
+  "index": "docs/v2-8h-evidence/browser-captures.json",
+  "allRecordedImageHashesVerified": true,
+  "findings": [
+    "Dialog close/actions fit wide and narrow viewports, including dark catalog deletion and history restoration.",
+    "Project cards show real first-slide previews; empty, loading, retry and session-revocation captures match their injected fixture states.",
+    "Toolbar horizontal scrolling and narrow inspector overlay are intentional; Fit/100%-zoom viewport limitations are retained.",
+    "Chart/table scenes and saved status are visible; read-only and standalone developer surfaces remain distinct.",
+    "Legacy generation still has its established question cards; the project Assistant is still a placeholder. No new conversational UI is claimed."
+  ],
+  "nativeInspection": "pending"
+}
