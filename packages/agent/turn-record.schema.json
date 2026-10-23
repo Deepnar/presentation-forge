@@ -1,0 +1,177 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TurnRecord",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "generation": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "requestKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "identity": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "projectRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "state": {
+      "enum": [
+        "submitted",
+        "preparing",
+        "awaiting-decision",
+        "complete",
+        "refused",
+        "needs-user-action",
+        "cancelled",
+        "expired",
+        "approved",
+        "rejected"
+      ]
+    },
+    "code": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "fence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "lease": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "workerId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "until": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "workerId",
+            "until"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "everDispatched": {
+      "type": "boolean"
+    },
+    "createdAt": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "updatedAt": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "prepDeadline": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "planDeadline": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "proposalId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "runId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reservedPrivateBytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 262144
+    },
+    "reservedMetadataBytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 32768
+    }
+  },
+  "required": [
+    "version",
+    "id",
+    "generation",
+    "requestKey",
+    "identity",
+    "projectRevision",
+    "state",
+    "code",
+    "revision",
+    "fence",
+    "lease",
+    "everDispatched",
+    "createdAt",
+    "updatedAt",
+    "prepDeadline",
+    "planDeadline",
+    "proposalId",
+    "runId",
+    "reservedPrivateBytes",
+    "reservedMetadataBytes"
+  ],
+  "additionalProperties": false
+}

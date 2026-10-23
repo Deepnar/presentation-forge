@@ -15,6 +15,11 @@ function banner(schemaPath) {
 
 export async function generateTypes({ write = true } = {}) {
   const targets = [
+    { schema: "packages/agent/turn-submission.schema.json", out: "packages/agent/turn-submission.generated.ts", name: "TurnSubmission" },
+    { schema: "packages/agent/turn-header.schema.json", out: "packages/agent/turn-header.generated.ts", name: "TurnHeader" },
+    { schema: "packages/agent/turn-record.schema.json", out: "packages/agent/turn-record.generated.ts", name: "TurnRecord" },
+    { schema: "packages/agent/turn-proposal.schema.json", out: "packages/agent/turn-proposal.generated.ts", name: "TurnProposal" },
+    { schema: "packages/agent/turn-attempt.schema.json", out: "packages/agent/turn-attempt.generated.ts", name: "TurnAttempt" },
     { schema: "packages/agent/search-request.schema.json", out: "packages/agent/search-request.generated.ts", name: "SearchRequest" },
     { schema: "packages/agent/provider-run-request.schema.json", out: "packages/agent/provider-run-request.generated.ts", name: "ProviderRunRequest" },
     { schema: "packages/agent/conversation-request.schema.json", out: "packages/agent/conversation-request.generated.ts", name: "ConversationRequest" },

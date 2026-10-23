@@ -9,3 +9,8 @@ export async function agentRuntime() {
 export async function providerRunner(provider) {
   return createProviderRunner(await projectStore(), provider);
 }
+
+export async function turnService() {
+  const { createTurnService } = await import("../../packages/agent/turns.ts");
+  return createTurnService(await projectStore());
+}

@@ -93,7 +93,16 @@ const newTrace = (): ConversationTrace => ({ exchanges: 0, toolCalls: 0, reserve
 
 // Preparation is ephemeral. Only an explicit queue action persists the canonical
 // semantic plan; no request text, provider response or new transcript is stored.
-export function createProviderRunner(backend: RuntimeBackend, provider: ModelProvider) {
+export type ProviderRunHost = {
+  planDeadlineAt?: number;
+  reserve(event: { step: number; outputTokens: number }): Promise<string>;
+  dispatch(attemptId: string): Promise<void>;
+  receipt(attemptId: string, usage: ProviderExchange['usage']): Promise<void>;
+  proposal(plan: ReturnType<typeof parsePlan>): Promise<void>;
+};
+// Only the trusted host factory supplies this bridge; model/request JSON cannot
+// carry persistence callbacks or convert copied proposal DTOs into capabilities.
+export function createProviderRunner(backend: RuntimeBackend, provider: ModelProvider, host?: ProviderRunHost) {
   const profile = providerProfile(provider.profile);
   const proposals = new WeakMap<object, { binding: Binding; plan: ReturnType<typeof parsePlan> }>();
   async function snapshot(binding: Binding, request: ProviderRunRequest, signal?: AbortSignal) {
@@ -152,6 +161,7 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
               reservedOutputTokens: outputTokens, durationMs: null, outcome: 'error', toolNames: [] };
             loop.trace.steps.push(step);
           }
+          const attemptId = await host?.reserve({ step: loop ? loop.trace.exchanges - 1 : 0, outputTokens });
           const controller = new AbortController();
           let timer: ReturnType<typeof setTimeout> | undefined;
           let abort: () => void = () => {};
@@ -166,9 +176,18 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
             if (signal?.aborted) return fail('cancelled');
             raw = await Promise.race([Promise.resolve().then(() => {
               if (controller.signal.aborted || signal?.aborted) return providerFailure('cancelled');
-              return provider.exchange(loop ? freeze(structuredClone(context)) : context, {
-                ...exchangeOptions, ...(loop ? { history: freeze(structuredClone(loop.history)) } : {}), signal: controller.signal,
-              });
+              return (async () => {
+                if (attemptId !== undefined) await host!.dispatch(attemptId);
+                if (controller.signal.aborted || signal?.aborted) return providerFailure('cancelled');
+                const raw = await provider.exchange(loop ? freeze(structuredClone(context)) : context, {
+                  ...exchangeOptions, ...(loop ? { history: freeze(structuredClone(loop.history)) } : {}), signal: controller.signal,
+                });
+                // A late validated receipt still settles its bounded slot after
+                // cancellation/clear; it can never publish a stale turn.
+                const accepted = normalizedExchange(profile, context, raw, outputTokens);
+                if (attemptId !== undefined && accepted) await host!.receipt(attemptId, accepted.usage);
+                return raw;
+              })();
             }).catch(() => fail('provider-error')), stopped]);
           } finally { clearTimeout(timer); signal?.removeEventListener('abort', abort); if (step) step.durationMs = performance.now() - started; }
           if (signal?.aborted) return fail('cancelled');
@@ -212,7 +231,7 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
             let plan: ReturnType<typeof parsePlan>;
             try {
               plan = parsePlan({ requestId: request.requestId, projectRevision: request.projectRevision,
-                scope: request.scope, steps: [batch], maxSteps: 8, maxFailures: 1, deadlineAt: request.deadlineAt });
+                scope: request.scope, steps: [batch], maxSteps: 8, maxFailures: 1, deadlineAt: host?.planDeadlineAt ?? request.deadlineAt });
             } catch { return fail('invalid-response'); }
             await snapshot(trusted, request, signal);
             if (signal?.aborted) return fail('cancelled');
@@ -220,6 +239,7 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
               projectRevision: request.projectRevision, editCount: batch.args.edits.length, expiresAt: request.deadlineAt,
               edits: structuredClone(batch.args.edits), summary });
             if (JSON.stringify(proposal).length > 65536) return fail('result-too-large');
+            await host?.proposal(freeze(structuredClone(plan)));
             proposals.set(proposal, { binding: trusted, plan });
             return proposal;
           }

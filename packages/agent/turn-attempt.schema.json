@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TurnAttempt",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "turnId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "generation": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "fence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "step": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 7
+    },
+    "reservedOutputTokens": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 32000
+    },
+    "state": {
+      "enum": [
+        "reserved",
+        "dispatched",
+        "known",
+        "unknown",
+        "not-dispatched"
+      ]
+    },
+    "providerId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "family": {
+      "enum": [
+        "openai-compatible",
+        "anthropic"
+      ]
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "configurationDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "instructionsVersion": {
+      "const": "forge-context-v1"
+    },
+    "catalogVersion": {
+      "const": "semantic-tools-v1"
+    },
+    "createdAt": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "settleBy": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "usage": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "inputTokens": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000000
+            },
+            "outputTokens": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000000
+            },
+            "cacheReadInputTokens": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000000
+            },
+            "cacheWriteInputTokens": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000000
+            }
+          },
+          "required": [
+            "inputTokens",
+            "outputTokens",
+            "cacheReadInputTokens",
+            "cacheWriteInputTokens"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "version",
+    "id",
+    "turnId",
+    "generation",
+    "fence",
+    "step",
+    "reservedOutputTokens",
+    "state",
+    "providerId",
+    "family",
+    "model",
+    "configurationDigest",
+    "instructionsVersion",
+    "catalogVersion",
+    "createdAt",
+    "settleBy",
+    "usage"
+  ],
+  "additionalProperties": false
+}
