@@ -1,5 +1,127 @@
 {
   "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-  "status": "pending fresh complete browser/native execution and inspection",
-  "priorSourcePartialInspection": "docs/v2-8h-evidence/prior-attempt-cc3ed18/shell-visual-inspection.json"
+  "inspector": "/root",
+  "records": [
+    {
+      "source": "docs/v2-7a-evidence/editor-shell.png",
+      "sha256": "c3f143b753a01bedc1fa08a911a2c2f25c9ae893635aac9f0f5b7896c13e7eae",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-shell.png"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-narrow.png",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-narrow.png"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+      "sha256": "180b87710accdd031f18dde70d1ae8a414ce5eaca1c7154961096741b3dc2451",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-narrow-projects.png"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-history.png",
+      "sha256": "f1390bea10b6c5cdf40bef3105628781d520b43cc1053fad458cdb66b54e5084",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-history.png"
+    },
+    {
+      "source": "docs/v2-7a-evidence/dashboard.png",
+      "sha256": "9efdda8a9077188279e24c9f35906d8e989ef60a57da8cbe69f7e9bef5a30bcc",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--dashboard.png"
+    },
+    {
+      "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+      "sha256": "68dfd00a4e1b3b06c548774a3088af097d68971d9e737256b0ec7fabc2fe1756",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--dashboard-hosted-anon.png"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-chart.png",
+      "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-chart.png"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-table.png",
+      "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-table.png"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-readonly.png",
+      "sha256": "7ee64bf983c1a5cc40d897767c18adb7d54a8d2192699f07cd17127d14b079c1",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-readonly.png"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-blank.png",
+      "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-blank.png"
+    },
+    {
+      "source": "docs/v2-7a-evidence/dashboard-empty.png",
+      "sha256": "420b39b6bd46e9e18e468327452dfbbd1818990ea361bfaad8a697cd68facf0b",
+      "inspected": true,
+      "preservedCopy": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--dashboard-empty.png"
+    }
+  ],
+  "findings": [
+    "Wide and narrow history dialogs remain inside the viewport with accessible close/control areas; revision-list clipping is within its scroll container.",
+    "Narrow toolbar uses the established horizontal scroller and the inspector is an overlay; the partially covered canvas is expected.",
+    "The table data editor uses its existing horizontal scroll container; columns beyond its viewport are scrollable rather than resized into overlap.",
+    "Dashboard cards/actions, hosted signed-out modal, blank/editor/chart/table/read-only states show no new overlapping controls.",
+    "Assistant remains a placeholder; headless V2-8H is not browser integration."
+  ],
+  "largeDeck": {
+    "project": "p-cbc38714040dcb25b3de306f",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1545
+  },
+  "canvasChart": {
+    "before": [
+      456,
+      108.25125122070312,
+      719.99169921875,
+      404.9925231933594
+    ],
+    "after": [
+      456,
+      108.20159912109375,
+      719.99169921875,
+      404.9925537109375
+    ],
+    "delta": [
+      0,
+      -0.049652099609375,
+      0,
+      3.0517578125e-05
+    ]
+  },
+  "canvasTable": {
+    "before": [
+      456,
+      108.25122833251953,
+      719.99169921875,
+      404.9925537109375
+    ],
+    "after": [
+      456,
+      108.20167541503906,
+      719.99169921875,
+      404.9925537109375
+    ],
+    "delta": [
+      0,
+      -0.04955291748046875,
+      0,
+      0
+    ]
+  },
+  "status": "Eleven final-source shell captures inspected; remaining browser and native captures pending",
+  "sourcePathsAreTransientUntilHistoricalRestoration": true
 }
