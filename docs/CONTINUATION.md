@@ -35,8 +35,12 @@ because old eval wording predates review.
 ## Active task and reproduction
 
 The approved V2-8H contract was explicitly resumed on 2026-10-23. Its headless
-implementation is committed at `22e7c97`, **pending complete validation and separate
-acceptance**. Read [the evaluation](V2-8H-EVAL.md), state and
+implementation is committed at `22e7c97`, **fully validated, pending separate
+acceptance and owned-service cleanup**. The229-file matrix passed2898/2898 plus
+four distinct persisted/native scenarios;90focused repeats also pass. All nine
+gates are complete,115images inspected and13original native archives verified.
+The separate locale probe remains9pass/1standingfail. Read
+[the evaluation](V2-8H-EVAL.md), state and
 [nine-gate inventory](v2-8h-evidence/validation-plan.json). The prior native-ID
 correction `45c2c4c` remains the accepted baseline. The current slice adds no
 Assistant UI or HTTP route and authorizes no real model API/local inference.

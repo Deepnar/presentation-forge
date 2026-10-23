@@ -1,0 +1,13 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "command": "Inspect76 current browser captures through13 browser contact sheets plus39 native/SVG/export rasters through final contact sheets13\u201320, with22 full-size cases; verify archive and image hashes.",
+  "log": "docs/v2-8h-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": 115,
+  "maximumCanvasDeltaPx": 0.0771484375,
+  "largeDeckOpenMs": 1545,
+  "interactivePowerPointExecuted": false
+}

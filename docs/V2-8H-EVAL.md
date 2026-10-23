@@ -2,7 +2,7 @@
 
 ## Status and authority
 
-**Approved contract resumed on 2026-10-23; implemented, pending final validation and independent acceptance.** The 2026-10-22 continuation produced
+**Approved contract resumed on 2026-10-23; all validation gates passed, pending independent acceptance and owned-service cleanup.** The 2026-10-22 continuation produced
 this prepared contract; the subsequent human reply approved it and requested
 an immediate stop before implementation. Approval and deferral authority are in
 [the roadmap](ROADMAP.md#assistant-turn-approval-contract). No implementation
@@ -29,18 +29,59 @@ Later commits contain documentation and evidence only. The accepted baseline rem
 | Serial browser/build suites,26 files | 208/208 pass; Chrome7A28/28 |
 | Designated PostgreSQL project/import contracts | 23/23 pass |
 | Designated PostgreSQL cross-process/faults | 19/19 pass |
-| Remaining complete PostgreSQL inventory | In progress; not counted as passed |
-| Production build/typecheck/50-cell benchmark | Pending |
-| Persisted/native scenarios and export inspection | Pending |
-| Browser imagery | 76 captures inspected by root and separate reviewer; no new blocker |
+| Complete PostgreSQL inventory,nine files | 209/209 pass; includes the designated23/19 subsets |
+| Production build/typecheck/50-cell benchmark | All passed;50 cells,554ms compiler/ZIP sample |
+| Persisted/native scenarios | 4/4 distinct passes; both backends × both protocol fixtures |
+| Browser/native/SVG imagery | 115 captures inspected by root;76 browser captures independently inspected |
+| Native identity audit | 13 original archives,93 parts,319 unique-per-part nonvisual properties |
 | Final independent ACCEPT/HOLD and owned-service cleanup | Pending |
 
 Every completed test row has zero failures, skips or cancellations. The focused gate
 and designated PostgreSQL subsets must not be added to the full matrix again.
-The229-file inventory remains the complete primary denominator. No real model API
+The229-file inventory passed**2898/2898**; adding the four persisted/native scenarios
+gives**2902 distinct primary passes**, zero failures/skips/cancellations/unexecuted.
+The separate focused gate repeats90 primary cases. No real model API
 or local inference has been used. Two between-job coordinator interruptions retain
 their raw records; neither interrupted an active test or cancelled a leaf case.
-The separate standing BYOK locale probe and complete final totals await execution.
+The separate standing BYOK locale probe ran10 cases:9pass,1standing failure,
+zero skips/cancellations. That known failure is not relabelled or included in the
+successful primary total. [Full matrix](v2-8h-evidence/full-matrix.json),
+[exact commands/raw logs](v2-8h-evidence/logs/coordinator.json),
+[visual inspection](v2-8h-evidence/VISUAL-REVIEW.md) and
+[performance](v2-8h-evidence/performance.json) supply the completed packet.
+
+Environment: Node24.16.0, Linux7.2.8 x86_64, temporary SQLite and owned isolated
+PostgreSQL15.18 at127.0.0.1:5544. The service identity is recorded and was rechecked
+before current-source reuse. All44 ordered jobs had two fresh ready samples totaling
+at least30 seconds immediately before launch; resource thresholds were unchanged.
+The [resource assessment](v2-8h-evidence/resource-assessment.json) retains298 samples,
+including withheld busy windows, three observations of userspace blocked threads,
+and zero critical samples. The qualification window had no observed userspace
+blocked thread or memory pressure. Global I/O PSI/iowait provenance remains
+unresolved; local timings are not production percentiles.
+
+The120-slide/120-thumbnail deck opened in1545ms; maximum canvas movement across six
+measurements was0.0771484375px. Four local protocol/backend samples prepared in
+35.57–73.83ms and committed in2.93–9.16ms. Recovery metrics explicitly exclude worker
+module bootstrap and leasewait and include worker store setup; no comparison with
+older claim-then-spawn timing is asserted. All5725 historical evidence files,
+including164 original PPTXs, and five canonical output originals were restored and
+hash-verified. Eight new headless and five actual browser original PPTXs are retained.
+
+Corrections are detailed chronologically below: cancellation-outcome rollback,
+schema I/O placement, and mutable authority binding were product defects; the
+accepted identity helper required an exact-file boundary-policy correction; short
+deadline/process-bootstrap failures required fixture corrections preserving actual
+storage, original assertions, short leases, process kills and expiry. Failed and
+superseded runs remain separately archived, never retagged as final-source passes.
+Raw TAP/log bytes retain their original whitespace, including the standing failure.
+
+No new blocking visual regression was observed. Existing SVG mixed-run/chart
+differences, narrow inspector/toolbar/Fit behavior, capture/timeout limits and older
+original-archive provenance limitations remain. Interactive Microsoft PowerPoint,
+real-model quality, automatic cross-turn provider context, authenticated hosted
+Assistant routes/UI and search orchestration were not qualified by this slice.
+Future work remains only in the [roadmap](ROADMAP.md#v2-8-remaining). Stop afterH.
 
 ## Observed boundary
 

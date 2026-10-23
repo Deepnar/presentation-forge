@@ -8920,10 +8920,13 @@ local inference. Only that separate transport correction is authorized; this aud
   composition and CLI parity. Draft independent source review identified UTF-8
   load/admission symmetry, pre-dispatch recovery sequencing and final publication
   fences; corrections and later binding/fixture changes are recorded below.
-  Current exact-source results are focused90, bulk2481, serial208, designated
-  PostgreSQLcontracts23 and cross-process/fault19, all passing. The remaining
-  complete inventory, build/type/benchmark/native gates and final independent
-  acceptance remain pending; no checkmark or dependent feature is authorized.
+  Final exact-source validation passes2898/2898 across all229 primary files
+  (bulk2481,serial208,allninePostgreSQL209), plus4distinct persisted/native
+  scenarios and90separate focused repeats. All nine gates, build/type/50cells and
+  root inspection of115images are complete;13original native archives pass the
+  per-part nonvisual-ID audit. Standing locale remains9pass/1fail separately.
+  Final independent acceptance and owned-service cleanup remain pending; no
+  checkmark or dependent feature is authorized.
   Independent source review held `464c6d7` for cancellation rollback permitting
   pre-dispatch recovery after abort. Narrow correction `b095bba` persists the
   matching turn's cancellation, with fail-first reproduction and 40 corrected
