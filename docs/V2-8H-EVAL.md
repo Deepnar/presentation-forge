@@ -383,3 +383,18 @@ three-file delta and ran 10/10 boundary/unit leaves (no skips/cancellations), wi
 no blocker or broad assertion weakening. The full nine-gate matrix will execute
 afresh on this source using the recorded owned PostgreSQL instance and the
 original verified pre-test snapshot. Prior partial results are retained separately.
+
+### Replacement-source execution in progress
+
+A fresh sustained window qualified on `cc3ed18`: 180.76 seconds, mean CPU14.99%,
+iowait9.71%, physical NVMe busy0.99%, weighted queue0.045, no observed userspace
+blocked thread or memory pressure, followed by nine ready samples. Raw global I/O
+PSI remains elevated with unresolved provenance; no cause is claimed. Before any
+replacement test, the [backend recheck](v2-8h-evidence/corrected-owned-backend.json)
+verified the exact recorded PostgreSQL15.18 instance and zero leftover databases.
+Original pre-test snapshots were linked and preserved, not replaced.
+
+Current exact-source gates: **focused76/76**, **bulk2474/2474**, all zero fail/skip/
+cancelled. The full serial browser sequence has begun; remaining PostgreSQL files,
+build/type/benchmark and fresh visual/native preservation still await completion.
+No acceptance is implied by these passing subsets.

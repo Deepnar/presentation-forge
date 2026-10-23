@@ -23,15 +23,15 @@
   "validation": [
     {
       "id": "turn-approval",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Approved resume; exact-source validation has not executed."
+      "status": "passed",
+      "evidence": "docs/v2-8h-evidence/turn-approval.json",
+      "reason": "Complete exact-source execution, no skips/cancellations. Remaining gates are still pending."
     },
     {
       "id": "non-browser-bulk",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Approved resume; exact-source validation has not executed."
+      "status": "passed",
+      "evidence": "docs/v2-8h-evidence/non-browser-bulk.json",
+      "reason": "Complete exact-source execution, no skips/cancellations. Remaining gates are still pending."
     },
     {
       "id": "serial-browser",

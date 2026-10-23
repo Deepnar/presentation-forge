@@ -37,4 +37,7 @@ The original5725-file/164-PPTX snapshot and five canonical output originals
 remain at `out/v2-8h-validation/{backup,prior-generated-backup}`. The corrected
 launcher verifies the exact service and zero leftover databases, then links those
 snapshots. It must not resnapshot potentially rewritten originals. Full replacement
-execution is awaiting its fresh sustained quiet window; no browser/build is running.
+execution qualified and is running in bounded serial isolation. Focused76/76 and
+bulk2474/2474 pass on cc3ed18; the complete Chrome7A suite is currently running.
+Remaining serial browser/PG/build/type/benchmark/visual gates are pending. Do not
+start a second coordinator or overlap Vite builds.
