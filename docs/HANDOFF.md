@@ -5,7 +5,7 @@ Accepted product remains `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`.
 The explicit continuation resumes the approved contract and lifts the overnight
 stop. Scope and policy authority remain in [the roadmap](ROADMAP.md#assistant-turn-approval-contract).
 
-Implementation/test source `464c6d787d77444b7110226d2fc14649acd8e5f1` adds the
+Implementation/test source `b095bbac40ccbe0be7a38724f7854b9e8e15d313` adds the
 headless durable visible-chat/proposal service, bounded schemas, atomic approval
 with the existing run queue, cancellation/clear and conservative attempt recovery.
 CLI parity is `agent-chat`; no routes or Assistant UI are added. Read

@@ -337,3 +337,20 @@ or a refund; later session/tool/budget/publication refusals preserve validated u
 The associated trace/receipt follow-up remains only in the roadmap.
 Visible request/reply character limits follow Unicode code points (as AJV request
 limits do); the inherited provider limit of 32,000 UTF-16 units is unchanged.
+
+### Independent source HOLD and cancellation correction
+
+The separate [source review](reviews/V2-8H-source-464c6d7.md) holds `464c6d7`:
+a successful-publication AbortSignal guard also rolled back cancellation outcomes.
+A no-dispatch aborted turn could become submitted after lease expiry and call the
+provider on recovery. This is a product regression, independently reproduced with
+one in-memory transactional probe and no database/service/network execution.
+
+New fail-first cases on that source ran 23 SQLite cases: 21 pass, two fail, zero
+skips/cancellations. Correction `b095bbac40ccbe0be7a38724f7854b9e8e15d313` records
+a matching generation/fence cancellation before applying visible-publication guards;
+a mid-write abort rolls back the visible result and then commits only cancellation
+in a separate project transaction. Cleared/newer-fence work remains fenced. The
+corrected unit/SQLite/independent-process set passes **40/40**, zero failures/skips/
+cancellations, with typecheck passing. These development checks do not substitute
+for the still-pending nine complete gates on the replacement source.

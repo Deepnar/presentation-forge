@@ -1,0 +1,53 @@
+✔ SQLite: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate (68.011486ms)
+✔ SQLite: host reload approves stored canonical plan once, then replay survives own saved revision (73.933551ms)
+✔ SQLite: all read/export/mutation operations recheck owner; copied export confers no authority (24.982113ms)
+✔ SQLite: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting (29.685075ms)
+✔ SQLite: human save refuses new approval and preserves the pending visible proposal (22.624249ms)
+✔ SQLite: reject is durable/idempotent, removes private plan and permits an explicit fresh turn (26.786631ms)
+✔ SQLite: visible reply overflow settles usage, refuses without truncation and never retries (18.80709ms)
+✔ SQLite: publication loses to clear, but valid late usage settles once across generations (18.56166ms)
+✔ SQLite: database-time expiry removes unapproved body and blocks approval at the boundary (22.910244ms)
+✔ SQLite: precommit approval expiry rolls back both decision and canonical queue (21.128805ms)
+✔ SQLite: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once (20.047993ms)
+✔ SQLite: project deletion cascades all new private and metadata child records (20.883944ms)
+✔ SQLite: escaped controls and multibyte text remain readable/exportable/clearable after publication (45.666925ms)
+✔ SQLite: final publication rechecks preparation lease after row writes; settled usage is preserved (19.13046ms)
+✔ SQLite: turn-count admission refuses before dispatch while read/export/clear remain available (121.298186ms)
+✔ SQLite: private-bytes admission refuses before dispatch while read/export/clear remain available (441.244647ms)
+✔ SQLite: corrupt canonical digest refuses read/approve rather than executing a replacement plan (23.129515ms)
+✔ SQLite: reusing a committed decision key with different expected revisions is a conflict (31.856103ms)
+✔ SQLite: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear (76.209273ms)
+✔ SQLite: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits (39.826057ms)
+✔ SQLite: caller abort during publication row writes cannot commit a visible result (24.799916ms)
+✖ SQLite: abort after-claim is durable and cannot recover into an automatic retry (9.865177ms)
+✖ SQLite: abort during-provider is durable and cannot recover into an automatic retry (17.278235ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 21
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1574.262956
+
+✖ failing tests:
+
+test at test/v2-turns-contract.js:316:56
+✖ SQLite: abort after-claim is durable and cannot recover into an automatic retry (9.865177ms)
+  Error: Durable turn was fenced.
+      at hostFailure (file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:24:68)
+      at file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:248:40
+      at file:///home/deepnar/Programs/presentations/src/projects/store.js:774:24 {
+    code: 'invalid-document',
+    turnCode: 'cancelled'
+  }
+
+test at test/v2-turns-contract.js:316:56
+✖ SQLite: abort during-provider is durable and cannot recover into an automatic retry (17.278235ms)
+  Error: Durable turn was fenced.
+      at hostFailure (file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:24:68)
+      at file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:248:40
+      at file:///home/deepnar/Programs/presentations/src/projects/store.js:774:24 {
+    code: 'invalid-document',
+    turnCode: 'cancelled'
+  }

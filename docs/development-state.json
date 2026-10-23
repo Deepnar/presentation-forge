@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-PPTX-ID-45c2c4c.json"
   },
   "implementationHead": {
-    "sha": "464c6d787d77444b7110226d2fc14649acd8e5f1",
-    "note": "V2-8H headless implementation and four new test files committed; complete exact-source nine-gate validation and independent acceptance pending. Preliminary SQLite/compatibility results are not gate passes."
+    "sha": "b095bbac40ccbe0be7a38724f7854b9e8e15d313",
+    "note": "V2-8H cancellation correction after independent source HOLD on464c6d7. Forty focused SQLite/unit/process cases pass; all nine complete exact-source gates and independent acceptance remain pending."
   },
   "activeMilestone": {
     "id": "V2-8H",

@@ -1,0 +1,48 @@
+✔ turn submission requires explicit generation and revision; authority fields refuse (4.431872ms)
+✔ turn admission preserves existing stricter bounds and refuses oversized visible input (0.698336ms)
+✔ submission rejects accessors, executable objects and duplicate scope without invoking them (0.411302ms)
+✔ metadata schemas reject unbounded accounting maps and inconsistent attempt settlements (1.984313ms)
+✔ SQLite process: local CLI exposes the same generation-bound submit, read, decision and clear contracts (2690.358974ms)
+✔ SQLite process: approve/approve across independent processes links exactly one canonical run (500.438817ms)
+✔ SQLite process: reject/approve across independent processes has one terminal winner (462.527778ms)
+✔ SQLite process: approve-before crash leaves neither decision/run or exactly one recoverable pair (379.39156ms)
+✔ SQLite process: approve-after crash leaves neither decision/run or exactly one recoverable pair (391.825419ms)
+✔ SQLite process: reserve-after crash observes conservative recovery and accounting (387.374163ms)
+✔ SQLite process: dispatch-after crash observes conservative recovery and accounting (385.271075ms)
+✔ SQLite process: receipt-after crash observes conservative recovery and accounting (383.04521ms)
+✔ SQLite process: reserve-after-read crash observes conservative recovery and accounting (359.09498ms)
+✔ SQLite process: publication-before crash never reruns a dispatched provider conversation (362.609349ms)
+✔ SQLite process: publication-after crash never reruns a dispatched provider conversation (369.056937ms)
+✔ SQLite process: clear in another process fences pending publication and settles late receipt once (659.864552ms)
+✔ SQLite process: cancel/commit serialization reports committed winner without duplicate edits (426.198502ms)
+✔ SQLite: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate (62.578606ms)
+✔ SQLite: host reload approves stored canonical plan once, then replay survives own saved revision (63.745631ms)
+✔ SQLite: all read/export/mutation operations recheck owner; copied export confers no authority (22.340623ms)
+✔ SQLite: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting (28.490142ms)
+✔ SQLite: human save refuses new approval and preserves the pending visible proposal (20.500058ms)
+✔ SQLite: reject is durable/idempotent, removes private plan and permits an explicit fresh turn (23.71855ms)
+✔ SQLite: visible reply overflow settles usage, refuses without truncation and never retries (16.62755ms)
+✔ SQLite: publication loses to clear, but valid late usage settles once across generations (17.020911ms)
+✔ SQLite: database-time expiry removes unapproved body and blocks approval at the boundary (20.693419ms)
+✔ SQLite: precommit approval expiry rolls back both decision and canonical queue (19.492702ms)
+✔ SQLite: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once (18.733183ms)
+✔ SQLite: project deletion cascades all new private and metadata child records (19.036274ms)
+✔ SQLite: escaped controls and multibyte text remain readable/exportable/clearable after publication (44.419544ms)
+✔ SQLite: final publication rechecks preparation lease after row writes; settled usage is preserved (19.535234ms)
+✔ SQLite: turn-count admission refuses before dispatch while read/export/clear remain available (108.888378ms)
+✔ SQLite: private-bytes admission refuses before dispatch while read/export/clear remain available (391.183266ms)
+✔ SQLite: corrupt canonical digest refuses read/approve rather than executing a replacement plan (22.299761ms)
+✔ SQLite: reusing a committed decision key with different expected revisions is a conflict (21.487878ms)
+✔ SQLite: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear (60.674683ms)
+✔ SQLite: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits (32.503788ms)
+✔ SQLite: caller abort during publication row writes cannot commit a visible result (17.854197ms)
+✔ SQLite: abort after-claim is durable and cannot recover into an automatic retry (11.021403ms)
+✔ SQLite: abort during-provider is durable and cannot recover into an automatic retry (17.849999ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9733.507484

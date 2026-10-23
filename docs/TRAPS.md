@@ -1913,3 +1913,14 @@ different slides may reuse IDs. Preserve valid identities and relationships,
 reserve IDs appearing later before allocating repairs, and refuse ambiguous
 connector/animation targets. Raster equality proves visual preservation, not
 Microsoft PowerPoint selection, load/repair or interactive editability.
+
+## Publication guards must not roll back cancellation itself
+
+A final signal/lease guard correctly prevents a stale result from becoming visible,
+but applying the same guard to a cancellation outcome can roll that outcome back.
+If a no-dispatch turn then becomes recoverable after lease expiry, a cancelled
+request can call the provider. Persist cancellation under its generation/fence
+without treating it as successful publication; if abort arrives during result row
+writes, roll back the result and record only cancellation in a fresh transaction.
+Test both cancellation before dispatch and after writes, then advance the lease
+and prove no automatic retry. See the [V2-8H correction](V2-8H-EVAL.md).

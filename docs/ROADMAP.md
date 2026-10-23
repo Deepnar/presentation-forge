@@ -8920,6 +8920,11 @@ local inference. Only that separate transport correction is authorized; this aud
   load/admission symmetry, pre-dispatch recovery sequencing and final publication
   fences; corrections are under regression. Complete both-backend, process,
   regression and visual gates remain pending; no checkmark or acceptance yet.
+  Independent source review held `464c6d7` for cancellation rollback permitting
+  pre-dispatch recovery after abort. Narrow correction `b095bba` persists the
+  matching turn's cancellation, with fail-first reproduction and 40 corrected
+  unit/SQLite/process passes. Complete exact-source gates and acceptance remain
+  pending on the replacement source; no dependent work is authorized.
   The browser remains the primary editor; native PowerPoint qualification concerns
   exported files and is not a requirement to edit a project in the browser.
   Existing runtime plans/receipts are durable; `converse` histories and WeakMap
