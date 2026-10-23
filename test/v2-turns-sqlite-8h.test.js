@@ -1,5 +1,6 @@
 import { scenario } from './v2-runtime-fixture.js';
-import { turnContract, recoveryContract, boundsContract, admissionContract, settlementContract, unicodeContract, cancellationContract, abortRecoveryContract } from './v2-turns-contract.js';
+import { turnContract, recoveryContract, boundsContract, admissionContract, settlementContract, unicodeContract, cancellationContract, abortRecoveryContract, bindingContract } from './v2-turns-contract.js';
+bindingContract('SQLite',scenario);
 turnContract('SQLite',scenario);
 recoveryContract('SQLite',scenario);
 boundsContract('SQLite',scenario);

@@ -31,6 +31,48 @@ export async function rows(env) {
     const result={};for(const table of ['conversations','turns','proposals','attempts','runs'])result[table]=await tx.query(`SELECT * FROM v2_agent_${table} WHERE project_id=?`,[env.binding.id]);return result;
   });
 }
+export function bindingContract(label,setup) {
+  for(const operation of ['read','export','submit','clear','cancel','decide','prepare']) {
+    test(`${label}: ${operation} retains its original project when the caller reuses the binding`,{timeout:30000},async t=>{
+      const e=await fixture(t,setup);
+      const other=await e.store.createProject({owner:e.binding.owner,title:'Other conversation',scenes:e.doc.scenes});
+      const otherBinding={owner:e.binding.owner,id:other.doc.id};
+      const otherState=await e.service.read(otherBinding);
+      const otherTurn=await e.service.submit(otherBinding,submission({...e,doc:other.doc},otherState));
+      const before=await rows({...e,binding:otherBinding});
+      let state=e.state,turn;
+      if(['read','export','cancel','decide'].includes(operation)) {
+        state=await proposed(e);turn=state.turn;
+        if(operation!=='decide') {
+          state=await e.service.decide(e.binding,decision(state,turn));turn=state.turn;
+        }
+      } else if(operation!=='submit') {
+        state=await e.service.submit(e.binding,submission(e,state));turn=state.turn;
+      }
+      const shared={...e.binding};
+      const actions={
+        read:()=>e.service.read(shared),export:()=>e.service.export(shared),
+        submit:()=>e.service.submit(shared,submission(e,state)),
+        clear:()=>e.service.clear(shared,{generation:state.generation,revision:state.revision}),
+        cancel:()=>e.service.cancel(shared,{generation:state.generation,revision:state.revision,turnId:turn.id}),
+        decide:()=>e.service.decide(shared,decision(state,turn)),
+        prepare:()=>e.service.prepare(shared,{generation:state.generation,revision:turn.revision,turnId:turn.id,workerId:'binding-host'},e.provider),
+      };
+      const pending=actions[operation]();shared.id=otherBinding.id;
+      const value=await pending;
+      assert.equal(value.ok,true,JSON.stringify(value));
+      if(['read','export'].includes(operation))assert.equal(value.turns[0].run.id,turn.run.id);
+      if(operation==='submit')assert.equal(value.turn.state,'submitted');
+      if(operation==='cancel')assert.equal(value.turn.run.status,'cancelled');
+      if(operation==='decide')assert.equal(value.turn.run.status,'queued');
+      if(operation==='prepare')assert.equal(value.turn.state,'awaiting-decision');
+      const current=await e.service.read(e.binding);
+      assert.equal(current.turns.length,operation==='clear'?0:1);
+      assert.equal((await e.service.read(otherBinding)).turns[0].id,otherTurn.turn.id);
+      assert.deepEqual(await rows({...e,binding:otherBinding}),before);
+    });
+  }
+}
 export function turnContract(label,setup) {
   const check=(name,body)=>test(`${label}: ${name}`,{timeout:30000},t=>body(t));
   check('submit replay, conflicting identity and explicit generation cannot enqueue or duplicate',async t=>{

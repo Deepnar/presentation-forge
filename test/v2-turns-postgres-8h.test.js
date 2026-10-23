@@ -3,7 +3,7 @@ import { Pool } from 'pg';
 import * as store from '../src/projects/store-postgres.js';
 import { scenario } from './v2-runtime-fixture.js';
 import { turnProcessContract } from './v2-turns-process-contract.js';
-import { turnContract, recoveryContract, boundsContract, admissionContract, settlementContract, unicodeContract, cancellationContract, abortRecoveryContract } from './v2-turns-contract.js';
+import { turnContract, recoveryContract, boundsContract, admissionContract, settlementContract, unicodeContract, cancellationContract, abortRecoveryContract, bindingContract } from './v2-turns-contract.js';
 const url = process.env.TEST_PG_URL ?? 'postgres://postgres:probe@127.0.0.1:5544/postgres';
 const maintenance = new Pool({ connectionString: url, connectionTimeoutMillis: 3000 });
 let available = false, readinessCode = 'unknown';
@@ -25,6 +25,7 @@ if (!available) {
     else process.env.FORGE_PROJECTS_DATABASE_URL = previous;
     await maintenance.query(`DROP DATABASE "${database}"`); await maintenance.end();
   });
+  bindingContract('PostgreSQL', t => scenario(t, store));
   turnContract('PostgreSQL', t => scenario(t, store));
   recoveryContract('PostgreSQL', t => scenario(t, store));
   boundsContract('PostgreSQL', t => scenario(t, store));
