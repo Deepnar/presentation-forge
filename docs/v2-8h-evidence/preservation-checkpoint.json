@@ -1,0 +1,33 @@
+{
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "snapshots": [
+    {
+      "snapshot": "backup",
+      "files": 5725,
+      "pptx": 164,
+      "allHashesMatch": true
+    },
+    {
+      "snapshot": "prior-generated-backup",
+      "files": 5,
+      "pptx": 5,
+      "allHashesMatch": true
+    }
+  ],
+  "newOriginalArchives": [
+    "docs/v2-8h-evidence/native/sqlite-openai-compatible/before.pptx",
+    "docs/v2-8h-evidence/native/sqlite-openai-compatible/after.pptx",
+    "docs/v2-8h-evidence/native/postgres-openai-compatible/before.pptx",
+    "docs/v2-8h-evidence/native/postgres-openai-compatible/after.pptx",
+    "docs/v2-8h-evidence/native/sqlite-anthropic/before.pptx",
+    "docs/v2-8h-evidence/native/sqlite-anthropic/after.pptx",
+    "docs/v2-8h-evidence/native/postgres-anthropic/before.pptx",
+    "docs/v2-8h-evidence/native/postgres-anthropic/after.pptx",
+    "docs/v2-8h-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-chart.pptx",
+    "docs/v2-8h-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-table.pptx",
+    "docs/v2-8h-evidence/browser-archives/out--v2-7b-2-validation--browser--handoff.pptx",
+    "docs/v2-8h-evidence/browser-archives/out--v2-7a-validation--shell-chart.pptx",
+    "docs/v2-8h-evidence/browser-archives/out--v2-7a-validation--shell-table.pptx"
+  ],
+  "archiveReconstruction": false
+}
