@@ -23,15 +23,15 @@
   "validation": [
     {
       "id": "turn-approval",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8h-evidence/turn-approval.json",
+      "reason": "Complete final-source execution; no fail/skip/cancel. Remaining gates are pending."
     },
     {
       "id": "non-browser-bulk",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "New binding-correction source frozen; exact-source complete gate awaits fresh execution. Prior source results retained separately."
+      "status": "passed",
+      "evidence": "docs/v2-8h-evidence/non-browser-bulk.json",
+      "reason": "Complete final-source execution; no fail/skip/cancel. Remaining gates are pending."
     },
     {
       "id": "serial-browser",

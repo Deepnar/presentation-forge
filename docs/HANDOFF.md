@@ -1,40 +1,49 @@
-# Handoff — V2-8H binding correction, validation pending
+# Handoff — V2-8H final-source validation running
 
 2026-10-23 · branch `v2`; authorized push `origin/v2`.
-Accepted product remains `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`.
-Approved H contract is resumed; [roadmap](ROADMAP.md#assistant-turn-approval-contract)
-and [evaluation](V2-8H-EVAL.md) define scope. No models/local inference, Assistant
-UI/routes, dependent feature, deployment or production migration are authorized.
+Accepted product: `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`.
+Implementation/test source: `22e7c9749865f3e7c2d62fb8724136e0f19048b0`.
+The explicit continuation resumes the approved headless contract in
+[the roadmap](ROADMAP.md#assistant-turn-approval-contract) and
+[evaluation](V2-8H-EVAL.md). No model API/local inference, Assistant UI/routes,
+dependent feature, deployment or production migration is authorized.
 
-Implementation/test source `22e7c9749865f3e7c2d62fb8724136e0f19048b0` corrects the
-independently found mutable binding defect by taking a private snapshot at all seven
-public entries. Fail-first7/7 fail on old product source; corrected development
-unit/SQLite/process47/47 and typecheck pass. Independent correction review and all
-nine fresh complete gates remain pending. State/inventory identify the exact source.
+The durable visible-chat/proposal service, bounded records, atomic decisions over
+the existing run queue and CLI are implemented. Separate source reviews found and
+corrected cancellation rollback, schema I/O placement and mutable binding reuse.
+Inherited short-deadline and process-bootstrap timing assumptions received narrow
+fixture corrections; assertions, actual storage and real process/lease races remain.
+The [final fixture review](reviews/V2-8H-source-22e7c97.md) is readiness only.
+Full independent acceptance is pending; never infer it from passing tests.
 
-Prior cc3 partial76 focused/2474 bulk/73 serial passes are preserved separately in
-`v2-8h-evidence/prior-attempt-cc3ed18`; no cancelled test. Do not relabel these as
-replacement-source passes. All5725 historical evidence files/164 PPTXs and five
-canonical originals were restored/hash-verified after preservation. Original
-snapshots remain `out/v2-8h-validation/{backup,prior-generated-backup}`; reuse those,
-never resnapshot rewritten outputs or run old finishers.
+Current exact-source gates: focused **90/90**, nonbrowser bulk **2481/2481**, zero
+fail/skip/cancel. Chrome7A is running; other serial/PG/build/type/50-cell/visual gates
+remain pending. Current execution is `out/v2-8h-validation-r4`, with the frozen
+229-file inventory and all nine gates. It qualified a fresh180.61-second window;
+bulk uses file concurrency1, browser/build files remain strictly serial.
+Do not start a second coordinator or any overlapping build/browser job.
 
-Fresh validation uses `out/v2-8h-validation-r4` and current H scripts only, after
-180-second measured quiet-window qualification. Resume coordinator with `--resume
---max-new-jobs 3` only after a complete between-job yield; never overlap browser/build
-jobs. The owned PostgreSQL15.18 instance is still running: ID
+After a complete between-job yield, continue with:
+
+```sh
+FORGE_VALIDATION_OUT=out/v2-8h-validation-r4 python3 -u docs/v2-8h-evidence/run-validation.py --resume --max-new-jobs 3
+```
+
+Inspect coordinator/source/resource records before resuming. Do not resume after a
+failed job without retaining/classifying it. Prior partial/failed attempts are in
+`v2-8h-evidence/prior-attempt-{b095bba,cc3ed18,ac87496}`; they are not final-source
+passes. The runbook defines final assembly, image inspection and restoration.
+
+Original5725 evidence files/164 PPTXs and five canonical output archives remain
+protected in `out/v2-8h-validation/{backup,prior-generated-backup}`. Current run uses
+links to those original snapshots. Capture fresh browser/export evidence in the H
+namespace before restoring and hash-verifying every original; never rerun old
+finishers or resnapshot rewritten outputs.
+
+Owned PostgreSQL15.18 is running, exact ID
 `d89e445e3e9ac94460781fbe5932cc35b7ed8752814e1146ee7fa751e467d4b2`, name
-`forge-v28h-validation`, local5544. Verify exact recorded metadata and zero leftover
-DBs before reuse. Save/fsync fresh zero-project-DB evidence before exact-ID cleanup.
+`forge-v28h-validation`, local5544. The current-source backend recheck records exact
+metadata and zero leftover DBs before use. Save/fsync a fresh zero-project-DB count
+before exact-ID cleanup and prove removal/closed port. Other services are unrelated.
 Original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched. Independent
-acceptance is pending; stop after H.
-
-The ac87496 attempt90focusedpass/2480of2481bulk and two failed intermediate
-runtime runs are retained in `prior-attempt-ac87496/`. Finaltestcorrection freezes
-actualDBtime for deadline/rollback fixtures and boots module-ready children before
-unchangedshortleases.69 bothstore/process developmentcasespass; the complete
-newsource matrix reruns with nonbrowserbulkconcurrency1. Revised recoverytimings
-exclude leasewait/modulebootstrap and include workerstore setup; do not compare
-as speedups with old claim-then-spawn timings. No productsource changed since
-bindingcorrection; final exactsource and allninegates remain required.
+`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` stay untouched. Stop after H.

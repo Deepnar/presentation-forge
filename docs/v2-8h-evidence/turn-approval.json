@@ -1,13 +1,13 @@
 {
   "id": "turn-approval",
   "kind": "tests",
-  "implementationSha": "cc3ed185afda2058afa6f9b177f2d497fe30719c",
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
   "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-turns-8h.test.js test/v2-turns-sqlite-8h.test.js test/v2-turns-postgres-8h.test.js test/v2-turns-process-8h.test.js",
   "log": "docs/v2-8h-evidence/logs/turn-approval.tap",
   "exitCode": 0,
   "tests": {
-    "total": 76,
-    "pass": 76,
+    "total": 90,
+    "pass": 90,
     "fail": 0,
     "skip": 0,
     "cancelled": 0
@@ -19,5 +19,5 @@
     "test/v2-turns-process-8h.test.js"
   ],
   "backend": "SQLite and owned PostgreSQL15.18 for focused; isolated domain/SQLite fixtures for bulk",
-  "durationSeconds": 20.073751
+  "durationSeconds": 21.840672
 }

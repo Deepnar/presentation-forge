@@ -454,3 +454,17 @@ delta from the binding correction. Every gate executes afresh in
 build isolation. Recovered-claim timings now explicitly exclude worker module
 bootstrap and leasewait while including store setup; they are not speedup
 comparisons with older claim-then-spawn measurements. Acceptedbaseline is unchanged.
+
+### Final-source execution in progress
+
+Source `22e7c97` qualified a fresh180.61-second window: meanCPU12.07%, iowait9.85%,
+NVMe busy1.40%, weightedqueue0.068, twelve final ready samples, no observed userspace
+blocked thread or memory pressure. Raw globalI/OPSI remains elevated with unresolved
+provenance. The per-source backend recheck verified the exact owned instance and
+zero leftover DBs before use; original snapshots were reused without replacement.
+
+Current complete gates: **focused90/90**, **nonbrowserbulk2481/2481**, zero fail,
+skip or cancelled. Bulk uses concurrency1; the full serialbrowser sequence has
+started. Remaining gates and final independent acceptance are pending. Raw commands
+and counts are indexed by state and the current coordinator; prior source results
+are retained separately, never added to these totals.
