@@ -8914,12 +8914,16 @@ local inference. Only that separate transport correction is authorized; this aud
   and 229-file inventory are frozen in `v2-8h-evidence/validation-plan.json`;
   implement within this approved headless contract,
   preserving offline-only validation and the later independent acceptance gate.
-  The headless implementation is in progress, with bounded schemas, project-child
+  The headless implementation is frozen at `22e7c97`, pending complete validation
+  and independent acceptance, with bounded schemas, project-child
   storage, the host-only proposal/receipt bridge, atomic decision/queue/cancel
   composition and CLI parity. Draft independent source review identified UTF-8
   load/admission symmetry, pre-dispatch recovery sequencing and final publication
-  fences; corrections are under regression. Complete both-backend, process,
-  regression and visual gates remain pending; no checkmark or acceptance yet.
+  fences; corrections and later binding/fixture changes are recorded below.
+  Current exact-source results are focused90, bulk2481, serial208, designated
+  PostgreSQLcontracts23 and cross-process/fault19, all passing. The remaining
+  complete inventory, build/type/benchmark/native gates and final independent
+  acceptance remain pending; no checkmark or dependent feature is authorized.
   Independent source review held `464c6d7` for cancellation rollback permitting
   pre-dispatch recovery after abort. Narrow correction `b095bba` persists the
   matching turn's cancellation, with fail-first reproduction and 40 corrected
@@ -8950,20 +8954,19 @@ local inference. Only that separate transport correction is authorized; this aud
   [retained timing assessment](v2-8h-evidence/prior-attempt-ac87496/assessment.json).
   The browser remains the primary editor; native PowerPoint qualification concerns
   exported files and is not a requirement to edit a project in the browser.
-  Existing runtime plans/receipts are durable; `converse` histories and WeakMap
-  proposals are deliberately host-instance ephemeral. Specify conversation/turn,
-  proposal/decision and provider-attempt records over the existing project backend,
-  without another scene, edit cursor or queue. Bind opaque IDs to authenticated
-  owner/project, expected revisions, immutable canonical plan digest, cancellation
-  generation, expiry, retention-policy version and existing run ID. Make decision
-  replay and approval+enqueue atomic through an explicitly reviewed host-only queue
-  transaction seam, without weakening current exact-object enqueue or nesting public
-  transactions; refuse stale/rejected/expired/superseded
-  proposals across hosts. Define recovery of pre-dispatch versus ambiguous dispatched
-  provider attempts without automatic rebilling. Choose bounded user-visible content
-  retention/deletion/export/access rules before new storage; do not persist raw model
-  transcripts, read results, reasoning or credentials by default. This is a human
-  architecture/data-handling decision, not approval supplied by the audit. See the
+  Existing low-level `converse` histories and WeakMap proposals remain deliberately
+  host-instance ephemeral. The new headless turn service composes durable turn,
+  proposal/decision and bounded provider-attempt records over the existing backend,
+  without another scene, edit cursor or queue. Private binding snapshots retain
+  owner/project identity through asynchronous work; opaque IDs also bind expected
+  revisions, immutable plan digest, cancellation generation, expiry, retention-policy
+  version and existing run ID. Decision replay and approval+enqueue use the internal
+  atomic queue seam; the public exact-object enqueue contract remains unchanged.
+  Stored visible chat does not automatically become provider context. Pre-dispatch
+  recovery and ambiguous dispatched attempts have distinct fences and never imply
+  automatic rebilling. The approved bounded retention/clear/export/access policy
+  stores no raw wire messages, read results or hidden reasoning. The human approved
+  that policy explicitly; the architecture audit supplied no approval. See the
   [minimum-state analysis](V2-8-ARCHITECTURE-GAP-AUDIT.md#critical-seams-and-minimum-durable-state).
 
 <a id="assistant-search-source-integrity"></a>
