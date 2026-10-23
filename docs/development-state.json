@@ -6,44 +6,74 @@
     "source": "docs/reviews/V2-PPTX-ID-45c2c4c.json"
   },
   "implementationHead": {
-    "sha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
-    "note": "Independently accepted canonical PPTX ID correction: 376 required passes; 271 independent cases plus 5 overlapping repeats; typecheck, 50 cells, 54 native parts, 9 fresh raster pages and 161 originals preserved. Interactive PowerPoint unexecuted. No model API/local inference."
+    "sha": "431a6fb3980c5fa28868830145ce771571d72b72",
+    "note": "Approved V2-8H resumed 2026-10-23; entry commit only, implementation and all nine current-source gates pending. Accepted baseline remains unchanged."
   },
   "activeMilestone": {
-    "id": "V2-PPTX-ID",
-    "roadmapRef": "docs/ROADMAP.md#native-pptx-shape-id-uniqueness",
-    "evalDoc": "docs/V2-PPTX-ID-EVAL.md",
+    "id": "V2-8H",
+    "roadmapRef": "docs/ROADMAP.md#assistant-turn-approval-contract",
+    "evalDoc": "docs/V2-8H-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "not-started",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-PPTX-ID-45c2c4c.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "native-pptx",
-      "status": "passed",
-      "evidence": "docs/v2-pptx-id-evidence/native-pptx.json",
-      "reason": "Completed on exact frozen source; independent acceptance and exclusions recorded in docs/reviews/V2-PPTX-ID-45c2c4c.json."
+      "id": "turn-approval",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Approved resume; exact-source validation has not executed."
+    },
+    {
+      "id": "non-browser-bulk",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Approved resume; exact-source validation has not executed."
+    },
+    {
+      "id": "serial-browser",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Approved resume; exact-source validation has not executed."
+    },
+    {
+      "id": "postgres-contract",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Approved resume; exact-source validation has not executed."
+    },
+    {
+      "id": "cross-process-faults",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Approved resume; exact-source validation has not executed."
+    },
+    {
+      "id": "production-build",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Approved resume; exact-source validation has not executed."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-pptx-id-evidence/typecheck.json",
-      "reason": "Completed on exact frozen source; independent acceptance and exclusions recorded in docs/reviews/V2-PPTX-ID-45c2c4c.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Approved resume; exact-source validation has not executed."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-pptx-id-evidence/benchmark-50.json",
-      "reason": "Completed on exact frozen source; independent acceptance and exclusions recorded in docs/reviews/V2-PPTX-ID-45c2c4c.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Approved resume; exact-source validation has not executed."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-pptx-id-evidence/frontend-visual.json",
-      "reason": "Completed on exact frozen source; independent acceptance and exclusions recorded in docs/reviews/V2-PPTX-ID-45c2c4c.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Approved resume; exact-source validation has not executed."
     }
   ],
   "knownBlockers": [],
@@ -54,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8H approved contract; implementation deferred until explicit resume",
+    "id": "Assistant integration requires separate contract after V2-8H acceptance",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-turn-approval-contract"
+    "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
@@ -73,5 +103,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-22"
+  "updated": "2026-10-23"
 }

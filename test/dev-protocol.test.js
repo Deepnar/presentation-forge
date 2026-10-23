@@ -332,3 +332,15 @@ test('native identity correction has explicit scoped gates and complete export f
   f.state.validation.push({ id: 'production-build', status: 'unexecuted', evidence: null, reason: 'Wrong gate' });
   hasError(f.check(), /inventory.*contract/);
 });
+
+test('durable turn approval requires state, both stores and independent-process evidence', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8h-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8h-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8h-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8H'; hasError(f.check(), /inventory.*contract/);
+  f.state.validation[0].id = 'turn-approval'; assert.deepEqual(f.check().errors, []);
+  f.evidence(); assert.deepEqual(f.check().errors, []);
+  const log = path.join(f.dir, 'docs/output.tap');
+  writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-turns-process-8h.test.js"\n', ''));
+  hasError(f.check(), /complete required scope/);
+});

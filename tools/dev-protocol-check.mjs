@@ -16,13 +16,18 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
-  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'native-pptx': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'native-pptx': 'tests', 'turn-approval': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
   'postgres-contract': 'tests', 'cross-process-faults': 'tests',
   'production-build': 'command', typecheck: 'command',
   'benchmark-50': 'benchmark', 'frontend-visual': 'visual',
 };
 
 const MILESTONES = {
+  'V2-8H': {
+    plan: 'docs/v2-8h-evidence/validation-plan.json',
+    focused: 'turn-approval',
+    files: ['test/v2-turns-8h.test.js', 'test/v2-turns-sqlite-8h.test.js', 'test/v2-turns-postgres-8h.test.js', 'test/v2-turns-process-8h.test.js'],
+  },
   'V2-PPTX-ID': {
     plan: 'docs/v2-pptx-id-evidence/validation-plan.json',
     focused: 'native-pptx',

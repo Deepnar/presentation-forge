@@ -140,7 +140,8 @@
               "provider-run",
               "tool-conversation",
               "search-provider",
-              "native-pptx"
+              "native-pptx",
+              "turn-approval"
             ]
           },
           "status": {

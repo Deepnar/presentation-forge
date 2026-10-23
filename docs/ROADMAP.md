@@ -8896,7 +8896,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
 <a id="assistant-turn-approval-contract"></a>
 
-- [ ] **Durable user-turn and approval ownership — approved, awaiting resume.**
+- [ ] **Durable user-turn and approval ownership — implementation resumed.**
   The 2026-10-22 continuation starts **V2-8H contract preparation**, from accepted
   `45c2c4c` and planning HEAD `2e0e40d`. The concrete recommended policy, atomic
   queue/cancel seams, recovery behavior and required evidence are prepared in
@@ -8910,8 +8910,9 @@ local inference. Only that separate transport correction is authorized; this aud
   reasoning, and existing deck/history preserved when chat is cleared.
   **Explicit stop:** implementation is deferred until the human resumes; do not
   start it tonight, schedule it, or re-ask this already approved retention choice.
-  No V2-8H code or stored user data exists yet. On explicit resume, freeze the
-  implementation inventory and proceed within this approved headless contract,
+  **Resumed on 2026-10-23** by explicit continuation. The nine validation gates
+  and 229-file inventory are frozen in `v2-8h-evidence/validation-plan.json`;
+  implement within this approved headless contract,
   preserving offline-only validation and the later independent acceptance gate.
   The browser remains the primary editor; native PowerPoint qualification concerns
   exported files and is not a requirement to edit a project in the browser.

@@ -2,8 +2,7 @@
 
 ## Status and authority
 
-**Contract and recommended data-retention direction approved; implementation
-explicitly deferred until human resume.** The 2026-10-22 continuation produced
+**Approved contract resumed on 2026-10-23; implementation and acceptance pending.** The 2026-10-22 continuation produced
 this prepared contract; the subsequent human reply approved it and requested
 an immediate stop before implementation. Approval and deferral authority are in
 [the roadmap](ROADMAP.md#assistant-turn-approval-contract). No implementation
@@ -300,3 +299,16 @@ The next session must wait for an explicit resume before starting implementation
 that resume lifts the deferral, not the offline-only, scope or independent-review
 constraints. No V2-8H implementation, data writes or resource-intensive validation
 were started before stopping.
+
+## Implementation resume — 2026-10-23
+
+Explicit continuation lifts the overnight deferral. The approved policy is unchanged.
+Entry HEAD is `431a6fb3980c5fa28868830145ce771571d72b72`; accepted source remains
+`45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`. Nine gates are required: focused
+turn/approval contracts, complete non-browser bulk, serial browser/build owners,
+PostgreSQL contracts, cross-process faults, production build, typecheck, canonical
+50-cell benchmark and inspected visual/native preservation. The frozen inventory
+contains 229 files (194 bulk, 26 serial, nine PostgreSQL), including four planned
+V2-8H files. Historical results supply no current-source passes. No live provider
+or local inference is authorized. Independent exact-source acceptance remains
+required; no Assistant UI or dependent feature is authorized by this resume.
