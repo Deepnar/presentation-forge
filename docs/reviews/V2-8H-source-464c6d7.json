@@ -1,0 +1,58 @@
+{
+  "decision": "HOLD",
+  "kind": "independent-review",
+  "implementationSha": "464c6d787d77444b7110226d2fc14649acd8e5f1",
+  "acceptedBaselineCompared": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "scope": "Provisional exact-source V2-8H implementation/test review before complete validation; historical decision for the cancellation-resurrection defect.",
+  "provisional": true,
+  "evidence": "docs/reviews/V2-8H-source-464c6d7.md",
+  "findings": [
+    {
+      "priority": 1,
+      "file": "packages/agent/turns.ts",
+      "line": 247,
+      "title": "Persist caller cancellation before preparation can recover",
+      "detail": "The aborted-signal publication guard rolls back the transaction that marks the turn cancelled. A pre-dispatch abort leaves preparing, lease expiry restores submitted, and a new worker can call the provider for that aborted turn.",
+      "independentReproduction": {
+        "backend": "transactional in-memory fixture, no database or service",
+        "abortResult": "invalid-document",
+        "stateAfterAbort": "preparing",
+        "stateAfterLease": "submitted",
+        "retryState": "complete",
+        "providerCalls": 1,
+        "providerKind": "deterministic in-memory fixture; zero model API or local inference calls"
+      }
+    }
+  ],
+  "independentExecutionCounts": {
+    "targetedInMemoryProbes": 1,
+    "testSuites": 0,
+    "databaseOperations": 0,
+    "services": 0,
+    "modelApiCalls": 0,
+    "localInference": 0,
+    "builds": 0,
+    "typechecks": 0,
+    "browsers": 0,
+    "benchmarks": 0,
+    "nativeExportInspections": 0
+  },
+  "requiredValidationUnexecutedByReviewer": [
+    "both-store turn contracts",
+    "actual PostgreSQL concurrency and fault checks",
+    "complete non-browser regression",
+    "bounded serial browser regression",
+    "production build",
+    "typecheck",
+    "all 50 benchmark cells",
+    "native and browser preservation",
+    "original archive preservation"
+  ],
+  "waivers": [],
+  "productAcceptanceUnchanged": true,
+  "stateUnchanged": true,
+  "historicalArchivesUnchanged": true
+}

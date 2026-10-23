@@ -354,3 +354,9 @@ in a separate project transaction. Cleared/newer-fence work remains fenced. The
 corrected unit/SQLite/independent-process set passes **40/40**, zero failures/skips/
 cancellations, with typecheck passing. These development checks do not substitute
 for the still-pending nine complete gates on the replacement source.
+
+Independent [correction review](reviews/V2-8H-source-b095bba.md) reports
+**READY_FOR_FULL_VALIDATION** on `b095bba`, with 5/5 standalone in-memory probes
+covering the three abort timings plus replacement generation/fence safety. It
+grants no final acceptance. The historical [HOLD JSON](reviews/V2-8H-source-464c6d7.json)
+remains attached to its rejected source; current implementation acceptance is pending.
