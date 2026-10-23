@@ -1,0 +1,47 @@
+{
+  "decision": "HOLD",
+  "kind": "independent-review",
+  "implementationSha": "cc3ed185afda2058afa6f9b177f2d497fe30719c",
+  "acceptedBaselineCompared": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "scope": "Historical provisional source review of ordinary mutable caller-binding reuse in the seven V2-8H public operations.",
+  "provisional": true,
+  "evidence": "docs/reviews/V2-8H-source-cc3ed18.md",
+  "findings": [
+    {
+      "priority": 1,
+      "file": "packages/agent/turns.ts",
+      "line": 103,
+      "title": "Capture one private binding before asynchronous operation work",
+      "detail": "Backend authorization and state load/save use a copied A binding, but clear closures reread the caller's reused B binding. An A-authorized operation deletes B chat rows and leaves A rows under a new conversation generation, breaking subsequent A reads.",
+      "independentReproduction": {
+        "backend": "transactional in-memory fixture, no database or service",
+        "sameOwnerProjects": true,
+        "clearResult": true,
+        "authenticatedProject": "A",
+        "mutatedCallerProject": "B",
+        "remainingBVisibleTurns": 0,
+        "remainingARows": 1,
+        "aReadError": "invalid-document"
+      }
+    }
+  ],
+  "independentExecutionCounts": {
+    "targetedInMemoryProbes": 1,
+    "testSuites": 0,
+    "databaseOperations": 0,
+    "services": 0,
+    "modelApiCalls": 0,
+    "localInference": 0,
+    "builds": 0,
+    "browsers": 0,
+    "benchmarks": 0,
+    "nativeExportInspections": 0
+  },
+  "waivers": [],
+  "productAcceptanceUnchanged": true,
+  "stateUnchanged": true,
+  "historicalArchivesUnchanged": true
+}
