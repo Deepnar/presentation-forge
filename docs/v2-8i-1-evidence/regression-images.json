@@ -1,0 +1,458 @@
+[
+  {
+    "source": "docs/v2-6a-evidence/conflict.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6a-evidence--conflict.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "4fa9aadf55ac3e1f81abbc14194398c4d137edbe8e656fc84ae577501398ac9c"
+  },
+  {
+    "source": "docs/v2-6a-evidence/project-list.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6a-evidence--project-list.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "c9ba170b99454d37be7ab62820c4997e92d8a9587d4286dd6674692ba654b54e"
+  },
+  {
+    "source": "docs/v2-6a-evidence/recovered-banner.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6a-evidence--recovered-banner.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "8e1be75e3fbd12dc1b6cc087c9455c7cf73e68bb584315a710a7d7a851df1dbd"
+  },
+  {
+    "source": "docs/v2-6a-evidence/reopened.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6a-evidence--reopened.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "2e996f6e7c80811960cd9b6f91d2ee297e467f0c07588e3eb4424732260d6b9b"
+  },
+  {
+    "source": "docs/v2-6a-evidence/saved.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6a-evidence--saved.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "b766fa71dcfb4a3507d22cee82dada74a8111303b2b3911b78b0cea66c0f66ec"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-after-refresh.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6b-evidence--history-after-refresh.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "283ff473267ac47ec04ff599add61f4be987e88a70ea810558ffa6d4054edff8"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-list.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6b-evidence--history-list.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "b7de8a84dfebacbee0d77ff11c4ba02b967367031f0a3cdd358fb7c839792d99"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-preview.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6b-evidence--history-preview.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "4d9442b24afd164d02dc60d1bc6bee955a6e6c4ec5b62e1d0141f76e2ec7e6fb"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-restored.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6b-evidence--history-restored.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "aac44a259fd20bf1b67b4fb077c462bfdd6bd6f9a022efbb18bc269df9587984"
+  },
+  {
+    "source": "docs/v2-6b-evidence/history-three-versions.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6b-evidence--history-three-versions.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "2934a028b919962b62921a5c89203ad335595c7fe2cd4d8b05aa03293c684024"
+  },
+  {
+    "source": "docs/v2-6c-evidence/hosted-after-restart.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6c-evidence--hosted-after-restart.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "3c658c680743355c986b9e7e4d723aca8beae40e3d0c1c6bf1c722d76891742b"
+  },
+  {
+    "source": "docs/v2-6c-evidence/hosted-conflict.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6c-evidence--hosted-conflict.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "401a8e92f64f0256a48afd60676d3e3ee4a2d9058204e3bd30357bb473924d73"
+  },
+  {
+    "source": "docs/v2-6c-evidence/hosted-history.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6c-evidence--hosted-history.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "8c8f44d0855a2eefc35678bf46d928eacc035850ca88b8bd36af5db62cce8e1f"
+  },
+  {
+    "source": "docs/v2-6c-evidence/hosted-restored.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-6c-evidence--hosted-restored.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "6439fd54f2297844308326d693e05f376394eec69ec874d8638397b029d22a7f"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-empty.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--dashboard-empty.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "9f2e6d5dd5df5e465ea16a5b1a49ba1d9169f8d4ad66208ba93efbec4c2febce"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--dashboard-hosted-anon.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "41b2ad1736f2b04ac1234a2424f707b1df767ccd4129399f780d7a636dd7e7da"
+  },
+  {
+    "source": "docs/v2-7a-evidence/dashboard.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--dashboard.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "2a3a48739398f1593112e32ef188bbee4b7597600f5e16b30f3716ee5f5f3a95"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-blank.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--editor-blank.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-chart.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--editor-chart.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "82666bb39c179729c0dba02a5dde3a748dc22a3e18d2b755c923f017e27c2027"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-history.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--editor-history.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "5a3e71917de7834a0448ae25a9f323726a96219784d4a5c76b38121d68ac2a26"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--editor-narrow-projects.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "17199f412c8964fd252aecb918c82708a65247a48692eeca01a1b7e4f4e21712"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-narrow.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--editor-narrow.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-readonly.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--editor-readonly.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "44796071cf8b6926f30af3b3d9981b9dd9eff5739c3f232903e0b087d2d6d95d"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-shell.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--editor-shell.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "334076ed91a1ed3551fe6349bd225217f2e17827b1df50fc13ae84012fba961f"
+  },
+  {
+    "source": "docs/v2-7a-evidence/editor-table.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--editor-table.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "b1590d9b82975a254445f4907359109aba1b91c13e0c3c9a8f5fc177adbebfc9"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-chart.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-1-evidence--imported-chart.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "2adc698b8b3681c4631365f341c6a401533731bb0520d9063d3cef0d4926f3ec"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-narrow.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-1-evidence--imported-narrow.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "14238a1333b3e9ea333e9f0e481b0f0a043592e291ac48a5e7522bb8a9db8cb0"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-stats.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-1-evidence--imported-stats.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "c7d67e6c886e54d3b06d96ef5b9ae023625f49281e664124870b04cc5f92656c"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-table.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-1-evidence--imported-table.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "5986dedaca9e3f751953b5ad3d3ca821eb697f1739603e3da44c157229249866"
+  },
+  {
+    "source": "docs/v2-7b-1-evidence/imported-transition.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-1-evidence--imported-transition.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "d375efc975ddd3f8ed05a2079c572b000dc455e8d1f33ae57f23ff55807862a6"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/ambiguous-response.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-2-evidence--ambiguous-response.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "db0a122b101c27ee9454b3237b14989216979baa7ffb79439ddae13eddf88281"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/boundary-narrow.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-2-evidence--boundary-narrow.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "a62c079413580621ef64c64ada2fb1d06794292804639f3402c527480c8f5521"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/completed-chat.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-2-evidence--completed-chat.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "8cfdd41b3976527531141043299b416c229814953533ccc824abf4cdf7c60871"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/deck-page-action.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-2-evidence--deck-page-action.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "9a7d0003f597cc6e14fd1fb603e60dd0e171f4da4d74f45100d5b8f45b1f343f"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/handoff-history.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-2-evidence--handoff-history.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "93247c400e857a5c11fd188e11aebef6dbe129e93916c5561deacbfb30e844d4"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/opening-project.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-2-evidence--opening-project.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "485750ce1347271eedad8a8acc7e6b112801b40bbefaf02e2bf2d74e463951f7"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/refusal-narrow.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-2-evidence--refusal-narrow.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "744db24b92511f64fc140656c74ed1bd3c01a8ae24314dea3d570fa1007f7f1d"
+  },
+  {
+    "source": "docs/v2-7b-2-evidence/session-changed.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7b-2-evidence--session-changed.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "78c3781e68c285c13b918c55100684a199bbb94170e64f72afd2f29a093349cf"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-content.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-content.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "47b9b250ef5e48b32859a7b2cace7c316141727fbedcc3ecdb5130e23db7c113"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-desktop.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-desktop.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "78105ef5625c0d4b0074a96dbfcbffec56949d8f8f58aeabfb795e2c447cdc95"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-development.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-development.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "e7cf07f6bcf7848ae5ad23f47f34747012f0e644b154d0e88669389d3941c8aa"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-font-failure.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-failure.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "aecd3eaf81fb8e19615bfa1f662c5d7a0ccb839d6f40d4cecdfe48f634d0bc1e"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-font-http-failure.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-failure.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "4097b9acf891782c109fe964505cae60768ffa3bbaccce4696d13a815fdae412"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-font-http-recovered.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-http-recovered.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "2c2cfe275083d7ddf88895947d527a36ec3fc071bec8885c19cc3631a521c3a8"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-font-static-failure.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-failure.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "54d59f57433de71a15d1444adf72b904bd7dbe0d5fa68cdbd3704d21b3191909"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-font-static-recovered.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-recovered.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "265d2f13c29f6481d2d7ee1ae9a557ab2fe5978db9d025e94ecdb52871586688"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-loading.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-loading.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "512f9d988522458c68b7969e288bac00a4cd0dce227b8b9c38d2df8e560147ac"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-narrow-dark.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-narrow-dark.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "1fea350d96c7fa73f9388c62ce3c1d6c741d8e9a5383c56d2c6a8978b4be353c"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-network-failure.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-network-failure.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "ceb26e5aaa70614e5c9aebcdb9fa592e3b4abadb0a8d7ff4eb1a5b1dda218e92"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-restored.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-restored.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "152e22bb80abaac9b52ccd109987ca821949d648aff548ca0dafa38d06bd0488"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-session-cross-tab.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-cross-tab.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "9974dbeca5e0edaf3002d338ee6525ccf17f454f0452fa0d8406daf14e046c90"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-session-pending.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-pending.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "6b6d43b5ecd2de31b87d0e9daaa1cb30834b2a10f3d1d2368a9eefc09e691e4d"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-session-settled.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-session-settled.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "6e9bd339d1a7996e8098ce309226eee7aac30839a860b22b842faa3902e032f3"
+  },
+  {
+    "source": "docs/v2-7c-1-evidence/covers-timeout.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-1-evidence--covers-timeout.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "e002b123a876b0b057933b93600305acd1ebff6aa4a0b54a8dbf6d98bec1f61e"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-delete-generated-failure.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated-failure.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "691e5481eb0cd85a66c77d3575aa14da858d2e46e748d55dcb0b70c386ee521c"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-delete-generated.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-generated.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "54e1f6d582ca633e2ab6aa6033a8bfeb2ed4dea926c5eb1cde01ed874be1c8f7"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-delete-pending.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-pending.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "a7ba4e6a1cbfa1c7c48e8e37eb7da1918f4e5f5969c434b95536470b9326263d"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-delete-saved-failure.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-delete-saved-failure.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "33f61bafd41f65e06f76ad1d6f76b4bfefc5b072ef4025d37fa9f089bbaea0b2"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-desktop.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-desktop.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "aa996770459301a4e4fcca719b1e094405eb1d75af54793dda9cc36628365f4d"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-development.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-development.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "542bd391cebc4a5fc3481e156659535341053adbd584ddc81b6a85f1441cb94e"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-empty.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-empty.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "66dbb84c1914a53b6838d11fc3dc52456d37b76f5f9218da0bf2a3ac37921b93"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-generated-error.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-generated-error.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "c5710a8d63ff32dc539876851a35369a3eafc90684490eee6f2f613891036ba1"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-narrow-dark.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dark.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "68e46353378cdc65cbdaa13cc0d5769563c31f5a5922c9fcc11aa4e8de8ebfc4"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-narrow-dialog.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dialog.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "5d9aaa104136c03d6e74bc4554868e707d7d005cda81c283778dbf489ec84ceb"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-no-matches.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-no-matches.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "973f560c008b7e1d6603e7ecde674196fd666731ca49785245c55661e530e982"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-saved-error.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-saved-error.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "79f1bdc7c632300bf1d7bc4dec829df5fdc83436fb1f50b697c26bf9681ea928"
+  },
+  {
+    "source": "docs/v2-7c-2-evidence/catalog-signed-out.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-2-evidence--catalog-signed-out.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "fcdce617c1e27fa00b626c4baa40e15fa6c1684d9d7e91c83c17d8553f4a5aa2"
+  },
+  {
+    "source": "docs/v2-7c-3-evidence/editor-chart.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-3-evidence--editor-chart.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "2a5278fef08bb80c8886e2dc723c5457bd995d2281e8d87d986f762c8c8914df"
+  },
+  {
+    "source": "docs/v2-7c-3-evidence/editor-readonly.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-3-evidence--editor-readonly.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "38899725b0e0eea147f2c7ad4f70ad3bbf43fdb5c7b8461df70f08d67354b48a"
+  },
+  {
+    "source": "docs/v2-7c-3-evidence/editor-narrow-light.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-light.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "b7b1c9001cccd3d60f9861abe793ae7392cfc1f5d734c24b2d0fbff1248cbdba"
+  },
+  {
+    "source": "docs/v2-7c-3-evidence/editor-narrow-dark.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-3-evidence--editor-narrow-dark.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "3d40113f2f2cb79302af90b7a4951c180fed9bb77466f6003b83ea2e194c254e"
+  },
+  {
+    "source": "docs/v2-7c-3-evidence/editor-blank-history.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-3-evidence--editor-blank-history.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "792b35587d1361bec1431b7cc3888b11c088092bdb682bb56dc02238a6345ed4"
+  },
+  {
+    "source": "docs/v2-7c-3-evidence/editor-desktop.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-3-evidence--editor-desktop.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "bb43a3c990a499d9827ae9c763447364028bc08d08d9f6f30c90cc521ff60cae"
+  },
+  {
+    "source": "docs/v2-7c-3-evidence/editor-table.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-3-evidence--editor-table.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "3d22c41bb70819a350a68b244f01742179fc222ef2885eaa6e2e911cd4a61d2d"
+  },
+  {
+    "source": "docs/v2-7c-3-evidence/standalone-live.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-3-evidence--standalone-live.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "0da8e664aa1eb742d1e76863fcfdbd3212da49e3e67c90e9e5c529bb0d4d0e68"
+  },
+  {
+    "source": "docs/v2-7c-3-evidence/standalone-projects.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7c-3-evidence--standalone-projects.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "87985b771efdf8e225cbf03baad6a31df51ae7731d4ee5b7179c4745d7dc20d4"
+  }
+]
