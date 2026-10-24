@@ -8,11 +8,12 @@ Read [the evaluation](V2-8I-1-EVAL.md), state and [runbook](v2-8i-1-evidence/RUN
 
 **Active process: first bounded coordinator, session85328.** Its first focused
 SQLite/PostgreSQL HTTP gate passed34/34 (18SQLite+16PostgreSQL), zero fail/skip/cancel.
-The195-file bulk run is now active. The first batch will next run full7A browser
-and yield before the following file. Inspect actual `out/v2-8i-1-validation/`
+The195-file bulk run passed2500/2500, zero fail/skip/cancel. The first batch
+now runs full7A browser and then yields before the following file. Inspect actual `out/v2-8i-1-validation/`
 coordinator.json/log and process before resuming with `--resume --max-new-jobs 3`.
 Do not start a second test/build/browser process. No gate is inferred from partial
-output; current state marks one passed, bulk pending and other gates unexecuted.
+output; current state marks focused HTTP and bulk passed, serial browser pending and
+other gates unexecuted.
 The earlier50/50 SQLite/protocol development result is separate, not primary sum.
 
 The exclusive owned PostgreSQL15.18 container is

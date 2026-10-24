@@ -29,15 +29,15 @@
     },
     {
       "id": "non-browser-bulk",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Complete195-file nonbrowser run active under bounded serial coordinator; result not yet available."
+      "status": "passed",
+      "evidence": "docs/v2-8i-1-evidence/non-browser-bulk.json",
+      "reason": "Complete195-file primary bulk2500/2500; no fail/skip/cancel. Browser/PG primary files remain separate."
     },
     {
       "id": "serial-browser",
-      "status": "unexecuted",
+      "status": "pending",
       "evidence": null,
-      "reason": "Fresh quiet admission and exclusive owned backend/snapshots are ready; exact-source final execution is active. Await recorded completion and independent review."
+      "reason": "Bounded serial browser/build inventory underway; complete26-file result not yet available."
     },
     {
       "id": "postgres-contract",

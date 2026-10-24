@@ -316,3 +316,8 @@ The first complete two-file HTTP gate now passed **34/34**:18SQLite and16actual
 owned PostgreSQL cases, zero fail/skip/cancel. This is a focused repeat that will
 overlap the complete primary inventory, not34additional distinct primary cases.
 The195-file bulk run is active; its result and every remaining gate await completion.
+
+
+Complete195-file nonbrowser primary execution passed **2500/2500**, zero fail/skip/
+cancel. The26-file browser/build inventory is now underway in bounded serial
+isolation; no combined browser or complete primary total is claimed yet.
