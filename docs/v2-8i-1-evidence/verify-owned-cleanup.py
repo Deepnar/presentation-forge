@@ -40,8 +40,9 @@ record = {
     'beforeRemovalSha256': hashlib.sha256(before_path.read_bytes()).hexdigest(),
     'initialCleanupRecord': str(initial_path),
     'initialCleanupSha256': hashlib.sha256(initial_path.read_bytes()).hexdigest(),
-    'initialImmediateExactIdAbsent': initial['exactIdAbsent'],
-    'initialPortConnectionRefused': initial['portConnectionRefused'],
+    'firstPostStopObservation': initial['postStopObservations'][0],
+    'boundedCleanupExactIdAbsent': initial['exactIdAbsent'],
+    'boundedCleanupPortConnectionRefused': initial['portConnectionRefused'],
     'inspectExitCode': inspection.returncode,
     'inspectStderr': inspection.stderr,
     'matchingContainerIds': remaining,
@@ -51,7 +52,7 @@ record = {
     'savedCountReconstructed': False,
     'additionalStopOrRemovalIssued': False,
     'unrelatedServicesModified': False,
-    'classification': 'Read-only follow-up after the immediate post-stop identity observation was false; both original records are retained unchanged.',
+    'classification': 'Read-only verification after bounded cleanup; the first post-stop observation and final cleanup summary are distinguished, with both original records retained unchanged.',
 }
 assert record['exactIdAbsent'] and record['portConnectionRefused']
 path = root / 'owned-postgres-cleanup-verification.json'

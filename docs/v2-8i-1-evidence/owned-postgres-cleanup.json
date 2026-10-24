@@ -1,0 +1,41 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "atUtc": "2026-10-24T14:08:10.227969+00:00",
+  "id": "22f3b4ef8c918b6ef3a218dba1fd896159028dddc9d6b1d193ef15146574cc94",
+  "beforeRemovalRecord": "docs/v2-8i-1-evidence/owned-postgres-before-removal.json",
+  "beforeRemovalSha256": "91313974289fba26eeea4963eb780f1c03999feeb7d63575d8372bc4e2d960aa",
+  "freshSavedProjectDatabaseCount": 0,
+  "stop": {
+    "command": [
+      "docker",
+      "stop",
+      "--timeout",
+      "10",
+      "22f3b4ef8c918b6ef3a218dba1fd896159028dddc9d6b1d193ef15146574cc94"
+    ],
+    "exitCode": 0,
+    "stdout": "22f3b4ef8c918b6ef3a218dba1fd896159028dddc9d6b1d193ef15146574cc94\n",
+    "stderr": ""
+  },
+  "exactIdAbsent": true,
+  "port": 5544,
+  "portConnectionRefused": true,
+  "postStopObservations": [
+    {
+      "atUtc": "2026-10-24T14:08:09.760626+00:00",
+      "exactIdAbsent": false,
+      "portConnectionRefused": true
+    },
+    {
+      "atUtc": "2026-10-24T14:08:09.988649+00:00",
+      "exactIdAbsent": false,
+      "portConnectionRefused": true
+    },
+    {
+      "atUtc": "2026-10-24T14:08:10.227951+00:00",
+      "exactIdAbsent": true,
+      "portConnectionRefused": true
+    }
+  ],
+  "unrelatedServicesModified": false
+}
