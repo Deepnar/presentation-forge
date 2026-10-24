@@ -9053,11 +9053,27 @@ local inference. Only that separate transport correction is authorized; this aud
   inspection passed. Focused34cases overlap primary execution, and locale remains
   9pass/1standing failure separately.15original archives were preserved;6102prior
   evidence files and5canonical originals are restored/hash-verified. Independent
-  execution/decision and owned-service cleanup are pending; the accepted baseline
-  remains H22e7c97. Earlier resource holds are historical. Fresh admission/owned
+  execution passed231/231primary repeats plus typecheck; the exact source is
+  [accepted](reviews/V2-8I-1-5170adc.json). The owned backend was removed only after
+  saved/fsynced actual0catalog and independent exact-ID absence/5544refusal checks.
+  Earlier resource holds are historical. Fresh admission/owned
   preparation succeeded without relaxing thresholds; the initial setup race and
   guarded same-ID recovery remain documented. No source change was needed by the
   complete final run. See [the exact evaluation](V2-8I-1-EVAL.md) and current handoff.
+
+  - [x] **V2-8I-1 authenticated lifecycle transport** — complete and independently
+    accepted at5170adc. Scope is read/export/decide/cancel/clear only; no public
+    submission/preparation/execution, worker loop or Assistant UI. Reviewer's
+    6444-file/194-PPTX preservation checkpoint passed;2freshHTTP originals are kept.
+    Final cleanup and linked-state governance closeout complete the slice.
+
+    > **Learned.** Private parser errors need a raw-path late boundary because
+    > parameter decoding can fail first, with the same case policy as the router.
+    > PostgreSQL initialization readiness must wait for the final authenticated TCP
+    > listener. Cleanup evidence must distinguish the first observation from its
+    > bounded final result; a separate known-failure probe is not a required-gate
+    > waiver. Preserve failed attempts and exact original bytes throughout.
+
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.

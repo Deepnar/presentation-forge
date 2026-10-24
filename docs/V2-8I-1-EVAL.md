@@ -1,11 +1,13 @@
 # V2-8I-1 — authenticated conversation and approval transport
 
-## Current result — validation complete, independent decision pending
+## Current result — independently accepted, cleanup complete
 
 Frozen product/test source: `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`.
-Accepted baseline remains H `22e7c97`. All nine required validation gates passed;
-this report recommends acceptance of the bounded transport, subject to separate
-independent execution and an exact-source ACCEPT/HOLD. It supplies no acceptance.
+Compared with previous accepted H `22e7c97`, the separate reviewer issued
+[ACCEPT for exact source5170adc](reviews/V2-8I-1-5170adc.json). All nine required
+validation gates passed, independent execution passed231/231 primary repeats and
+typecheck, and exact owned-service cleanup is independently verified. The decision
+accepts only this bounded transport; parent V2-8 and the Assistant remain incomplete.
 
 | Executed group | Pass | Fail | Skip | Cancelled |
 |---|---:|---:|---:|---:|
@@ -59,7 +61,7 @@ standing BYOK locale failure, next-request session revocation without an in-flig
 logout fence, no live-provider qualification or interactive Microsoft PowerPoint
 execution. This slice adds neither a browser Assistant nor public worker execution.
 The next dependencies live only in [the roadmap](ROADMAP.md#assistant-surface-integration).
-Stop after I1 review/cleanup; no dependent feature is authorized by this report.
+Review/cleanup are complete. Stop after I1; no dependent feature is authorized.
 
 ## Authority and entry state
 
@@ -408,3 +410,42 @@ checks of narrow/history/refusal/catalog dialogs and chart/table inspectors. No 
 control overlap, clipped dialog or unexplained canvas movement was observed.
 Inherited narrow canvas overflow and canonical screenshot timing/scroll limitations
 remain explicit; final native rasters and measured canvas deltas still await review.
+
+
+## Final independent decision and cleanup
+
+The [separate review](reviews/V2-8I-1-5170adc.md) and corrected
+[JSON decision](reviews/V2-8I-1-5170adc.json) ACCEPT exact source5170adc against H22e7c97.
+Independent execution passed231/231:34HTTP,90turn/approval,6boundary,69runtime/process
+and32protocol cases, plus typecheck0. All231 repeat11primary files and are not added
+to2937distinct primary/headless successes. The remaining2702primary leaves and220files
+were inspected, not independently rerun. The reviewer inspected all119images,
+20full-size risk cases and15packet original PPTXs, and preserved2fresh actualHTTP
+originals. Fresh slide/chart payloads and embedded workbook data match the packet;
+metadata timestamps/ZIP bytes differ. No new raster or browser run is claimed.
+
+Before those checks the reviewer snapshotted/hash-verified6444current evidence files,
+including194original PPTXs, plus5canonical originals. At14:06UTC all still matched;
+no restoration or reconstruction was needed. A later intentional evidence-helper
+label correction distinguishes the actual first absence=false observation from the
+successful final bounded cleanup summary. The reviewer inspected and hash-bound
+this change separately. It is not a product/test delta or failed restoration.
+
+After explicit reviewer DB-slot release, cleanup saved/fsynced an actual empty
+catalog/count0 BEFORE stopping the exact owned ID once. Its first two read-only
+absence checks were false while5544already refused connections; the bounded third
+check proved exact-ID absence. Original count/cleanup records remain unchanged,
+and both root and reviewer independently rechecked absence/port refusal. See
+[cleanup](v2-8i-1-evidence/owned-postgres-cleanup.json) and
+[independent verification](v2-8i-1-evidence/independent/cleanup-verification.json).
+No unrelated service, production database or deployment was changed.
+
+The initial review JSON incorrectly used a formal waiver for the separate locale
+probe, which is outside the approved nine validation gates. A focused review-record
+correction removed that field while retaining the explicit9pass/1failure result.
+No assertion, gate contract or product source changed. Final linked-state protocol
+validation is recorded by the closeout; an earlier pending-state check did not
+validate the then-unattached decision. Independent evidence, original decision and
+focused correction remain separate commits. Acceptance state advances to5170adc
+only from that corrected independent decision. Stop here; dependent implementation
+is not authorized.

@@ -34,21 +34,27 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-The active slice is **V2-8I-1 authenticated conversation/approval transport** at
-`5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`, not yet accepted. Read [the contract/evaluation](V2-8I-1-EVAL.md),
-[runbook](v2-8i-1-evidence/RUNBOOK.md), state and current HANDOFF. Its five lifecycle
-routes reuse accepted H and add no public preparation, worker loop or Assistant UI.
-The complete231-file inventory passed2933/2933, plus4distinct persisted/native
-cases; build/typecheck/50cells and119-image inspection passed. The34focused HTTP
-cases repeat the primary inventory. Locale remains9pass/1standing failure separately.
-All6102historical files and5canonical originals are restored/hash-verified;15new
-original PPTXs are retained. Independent execution/decision and owned-service cleanup
-remain pending; read HANDOFF before using the DB/test slot. Source review/tooling
-readiness are not implementation acceptance. Earlier admission holds remain
-historical. Do not rerun any finisher against restored canonical originals or
-recreate H's removed backend.
+The active slice **V2-8I-1 authenticated conversation/approval transport** is
+independently accepted at `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d` in
+[the exact-source decision](reviews/V2-8I-1-5170adc.json). Read
+[the evaluation](V2-8I-1-EVAL.md), [runbook](v2-8i-1-evidence/RUNBOOK.md), state and
+HANDOFF. All231primary files passed2933/2933 plus4distinct persisted/native cases;
+build/typecheck/50cells and119-image inspection passed. Focused34cases and231
+independent successful executions overlap primary files. The separate locale probe
+remains9pass/1standing failure; it is not a passing case or a waived required gate.
 
-H remains the accepted baseline at `22e7c97`, with its separate
+All6102historical files and5canonical originals were restored/hash-verified;15new
+implementer originals and2fresh independent HTTP originals are retained. The
+reviewer verified6444current files/194PPTXs before its checks and all still matched
+at its preservation checkpoint. The later evidence-helper label correction is
+explicitly hash-bound. Exact owned-service cleanup saved/fsynced actual0catalog
+before a single stop and independently verified exact-ID absence/5544refusal.
+No process/service remains from this run. Do not rerun finishers against restored
+canonical originals or recreate a removed backend. For new reproduction use a
+fresh namespace, all-current snapshots and a new owned service in a quiet window.
+Stop after I1 acceptance; future scope lives only in the roadmap.
+
+H was the previous accepted baseline at `22e7c97`, with its separate
 [decision](reviews/V2-8H-22e7c97.json). Its 2,898 primary cases, four distinct native
 cases, 115 images and 13 original PPTXs remain historical evidence. Its owned
 service was removed after a saved/fsynced zero-database observation. Later read-only

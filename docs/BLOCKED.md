@@ -188,12 +188,12 @@ current roadmap work is blocked:
 - `feature-grid`'s note debt, *diagnosed* — a 1pt gap on a deliberately compact
   theme rather than the 2pt a misreported floor claimed
 
-Current V2-8I-1 required validation is complete at5170adc:231primary files2933/2933,
-plus4distinct native scenarios and all command/visual gates. Independent execution/
-ACCEPT-HOLD and then exact owned-service cleanup remain pending. Earlier resource
-holds are historical; no threshold was relaxed. State/HANDOFF index the current
-review and DB-slot ownership. [The roadmap](ROADMAP.md#assistant-surface-integration)
-owns remaining scope; do not begin dependent work or another coordinator.
+V2-8I-1 is independently accepted at5170adc with complete required validation and
+231/231independent repeats/typecheck. Exact owned-service cleanup saved/fsynced an
+actual0catalog before its single stop; exact-ID absence and5544refusal are independently
+verified. Earlier resource holds remain historical. There is no remaining I1
+validation/review/cleanup blocker. [The roadmap](ROADMAP.md#assistant-surface-integration)
+owns future scope; acceptance does not authorize dependent implementation.
 
 The active V2 task is recorded in `docs/development-state.json` and
 `docs/ROADMAP.md` §12. For V2-7A a quiet shared-machine

@@ -1975,3 +1975,22 @@ initial log before rejecting an existing run can destroy evidence, and a fixed
 backup name can erase the previous interrupted attempt. Reject initial reuse and
 create each retained log exclusively and durably before rewriting the active log.
 I1's tooling review caught both gaps before any full validation executed.
+
+
+## PostgreSQL readiness must identify the final listener
+
+A container entrypoint can briefly accept Unix-socket queries on a temporary
+initialization server, then stop it before starting its real TCP listener. A
+successful local SELECT1 can therefore precede a failing version/catalog query.
+Probe authenticated TCP readiness and verify the exact owned identity/catalog
+before snapshots or child work. Guard same-ID recovery separately from creation;
+never replace a saved ownership record after startup failure. I1 retained the
+natural race and recovered the same instance without product cases running.
+
+## Validate the linked acceptance state
+
+A protocol check on pending state does not follow an unattached review decision.
+Run it again after linking the exact accepted decision. A formal standing-failure
+waiver must name an actual failed required gate; a separate diagnostic probe stays
+failed and explicitly acknowledged outside that gate inventory. I1 corrected only
+review metadata after this distinction was caught, preserving the locale failure.

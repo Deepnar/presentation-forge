@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+    "sha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8H-22e7c97.json"
+    "source": "docs/reviews/V2-8I-1-5170adc.json"
   },
   "implementationHead": {
     "sha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
-    "note": "I1 frozen source5170adc unchanged; all231primary files2933/2933 plus4distinct headless cases pass, commands/50cells and119image inspection complete. Independent acceptance remains pending; H remains accepted baseline."
+    "note": "I1 exact source5170adc independently accepted;231primary files2933/2933 plus4distinct native scenarios, nine gates and231independent primary repeats pass. Locale remains9pass/1standing failure separately. Exact owned backend removed after saved/fsynced actual0catalog and verified absence/5544refusal. Stop afterI1; no dependent feature authorized."
   },
   "activeMilestone": {
     "id": "V2-8I-1",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8I-1-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8I-1-5170adc.json",
+    "accepted": true
   },
   "validation": [
     {

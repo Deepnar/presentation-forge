@@ -1,54 +1,47 @@
-# Current handoff — I1 validated, independent decision pending
+# Current handoff — I1 independently accepted and closed
 
-Branch/push: `v2` / `origin/v2`. Accepted baseline remains H
-`22e7c9749865f3e7c2d62fb8724136e0f19048b0` with its separate acceptance.
-I1 frozen product/test source is `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`.
-Later docs/evidence commits do not retag source. I1 is validated, not accepted.
-Read [the evaluation](V2-8I-1-EVAL.md), state and [runbook](v2-8i-1-evidence/RUNBOOK.md).
+Branch/push: `v2` / `origin/v2`. Accepted implementation/source baseline is now
+`5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`, compared with previous H22e7c97.
+The separate [decision](reviews/V2-8I-1-5170adc.json) ACCEPTS only authenticated
+conversation read/export/decide/cancel/clear transport. Evidence commit76eb392,
+decision86ace3a and focused record correction4d478ed preserve reviewer authorship.
+Read [evaluation](V2-8I-1-EVAL.md), state and [runbook](v2-8i-1-evidence/RUNBOOK.md).
+Later documentation/evidence commits do not retag frozen product/test source.
 
-Root driver session55844 exited0; all ordered jobs/assembly/finisher/identity/resource
-assessment are complete. Do not resume a coordinator or rerun a finisher. All231
-primary files passed2933/2933 (bulk2500+serial208+PostgreSQL225), plus4distinct
-persisted/native cases. Focused HTTP34/34 repeats primary files; development50/50
-also overlaps. All have zero fail/skip/cancel. Separate Indian-locale BYOK remains
-9pass/1standing failure. Build/typecheck/50cells passed. All119images were manually
-inspected and15original PPTXs/107parts/365nonvisual identities checked. No new
-material visual regression was observed. Read VISUAL-REVIEW.md for inherited limits.
-120-slide opening1547ms, max canvas delta0.04950px; fixture latency is not live quality.
+All231primary files passed2933/2933 (bulk2500+serial208+actualPostgreSQL225), plus
+4distinct persisted/native scenarios:2937distinct successes, zero fail/skip/cancel
+and0required cases unexecuted. Focused HTTP34/34, development50/50 and independent
+231/231 repeat primary cases and are not added. Build/typecheck/50cells passed.
+The separate Indian-locale BYOK probe remains9pass/1standing failure, outside the
+nine approved passing gates; no assertion was weakened or required gate waived.
 
-**Independent reviewer `/root/turn_contract_review` is preparing read-only review.**
-Root will explicitly release the execution/DB slot after pushing the complete packet.
-No test/build/generator remains active from root. The final reviewer must inspect
-pushed source/evidence and execute applicable offline checks, then issue exact-source
-ACCEPT/HOLD separately. The implementer cannot accept this work. Stop after I1.
+All119packet images were manually inspected by implementer and reviewer.15packet
+original PPTXs/107parts/365nonvisual identities passed hash and per-part uniqueness
+checks;2fresh independent HTTP originals are also preserved. No new material
+visual/source blocker was found. Actual120-slide opening1547ms, max canvas delta
+0.04950px; local fixture/IO-pressure timings are not production or live quality.
+Inherited narrow canvas, SVG/capture/native-consumer limits remain explicit.
 
-The exclusive owned PostgreSQL15.18 container remains running for independent checks:
-`22f3b4ef8c918b6ef3a218dba1fd896159028dddc9d6b1d193ef15146574cc94`, name
-`forge-v28i1-validation`, at127.0.0.1:5544,1CPU/512MiB/tmpfs192MiB.
-The ID was saved/fsynced before use. The initial Unix readiness/init restart race
-and guarded same-ID finalTCP recovery are retained. Do not create a replacement,
-reuse an external maintenance URL, or touch another project's service.
+All6102historical files/179original PPTXs and5canonical originals were restored/
+hash-verified. The reviewer snapshotted6444current files/194PPTXs; all matched at
+its14:06UTC preservation checkpoint. A later intentional verifier-label correction
+is separately hash-bound, preserving first and final cleanup observations. No
+original archive was reconstructed. Never rerun finishers against restored outputs.
 
-All6102historical evidence files, including179original PPTXs, and5canonical output
-originals were snapshotted, restored and hash-verified. Snapshots remain in
-`out/v2-8i-1-validation/backup` and `prior-generated-backup`. Exact fresh15originals
-are preserved in I1 native/browser/http namespaces. No archive was reconstructed.
-A reviewer generating new outputs must snapshot all-current evidence/originals,
-use a separate namespace and restore/hash-check afterwards. Do not run old H
-helpers or any finisher against restored canonical outputs.
+The exclusive PostgreSQL15.18 ID
+`22f3b4ef8c918b6ef3a218dba1fd896159028dddc9d6b1d193ef15146574cc94`
+was removed after explicit reviewer DB-slot release and a fresh actual empty catalog/
+count0 saved/fsynced BEFORE the single stop. Both original records are retained;
+bounded final exact-ID absence and5544refusal and later independent read-only
+verification passed. No test/build/generator/service remains active from this run.
+Do not resume session55844/coordinators or recreate the removed backend. Fresh
+reproduction needs a new namespace, all-current snapshots, owned service and quiet
+admission, following the runbook. Earlier admission/startup failures stay historical.
 
-Earlier resource holds remain historical. Fresh180.42seconds (meanCPU8.22%,disk1.74%)
-plus per-job30-second admission qualified this run; all258samples and job admissions
-are retained. Unresolved global I/O PSI/iowait provenance remains a timing limitation.
-No real model APIs/local inference, deployment or migrations occurred. Do not add any.
+No real model APIs/local inference, deployment, production DB changes or irreversible
+migration occurred. I1 acceptance/cleanup are complete. **Stop here.** The next
+candidate remains unauthorized; worker/provider/Assistant scope lives only in
+[the roadmap](ROADMAP.md#assistant-surface-integration). Parent V2-8 is not complete.
 
-After the reviewer explicitly releases the DB slot, root must run the guarded
-`cleanup-owned.py --after-review-database-checks` with FORGE_VALIDATION_OUT set.
-It must save/fsync a fresh actual zero-database observation BEFORE stopping only
-that exact owned ID, then prove absence/5544refusal. Do not reconstruct missing counts.
-Update the final state/docs/manifest from the separate decision, run dev:protocol,
-commit/push scoped closeout, and stop. All later scope remains only in
-[the roadmap](ROADMAP.md#assistant-surface-integration); no worker/UI feature is authorized.
-
-Preserve original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`
-and `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`.
+Original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
+`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched.
