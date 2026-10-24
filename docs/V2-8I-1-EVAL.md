@@ -211,3 +211,21 @@ uses label `PostgreSQL`, producing `postgresql-approved.pptx`, whereas the nativ
 helper expected `postgres-approved.pptx`. The helper now reads the actual fixture
 filename while retaining normalized backend metadata. This changes no product/test
 source or assertion and has not yet produced a native inspection result.
+
+
+A separate read-only tooling audit by `/root/turn_contract_review` found two
+pre-execution evidence risks. The coordinator inherited `TEST_PG_URL` even though
+preparation owned only loopback5544, and its initial/fixed unacknowledged log names
+could overwrite prior execution evidence. The coordinator now rejects non-owned
+maintenance URLs; verifies exact saved ID/name/image/running/port and an empty
+actual database catalog on each entry/resume; binds child URLs to the owned
+endpoint; rejects initial existing logs; and durably preserves each unacknowledged
+attempt under an exclusive name. Entry checks are retained as source-bound JSONL.
+
+Two lightweight black-box negative checks rejected a deliberate external fixture
+URL before database inspection/child work, and rejected a prior coordinator log
+without altering its hash. Each deliberately exited1 as expected; these are
+harness admission probes, not failed product cases or primary matrix execution.
+Raw commands/results remain under `development/`. Product/test source is unchanged.
+The review ran no tests, services, generators or snapshot mutations and supplied
+no acceptance. Full execution still requires measured resource admission.

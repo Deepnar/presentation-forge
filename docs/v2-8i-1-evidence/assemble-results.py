@@ -31,7 +31,7 @@ for name in ['headless','native-review','shell-native','http-native']:
  assert byname[name]['exitCode']==0;shutil.copy2(byname[name]['log'],logs/(name+'.log'))
 headless=pathlib.Path(byname['headless']['log']).read_text();assert re.search(r'^# tests 4$',headless,re.M) and re.search(r'^# pass 4$',headless,re.M)
 shutil.copy2(out/'coordinator.json',logs/'coordinator.json');shutil.copy2(out/'coordinator.log',logs/'coordinator.log');(root/'recovery-metrics.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in [json.loads(line) for line in (out/'recovery-metrics.jsonl').read_text().splitlines() if line] if row['source']==sha))
-for name in ['resource-window.jsonl','storage-window.jsonl','quiet-restart.jsonl']:
+for name in ['resource-window.jsonl','storage-window.jsonl','quiet-restart.jsonl','owned-entry-checks.jsonl']:
  if (out/name).exists():
   rows=[json.loads(line) for line in (out/name).read_text().splitlines() if line]
   (root/name).write_text(''.join(json.dumps(row)+'\n' for row in rows if row['implementationSha']==sha))

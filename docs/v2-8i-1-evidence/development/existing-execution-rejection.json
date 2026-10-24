@@ -1,0 +1,15 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "atUtc": "2026-10-24T08:21:13.188995+00:00",
+  "command": [
+    "python3",
+    "docs/v2-8i-1-evidence/run-validation.py",
+    "--max-new-jobs",
+    "1"
+  ],
+  "exitCode": 1,
+  "expectedExitCode": 1,
+  "sentinelSha256": "4281954e33e2bc50666ac0d2b90aed6d7e36a69330424ce2f767a6df82d73f1f",
+  "priorLogPreserved": true,
+  "classification": "Evidence-harness black-box negative check; no test leaf or actual backend execution"
+}

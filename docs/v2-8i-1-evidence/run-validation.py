@@ -9,13 +9,33 @@ resume='--resume' in sys.argv
 max_new_jobs=int(sys.argv[sys.argv.index('--max-new-jobs')+1]) if '--max-new-jobs' in sys.argv else None
 assert max_new_jobs is None or 1<=max_new_jobs<=8
 new_jobs=0
+plan=json.loads((root/'validation-plan.json').read_text());sha=plan['implementationSha']
+if resume:
+ assert (out/'coordinator.json').is_file(), 'No acknowledged execution to resume; audit preserved logs first'
+else:
+ names=['conversation-http-gate','bulk',*[pathlib.Path(f).stem for f in plan['serial']+plan['postgres']],
+  'production-build','typecheck','benchmark-50','headless','byok-locale','native-review','shell-native','http-native']
+ existing=[str(out/name) for name in ['coordinator.json','coordinator.log','coordinator-complete.json',*[name+'.log' for name in names]] if (out/name).exists()]
+ assert not existing, ('Existing execution must be audited and resumed; never truncate it',existing)
 sys.stdout=Tee(sys.stdout,(out/'coordinator.log').open('a' if resume else 'w'))
 signal.signal(signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
-plan=json.loads((root/'validation-plan.json').read_text());sha=plan['implementationSha'];runs=json.loads((out/'coordinator.json').read_text()) if resume else []
+runs=json.loads((out/'coordinator.json').read_text()) if resume else []
 assert all(r['implementationSha']==sha for r in runs)
 subprocess.run(['git','merge-base','--is-ancestor',sha,'HEAD'],check=True)
 subprocess.run(['git','diff','--quiet',sha,'--','packages','src','test','app','tools','schema','themes','package.json','package-lock.json','tsconfig.json'],check=True)
-env={**os.environ,'LC_ALL':'C.UTF-8','TEST_PG_URL':os.environ.get('TEST_PG_URL','postgres://postgres:probe@127.0.0.1:5544/postgres'),'FORGE_RUNTIME_SOURCE':sha,'FORGE_HTTP_EVIDENCE_DIR':str((out/'http').resolve()),'FORGE_RUNTIME_METRICS_PATH':str((out/'recovery-metrics.jsonl').resolve())}
+owned_url='postgres://postgres:probe@127.0.0.1:5544/postgres'
+assert os.environ.get('TEST_PG_URL',owned_url)==owned_url, 'Refuse an external TEST_PG_URL; validation owns only loopback5544'
+owned=json.loads((root/'owned-postgres.json').read_text())
+assert owned['implementationSha']==sha and owned['port']==5544 and owned['name']=='forge-v28i1-validation'
+meta=json.loads(subprocess.check_output(['docker','inspect',owned['id']],text=True))[0]
+assert meta['Id']==owned['id'] and meta['Name']=='/'+owned['name'] and meta['Image']==owned['imageId'] and meta['State']['Running'] and meta['HostConfig']['AutoRemove']
+assert meta['NetworkSettings']['Ports']['5432/tcp']==[{'HostIp':'127.0.0.1','HostPort':'5544'}]
+query="SELECT datname FROM pg_database WHERE NOT datistemplate AND datname <> 'postgres' ORDER BY datname"
+databases=subprocess.check_output(['docker','exec',owned['id'],'psql','-U','postgres','-d','postgres','-At','-c',query],text=True).splitlines()
+assert databases==[], ('Owned backend contains leftover databases; audit before resuming',databases)
+with (out/'owned-entry-checks.jsonl').open('a') as stream:
+ stream.write(json.dumps({'implementationSha':sha,'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'id':owned['id'],'name':owned['name'],'imageId':owned['imageId'],'port':5544,'nonMaintenanceDatabases':databases,'resume':resume})+'\n')
+env={**os.environ,'LC_ALL':'C.UTF-8','TEST_PG_URL':owned_url,'FORGE_RUNTIME_SOURCE':sha,'FORGE_HTTP_EVIDENCE_DIR':str((out/'http').resolve()),'FORGE_RUNTIME_METRICS_PATH':str((out/'recovery-metrics.jsonl').resolve())}
 files=plan['bulk']+plan['serial']+plan['postgres']
 actual={str(f) for f in pathlib.Path('test').glob('*.test.js')}|{str(f) for f in pathlib.Path('test').glob('*.test.ts')}
 assert len(files)==len(set(files)) and set(files)==actual,(len(files),len(actual),set(files)^actual)
@@ -36,7 +56,11 @@ def run(name,args,files=None,changes=None,expected=0):
  quiet_window()
  cmd=['nice','-n','10','ionice','-c','2','-n','7','timeout','--signal=TERM','--kill-after=10s','30m' if name=='bulk' else '15m',*args]
  log=out/(name+'.log');at=datetime.datetime.now(datetime.timezone.utc);print(name,'START',flush=True)
- if resume and log.exists():shutil.copy2(log,log.with_suffix('.unacknowledged-before-reboot.log'))
+ if resume and log.exists():
+  retained=log.with_suffix(f'.unacknowledged-{time.time_ns()}.log')
+  with retained.open('xb') as target,log.open('rb') as source:
+   shutil.copyfileobj(source,target);target.flush();os.fsync(target.fileno())
+  fd=os.open(out,os.O_RDONLY|os.O_DIRECTORY);os.fsync(fd);os.close(fd)
  with log.open('w') as stream:
   process=subprocess.Popen(cmd,env={**env,**(changes or {})},stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
   monitor=Window();critical=0

@@ -35,6 +35,12 @@ resume bounded batches until `coordinator-complete.json` exists:
 python3 -u docs/v2-8i-1-evidence/run-validation.py --resume --max-new-jobs 3
 ```
 
+Every coordinator entry/restart rejects an external `TEST_PG_URL`, verifies the
+recorded container ID/name/image/running state/loopback5544 binding and queries its
+actual empty test-database catalog before child work. The maintenance URL is fixed
+to that owned service. An initial invocation refuses existing coordinator/job logs;
+resume preserves every unacknowledged attempt under an exclusive name before reuse.
+
 Never reuse an unrelated service or count skips/timeouts/cancellations as passes.
 Interrupted/unacknowledged logs must be retained; only recorded complete successful
 jobs are retained on resume. If source changes, preserve that attempt and execute

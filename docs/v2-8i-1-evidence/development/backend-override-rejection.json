@@ -1,0 +1,15 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "atUtc": "2026-10-24T08:20:08.554573+00:00",
+  "command": [
+    "python3",
+    "docs/v2-8i-1-evidence/run-validation.py",
+    "--max-new-jobs",
+    "1"
+  ],
+  "testPgUrl": "Deliberate unreachable fixture endpoint, never connected",
+  "exitCode": 1,
+  "expectedExitCode": 1,
+  "rejectedBeforeDatabaseInspectionAndChildExecution": true,
+  "classification": "Evidence-harness negative admission check; no leaf tests or actual backend execution"
+}
