@@ -63,14 +63,6 @@
     "includedInSuccessfulPrimaryTotal": false,
     "classification": "Inherited en_IN formatting assertion remains failed and separately acknowledged; no assertion or implementation change."
   },
-  "waivers": [
-    {
-      "checkId": "byok-locale",
-      "standingFailureId": "byok-locale",
-      "reason": "The inherited assertion expects Western grouping while en_IN emits Indian grouping. This separately retained locale probe is unrelated to unchanged I1 transport behavior and remains failed; no skipped, cancelled or unexecuted case is waived.",
-      "evidence": "docs/v2-8i-1-evidence/logs/files/byok-locale.tap"
-    }
-  ],
   "visualAndNativeInspection": {
     "packetImagesHashVerifiedAndInspected": 119,
     "browserImages": 76,
@@ -155,6 +147,14 @@
     "exitCode": 0,
     "errors": 0,
     "warnings": 0,
-    "log": "docs/v2-8i-1-evidence/independent/protocol-validator.log"
+    "log": "docs/v2-8i-1-evidence/independent/protocol-validator.log",
+    "scope": "Existing pending state; the review record was not yet attached to accepted state."
+  },
+  "recordCorrection": {
+    "formalWaiverRemoved": true,
+    "reason": "The locale probe is separate standing evidence, not a failed member of the nine required validation gates. Its retained failed counts remain explicit.",
+    "productOrGateContractChanged": false,
+    "pendingStateProtocolExitCode": 0,
+    "pendingStateProtocolLog": "docs/v2-8i-1-evidence/independent/protocol-validator-record-correction.log"
   }
 }
