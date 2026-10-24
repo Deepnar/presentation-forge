@@ -23,15 +23,16 @@ export async function conversationHttpFixture(t, store, extraEnv = {}) {
   });
   setDbPathForTest(f.env.FORGE_DB_PATH);
   t.after(async () => { await f.stop(); await store.closeProjectStore(); });
+  const anonymous = extraEnv.FORGE_HOSTED === '0';
   const response = await f.request('/api/v2/projects', {
-    token: f.token, method: 'POST', body: JSON.stringify({ title: 'Conversation HTTP', scenes: seed() }),
+    token: anonymous ? null : f.token, method: 'POST', body: JSON.stringify({ title: 'Conversation HTTP', scenes: seed() }),
   });
   assert.equal(response.status, 200);
   const { project: doc } = await response.json();
-  const binding = { owner: f.owner, id: doc.id }, service = createTurnService(store);
+  const binding = { owner: anonymous ? null : f.owner, id: doc.id }, service = createTurnService(store);
   const env = { ...f, store, binding, doc, plan: spec(), service, runtime: createRuntime(store) };
   const base = `/api/v2/projects/${doc.id}/conversation`;
-  env.call = (suffix = '', options = {}) => f.request(base + suffix, { token: f.token, ...options });
+  env.call = (suffix = '', options = {}) => f.request(base + suffix, { token: anonymous ? null : f.token, ...options });
   env.post = (suffix, body, options = {}) => env.call(suffix, { method: 'POST', body: JSON.stringify(body), ...options });
   env.proposed = async () => {
     const remote = await endpoint(t, 'openai-compatible', (_req, res) => {
@@ -72,6 +73,22 @@ async function isolatedRouter(t, env, service) {
 export function conversationHttpContract(label, setup) {
   const check = (name, run) => test(`${label} HTTP: ${name}`, { timeout: 45000 }, async t => run(t, await setup(t)));
 
+  test(`${label} HTTP: local ownerless lifecycle retains the existing project access policy`, { timeout: 45000 }, async t => {
+    const e = await setup(t, { FORGE_HOSTED: '0' }), p = await e.proposed();
+    assert.equal(e.binding.owner, null);
+    assert.equal((await e.call()).status, 200);
+    assert.deepEqual(await e.call('/export').then(r => r.json()), await e.service.export(e.binding));
+    assert.equal((await e.call('', { token: e.token })).status, 404);
+    const approved = await e.post('/decisions', decision(p, p.turn)).then(r => r.json());
+    assert.equal(approved.turn.run.status, 'queued');
+    const beforeCancel = await e.service.read(e.binding);
+    const cancelled = await e.post('/cancel', { generation: beforeCancel.generation, revision: beforeCancel.revision, turnId: p.turn.id }).then(r => r.json());
+    assert.equal(cancelled.turn.run.status, 'cancelled');
+    const beforeClear = await e.service.read(e.binding);
+    assert.equal((await e.post('/clear', { generation: beforeClear.generation, revision: beforeClear.revision }).then(r => r.json())).ok, true);
+    assert.deepEqual((await e.store.getProject(e.binding)).doc, e.doc);
+  });
+
   check('owner reads and exports only bounded visible state with private response headers', async (_t, e) => {
     await e.proposed();
     const read = await e.call(); assert.equal(read.status, 200);
@@ -110,8 +127,11 @@ export function conversationHttpContract(label, setup) {
     await promoteToAdmin(e.owner);
     assert.equal((await e.request('/api/auth/me', { token: e.token }).then(r => r.json())).user.role, 'admin');
     assert.equal((await e.request(`/api/v2/projects/${other.id}`, { token: e.token })).status, 200);
-    for (const suffix of ['', '/export', '/clear']) {
-      const response = await e.request(`/api/v2/projects/${other.id}/conversation${suffix}`, { token: e.token, ...(suffix === '/clear' ? { method: 'POST', body: JSON.stringify({ generation: before.generation, revision: before.revision }) } : {}) });
+    const pending = await e.proposed();
+    for (const suffix of ['', '/export', '/decisions', '/cancel', '/clear']) {
+      const body = suffix === '/decisions' ? decision(pending, pending.turn)
+        : { generation: before.generation, revision: before.revision, ...(suffix === '/cancel' ? { turnId: pending.turn.id } : {}) };
+      const response = await e.request(`/api/v2/projects/${other.id}/conversation${suffix}`, { token: e.token, ...(suffix && suffix !== '/export' ? { method: 'POST', body: JSON.stringify(body) } : {}) });
       assert.equal(response.status, 404);
     }
     assert.deepEqual(await e.service.export(other), before);
@@ -138,7 +158,14 @@ export function conversationHttpContract(label, setup) {
     }
     assert.equal((await e.post('/decisions?owner=x', input)).status, 400);
     assert.deepEqual(await e.service.export(e.binding), before);
-    for (const suffix of ['/submit', '/prepare', '/claim', '/advance']) assert.equal((await e.post(suffix, input)).status, 404);
+    for (const suffix of ['/submit', '/prepare', '/claim', '/advance', '/prepare/DO_NOT_ECHO']) {
+      const response = await e.post(suffix, input);
+      assert.equal(response.status, 404);
+      assert.equal(response.headers.get('cache-control'), 'private, no-store');
+      const text = await response.text();
+      assert.equal(text.includes('DO_NOT_ECHO'), false);
+      assert.equal(JSON.parse(text).code, 'not-found');
+    }
   });
 
   check('private parser bounds and failures are sanitized before the shared parser', async (_t, e) => {

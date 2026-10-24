@@ -19,7 +19,8 @@ if (!available) {
     await maintenance.query(`DROP DATABASE "${database}"`); await maintenance.end();
     if (previous === undefined) delete process.env.FORGE_PROJECTS_DATABASE_URL; else process.env.FORGE_PROJECTS_DATABASE_URL = previous;
   });
-  conversationHttpContract('PostgreSQL', t => conversationHttpFixture(t, store, {
+  conversationHttpContract('PostgreSQL', (t, env) => conversationHttpFixture(t, store, {
     FORGE_PROJECTS_BACKEND: 'postgres', FORGE_PROJECTS_DATABASE_URL: destination.href,
+    ...env,
   }));
 }

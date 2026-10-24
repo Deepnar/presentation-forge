@@ -4,6 +4,7 @@ import { turnService } from '../../src/agent/index.js';
 import { projectsAllowed, resolveProjectOwner } from './v2-projects-routes.js';
 
 const PREFIX = '/api/v2/projects/:id/conversation';
+const PRIVATE_PATH = /^\/api\/v2\/projects\/[^/]+\/conversation(?:\/|$)/i;
 const BODY_BYTES = 8192;
 const STATUS = {
   'invalid-request': 400, 'invalid-id': 400, 'invalid-document': 422,
@@ -102,10 +103,15 @@ export function registerV2ConversationRoutes(app, { service = turnService } = {}
   app.post(`${PREFIX}/decisions`, route('decide'));
   app.post(`${PREFIX}/cancel`, route('cancel'));
   app.post(`${PREFIX}/clear`, route('clear'));
+  app.use((req, res, next) => {
+    if (!PRIVATE_PATH.test(req.path)) return next();
+    privateHeaders(req, res, () => {});
+    return failure(res, 404, 'not-found');
+  });
   // Parameter decoding can fail before the prefix parser or route runs. Match
   // the raw path here so private request bytes never reach Express's formatter.
   app.use((error, req, res, next) => {
-    if (!/^\/api\/v2\/projects\/[^/]+\/conversation(?:\/|$)/i.test(req.path)) return next(error);
+    if (!PRIVATE_PATH.test(req.path)) return next(error);
     privateHeaders(req, res, () => {});
     const invalid = error instanceof URIError || error?.status === 400;
     return failure(res, invalid ? 400 : 500, invalid ? 'invalid-request' : 'request-failed');

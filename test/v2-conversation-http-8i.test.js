@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { importApiFixture } from './v2-import-fixture.js';
 import { conversationHttpContract, conversationHttpFixture } from './v2-conversation-http-contract.js';
 process.env.FORGE_HOSTED = '1';
-conversationHttpContract('SQLite', t => conversationHttpFixture(t, store));
+conversationHttpContract('SQLite', (t, env) => conversationHttpFixture(t, store, env));
 
 for (const [name, extra, status, code] of [
   ['disabled projects', { FORGE_V2_PROJECTS: '0' }, 403, 'projects-disabled'],
