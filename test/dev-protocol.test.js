@@ -344,3 +344,15 @@ test('durable turn approval requires state, both stores and independent-process 
   writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-turns-process-8h.test.js"\n', ''));
   hasError(f.check(), /complete required scope/);
 });
+
+test('conversation HTTP acceptance requires both actual backend entry files', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8i-1-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8i-1-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8i-1-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8I-1'; hasError(f.check(), /inventory.*contract/);
+  f.state.validation[0].id = 'conversation-http'; assert.deepEqual(f.check().errors, []);
+  f.evidence(); assert.deepEqual(f.check().errors, []);
+  const log = path.join(f.dir, 'docs/output.tap');
+  writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-conversation-http-postgres-8i.test.js"\n', ''));
+  hasError(f.check(), /complete required scope/);
+});
