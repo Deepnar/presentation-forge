@@ -102,4 +102,12 @@ export function registerV2ConversationRoutes(app, { service = turnService } = {}
   app.post(`${PREFIX}/decisions`, route('decide'));
   app.post(`${PREFIX}/cancel`, route('cancel'));
   app.post(`${PREFIX}/clear`, route('clear'));
+  // Parameter decoding can fail before the prefix parser or route runs. Match
+  // the raw path here so private request bytes never reach Express's formatter.
+  app.use((error, req, res, next) => {
+    if (!/^\/api\/v2\/projects\/[^/]+\/conversation(?:\/|$)/.test(req.path)) return next(error);
+    privateHeaders(req, res, () => {});
+    const invalid = error instanceof URIError || error?.status === 400;
+    return failure(res, invalid ? 400 : 500, invalid ? 'invalid-request' : 'request-failed');
+  });
 }
