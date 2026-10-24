@@ -1,0 +1,54 @@
+{
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "atUtc": "2026-10-24T07:17:04.588597+00:00",
+  "acceptedBySeparateContext": "/root/turn_contract_review",
+  "reviewDecision": "docs/reviews/V2-8H-22e7c97.json",
+  "sourceDeltaAfterImplementation": [],
+  "sourceAndTestHashesVerified": 34,
+  "primaryInventoryFiles": 229,
+  "primaryInventoryPasses": 2898,
+  "additionalDistinctNativePasses": 4,
+  "primaryDistinctPasses": 2902,
+  "focusedRepeats": 90,
+  "independentPrimaryRepeats": 165,
+  "requiredFailedSkippedCancelledUnexecuted": 0,
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "all44DurableLogsMatchRawBytes": true,
+  "imagesHashVerified": 115,
+  "originalNewPptxTrackedAndHashVerified": 13,
+  "snapshots": [
+    {
+      "name": "backup",
+      "files": 5725,
+      "pptx": 164,
+      "allHashesMatch": true
+    },
+    {
+      "name": "prior-generated-backup",
+      "files": 5,
+      "pptx": 5,
+      "allHashesMatch": true
+    }
+  ],
+  "ownedContainerAbsent": true,
+  "port5544ConnectionRefused": true,
+  "savedActualDatabaseCountBeforeStop": 0,
+  "initialFailedCleanupObservationPreserved": true,
+  "protocolExitCode": 0,
+  "sourceAndProseWhitespaceCheckExitCode": 0,
+  "rawLogWhitespacePreserved": true,
+  "originalUntrackedPathsPreserved": [
+    ".agents/",
+    "PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md",
+    "PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md"
+  ],
+  "dependentFeatureStarted": false,
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0
+}
