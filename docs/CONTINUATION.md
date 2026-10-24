@@ -38,7 +38,10 @@ The active slice is **V2-8I-1 authenticated conversation/approval transport** at
 `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`, not yet accepted. Read [the contract/evaluation](V2-8I-1-EVAL.md),
 [runbook](v2-8i-1-evidence/RUNBOOK.md), state and current HANDOFF. Its five lifecycle
 routes reuse accepted H and add no public preparation, worker loop or Assistant UI.
-The new inventory is 231 files; full gates and independent review remain pending.
+The new inventory is 231 files. Frozen-source development checks pass50/50; all
+final gates and independent execution remain pending because sustained resource
+admission failed. No I1 backend or active validation process exists; see
+[the resource checkpoint](v2-8i-1-evidence/environment-held.json) and HANDOFF.
 The plan received independent READY_FOR_IMPLEMENTATION; that is not acceptance.
 Do not run old H finishers or reuse its removed backend.
 

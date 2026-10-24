@@ -188,6 +188,13 @@ current roadmap work is blocked:
 - `feature-grid`'s note debt, *diagnosed* — a 1pt gap on a deliberately compact
   theme rather than the 2pt a misreported floor claimed
 
+Current V2-8I-1 implementation is pending final validation: sustained shared-machine
+admission was not achieved, and no I1 backend/full matrix was started. The 50/50
+development check does not supply those gates. A fresh measured quiet window
+unblocks validation; [the roadmap](ROADMAP.md#assistant-surface-integration) owns
+the current scope and dependencies. [Resource evidence](v2-8i-1-evidence/environment-held.json)
+records the actual samples; no unrelated process was stopped.
+
 The active V2 task is recorded in `docs/development-state.json` and
 `docs/ROADMAP.md` §12. For V2-7A a quiet shared-machine
 window was obtained and all required validation executed against the isolated

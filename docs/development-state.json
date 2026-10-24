@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
-    "note": "Frozen I1 source including malformed-URI privacy correction. Development checks are separate; all nine acceptance gates await exact-source execution and independent review."
+    "note": "I1 frozen source. SQLite/protocol development check passed50/50. No remaining material source-review blocker; full nine-gate acceptance execution is deferred because sustained shared-machine admission failed. No I1 backend was created; no acceptance claimed."
   },
   "activeMilestone": {
     "id": "V2-8I-1",
     "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration",
     "evalDoc": "docs/V2-8I-1-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -25,58 +25,60 @@
       "id": "conversation-http",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
+      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
     },
     {
       "id": "non-browser-bulk",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
+      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
     },
     {
       "id": "serial-browser",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
+      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
     },
     {
       "id": "postgres-contract",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
+      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
     },
     {
       "id": "cross-process-faults",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
+      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
     },
     {
       "id": "production-build",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
+      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
     },
     {
       "id": "typecheck",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
+      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
     },
     {
       "id": "benchmark-50",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
+      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
     },
     {
       "id": "frontend-visual",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
+      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
     }
   ],
-  "knownBlockers": [],
+  "knownBlockers": [
+    "Required sustained shared-machine quiet window not achieved; exact I1 final gates and independent execution remain pending. See docs/v2-8i-1-evidence/environment-held.json and docs/ROADMAP.md#assistant-surface-integration."
+  ],
   "standingFailures": [
     {
       "id": "byok-locale",

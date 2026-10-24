@@ -9036,7 +9036,12 @@ local inference. Only that separate transport correction is authorized; this aud
   accepted owner-only policy and H storage; it adds no UI or provider execution.
   I1 source `5170adc` implements the five lifecycle routes and strict private JSON
   boundaries, with shared SQLite/PostgreSQL contracts. Final exact-source validation
-  and independent acceptance are pending. Subsequent slices still need
+  and independent acceptance are pending. Frozen-source SQLite/protocol development
+  checks pass50/50, but sustained shared-machine admission failed; all nine final
+  gates remain unexecuted. No I1 backend was started. See the
+  [resource checkpoint](v2-8i-1-evidence/environment-held.json); the next action is
+  fresh resource qualification and the complete I1 validation, followed by separate
+  acceptance. Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
   Agree the promised surface before implementation: existing-deck editing versus

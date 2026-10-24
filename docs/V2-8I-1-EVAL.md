@@ -146,3 +146,54 @@ Independent source inspection found no remaining material blocker, but did not
 execute tests or issue acceptance. The full 231-file matrix, actual owned PostgreSQL,
 build/typecheck/benchmark/native/browser gates and final independent execution are
 still unexecuted at this checkpoint. Sustained resource qualification is running.
+
+
+## Validation checkpoint and recommendation
+
+Frozen source: `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`. The independent source
+inspection reports no remaining material blocker; it executed no tests and does
+not supply acceptance. Recommendation: **keep I1 unaccepted pending complete final
+validation and independent execution**. Accepted baseline remains H `22e7c97`.
+
+| Execution | Pass | Fail | Skip | Cancelled |
+|---|---:|---:|---:|---:|
+| First SQLite development attempt (16 cases) | 14 | 2 | 0 | 0 |
+| Corrected pre-URI SQLite/protocol repeat (49 cases) | 49 | 0 | 0 | 0 |
+| Frozen-source SQLite/protocol development check (50 cases) | 50 | 0 | 0 | 0 |
+
+These are separate executions and overlapping tests, not an aggregate primary
+matrix. Lightweight single-request probes are separate from those leaf counts:
+lowercase URI, uppercase URI and unsupported-path fail-first probes each exited1;
+URI/case corrections exited0. The unsupported-path first after-probe exited1 from
+its wrong `invalid-request` oracle; corrected `not-found` probe exited0. Retained
+logs classify these product and harness failures separately.
+
+All nine final gate records remain unexecuted, with zero current complete-matrix
+files executed out of231 (195 bulk,26 serial browser/build,10 PostgreSQL). Both-store
+focused acceptance, actual PostgreSQL contracts/concurrency/faults, full browser
+behavior, production build, typecheck, canonical50 cells, four distinct persisted/
+native cases, final screenshots/native rasters and independent execution are not
+claimed. The actual number of leaf cases in that future complete execution is not
+inferred from historical totals. No final screenshots or persisted native evidence archives were produced or
+visually inspected for I1. The SQLite development case exercised actual HTTP PPTX
+export and OOXML assertions in memory; it did not rasterize or preserve that export. The standing BYOK locale failure remains separate
+and was not rerun; historical H locale counts are not current execution.
+
+The [resource checkpoint](v2-8i-1-evidence/environment-held.json) retains31 samples
+over466.87seconds, duration-weighted CPU31.51%, peak87.30%. Required180-second
+sustained admission was not achieved. Earlier development admission sampled18.82
+minutes separately. A brief quiet window admitted the50-case development check;
+it did not authorize the longer regression workload. No I1 PostgreSQL container,
+snapshot, bulk/browser/build/benchmark/native generator or migration was started.
+The owned service name is absent and5544refuses connections. Waiting monitors were
+stopped without cancelling a test leaf or affecting unrelated processes. No active
+validation/background continuation remains.
+
+Performance available today: local development50-case run19.877seconds, including
+child startup and actual SQLite HTTP fixtures. This is not an opening-performance,
+production-latency or provider-quality result. New benchmark/large-deck/canvas
+measurements remain unexecuted. Existing accepted editor/fit/native-consumer and
+locale limitations remain recorded in the roadmap. No real model APIs or local
+inference ran.
+The [runbook](v2-8i-1-evidence/RUNBOOK.md) preserves exact continuation commands;
+stop at I1 until the required gates and independent ACCEPT/HOLD are available.
