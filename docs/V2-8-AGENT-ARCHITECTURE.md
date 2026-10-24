@@ -334,7 +334,8 @@ quality or process peak-memory claim follows from these bounded fixture checks.
 
 ## V2-8H durable visible conversations and approval
 
-Implemented boundary, **pending complete validation and independent acceptance**.
+Implemented boundary, **independently accepted at `22e7c97`** in
+[the exact-source decision](reviews/V2-8H-22e7c97.json).
 `packages/agent/turns.ts` is backend-injected; `src/agent/index.js:turnService`
 selects the existing project store. `agent-chat` exposes read/export, submit,
 prepare, decide, cancel and clear to trusted local operators. It adds no HTTP route

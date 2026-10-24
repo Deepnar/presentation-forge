@@ -2716,6 +2716,8 @@ preparation leases, atomic approval plus the existing run queue, and conservativ
 provider recovery make cross-host decisions durable. Clear preserves committed deck
 history while fencing preparations and cancelling linked nonterminal runs.
 `agent-chat` provides CLI parity; no Assistant surface or HTTP route is added.
-This implementation is **pending complete validation and independent acceptance**.
+Exact source `22e7c97` is [independently accepted](reviews/V2-8H-22e7c97.json)
+for this headless boundary. Saved visible chat is not automatic cross-turn provider
+context; authenticated routes and the visible Assistant retain their roadmap gates.
 The [as-built boundary](V2-8-AGENT-ARCHITECTURE.md#v2-8h-durable-visible-conversations-and-approval)
 and [evaluation](V2-8H-EVAL.md) distinguish implemented behavior from executed evidence.

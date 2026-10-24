@@ -79,6 +79,11 @@ The shared web-search provider boundary is also independently accepted: SearXNG
 results normalize to project-scoped citation sources, separately from model
 providers. [V2-8F evidence](V2-8F-EVAL.md) qualifies the bounded local protocol;
 model search-tool integration and live relevance retain their roadmap gates.
+V2-8H independently accepts bounded project-linked visible chat and durable atomic
+approval over the existing run queue, with owner-only read/export/clear and CLI
+parity. Saved chat does not automatically become provider context. The
+[H evaluation](V2-8H-EVAL.md) distinguishes accepted headless continuity from
+authenticated hosted orchestration and visible Assistant integration.
 The Assistant remains a placeholder.
 The sole work registry is [ROADMAP.md](ROADMAP.md); AI editing integration,
 native assets/imports, frontend polish and deployment operations retain their

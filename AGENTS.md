@@ -49,10 +49,11 @@ Preserve human modifications, ownership flags, tombstones and detached scenes
 during regeneration. Human and future agent changes share validated commands,
 stale-revision checks and history. The headless durable run core, bounded provider
 exchanges, explicit provider-backed preparation/queue boundary, bounded
-host-instance tool conversations and the shared web-search provider boundary are
-independently accepted. Search-tool orchestration, hosted user-turn and
-cross-request approval ownership, live-provider qualification and Assistant
-integration remain in the
+host-instance tool conversations, the shared web-search provider boundary and
+headless durable visible turns with atomic proposal approval are independently
+accepted. Saved chat does not automatically become provider context. Authenticated
+hosted turn orchestration, search-tool integration, live-provider qualification
+and the visible Assistant remain in the
 [roadmap](docs/ROADMAP.md#v2-8-remaining). Resolve exact accepted
 scope through development-state.json and its independent review record.
 
