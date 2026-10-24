@@ -141,7 +141,8 @@
               "tool-conversation",
               "search-provider",
               "native-pptx",
-              "turn-approval"
+              "turn-approval",
+              "conversation-http"
             ]
           },
           "status": {

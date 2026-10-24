@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-8H-22e7c97.json"
   },
   "implementationHead": {
-    "sha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-    "note": "Independently accepted headless V2-8H:229-file2898/2898 plus4distinct persisted/native passes,90focused repeats,all nine gates,115inspected images,13original PPTXs audited. Independent165/165 primary repeats and typecheck pass. Actual saved0DB count and final exact-ID/5544absence verified; initial failed observation retained. Separate locale9pass/1standingfail. No dependent feature authorized."
+    "sha": "e24a281db10cbc395fbbe67a75879e4efdeb9ae2",
+    "note": "I1 development checkpoint with working-tree source/test delta; no current-source validation claimed. Five owner-only conversation/approval routes, no provider execution or UI."
   },
   "activeMilestone": {
-    "id": "V2-8H",
-    "roadmapRef": "docs/ROADMAP.md#assistant-turn-approval-contract",
-    "evalDoc": "docs/V2-8H-EVAL.md",
+    "id": "V2-8I-1",
+    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration",
+    "evalDoc": "docs/V2-8I-1-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8H-22e7c97.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "turn-approval",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/turn-approval.json",
-      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
+      "id": "conversation-http",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/non-browser-bulk.json",
-      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/serial-browser.json",
-      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/postgres-contract.json",
-      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/cross-process-faults.json",
-      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/production-build.json",
-      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/typecheck.json",
-      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/benchmark-50.json",
-      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8h-evidence/frontend-visual.json",
-      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I1 source and complete inventory require exact-source execution; accepted H results remain historical."
     }
   ],
   "knownBlockers": [],
@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Assistant interaction and authenticated turn orchestration \u2014 separate scope contract required",
+    "id": "Assistant worker/provider orchestration \u2014 separate bounded contract after I1",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
+    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

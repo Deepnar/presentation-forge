@@ -34,7 +34,11 @@ request; never accept owner/admin from query or body. Hosted anonymous requests
 are401. Local ownerless access retains existing project policy. Crucially, an
 administrator receives no cross-owner private-chat access: pass only the resolved
 owner and project ID toH, never the project-admin bypass. Cross-owner and missing
-projects both return404. Recheck revocation and ownership throughH's transaction.
+projects both return404. H's transaction rechecks current project ownership,
+including project-access revocation after session resolution. Session/token validity
+is resolved on each HTTP request under the existing auth policy; logout or token
+revocation is enforced on the next request. No atomic in-flight logout/commit fence
+is claimed or introduced by this transport.
 Keep project feature-disable gating. No change to session cookies, auth policy,
 approved retention/clear/export rules, provider configuration or dependencies.
 
