@@ -1,0 +1,26 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "atUtc": "2026-10-24T08:03:07.828670+00:00",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "5m",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-conversation-http-8i.test.js",
+    "test/dev-protocol.test.js"
+  ],
+  "classification": "Development affected-suite check, distinct from the full acceptance matrix.",
+  "exitCode": 0
+}

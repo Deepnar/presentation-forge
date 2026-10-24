@@ -136,3 +136,13 @@ Source checkpoint `5170adc` includes these narrow corrections. The old coordinat
 was stopped while waiting with no child process active: no test was cancelled,
 and the development typecheck remains unexecuted. Final validation requires the
 new source and its expanded case inventory; prior passes are not retagged.
+
+
+The corrected-source development check at `5170adc` passed **50/50**: 18 SQLite
+HTTP cases and 32 development-protocol cases; zero failures, skips or cancellations,
+19.877 seconds. It admitted after two fresh quiet samples. Raw TAP, exact command,
+SHA and admission samples are retained under `development/candidate-*`.
+Independent source inspection found no remaining material blocker, but did not
+execute tests or issue acceptance. The full 231-file matrix, actual owned PostgreSQL,
+build/typecheck/benchmark/native/browser gates and final independent execution are
+still unexecuted at this checkpoint. Sustained resource qualification is running.

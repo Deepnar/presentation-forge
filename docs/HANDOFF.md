@@ -9,20 +9,18 @@ Five authenticated lifecycle routes reuse H; no public submit/prepare/worker or
 Assistant UI is included. The human delegated dependency ordering; future scope
 remains only in [the roadmap](ROADMAP.md#assistant-surface-integration).
 
-Development execution: first SQLite run 14 pass / 2 fail (incorrect authorization
-and admin fixtures, retained); corrected SQLite plus protocol 49/49 passed before
-the URI correction. A lightweight single-request negative probe then reproduced
-HTML/path disclosure for malformed parameters; the scoped correction passes that
-probe and adds the shared backend assertion. All acceptance gates remain pending.
-The old development coordinator was stopped with no child/test active while
-waiting for admission; its typecheck is unexecuted. A new candidate check uses
-`out/v2-8i-1-development/candidate-check.py`; inspect its log/process before any
-other validation. Logs are
-in `out/v2-8i-1-development`. It is not the final matrix.
+Development execution: initial SQLite 14 pass / 2 incorrect-fixture failures,
+corrected pre-URI SQLite/protocol 49/49, then final candidate `5170adc` SQLite/protocol
+**50/50** (18 HTTP + 32 governance), zero fail/skip/cancel. Malformed-URI and case
+privacy regressions were reproduced and narrowly corrected; unsupported private
+paths now return fixed JSON404. Raw failures and probe-oracle correction remain in
+`v2-8i-1-evidence/development`. The old typecheck wait was stopped with no child or
+leaf active; typecheck remains unexecuted. Candidate-check process finished.
 
-Follow [the I1 runbook](v2-8i-1-evidence/RUNBOOK.md). Draft validation helpers are
-current-slice files; inspect their checks before execution. No I1 backend or fresh
-snapshot has been created yet. Shared CPU/storage contention is ongoing. Do not
+Follow [the I1 runbook](v2-8i-1-evidence/RUNBOOK.md). Validation helpers passed syntax and complete-inventory checks; they have not yet
+executed the final matrix. No I1 backend or fresh
+snapshot has been created yet. Sustained resource qualification is running (session 65233;
+`out/v2-8i-1-validation/qualification.log`). Shared contention continues. Do not
 stop unrelated jobs. The exact-source reviewer `/root/turn_contract_review` has
 been assigned read-only source review only; root retains the validation slot until
 explicitly released. Full matrix, actual PostgreSQL, production build, typecheck,
