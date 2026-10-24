@@ -1,0 +1,33 @@
+URIError: Failed to decode param 'DO_NOT_ECHO%E0%A4%A'
+    at decodeURIComponent (<anonymous>)
+    at decodeParam (/home/deepnar/Programs/presentations/node_modules/router/lib/layer.js:225:12)
+    at Array.match (/home/deepnar/Programs/presentations/node_modules/path-to-regexp/dist/index.js:244:32)
+    at Layer.match (/home/deepnar/Programs/presentations/node_modules/router/lib/layer.js:192:31)
+    at matchLayer (/home/deepnar/Programs/presentations/node_modules/router/index.js:519:18)
+    at next (/home/deepnar/Programs/presentations/node_modules/router/index.js:237:15)
+    at router.handle (/home/deepnar/Programs/presentations/node_modules/router/index.js:186:3)
+    at app.handle (/home/deepnar/Programs/presentations/node_modules/express/lib/application.js:177:15)
+    at Server.app (/home/deepnar/Programs/presentations/node_modules/express/lib/express.js:38:9)
+    at Server.emit (node:events:509:28)
+{"status":400,"cacheControl":null,"contentType":"text/html; charset=utf-8","echoesFixture":true}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ null
+- 'private, no-store'
+
+    at file:///home/deepnar/Programs/presentations/docs/v2-8i-1-evidence/development/malformed-path-repro.mjs:15:10
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: null,
+  expected: 'private, no-store',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.16.0

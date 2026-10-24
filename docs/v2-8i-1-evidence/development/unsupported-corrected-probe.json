@@ -1,0 +1,14 @@
+{
+  "head": "6af5a5f00a15b8a2356cfc13af13f3edc6c5dc9f",
+  "atUtc": "2026-10-24T08:00:36.449043+00:00",
+  "sourceHash": "e43b72303c2aaa0886c315e8e4f5a1d16657730fbd4a72ffee5f4fb856d8c937",
+  "probeHash": "96fd1a6af0bab5186ea4b904fa5c1bbc247442a7f9ef17c7d18fc27848af72c3",
+  "classification": "Corrected probe oracle expects not-found for404. Previous after probe correctly observed private JSON/no-echo but incorrectly expected invalid-request; its failure is retained.",
+  "command": [
+    "node",
+    "docs/v2-8i-1-evidence/development/malformed-path-repro.mjs",
+    "/api/v2/projects/example/conversation/prepare/DO_NOT_ECHO",
+    "404"
+  ],
+  "exitCode": 0
+}

@@ -1,0 +1,14 @@
+{
+  "head": "f92ccaa3d180f6cde03f12039de3d320ed9d78eb",
+  "atUtc": "2026-10-24T07:53:53.854288+00:00",
+  "classification": "Lightweight single-request fail-first privacy probe; no backend, build or provider execution.",
+  "sourceHashes": {
+    "app/server/v2-conversation-routes.js": "602e25ab7982e39070c9063437151f0d4a9f908f29166d6478964337e2cccdfe",
+    "test/v2-conversation-http-contract.js": "041d38f9a8bff278ac614696807fe5f3a8963579f38c5bb98f3a57b8be3307fb"
+  },
+  "command": [
+    "node",
+    "docs/v2-8i-1-evidence/development/malformed-path-repro.mjs"
+  ],
+  "exitCode": 1
+}

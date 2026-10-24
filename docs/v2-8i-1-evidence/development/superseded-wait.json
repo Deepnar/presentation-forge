@@ -1,0 +1,6 @@
+{
+  "atUtc": "2026-10-24T08:00:08.063804+00:00",
+  "pid": 39533,
+  "children": [],
+  "classification": "Superseded coordinator stopped while waiting for typecheck admission; no test command active, no leaf cancellation. Completed 49-case development result retained; typecheck unexecuted. Final exact-source coordinator will replace this wait."
+}

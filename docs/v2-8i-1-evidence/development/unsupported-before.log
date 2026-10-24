@@ -1,0 +1,20 @@
+{"status":404,"cacheControl":"private, no-store","contentType":"text/html; charset=utf-8","echoesFixture":true}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+true !== false
+
+    at file:///home/deepnar/Programs/presentations/docs/v2-8i-1-evidence/development/malformed-path-repro.mjs:16:10
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: true,
+  expected: false,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.16.0

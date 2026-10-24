@@ -1,0 +1,306 @@
+TAP version 13
+# Subtest: repository state, document references and real Git ancestry validate
+ok 1 - repository state, document references and real Git ancestry validate
+  ---
+  duration_ms: 51.490769
+  type: 'test'
+  ...
+# Subtest: missing required role document fails closed
+ok 2 - missing required role document fails closed
+  ---
+  duration_ms: 35.056478
+  type: 'test'
+  ...
+# Subtest: malformed state JSON returns diagnostics instead of crashing
+ok 3 - malformed state JSON returns diagnostics instead of crashing
+  ---
+  duration_ms: 1.645538
+  type: 'test'
+  ...
+# Subtest: unknown review state, malformed SHA and extra properties are rejected
+ok 4 - unknown review state, malformed SHA and extra properties are rejected
+  ---
+  duration_ms: 12.835998
+  type: 'test'
+  ...
+# Subtest: known pending validation cannot disappear or be duplicated
+ok 5 - known pending validation cannot disappear or be duplicated
+  ---
+  duration_ms: 29.508543
+  type: 'test'
+  ...
+# Subtest: unaccepted implementation cannot replace the accepted baseline
+ok 6 - unaccepted implementation cannot replace the accepted baseline
+  ---
+  duration_ms: 16.951078
+  type: 'test'
+  ...
+# Subtest: passed validation needs existing matching evidence and its output log
+ok 7 - passed validation needs existing matching evidence and its output log
+  ---
+  duration_ms: 65.201269
+  type: 'test'
+  ...
+# Subtest: stale evidence from another implementation SHA is refused
+ok 8 - stale evidence from another implementation SHA is refused
+  ---
+  duration_ms: 20.161765
+  type: 'test'
+  ...
+# Subtest: self-reported totals must match the retained test output
+ok 9 - self-reported totals must match the retained test output
+  ---
+  duration_ms: 18.669868
+  type: 'test'
+  ...
+# Subtest: nonzero, cancelled, skipped and inconsistent totals never become passes
+ok 10 - nonzero, cancelled, skipped and inconsistent totals never become passes
+  ---
+  duration_ms: 59.208548
+  type: 'test'
+  ...
+# Subtest: existing output cannot substitute for actual visual inspection or 50 benchmark cells
+ok 11 - existing output cannot substitute for actual visual inspection or 50 benchmark cells
+  ---
+  duration_ms: 39.183994
+  type: 'test'
+  ...
+# Subtest: renaming a reviewer cannot substitute for a separate decision record
+ok 12 - renaming a reviewer cannot substitute for a separate decision record
+  ---
+  duration_ms: 30.364939
+  type: 'test'
+  ...
+# Subtest: legitimate recorded acceptance can advance the baseline after completed validation
+ok 13 - legitimate recorded acceptance can advance the baseline after completed validation
+  ---
+  duration_ms: 72.357693
+  type: 'test'
+  ...
+# Subtest: document paths, anchors and symlinks cannot leave the repository or point nowhere
+ok 14 - document paths, anchors and symlinks cannot leave the repository or point nowhere
+  ---
+  duration_ms: 45.544682
+  type: 'test'
+  ...
+# Subtest: Git verification rejects well-shaped nonexistent commits
+ok 15 - Git verification rejects well-shaped nonexistent commits
+  ---
+  duration_ms: 11.468359
+  type: 'test'
+  ...
+# Subtest: a passing subset cannot substitute for the full required file scope
+ok 16 - a passing subset cannot substitute for the full required file scope
+  ---
+  duration_ms: 14.556804
+  type: 'test'
+  ...
+# Subtest: name-filtered runs and implausibly small suite counts fail closed
+ok 17 - name-filtered runs and implausibly small suite counts fail closed
+  ---
+  duration_ms: 26.202411
+  type: 'test'
+  ...
+# Subtest: the TAP inventory records entry files without imported contract helpers
+ok 18 - the TAP inventory records entry files without imported contract helpers
+  ---
+  duration_ms: 75.364963
+  type: 'test'
+  ...
+# Subtest: new milestone keeps its own focused gate and rejects old evidence inventory
+ok 19 - new milestone keeps its own focused gate and rejects old evidence inventory
+  ---
+  duration_ms: 51.118286
+  type: 'test'
+  ...
+# Subtest: browser handoff requires its own complete focused evidence
+ok 20 - browser handoff requires its own complete focused evidence
+  ---
+  duration_ms: 59.887136
+  type: 'test'
+  ...
+# Subtest: project covers require their own unit, HTTP and complete Chrome evidence
+ok 21 - project covers require their own unit, HTTP and complete Chrome evidence
+  ---
+  duration_ms: 63.391287
+  type: 'test'
+  ...
+# Subtest: project discovery requires its own complete unit, HTTP and Chrome evidence
+ok 22 - project discovery requires its own complete unit, HTTP and Chrome evidence
+  ---
+  duration_ms: 59.004678
+  type: 'test'
+  ...
+# Subtest: production toolbar evidence includes its complete Chrome file and full shell regression
+ok 23 - production toolbar evidence includes its complete Chrome file and full shell regression
+  ---
+  duration_ms: 58.609571
+  type: 'test'
+  ...
+# Subtest: agent foundation requires complete tool and context behavioral evidence
+ok 24 - agent foundation requires complete tool and context behavioral evidence
+  ---
+  duration_ms: 56.055332
+  type: 'test'
+  ...
+# Subtest: provider boundary requires both protocol and durable backend files
+ok 25 - provider boundary requires both protocol and durable backend files
+  ---
+  duration_ms: 57.573562
+  type: 'test'
+  ...
+# Subtest: provider-run preparation requires both storage backends and boundary cases
+ok 26 - provider-run preparation requires both storage backends and boundary cases
+  ---
+  duration_ms: 57.875983
+  type: 'test'
+  ...
+# Subtest: bounded conversation requires both storage backends and boundary cases
+ok 27 - bounded conversation requires both storage backends and boundary cases
+  ---
+  duration_ms: 53.992004
+  type: 'test'
+  ...
+# Subtest: shared search requires normalization and complete HTTP transport evidence
+ok 28 - shared search requires normalization and complete HTTP transport evidence
+  ---
+  duration_ms: 55.247681
+  type: 'test'
+  ...
+# Subtest: model-stream correction requires new lifetime cases and both durable backends
+ok 29 - model-stream correction requires new lifetime cases and both durable backends
+  ---
+  duration_ms: 55.826864
+  type: 'test'
+  ...
+# Subtest: native identity correction has explicit scoped gates and complete export files
+ok 30 - native identity correction has explicit scoped gates and complete export files
+  ---
+  duration_ms: 84.548874
+  type: 'test'
+  ...
+# Subtest: durable turn approval requires state, both stores and independent-process evidence
+ok 31 - durable turn approval requires state, both stores and independent-process evidence
+  ---
+  duration_ms: 58.488828
+  type: 'test'
+  ...
+# Subtest: conversation HTTP acceptance requires both actual backend entry files
+ok 32 - conversation HTTP acceptance requires both actual backend entry files
+  ---
+  duration_ms: 57.833937
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: owner reads and exports only bounded visible state with private response headers
+ok 33 - SQLite HTTP: owner reads and exports only bounded visible state with private response headers
+  ---
+  duration_ms: 690.978086
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: anonymous and nonowner access cannot read or change a conversation
+ok 34 - SQLite HTTP: anonymous and nonowner access cannot read or change a conversation
+  ---
+  duration_ms: 613.9958
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: project administrator privileges do not grant cross-owner private chat access
+ok 35 - SQLite HTTP: project administrator privileges do not grant cross-owner private chat access
+  ---
+  duration_ms: 594.580027
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+ok 36 - SQLite HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+  ---
+  duration_ms: 7143.848042
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: authority and execution payloads cannot replace the stored decision identity
+ok 37 - SQLite HTTP: authority and execution payloads cannot replace the stored decision identity
+  ---
+  duration_ms: 618.178495
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: private parser bounds and failures are sanitized before the shared parser
+ok 38 - SQLite HTTP: private parser bounds and failures are sanitized before the shared parser
+  ---
+  duration_ms: 579.840473
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+ok 39 - SQLite HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+  ---
+  duration_ms: 646.690488
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: rejection is durable and cannot create or replace a queued run
+ok 40 - SQLite HTTP: rejection is durable and cannot create or replace a queued run
+  ---
+  duration_ms: 613.833129
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: HTTP cancellation fences a claimed run before its edit can commit
+ok 41 - SQLite HTTP: HTTP cancellation fences a claimed run before its edit can commit
+  ---
+  duration_ms: 606.820003
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+ok 42 - SQLite HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+  ---
+  duration_ms: 623.062121
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: a newer human save refuses stale approval without losing the pending proposal
+ok 43 - SQLite HTTP: a newer human save refuses stale approval without losing the pending proposal
+  ---
+  duration_ms: 597.475713
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: logout revokes the next request and deleted projects remain absent
+ok 44 - SQLite HTTP: logout revokes the next request and deleted projects remain absent
+  ---
+  duration_ms: 620.402633
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: project ownership changes revoke the previous owner on every operation
+ok 45 - SQLite HTTP: project ownership changes revoke the previous owner on every operation
+  ---
+  duration_ms: 601.176647
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: lost HTTP response preserves the original committed decision for replay
+ok 46 - SQLite HTTP: lost HTTP response preserves the original committed decision for replay
+  ---
+  duration_ms: 608.522886
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+ok 47 - SQLite HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+  ---
+  duration_ms: 549.43619
+  type: 'test'
+  ...
+# Subtest: production HTTP: disabled projects is an honest sanitized refusal
+ok 48 - production HTTP: disabled projects is an honest sanitized refusal
+  ---
+  duration_ms: 525.222503
+  type: 'test'
+  ...
+# Subtest: production HTTP: misconfigured backend is an honest sanitized refusal
+ok 49 - production HTTP: misconfigured backend is an honest sanitized refusal
+  ---
+  duration_ms: 557.746543
+  type: 'test'
+  ...
+1..49
+# tests 49
+# suites 0
+# pass 49
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18631.577157
+# forge-test-file "test/dev-protocol.test.js"
+# forge-test-file "test/v2-conversation-http-8i.test.js"

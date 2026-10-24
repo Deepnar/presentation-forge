@@ -1,0 +1,22 @@
+{"status":404,"cacheControl":"private, no-store","contentType":"application/json; charset=utf-8","echoesFixture":false}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'not-found'
+- 'invalid-request'
+
+    at file:///home/deepnar/Programs/presentations/docs/v2-8i-1-evidence/development/malformed-path-repro.mjs:17:10
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'not-found',
+  expected: 'invalid-request',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.16.0

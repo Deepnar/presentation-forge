@@ -1,0 +1,13 @@
+{
+  "head": "6af5a5f00a15b8a2356cfc13af13f3edc6c5dc9f",
+  "atUtc": "2026-10-24T07:59:54.078402+00:00",
+  "sourceHash": "d7f11b16e34b4fa17440de425976cba19868807720f69dbb644914ffcfdb23ba",
+  "classification": "Lightweight unsupported-private-prefix formatting probe.",
+  "command": [
+    "node",
+    "docs/v2-8i-1-evidence/development/malformed-path-repro.mjs",
+    "/api/v2/projects/example/conversation/prepare/DO_NOT_ECHO",
+    "404"
+  ],
+  "exitCode": 1
+}

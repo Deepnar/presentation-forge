@@ -1,0 +1,36 @@
+{
+  "head": "e24a281db10cbc395fbbe67a75879e4efdeb9ae2",
+  "workingTreeSourceHashes": {
+    "app/server/v2-conversation-routes.js": "602e25ab7982e39070c9063437151f0d4a9f908f29166d6478964337e2cccdfe",
+    "app/server/index.js": "73b9b3943c226c5b7a284dd6484bfa92ed0908b3627aafa052994c1b59c5ca6e",
+    "test/v2-conversation-http-contract.js": "fa205a5e6ad87336fc2f20c97b810c351e05a4dfd90e2c6eda0515c656181c95",
+    "test/v2-conversation-http-8i.test.js": "2af1fbbc80bc26bd72ccbe31dcdacc6079102a37e1a29493adfbc63ca76e724f",
+    "test/v2-conversation-http-postgres-8i.test.js": "d72cd78c326d62573f69de55bc00ac82bc57d2c1f0e6e6a256cc8eb803d13b50",
+    "test/dev-protocol.test.js": "2973cb22a96fe73f75edb6763cdb4adf49c1f720877dfcef0809b177e60fdbcb",
+    "tools/dev-protocol-check.mjs": "37484ea1de7da5c8290ba01b9adc3c57a3212b38904ba9a2435562042dd104cb",
+    "docs/development-state.schema.json": "16b611e40d42d81b00dd619aa9324c5096e5090891ca21826d59ea6ab5c1ddce"
+  },
+  "purpose": "Corrected working-tree development checks, not frozen acceptance gates.",
+  "atUtc": "2026-10-24T07:46:31.231095+00:00",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "5m",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "test/v2-conversation-http-8i.test.js",
+    "test/dev-protocol.test.js"
+  ],
+  "exitCode": 0
+}

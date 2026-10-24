@@ -1,0 +1,12 @@
+{
+  "head": "0b5fd3879ffeb5a3e42fc890839a486f7d95aff5",
+  "atUtc": "2026-10-24T07:56:07.331896+00:00",
+  "sourceHash": "d7f11b16e34b4fa17440de425976cba19868807720f69dbb644914ffcfdb23ba",
+  "classification": "Case-insensitive raw-path correction; lightweight single-request probe.",
+  "command": [
+    "node",
+    "docs/v2-8i-1-evidence/development/malformed-path-repro.mjs",
+    "/API/V2/PROJECTS/DO_NOT_ECHO%E0%A4%A/CONVERSATION"
+  ],
+  "exitCode": 0
+}
