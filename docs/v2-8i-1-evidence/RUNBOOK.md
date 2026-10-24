@@ -20,7 +20,12 @@ It verifies unchanged frozen source and previously closed port 5544, creates one
 CPU/512 MiB PostgreSQL container from the existing pinned image with no pull, and
 saves/fsyncs its identity before use. It snapshots and verifies all current historical
 V2 evidence, including ignored PPTXs, and five canonical output originals. It refuses
-to replace existing ownership or snapshot records. Do not run H's old helpers.
+to replace existing ownership or snapshot records. Readiness probes the final TCP
+listener, since the initialization server is Unix-only. If startup fails after
+the identity is saved but before snapshots/tests, retain the failure and verify
+that exact owned ID. Only then may `--resume-owned-preparation --prepare-only`
+recover it with fresh qualification/admission, empty catalog and absent backup/
+coordinator guards; it does not create a replacement service. Do not run H's old helpers.
 
 The coordinator runs the two-file HTTP gate, 195 nonbrowser files, 26 serial browser/
 build files, 10 PostgreSQL files, production build, typecheck, 50 cells, four persisted/

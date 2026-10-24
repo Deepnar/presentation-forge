@@ -1,0 +1,30 @@
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 12.2 iowait 10.0 storage {'nvme0n1': {'busyPercent': 2.0532936912133413, 'weightedQueue': 0.09173156230875186, 'inflight': 0, 'readKiBps': 245.32859687224337, 'writeKiBps': 854.3835047594214}}
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 9.7 iowait 10.0 storage {'nvme0n1': {'busyPercent': 2.838260716677551, 'weightedQueue': 0.11931330179007504, 'inflight': 0, 'readKiBps': 28.449076972786695, 'writeKiBps': 2374.301470719488}}
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 9.6 iowait 9.7 storage {'nvme0n1': {'busyPercent': 3.4166536274803185, 'weightedQueue': 0.14816577695824185, 'inflight': 0, 'readKiBps': 2725.346278729437, 'writeKiBps': 5437.9299602511655}}
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 8.1 iowait 8.3 storage {'nvme0n1': {'busyPercent': 3.5229031252498912, 'weightedQueue': 0.2647494933560437, 'inflight': 0, 'readKiBps': 1920.7133718343557, 'writeKiBps': 7089.942244370837}}
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 6.7 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.5254255504620541, 'weightedQueue': 0.02886515049373816, 'inflight': 0, 'readKiBps': 588.7426547708991, 'writeKiBps': 963.5905538093974}}
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 7.9 iowait 8.3 storage {'nvme0n1': {'busyPercent': 1.7028934581220065, 'weightedQueue': 0.09372565947241825, 'inflight': 0, 'readKiBps': 1894.7350492635637, 'writeKiBps': 4296.080902318425}}
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 7.9 iowait 8.3 storage {'nvme0n1': {'busyPercent': 1.842103706890026, 'weightedQueue': 0.06530490397711211, 'inflight': 0, 'readKiBps': 452.47919211840207, 'writeKiBps': 537.8676816363368}}
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 7.3 iowait 8.3 storage {'nvme0n1': {'busyPercent': 1.868648822955867, 'weightedQueue': 0.1158429270316413, 'inflight': 0, 'readKiBps': 3226.311967776756, 'writeKiBps': 1654.2529580017847}}
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 6.3 iowait 8.2 storage {'nvme0n1': {'busyPercent': 0.6053079743090305, 'weightedQueue': 0.03379081878560302, 'inflight': 0, 'readKiBps': 2385.5785923757217, 'writeKiBps': 9.844569252498518}}
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 8.7 iowait 8.2 storage {'nvme0n1': {'busyPercent': 1.0574000801913008, 'weightedQueue': 0.05912130008113626, 'inflight': 0, 'readKiBps': 5.320251975805288, 'writeKiBps': 1708.8649346286584}}
+RESOURCE WINDOW 0 of 180 stable seconds; CPU 7.5 iowait 8.7 storage {'nvme0n1': {'busyPercent': 0.5719191146995064, 'weightedQueue': 0.012568920078861245, 'inflight': 0, 'readKiBps': 801.7507961415406, 'writeKiBps': 86.18688054076283}}
+RESOURCE WINDOW 180 of 180 stable seconds; CPU 6.7 iowait 8.5 storage {'nvme0n1': {'busyPercent': 0.8580010698910238, 'weightedQueue': 0.05813123527788797, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1094.5167136532316}}
+prepare BEGIN
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 6.8 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.5666491903745592, 'weightedQueue': 0.01299959907329871, 'inflight': 0, 'readKiBps': 1.3332922126460216, 'writeKiBps': 149.59538625888362}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 7.5 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.9177501323078472, 'weightedQueue': 0.07275497425686847, 'inflight': 0, 'readKiBps': 1.0640581244148952, 'writeKiBps': 1411.207087505255}}
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+Traceback (most recent call last):
+  File "/home/deepnar/Programs/presentations/docs/v2-8i-1-evidence/prepare-full-validation.py", line 31, in <module>
+    owned['version']=subprocess.check_output(['docker','exec',cid,'psql','-U','postgres','-d','postgres','-At','-c','SHOW server_version'],text=True).strip()
+                     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 473, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+               **kwargs).stdout
+               ^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['docker', 'exec', '22f3b4ef8c918b6ef3a218dba1fd896159028dddc9d6b1d193ef15146574cc94', 'psql', '-U', 'postgres', '-d', 'postgres', '-At', '-c', 'SHOW server_version']' returned non-zero exit status 2.
