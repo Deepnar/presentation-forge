@@ -1,0 +1,24 @@
+{
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "atUtc": "2026-10-24T07:08:49.361038+00:00",
+  "kind": "independent-read-only-cleanup-verification",
+  "recordsSha256": {
+    "owned-postgres-before-removal.json": "1b11837ef46314f7b18718396f9974b46808fc43eca21294081fa9a0bd571404",
+    "owned-postgres-cleanup.json": "23df9a36dbf3a2de0f8ffc4103147c4038faeed48b75f56f6c57ae151a1190f9",
+    "owned-postgres-cleanup-verification.json": "8ee0099627ecc3db6adbeb65f54f710cd09f0c3545bf2acf3f2c59e52d3e2936"
+  },
+  "originalImmediateExactIdAbsent": false,
+  "originalStopExitCode": 0,
+  "freshSavedProjectDatabaseCountBeforeStop": 0,
+  "databaseCountReconstructed": false,
+  "inspectExitCode": 1,
+  "inspectStderr": "error: no such object: d89e445e3e9ac94460781fbe5932cc35b7ed8752814e1146ee7fa751e467d4b2\n",
+  "matchingContainerIds": [],
+  "exactIdAbsent": true,
+  "port": 5544,
+  "portConnectionRefused": true,
+  "additionalStopOrRemovalIssued": false,
+  "currentSourceDiff": [],
+  "sourceHashesVerified": 34,
+  "priorIndependentTestLogHashesVerified": true
+}

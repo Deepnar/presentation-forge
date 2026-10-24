@@ -1,0 +1,249 @@
+{
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "acceptedBaselineCompared": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "reviewedEvidenceCommit": "24e9939f4d74641420c8adc70ef57b58820f1b1a",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "atUtc": "2026-10-24T07:10:29.692433+00:00",
+  "currentSourceExecutions": {
+    "total": 165,
+    "pass": 165,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "groups": [
+    {
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "name": "turn-approval",
+      "atUtc": "2026-10-23T16:15:56.770207+00:00",
+      "durationSeconds": 19.058795068998734,
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-turns-8h.test.js",
+        "test/v2-turns-sqlite-8h.test.js",
+        "test/v2-turns-postgres-8h.test.js",
+        "test/v2-turns-process-8h.test.js"
+      ],
+      "exitCode": 0,
+      "tests": {
+        "total": 90,
+        "pass": 90,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "expectedTests": 90,
+      "log": "docs/v2-8h-evidence/independent/turn-approval.log",
+      "logSha256": "bbff95cbc2786138ac09085a0a4d009693c527a62b9611b0c6be3a47f9ae2790"
+    },
+    {
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "name": "core-boundary",
+      "atUtc": "2026-10-23T16:16:45.915597+00:00",
+      "durationSeconds": 1.00088624899945,
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-core-boundary.test.js"
+      ],
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "expectedTests": 6,
+      "log": "docs/v2-8h-evidence/independent/core-boundary.log",
+      "logSha256": "e8e313ed793fff03132fd826b711c713d66c54447767a7b71828a6209232114b"
+    },
+    {
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "name": "runtime",
+      "atUtc": "2026-10-23T16:17:17.012425+00:00",
+      "durationSeconds": 24.048928997002804,
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-runtime-8b.test.js",
+        "test/v2-runtime-process-8b.test.js",
+        "test/v2-runtime-postgres-8b.test.js"
+      ],
+      "exitCode": 0,
+      "tests": {
+        "total": 69,
+        "pass": 69,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "expectedTests": 69,
+      "log": "docs/v2-8h-evidence/independent/runtime.log",
+      "logSha256": "2985697f195b305eb765d946bb346f8b1878de407cfb58c7657d5ddcec42b37f"
+    },
+    {
+      "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+      "name": "typecheck",
+      "atUtc": "2026-10-23T16:18:11.153944+00:00",
+      "durationSeconds": 2.000956727999437,
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "tests": null,
+      "expectedTests": null,
+      "log": "docs/v2-8h-evidence/independent/typecheck.log",
+      "logSha256": "5b7f3df27a2b67b5ec58d28781702999fd5e43a5c7f20576d631e777f0477c88"
+    }
+  ],
+  "executionOverlap": {
+    "primaryInventoryFilesRepeated": 8,
+    "primaryInventoryLeavesRepeated": 165,
+    "primaryInventoryFilesNotIndependentlyRepeated": 221,
+    "primaryInventoryLeavesNotIndependentlyRepeated": 2733,
+    "newProductProbesInFinalExecution": 0,
+    "notAddedToImplementerDistinctTotal": true
+  },
+  "inspectedPacket": {
+    "files": 229,
+    "primaryInventoryLeaves": 2898,
+    "distinctPersistedNativeCases": 4,
+    "focusedRepeats": 90,
+    "all44RawCoordinatorCountsVerified": true,
+    "fullMatrixIndependentlyDuplicated": false,
+    "standingLocale": {
+      "total": 10,
+      "pass": 9,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0,
+      "independentlyRepeated": false,
+      "classification": "Acknowledged inherited en_IN assertion, excluded from passing primary total."
+    }
+  },
+  "visuals": {
+    "packetImagesHashVerifiedAndInspected": 115,
+    "browser": 76,
+    "nativeSvgAndExport": 39,
+    "browserFullSizeRiskCases": 16,
+    "additionalNativeFullSizeRiskCases": 5,
+    "freshReviewerBrowserOrGenerationExecuted": false,
+    "maximumMeasuredCanvasDeltaPx": 0.0771484375,
+    "largeDeck": {
+      "slides": 120,
+      "thumbnails": 120,
+      "openMs": 1545
+    },
+    "interactivePowerPointExecuted": false
+  },
+  "nativeArchiveAudit": {
+    "originalArchivesHashVerified": 13,
+    "parts": 93,
+    "numericNonvisualProperties": 319,
+    "namespaceAwareXmlParsing": true,
+    "archiveBytesReconstructed": false
+  },
+  "preservation": {
+    "historicalFilesHashVerified": 5725,
+    "historicalPptxHashVerified": 164,
+    "canonicalOriginalsHashVerified": 5,
+    "newRootOriginalsRetained": 13,
+    "reviewerGeneratorsExecuted": false
+  },
+  "resources": {
+    "samples": 10,
+    "readyPreJobSamples": 8,
+    "criticalSamples": 0,
+    "cpuBusyRangePercent": [
+      8.417378878232434,
+      17.47188557702806
+    ],
+    "availableGiBMinimum": 35.08048629760742,
+    "raw": "docs/v2-8h-evidence/independent/resource-window.jsonl",
+    "admission": "30 seconds of serial waiting with two ready samples before each job; unchanged shared-machine thresholds, nice10/ionice2.7/15-minute watchdog.",
+    "limitation": "Global I/O PSI/iowait provenance unresolved; sampled resources and local fixture timings are not continuous peaks or production percentiles."
+  },
+  "cleanup": "docs/v2-8h-evidence/independent/cleanup-verification.json",
+  "interruption": {
+    "executionCompletedAtUtc": "2026-10-23T16:18:11.153944+00:00",
+    "reviewOrchestrationInterrupted": "Usage-limit interruption after acknowledged checks/typecheck and explicit release of PostgreSQL; no final decision had been issued.",
+    "resumedDate": "2026-10-24",
+    "passedTestsRerun": false,
+    "newExecutionOnResume": "Only read-only source/hash/Docker-absence/port verification; no database or application test."
+  },
+  "harnessPreflight": {
+    "record": "docs/v2-8h-evidence/independent/preflight-image-format.log",
+    "classification": "Initial reviewer harness expected a tag string; actual container uses immutable image digest. Asserted before tests. Corrected to exact recorded image-ID comparison; raw failure retained.",
+    "productOrTestAssertionsChanged": false
+  },
+  "earlierSourceReviews": "docs/reviews/V2-8H-22e7c97-source-inspection.md",
+  "historicalHolds": [
+    "docs/reviews/V2-8H-source-464c6d7.json",
+    "docs/reviews/V2-8H-source-cc3ed18.json"
+  ],
+  "blockingFindings": [],
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0,
+  "productTestsStateRoadmapHandoffEdited": false,
+  "independentPlannedChecksUnexecuted": 0,
+  "scopeStop": "V2-8H only; no Assistant integration, parent milestone completion, deployment or next feature."
+}
