@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
-    "note": "I1 source5170adc unchanged. Fresh sustained qualification passed; same recorded isolated PostgreSQL15.18 recovered after init-readiness race.6102historical files,179evidence originals and5canonical originals snapshotted/hash-verified. Full exact-source execution is active, not yet accepted."
+    "note": "I1 frozen source5170adc unchanged; all231primary files2933/2933 plus4distinct headless cases pass, commands/50cells and119image inspection complete. Independent acceptance remains pending; H remains accepted baseline."
   },
   "activeMilestone": {
     "id": "V2-8I-1",
     "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration",
     "evalDoc": "docs/V2-8I-1-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -35,45 +35,45 @@
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Bounded serial browser/build inventory underway; complete26-file result not yet available."
+      "status": "passed",
+      "evidence": "docs/v2-8i-1-evidence/serial-browser.json",
+      "reason": "Complete26-file bounded serial browser/build inventory208/208, no fail/skip/cancel; visual inspection is a separate gate."
     },
     {
       "id": "postgres-contract",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Fresh quiet admission and exclusive owned backend/snapshots are ready; exact-source final execution is active. Await recorded completion and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-1-evidence/postgres-contract.json",
+      "reason": "Designated actual owned PostgreSQL project/import contract23/23, overlapping complete225/225 backend group."
     },
     {
       "id": "cross-process-faults",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Fresh quiet admission and exclusive owned backend/snapshots are ready; exact-source final execution is active. Await recorded completion and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-1-evidence/cross-process-faults.json",
+      "reason": "Actual owned PostgreSQL independent-process/fault19/19, overlapping complete225/225 backend group."
     },
     {
       "id": "production-build",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Fresh quiet admission and exclusive owned backend/snapshots are ready; exact-source final execution is active. Await recorded completion and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-1-evidence/production-build.json",
+      "reason": "Complete frozen-source command exited0 under bounded serial resource admission."
     },
     {
       "id": "typecheck",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Fresh quiet admission and exclusive owned backend/snapshots are ready; exact-source final execution is active. Await recorded completion and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-1-evidence/typecheck.json",
+      "reason": "Complete frozen-source command exited0 under bounded serial resource admission."
     },
     {
       "id": "benchmark-50",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Fresh quiet admission and exclusive owned backend/snapshots are ready; exact-source final execution is active. Await recorded completion and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-1-evidence/benchmark-50.json",
+      "reason": "All50canonical cells completed; compiler/ZIP sample519ms, without raster in benchmark. Native visual evidence is separate."
     },
     {
       "id": "frontend-visual",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Fresh quiet admission and exclusive owned backend/snapshots are ready; exact-source final execution is active. Await recorded completion and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-1-evidence/frontend-visual.json",
+      "reason": "All119current images manually inspected;15original archives verified. Inherited limitations retained; interactive Microsoft PowerPoint unexecuted."
     }
   ],
   "knownBlockers": [],

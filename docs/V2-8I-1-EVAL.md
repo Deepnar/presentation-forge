@@ -1,5 +1,66 @@
 # V2-8I-1 — authenticated conversation and approval transport
 
+## Current result — validation complete, independent decision pending
+
+Frozen product/test source: `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`.
+Accepted baseline remains H `22e7c97`. All nine required validation gates passed;
+this report recommends acceptance of the bounded transport, subject to separate
+independent execution and an exact-source ACCEPT/HOLD. It supplies no acceptance.
+
+| Executed group | Pass | Fail | Skip | Cancelled |
+|---|---:|---:|---:|---:|
+|195 nonbrowser primary files|2500|0|0|0|
+|26 serial browser/build primary files|208|0|0|0|
+|10 owned PostgreSQL primary files|225|0|0|0|
+|Complete231-file primary inventory|2933|0|0|0|
+|Four additional persisted/native scenarios|4|0|0|0|
+|Separate focused HTTP repeat (overlaps primary)|34|0|0|0|
+|Separate Indian-locale BYOK probe|9|1|0|0|
+
+The2937 distinct successful primary/headless cases do not include the34focused
+repeats, earlier50/50development run, or overlapping PostgreSQL gate subsets.
+Unexecuted required cases:0. Production build, typecheck and all50canonical
+benchmark cells exited0. The known locale assertion still expects `5,000,000`
+while the actual Indian locale formats `50,00,000`; no assertion was weakened.
+See [full matrix](v2-8i-1-evidence/full-matrix.json),
+[coordinator/raw logs](v2-8i-1-evidence/logs/coordinator.json),
+[performance](v2-8i-1-evidence/performance.json) and
+[visual report](v2-8i-1-evidence/VISUAL-REVIEW.md).
+
+Actual backend: exclusive PostgreSQL15.18, exact saved container ID
+`22f3b4ef8c918b6ef3a218dba1fd896159028dddc9d6b1d193ef15146574cc94`,
+loopback5544, plus temporary SQLite stores. Source has no app/package/test/tool
+working delta after5170adc. Later documentation/evidence commits are distinct.
+Every job had fresh30-second resource admission, bounded serial isolation and a
+process-group watchdog. The retained180.42-second qualification averaged8.22%CPU
+and1.74%backing-storage busy; all258 resource samples and exact job admissions are
+[retained](v2-8i-1-evidence/resource-assessment.json). Global I/O PSI/iowait provenance
+remains unresolved; timings retain that environment limitation.
+
+All119 current images were manually inspected and15exact original PPTXs retained.
+Per-part native-ID uniqueness passed for107OOXML parts/365nonvisual properties.
+Actual120-slide opening was1547ms; maximum measured canvas delta0.04950px;
+50-cell compiler/ZIP sample519ms. Local crash-recovery samples were35.55msSQLite
+and89.88msPostgreSQL (exclude lease wait/module bootstrap, include store setup).
+These are local fixtures/samples, not live-provider quality or production percentiles.
+All6102historical evidence files/179original archives and5canonical output originals
+were restored/hash-verified. No original bytes were reconstructed.
+
+Product corrections during I1 development are the private malformed-URI/case error
+boundary and unsupported-prefix sanitization described below. Incorrect development
+fixtures and a probe oracle were corrected without weakening behavior. The later
+startup readiness race was an evidence-setup issue, corrected using finalTCP and
+guarded recovery of the same owned ID. No product/test source correction was
+needed by the final2933-case run. All failed attempts remain retained.
+
+Known limitations remain: inherited partial narrow canvas and screenshot scroll/
+loading/transition debt, SVG mixed-run styling and native chart-consumer differences,
+standing BYOK locale failure, next-request session revocation without an in-flight
+logout fence, no live-provider qualification or interactive Microsoft PowerPoint
+execution. This slice adds neither a browser Assistant nor public worker execution.
+The next dependencies live only in [the roadmap](ROADMAP.md#assistant-surface-integration).
+Stop after I1 review/cleanup; no dependent feature is authorized by this report.
+
 ## Authority and entry state
 
 The2026-10-24 continuation requests the next immediate work and delegates its
@@ -330,3 +391,20 @@ is byte-identical to accepted H's preserved fresh capture. The older restored
 V2-7A canonical screenshot is a historical original, not the H visual reference.
 Inherited horizontal overflow/partial narrow canvas is not called fixed. This
 partial inspection does not pass the complete final visual gate.
+
+
+## Complete regression inventory checkpoint
+
+All231primary files passed **2933/2933**:195nonbrowser files2500/2500,
+26serial browser/build files208/208 and10actual owned PostgreSQL files225/225.
+Every file exited0, with zero failures, skips or cancellations. PostgreSQL's
+23designated contract cases and19cross-process/fault cases overlap those225;
+they are not additional distinct cases. The34focused HTTP cases also repeat
+the primary inventory. Production build passed. Remaining command/native/visual
+assembly and independent execution/decision are still pending at this checkpoint.
+
+All76fresh browser captures have been inspected on13contact sheets, with full-size
+checks of narrow/history/refusal/catalog dialogs and chart/table inspectors. No new
+control overlap, clipped dialog or unexplained canvas movement was observed.
+Inherited narrow canvas overflow and canonical screenshot timing/scroll limitations
+remain explicit; final native rasters and measured canvas deltas still await review.

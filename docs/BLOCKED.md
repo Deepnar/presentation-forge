@@ -188,12 +188,12 @@ current roadmap work is blocked:
 - `feature-grid`'s note debt, *diagnosed* — a 1pt gap on a deliberately compact
   theme rather than the 2pt a misreported floor claimed
 
-Current V2-8I-1 full validation is active after a fresh quiet qualification and
-recovery of its exact owned PostgreSQL startup. Earlier resource holds remain
-historical; no threshold was relaxed. The34/34two-store HTTP gate passed, while
-primary completion and independent review remain pending. Current execution and
-ownership are indexed in state/HANDOFF; [the roadmap](ROADMAP.md#assistant-surface-integration)
-owns all remaining work. Do not start dependent work or another coordinator.
+Current V2-8I-1 required validation is complete at5170adc:231primary files2933/2933,
+plus4distinct native scenarios and all command/visual gates. Independent execution/
+ACCEPT-HOLD and then exact owned-service cleanup remain pending. Earlier resource
+holds are historical; no threshold was relaxed. State/HANDOFF index the current
+review and DB-slot ownership. [The roadmap](ROADMAP.md#assistant-surface-integration)
+owns remaining scope; do not begin dependent work or another coordinator.
 
 The active V2 task is recorded in `docs/development-state.json` and
 `docs/ROADMAP.md` §12. For V2-7A a quiet shared-machine

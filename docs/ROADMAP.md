@@ -9048,17 +9048,17 @@ local inference. Only that separate transport correction is authorized; this aud
   orchestration before the existing-deck Assistant panel. This first step reuses
   accepted owner-only policy and H storage; it adds no UI or provider execution.
   I1 source `5170adc` implements the five lifecycle routes and strict private JSON
-  boundaries, with shared SQLite/PostgreSQL contracts. Final exact-source validation
-  and independent acceptance are pending. Frozen-source SQLite/protocol development
-  checks pass50/50. Earlier admission attempts failed; a later fresh window now
-  qualified and complete final validation is active against the exclusive owned
-  PostgreSQL backend. All final gate results still await recorded execution and review. See the
-  [latest resource checkpoint](v2-8i-1-evidence/environment-held-continuation.json); the current action is
-  completing bounded I1 validation batches and separate independent acceptance. A subsequent14.55-minute admission attempt again failed; source is
-  unchanged. Pre-execution tooling corrections now enforce the exact owned backend,
-  preserve every interrupted log and align the actual PostgreSQL HTTP export name.
-  The [tooling review](reviews/V2-8I-1-tooling-readiness.md) is ready for bounded
-  validation, with no acceptance or product-suite execution inferred. Subsequent slices still need
+  boundaries, with shared SQLite/PostgreSQL contracts. All231primary files passed
+  2933/2933 plus4distinct persisted/native cases; build/typecheck/50cells and119-image
+  inspection passed. Focused34cases overlap primary execution, and locale remains
+  9pass/1standing failure separately.15original archives were preserved;6102prior
+  evidence files and5canonical originals are restored/hash-verified. Independent
+  execution/decision and owned-service cleanup are pending; the accepted baseline
+  remains H22e7c97. Earlier resource holds are historical. Fresh admission/owned
+  preparation succeeded without relaxing thresholds; the initial setup race and
+  guarded same-ID recovery remain documented. No source change was needed by the
+  complete final run. See [the exact evaluation](V2-8I-1-EVAL.md) and current handoff.
+  Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
   Agree the promised surface before implementation: existing-deck editing versus

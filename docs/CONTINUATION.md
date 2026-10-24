@@ -38,12 +38,15 @@ The active slice is **V2-8I-1 authenticated conversation/approval transport** at
 `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`, not yet accepted. Read [the contract/evaluation](V2-8I-1-EVAL.md),
 [runbook](v2-8i-1-evidence/RUNBOOK.md), state and current HANDOFF. Its five lifecycle
 routes reuse accepted H and add no public preparation, worker loop or Assistant UI.
-The complete inventory is231files. Fresh resource qualification and same-ID owned
-PostgreSQL preparation have succeeded; the two-file HTTP gate passed34/34 and the
-bounded primary coordinator is active. Read HANDOFF for exact session/owned ID/
-snapshot state before another command. Source review and tooling readiness supply
-no implementation acceptance. Earlier admission holds remain historical evidence.
-Do not run old H finishers or reuse its removed backend.
+The complete231-file inventory passed2933/2933, plus4distinct persisted/native
+cases; build/typecheck/50cells and119-image inspection passed. The34focused HTTP
+cases repeat the primary inventory. Locale remains9pass/1standing failure separately.
+All6102historical files and5canonical originals are restored/hash-verified;15new
+original PPTXs are retained. Independent execution/decision and owned-service cleanup
+remain pending; read HANDOFF before using the DB/test slot. Source review/tooling
+readiness are not implementation acceptance. Earlier admission holds remain
+historical. Do not rerun any finisher against restored canonical originals or
+recreate H's removed backend.
 
 H remains the accepted baseline at `22e7c97`, with its separate
 [decision](reviews/V2-8H-22e7c97.json). Its 2,898 primary cases, four distinct native
