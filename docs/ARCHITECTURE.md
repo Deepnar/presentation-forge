@@ -2718,6 +2718,25 @@ history while fencing preparations and cancelling linked nonterminal runs.
 `agent-chat` provides CLI parity; no Assistant surface or HTTP route is added.
 Exact source `22e7c97` is [independently accepted](reviews/V2-8H-22e7c97.json)
 for this headless boundary. Saved visible chat is not automatic cross-turn provider
-context; authenticated routes and the visible Assistant retain their roadmap gates.
+context; later authenticated orchestration and the visible Assistant retain their roadmap gates.
 The [as-built boundary](V2-8-AGENT-ARCHITECTURE.md#v2-8h-durable-visible-conversations-and-approval)
 and [evaluation](V2-8H-EVAL.md) distinguish implemented behavior from executed evidence.
+
+
+### V2-8I-1 authenticated conversation lifecycle transport
+
+The thin Express module `app/server/v2-conversation-routes.js` exposes read/export,
+stored decision, cancel and clear through the existing H turn service. It resolves
+the current project/session owner on each request and deliberately omits the
+administrator project-CRUD bypass for private conversations. H rechecks current
+project ownership transactionally. Session revocation takes effect on the next
+request; an atomic in-flight logout fence is not claimed.
+
+Conversation JSON has an 8 KiB prefix parser before the global parser. Fixed JSON
+failures and private/no-store headers cover malformed bodies, backend errors and
+parameter-decoding failures that precede route execution. Pagination and mutation
+queries are strict; export names derive from validated project IDs. No transport
+accepts client edits, provider configuration or worker execution. Queueing/replay,
+revision conflicts, cancellation and clear remain H domain operations with CLI
+parity. The [I1 evaluation](V2-8I-1-EVAL.md) records pending validation/review;
+implementation does not establish acceptance or complete the Assistant.

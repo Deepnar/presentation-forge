@@ -94,3 +94,45 @@ Deployment safety means no deployment or irreversible migration. Update the as-b
 architecture, state, roadmap and handoff only to actual implemented/validated facts.
 A separate exact-source reviewer must issue ACCEPT/HOLD. Stop afterI1 acceptance
 or a material scope/authorization blocker; no dependent implementation is implied.
+
+
+## Development execution (not acceptance gates)
+
+Source checkpoint `6af5a5f` contains the five routes, shared both-store HTTP tests,
+complete-inventory governance and the parameter error correction. The independent
+[plan review](reviews/V2-8I-1-plan-e24a281.md) was READY_FOR_IMPLEMENTATION. Exact-source
+implementation review and all final gates remain pending.
+
+The first SQLite development run executed 16 cases: 14 pass, 2 fail, zero skips or
+cancellations. Both failures were incorrect fixtures: cancel/clear authorization
+checks used a decision body instead of each method's valid input, and the registered
+account had not actually been promoted to administrator. Corrections retain the
+404 assertion and now prove real admin access to project CRUD while private chat
+remains denied. An additional actual ownership-transfer case was added. The next
+SQLite plus protocol run passed 49/49 (17 HTTP and 32 governance), zero failures,
+skips or cancellations. Its separate development typecheck was still awaiting a
+quiet window at this checkpoint; no typecheck pass is claimed.
+
+A single-request lightweight malformed-URI probe reproduced a product regression:
+Express decoded parameters before the prefix parser and returned HTML, echoing the
+fixture path without private cache headers. A scoped late handler fixed this.
+Independent source review then found that the raw predicate needed to match
+Express's case-insensitive routing. The uppercase fail-first probe reproduced the
+same disclosure; `/i` and lower/upper/mixed-case shared assertions correct it.
+Both post-correction single-request probes pass. These are development probes,
+not complete matrix execution. Raw failures, source hashes and corrected results
+remain in `v2-8i-1-evidence/development/`. No assertions were weakened.
+
+
+Independent source review also identified coverage gaps for local ownerless policy
+and admin decide/cancel. The shared contract now exercises the complete ownerless
+lifecycle on each backend, with authenticated access denied to that ownerless chat,
+and all five administrator cross-owner denials. Unsupported private-prefix paths
+now return fixed JSON404 rather than the default HTML path echo. A single-request
+fail-first probe confirms the former HTML response; its first after-probe retained
+an incorrect `invalid-request` oracle for404, then the corrected `not-found` oracle
+passes. This probe mistake did not change the product refusal or shared assertions.
+Source checkpoint `5170adc` includes these narrow corrections. The old coordinator
+was stopped while waiting with no child process active: no test was cancelled,
+and the development typecheck remains unexecuted. Final validation requires the
+new source and its expanded case inventory; prior passes are not retagged.

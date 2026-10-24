@@ -1,51 +1,34 @@
-# Handoff — V2-8H accepted; stop after this slice
+# Current handoff — V2-8I-1 in progress
 
-2026-10-24 · branch `v2`; authorized push `origin/v2`.
-Accepted implementation/tests: `22e7c9749865f3e7c2d62fb8724136e0f19048b0`.
-Previous accepted baseline: `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`.
-Separate reviewer `/root/turn_contract_review` issued ACCEPT in
-`docs/reviews/V2-8H-22e7c97.json`, committed at `701e874`. Later commits update
-only documentation/evidence. State, evaluation, roadmap and architecture agree.
+Branch/push: `v2` / `origin/v2`. Accepted baseline is H `22e7c97`, with
+[separate acceptance](reviews/V2-8H-22e7c97.json). I1 frozen source is
+`5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`. Later documentation commits do not retag tested source.
 
-The approved headless slice supplies bounded owner/project-linked visible turns,
-stored semantic proposals, atomic approval over the existing run queue,
-cancellation/clear/recovery and CLI parity. It adds no Assistant UI or HTTP route.
-Saved visible chat does not automatically become cross-turn provider context.
-Corrections addressed cancellation rollback, schema I/O placement and mutable
-binding reuse. Fixture corrections retain actual stores, original assertions,
-short leases, process kills and exact expiry boundaries. Earlier failed and
-superseded runs remain archived separately.
+The immediate authorized slice is the [I1 bounded contract](V2-8I-1-EVAL.md).
+Five authenticated lifecycle routes reuse H; no public submit/prepare/worker or
+Assistant UI is included. The human delegated dependency ordering; future scope
+remains only in [the roadmap](ROADMAP.md#assistant-surface-integration).
 
-All nine gates passed. The 229-file primary inventory passed 2,898/2,898 plus four
-additional distinct persisted/native scenarios: 2,902 distinct primary passes,
-zero fail/skip/cancel/unexecuted. The 90 focused cases are separate repeats.
-Bulk: 2,481; serial browser/build: 208; all nine PostgreSQL files: 209. Production
-build, typecheck and 50 benchmark cells passed. The separate locale probe remains
-nine pass/one standing failure. Independent execution repeated 165 primary cases
-and typecheck; it did not independently rerun the complete inventory.
+Development execution: first SQLite run 14 pass / 2 fail (incorrect authorization
+and admin fixtures, retained); corrected SQLite plus protocol 49/49 passed before
+the URI correction. A lightweight single-request negative probe then reproduced
+HTML/path disclosure for malformed parameters; the scoped correction passes that
+probe and adds the shared backend assertion. All acceptance gates remain pending.
+The old development coordinator was stopped with no child/test active while
+waiting for admission; its typecheck is unexecuted. A new candidate check uses
+`out/v2-8i-1-development/candidate-check.py`; inspect its log/process before any
+other validation. Logs are
+in `out/v2-8i-1-development`. It is not the final matrix.
 
-Root and reviewer inspected all 115 images and verified 13 original native PPTXs.
-The ID audit found 319 numeric nonvisual properties across 93 parts, unique within
-each part. The 120-slide/120-thumbnail sample opened in 1,545 ms; maximum canvas
-movement was 0.0771484375 px. All 5,725 historical files (164 PPTXs) and five
-canonical output originals were restored/hash-verified. Thirteen new original
-PPTXs are preserved and tracked. Never rerun the one-time finisher against restored
-originals. The full matrix, performance, visual and preservation records are in
-`docs/v2-8h-evidence`; the runbook defines fresh reproduction in a new namespace.
+Follow [the I1 runbook](v2-8i-1-evidence/RUNBOOK.md). Draft validation helpers are
+current-slice files; inspect their checks before execution. No I1 backend or fresh
+snapshot has been created yet. Shared CPU/storage contention is ongoing. Do not
+stop unrelated jobs. The exact-source reviewer `/root/turn_contract_review` has
+been assigned read-only source review only; root retains the validation slot until
+explicitly released. Full matrix, actual PostgreSQL, production build, typecheck,
+50 cells, final raster inspection and independent execution/decision remain pending.
 
-The owned PostgreSQL service was removed after the reviewer released DB use.
-The actual zero-project-database count was saved/fsynced before stop. The immediate
-identity observation was false and its assertion failed; both original records
-remain unchanged. Later root and reviewer read-only verification proved exact-ID
-absence and port 5544 refusal. No count reconstruction, second stop, replacement
-service or unrelated-service change occurred. Do not rerun cleanup on the removed
-container. Missing PostgreSQL makes future tests unexecuted, not historical passes.
-
-Original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched. No real model API,
-local inference, deployment or production migration ran. Interactive Microsoft
-PowerPoint and live-model quality remain unexecuted; SVG/Fit/capture/timeout,
-historical archive provenance and unresolved global I/O PSI limits remain explicit.
-
-No dependent feature is authorized. Stop after H. Future scope and decisions live
-only in `docs/ROADMAP.md#v2-8-remaining`; acceptance does not authorize starting them.
+Preserve original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`
+and `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`. Do not deploy, migrate, call a
+real model or run inference. Stop after I1 ACCEPT/HOLD. Do not run historical H
+coordinators/finishers or reuse its removed container.

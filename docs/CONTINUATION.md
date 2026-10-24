@@ -34,30 +34,20 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-The approved V2-8H headless contract is **independently accepted at `22e7c97`** in
-[the exact-source decision](reviews/V2-8H-22e7c97.json). All nine gates passed:
-229 files with 2,898/2,898 primary cases, plus four distinct persisted/native cases
-and 90 separate focused repeats. The reviewer independently repeated 165 primary
-cases and typecheck, inspected all 115 images and verified 13 original PPTXs.
-The separate locale probe remains nine pass/one standing failure. The reviewer
-resumed after its usage-limit interruption without retagging or rerunning completed
-checks. Read [the evaluation](V2-8H-EVAL.md), state and
-[nine-gate inventory](v2-8h-evidence/validation-plan.json).
+The active slice is **V2-8I-1 authenticated conversation/approval transport** at
+`5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`, not yet accepted. Read [the contract/evaluation](V2-8I-1-EVAL.md),
+[runbook](v2-8i-1-evidence/RUNBOOK.md), state and current HANDOFF. Its five lifecycle
+routes reuse accepted H and add no public preparation, worker loop or Assistant UI.
+The new inventory is 231 files; full gates and independent review remain pending.
+The plan received independent READY_FOR_IMPLEMENTATION; that is not acceptance.
+Do not run old H finishers or reuse its removed backend.
 
-Owned-service cleanup saved/fsynced the actual zero-database count before stop.
-The initial immediate identity check failed and is retained; later read-only
-[verification](v2-8h-evidence/owned-postgres-cleanup-verification.json) and separate
-review prove exact-ID absence and port 5544 refusal. All 5,725 historical files
-and five canonical output originals were restored/hash-verified. Never rerun the
-one-time finisher or cleanup against restored outputs/the removed service.
-
-For fresh reproduction, use a new output namespace and owned backend, snapshot
-all current evidence and ignored originals, and follow the H runbook. Missing
-PostgreSQL makes future checks unexecuted, not historical passes. The accepted
-slice adds no Assistant UI or HTTP route, no automatic cross-turn provider context
-and no live quality claim. Stop after H; later work remains only in the roadmap
-and requires its own approved contract. No real model API/local inference,
-dependent feature, deployment or migration is authorized by this closeout.
+H remains the accepted baseline at `22e7c97`, with its separate
+[decision](reviews/V2-8H-22e7c97.json). Its 2,898 primary cases, four distinct native
+cases, 115 images and 13 original PPTXs remain historical evidence. Its owned
+service was removed after a saved/fsynced zero-database observation. Later read-only
+verification proves exact-ID absence and port refusal; do not recreate it or
+reconstruct prior bytes. I1 requires fresh snapshots and its own owned service.
 
 The approved [V2-8A foundation](ROADMAP.md#v2-8a-scope-proposal) is independently
 accepted atd4f446c in [the decision](reviews/V2-8A-d4f446c.json).

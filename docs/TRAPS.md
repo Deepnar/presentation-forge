@@ -1952,3 +1952,14 @@ For crash integration, boot a worker before acquiring its short lease and retain
 real expiry/kills/races. Worker module readiness does not warm the first database
 connection. Label changed timing boundaries and retain failed runs; do not claim
 lease refusals are product success or hide them by weakening assertions.
+
+
+## Private parser headers can be bypassed by parameter decoding
+
+Express may reject malformed URL parameters before a parameterized prefix parser
+or route handler runs. A private JSON parser alone therefore does not guarantee
+sanitized private errors: the default formatter can echo the path in HTML. Add a
+scoped late error boundary that matches the raw path without decoding parameters,
+and align its case policy with the actual router. Test lowercase and case variants
+through real HTTP, retaining no-store, JSON and no-echo assertions. I1's fail-first
+probes and independent review caught both ordering and case-policy failures.

@@ -9034,7 +9034,9 @@ local inference. Only that separate transport correction is authorized; this aud
   transport** in [the bounded contract](V2-8I-1-EVAL.md), then prepare worker/provider
   orchestration before the existing-deck Assistant panel. This first step reuses
   accepted owner-only policy and H storage; it adds no UI or provider execution.
-  I1 is the selected immediate implementation scope; subsequent slices still need
+  I1 source `5170adc` implements the five lifecycle routes and strict private JSON
+  boundaries, with shared SQLite/PostgreSQL contracts. Final exact-source validation
+  and independent acceptance are pending. Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
   Agree the promised surface before implementation: existing-deck editing versus
