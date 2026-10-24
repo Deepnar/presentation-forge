@@ -1963,3 +1963,15 @@ scoped late error boundary that matches the raw path without decoding parameters
 and align its case policy with the actual router. Test lowercase and case variants
 through real HTTP, retaining no-store, JSON and no-echo assertions. I1's fail-first
 probes and independent review caught both ordering and case-policy failures.
+
+
+## Validation ownership must survive caller environments and retries
+
+Creating an isolated service does not bind later tests to it if a runner inherits
+an arbitrary maintenance URL. Pin the owned endpoint and recheck saved identity,
+image, running state, host binding and actual empty test catalog at coordinator
+entry/resume before child work. Keep these observations source-bound. Opening an
+initial log before rejecting an existing run can destroy evidence, and a fixed
+backup name can erase the previous interrupted attempt. Reject initial reuse and
+create each retained log exclusively and durably before rewriting the active log.
+I1's tooling review caught both gaps before any full validation executed.

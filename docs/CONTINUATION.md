@@ -41,8 +41,9 @@ routes reuse accepted H and add no public preparation, worker loop or Assistant 
 The new inventory is 231 files. Frozen-source development checks pass50/50; all
 final gates and independent execution remain pending because sustained resource
 admission failed. No I1 backend or active validation process exists; see
-[the resource checkpoint](v2-8i-1-evidence/environment-held.json) and HANDOFF.
-The plan received independent READY_FOR_IMPLEMENTATION; that is not acceptance.
+[the latest resource checkpoint](v2-8i-1-evidence/environment-held-continuation.json) and HANDOFF.
+The plan received independent READY_FOR_IMPLEMENTATION and hardened tooling later
+received READY_FOR_BOUNDED_VALIDATION. Neither supplies implementation acceptance.
 Do not run old H finishers or reuse its removed backend.
 
 H remains the accepted baseline at `22e7c97`, with its separate

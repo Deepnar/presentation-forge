@@ -236,3 +236,27 @@ the pushed8e64c83 safeguards and reports READY_FOR_BOUNDED_VALIDATION with no
 remaining material tooling blocker. It distinguishes inspected negative probes
 from reviewer execution and issues no implementation acceptance. Frozen product/
 test source remains5170adc; the resource prerequisite is still enforced.
+
+
+## Continuation result — resource prerequisite remains unavailable
+
+The fresh [resource checkpoint](v2-8i-1-evidence/environment-held-continuation.json)
+retains58samples over872.97seconds (14.55minutes), mean CPU24.36%, peak81.75%,
+backing-storage busy peak21.30%. Nineteen individually ready samples did not form
+the required sustained admission. No I1 backend, snapshot, complete-matrix job,
+production build, typecheck, benchmark or native/browser generator started. The
+owned service name is absent and5544refuses connections. Only the waiting driver
+was stopped, with no child/test active and no test leaf cancellation. No background
+continuation remains. Prior resource/probe evidence stays immutable.
+
+This continuation executed no new product test leaves. Two new lightweight
+harness negative scenarios were checked initially and repeated against exact
+tooling8e64c83 after its complete guard changes; all four executions exited1 as
+expected, preserving admission/error and prior-log hash assertions. Repeats retain
+the exact fixture environment, command, tooling SHA and runner hash. They are not added to the earlier50/50 SQLite/
+protocol development result or to any full-matrix total. The protocol checker
+reports0errors/0warnings; the native filename helper passes syntax inspection,
+not render validation. Product/test source remains5170adc. All231full-matrix files
+and nine final gates remain unexecuted, as do actual PostgreSQL and independent
+execution; the known locale issue was not rerun. Recommendation remains unaccepted,
+with H22e7c97 as accepted baseline and the complete I1 validation as next action.

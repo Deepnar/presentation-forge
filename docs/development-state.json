@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
-    "note": "I1 frozen source. SQLite/protocol development check passed50/50. No remaining material source-review blocker; full nine-gate acceptance execution is deferred because sustained shared-machine admission failed. No I1 backend was created; no acceptance claimed."
+    "note": "I1 source unchanged at5170adc. Earlier SQLite/protocol development check50/50 remains separate. Evidence tooling hardened and independently READY_FOR_BOUNDED_VALIDATION; fresh resource admission again failed, so all nine final gates and acceptance remain pending. No I1 backend or active monitor exists."
   },
   "activeMilestone": {
     "id": "V2-8I-1",
@@ -25,59 +25,59 @@
       "id": "conversation-http",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
+      "reason": "Final exact-source gate unexecuted: fresh resource qualification did not achieve sustained admission. Earlier50/50 development checks and expected-rejection harness probes are separate; see docs/v2-8i-1-evidence/environment-held-continuation.json."
     },
     {
       "id": "non-browser-bulk",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
+      "reason": "Final exact-source gate unexecuted: fresh resource qualification did not achieve sustained admission. Earlier50/50 development checks and expected-rejection harness probes are separate; see docs/v2-8i-1-evidence/environment-held-continuation.json."
     },
     {
       "id": "serial-browser",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
+      "reason": "Final exact-source gate unexecuted: fresh resource qualification did not achieve sustained admission. Earlier50/50 development checks and expected-rejection harness probes are separate; see docs/v2-8i-1-evidence/environment-held-continuation.json."
     },
     {
       "id": "postgres-contract",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
+      "reason": "Final exact-source gate unexecuted: fresh resource qualification did not achieve sustained admission. Earlier50/50 development checks and expected-rejection harness probes are separate; see docs/v2-8i-1-evidence/environment-held-continuation.json."
     },
     {
       "id": "cross-process-faults",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
+      "reason": "Final exact-source gate unexecuted: fresh resource qualification did not achieve sustained admission. Earlier50/50 development checks and expected-rejection harness probes are separate; see docs/v2-8i-1-evidence/environment-held-continuation.json."
     },
     {
       "id": "production-build",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
+      "reason": "Final exact-source gate unexecuted: fresh resource qualification did not achieve sustained admission. Earlier50/50 development checks and expected-rejection harness probes are separate; see docs/v2-8i-1-evidence/environment-held-continuation.json."
     },
     {
       "id": "typecheck",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
+      "reason": "Final exact-source gate unexecuted: fresh resource qualification did not achieve sustained admission. Earlier50/50 development checks and expected-rejection harness probes are separate; see docs/v2-8i-1-evidence/environment-held-continuation.json."
     },
     {
       "id": "benchmark-50",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
+      "reason": "Final exact-source gate unexecuted: fresh resource qualification did not achieve sustained admission. Earlier50/50 development checks and expected-rejection harness probes are separate; see docs/v2-8i-1-evidence/environment-held-continuation.json."
     },
     {
       "id": "frontend-visual",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Final exact-source gate unexecuted: sustained shared-machine admission not achieved. The 50/50 development run is separate; see docs/v2-8i-1-evidence/environment-held.json."
+      "reason": "Final exact-source gate unexecuted: fresh resource qualification did not achieve sustained admission. Earlier50/50 development checks and expected-rejection harness probes are separate; see docs/v2-8i-1-evidence/environment-held-continuation.json."
     }
   ],
   "knownBlockers": [
-    "Required sustained shared-machine quiet window not achieved; exact I1 final gates and independent execution remain pending. See docs/v2-8i-1-evidence/environment-held.json and docs/ROADMAP.md#assistant-surface-integration."
+    "Fresh sustained shared-machine qualification not achieved after58samples/872.97seconds; full I1 gates and independent execution remain pending. See docs/v2-8i-1-evidence/environment-held-continuation.json and docs/ROADMAP.md#assistant-surface-integration."
   ],
   "standingFailures": [
     {

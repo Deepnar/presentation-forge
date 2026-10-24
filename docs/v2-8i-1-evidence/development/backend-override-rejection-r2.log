@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/deepnar/Programs/presentations/docs/v2-8i-1-evidence/run-validation.py", line 27, in <module>
+    assert os.environ.get('TEST_PG_URL',owned_url)==owned_url, 'Refuse an external TEST_PG_URL; validation owns only loopback5544'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Refuse an external TEST_PG_URL; validation owns only loopback5544

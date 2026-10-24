@@ -1,0 +1,21 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "toolingSha": "8e64c834f6233d48e093203443b1c1a276ded24b",
+  "runnerSha256": "9b74dbe8dbe7bfaccb88da095854e81395a50676dbb2bd477ffd086d51fef73f",
+  "entryHead": "403a3d491f38366c5577cd16ec4f91b0aa69b4cb",
+  "atUtc": "2026-10-24T08:34:00.053518+00:00",
+  "command": [
+    "python3",
+    "docs/v2-8i-1-evidence/run-validation.py",
+    "--max-new-jobs",
+    "1"
+  ],
+  "fixtureEnvironment": {
+    "FORGE_VALIDATION_OUT": "out/v2-8i-1-existing-execution-rejection-r2"
+  },
+  "exitCode": 1,
+  "expectedExitCode": 1,
+  "noBackendOrChildExecution": true,
+  "priorLogSha256Preserved": "4281954e33e2bc50666ac0d2b90aed6d7e36a69330424ce2f767a6df82d73f1f",
+  "classification": "Exact frozen-tooling repeat of an admission-negative scenario, not a product test leaf"
+}

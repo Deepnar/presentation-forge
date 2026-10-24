@@ -192,7 +192,7 @@ Current V2-8I-1 implementation is pending final validation: sustained shared-mac
 admission was not achieved, and no I1 backend/full matrix was started. The 50/50
 development check does not supply those gates. A fresh measured quiet window
 unblocks validation; [the roadmap](ROADMAP.md#assistant-surface-integration) owns
-the current scope and dependencies. [Resource evidence](v2-8i-1-evidence/environment-held.json)
+the current scope and dependencies. [Latest resource evidence](v2-8i-1-evidence/environment-held-continuation.json)
 records the actual samples; no unrelated process was stopped.
 
 The active V2 task is recorded in `docs/development-state.json` and

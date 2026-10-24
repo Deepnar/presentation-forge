@@ -1,0 +1,27 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "entryHead": "0c5827fb03adf94e18274a14b4fc2a282d4e23fb",
+  "atUtc": "2026-10-24T08:31:33.212790+00:00",
+  "status": "unexecuted",
+  "reason": "Fresh sustained shared-machine qualification did not succeed; no full validation/backend job started.",
+  "resourceSamples": "docs/v2-8i-1-evidence/development/continuation-resource-window.jsonl",
+  "resourceSamplesSha256": "1dc3437837aa605ac1a3bc6943e0219ead5a6568e2597fb7f2730c712d940639",
+  "samples": 58,
+  "sampleSeconds": 872.9702633869992,
+  "cpuBusyPercent": {
+    "minimum": 9.06370947819165,
+    "maximum": 81.75244928936111,
+    "durationWeightedMean": 24.357577247269123
+  },
+  "storageBusyMaximumPercent": 21.30007583766477,
+  "readySamples": 19,
+  "qualified": false,
+  "ownedPostgresCreated": false,
+  "matchingOwnedContainerIds": [],
+  "port5544ConnectErrno": 111,
+  "testProcessesCancelled": 0,
+  "unrelatedProcessesStopped": false,
+  "monitorStoppedPid": 57962,
+  "previousCheckpoint": "docs/v2-8i-1-evidence/environment-held.json",
+  "limitation": "Periodic shared-host observations retain unresolved global I/O pressure provenance; no continuous per-process profiling."
+}

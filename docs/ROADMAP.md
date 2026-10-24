@@ -9039,9 +9039,13 @@ local inference. Only that separate transport correction is authorized; this aud
   and independent acceptance are pending. Frozen-source SQLite/protocol development
   checks pass50/50, but sustained shared-machine admission failed; all nine final
   gates remain unexecuted. No I1 backend was started. See the
-  [resource checkpoint](v2-8i-1-evidence/environment-held.json); the next action is
+  [latest resource checkpoint](v2-8i-1-evidence/environment-held-continuation.json); the next action is
   fresh resource qualification and the complete I1 validation, followed by separate
-  acceptance. Subsequent slices still need
+  acceptance. A subsequent14.55-minute admission attempt again failed; source is
+  unchanged. Pre-execution tooling corrections now enforce the exact owned backend,
+  preserve every interrupted log and align the actual PostgreSQL HTTP export name.
+  The [tooling review](reviews/V2-8I-1-tooling-readiness.md) is ready for bounded
+  validation, with no acceptance or product-suite execution inferred. Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
   Agree the promised surface before implementation: existing-deck editing versus
