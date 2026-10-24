@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+    "sha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-PPTX-ID-45c2c4c.json"
+    "source": "docs/reviews/V2-8H-22e7c97.json"
   },
   "implementationHead": {
     "sha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
-    "note": "Complete final-source229-file2898/2898 plus4distinct persisted/native cases;90focused repeats. All nine gates passed,115images inspected,13originalPPTXs audited. Separate locale9pass/1standingfail. Independent acceptance and owned cleanup pending."
+    "note": "Independently accepted headless V2-8H:229-file2898/2898 plus4distinct persisted/native passes,90focused repeats,all nine gates,115inspected images,13original PPTXs audited. Independent165/165 primary repeats and typecheck pass. Actual saved0DB count and final exact-ID/5544absence verified; initial failed observation retained. Separate locale9pass/1standingfail. No dependent feature authorized."
   },
   "activeMilestone": {
     "id": "V2-8H",
@@ -15,65 +15,65 @@
     "evalDoc": "docs/V2-8H-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8H-22e7c97.json",
+    "accepted": true
   },
   "validation": [
     {
       "id": "turn-approval",
       "status": "passed",
       "evidence": "docs/v2-8h-evidence/turn-approval.json",
-      "reason": "Complete final-source execution/inspection; no skipped,cancelled or unexecuted required case. Independent acceptance remains pending."
+      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
     },
     {
       "id": "non-browser-bulk",
       "status": "passed",
       "evidence": "docs/v2-8h-evidence/non-browser-bulk.json",
-      "reason": "Complete final-source execution/inspection; no skipped,cancelled or unexecuted required case. Independent acceptance remains pending."
+      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
     },
     {
       "id": "serial-browser",
       "status": "passed",
       "evidence": "docs/v2-8h-evidence/serial-browser.json",
-      "reason": "Complete final-source execution/inspection; no skipped,cancelled or unexecuted required case. Independent acceptance remains pending."
+      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
     },
     {
       "id": "postgres-contract",
       "status": "passed",
       "evidence": "docs/v2-8h-evidence/postgres-contract.json",
-      "reason": "Complete final-source execution/inspection; no skipped,cancelled or unexecuted required case. Independent acceptance remains pending."
+      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
     },
     {
       "id": "cross-process-faults",
       "status": "passed",
       "evidence": "docs/v2-8h-evidence/cross-process-faults.json",
-      "reason": "Complete final-source execution/inspection; no skipped,cancelled or unexecuted required case. Independent acceptance remains pending."
+      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
     },
     {
       "id": "production-build",
       "status": "passed",
       "evidence": "docs/v2-8h-evidence/production-build.json",
-      "reason": "Complete final-source execution/inspection; no skipped,cancelled or unexecuted required case. Independent acceptance remains pending."
+      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
     },
     {
       "id": "typecheck",
       "status": "passed",
       "evidence": "docs/v2-8h-evidence/typecheck.json",
-      "reason": "Complete final-source execution/inspection; no skipped,cancelled or unexecuted required case. Independent acceptance remains pending."
+      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
     },
     {
       "id": "benchmark-50",
       "status": "passed",
       "evidence": "docs/v2-8h-evidence/benchmark-50.json",
-      "reason": "Complete final-source execution/inspection; no skipped,cancelled or unexecuted required case. Independent acceptance remains pending."
+      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
     },
     {
       "id": "frontend-visual",
       "status": "passed",
       "evidence": "docs/v2-8h-evidence/frontend-visual.json",
-      "reason": "Complete final-source execution/inspection; no skipped,cancelled or unexecuted required case. Independent acceptance remains pending."
+      "reason": "Completed on exact frozen source; separate acceptance and exclusions recorded in docs/reviews/V2-8H-22e7c97.json."
     }
   ],
   "knownBlockers": [],
@@ -84,7 +84,7 @@
     }
   ],
   "nextCandidate": {
-    "id": "Assistant integration requires separate contract after V2-8H acceptance",
+    "id": "Assistant interaction and authenticated turn orchestration \u2014 separate scope contract required",
     "authorized": false,
     "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
   },
@@ -103,5 +103,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-23"
+  "updated": "2026-10-24"
 }

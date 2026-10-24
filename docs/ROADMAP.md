@@ -8870,7 +8870,8 @@ Keep the existing native runtime; no LangGraph/LangChain/LlamaIndex/SDK/framewor
 migration is selected. Framework version compatibility remains unqualified.
 
 The following entries clarify the parent scope and newly identified missing
-contracts. They are **proposed, not authorized implementation milestones**. P0 is
+contracts. Their later explicit authorizations and completions are recorded below;
+unchecked entries are **not authorized implementation milestones**. P0 is
 required for the claimed first Assistant capability, P1 before public/hosted release,
 and P2 conditional improvement. An editing-only interface must not claim the full
 research-and-creation parent is complete. The request to start the immediate next
@@ -8878,14 +8879,14 @@ thing was prepared as the concrete transport correction contract below. The late
 2026-10-22 clarification permits writing code but forbids API-backed models and
 local inference. Only that separate transport correction is authorized; this audit
   remains inspection-only. Later explicit requests authorized the separately
-  accepted native-ID correction and now preparation of the durable turn/approval
-  contract below. Its subsequent human approval and explicit implementation
-  deferral are recorded there; prior-slice acceptance did not supply that choice.
+  accepted native-ID correction and the durable turn/approval contract below.
+  Its human approval, overnight deferral, explicit resume and independent
+  acceptance are recorded there; prior-slice acceptance did not supply that choice.
 
 | Priority | Canonical work entry | Intent / rationale |
 |---|---|---|
 | P0 — complete | [Model transport resource bounds](#model-provider-stream-resource-bounds) | V2-8G independently accepted at f3e784a; qualified the read-loop/cleanup correction while preserving wire/error/usage/tool contracts. |
-| P0 | [Turn and approval ownership](#assistant-turn-approval-contract) | Resolve cross-request/restart/multi-instance continuity and minimum durable private data before adding a user-facing approval flow. |
+| P0 — complete headless boundary | [Turn and approval ownership](#assistant-turn-approval-contract) | V2-8H independently accepted at22e7c97; durable bounded visible turns and atomic approval reuse the existing run queue. Hosted routes/UI remain in their own entry. |
 | P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | Connect accepted SearchProvider through canonical authority and preserve verifiable project-scoped citations; do not merely add a catalog name. |
 | P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
 | P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Agree editing-only versus full creation surface, save/draft coordination, approval presentation and cancellation behavior. |
@@ -8896,7 +8897,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
 <a id="assistant-turn-approval-contract"></a>
 
-- [ ] **Durable user-turn and approval ownership — implementation resumed.**
+- [x] **V2-8H durable user-turn and approval ownership — independently accepted.**
   The 2026-10-22 continuation starts **V2-8H contract preparation**, from accepted
   `45c2c4c` and planning HEAD `2e0e40d`. The concrete recommended policy, atomic
   queue/cancel seams, recovery behavior and required evidence are prepared in
@@ -8914,8 +8915,8 @@ local inference. Only that separate transport correction is authorized; this aud
   and 229-file inventory are frozen in `v2-8h-evidence/validation-plan.json`;
   implement within this approved headless contract,
   preserving offline-only validation and the later independent acceptance gate.
-  The headless implementation is frozen at `22e7c97`, pending complete validation
-  and independent acceptance, with bounded schemas, project-child
+  The headless implementation is frozen and independently accepted at `22e7c97`,
+  with bounded schemas, project-child
   storage, the host-only proposal/receipt bridge, atomic decision/queue/cancel
   composition and CLI parity. Draft independent source review identified UTF-8
   load/admission symmetry, pre-dispatch recovery sequencing and final publication
@@ -8925,8 +8926,14 @@ local inference. Only that separate transport correction is authorized; this aud
   scenarios and90separate focused repeats. All nine gates, build/type/50cells and
   root inspection of115images are complete;13original native archives pass the
   per-part nonvisual-ID audit. Standing locale remains9pass/1fail separately.
-  Final independent acceptance and owned-service cleanup remain pending; no
-  checkmark or dependent feature is authorized.
+  The reviewer also completed165/165 repeated primary checks,typecheck,all115image
+  inspection and native/archive/hash verification before a usage-limit interruption.
+  Owned-service cleanup is complete: saved/fsynced actual0DB count before stop,
+  initial immediate identity check retained as failed, later read-only absence and
+  5544refusal verified. On2026-10-24 the same reviewer recovered the acknowledged
+  checks, reverified source/cleanup and issued [ACCEPT](reviews/V2-8H-22e7c97.json)
+  for this exact source. Parent V2-8 remains incomplete. No dependent feature,
+  API/local inference, deployment or migration is authorized; stop afterH.
   Independent source review held `464c6d7` for cancellation rollback permitting
   pre-dispatch recovery after abort. Narrow correction `b095bba` persists the
   matching turn's cancellation, with fail-first reproduction and 40 corrected
@@ -8972,6 +8979,23 @@ local inference. Only that separate transport correction is authorized; this aud
   that policy explicitly; the architecture audit supplied no approval. See the
   [minimum-state analysis](V2-8-ARCHITECTURE-GAP-AUDIT.md#critical-seams-and-minimum-durable-state).
 
+  **Look-ahead.** Authenticated routes and the Assistant must reuse this accepted
+  turn/run authority, saved generation/revisions, expiry and explicit decisions.
+  They must settle editor drafts before saved-revision capture; stored visible chat
+  is not automatic cross-turn provider context. Search/source integrity, semantic
+  creation and account spend retain their separate contracts. No future subsystem
+  needs another scene, queue or serialized approval capability.
+
+  > **Learned.** Durable visible text, volatile provider continuation and run
+  > authority have separate lifetimes. Cancellation must survive result rollback;
+  > trusted mutable bindings must be copied before any await; private-body and
+  > metadata caps need dispatch reservations and bounded old-generation settlement.
+  > Exact clock-boundary fixtures should advance actual injected database time,
+  > while process tests retain real kills, short leases and expiry after bootstrap.
+  > A successful stop may precede observable auto-removal; preserve the original
+  > count and failed immediate observation, then verify state read-only. Reusable
+  > failure modes are in TRAPS.md; no new feature follows from a green matrix.
+
 <a id="assistant-search-source-integrity"></a>
 
 - [ ] **Canonical search tools and project-scoped source integrity.**
@@ -8979,7 +9003,8 @@ local inference. Only that separate transport correction is authorized; this aud
   provider normalization, context, budgets and receipt/plan contracts coherently;
   general search needs an explicitly scoped network-tool boundary rather than
   network imports in pure packages. Bind search permission/query disclosure and
-  source resolution to the trusted caller. Add separate paper/project adapters,
+  source resolution to the trusted caller, retaining V2-8H turn generation, authority
+  and approval bindings. Add separate paper/project adapters,
   immutable source versions and locator resolution without replacing legacy paths.
   Verify source existence/project ownership and source-to-block/slide/export mappings;
   distinguish claim support from matching IDs/numbers and retain unsupported/uncertain
@@ -8994,7 +9019,8 @@ local inference. Only that separate transport correction is authorized; this aud
   compiler and preserving recompile primitives already exist. Define bounded
   semantic intent proposals for creation, slide operations and regeneration, with
   deterministic compilation, fit/refusal, canonical revision/history application
-  and human ownership/tombstone/detached preservation. Do not expose raw scene or
+  and human ownership/tombstone/detached preservation. Reuse V2-8H's existing stored
+  proposal/decision and atomic queue seam for durable approval. Do not expose raw scene or
   layout patch tools, or persist a second authoritative document. Use existing
   accepted quality/native primitives; prove content and citation preservation.
   This is a dependency of full parent V2-8, not permission to broaden an editing-only
@@ -9006,7 +9032,10 @@ local inference. Only that separate transport correction is authorized; this aud
   Agree the promised surface before implementation: existing-deck editing versus
   complete conversational creation/research. Keep the current placeholder until
   the selected contract works. Thin authenticated submit/read/decide/cancel routes
-  and equivalent CLI delegate to the same turn/run services. Settle or explicitly
+  delegate to the accepted V2-8H turn/run services; `agent-chat` already supplies
+  CLI parity. Derive authority from the session and retain explicit generation,
+  revision and decision bindings. Saved chat is not automatically provider context;
+  agree that context policy separately if the surface promises continuity. Settle or explicitly
   handle pending editor drafts/saves before capturing a saved revision; preserve
   conflict/navigation/project-switch/focus guards and never overwrite an unsaved
   draft with a background result. Present proposal, expiry, refusal, rejected/stale
@@ -9017,13 +9046,14 @@ local inference. Only that separate transport correction is authorized; this aud
 <a id="assistant-trace-budget"></a>
 
 - [ ] **Versioned trace provenance and durable spend admission.**
-  Reuse existing metadata traces, nullable usage and run receipts. Add turn/run/
-  attempt correlation, instruction/skill/catalog/schema/configuration identifiers,
+  Reuse existing metadata traces, nullable usage, run receipts and V2-8H turn/run/
+  attempt identities and conservative counters. Extend provenance with instruction/
+  skill/catalog/schema/configuration identifiers,
   normalized error classes, context diagnostics and revision transitions without
   logging private bodies. A plan hash is consistency evidence, not signed tamper
   protection; define audit access and redaction. P0 requires bounded useful error/
-  progress diagnostics. P1 requires per-account concurrency, durable provider-attempt
-  reservation/settlement, unknown post-dispatch billing and price-version provenance;
+  progress diagnostics. P1 requires per-account concurrency/admission over existing
+  per-project reservation/settlement, unknown post-dispatch billing and price-version provenance;
   per-invocation output limits do not bound concurrent total spend. Do not introduce
   payload capture, raw-content hashes as public telemetry, an exporter, external
   service or dependency without a separate policy/need. Exact live replay is not
@@ -9094,12 +9124,13 @@ prove both protocols and persisted edits, not live model quality. V2-8D independ
 accepts scoped single-turn preparation, atomic preflight and explicit opaque-proposal
 queueing through the existing durable core. V2-8E independently accepts bounded
 host-instance tool conversations with correlated semantic read rounds and explicit
-proposal enqueue. Its ephemeral history/approval lifetime seam remains explicit
-above. V2-8F independently accepts the provider-neutral web-search boundary and
-SearXNG transport/normalization. The remaining parent milestone defines hosted
-user-turn and cross-request approval ownership, qualifies live providers and
-integrates the visible Assistant and canonical search/source tools with that
-boundary; its full done-when gate is still pending. Any later
+proposal enqueue. These low-level provider histories remain ephemeral; V2-8H now
+independently accepts durable visible turns/proposals and atomic cross-host approval
+over the same run queue. Visible chat is not automatic provider context. V2-8F
+independently accepts the provider-neutral web-search boundary and SearXNG transport/
+normalization. The remaining parent milestone integrates authenticated hosted
+orchestration, the visible Assistant, canonical search/source and semantic creation
+tools, and qualifies live providers. Its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing
 resolved layout as model input.
 

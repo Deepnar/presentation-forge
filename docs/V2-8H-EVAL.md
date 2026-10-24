@@ -2,14 +2,15 @@
 
 ## Status and authority
 
-**Approved contract resumed on 2026-10-23; all validation gates passed, pending independent acceptance and owned-service cleanup.** The 2026-10-22 continuation produced
+**Independently accepted on 2026-10-24 at `22e7c97` for the approved headless H contract.**
+All validation gates and owned-service cleanup are complete. The 2026-10-22 continuation produced
 this prepared contract; the subsequent human reply approved it and requested
 an immediate stop before implementation. Approval and deferral authority are in
-[the roadmap](ROADMAP.md#assistant-turn-approval-contract). No implementation
-acceptance is implied.
+[the roadmap](ROADMAP.md#assistant-turn-approval-contract). That policy approval
+alone did not supply implementation acceptance; the separate decision below does.
 
 Branch/push: `v2` / `origin/v2`. Planning-entry HEAD:
-`2e0e40d4007be462c111bc2a0fe38398a048f7ba`. Accepted source:
+`2e0e40d4007be462c111bc2a0fe38398a048f7ba`. Task-entry accepted baseline:
 `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`, independently accepted in
 [the native-ID decision](reviews/V2-PPTX-ID-45c2c4c.json).
 The original planning phase made no product changes or validation runs. Implementation
@@ -19,8 +20,10 @@ historical and are never substituted for current-source execution.
 ### Current exact-source checkpoint
 
 Frozen implementation/tests: **`22e7c9749865f3e7c2d62fb8724136e0f19048b0`**.
-Later commits contain documentation and evidence only. The accepted baseline remains
-`45c2c4c`; final independent acceptance is pending.
+Later commits contain documentation and evidence only. The separate
+[decision](reviews/V2-8H-22e7c97.json) accepts this exact source against the prior
+`45c2c4c` baseline; [supporting review](reviews/V2-8H-22e7c97.md) records its scope
+and exclusions. Parent V2-8 is incomplete, and no dependent feature is authorized.
 
 | Check | Current result |
 |---|---|
@@ -34,7 +37,8 @@ Later commits contain documentation and evidence only. The accepted baseline rem
 | Persisted/native scenarios | 4/4 distinct passes; both backends × both protocol fixtures |
 | Browser/native/SVG imagery | 115 captures inspected by root;76 browser captures independently inspected |
 | Native identity audit | 13 original archives,93 parts,319 unique-per-part nonvisual properties |
-| Final independent ACCEPT/HOLD and owned-service cleanup | Pending |
+| Final independent decision | ACCEPT exact22;165/165 repeat checks and typecheck passed |
+| Owned-service cleanup | Saved/fsynced actual0DB count before stop; exact-ID absence/5544closure verified |
 
 Every completed test row has zero failures, skips or cancellations. The focused gate
 and designated PostgreSQL subsets must not be added to the full matrix again.
@@ -82,6 +86,36 @@ original-archive provenance limitations remain. Interactive Microsoft PowerPoint
 real-model quality, automatic cross-turn provider context, authenticated hosted
 Assistant routes/UI and search orchestration were not qualified by this slice.
 Future work remains only in the [roadmap](ROADMAP.md#v2-8-remaining). Stop afterH.
+
+### Interrupted review and cleanup verification — 2026-10-24 continuation
+
+The separate reviewer completed165/165 current-source checks (90turn,6boundary,
+69runtime), with zero fail/skip/cancel, and typecheck exit0. All165 repeat primary
+cases and are not added to2902. The reviewer inspected all115images, parsed the13
+original archives and rehashed5725historical files plus5canonical originals.
+Its initial image-tag preflight failed before testing because the configured image
+uses a pinned digest; exact recorded Image-ID comparison corrected the reviewer
+harness. Raw preflight and all complete execution/inspection records are retained.
+A usage-limit interruption prevented the final decision; passing results were not
+promoted to acceptance. Explicit continuation on2026-10-24 resumed that gate. After
+read-only cleanup/source reverification, the same separate reviewer issued the
+committed exact-source ACCEPT decision. Its165checks repeat primary cases; its
+inspection does not claim independent execution of the entire229-file matrix.
+
+After the reviewer explicitly finished all database checks on2026-10-23, root saved
+and fsynced the fresh actual0-project-database observation before stopping the exact
+owned service. Stop returned0 and5544refused connections, but the immediate exact-ID
+absence observation was false, so the cleanup helper's final assertion failed.
+Both original records remain unchanged. The next Docker read already showed the
+ID absent; the2026-10-24 read-only follow-up durably verifies exact-ID absence and
+5544refusal and links both original hashes. No second stop, replacement database or
+reconstruction of the saved count occurred. See
+[before stop](v2-8h-evidence/owned-postgres-before-removal.json),
+[initial failed verification](v2-8h-evidence/owned-postgres-cleanup.json) and
+[final read-only verification](v2-8h-evidence/owned-postgres-cleanup-verification.json).
+The future cleanup helper now permits bounded read-only post-stop polling; it was
+not rerun against the removed service. The initial observation is not a product
+test failure or an unexecuted backend gate.
 
 ## Observed boundary
 
