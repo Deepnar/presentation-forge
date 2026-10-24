@@ -1,7 +1,7 @@
 {
   "acceptedBaseline": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
   "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
-  "atUtc": "2026-10-24T08:34:37.572144+00:00",
+  "atUtc": "2026-10-24T08:35:28.189117+00:00",
   "method": "Scoped tracked delta through this validation checkpoint, including the manifest itself; later evidence commits are distinct from frozen source. Original untracked paths excluded.",
   "count": 401,
   "sourceAndTestPaths": [
@@ -510,6 +510,7 @@
     "docs/reviews/V2-8I-1-tooling-readiness.md",
     "docs/v2-8i-1-evidence/RUNBOOK.md",
     "docs/v2-8i-1-evidence/assemble-results.py",
+    "docs/v2-8i-1-evidence/changed-files.json",
     "docs/v2-8i-1-evidence/development/backend-override-rejection-r2.json",
     "docs/v2-8i-1-evidence/development/backend-override-rejection-r2.log",
     "docs/v2-8i-1-evidence/development/backend-override-rejection.json",
@@ -525,7 +526,7 @@
     "docs/v2-8i-1-evidence/http-native.mjs",
     "docs/v2-8i-1-evidence/run-validation.py"
   ],
-  "continuationDeltaCount": 24,
+  "continuationDeltaCount": 25,
   "continuationEntryHead": "0c5827fb03adf94e18274a14b4fc2a282d4e23fb",
   "continuationProductAndTestDelta": []
 }
