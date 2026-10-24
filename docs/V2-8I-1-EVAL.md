@@ -260,3 +260,26 @@ not render validation. Product/test source remains5170adc. All231full-matrix fil
 and nine final gates remain unexecuted, as do actual PostgreSQL and independent
 execution; the known locale issue was not rerun. Recommendation remains unaccepted,
 with H22e7c97 as accepted baseline and the complete I1 validation as next action.
+
+
+## Later continuation and retained resource audit
+
+Continuation3 recovered3176580 and attempted fresh qualification:27samples over
+406.39seconds, meanCPU29.43%, peak75.94%, storage busy peak18.37%. It did not qualify,
+started no backend/snapshot/full job, and stopped its waiting driver with no child
+or test active. Its raw [checkpoint](v2-8i-1-evidence/environment-held-continuation-3.json)
+is retained separately. No product test leaves ran and no gate passed.
+
+The separate reviewer reported continued environment hold after auditing the
+previous58samples and the earlier continuation3 cutoff. Writing its durable note
+was then interrupted by an account usage limit, not by a failed product check;
+no implementation decision was issued. The later user resume asks the same
+reviewer to preserve the already-delivered audit, without reconstructing any test
+execution. A new continuation4 qualification starts after the later resource check;
+product/test source remains5170adc. Prior holds do not preclude a genuinely fresh
+window, and a new resource observation is not current-source validation.
+
+Existing CI was inspected read-only. Its default concurrent tests, trigger and
+missing isolated PostgreSQL/evidence collection cannot replace the approved I1
+acceptance run. No remote workflow was dispatched or changed. Future parity work
+is recorded only in [the roadmap](ROADMAP.md#v2-acceptance-ci-parity).

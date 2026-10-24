@@ -1,0 +1,27 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "entryHead": "31765805b6ebae9b96583bd3cf5096649d291c76",
+  "atUtc": "2026-10-24T08:43:54.478973+00:00",
+  "status": "unexecuted",
+  "reason": "Fresh sustained shared-machine qualification did not succeed; independent resource audit recommends continuing the hold without relaxing thresholds.",
+  "resourceSamples": "docs/v2-8i-1-evidence/development/continuation-3-resource-window.jsonl",
+  "resourceSamplesSha256": "7c925733996b54f80601de4b548adfb833a4237d6bca1bee775006c24242213c",
+  "samples": 27,
+  "sampleSeconds": 406.38715108999986,
+  "cpuBusyPercent": {
+    "minimum": 8.016076196768244,
+    "maximum": 75.94426817492068,
+    "durationWeightedMean": 29.42592875515884
+  },
+  "storageBusyMaximumPercent": 18.365814085969554,
+  "readySamples": 12,
+  "qualified": false,
+  "ownedPostgresCreated": false,
+  "matchingOwnedContainerIds": [],
+  "port5544ConnectErrno": 111,
+  "testProcessesCancelled": 0,
+  "unrelatedProcessesStopped": false,
+  "monitorStoppedPid": 68785,
+  "independentResourceAudit": "docs/reviews/V2-8I-1-resource-admission.md",
+  "limitation": "Periodic shared-host observations retain unresolved global I/O pressure provenance, not continuous or per-process profiling."
+}

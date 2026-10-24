@@ -8,8 +8,13 @@ retag source. State: implemented-pending-validation, review pending, accepted fa
 
 The [I1 contract](V2-8I-1-EVAL.md) implements five authenticated conversation lifecycle
 routes over H. No public submit/prepare/worker loop or Assistant UI is included.
-The current continuation recovered `0c5827f` and unchanged source, then attempted
-fresh resource admission. Future scope/dependencies remain only in
+The previous continuation recovered `0c5827f` and unchanged source, then attempted
+fresh resource admission. A subsequent continuation3 hold is preserved under
+`environment-held-continuation-3.json` (27samples/406.39seconds, no jobs/backend).
+After the later user resume, continuation4 is actively qualifying a new window
+in session5881; inspect `out/v2-8i-1-validation/continuation-4-entry.json` and its
+driver log before another execution. It may automatically prepare the owned
+backend/snapshots and first three bounded jobs only after admission. Future scope/dependencies remain only in
 [the roadmap](ROADMAP.md#assistant-surface-integration); do not advance from here.
 
 The earlier frozen-source development check remains **50/50** (18 SQLite HTTP +
@@ -34,8 +39,8 @@ busy peak21.30%. Required sustained admission was not achieved. Original prior
 resource evidence is retained unchanged. No I1 backend, snapshot, full matrix,
 build, benchmark or native/browser generator started. The owned service name is
 absent and5544refuses connections. Only the owned waiting monitor was stopped;
-no test leaf was cancelled and no unrelated process stopped. **No active validation
-process or background continuation remains.**
+no test leaf was cancelled and no unrelated process stopped. **That hold stopped the old monitor. Continuation4 is now active as described
+above; do not start another coordinator concurrently.**
 
 All nine final gates remain unexecuted: the complete231-file inventory (195bulk,
 26serial browser/build,10PostgreSQL), both-store focused gate, build/typecheck,

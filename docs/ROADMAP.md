@@ -7264,6 +7264,19 @@ scale); charts structurally exact without axes (V2-4C).
   This entry does not require new parallelism or another harness rewrite before
   current bounded serial validation can run.
 
+
+<a id="v2-acceptance-ci-parity"></a>
+
+- [ ] **V2 acceptance CI parity.** Existing `.github/workflows/ci.yml` triggers
+  for main pushes/PRs and runs default concurrent `npm test`; it does not provision
+  the isolated acceptance PostgreSQL backend or retain source-bound visual/native
+  evidence. It cannot replace the current V2 acceptance run during a busy local
+  window. A separately bounded validation-tooling task should align the intended
+  trigger, complete inventory, serial browser/build isolation, honest absent-backend
+  handling, renderer/font prerequisites and retained original artifacts. Reuse
+  existing CI where suitable; no paid runner or workflow execution is selected by
+  this planning entry. This does not block the approved local I1 validation.
+
 ### [~] V2-5 real editor, commands, autosave
 
 *Depends on: V2-4 (accepted at `5beba39`). Blocks: V2-8 (agent edits ride the same commands).*
