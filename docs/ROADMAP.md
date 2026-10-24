@@ -9074,6 +9074,22 @@ local inference. Only that separate transport correction is authorized; this aud
     > bounded final result; a separate known-failure probe is not a required-gate
     > waiver. Preserve failed attempts and exact original bytes throughout.
 
+  <a id="assistant-turn-worker"></a>
+
+  - [ ] **V2-8I-2 bounded turn-worker orchestration — current authorized dependency.**
+    The2026-10-24 human continuation starts the next immediate work. Prepare and
+    implement [the bounded worker contract](V2-8I-2-EVAL.md): exact-turn H lookup,
+    stateless preparation/approved-run orchestration and operator CLI parity.
+    Preserve all existing leases/approvals/accounting, copy authority before awaits,
+    return private metadata only and validate both stores/process recovery with
+    offline fixtures. Plan review precedes implementation. There is no public
+    submission endpoint, provider registry/default, daemon, deployment or UI in
+    this slice. Later authenticated submission/scheduling supplies trusted bindings
+    and bounded durable discovery over these same rows; it must not add another
+    queue or tie workers to a browser connection. Scope/non-goals/common gates and
+    stop point are frozen in the linked contract; source/evidence acceptance is
+    separate. Keep I1's accepted source and originals intact.
+
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.

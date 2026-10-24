@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Assistant worker/provider orchestration \u2014 separate bounded contract after I1",
-    "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
+    "id": "V2-8I-2 bounded turn-worker orchestration \u2014 contract/plan review",
+    "authorized": true,
+    "roadmapRef": "docs/ROADMAP.md#assistant-turn-worker"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

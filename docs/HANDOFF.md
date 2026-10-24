@@ -1,4 +1,11 @@
-# Current handoff — I1 independently accepted and closed
+# Current handoff — I2 contract and plan review
+
+The latest human continuation requests starting the next immediate work. I1 is
+closed; the authorized next dependency is [I2's bounded turn-worker contract](V2-8I-2-EVAL.md),
+indexed in [the roadmap](ROADMAP.md#assistant-turn-worker). Contract preparation
+and independent plan review precede product implementation. No new product code,
+provider call, test/evaluation, backend or generator has run in this continuation.
+The state retains accepted I1 until implementation begins.
 
 Branch/push: `v2` / `origin/v2`. Accepted implementation/source baseline is now
 `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`, compared with previous H22e7c97.
@@ -39,9 +46,9 @@ reproduction needs a new namespace, all-current snapshots, owned service and qui
 admission, following the runbook. Earlier admission/startup failures stay historical.
 
 No real model APIs/local inference, deployment, production DB changes or irreversible
-migration occurred. I1 acceptance/cleanup are complete. **Stop here.** The next
-candidate remains unauthorized; worker/provider/Assistant scope lives only in
-[the roadmap](ROADMAP.md#assistant-surface-integration). Parent V2-8 is not complete.
+migration occurred. I1 acceptance/cleanup are complete. The new continuation opens
+only the linked I2 dependency; later hosted scheduling and Assistant surface work
+retain separate contracts in the roadmap. Parent V2-8 is not complete.
 
 Original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
 `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched.
