@@ -1,61 +1,50 @@
-# Current handoff — I1 validation still pending
+# Current handoff — I1 full validation active
 
 Branch/push: `v2` / `origin/v2`. Accepted baseline remains H
-`22e7c9749865f3e7c2d62fb8724136e0f19048b0`, with separate
-[acceptance](reviews/V2-8H-22e7c97.json). I1 product/test source remains
-`5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`. Later evidence/tooling commits do not
-retag source. State: implemented-pending-validation, review pending, accepted false.
+`22e7c9749865f3e7c2d62fb8724136e0f19048b0` with its separate acceptance.
+I1 product/test source is `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`, unchanged.
+Later docs/evidence-tooling commits do not retag source. I1 is not accepted.
+Read [the evaluation](V2-8I-1-EVAL.md), state and [runbook](v2-8i-1-evidence/RUNBOOK.md).
 
-The [I1 contract](V2-8I-1-EVAL.md) implements five authenticated conversation lifecycle
-routes over H. No public submit/prepare/worker loop or Assistant UI is included.
-The previous continuation recovered `0c5827f` and unchanged source, then attempted
-fresh resource admission. A subsequent continuation3 hold is preserved under
-`environment-held-continuation-3.json` (27samples/406.39seconds, no jobs/backend).
-After the later user resume, continuation4 is actively qualifying a new window
-in session5881; inspect `out/v2-8i-1-validation/continuation-4-entry.json` and its
-driver log before another execution. It may automatically prepare the owned
-backend/snapshots and first three bounded jobs only after admission. Future scope/dependencies remain only in
-[the roadmap](ROADMAP.md#assistant-surface-integration); do not advance from here.
+**Active process: first bounded coordinator, session85328.** Its first focused
+SQLite/PostgreSQL HTTP gate passed34/34 (18SQLite+16PostgreSQL), zero fail/skip/cancel.
+The195-file bulk run is now active. The first batch will next run full7A browser
+and yield before the following file. Inspect actual `out/v2-8i-1-validation/`
+coordinator.json/log and process before resuming with `--resume --max-new-jobs 3`.
+Do not start a second test/build/browser process. No gate is inferred from partial
+output; current state marks one passed, bulk pending and other gates unexecuted.
+The earlier50/50 SQLite/protocol development result is separate, not primary sum.
 
-The earlier frozen-source development check remains **50/50** (18 SQLite HTTP +
-32 governance), zero fail/skip/cancel. Earlier16-case fixture failures,49-case repeat
-and URI/unsupported-path probes are retained separately. No additional product
-suite ran this continuation. The known BYOK locale failure was not rerun.
+The exclusive owned PostgreSQL15.18 container is
+`22f3b4ef8c918b6ef3a218dba1fd896159028dddc9d6b1d193ef15146574cc94`, name
+`forge-v28i1-validation`, at127.0.0.1:5544,1CPU/512MiB/tmpfs192MiB.
+The exact ID was saved/fsynced before use. Initial Unix readiness hit the temporary
+init server and version lookup failed during restart; raw logs/script/initial
+identity are preserved. TCP readiness and guarded same-ID recovery succeeded,
+without replacement. Separate read-only inspection found no startup-fix blocker.
+Do not run initial preparation over this existing ownership or snapshots.
 
-A separate [tooling review](reviews/V2-8I-1-tooling-readiness.md) is
-READY_FOR_BOUNDED_VALIDATION at8e64c83, without test execution or acceptance.
-Pre-execution corrections align the PostgreSQL HTTP archive filename, reject
-non-owned `TEST_PG_URL`, verify exact owned container identity/port/empty catalog on
-every coordinator entry, reject initial existing logs and preserve unacknowledged
-logs under exclusive durable names. Two black-box negative admission scenarios
-were checked initially and repeated against frozen tooling8e64c83; all four
-executions exited1 as expected. Foreign URL was refused before DB/child work, and
-the existing log was refused without a hash change. Exact fixture environment and
-runner hashes are retained; these are harness checks, not primary product cases.
+All6102historical evidence files, including179original PPTXs, and five canonical
+output originals were snapshotted/hash-verified before any primary test. Baseline
+copies are `out/v2-8i-1-validation/backup` and `prior-generated-backup`; the committed
+backup manifest supplies hashes. Preserve all snapshots and original archive bytes.
+Never reconstruct ZIP originals or run historical H finishers. The current I1
+finisher runs once against fresh exports before restoration. Keep exact original
+and failed-attempt provenance through final independent review and owned cleanup.
 
-Fresh [resource evidence](v2-8i-1-evidence/environment-held-continuation.json) records
-58samples over872.97seconds (14.55minutes), mean CPU24.36%, peak81.75%, storage
-busy peak21.30%. Required sustained admission was not achieved. Original prior
-resource evidence is retained unchanged. No I1 backend, snapshot, full matrix,
-build, benchmark or native/browser generator started. The owned service name is
-absent and5544refuses connections. Only the owned waiting monitor was stopped;
-no test leaf was cancelled and no unrelated process stopped. **That hold stopped the old monitor. Continuation4 is now active as described
-above; do not start another coordinator concurrently.**
+Earlier resource holds and the cutoff-specific independent audit remain historical.
+A fresh180.42-second window (meanCPU8.22%,disk1.74%) plus fresh30seconds admitted this
+run. Every new job retains its own30-second check and watchdog. No real model APIs
+or local inference, deployment or migrations. The BYOK locale probe remains separate.
 
-All nine final gates remain unexecuted: the complete231-file inventory (195bulk,
-26serial browser/build,10PostgreSQL), both-store focused gate, build/typecheck,
-50cells, persisted/native/visual evidence and final independent execution. Source
-review and tooling readiness do not supply acceptance.
-
-Resume only I1 final gates using [the runbook](v2-8i-1-evidence/RUNBOOK.md): obtain a
-fresh sustained window, then prepare the exclusive I1 backend and snapshots and
-run bounded coordinator batches. Existing output contains only admission/entry
-observations; no owned/coordinator/snapshot state exists. Negative guard fixture
-outputs use separate names and must not be mistaken for primary execution. Keep
-all failed/probe logs; do not overwrite or retag them. Never invoke historical H
-finishers or reuse/recreate its removed service. Reviewer `/root/turn_contract_review`
-can resume final review after root explicitly releases the execution/database slot.
+Complete the231-file inventory, build/typecheck/50cells, four distinct persisted/
+native cases, native/browser preservation, all final image inspection and independent
+execution/decision. Reviewer `/root/turn_contract_review` owns no current execution;
+release the DB/test slot explicitly only after root's jobs finish. Cleanup must save/
+fsync an actual zero-database observation before stopping only this recorded ID.
+Stop after I1 ACCEPT/HOLD. Later dependencies live only in
+[the roadmap](ROADMAP.md#assistant-surface-integration); CI parity is a separate
+planning entry and has not changed or dispatched workflows.
 
 Preserve original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md`
-and `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`. No real model APIs/local
-inference, deployment or migration. Stop after I1 ACCEPT/HOLD.
+and `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md`.

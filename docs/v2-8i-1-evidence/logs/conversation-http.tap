@@ -1,0 +1,216 @@
+TAP version 13
+# Subtest: SQLite HTTP: local ownerless lifecycle retains the existing project access policy
+ok 1 - SQLite HTTP: local ownerless lifecycle retains the existing project access policy
+  ---
+  duration_ms: 703.556523
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: owner reads and exports only bounded visible state with private response headers
+ok 2 - SQLite HTTP: owner reads and exports only bounded visible state with private response headers
+  ---
+  duration_ms: 609.910188
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: anonymous and nonowner access cannot read or change a conversation
+ok 3 - SQLite HTTP: anonymous and nonowner access cannot read or change a conversation
+  ---
+  duration_ms: 591.979198
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: project administrator privileges do not grant cross-owner private chat access
+ok 4 - SQLite HTTP: project administrator privileges do not grant cross-owner private chat access
+  ---
+  duration_ms: 645.160211
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+ok 5 - SQLite HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+  ---
+  duration_ms: 895.689195
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: authority and execution payloads cannot replace the stored decision identity
+ok 6 - SQLite HTTP: authority and execution payloads cannot replace the stored decision identity
+  ---
+  duration_ms: 679.896096
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: private parser bounds and failures are sanitized before the shared parser
+ok 7 - SQLite HTTP: private parser bounds and failures are sanitized before the shared parser
+  ---
+  duration_ms: 619.857245
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+ok 8 - SQLite HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+  ---
+  duration_ms: 741.026796
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: rejection is durable and cannot create or replace a queued run
+ok 9 - SQLite HTTP: rejection is durable and cannot create or replace a queued run
+  ---
+  duration_ms: 711.400683
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: HTTP cancellation fences a claimed run before its edit can commit
+ok 10 - SQLite HTTP: HTTP cancellation fences a claimed run before its edit can commit
+  ---
+  duration_ms: 693.541643
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+ok 11 - SQLite HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+  ---
+  duration_ms: 717.522362
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: a newer human save refuses stale approval without losing the pending proposal
+ok 12 - SQLite HTTP: a newer human save refuses stale approval without losing the pending proposal
+  ---
+  duration_ms: 675.786216
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: logout revokes the next request and deleted projects remain absent
+ok 13 - SQLite HTTP: logout revokes the next request and deleted projects remain absent
+  ---
+  duration_ms: 675.315335
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: project ownership changes revoke the previous owner on every operation
+ok 14 - SQLite HTTP: project ownership changes revoke the previous owner on every operation
+  ---
+  duration_ms: 715.612054
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: lost HTTP response preserves the original committed decision for replay
+ok 15 - SQLite HTTP: lost HTTP response preserves the original committed decision for replay
+  ---
+  duration_ms: 750.336294
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+ok 16 - SQLite HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+  ---
+  duration_ms: 633.815284
+  type: 'test'
+  ...
+# Subtest: production HTTP: disabled projects is an honest sanitized refusal
+ok 17 - production HTTP: disabled projects is an honest sanitized refusal
+  ---
+  duration_ms: 532.207217
+  type: 'test'
+  ...
+# Subtest: production HTTP: misconfigured backend is an honest sanitized refusal
+ok 18 - production HTTP: misconfigured backend is an honest sanitized refusal
+  ---
+  duration_ms: 573.987268
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: local ownerless lifecycle retains the existing project access policy
+ok 19 - PostgreSQL HTTP: local ownerless lifecycle retains the existing project access policy
+  ---
+  duration_ms: 835.493771
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: owner reads and exports only bounded visible state with private response headers
+ok 20 - PostgreSQL HTTP: owner reads and exports only bounded visible state with private response headers
+  ---
+  duration_ms: 670.579448
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: anonymous and nonowner access cannot read or change a conversation
+ok 21 - PostgreSQL HTTP: anonymous and nonowner access cannot read or change a conversation
+  ---
+  duration_ms: 712.044181
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: project administrator privileges do not grant cross-owner private chat access
+ok 22 - PostgreSQL HTTP: project administrator privileges do not grant cross-owner private chat access
+  ---
+  duration_ms: 677.91533
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+ok 23 - PostgreSQL HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+  ---
+  duration_ms: 1112.543781
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: authority and execution payloads cannot replace the stored decision identity
+ok 24 - PostgreSQL HTTP: authority and execution payloads cannot replace the stored decision identity
+  ---
+  duration_ms: 755.21181
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: private parser bounds and failures are sanitized before the shared parser
+ok 25 - PostgreSQL HTTP: private parser bounds and failures are sanitized before the shared parser
+  ---
+  duration_ms: 676.948139
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+ok 26 - PostgreSQL HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+  ---
+  duration_ms: 820.793561
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: rejection is durable and cannot create or replace a queued run
+ok 27 - PostgreSQL HTTP: rejection is durable and cannot create or replace a queued run
+  ---
+  duration_ms: 735.732489
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: HTTP cancellation fences a claimed run before its edit can commit
+ok 28 - PostgreSQL HTTP: HTTP cancellation fences a claimed run before its edit can commit
+  ---
+  duration_ms: 778.412672
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+ok 29 - PostgreSQL HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+  ---
+  duration_ms: 806.888799
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: a newer human save refuses stale approval without losing the pending proposal
+ok 30 - PostgreSQL HTTP: a newer human save refuses stale approval without losing the pending proposal
+  ---
+  duration_ms: 777.187408
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: logout revokes the next request and deleted projects remain absent
+ok 31 - PostgreSQL HTTP: logout revokes the next request and deleted projects remain absent
+  ---
+  duration_ms: 737.131423
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: project ownership changes revoke the previous owner on every operation
+ok 32 - PostgreSQL HTTP: project ownership changes revoke the previous owner on every operation
+  ---
+  duration_ms: 763.098015
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: lost HTTP response preserves the original committed decision for replay
+ok 33 - PostgreSQL HTTP: lost HTTP response preserves the original committed decision for replay
+  ---
+  duration_ms: 713.191648
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+ok 34 - PostgreSQL HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+  ---
+  duration_ms: 596.27025
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24996.263799
+# forge-test-file "test/v2-conversation-http-8i.test.js"
+# forge-test-file "test/v2-conversation-http-postgres-8i.test.js"

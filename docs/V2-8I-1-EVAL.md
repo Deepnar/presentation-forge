@@ -283,3 +283,36 @@ Existing CI was inspected read-only. Its default concurrent tests, trigger and
 missing isolated PostgreSQL/evidence collection cannot replace the approved I1
 acceptance run. No remote workflow was dispatched or changed. Future parity work
 is recorded only in [the roadmap](ROADMAP.md#v2-acceptance-ci-parity).
+
+
+## Fresh window admitted; owned preparation recovered
+
+Continuation4 obtained a fresh180.42-second qualification: meanCPU8.22%, backing
+storage busy1.74%, followed by fresh30seconds. It created the exclusive pinned
+PostgreSQL15.18 container recorded in `owned-postgres.json`. Initial readiness
+mistakenly accepted the entrypoint's temporary Unix-only initialization server;
+`SHOW server_version` then failed during its planned restart. Raw failure, original
+helper and initial fsynced ownership record are retained under `development/`.
+This was an evidence-setup race, with zero product cases executed at failure.
+
+Readiness now requires authenticated final TCP service, with exact ID/name/image/
+port/cpu/memory and empty actual catalog checks. `--resume-owned-preparation` is
+allowed only before any snapshot/coordinator exists and retains the same recorded
+identity; it requires the fresh qualification/admission again. Actual recovery
+succeeded without creating another container.6102historical files, including179
+original PPTXs, and5canonical output originals are snapshotted/hash-verified.
+The current primary coordinator is executing bounded serial batches at5170adc.
+No test or acceptance result is inferred from successful preparation.
+
+
+Separate read-only inspection of the startup correction found no material blocker:
+retained logs support the initialization race, authenticated TCP cannot accept the
+Unix-only temporary server, and same-ID recovery is guarded before snapshots or
+tests. This is source/evidence inspection, not independently executed recovery or
+implementation acceptance.
+
+
+The first complete two-file HTTP gate now passed **34/34**:18SQLite and16actual
+owned PostgreSQL cases, zero fail/skip/cancel. This is a focused repeat that will
+overlap the complete primary inventory, not34additional distinct primary cases.
+The195-file bulk run is active; its result and every remaining gate await completion.
