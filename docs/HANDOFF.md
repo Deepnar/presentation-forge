@@ -6,15 +6,15 @@ I1 product/test source is `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`, unchanged.
 Later docs/evidence-tooling commits do not retag source. I1 is not accepted.
 Read [the evaluation](V2-8I-1-EVAL.md), state and [runbook](v2-8i-1-evidence/RUNBOOK.md).
 
-**Active process: first bounded coordinator, session85328.** Its first focused
-SQLite/PostgreSQL HTTP gate passed34/34 (18SQLite+16PostgreSQL), zero fail/skip/cancel.
-The195-file bulk run passed2500/2500, zero fail/skip/cancel. The first batch
-now runs full7A browser and then yields before the following file. Inspect actual `out/v2-8i-1-validation/`
-coordinator.json/log and process before resuming with `--resume --max-new-jobs 3`.
-Do not start a second test/build/browser process. No gate is inferred from partial
-output; current state marks focused HTTP and bulk passed, serial browser pending and
-other gates unexecuted.
-The earlier50/50 SQLite/protocol development result is separate, not primary sum.
+**Active process: remaining bounded-batch driver (session55844; see
+`remaining-driver.json` and actual coordinator state).** Initial and second batches
+completed. Focused HTTP34/34 and primary bulk2500/2500 pass. First nine serial files
+pass73/73 total, zero fail/skip/cancel. Remaining driver
+repeats `--resume --max-new-jobs 3` sequentially, checking saved complete jobs and
+exact owned backend/catalog at each entry; no overlapping build/test process.
+Inspect actual coordinator.json/log and process before any resume. Complete serial,
+PostgreSQL and command/visual gates still await results. The earlier50/50 development
+result and34focused cases overlap primary files and are not added as distinct cases.
 
 The exclusive owned PostgreSQL15.18 container is
 `22f3b4ef8c918b6ef3a218dba1fd896159028dddc9d6b1d193ef15146574cc94`, name

@@ -1,0 +1,22 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "atUtc": "2026-10-24T13:27:39.118424+00:00",
+  "inspector": "/root",
+  "status": "partial-inspection-only",
+  "observations": [
+    {
+      "file": "docs/v2-7a-evidence/editor-narrow.png",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+      "acceptedHReference": "docs/v2-8h-evidence/regression-images/docs--v2-7a-evidence--editor-narrow.png",
+      "referenceSha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+      "byteIdentical": true,
+      "observation": "Inspector visible in right-scrolled narrow viewport; partial canvas and horizontal overflow are inherited accepted geometry, not a new I1 shift."
+    },
+    {
+      "file": "docs/v2-7a-evidence/editor-shell.png",
+      "sha256": "334076ed91a1ed3551fe6349bd225217f2e17827b1df50fc13ae84012fba961f",
+      "observation": "Actual history dialog fits viewport with visible close control and bounded scroll region; this capture includes an open history overlay, not a bare editor canvas."
+    }
+  ],
+  "limitation": "Only these current captures were visually inspected here. Final complete image/native inspection and measured canvas review remain pending; historical V2-7A originals are not the accepted-H visual reference."
+}

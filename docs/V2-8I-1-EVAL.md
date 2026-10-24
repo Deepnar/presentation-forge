@@ -321,3 +321,12 @@ The195-file bulk run is active; its result and every remaining gate await comple
 Complete195-file nonbrowser primary execution passed **2500/2500**, zero fail/skip/
 cancel. The26-file browser/build inventory is now underway in bounded serial
 isolation; no combined browser or complete primary total is claimed yet.
+
+
+Intermediate serial checkpoint:9/26files pass73/73, zero fail/skip/cancel. Actual
+120-slide opening is1547ms with120thumbnails. Early manual inspection found the
+history dialog contained and inspector visible; the current narrow-editor capture
+is byte-identical to accepted H's preserved fresh capture. The older restored
+V2-7A canonical screenshot is a historical original, not the H visual reference.
+Inherited horizontal overflow/partial narrow canvas is not called fixed. This
+partial inspection does not pass the complete final visual gate.
