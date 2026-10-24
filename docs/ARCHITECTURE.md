@@ -2738,5 +2738,7 @@ parameter-decoding failures that precede route execution. Pagination and mutatio
 queries are strict; export names derive from validated project IDs. No transport
 accepts client edits, provider configuration or worker execution. Queueing/replay,
 revision conflicts, cancellation and clear remain H domain operations with CLI
-parity. The [I1 evaluation](V2-8I-1-EVAL.md) records pending validation/review;
-implementation does not establish acceptance or complete the Assistant.
+parity. The [I1 evaluation](V2-8I-1-EVAL.md) and
+[separate exact-source acceptance](reviews/V2-8I-1-5170adc.json) record complete
+validation and cleanup. Public orchestration and the visible Assistant retain
+their separate roadmap scope.

@@ -339,8 +339,9 @@ Implemented boundary, **independently accepted at `22e7c97`** in
 `packages/agent/turns.ts` is backend-injected; `src/agent/index.js:turnService`
 selects the existing project store. `agent-chat` exposes read/export, submit,
 prepare, decide, cancel and clear to trusted local operators. It adds no HTTP route
-or Assistant UI. A future authenticated transport must derive owner/project binding
-from its session; JSON never supplies authority. All future integration is tracked
+or Assistant UI itself. The separately accepted I1 lifecycle transport derives
+owner/project binding from its session; JSON never supplies authority. Future
+worker/provider and Assistant integration is tracked
 in [the roadmap](ROADMAP.md#v2-8-remaining).
 
 The project owns conversation/header, turn, proposal and attempt child tables in
@@ -399,3 +400,16 @@ A late receipt cannot revive a cleared turn or change an already compacted outco
 No raw provider transcript, instruction/context body, read result or hidden reasoning
 is persisted. Visible free text may itself be sensitive; existing project access and
 storage protections apply, without a new encryption or secure-erasure guarantee.
+
+
+## V2-8I-1 authenticated lifecycle transport
+
+The independently accepted [I1 transport](reviews/V2-8I-1-5170adc.json) supplies
+five thin authenticated HTTP operations over the H service: read, export, stored
+decision, cancel and clear. It keeps owner-only chat authority even when project
+CRUD grants an administrator bypass. Its bounded private JSON parser and late
+raw-path error boundary sanitize failures that precede route execution. H retains
+revision, replay, queue, cancellation and clear authority; session revocation is
+resolved per request. No public submission, preparation, execution or worker loop
+is introduced. The [main architecture](ARCHITECTURE.md#v2-8i-1-authenticated-conversation-lifecycle-transport)
+records the transport as built; future integration remains only in the roadmap.

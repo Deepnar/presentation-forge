@@ -84,7 +84,10 @@ approval over the existing run queue, with owner-only read/export/clear and CLI
 parity. Saved chat does not automatically become provider context. The
 [H evaluation](V2-8H-EVAL.md) distinguishes accepted headless continuity from
 authenticated hosted orchestration and visible Assistant integration.
-The Assistant remains a placeholder.
+V2-8I-1 independently accepts owner-authenticated conversation read/export/decide/
+cancel/clear HTTP transport over H. It adds no public preparation/execution or
+worker loop; [its decision](reviews/V2-8I-1-5170adc.json) does not complete hosted
+orchestration. The Assistant remains a placeholder.
 The sole work registry is [ROADMAP.md](ROADMAP.md); AI editing integration,
 native assets/imports, frontend polish and deployment operations retain their
 roadmap dependencies.

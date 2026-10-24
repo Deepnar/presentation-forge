@@ -51,7 +51,9 @@ stale-revision checks and history. The headless durable run core, bounded provid
 exchanges, explicit provider-backed preparation/queue boundary, bounded
 host-instance tool conversations, the shared web-search provider boundary and
 headless durable visible turns with atomic proposal approval are independently
-accepted. Saved chat does not automatically become provider context. Authenticated
+accepted. Owner-authenticated conversation read/export/decide/cancel/clear HTTP
+transport is also independently accepted; it exposes no preparation or execution.
+Saved chat does not automatically become provider context. Authenticated
 hosted turn orchestration, search-tool integration, live-provider qualification
 and the visible Assistant remain in the
 [roadmap](docs/ROADMAP.md#v2-8-remaining). Resolve exact accepted
