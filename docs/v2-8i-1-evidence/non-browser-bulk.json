@@ -2,7 +2,7 @@
   "id": "non-browser-bulk",
   "kind": "tests",
   "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
-  "command": "python3 docs/v2-8i-1-evidence/run-validation.py; exact195-file serial command retained in coordinator.json",
+  "command": "python3 docs/v2-8i-1-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8i-1-evidence/logs/non-browser-bulk.tap",
   "exitCode": 0,
   "tests": {
@@ -209,5 +209,5 @@
     "test/vision-role.test.js",
     "test/vocabulary.test.js"
   ],
-  "backend": "Temporary SQLite and fixture domain backends; concurrency1; actual owned PostgreSQL available only to designated isolated tests."
+  "backend": "Pure domain and temporary SQLite stores; selected tests use their isolated backends"
 }

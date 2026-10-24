@@ -1,0 +1,263 @@
+TAP version 13
+# Subtest: PostgreSQL/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+ok 1 - PostgreSQL/openai-compatible: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 500.28783
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: text returns bounded information without a queue or edit
+ok 2 - PostgreSQL/openai-compatible: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 22.955422
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refusal returns bounded information without a queue or edit
+ok 3 - PostgreSQL/openai-compatible: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 17.715167
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-results returns bounded information without a queue or edit
+ok 4 - PostgreSQL/openai-compatible: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 23.79311
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 5 - PostgreSQL/openai-compatible: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 29.923704
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+ok 6 - PostgreSQL/openai-compatible: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 26.385082
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses protected batches without partial edits
+ok 7 - PostgreSQL/openai-compatible: refuses protected batches without partial edits
+  ---
+  duration_ms: 20.994355
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: uses engine revision zero independently of an advanced durable revision
+ok 8 - PostgreSQL/openai-compatible: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 40.275101
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save while HTTP is pending invalidates preparation
+ok 9 - PostgreSQL/openai-compatible: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 21.056957
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save after preparation prevents queuing
+ok 10 - PostgreSQL/openai-compatible: a human save after preparation prevents queuing
+  ---
+  duration_ms: 22.87504
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: refuses foreign owners and invalid scopes before network
+ok 11 - PostgreSQL/openai-compatible: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 9.519795
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancellation covers both preparation and pending HTTP
+ok 12 - PostgreSQL/openai-compatible: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 15.885639
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: an expired deadline refuses before HTTP
+ok 13 - PostgreSQL/openai-compatible: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 10.242388
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: the absolute deadline also bounds pending provider HTTP
+ok 14 - PostgreSQL/openai-compatible: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 509.37894
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: cancelled at final queue commit rolls back the run insert
+ok 15 - PostgreSQL/openai-compatible: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 19.719083
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deadline at final queue commit rolls back the run insert
+ok 16 - PostgreSQL/openai-compatible: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 19.864727
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: only the original proposal instance can queue its private plan
+ok 17 - PostgreSQL/openai-compatible: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 16.709605
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: conflicting proposals cannot reuse a queued request identity
+ok 18 - PostgreSQL/openai-compatible: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 31.466672
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: read-only grants cannot receive edit proposals
+ok 19 - PostgreSQL/openai-compatible: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 12.862843
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: deleting a project invalidates its ephemeral proposals
+ok 20 - PostgreSQL/openai-compatible: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 18.132828
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+ok 21 - PostgreSQL/openai-compatible: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 16.05435
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+ok 22 - PostgreSQL/anthropic: previews one atomic batch, queues idempotently and executes after process restart
+  ---
+  duration_ms: 380.946886
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: text returns bounded information without a queue or edit
+ok 23 - PostgreSQL/anthropic: text returns bounded information without a queue or edit
+  ---
+  duration_ms: 15.284209
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refusal returns bounded information without a queue or edit
+ok 24 - PostgreSQL/anthropic: refusal returns bounded information without a queue or edit
+  ---
+  duration_ms: 14.963119
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-results returns bounded information without a queue or edit
+ok 25 - PostgreSQL/anthropic: read-results returns bounded information without a queue or edit
+  ---
+  duration_ms: 13.914801
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+ok 26 - PostgreSQL/anthropic: coalesces distinct edit calls and refuses duplicate writes atomically
+  ---
+  duration_ms: 16.620167
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+ok 27 - PostgreSQL/anthropic: refuses mixed read/edit and oversized combined proposals before effects
+  ---
+  duration_ms: 12.917969
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses protected batches without partial edits
+ok 28 - PostgreSQL/anthropic: refuses protected batches without partial edits
+  ---
+  duration_ms: 10.462964
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: uses engine revision zero independently of an advanced durable revision
+ok 29 - PostgreSQL/anthropic: uses engine revision zero independently of an advanced durable revision
+  ---
+  duration_ms: 22.72717
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save while HTTP is pending invalidates preparation
+ok 30 - PostgreSQL/anthropic: a human save while HTTP is pending invalidates preparation
+  ---
+  duration_ms: 11.306097
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save after preparation prevents queuing
+ok 31 - PostgreSQL/anthropic: a human save after preparation prevents queuing
+  ---
+  duration_ms: 12.768287
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: refuses foreign owners and invalid scopes before network
+ok 32 - PostgreSQL/anthropic: refuses foreign owners and invalid scopes before network
+  ---
+  duration_ms: 5.859863
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancellation covers both preparation and pending HTTP
+ok 33 - PostgreSQL/anthropic: cancellation covers both preparation and pending HTTP
+  ---
+  duration_ms: 12.45062
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: an expired deadline refuses before HTTP
+ok 34 - PostgreSQL/anthropic: an expired deadline refuses before HTTP
+  ---
+  duration_ms: 5.510252
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: the absolute deadline also bounds pending provider HTTP
+ok 35 - PostgreSQL/anthropic: the absolute deadline also bounds pending provider HTTP
+  ---
+  duration_ms: 506.328164
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: cancelled at final queue commit rolls back the run insert
+ok 36 - PostgreSQL/anthropic: cancelled at final queue commit rolls back the run insert
+  ---
+  duration_ms: 21.761462
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deadline at final queue commit rolls back the run insert
+ok 37 - PostgreSQL/anthropic: deadline at final queue commit rolls back the run insert
+  ---
+  duration_ms: 12.236219
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: only the original proposal instance can queue its private plan
+ok 38 - PostgreSQL/anthropic: only the original proposal instance can queue its private plan
+  ---
+  duration_ms: 9.819402
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: conflicting proposals cannot reuse a queued request identity
+ok 39 - PostgreSQL/anthropic: conflicting proposals cannot reuse a queued request identity
+  ---
+  duration_ms: 19.44388
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: read-only grants cannot receive edit proposals
+ok 40 - PostgreSQL/anthropic: read-only grants cannot receive edit proposals
+  ---
+  duration_ms: 7.491948
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: deleting a project invalidates its ephemeral proposals
+ok 41 - PostgreSQL/anthropic: deleting a project invalidates its ephemeral proposals
+  ---
+  duration_ms: 13.244888
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+ok 42 - PostgreSQL/anthropic: a foreign target in an otherwise valid edit batch preserves every scene
+  ---
+  duration_ms: 7.219572
+  type: 'test'
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2806.326384
+# forge-test-file "test/v2-provider-run-postgres-8d.test.js"

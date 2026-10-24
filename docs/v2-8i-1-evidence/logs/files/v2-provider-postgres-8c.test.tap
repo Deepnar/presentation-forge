@@ -1,0 +1,71 @@
+TAP version 13
+# Subtest: PostgreSQL/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+ok 1 - PostgreSQL/openai-compatible: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 169.828497
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a human save during HTTP prevents stale plan execution
+ok 2 - PostgreSQL/openai-compatible: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 22.510884
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: protected content remains protected after a valid proposal
+ok 3 - PostgreSQL/openai-compatible: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 35.069412
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: a normalized response grants no foreign-owner authority
+ok 4 - PostgreSQL/openai-compatible: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 13.15885
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/openai-compatible: inspection scope cannot receive an edit proposal
+ok 5 - PostgreSQL/openai-compatible: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 10.655392
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+ok 6 - PostgreSQL/anthropic: HTTP proposal commits canonically, reopens and restores exact history
+  ---
+  duration_ms: 48.479833
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a human save during HTTP prevents stale plan execution
+ok 7 - PostgreSQL/anthropic: a human save during HTTP prevents stale plan execution
+  ---
+  duration_ms: 9.833929
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: protected content remains protected after a valid proposal
+ok 8 - PostgreSQL/anthropic: protected content remains protected after a valid proposal
+  ---
+  duration_ms: 16.360766
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: a normalized response grants no foreign-owner authority
+ok 9 - PostgreSQL/anthropic: a normalized response grants no foreign-owner authority
+  ---
+  duration_ms: 7.884488
+  type: 'test'
+  ...
+# Subtest: PostgreSQL/anthropic: inspection scope cannot receive an edit proposal
+ok 10 - PostgreSQL/anthropic: inspection scope cannot receive an edit proposal
+  ---
+  duration_ms: 5.482843
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 620.127859
+# forge-test-file "test/v2-provider-postgres-8c.test.js"
