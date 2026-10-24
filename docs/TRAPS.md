@@ -1882,6 +1882,13 @@ assertion can fail after a successful stop. Preserve that failure, then verify
 state without recreating the service or reconstructing the lost reply/count.
 V2-8D's saved cleanup evidence records this distinction.
 
+Auto-removal can also become visible after a successful stop returns. Use bounded
+read-only post-stop polling for exact-ID absence and port refusal; do not issue a
+second stop or erase a failed immediate observation. If orchestration is interrupted,
+link the original saved count and initial cleanup hashes in a later verification.
+V2-8H retains its immediate absence=false record and separate successful read-only
+follow-up; the original count was saved before removal and never reconstructed.
+
 
 **Known provider usage survives a later tool-budget refusal.** A valid response
 can report billable usage even when its proposed tool batch exceeds the remaining
