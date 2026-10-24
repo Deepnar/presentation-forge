@@ -1,45 +1,51 @@
-# Handoff — V2-8H validated, pending independent acceptance
+# Handoff — V2-8H accepted; stop after this slice
 
-2026-10-23 · branch `v2`; authorized push `origin/v2`.
-Accepted baseline: `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`.
-Frozen implementation/tests: `22e7c9749865f3e7c2d62fb8724136e0f19048b0`.
-Later commits contain documentation/evidence only. No real model API/local
-inference, Assistant UI/routes, dependent feature, deployment or production
-migration is authorized. Stop after the approved H slice.
+2026-10-24 · branch `v2`; authorized push `origin/v2`.
+Accepted implementation/tests: `22e7c9749865f3e7c2d62fb8724136e0f19048b0`.
+Previous accepted baseline: `45c2c4c84581f41d1b2ef4ca61d15c067b8562a9`.
+Separate reviewer `/root/turn_contract_review` issued ACCEPT in
+`docs/reviews/V2-8H-22e7c97.json`, committed at `701e874`. Later commits update
+only documentation/evidence. State, evaluation, roadmap and architecture agree.
 
-The bounded durable visible-chat/proposal service, atomic approval over the
-existing queue, cancellation/clear/recovery and CLI are implemented. Separate
-source reviews found and corrected cancellation rollback, schema I/O placement
-and mutable binding reuse. Inherited deadline/process-bootstrap fixtures received
-narrow corrections retaining original assertions, actual stores and real races.
+The approved headless slice supplies bounded owner/project-linked visible turns,
+stored semantic proposals, atomic approval over the existing run queue,
+cancellation/clear/recovery and CLI parity. It adds no Assistant UI or HTTP route.
+Saved visible chat does not automatically become cross-turn provider context.
+Corrections addressed cancellation rollback, schema I/O placement and mutable
+binding reuse. Fixture corrections retain actual stores, original assertions,
+short leases, process kills and exact expiry boundaries. Earlier failed and
+superseded runs remain archived separately.
 
-Final-source validation is complete:229 primary files2898/2898, plus4distinct
-persisted/native cases, zero fail/skip/cancel/unexecuted. The90focused cases are
-separate repeats. Bulk2481,serial208,allninePostgreSQL209. All nine gates passed,
-including production build,typecheck,50cells and root inspection of115captures.
-Separate locale probe9pass/1standingfail.13original PPTXs pass numeric per-part
-identity checks.120slides opened1545ms; max measured canvas delta0.0771484375px.
-The evaluation/state/full-matrix/visual/performance records index exact results.
-Separate full-source and76-browser-capture inspection found no new blocker but
-is not final acceptance. Request the existing separate reviewer for an exact22
-ACCEPT/HOLD after applicable current-source execution and final native inspection.
+All nine gates passed. The 229-file primary inventory passed 2,898/2,898 plus four
+additional distinct persisted/native scenarios: 2,902 distinct primary passes,
+zero fail/skip/cancel/unexecuted. The 90 focused cases are separate repeats.
+Bulk: 2,481; serial browser/build: 208; all nine PostgreSQL files: 209. Production
+build, typecheck and 50 benchmark cells passed. The separate locale probe remains
+nine pass/one standing failure. Independent execution repeated 165 primary cases
+and typecheck; it did not independently rerun the complete inventory.
 
-The ordered coordinator in `out/v2-8h-validation-r4` completed all44 jobs. Do not
-restart it or rerun the one-time finisher. All5725 historical evidence files,
-including164PPTXs, and five canonical output originals were restored/hash-verified
-from original immutable snapshots.13new original PPTXs are retained and tracked
-in the H namespace. Failed/superseded attempts remain separately archived.
+Root and reviewer inspected all 115 images and verified 13 original native PPTXs.
+The ID audit found 319 numeric nonvisual properties across 93 parts, unique within
+each part. The 120-slide/120-thumbnail sample opened in 1,545 ms; maximum canvas
+movement was 0.0771484375 px. All 5,725 historical files (164 PPTXs) and five
+canonical output originals were restored/hash-verified. Thirteen new original
+PPTXs are preserved and tracked. Never rerun the one-time finisher against restored
+originals. The full matrix, performance, visual and preservation records are in
+`docs/v2-8h-evidence`; the runbook defines fresh reproduction in a new namespace.
 
-Owned PostgreSQL15.18 is still running for review, exact ID
-`d89e445e3e9ac94460781fbe5932cc35b7ed8752814e1146ee7fa751e467d4b2`, name
-`forge-v28h-validation`, local5544. Never touch unrelated services. After the
-reviewer confirms all DB checks finished, use the guarded runbook cleanup to
-save/fsync the fresh actual0-project-DB observation before exact-ID stop and prove
-absence/5544refused. Final reviewer must inspect cleanup evidence before acceptance.
+The owned PostgreSQL service was removed after the reviewer released DB use.
+The actual zero-project-database count was saved/fsynced before stop. The immediate
+identity observation was false and its assertion failed; both original records
+remain unchanged. Later root and reviewer read-only verification proved exact-ID
+absence and port 5544 refusal. No count reconstruction, second stop, replacement
+service or unrelated-service change occurred. Do not rerun cleanup on the removed
+container. Missing PostgreSQL makes future tests unexecuted, not historical passes.
 
 Original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched. Own Python
-`__pycache__` may be removed after evidence scripts finish. Global I/O PSI provenance,
-SVG/Fit/capture/timeout and historical archive provenance limits remain explicit;
-interactive Microsoft PowerPoint and live-model quality are unexecuted. Visible
-Assistant remains a placeholder; future scope lives only in the roadmap.
+`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched. No real model API,
+local inference, deployment or production migration ran. Interactive Microsoft
+PowerPoint and live-model quality remain unexecuted; SVG/Fit/capture/timeout,
+historical archive provenance and unresolved global I/O PSI limits remain explicit.
+
+No dependent feature is authorized. Stop after H. Future scope and decisions live
+only in `docs/ROADMAP.md#v2-8-remaining`; acceptance does not authorize starting them.
