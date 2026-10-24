@@ -1,0 +1,28 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "atUtc": "2026-10-24T14:10:42.221855+00:00",
+  "initialPreservationCompletedBeforeCleanup": {
+    "allCurrentFiles": 6444,
+    "pptx": 194,
+    "canonicalOriginals": 5,
+    "changedFiles": 0,
+    "evidence": "restoration-backup.json"
+  },
+  "laterIntentionalHelperDelta": [
+    {
+      "file": "docs/v2-8i-1-evidence/verify-owned-cleanup.py",
+      "beforeSha256": "b42cc84a665b509140c44ef0cfbdf35f44d08a74d8fd3e53a3e14ff0c8f6e29e",
+      "afterSha256": "2b8395f81a388cf2d231f5c41a18b4b2e140f792ee441808956d3b264fb52608"
+    }
+  ],
+  "laterHelperDeltaPurpose": "Correct unused inherited verifier labels to distinguish first post-stop observation from final bounded cleanup; no database mutation, original record overwrite or product/test change. Explicitly authorized by coordinator after preservation checkpoint.",
+  "historicalOriginalFilesStillHashMatched": 6102,
+  "historicalOriginalPptxStillHashMatched": 179,
+  "canonicalOriginalsStillHashMatched": 5,
+  "reconstructedOriginals": false,
+  "rootReadOnlyCleanupVerification": {
+    "file": "docs/v2-8i-1-evidence/owned-postgres-cleanup-verification.json",
+    "sha256": "f0c2d61ae8b54584a5cf762aad8aea3552316ed43e88c8d326560c2c78d67f3f"
+  },
+  "helperCurrentSha256": "2b8395f81a388cf2d231f5c41a18b4b2e140f792ee441808956d3b264fb52608"
+}

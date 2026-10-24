@@ -1,0 +1,43 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "baseline": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "reviewedEvidenceCommit": "138eed09c9420f8f02b07464baeedbcbc0a3d050",
+  "productTestToolDeltaAfterFreeze": [],
+  "changedSourceFiles": [
+    {
+      "file": "app/server/index.js",
+      "sha256": "73b9b3943c226c5b7a284dd6484bfa92ed0908b3627aafa052994c1b59c5ca6e",
+      "matchesFrozenTree": true
+    },
+    {
+      "file": "app/server/v2-conversation-routes.js",
+      "sha256": "e43b72303c2aaa0886c315e8e4f5a1d16657730fbd4a72ffee5f4fb856d8c937",
+      "matchesFrozenTree": true
+    },
+    {
+      "file": "test/dev-protocol.test.js",
+      "sha256": "2973cb22a96fe73f75edb6763cdb4adf49c1f720877dfcef0809b177e60fdbcb",
+      "matchesFrozenTree": true
+    },
+    {
+      "file": "test/v2-conversation-http-8i.test.js",
+      "sha256": "48a74ee4f2af8da970d9eff0bf1fccaf0de8bec7d47e4fffad6102d104c1f4f3",
+      "matchesFrozenTree": true
+    },
+    {
+      "file": "test/v2-conversation-http-contract.js",
+      "sha256": "686bf218b3ee4176c00bc292806f2da607283b854097558cf52f2d861fbade73",
+      "matchesFrozenTree": true
+    },
+    {
+      "file": "test/v2-conversation-http-postgres-8i.test.js",
+      "sha256": "09fe5a455f1837c80f659f4a9651fd23c705b5ba56cd798ce57d9a2e88ecd092",
+      "matchesFrozenTree": true
+    },
+    {
+      "file": "tools/dev-protocol-check.mjs",
+      "sha256": "37484ea1de7da5c8290ba01b9adc3c57a3212b38904ba9a2435562042dd104cb",
+      "matchesFrozenTree": true
+    }
+  ]
+}

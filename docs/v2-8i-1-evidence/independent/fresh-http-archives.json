@@ -1,0 +1,114 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "records": [
+    {
+      "backend": "sqlite",
+      "file": "docs/v2-8i-1-evidence/independent/http-archives/sqlite-approved.pptx",
+      "sha256": "01bbbc0b991422caea232c19588666c4bf3f93ef55b7e561212b4de7bf115b3f",
+      "bytes": 84212,
+      "reference": "docs/v2-8i-1-evidence/http-archives/sqlite-approved.pptx",
+      "referenceSha256": "37f001239f44b5394f42b556e63f8073f6616c1eed97a45c8dd66afb90a7a7f6",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "numericIds": 23,
+      "byteEqualParts": 44,
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx"
+      ],
+      "allSlideAndChartPartsByteEqual": true,
+      "rasterRegenerated": false,
+      "embeddedWorkbookParts": 20,
+      "embeddedWorkbookPayloadDifferences": [
+        "docProps/core.xml"
+      ],
+      "coreMetadataEqualExceptCreationAndModificationTimes": true,
+      "embeddedWorkbookCoreEqualExceptCreationAndModificationTimes": true,
+      "differentPartsExplanation": "PPTX and embedded XLSX creation/modification timestamps and ZIP metadata differ; all other uncompressed workbook payloads and all slide/chart parts are byte-equal."
+    },
+    {
+      "backend": "postgresql",
+      "file": "docs/v2-8i-1-evidence/independent/http-archives/postgresql-approved.pptx",
+      "sha256": "53dc85b5faa6dafcaabb321f6d93e21f1625100a7b400b433964999cded06fc7",
+      "bytes": 84212,
+      "reference": "docs/v2-8i-1-evidence/http-archives/postgres-approved.pptx",
+      "referenceSha256": "06678eb3c0b306ae82d491dbdd5d86a86b139042c9ff610f65d4ed5fe97c9007",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "numericIds": 23,
+      "byteEqualParts": 44,
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx"
+      ],
+      "allSlideAndChartPartsByteEqual": true,
+      "rasterRegenerated": false,
+      "embeddedWorkbookParts": 20,
+      "embeddedWorkbookPayloadDifferences": [
+        "docProps/core.xml"
+      ],
+      "coreMetadataEqualExceptCreationAndModificationTimes": true,
+      "embeddedWorkbookCoreEqualExceptCreationAndModificationTimes": true,
+      "differentPartsExplanation": "PPTX and embedded XLSX creation/modification timestamps and ZIP metadata differ; all other uncompressed workbook payloads and all slide/chart parts are byte-equal."
+    }
+  ],
+  "allOriginalHashesSaved": true,
+  "noReconstruction": true,
+  "counting": "Exports from two independently repeated HTTP cases; no additional distinct product scenarios."
+}

@@ -1,0 +1,97 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "atUtc": "2026-10-24T14:08:19.555352+00:00",
+  "testCounts": {
+    "total": 231,
+    "pass": 231,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "uniquePrimaryFilesRepeated": 11,
+  "allArePrimaryRepeats": true,
+  "newProductProbes": 0,
+  "fullPrimaryRemainingInspectedNotReexecuted": 2702,
+  "fullPrimaryRemainingFilesInspectedNotReexecuted": 220,
+  "typecheckExitCode": 0,
+  "allLogHashesVerified": true,
+  "resourceSamples": 33,
+  "sampleSeconds": 495.95655394899586,
+  "cpuBusyMeanPercent": 11.841573934858701,
+  "cpuBusyPeakPercent": 47.07732706036817,
+  "ioPsiSomeRange": [
+    29.71,
+    47.02
+  ],
+  "criticalSamples": 0,
+  "freshAdmissions": [
+    {
+      "job": "http-both",
+      "precedingReadySamples": [
+        "2026-10-24T14:01:46.529437+00:00",
+        "2026-10-24T14:02:01.578630+00:00"
+      ],
+      "seconds": 30.044725692998327,
+      "lastSampleAgeSeconds": 0.000179
+    },
+    {
+      "job": "turns-both",
+      "precedingReadySamples": [
+        "2026-10-24T14:03:14.632941+00:00",
+        "2026-10-24T14:03:29.677417+00:00"
+      ],
+      "seconds": 30.09290335499827,
+      "lastSampleAgeSeconds": 0.000156
+    },
+    {
+      "job": "boundary",
+      "precedingReadySamples": [
+        "2026-10-24T14:04:11.547543+00:00",
+        "2026-10-24T14:04:26.593812+00:00"
+      ],
+      "seconds": 30.04627822800103,
+      "lastSampleAgeSeconds": 0.000211
+    },
+    {
+      "job": "runtime-both",
+      "precedingReadySamples": [
+        "2026-10-24T14:04:42.232999+00:00",
+        "2026-10-24T14:04:57.276839+00:00"
+      ],
+      "seconds": 30.043962231000478,
+      "lastSampleAgeSeconds": 0.00016
+    },
+    {
+      "job": "protocol",
+      "precedingReadySamples": [
+        "2026-10-24T14:06:06.502209+00:00",
+        "2026-10-24T14:06:21.545765+00:00"
+      ],
+      "seconds": 30.08330141100305,
+      "lastSampleAgeSeconds": 0.00015
+    },
+    {
+      "job": "typecheck",
+      "precedingReadySamples": [
+        "2026-10-24T14:06:38.720806+00:00",
+        "2026-10-24T14:06:53.764463+00:00"
+      ],
+      "seconds": 30.04597738499797,
+      "lastSampleAgeSeconds": 0.000191
+    }
+  ],
+  "dbSlotExplicitlyReleased": true,
+  "finalCatalogObservation": "backend-after.json",
+  "preservation": {
+    "allCurrentFiles": 6444,
+    "originalPptx": 194,
+    "canonicalOriginals": 5,
+    "changed": 0,
+    "reconstructed": 0
+  },
+  "decision": "review-evidence-complete",
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0,
+  "newBrowserBuildOrRasterGeneration": false,
+  "cleanup": "cleanup-verification.json"
+}

@@ -1,0 +1,2 @@
+{"backend":"PostgreSQL","source":"5170adcec56e65e08f4ec5c1e5067c127f1c4c9d","case":"kill-after-commit-checkpoint","recoveryClaimThroughWorkerCommitMs":88.37733899999876,"excludesLeaseWait":true,"workerReadyBeforeClaim":true,"excludesWorkerBootstrap":true,"includesWorkerStoreSetup":true}
+{"backend":"SQLite","source":"5170adcec56e65e08f4ec5c1e5067c127f1c4c9d","case":"kill-after-commit-checkpoint","recoveryClaimThroughWorkerCommitMs":34.61163399999987,"excludesLeaseWait":true,"workerReadyBeforeClaim":true,"excludesWorkerBootstrap":true,"includesWorkerStoreSetup":true}

@@ -1,0 +1,54 @@
+TAP version 13
+# Subtest: v2 core boundary
+    # Subtest: detects static, re-export, and literal dynamic imports
+    ok 1 - detects static, re-export, and literal dynamic imports
+      ---
+      duration_ms: 4.753473
+      type: 'test'
+      ...
+    # Subtest: fails closed on require() and non-literal dynamic import
+    ok 2 - fails closed on require() and non-literal dynamic import
+      ---
+      duration_ms: 0.577428
+      type: 'test'
+      ...
+    # Subtest: enforces package directions on synthetic edges
+    ok 3 - enforces package directions on synthetic edges
+      ---
+      duration_ms: 0.303341
+      type: 'test'
+      ...
+    # Subtest: confines node builtins to the named renderer adapter
+    ok 4 - confines node builtins to the named renderer adapter
+      ---
+      duration_ms: 0.203461
+      type: 'test'
+      ...
+    # Subtest: confines jszip to renderer-docx and the generated PPTX identity normalizer
+    ok 5 - confines jszip to renderer-docx and the generated PPTX identity normalizer
+      ---
+      duration_ms: 0.214521
+      type: 'test'
+      ...
+    # Subtest: repository packages contain zero boundary violations
+    ok 6 - repository packages contain zero boundary violations
+      ---
+      duration_ms: 177.602212
+      type: 'test'
+      ...
+    1..6
+ok 1 - v2 core boundary
+  ---
+  duration_ms: 184.527378
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 410.946809
+# forge-test-file "test/v2-core-boundary.test.js"

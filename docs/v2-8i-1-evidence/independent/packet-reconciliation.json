@@ -1,0 +1,736 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "reviewedEvidenceCommit": "138eed09c9420f8f02b07464baeedbcbc0a3d050",
+  "atUtc": "2026-10-24T14:05:31.749418+00:00",
+  "orderedJobs": 46,
+  "primaryDisjointJobs": 37,
+  "primaryUniqueFiles": 231,
+  "primaryRawFooters": {
+    "total": 2933,
+    "pass": 2933,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "all231FilesCoveredOnce": true,
+  "focusedRepeat": {
+    "total": 34,
+    "pass": 34,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "nativeDistinctInspectedNotReexecuted": {
+    "total": 4,
+    "pass": 4,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "primaryAndNativeDistinct": 2937,
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "allOriginalRawLogBytesPreserved": true,
+  "gates": [
+    {
+      "file": "docs/v2-8i-1-evidence/conversation-http.json",
+      "sha256": "be76ad0a8194b1a1f67b6c55089c3b865b0cb4fad26e8c5902ae43ac70062523",
+      "exitCode": 0
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/non-browser-bulk.json",
+      "sha256": "790439bbe648be466ac66de179e232b13354efc716d9983f237c2a31522e563b",
+      "exitCode": 0
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/serial-browser.json",
+      "sha256": "6463724c53ae1ef3ea0b8501e3d6c8076beabc90711c3c5803b7ae97cbe65548",
+      "exitCode": 0
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/postgres-contract.json",
+      "sha256": "d49a6e91cc17fd0a737abe5d83fe5b9951e57114eb3b4ffaec13a57fa9040363",
+      "exitCode": 0
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/cross-process-faults.json",
+      "sha256": "9e826250478205eb42d4a7724c644db86d8d1d692994afefd7d11baf3ab01c85",
+      "exitCode": 0
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/production-build.json",
+      "sha256": "41dd571820fd5e34fb50802d8e566f94ae652c5f141ee494629cd00619f46536",
+      "exitCode": 0
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/typecheck.json",
+      "sha256": "93c35a9db5e2e8f9af45c7517764205899a2af7a85beef5374a4ff25f7c8352a",
+      "exitCode": 0
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/benchmark-50.json",
+      "sha256": "ec66bb9a15136f6947dbc13ed5c9d574fe609b589daa580a8b6058b03992308b",
+      "exitCode": 0
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/frontend-visual.json",
+      "sha256": "c3a1381bf08ce39fea6943451768a341f5c55fe1671b9681d37ddd1dbf509327",
+      "exitCode": 0
+    }
+  ],
+  "rawLogs": [
+    {
+      "job": "conversation-http-gate",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/conversation-http.tap",
+      "sha256": "f6c88e3ffadc07d1d44694f985a756e92c9a2bdd81a043536a28a0b52e96e4f7",
+      "counts": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "bulk",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/non-browser-bulk.tap",
+      "sha256": "82c79ccaec316a880dde716827f952c384800325e4316586efba3085473cf909",
+      "counts": {
+        "total": 2500,
+        "pass": 2500,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-7a.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-7a.test.tap",
+      "sha256": "d174537f1de2b3bee3c9fe40f7c72df4aec2e8c0d6befa62f5b5ffff76be682f",
+      "counts": {
+        "total": 28,
+        "pass": 28,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "freeform.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/freeform.test.tap",
+      "sha256": "afdb31544b0f9ce783029e9a4803ebc24a85373af72012cb648fb469d1b63487",
+      "counts": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "plate.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/plate.test.tap",
+      "sha256": "26f8cd5e08c399aaf3e498fb7756078ee444e371e78ea16b7d9fc31da5cb63a5",
+      "counts": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-5c.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-5c.test.tap",
+      "sha256": "1e2cda44710440f9aa49155ae64b01be73533eabaea5c4b679a4e78c7c579c77",
+      "counts": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-5d.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-5d.test.tap",
+      "sha256": "cbe70521390020e2c0cc3c3e10bfe29ec2e38c282cc10793b1d29c4b0f4b4355",
+      "counts": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-5e.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-5e.test.tap",
+      "sha256": "3e866a0f77b08cf64f6210c2ba239e264cf819361e87ba811f3020816548f0c4",
+      "counts": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-5f.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-5f.test.tap",
+      "sha256": "b94845fbb7940538003abaa8681c373ec6f5ac87f8fe9d340fabac4e3cda7cda",
+      "counts": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-5i.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-5i.test.tap",
+      "sha256": "d23f0aaffbf202f7e02fad1172eba5d846bb52510d26babc5fc7cbc9ef4f086c",
+      "counts": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-5j.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-5j.test.tap",
+      "sha256": "da9a09dcc246a6e0616499edb56dcfb324d0e09ad04cf4dfef904d41614ff09a",
+      "counts": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-5k.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-5k.test.tap",
+      "sha256": "b821d34c1413780f3e51d449afe0ba9fec0d3598b0d4b98102428eb5c9cbbebf",
+      "counts": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-6a.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-6a.test.tap",
+      "sha256": "58ef8be3adb77cf896458de1a949c942c56f193ace76c4020c093f1a8e887f64",
+      "counts": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-6b.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-6b.test.tap",
+      "sha256": "2e9855c9dab9aa78c653d6ccdbc683c62ae2b2724b69e399b43480636327edd2",
+      "counts": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-6c.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-6c.test.tap",
+      "sha256": "fea58c6847485122763435f325f37bedcbe90bd76ce0eabe9ece3a232bfc94ee",
+      "counts": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-chart.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-chart.test.tap",
+      "sha256": "1014e555053fec2ac5f7c15f89462271ee11e93337cbe6112735acdb8d115187",
+      "counts": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-edit-chrome-table.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-edit-chrome-table.test.tap",
+      "sha256": "2ea907cd4bab40c4761bdf1b4a50383fa7af265e54c41aec9fa5293720ce00fc",
+      "counts": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-fontgate-4e.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-fontgate-4e.test.tap",
+      "sha256": "e9948e9c08b3f7ceb201333bcc2814a86634abdba137e925149f269c261e4d15",
+      "counts": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-fonts-4d.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-fonts-4d.test.tap",
+      "sha256": "747e6c8a3c001a3419abeefebfa3dd80ef944794a9367bc60355b148667b6c53",
+      "counts": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-live-chrome-4f.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-live-chrome-4f.test.tap",
+      "sha256": "910444948524298f6d1884078e269d6d4535f1986482c14292a5f0ef92059cac",
+      "counts": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-plate-3f5.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-plate-3f5.test.tap",
+      "sha256": "dac3d1f1185f58a0703898edea0cc50f206b9228211f15c09b857cbc9d91fcf0",
+      "counts": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-selection-chrome.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-selection-chrome.test.tap",
+      "sha256": "59b044412cbabd263c3080450ef84728308af810d3c2c8a72741383d31998386",
+      "counts": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-viewer-smoke.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-viewer-smoke.test.tap",
+      "sha256": "55283de1d5af1cdeaebc9a7d63f45a8b9f71f8781ba950f333e167db466ff32d",
+      "counts": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-import-chrome-7b.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-import-chrome-7b.test.tap",
+      "sha256": "ad08cc0f933433b4b47bd212e2e22d176dcc035b6c67dff4969ecd16596dc0ad",
+      "counts": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-handoff-chrome-7b.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-handoff-chrome-7b.test.tap",
+      "sha256": "3b52a0112a64faa82c7dcd2253a4dfab5cd6c958b81837eb7aa6704fa75ae072",
+      "counts": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-project-covers-chrome-7c.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-project-covers-chrome-7c.test.tap",
+      "sha256": "274152844920bd3d0da717f98f7aedae2f0080b3cebcb1062dad25cb3f23b5cb",
+      "counts": {
+        "total": 12,
+        "pass": 12,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-project-catalog-chrome-7c.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-project-catalog-chrome-7c.test.tap",
+      "sha256": "b7412135a7f7a8ee9c724b968ff6eb27a8b0b2d7298d9eda1dd5dc37b4b3a4c2",
+      "counts": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-editor-toolbar-chrome-7c.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-editor-toolbar-chrome-7c.test.tap",
+      "sha256": "fc8e8a7e700cbbdae0c00023409ed930707300af4e25fed98e5df6402aadf317",
+      "counts": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-projects-6c-postgres.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-projects-6c-postgres.test.tap",
+      "sha256": "c28d89c172e5726892565b7560b944b783bf38a3b666ff2d34726f065cdc8c47",
+      "counts": {
+        "total": 17,
+        "pass": 17,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-projects-6c-concurrency.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-projects-6c-concurrency.test.tap",
+      "sha256": "4c0ebba59ee5c6af9d637771a759a96fe61502e3d313ff143f5c5239c54db572",
+      "counts": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-projects-6c-faults.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-projects-6c-faults.test.tap",
+      "sha256": "8c8376f75dee8d5b7ed7621ab0deed70f70d20cc8f847a25b10cb79f87d3b73a",
+      "counts": {
+        "total": 8,
+        "pass": 8,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-import-postgres-7b.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-import-postgres-7b.test.tap",
+      "sha256": "d7a3756a0d450ea7a5bd6fbe1b7784427225e40ace85614bbd0eb85456bf0e4b",
+      "counts": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-runtime-postgres-8b.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-runtime-postgres-8b.test.tap",
+      "sha256": "fde8afb64313f34083d9c23250e7da6667c2c5258619203c83ce7da84e4635a4",
+      "counts": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-provider-postgres-8c.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-provider-postgres-8c.test.tap",
+      "sha256": "29927ecbd6e961f8ae8b571d55e58268deaaeb9d967618d7a0386de1217aecb1",
+      "counts": {
+        "total": 10,
+        "pass": 10,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-provider-run-postgres-8d.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-provider-run-postgres-8d.test.tap",
+      "sha256": "f826d06707147b3100082b3c0096bd1b389403a7dcfc667d77f19171cc1164d5",
+      "counts": {
+        "total": 42,
+        "pass": 42,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-conversation-postgres-8e.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-conversation-postgres-8e.test.tap",
+      "sha256": "b0d94203bb98236c5c0fc117e2fd6faef2a0ce33fcd0fc417d509226de8018fb",
+      "counts": {
+        "total": 38,
+        "pass": 38,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-turns-postgres-8h.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-turns-postgres-8h.test.tap",
+      "sha256": "f6c1d160a06a19ca2ecfc010ca9fcee24972d4dc4d814d931cfb663d3ecb22fe",
+      "counts": {
+        "total": 43,
+        "pass": 43,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "v2-conversation-http-postgres-8i.test",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/files/v2-conversation-http-postgres-8i.test.tap",
+      "sha256": "3565422edfd1a2821363d4326450047f4787363ddc4ab3bb35eadadd87233deb",
+      "counts": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "production-build",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/production-build.log",
+      "sha256": "eb76cdcf3a1e862a08c0da36a8c7debf794285e018b4c88284532b2e5dfeb3bc",
+      "counts": null,
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "typecheck",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/typecheck.log",
+      "sha256": "5b7f3df27a2b67b5ec58d28781702999fd5e43a5c7f20576d631e777f0477c88",
+      "counts": null,
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "benchmark-50",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/benchmark-50.log",
+      "sha256": "3cd150580438bc225fe58d30bfdda71e30061ba0c8980408c17388f3e1012814",
+      "counts": null,
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "headless",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/headless.log",
+      "sha256": "b0a96558c7d0ce2386773214701554938d665abbd6dd2b45ff437f0f0d6fe871",
+      "counts": null,
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "byok-locale",
+      "exitCode": 1,
+      "log": "docs/v2-8i-1-evidence/logs/files/byok-locale.tap",
+      "sha256": "d9d233aa9d161dc004a6729ae9cb75cea97d6a44a5337fae4474ffe08553d397",
+      "counts": {
+        "total": 10,
+        "pass": 9,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "native-review",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/native-review.log",
+      "sha256": "c5d8077f587916a6af3af80022d73bbc6127c2cf0d5b25498581d49d537dfbd0",
+      "counts": null,
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "shell-native",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/shell-native.log",
+      "sha256": "223f061a6a603fa03e03758dbe27f04ecf0df653cdf3e178a452cc5bcffb104a",
+      "counts": null,
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    },
+    {
+      "job": "http-native",
+      "exitCode": 0,
+      "log": "docs/v2-8i-1-evidence/logs/http-native.log",
+      "sha256": "ba6d56568c7a92b4e8786e4dd4c240eccb958a167fb229157c556af6476294bb",
+      "counts": null,
+      "originalBytesPreserved": true,
+      "groupAssemblyAddedNewline": false
+    }
+  ]
+}

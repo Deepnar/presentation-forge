@@ -1,0 +1,779 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "atUtc": "2026-10-24T14:03:49.096311+00:00",
+  "archives": 15,
+  "parts": 107,
+  "nonvisualProperties": 365,
+  "allOriginalHashesVerified": true,
+  "allZipCrcVerified": true,
+  "namespaceAwareXmlParsed": true,
+  "numericIdsUniqueWithinEachPart": true,
+  "records": [
+    {
+      "file": "docs/v2-8i-1-evidence/native/sqlite-openai-compatible/before.pptx",
+      "sha256": "3406e1e5cb21a9516e06ce81a97d4c8cb8a343a2ba1fe46f4c4a9dda83c9bae9",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Measured ",
+          "results",
+          "Cell",
+          "Score",
+          "A",
+          "1.25",
+          "B",
+          "12.5"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Unrelated private slide"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/native/sqlite-openai-compatible/after.pptx",
+      "sha256": "bd9ba0767771dd7d3a4d0abbb133555cf39f18312e5296d032518f406abb509b",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Reviewed ",
+          "results",
+          "Cell",
+          "Score",
+          "First",
+          "2.5",
+          "Second",
+          "15.75"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Unrelated private slide"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/native/postgres-openai-compatible/before.pptx",
+      "sha256": "bcecd6fb04dfb3c484d8e3bda5c465da027ade7af109f51e4d41396c03944ff0",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Measured ",
+          "results",
+          "Cell",
+          "Score",
+          "A",
+          "1.25",
+          "B",
+          "12.5"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Unrelated private slide"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/native/postgres-openai-compatible/after.pptx",
+      "sha256": "0152d23fee66a6aa87f59dd2749094d2132f9a9899c8922413df348ce2c05586",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Reviewed ",
+          "results",
+          "Cell",
+          "Score",
+          "First",
+          "2.5",
+          "Second",
+          "15.75"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Unrelated private slide"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/native/sqlite-anthropic/before.pptx",
+      "sha256": "22dd2568e6580184128eea4397bbb72ac451e4fa77da956f071641200a5ae447",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Measured ",
+          "results",
+          "Cell",
+          "Score",
+          "A",
+          "1.25",
+          "B",
+          "12.5"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Unrelated private slide"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/native/sqlite-anthropic/after.pptx",
+      "sha256": "886baa19598da08a7b3ce0e4af7a33a4679f1c1ccd3ecda0021f209fa00282b4",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Reviewed ",
+          "results",
+          "Cell",
+          "Score",
+          "First",
+          "2.5",
+          "Second",
+          "15.75"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Unrelated private slide"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/native/postgres-anthropic/before.pptx",
+      "sha256": "d7160f2dcd1f6c96eb6125bfe0515f7894937602929bfeab3502a3c6779cffea",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Measured ",
+          "results",
+          "Cell",
+          "Score",
+          "A",
+          "1.25",
+          "B",
+          "12.5"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Unrelated private slide"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/native/postgres-anthropic/after.pptx",
+      "sha256": "954e764ab1f35d0763665f1e12a8fc756aac3a0db01559b847f89157f1e37de7",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Reviewed ",
+          "results",
+          "Cell",
+          "Score",
+          "First",
+          "2.5",
+          "Second",
+          "15.75"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Unrelated private slide"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-chart.pptx",
+      "sha256": "dd2c6139523213452b93249d7761db8a2d1ea3097f2d6ec6456de933402c3c7f",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 3
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 5
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Imported results",
+          "Imported results"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Conductivity",
+          "Unit: mS/cm",
+          "2 / 3"
+        ],
+        "ppt/slides/slide3.xml": [
+          "Measurements",
+          "Cell",
+          "Score",
+          "A",
+          "1.25",
+          "B",
+          "12.5",
+          "3 / 3"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-table.pptx",
+      "sha256": "acdfa28748c420c7648767f2b7b03469fb697ac80435b1d7865e9b5290186232",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 3
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 5
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Imported results",
+          "Imported results"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Conductivity",
+          "Unit: mS/cm",
+          "2 / 3"
+        ],
+        "ppt/slides/slide3.xml": [
+          "Measurements",
+          "Human table",
+          "Score",
+          "A",
+          "1.25",
+          "B",
+          "12.5",
+          "3 / 3"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/browser-archives/out--v2-7b-2-validation--browser--handoff.pptx",
+      "sha256": "14c7232269def79d6fdf17b2056ee24ab37653eba42ee547e2a4af819a7d6ac4",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 3
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 5
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Imported results",
+          "Imported results"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Conductivity",
+          "Unit: mS/cm",
+          "2 / 3"
+        ],
+        "ppt/slides/slide3.xml": [
+          "Measurements",
+          "Cell",
+          "Score",
+          "A",
+          "1.25",
+          "B",
+          "12.5",
+          "3 / 3"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/browser-archives/out--v2-7a-validation--shell-chart.pptx",
+      "sha256": "3a7a4f4f1e6f6553e64e02c4ef4c450960c25622493e1b82f7396bba141c514f",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 6
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Chart title",
+          "What this shows",
+          "Replace this chart with your data. These figures are placeholders.",
+          "Source: your dataset"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/browser-archives/out--v2-7a-validation--shell-table.pptx",
+      "sha256": "a9becd0f783ac1d8d1f34d49e08e772ed60205e6c45f1560b303056ecf163363",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Table title",
+          "Shell edited",
+          "Example A",
+          "Example B",
+          "Note",
+          "Row 1",
+          "12",
+          "8",
+          "sample",
+          "Row 2",
+          "17",
+          "5",
+          "sample",
+          "Row 3",
+          "9",
+          "11",
+          "sample",
+          "Row 4",
+          "14",
+          "6",
+          "sample",
+          "Sample figures \u2014 replace with your own data."
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/http-archives/sqlite-approved.pptx",
+      "sha256": "37f001239f44b5394f42b556e63f8073f6616c1eed97a45c8dd66afb90a7a7f6",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Reviewed ",
+          "results",
+          "Cell",
+          "Score",
+          "First",
+          "2.5",
+          "Second",
+          "15.75"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Unrelated private slide"
+        ]
+      }
+    },
+    {
+      "file": "docs/v2-8i-1-evidence/http-archives/postgres-approved.pptx",
+      "sha256": "06678eb3c0b306ae82d491dbdd5d86a86b139042c9ff610f65d4ed5fe97c9007",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ],
+      "slideText": {
+        "ppt/slides/slide1.xml": [
+          "Reviewed ",
+          "results",
+          "Cell",
+          "Score",
+          "First",
+          "2.5",
+          "Second",
+          "15.75"
+        ],
+        "ppt/slides/slide2.xml": [
+          "Unrelated private slide"
+        ]
+      }
+    }
+  ],
+  "limitation": "Read-only original archive audit and retained raster inspection; no new renderer or interactive Microsoft PowerPoint run."
+}
