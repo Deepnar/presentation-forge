@@ -152,11 +152,13 @@ export function conversationHttpContract(label, setup) {
     }
     assert.equal((await e.call('/clear', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: '{}' })).status, 415);
     assert.equal((await rawRequest(e.base + `/api/v2/projects/${e.doc.id}/conversation`, { body: '{}', headers })).status, 400);
-    const invalidPath = await rawRequest(e.base + '/api/v2/projects/DO_NOT_ECHO%E0%A4%A/conversation', { headers });
-    assert.equal(invalidPath.status, 400);
-    assert.equal(invalidPath.headers['cache-control'], 'private, no-store');
-    assert.equal(invalidPath.text.includes('DO_NOT_ECHO'), false);
-    assert.equal(JSON.parse(invalidPath.text).code, 'invalid-request');
+    for (const prefix of ['/api/v2/projects', '/API/V2/PROJECTS', '/Api/v2/Projects']) {
+      const invalidPath = await rawRequest(e.base + `${prefix}/DO_NOT_ECHO%E0%A4%A/Conversation`, { headers });
+      assert.equal(invalidPath.status, 400);
+      assert.equal(invalidPath.headers['cache-control'], 'private, no-store');
+      assert.equal(invalidPath.text.includes('DO_NOT_ECHO'), false);
+      assert.equal(JSON.parse(invalidPath.text).code, 'invalid-request');
+    }
   });
 
   check('HTTP approval reopens one canonical run and preserves edits, styling and history', async (_t, e) => {
