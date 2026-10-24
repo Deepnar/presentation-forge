@@ -14,7 +14,7 @@ for (const [backend, job] of [['sqlite', 'bulk'], ['postgres', 'v2-conversation-
   const run = runs.find(row => row.name === job);
   assert.ok(run && run.exitCode === 0 && run.implementationSha === implementationSha);
   assert.ok(!run.tests.fail && !run.tests.skip && !run.tests.cancelled);
-  const source = `${out}/http/${backend}-approved.pptx`;
+  const source = `${out}/http/${backend === 'postgres' ? 'postgresql' : backend}-approved.pptx`;
   assert.ok((await stat(source)).mtimeMs >= Date.parse(run.atUtc));
   const bytes = await readFile(source), zip = await JSZip.loadAsync(bytes);
   const slides = Object.keys(zip.files).filter(file => /^ppt\/slides\/slide\d+\.xml$/.test(file));

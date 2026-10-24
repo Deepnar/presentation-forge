@@ -197,3 +197,17 @@ locale limitations remain recorded in the roadmap. No real model APIs or local
 inference ran.
 The [runbook](v2-8i-1-evidence/RUNBOOK.md) preserves exact continuation commands;
 stop at I1 until the required gates and independent ACCEPT/HOLD are available.
+
+
+## Continuation — fresh qualification
+
+The next continuation recovered `0c5827f` with unchanged frozen source `5170adc`
+and the same three untracked paths. The complete disjoint231-file inventory and
+protocol checker remain valid. A fresh sustained qualification driver is active;
+no acceptance is inferred from the earlier50-case development check.
+
+Pre-execution helper inspection caught a filename mismatch: the shared HTTP fixture
+uses label `PostgreSQL`, producing `postgresql-approved.pptx`, whereas the native
+helper expected `postgres-approved.pptx`. The helper now reads the actual fixture
+filename while retaining normalized backend metadata. This changes no product/test
+source or assertion and has not yet produced a native inspection result.

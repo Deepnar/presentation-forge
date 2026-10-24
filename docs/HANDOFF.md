@@ -30,7 +30,11 @@ The separate BYOK locale failure is retained historically, not rerun today.
 achieved. Earlier development waiting sampled another18.82 minutes. No I1 backend,
 snapshot or generator was started. Port5544 refused connections. Only owned waiting
 monitors were stopped; no test leaf was cancelled and no unrelated process stopped.
-There is **no active validation process or background continuation** now.
+That checkpoint stopped all waiting processes. The current continuation has
+recovered the unchanged source and is qualifying a fresh window in session72878
+(`out/v2-8i-1-validation/continuation-driver.log`). It will prepare the exclusive
+I1 backend/snapshots and first bounded batch only after admission; inspect actual
+phase and records before starting anything else.
 
 Resume only I1 gates using [the runbook](v2-8i-1-evidence/RUNBOOK.md): qualify a new
 fresh sustained window, then prepare the exclusive I1 backend/snapshots and execute
