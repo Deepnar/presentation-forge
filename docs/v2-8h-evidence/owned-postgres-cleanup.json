@@ -1,0 +1,24 @@
+{
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "atUtc": "2026-10-23T16:18:13.397614+00:00",
+  "id": "d89e445e3e9ac94460781fbe5932cc35b7ed8752814e1146ee7fa751e467d4b2",
+  "beforeRemovalRecord": "docs/v2-8h-evidence/owned-postgres-before-removal.json",
+  "beforeRemovalSha256": "1b11837ef46314f7b18718396f9974b46808fc43eca21294081fa9a0bd571404",
+  "freshSavedProjectDatabaseCount": 0,
+  "stop": {
+    "command": [
+      "docker",
+      "stop",
+      "--time",
+      "10",
+      "d89e445e3e9ac94460781fbe5932cc35b7ed8752814e1146ee7fa751e467d4b2"
+    ],
+    "exitCode": 0,
+    "stdout": "Flag --time has been deprecated, use --timeout instead\nd89e445e3e9ac94460781fbe5932cc35b7ed8752814e1146ee7fa751e467d4b2\n",
+    "stderr": ""
+  },
+  "exactIdAbsent": false,
+  "port": 5544,
+  "portConnectionRefused": true,
+  "unrelatedServicesModified": false
+}

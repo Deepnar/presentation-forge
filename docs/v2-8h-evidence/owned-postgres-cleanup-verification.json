@@ -1,0 +1,22 @@
+{
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "atUtc": "2026-10-24T07:07:39.580200+00:00",
+  "id": "d89e445e3e9ac94460781fbe5932cc35b7ed8752814e1146ee7fa751e467d4b2",
+  "port": 5544,
+  "beforeRemovalRecord": "docs/v2-8h-evidence/owned-postgres-before-removal.json",
+  "beforeRemovalSha256": "1b11837ef46314f7b18718396f9974b46808fc43eca21294081fa9a0bd571404",
+  "initialCleanupRecord": "docs/v2-8h-evidence/owned-postgres-cleanup.json",
+  "initialCleanupSha256": "23df9a36dbf3a2de0f8ffc4103147c4038faeed48b75f56f6c57ae151a1190f9",
+  "initialImmediateExactIdAbsent": false,
+  "initialPortConnectionRefused": true,
+  "inspectExitCode": 1,
+  "inspectStderr": "error: no such object: d89e445e3e9ac94460781fbe5932cc35b7ed8752814e1146ee7fa751e467d4b2\n",
+  "matchingContainerIds": [],
+  "exactIdAbsent": true,
+  "portConnectionRefused": true,
+  "freshSavedProjectDatabaseCountBeforeStop": 0,
+  "savedCountReconstructed": false,
+  "additionalStopOrRemovalIssued": false,
+  "unrelatedServicesModified": false,
+  "classification": "Read-only follow-up after the immediate post-stop identity observation was false; both original records are retained unchanged."
+}

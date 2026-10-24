@@ -111,3 +111,13 @@ FORGE_VALIDATION_OUT=out/v2-8h-validation-r4 python3 docs/v2-8h-evidence/cleanup
 This requires completed execution/assembly, verifies ownership and the empty actual
 catalog, writes exclusive durable records, then checks exact-ID absence and a
 refused connection to5544. A saved script is not evidence that cleanup ran.
+The helper now polls read-only observations for at most10seconds after stop,
+because auto-removal may become visible after the stop command returns.
+
+The actual H run used the original immediate checker: stop returned0 and5544
+refused connections, but its first exact-ID observation was false and its final
+assertion failed. That original `owned-postgres-cleanup.json` is preserved unchanged.
+`verify-owned-cleanup.py` subsequently verified exact-ID absence and5544refusal
+without another stop or reconstructing the already-saved count; the durable result
+is `owned-postgres-cleanup-verification.json`. Do not rerun cleanup against the
+removed service or overwrite either observation.

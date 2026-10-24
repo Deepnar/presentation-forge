@@ -1,0 +1,158 @@
+{
+  "implementationSha": "22e7c9749865f3e7c2d62fb8724136e0f19048b0",
+  "acceptedBaselineCompared": "45c2c4c84581f41d1b2ef4ca61d15c067b8562a9",
+  "evidenceHead": "f6732d8345452ed8be64bf21592fade71db162e5",
+  "sourceDiffAfterImplementation": [],
+  "sourcePathspec": [
+    "packages",
+    "src",
+    "test",
+    "app",
+    "tools",
+    "schema",
+    "themes",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json"
+  ],
+  "changedSourceAndTestFiles": 34,
+  "records": [
+    {
+      "file": "package.json",
+      "sha256": "ef46c636e1d1177a4612ecbb30e2f47de2147f9950e190da0c006d8d8456f3c0"
+    },
+    {
+      "file": "packages/agent/provider-run.ts",
+      "sha256": "2123febae45ab70d44c0310b0ac4e5748815f7d8720b0d96106d18c2c83aac08"
+    },
+    {
+      "file": "packages/agent/run-state.ts",
+      "sha256": "ec3994e4d4438594083203ebcc4d8bd3492e9119597ba4f51cd2f7a228a23d31"
+    },
+    {
+      "file": "packages/agent/run-transaction.ts",
+      "sha256": "2516b44b494b9910b5bce8a6679018d794766d3b4f7b187a242e7b5981e2bfc2"
+    },
+    {
+      "file": "packages/agent/runtime.ts",
+      "sha256": "134725b34d787ebbf25603355674c246e9090e14a64eeace6af9cab841a763b9"
+    },
+    {
+      "file": "packages/agent/turn-attempt.generated.ts",
+      "sha256": "98886cb8a46b182a28c5aa95b9c8bb1cf3f2f2883a451ac31079dd09e6d31094"
+    },
+    {
+      "file": "packages/agent/turn-attempt.schema.json",
+      "sha256": "d0e7a9c1e5ef51c1b86222a5fec196fec5d20a63235c5e0cc374676c45daf308"
+    },
+    {
+      "file": "packages/agent/turn-header.generated.ts",
+      "sha256": "157f1ee8d4fd468716b4d721f4e238bdd2afdd8308e92eda568e7a58453c338a"
+    },
+    {
+      "file": "packages/agent/turn-header.schema.json",
+      "sha256": "61deefaec2eb987cce27f9c58feb54b49c4233d538805e0ae87b667f377932eb"
+    },
+    {
+      "file": "packages/agent/turn-proposal.generated.ts",
+      "sha256": "5d9639e73eb3cdb7b10eb747b59f7da0cb622c2fe9a62daa6ac7ca9eaa42ddc2"
+    },
+    {
+      "file": "packages/agent/turn-proposal.schema.json",
+      "sha256": "9d7b3f70f976c9b855f478888fc13e7aadae914aad727cfa418b3ab0f80eeac5"
+    },
+    {
+      "file": "packages/agent/turn-record.generated.ts",
+      "sha256": "1ccf33777b0354273221fffd7007c619e20fa76722cc79ba07f45edd713e8530"
+    },
+    {
+      "file": "packages/agent/turn-record.schema.json",
+      "sha256": "f8f2e5a94edf454029ab3b18c2440985d74ceeadb7a3fc035eb31f9d72397897"
+    },
+    {
+      "file": "packages/agent/turn-state.ts",
+      "sha256": "763ba37d53c779fc7778386fd9b1175cc1bc78f7108d7acab8f85f127909ea8a"
+    },
+    {
+      "file": "packages/agent/turn-store.ts",
+      "sha256": "477910379fb59cc5da9fb13f0ccf7dcafb9932e09a69ba6df885b42d937b9b44"
+    },
+    {
+      "file": "packages/agent/turn-submission.generated.ts",
+      "sha256": "c90b7fca2c6c4394f57783a4791dbe715e08b744d98a4c355bc0cf621216ff68"
+    },
+    {
+      "file": "packages/agent/turn-submission.schema.json",
+      "sha256": "5bcb999c3e53bb2ab10f2aebb110886437d25773342e6ea8778b8f1167b4bd6e"
+    },
+    {
+      "file": "packages/agent/turns.ts",
+      "sha256": "723f6e44d4ca4757ebd8f2e9547e496489b38b41b1e6ff1e969d3bb16a5dee95"
+    },
+    {
+      "file": "src/agent/index.js",
+      "sha256": "acfcd28072e6bd2fde5533a4a325db26f72087b50e7fb65e15e52b2628167801"
+    },
+    {
+      "file": "src/agent/schema.js",
+      "sha256": "ffda5fbfe6236601753ab732ce3e184a8b62ead7bf5cb6c063d94f66971518d6"
+    },
+    {
+      "file": "src/agent/turn-cli.js",
+      "sha256": "684ca207585c4034639d7550021c22b7a32c73e4852ffba5db2a3e91182db5da"
+    },
+    {
+      "file": "test/dev-protocol.test.js",
+      "sha256": "df8709f56d7ee41a175625ab8b91595777d445c33f75e7c679a4ea56fa1e1100"
+    },
+    {
+      "file": "test/v2-core-boundary.test.js",
+      "sha256": "19acec3c7ef5d25a320fcc48f61ec89a1a0776eeff67012a376a9fa93a7c9743"
+    },
+    {
+      "file": "test/v2-runtime-contract.js",
+      "sha256": "5745f83c852add280ab22443c8a7597ea171864c6dfb27a16631ce9ebb678e0b"
+    },
+    {
+      "file": "test/v2-runtime-process-contract.js",
+      "sha256": "fd15bc6799350251e8e3147d2b3b39d483c3d76ad24d691b91a0c233aa17607c"
+    },
+    {
+      "file": "test/v2-turns-8h.test.js",
+      "sha256": "f8708b8796ec4f2308145f014bf8d2ecc5f1934a263c0f037e0ce0c7d4bc6e21"
+    },
+    {
+      "file": "test/v2-turns-contract.js",
+      "sha256": "0050f175f196fde7928de53d02dd58647d60697625a023af6f7a0b4ebcd4eb30"
+    },
+    {
+      "file": "test/v2-turns-postgres-8h.test.js",
+      "sha256": "f2e2be58dc5ea850deb1d5a84e6cf325d68b78a730d4976d47313e906a9b1001"
+    },
+    {
+      "file": "test/v2-turns-process-8h.test.js",
+      "sha256": "ef55b396364dd6445352cbb9cb8d5bb83f329831d66629c438dacf9a61d87153"
+    },
+    {
+      "file": "test/v2-turns-process-contract.js",
+      "sha256": "d7f0b77ece93b8638c929d33c59782c19eaf0309a5f1077377a42a85421daa69"
+    },
+    {
+      "file": "test/v2-turns-sqlite-8h.test.js",
+      "sha256": "3c8d9bd2b061f3b817141f1a1c058b7a39d3547811e5d217c4b037d83c87fcb9"
+    },
+    {
+      "file": "test/v2-turns-worker.js",
+      "sha256": "398e13374456b15c15360027e28191db1964a829ef82287cec6eb910368a6544"
+    },
+    {
+      "file": "tools/dev-protocol-check.mjs",
+      "sha256": "286f3ea7a48ed5879c72800e8318e825f9b9ff908bf2efea43d7b502c9963c66"
+    },
+    {
+      "file": "tools/v2-types.mjs",
+      "sha256": "b8d8a0bac820805a328e5a0fe8391a2964e9ee96dc8eac3a1f6376a8a243892f"
+    }
+  ],
+  "purpose": "Reconcile frozen implementation bytes with later evidence commits; not independent acceptance or an additional test case."
+}

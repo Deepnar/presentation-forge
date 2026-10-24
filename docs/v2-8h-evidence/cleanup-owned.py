@@ -1,4 +1,4 @@
-import datetime,hashlib,json,os,pathlib,socket,subprocess,sys
+import datetime,hashlib,json,os,pathlib,socket,subprocess,sys,time
 assert sys.argv[1:]==['--after-review-database-checks']
 root=pathlib.Path('docs/v2-8h-evidence');out=pathlib.Path(os.environ['FORGE_VALIDATION_OUT'])
 sha=json.loads((root/'validation-plan.json').read_text())['implementationSha']
@@ -19,14 +19,21 @@ def durable(path,data):
   json.dump(data,f,indent=2);f.write('\n');f.flush();os.fsync(f.fileno())
  fd=os.open(str(path.parent),os.O_RDONLY);os.fsync(fd);os.close(fd)
 beforepath=root/'owned-postgres-before-removal.json';durable(beforepath,before)
-stop=subprocess.run(['docker','stop','--time','10',owned['id']],capture_output=True,text=True,timeout=30)
-inspect=subprocess.run(['docker','inspect',owned['id']],capture_output=True,text=True)
-remaining=subprocess.check_output(['docker','ps','-aq','--no-trunc','--filter','id='+owned['id']],text=True).splitlines()
-refused=False
-try:
- connection=socket.create_connection(('127.0.0.1',owned['port']),timeout=1);connection.close()
-except ConnectionRefusedError:refused=True
-record={'implementationSha':sha,'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'id':owned['id'],'beforeRemovalRecord':str(beforepath),'beforeRemovalSha256':hashlib.sha256(beforepath.read_bytes()).hexdigest(),'freshSavedProjectDatabaseCount':0,'stop':{'command':['docker','stop','--time','10',owned['id']],'exitCode':stop.returncode,'stdout':stop.stdout,'stderr':stop.stderr},'exactIdAbsent':inspect.returncode!=0 and remaining==[],'port':owned['port'],'portConnectionRefused':refused,'unrelatedServicesModified':False}
+stopcommand=['docker','stop','--timeout','10',owned['id']]
+stop=subprocess.run(stopcommand,capture_output=True,text=True,timeout=30)
+observations=[];deadline=time.monotonic()+10
+while True:
+ inspect=subprocess.run(['docker','inspect',owned['id']],capture_output=True,text=True)
+ remaining=subprocess.check_output(['docker','ps','-aq','--no-trunc','--filter','id='+owned['id']],text=True).splitlines()
+ refused=False
+ try:
+  connection=socket.create_connection(('127.0.0.1',owned['port']),timeout=1);connection.close()
+ except ConnectionRefusedError:refused=True
+ absent=inspect.returncode!=0 and remaining==[]
+ observations.append({'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'exactIdAbsent':absent,'portConnectionRefused':refused})
+ if absent and refused or time.monotonic()>=deadline:break
+ time.sleep(0.2)
+record={'implementationSha':sha,'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'id':owned['id'],'beforeRemovalRecord':str(beforepath),'beforeRemovalSha256':hashlib.sha256(beforepath.read_bytes()).hexdigest(),'freshSavedProjectDatabaseCount':0,'stop':{'command':stopcommand,'exitCode':stop.returncode,'stdout':stop.stdout,'stderr':stop.stderr},'exactIdAbsent':absent,'port':owned['port'],'portConnectionRefused':refused,'postStopObservations':observations,'unrelatedServicesModified':False}
 durable(root/'owned-postgres-cleanup.json',record)
 assert record['exactIdAbsent'] and refused
 print(json.dumps(record,indent=2))
