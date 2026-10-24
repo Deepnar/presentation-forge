@@ -9029,6 +9029,14 @@ local inference. Only that separate transport correction is authorized; this aud
 <a id="assistant-surface-integration"></a>
 
 - [ ] **Assistant interaction and authenticated turn orchestration — direction required.**
+  On2026-10-24 explicit continuation delegates dependency ordering. Following the
+  recorded postH sequence, start with **V2-8I-1 authenticated conversation/approval
+  transport** in [the bounded contract](V2-8I-1-EVAL.md), then prepare worker/provider
+  orchestration before the existing-deck Assistant panel. This first step reuses
+  accepted owner-only policy and H storage; it adds no UI or provider execution.
+  I1 is the selected immediate implementation scope; subsequent slices still need
+  concrete contracts and independent gates. The full creation/research promise
+  remains dependent on the canonical semantic/search entries above.
   Agree the promised surface before implementation: existing-deck editing versus
   complete conversational creation/research. Keep the current placeholder until
   the selected contract works. Thin authenticated submit/read/decide/cancel routes
