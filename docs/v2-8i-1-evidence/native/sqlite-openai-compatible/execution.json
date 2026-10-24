@@ -1,0 +1,60 @@
+{
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "backend": "sqlite",
+  "family": "openai-compatible",
+  "providerExchangesMs": [
+    16.555418999999972,
+    4.033740999999964,
+    2.835366000000022
+  ],
+  "conversationAccounting": {
+    "reservedOutputTokens": 6144,
+    "knownInputTokens": 126,
+    "knownOutputTokens": 60,
+    "knownCacheReadTokens": 0,
+    "knownCacheWriteTokens": 0,
+    "knownAttempts": 3,
+    "unknownAttempts": 0
+  },
+  "visibleConversationBytes": 1352,
+  "runId": "59312431-a1f5-4ec6-b2b1-d797665108fe",
+  "timings": {
+    "submitMs": 4.000480000000039,
+    "prepareMs": 57.498582999999996,
+    "queueMs": 4.176549000000023,
+    "claimMs": 1.3198580000000106,
+    "commitMs": 3.952781000000016,
+    "reopenMs": 0.4169310000000337
+  },
+  "traceBytes": 1306,
+  "trace": {
+    "run": {
+      "id": "59312431-a1f5-4ec6-b2b1-d797665108fe",
+      "projectId": "p-e2f2aa8acb93a53a6314af4d",
+      "projectRevision": 1,
+      "status": "succeeded",
+      "code": null,
+      "revision": 3,
+      "cursor": 1,
+      "attempts": 1,
+      "failures": 0,
+      "createdAt": 1792849776801,
+      "updatedAt": 1792849776807,
+      "deadlineAt": 1792850976737,
+      "stepCount": 1
+    },
+    "receipts": [
+      {
+        "step": 0,
+        "tool": "edit_content",
+        "ok": true,
+        "code": null,
+        "changed": true,
+        "projectRevision": 1,
+        "engineRevision": 1,
+        "runRevision": 3
+      }
+    ]
+  },
+  "limits": "Local samples, not production percentiles. Reopen after closing the pool/connection; actual kill recovery is tested separately. Mixed-run SVG inherits its first-run-style limitation."
+}

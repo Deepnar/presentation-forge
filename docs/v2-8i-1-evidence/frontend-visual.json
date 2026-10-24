@@ -1,0 +1,13 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "command": "Inspect all119 indexed current images on browser/final contact sheets and relevant full-size cases; verify image/archive hashes, native identities, measured canvas stability and historical restoration.",
+  "log": "docs/v2-8i-1-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": 119,
+  "maximumCanvasDeltaPx": 0.04949951171875,
+  "largeDeckOpenMs": 1547,
+  "interactivePowerPointExecuted": false
+}
