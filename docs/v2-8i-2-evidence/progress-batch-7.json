@@ -1,0 +1,17 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T13:21:00.264225+00:00",
+  "completedJobs": 21,
+  "serialCompletedFiles": 19,
+  "serialCompletedTests": {
+    "total": 147,
+    "pass": 147,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "serialUnexecutedFiles": 7,
+  "primaryPostgresUnexecutedFiles": 12,
+  "nextBatch": "out/v2-8i-2-validation-batch-8.log",
+  "status": "Complete serial/PG/command/native/visual gates remain pending; passed subsets are not acceptance."
+}

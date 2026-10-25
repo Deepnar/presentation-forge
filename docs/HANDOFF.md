@@ -15,9 +15,9 @@ The exact new owned PG15.18 ID is
 name forge-v28i2-validation, loopback5544,1CPU/512MiB/tmpfs192MiB.
 Ownership/backup manifests are under docs/v2-8i-2-evidence; never recreate/reuse I1.
 
-Full coordinator batches1–4 completed successfully: focused79/79,196bulk2528/2528,
-and10of26serial files/82passes, with0fail/skip/cancelled. Batch5 is active:
-out/v2-8i-2-validation-batch-5.log and coordinator.json/log. No other validation
+Full coordinator batches1–7 completed successfully: focused79/79,196bulk2528/2528,
+and19of26serial files/147passes, with0fail/skip/cancelled. Batch8 is active:
+out/v2-8i-2-validation-batch-8.log and coordinator.json/log. No other validation
 process may overlap. The coordinator bounds3new jobs, yields, then needs audited
 --resume; never repeat preparation after snapshots. Exact source/ID/empty catalog
 and fresh admission are enforced. Focused worker, bulk and typecheck gates pass;
