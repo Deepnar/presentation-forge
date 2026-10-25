@@ -2,6 +2,7 @@ import { before, after, test } from 'node:test';
 import { Pool } from 'pg';
 import * as store from '../src/projects/store-postgres.js';
 import { conversationHttpContract, conversationHttpFixture } from './v2-conversation-http-contract.js';
+import { conversationSubmissionContract } from './v2-conversation-submission-contract.js';
 process.env.FORGE_HOSTED = '1';
 const url = process.env.TEST_PG_URL ?? 'postgres://postgres:probe@127.0.0.1:5544/postgres';
 const maintenance = new Pool({ connectionString: url, connectionTimeoutMillis: 3000 });
@@ -20,6 +21,10 @@ if (!available) {
     if (previous === undefined) delete process.env.FORGE_PROJECTS_DATABASE_URL; else process.env.FORGE_PROJECTS_DATABASE_URL = previous;
   });
   conversationHttpContract('PostgreSQL', (t, env) => conversationHttpFixture(t, store, {
+    FORGE_PROJECTS_BACKEND: 'postgres', FORGE_PROJECTS_DATABASE_URL: destination.href,
+    ...env,
+  }));
+  conversationSubmissionContract('PostgreSQL', (t, env) => conversationHttpFixture(t, store, {
     FORGE_PROJECTS_BACKEND: 'postgres', FORGE_PROJECTS_DATABASE_URL: destination.href,
     ...env,
   }));

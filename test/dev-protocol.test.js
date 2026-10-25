@@ -368,3 +368,15 @@ test('turn-worker acceptance requires both stores and the process/CLI entry file
   writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-turn-worker-process-8i.test.js"\n', ''));
   hasError(f.check(), /complete required scope/);
 });
+
+test('submission HTTP acceptance requires both actual backend entry files', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8i-3-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8i-3-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8i-3-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8I-3'; hasError(f.check(), /inventory.*contract/);
+  f.state.validation[0].id = 'conversation-http'; assert.deepEqual(f.check().errors, []);
+  f.evidence(); assert.deepEqual(f.check().errors, []);
+  const log = path.join(f.dir, 'docs/output.tap');
+  writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-conversation-http-postgres-8i.test.js"\n', ''));
+  hasError(f.check(), /complete required scope/);
+});

@@ -60,7 +60,7 @@ export function rawRequest(url, { method = 'GET', body = '', headers = {} } = {}
   });
 }
 
-async function isolatedRouter(t, env, service) {
+export async function isolatedRouter(t, env, service) {
   const { installConversationBodyParser, registerV2ConversationRoutes } = await import('../app/server/v2-conversation-routes.js');
   const app = express(); installConversationBodyParser(app); app.use(express.json({ limit: '8mb' }));
   registerV2ConversationRoutes(app, { service });
