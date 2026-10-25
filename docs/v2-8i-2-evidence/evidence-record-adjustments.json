@@ -1,0 +1,13 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T13:59:12.332713+00:00",
+  "helper": "docs/v2-8i-2-evidence/assemble-results.py",
+  "previousSha256": "e2cf5fd6259c7511f243868c859f128597d130379bd6db1e13eafe311d3b2459",
+  "correctedSha256": "48e4da664cce70706361f66c70affe9b9cf2e9c58a937011a6a8ef8d2a25e30b",
+  "reason": "Separate designated19-case fault gate from combined47-case process evidence; source validator and executed tests remain unchanged.",
+  "sourceWorkingDelta": [],
+  "historicalFilesOrOriginalArchivesChanged": false,
+  "finisherRerun": false,
+  "rawFailedGovernanceRecord": "docs/v2-8i-2-evidence/protocol-before-review.log",
+  "correctedGovernanceRecord": "docs/v2-8i-2-evidence/protocol-before-review-corrected.log"
+}

@@ -1,0 +1,17 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "classification": "Documentation state enum correction; no product or test change.",
+  "initialCommand": "npm run dev:protocol",
+  "initialExitCode": 1,
+  "initialErrors": 1,
+  "reason": "Unsupported implemented-pending-review enum; existing allowed validated state applies with reviewStatus pending.",
+  "schemaChanged": false,
+  "reviewStatus": "pending",
+  "accepted": false,
+  "secondCommand": "npm run dev:protocol",
+  "secondExitCode": 1,
+  "secondErrors": 1,
+  "secondReason": "Combined47-case cross-process evidence supplied to the designated19-case two-file gate. Preserve both reports; required source/governance contract stays unchanged.",
+  "productOrTestChanged": false,
+  "executedCasesDiscarded": false
+}

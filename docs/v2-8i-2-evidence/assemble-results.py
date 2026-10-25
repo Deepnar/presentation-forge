@@ -12,7 +12,8 @@ group('non-browser-bulk',['bulk'],'Pure domain and temporary SQLite stores; sele
 group('serial-browser',[pathlib.Path(f).stem for f in plan['serial']],'Temporary SQLite production routes, isolated PostgreSQL browser suite and standalone fixtures')
 group('postgres-contract',['v2-projects-6c-postgres.test','v2-import-postgres-7b.test'],'Owned isolated PostgreSQL15.18; designated23-case project/import contract gate')
 group('postgres-complete',[pathlib.Path(f).stem for f in plan['postgres']],'Owned isolated PostgreSQL15.18; all twelve files. Designated contract23 and cross-process/fault checks are overlapping subsets.')
-group('cross-process-faults',['v2-projects-6c-concurrency.test','v2-projects-6c-faults.test','v2-turn-worker-process-8i.test'],'Temporary SQLite and owned isolated PostgreSQL15; actual independent processes, worker CLI and injected faults')
+group('cross-process-faults',['v2-projects-6c-concurrency.test','v2-projects-6c-faults.test'],'Owned isolated PostgreSQL15; designated19-case concurrency/fault gate')
+group('cross-process-complete',['v2-projects-6c-concurrency.test','v2-projects-6c-faults.test','v2-turn-worker-process-8i.test'],'Temporary SQLite and owned PostgreSQL15; combined47 actual process/fault/worker CLI cases, overlapping primary/focused inventories')
 for name in ['production-build','typecheck','benchmark-50']:
  row=byname[name];assert row['exitCode']==0;log=logs/(name+'.log');shutil.copy2(row['log'],log)
  data={'id':name,'kind':'benchmark' if name=='benchmark-50' else 'command','implementationSha':sha,'command':' '.join(row['command']),'log':str(log),'exitCode':0,'durationSeconds':row['durationSeconds']}
