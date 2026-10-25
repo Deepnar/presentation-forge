@@ -84,3 +84,11 @@ The reviewer issues exact-source ACCEPT/HOLD separately. Stop after this slice.
 The internal loop cap/yield tests use actual B multistep plans. H proposals retain
 their one-batch validation, so a multistep visible-turn or CLI-cap claim is invalid.
 Development attempt/correction logs are separate and never substituted for gates.
+
+Reviewed preparation guards reject --resume and existing backup/coordinator artifacts
+before any container creation. Resume jobs through run-validation.py only. The
+corrected development coordinator propagates failed/skipped/cancelled leaves after
+preserving records. Its admission-only predecessor was stopped with zero child jobs;
+that source/log/resource attempt is archived separately. The original b07052c
+coordinator had the same supervisor-exit defect; its raw child exit1/106pass2fail
+was always treated as failure, never a green result.

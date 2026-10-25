@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/deepnar/Programs/presentations/docs/v2-8i-2-evidence/prepare-full-validation.py", line 12, in <module>
+    assert not any((out/name).exists() for name in artifacts), 'Existing snapshot/execution requires audit; refuse backend creation'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Existing snapshot/execution requires audit; refuse backend creation

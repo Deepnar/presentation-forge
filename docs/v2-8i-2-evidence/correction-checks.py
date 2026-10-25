@@ -1,6 +1,6 @@
-import datetime,hashlib,json,os,pathlib,re,signal,subprocess,time
+import datetime,hashlib,json,os,pathlib,re,signal,subprocess,time,sys
 from quiet_window import Window
-root=pathlib.Path('docs/v2-8i-2-evidence');out=pathlib.Path('out/v2-8i-2-correction');out.mkdir(exist_ok=False)
+root=pathlib.Path('docs/v2-8i-2-evidence');out=pathlib.Path('out/v2-8i-2-correction-v2');out.mkdir(exist_ok=False)
 os.environ['FORGE_VALIDATION_OUT']=str(out)
 # Imported quiet-window defaults are overridden before constructing any sampler.
 import quiet_window
@@ -8,9 +8,11 @@ quiet_window.OUT=out
 sha=json.loads((root/'validation-plan.json').read_text())['implementationSha']
 source=['app','packages','src','test','tools','schema','themes','package.json','package-lock.json','tsconfig.json']
 subprocess.run(['git','diff','--quiet',sha,'--',*source],check=True)
-evidence=root/'correction';evidence.mkdir(exist_ok=True)
+evidence=root/'correction-v2';evidence.mkdir(exist_ok=True)
 Window().wait(180)
 records=[]
+failed=False
+signal.signal(signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
 jobs=[('sqlite-adjacent',['node','--test','--test-concurrency=1','--test-reporter=./tools/validated-tap.mjs',
  'test/v2-turn-worker-sqlite-8i.test.js','test/v2-turns-8h.test.js','test/v2-turns-sqlite-8h.test.js','test/v2-turns-process-8h.test.js','test/v2-core-boundary.test.js','test/dev-protocol.test.js']),
  ('sqlite-cli',['node','--test-reporter=./tools/validated-tap.mjs','--input-type=module','--eval',"import { workerCliContract } from './test/v2-turn-worker-process-contract.js'; import { scenario } from './test/v2-runtime-fixture.js'; workerCliContract('SQLite',scenario);"]),
@@ -39,6 +41,9 @@ for name,args in jobs:
  if name!='typecheck':counts={key:int(re.findall(r'^# '+label+r' (\d+)\s*$',raw,re.M)[-1]) for key,label in {'total':'tests','pass':'pass','fail':'fail','skip':'skipped','cancelled':'cancelled'}.items()}
  record={'implementationSha':sha,'atUtc':started,'name':name,'command':command,'durationSeconds':time.monotonic()-tick,'exitCode':process.returncode,'tests':counts,'log':str(log),'logSha256':hashlib.sha256(log.read_bytes()).hexdigest()}
  records.append(record);(evidence/'checks.json').write_text(json.dumps(records,indent=2)+'\n');print(json.dumps(record),flush=True)
- if process.returncode:break
+ if process.returncode or counts and any(counts[k] for k in ['fail','skip','cancelled']):
+  failed=True;break
 for name in ['resource-window.jsonl','sustained-window.json']:
  if (out/name).exists():(evidence/name).write_bytes((out/name).read_bytes())
+
+raise SystemExit(1 if failed else 0)

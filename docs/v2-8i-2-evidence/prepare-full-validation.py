@@ -7,6 +7,9 @@ sha = json.loads((root / 'validation-plan.json').read_text())['implementationSha
 subprocess.run(['git', 'merge-base', '--is-ancestor', sha, 'HEAD'], check=True)
 subprocess.run(['git', 'diff', '--quiet', sha, '--', 'packages', 'src', 'test', 'app', 'tools', 'schema', 'themes', 'package.json', 'package-lock.json', 'tsconfig.json'], check=True)
 out.mkdir(parents=True, exist_ok=True)
+assert '--resume' not in sys.argv, 'Resume completed jobs through run-validation.py --resume, never backend preparation'
+artifacts=['backup','prior-generated-backup','coordinator.json','coordinator.log','coordinator-complete.json']
+assert not any((out/name).exists() for name in artifacts), 'Existing snapshot/execution requires audit; refuse backend creation'
 resume_owned = '--resume-owned-preparation' in sys.argv
 assert resume_owned or not (root/'owned-postgres.json').exists(), 'Do not replace an existing owned identity'
 if resume_owned:
@@ -55,42 +58,41 @@ if resume_owned:
     with (root/'owned-preparation-recovery.json').open('x') as stream:
         json.dump({'implementationSha':sha,'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'id':cid,'sameRecordedIdentity':True,'finalTcpReady':True,'version':owned['version'],'nonMaintenanceDatabases':databases,'snapshotOrTestExistedBeforeRecovery':False},stream,indent=2);stream.write('\n')
 
-if '--resume' not in sys.argv:
-    assert not (out / 'backup').exists(), 'Preserve the existing snapshot; do not overwrite a prior run'
-    assert not (out / 'coordinator.json').exists(), 'Existing execution must be audited before resuming'
-    index = []
-    for folder in sorted(pathlib.Path('docs').glob('v2-*-evidence')):
-        if folder == root: continue
-        for source in sorted(folder.rglob('*')):
-            if not source.is_file():
-                continue
-            destination = out / 'backup' / source
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(source, destination)
-            digest = hashlib.sha256(source.read_bytes()).hexdigest()
-            assert hashlib.sha256(destination.read_bytes()).hexdigest() == digest
-            index.append({'path': str(source), 'sha256': digest, 'bytes': source.stat().st_size})
-    (out / 'backup/index.json').write_text(json.dumps(index, indent=2) + '\n')
-    (root / 'backup-manifest.json').write_text(json.dumps(index, indent=2) + '\n')
-    originals = []
-    for source in map(pathlib.Path, [
-        'out/v2-7a-validation/shell-chart.pptx', 'out/v2-7a-validation/shell-table.pptx',
-        'out/v2-7b-1-validation/browser/imported-chart.pptx',
-        'out/v2-7b-1-validation/browser/imported-table.pptx',
-        'out/v2-7b-2-validation/browser/handoff.pptx',
-    ]):
-        assert source.is_file(), f'Existing original unavailable before execution: {source}'
-        destination = out / 'prior-generated-backup' / source
+assert not (out / 'backup').exists(), 'Preserve the existing snapshot; do not overwrite a prior run'
+assert not (out / 'coordinator.json').exists(), 'Existing execution must be audited before resuming'
+index = []
+for folder in sorted(pathlib.Path('docs').glob('v2-*-evidence')):
+    if folder == root: continue
+    for source in sorted(folder.rglob('*')):
+        if not source.is_file():
+            continue
+        destination = out / 'backup' / source
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
         digest = hashlib.sha256(source.read_bytes()).hexdigest()
         assert hashlib.sha256(destination.read_bytes()).hexdigest() == digest
-        originals.append({'path': str(source), 'sha256': digest, 'bytes': source.stat().st_size})
-    (out / 'prior-generated-backup/index.json').write_text(json.dumps(originals, indent=2) + '\n')
-    print('Snapshot verified', len(index), 'files;', sum(row['path'].endswith('.pptx') for row in index), 'evidence originals and', len(originals), 'canonical out originals', flush=True)
+        index.append({'path': str(source), 'sha256': digest, 'bytes': source.stat().st_size})
+(out / 'backup/index.json').write_text(json.dumps(index, indent=2) + '\n')
+(root / 'backup-manifest.json').write_text(json.dumps(index, indent=2) + '\n')
+originals = []
+for source in map(pathlib.Path, [
+    'out/v2-7a-validation/shell-chart.pptx', 'out/v2-7a-validation/shell-table.pptx',
+    'out/v2-7b-1-validation/browser/imported-chart.pptx',
+    'out/v2-7b-1-validation/browser/imported-table.pptx',
+    'out/v2-7b-2-validation/browser/handoff.pptx',
+]):
+    assert source.is_file(), f'Existing original unavailable before execution: {source}'
+    destination = out / 'prior-generated-backup' / source
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    assert hashlib.sha256(destination.read_bytes()).hexdigest() == digest
+    originals.append({'path': str(source), 'sha256': digest, 'bytes': source.stat().st_size})
+(out / 'prior-generated-backup/index.json').write_text(json.dumps(originals, indent=2) + '\n')
+print('Snapshot verified', len(index), 'files;', sum(row['path'].endswith('.pptx') for row in index), 'evidence originals and', len(originals), 'canonical out originals', flush=True)
 
 if '--prepare-only' in sys.argv:
     print('Owned backend and original snapshots ready; no test coordinator started.',flush=True)
     raise SystemExit(0)
 
-raise SystemExit(subprocess.run([sys.executable, '-u', str(root / 'run-validation.py'), *(['--resume'] if '--resume' in sys.argv else [])]).returncode)
+raise SystemExit(subprocess.run([sys.executable, '-u', str(root / 'run-validation.py')]).returncode)

@@ -1,0 +1,19 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T12:45:29.952724+00:00",
+  "checks": [
+    {
+      "name": "resume",
+      "exitCode": 1,
+      "expectedRefusal": "Resume completed jobs",
+      "newOwnedIdentityWritten": false
+    },
+    {
+      "name": "existing-snapshot",
+      "exitCode": 1,
+      "expectedRefusal": "Existing snapshot/execution",
+      "newOwnedIdentityWritten": false
+    }
+  ],
+  "kind": "negative helper guard probes; no product test leaf or backend creation"
+}

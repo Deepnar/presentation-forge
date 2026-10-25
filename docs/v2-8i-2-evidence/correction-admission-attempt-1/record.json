@@ -1,0 +1,24 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T12:44:52.148326+00:00",
+  "ownedCoordinatorPid": 25487,
+  "childProcessAbsentBeforeStop": true,
+  "jobStarted": false,
+  "executedLeaves": 0,
+  "cancelledLeaves": 0,
+  "classification": "Stopped root-owned admission-only coordinator to repair reviewed supervisor exit handling; no test process started. Resource thresholds unchanged.",
+  "files": [
+    {
+      "file": "docs/v2-8i-2-evidence/correction-admission-attempt-1/v2-8i-2-correction-driver.log",
+      "sha256": "6d4f35a5ae776aa1641a7f5196e261c42cd83b5ff4d660040310e2d0223a54cc"
+    },
+    {
+      "file": "docs/v2-8i-2-evidence/correction-admission-attempt-1/resource-window.jsonl",
+      "sha256": "12d8d6dc089cbc09506f084ce8c9dfab7b0a5fb73981b263f5fbdc36e94f705c"
+    },
+    {
+      "file": "docs/v2-8i-2-evidence/correction-admission-attempt-1/correction-checks.py",
+      "sha256": "824dc090c9a09215e96880908202c6d6e618d6f1f130c5df95c7116327e84dda"
+    }
+  ]
+}
