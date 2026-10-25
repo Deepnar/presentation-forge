@@ -1,4 +1,6 @@
 import express from 'express';
+import { MIMEType } from 'node:util';
+import { isUtf8 } from 'node:buffer';
 import { validProjectId } from '../../packages/projects/document.js';
 import { turnService } from '../../src/agent/index.js';
 import { projectsAllowed, resolveProjectOwner } from './v2-projects-routes.js';
@@ -6,17 +8,19 @@ import { projectsAllowed, resolveProjectOwner } from './v2-projects-routes.js';
 const PREFIX = '/api/v2/projects/:id/conversation';
 const PRIVATE_PATH = /^\/api\/v2\/projects\/[^/]+\/conversation(?:\/|$)/i;
 const BODY_BYTES = 8192;
+const SUBMISSION_BYTES = 262144;
 const STATUS = {
   'invalid-request': 400, 'invalid-id': 400, 'invalid-document': 422,
   'not-found': 404, 'stale-generation': 409, 'stale-conversation': 409,
   'stale-proposal': 409, 'stale-project': 409, 'proposal-unavailable': 409,
   'conflicting-decision': 409, 'approval-expired': 409, 'runtime-fenced': 409,
   'store-misconfigured': 503, 'storage-unavailable': 503,
+  'conflicting-request': 409, busy: 409, 'storage-limit': 409,
 };
 const MESSAGES = {
   400: 'Invalid conversation request.', 401: 'Log in to access project conversations.',
   403: 'Project storage is disabled on this host.', 404: 'No such conversation.',
-  409: 'Conversation or project state changed; reload before deciding.',
+  409: 'Conversation or project state changed; reload before retrying.',
   413: 'Conversation request is too large.', 415: 'Use application/json.',
   422: 'Conversation request or stored state is invalid.',
   500: 'Conversation request failed.', 503: 'Project storage is unavailable.',
@@ -28,14 +32,31 @@ function privateHeaders(_req, res, next) {
   res.set('Cache-Control', 'private, no-store');
   next();
 }
+function parserFailure(error, _req, res, _next) {
+  const oversized = error?.type === 'entity.too.large';
+  return failure(res, oversized ? 413 : 400, oversized ? 'request-too-large' : 'invalid-request');
+}
 
 // Install before the shared parser so malformed private bodies never reach its
 // default error formatter or its larger admission limit.
 export function conversationBodyParser() {
-  return [privateHeaders, express.json({ limit: BODY_BYTES }), (error, _req, res, _next) => {
-    const oversized = error?.type === 'entity.too.large';
-    return failure(res, oversized ? 413 : 400, oversized ? 'request-too-large' : 'invalid-request');
-  }];
+  return [privateHeaders, express.json({ limit: BODY_BYTES }), parserFailure];
+}
+
+function submissionEncoding(req, res, next) {
+  try {
+    const raw = req.get('Content-Type') ?? '', type = new MIMEType(raw);
+    const parameters = [...type.params];
+    // Reject ignored/duplicate parameters too: the header parser and JSON decoder
+    // must agree on UTF-8 before the larger admission budget can apply.
+    if (type.essence !== 'application/json' || raw.split(';').length !== parameters.length + 1 ||
+        parameters.some(([key, value]) => key !== 'charset' || value.toLowerCase() !== 'utf-8') ||
+        (req.get('Content-Encoding') ?? 'identity').toLowerCase() !== 'identity')
+      return failure(res, 415, 'unsupported-media-type');
+    return next();
+  } catch {
+    return failure(res, 415, 'unsupported-media-type');
+  }
 }
 
 function pagination(query) {
@@ -52,6 +73,12 @@ function pagination(query) {
 }
 
 export function installConversationBodyParser(app) {
+  // A parsed body skips later JSON parsers. Only this exact POST may consume
+  // the larger budget; every other private route keeps the prefix admission cap.
+  app.post(`${PREFIX}/turns`, privateHeaders, submissionEncoding,
+    express.json({ limit: SUBMISSION_BYTES, inflate: false, verify: (_req, _res, body) => {
+      if (!isUtf8(body)) throw new Error('Invalid conversation request.');
+    } }), parserFailure);
   app.use(PREFIX, ...conversationBodyParser());
 }
 
@@ -80,7 +107,8 @@ export function registerV2ConversationRoutes(app, { service = turnService } = {}
           input = req.body;
           if (!input || typeof input !== 'object' || Array.isArray(input))
             return failure(res, 400, 'invalid-request');
-          if (Buffer.byteLength(JSON.stringify(input), 'utf8') > BODY_BYTES)
+          const limit = operation === 'submit' ? SUBMISSION_BYTES : BODY_BYTES;
+          if (Buffer.byteLength(JSON.stringify(input), 'utf8') > limit)
             return failure(res, 413, 'request-too-large');
         }
         const api = await service();
@@ -100,6 +128,7 @@ export function registerV2ConversationRoutes(app, { service = turnService } = {}
   }
   app.get(PREFIX, route('read'));
   app.get(`${PREFIX}/export`, route('export'));
+  app.post(`${PREFIX}/turns`, route('submit'));
   app.post(`${PREFIX}/decisions`, route('decide'));
   app.post(`${PREFIX}/cancel`, route('cancel'));
   app.post(`${PREFIX}/clear`, route('clear'));
