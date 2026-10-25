@@ -1,0 +1,42 @@
+{
+  "decision": "READY_WITH_REQUIRED_HELPER_CORRECTION",
+  "kind": "independent-source-helper-readiness",
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "reviewedPacketSha": "85270a867a99d95e64a29cfcf5d4fce11fe22fff",
+  "acceptedBaseline": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-25",
+  "evidence": "docs/reviews/V2-8I-3-2ba82cb-source-harness.md",
+  "implementationAcceptance": false,
+  "materialProductSourceBlockers": [],
+  "requiredHelperCorrections": [
+    {
+      "id": "native-fixture-setup-failure-cleanup",
+      "priority": 2,
+      "path": "docs/v2-8i-3-evidence/headless-check.mjs",
+      "line": 49,
+      "condition": "Register PostgreSQL teardown after fixture API-stop cleanup on success and setup failure, using finally around fixture setup; retain store closure, real DROP, pool shutdown/environment restoration and close the pool when CREATE fails. Bind the corrected helper hash before preparation/execution.",
+      "status": "acknowledged-pending-correction"
+    }
+  ],
+  "identityChecks": {
+    "changedSourceFilesExactlyMatched": 7,
+    "helperHashesExactlyMatched": 13,
+    "disjointPrimaryFiles": 234,
+    "bulkFiles": 196,
+    "serialFiles": 26,
+    "postgresFiles": 12,
+    "focusedOverlappingFiles": 2
+  },
+  "executed": {
+    "tests": 0,
+    "services": 0,
+    "modelCalls": 0,
+    "generators": 0,
+    "note": "Source/document inspection and lightweight frozen-file/hash/inventory reconciliation only; no behavioral validation or backend preparation."
+  },
+  "pending": "Correct and bind the identified helper, then execute all required current-source gates and preserve raw counts/originals, inspect native/visual evidence, and obtain a separate exact-source ACCEPT/HOLD with owned-backend cleanup.",
+  "stopPoint": "I3 only; this source-readiness record grants no implementation acceptance or dependent feature authorization."
+}
