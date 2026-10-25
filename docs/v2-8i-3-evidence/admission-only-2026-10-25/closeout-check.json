@@ -1,0 +1,12 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "atUtc": "2026-10-25T18:11:21.563660+00:00",
+  "sourceDelta": [],
+  "sourceAndHelperHashesMatch": true,
+  "remainingExactSamplerPids": [],
+  "matchingI3ContainerIds": [],
+  "behavioralExecutions": 0,
+  "protocolExitCode": 0,
+  "protocolStdout": "dev-protocol-check: 0 error(s), 0 warning(s)\n",
+  "protocolStderr": "npm notice run presentation-forge@0.1.0 dev:protocol\nnpm notice run node tools/dev-protocol-check.mjs\n"
+}
