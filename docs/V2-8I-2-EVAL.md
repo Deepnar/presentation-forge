@@ -164,7 +164,10 @@ behavior. There is no assertion weakening, H invariant relaxation or provider
 retry. Source inspection also keeps final status awaits inside the sanitized
 error boundary and skips unused provider-file loading for approved work.
 
-Corrected candidate: `58662ecc074f7cc29bf29a0dd410d581ffca0eef`. Final validation remains unexecuted;
+Corrected candidate: `58662ecc074f7cc29bf29a0dd410d581ffca0eef`. Corrected development passed120/120 (113SQLite/adjacent plus7realCLI),
+0fail/skip/cancelled, and typecheck exited0. See
+[exact correction records](v2-8i-2-evidence/correction-v2/checks.json).
+These test executions overlap the final primary inventory. Remaining final validation is pending;
 this source needs fresh affected checks, complete234-file matrix, build/type/
 benchmark/native/frontend evidence and a separate exact-source decision. Only
 injected/loopback providers are permitted. Accepted baseline remains I1 source.

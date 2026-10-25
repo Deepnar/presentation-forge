@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
-    "note": "I2 corrected candidate: CLI unfinished-work exit table and internal canonical execution loop. Initial b07052c development108 leaves106pass2test-fixture failures are retained separately; all final gates remain unexecuted."
+    "note": "I2 corrected candidate58662ec:120/120 development tests and typecheck pass; full primary matrix/worker PostgreSQL/native/frontend gates and independent acceptance pending. Earlier106/108 failing fixture attempt retained separately."
   },
   "activeMilestone": {
     "id": "V2-8I-2",
@@ -25,55 +25,55 @@
       "id": "turn-worker",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
+      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
     },
     {
       "id": "non-browser-bulk",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
+      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
     },
     {
       "id": "serial-browser",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
+      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
     },
     {
       "id": "postgres-contract",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
+      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
     },
     {
       "id": "cross-process-faults",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
+      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
     },
     {
       "id": "production-build",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
+      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
     },
     {
       "id": "typecheck",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
+      "status": "passed",
+      "evidence": "docs/v2-8i-2-evidence/typecheck-development.json",
+      "reason": "Exact-source corrected development typecheck exited0; complete isolated matrix will repeat it."
     },
     {
       "id": "benchmark-50",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
+      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
     },
     {
       "id": "frontend-visual",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
+      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
     }
   ],
   "knownBlockers": [],

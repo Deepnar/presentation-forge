@@ -1,0 +1,9 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T12:50:26.465174+00:00",
+  "source": "out/v2-8i-2-correction-v2/sustained-window.json",
+  "sha256": "ffb28e9e4a9f1e4802aefd446e2b6c316ca0b39f39ceac8c8cc0ab6602b50a28",
+  "qualificationAgeSeconds": 153.86246848106384,
+  "developmentCompletedChecks": "docs/v2-8i-2-evidence/correction-v2/checks.json",
+  "method": "Retain the actual same-source recent180-second qualification and raw samples; preparation and every validation job still require fresh30-second admission. No concurrent development child remains; no resource threshold changed."
+}

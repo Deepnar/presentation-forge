@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: SQLite turn worker CLI: explicit provider preparation and provider-free approved work share stored authority
+ok 1 - SQLite turn worker CLI: explicit provider preparation and provider-free approved work share stored authority
+  ---
+  duration_ms: 1149.294444
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: unknown work authority and malformed provider inputs produce fixed private errors
+ok 2 - SQLite turn worker CLI: unknown work authority and malformed provider inputs produce fixed private errors
+  ---
+  duration_ms: 580.617341
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: a held execution lease exits nonzero without an edit or provider access
+ok 3 - SQLite turn worker CLI: a held execution lease exits nonzero without an edit or provider access
+  ---
+  duration_ms: 342.480674
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: preparation already held by another host exits nonzero without dispatch
+ok 4 - SQLite turn worker CLI: preparation already held by another host exits nonzero without dispatch
+  ---
+  duration_ms: 420.621609
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: a provider refusal exits nonzero and retains only fixed private status
+ok 5 - SQLite turn worker CLI: a provider refusal exits nonzero and retains only fixed private status
+  ---
+  duration_ms: 371.138726
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: SIGTERM during preparation closes the CLI without publishing
+ok 6 - SQLite turn worker CLI: SIGTERM during preparation closes the CLI without publishing
+  ---
+  duration_ms: 342.668611
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: SIGINT during preparation closes the CLI without publishing
+ok 7 - SQLite turn worker CLI: SIGINT during preparation closes the CLI without publishing
+  ---
+  duration_ms: 331.016722
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3542.044442

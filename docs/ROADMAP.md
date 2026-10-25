@@ -9084,7 +9084,8 @@ local inference. Only that separate transport correction is authorized; this aud
     return private metadata only and validate both stores/process recovery with
     offline fixtures. [Plan review](reviews/V2-8I-2-plan-3ffebec.md) is ready for
     implementation; the worker/CLI and both-store/process contracts are in progress,
-    with final validation still unexecuted. Initial development passed106/108; two
+    with complete validation pending. Corrected development passed120/120 plus
+    typecheck; these overlap primary tests. Initial development passed106/108; two
     invalid multi-batch H fixtures were corrected without relaxing the invariant.
     Initial review also found and corrected a CLI unfinished-work exit-status
     defect; the eval retains the exact table and failed attempt. There is no public
