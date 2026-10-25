@@ -1,0 +1,19 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "inspectedBy": "/root",
+  "images": 11,
+  "index": "docs/v2-8i-2-evidence/pre-resume-browser/images.json",
+  "allImageHashesVerified": true,
+  "fullSize": [
+    "editor-narrow.png",
+    "editor-narrow-projects.png"
+  ],
+  "observations": "Dashboard empty/project cards, hosted login, blank/chart/table editor, history and read-only captures inspected on two contact sheets; full-size narrow editor/history show visible inspector and dialog controls. Inherited partial narrow canvas/horizontal overflow and blank/loading captures remain; no new overlapping control or clipped dialog observed in these11. Complete final visual review remains pending.",
+  "narrowMatchesAcceptedI1Capture": true,
+  "acceptedReference": {
+    "source": "docs/v2-7a-evidence/editor-narrow.png",
+    "file": "docs/v2-8i-1-evidence/regression-images/docs--v2-7a-evidence--editor-narrow.png",
+    "implementationSha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+  }
+}
