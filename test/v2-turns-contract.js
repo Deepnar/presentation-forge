@@ -32,7 +32,7 @@ export async function rows(env) {
   });
 }
 export function bindingContract(label,setup) {
-  for(const operation of ['read','export','submit','clear','cancel','decide','prepare']) {
+  for(const operation of ['read','export','inspect','submit','clear','cancel','decide','prepare']) {
     test(`${label}: ${operation} retains its original project when the caller reuses the binding`,{timeout:30000},async t=>{
       const e=await fixture(t,setup);
       const other=await e.store.createProject({owner:e.binding.owner,title:'Other conversation',scenes:e.doc.scenes});
@@ -41,7 +41,7 @@ export function bindingContract(label,setup) {
       const otherTurn=await e.service.submit(otherBinding,submission({...e,doc:other.doc},otherState));
       const before=await rows({...e,binding:otherBinding});
       let state=e.state,turn;
-      if(['read','export','cancel','decide'].includes(operation)) {
+      if(['read','export','inspect','cancel','decide'].includes(operation)) {
         state=await proposed(e);turn=state.turn;
         if(operation!=='decide') {
           state=await e.service.decide(e.binding,decision(state,turn));turn=state.turn;
@@ -52,6 +52,7 @@ export function bindingContract(label,setup) {
       const shared={...e.binding};
       const actions={
         read:()=>e.service.read(shared),export:()=>e.service.export(shared),
+        inspect:()=>e.service.inspect(shared,{generation:state.generation,turnId:turn.id}),
         submit:()=>e.service.submit(shared,submission(e,state)),
         clear:()=>e.service.clear(shared,{generation:state.generation,revision:state.revision}),
         cancel:()=>e.service.cancel(shared,{generation:state.generation,revision:state.revision,turnId:turn.id}),
@@ -62,6 +63,7 @@ export function bindingContract(label,setup) {
       const value=await pending;
       assert.equal(value.ok,true,JSON.stringify(value));
       if(['read','export'].includes(operation))assert.equal(value.turns[0].run.id,turn.run.id);
+      if(operation==='inspect')assert.equal(value.turn.run.id,turn.run.id);
       if(operation==='submit')assert.equal(value.turn.state,'submitted');
       if(operation==='cancel')assert.equal(value.turn.run.status,'cancelled');
       if(operation==='decide')assert.equal(value.turn.run.status,'queued');

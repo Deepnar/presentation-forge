@@ -142,7 +142,8 @@
               "search-provider",
               "native-pptx",
               "turn-approval",
-              "conversation-http"
+              "conversation-http",
+              "turn-worker"
             ]
           },
           "status": {
