@@ -1,7 +1,7 @@
 {
-  "implementationSha": null,
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
   "inventoryIncludesWorkingTreeGovernanceTests": false,
-  "inventoryMethod": "Exact I2 candidate inventory:234disjoint files (196bulk,26serial browser/build,12PostgreSQL including both-store process/CLI); complete union asserted before execution. Offline fixtures only. All new-source final gates remain unexecuted.",
+  "inventoryMethod": "Exact I3 inventory:234 disjoint files (196 bulk,26 serial browser/build,12 PostgreSQL). Existing actual backend HTTP entry files now include the submission contract. Complete union is asserted before execution; no prior result supplies an I3 pass.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",
@@ -244,7 +244,7 @@
   ],
   "acceptedBaseline": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
   "taskEntry": "aeeb9de5f504c04f7269a1bb6259df005dc5bcff",
-  "sourceFreeze": "Pending implementation and reviewed validation helpers; no prior result supplies a new-source pass.",
+  "sourceFreeze": "Committed I3 source/tests; full validation and separate source/helper review pending.",
   "focused": [
     "test/v2-conversation-http-8i.test.js",
     "test/v2-conversation-http-postgres-8i.test.js"

@@ -1,0 +1,112 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "acceptedBaseline": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "taskEntry": "aeeb9de5f504c04f7269a1bb6259df005dc5bcff",
+  "atUtc": "2026-10-25T17:56:31.629376+00:00",
+  "workingSourceDelta": [],
+  "sourcePathsCompared": [
+    "app",
+    "packages",
+    "src",
+    "test",
+    "tools",
+    "schema",
+    "themes",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json",
+    "docs/development-state.schema.json"
+  ],
+  "changedSourceFiles": [
+    {
+      "path": "app/server/v2-conversation-routes.js",
+      "sha256": "e01771cb4766e18654b6bd27984553b89fce2b5216c1f5edda800b846b7e7fae",
+      "implementationBlob": "43f91dcac1919f8bff7d2d6bd251bfdbb54f75cd"
+    },
+    {
+      "path": "test/dev-protocol.test.js",
+      "sha256": "b42e1a106e0292e60b99360c469ca4d8a8c668118f8e93d3e5fa88b55040b4e6",
+      "implementationBlob": "34ee13ee95a6c9cbde91fe3d0a5cdc2ccb72f6eb"
+    },
+    {
+      "path": "test/v2-conversation-http-8i.test.js",
+      "sha256": "502a38aab42189c681d702355cb443f621a17cfd89a8c12f23a4a87a3651a2a7",
+      "implementationBlob": "d8c61aa1db333a30884f1db403c95fa8837d45a5"
+    },
+    {
+      "path": "test/v2-conversation-http-contract.js",
+      "sha256": "9be9adf327609edd3fb58faad4b3a37736bd4f8c4074a697e20caa7034c4dbfb",
+      "implementationBlob": "5ec916969ecfbe055d8f50b64e55829162832812"
+    },
+    {
+      "path": "test/v2-conversation-http-postgres-8i.test.js",
+      "sha256": "0aa1d09431c03345cff81569f760762eabb0ab408bd9795784f4756e8b15ff9c",
+      "implementationBlob": "2f6ad3c2c2afebeec68c525053ef34ad4d66395b"
+    },
+    {
+      "path": "test/v2-conversation-submission-contract.js",
+      "sha256": "5a3b3915de13706d3c86f6ac8cbc35dc379d84c7309ae1a1298420c0ddc09121",
+      "implementationBlob": "2adaf4b33881ebf35d920dca466955b349f57586"
+    },
+    {
+      "path": "tools/dev-protocol-check.mjs",
+      "sha256": "d17e6c84e28fd454779b41bfe99bbd318217dfaf8606f4192bcdea4976614298",
+      "implementationBlob": "35db09bbc9ced33ea35f2707184d9143e939ca05"
+    }
+  ],
+  "helperFiles": [
+    {
+      "path": "docs/v2-8i-3-evidence/assemble-results.py",
+      "sha256": "45379541a308a40d7d1a5f56e5a11b9b9b3d97ed58489cc605b4e965a16d3b9d"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/assess-resources.py",
+      "sha256": "5702637d72c503cb1a59ce157f31de236d7f66679917842ba077566d5aa34511"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/cleanup-owned.py",
+      "sha256": "83b54dde7be23d16a7a8cd37f0daa68133c543acb72e9c50df3273407ca0f8e3"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/finish-evidence.py",
+      "sha256": "ea64dc919f307cc001a67e123bee4fdc2657093969f5f3501643a2a84d6ff789"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/headless-check.mjs",
+      "sha256": "549e93a55213c55b480535ca1b9174e701dbadfcab3dff694743b473de3e1f99"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/http-native.mjs",
+      "sha256": "3015ea24db1a10815b81c23b414f559dbc196b4710b7ab6104d3dbcfe9718f0b"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/inspect-native-ids.mjs",
+      "sha256": "a8e96f8c8c10b3b4560f99d0cded667aa3b664fbbf0967763949361268a03d97"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/native-review.mjs",
+      "sha256": "240a8b0a487f8614771e2ce295035cabce9dbe98f253e9ab8e366b57d0f481b9"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/prepare-full-validation.py",
+      "sha256": "b310629c384cbdf9496a05ee05d48f33fa6c6bf2592f172f712d8bc385012432"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/quiet_window.py",
+      "sha256": "069754ef5a73e5f0212f7f30fbb03b7c480de47a35d1039634db85fd6895dbd1"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/run-validation.py",
+      "sha256": "aef6a57a24689ba220a9c68d0873c185977e5a7b8f4b2bb7ebac9851fec36086"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/shell-native.mjs",
+      "sha256": "dca7b4e1410dd3514fa7636b9e87880c10b6fa7520373769b53c61fdbc793093"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/verify-owned-cleanup.py",
+      "sha256": "faa0d6bbfb25b2d69ce48ebef8c50569599bd53e6f1942cc625d4c2b8a5899b8"
+    }
+  ],
+  "modelsUsed": "No execution yet. Planned injected/loopback deterministic protocol fixtures only; no live API or local inference."
+}
