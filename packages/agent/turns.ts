@@ -58,6 +58,16 @@ export function createTurnService(backend: RuntimeBackend) {
         turns:await Promise.all([...s.turns].sort((a,b)=>a.meta.createdAt-b.meta.createdAt || a.meta.id.localeCompare(b.meta.id))
           .slice(offset,offset+limit).map(t=>turnView(tx,binding,s,t)))}));
     },
+    async inspect(binding: Binding, input: unknown) {
+      binding=checkBinding(request(binding,['owner','id']) as Binding);
+      const r=request(input,['generation','turnId']);
+      if(!identifier(r.generation) || !identifier(r.turnId))invalidRun();
+      return transaction(binding,async(tx,s)=>{
+        if(r.generation!==s.header.generation)return refuse('stale-generation');
+        const turn=s.turns.find(t=>t.meta.id===r.turnId);
+        return turn ? result(tx,binding,s,turn) : refuse('not-found');
+      });
+    },
     async export(binding: Binding) {
       binding=checkBinding(binding);
       return transaction(binding,async(tx,s)=>({ok:true as const,version:1,...stamp(s),policyVersion:1,
