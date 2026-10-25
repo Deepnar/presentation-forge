@@ -41,9 +41,9 @@
     },
     {
       "id": "postgres-contract",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-2-evidence/postgres-contract.json",
+      "reason": "Designated project/import gate23/23 passed; five of12primary PG files76/76 completed; seven further primary PG file executions still pending."
     },
     {
       "id": "cross-process-faults",
