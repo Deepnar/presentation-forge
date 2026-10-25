@@ -33,8 +33,11 @@ and bounded requests; H remains the authority on admission, revisions, replay,
 storage reservation, deadlines and all subsequent decisions. No new schema, SQL,
 queue, store authority or credential resolver is introduced.
 
-The submission parser admits at most **262,144 UTF-8 wire bytes**, matching H's
-existing serialized submission ceiling. Install it on this POST route before the
+The new endpoint accepts `application/json`, optionally declaring `charset=utf-8`,
+with absent or `identity` Content-Encoding only. Other charsets and compressed
+entities return private 415 without body decoding. The submission parser admits
+at most **262,144 UTF-8 wire bytes**, matching H's existing serialized submission
+ceiling. Install it on this exact Express-matching POST route before the
 existing 8 KiB conversation-prefix parser and global 8 MiB parser. Preserve 8 KiB
 admission on every lifecycle route, unsupported private path and other method.
 Valid Unicode requests above 8 KiB must work. Oversized wire bodies are 413 even
@@ -73,6 +76,9 @@ discovers work over existing stored identities, and reuses I2; submitting a clie
 token budget is not host authorization to spend it. Save/draft synchronization and
 visible proposal/cancel/status interactions retain the next surface contract.
 All future work lives only in [the roadmap](ROADMAP.md#assistant-surface-integration).
+The separate [plan readiness review](reviews/V2-8I-3-plan-a20ebad.json) is
+READY_FOR_IMPLEMENTATION with the UTF-8/identity clarification above; it supplies
+no implementation acceptance or test execution.
 
 ## Verification and acceptance contract
 
