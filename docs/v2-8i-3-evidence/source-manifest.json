@@ -73,7 +73,7 @@
     },
     {
       "path": "docs/v2-8i-3-evidence/headless-check.mjs",
-      "sha256": "549e93a55213c55b480535ca1b9174e701dbadfcab3dff694743b473de3e1f99"
+      "sha256": "80db5505b4394553a69b0e281a1fb3b234f14e4718607a2b2d436e4b2594d969"
     },
     {
       "path": "docs/v2-8i-3-evidence/http-native.mjs",

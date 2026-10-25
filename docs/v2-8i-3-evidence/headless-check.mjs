@@ -31,7 +31,7 @@ for (const [backend, store] of [
   ["postgres", postgres],
 ])
   test(`${backend}/${family}: persisted provider semantic edits survive reopen, history restore and native export`, async (t) => {
-    let stopApi;
+    let cleanupPostgres;
     if (backend === "postgres") {
       const pool = new Pool({
         connectionString:
@@ -39,27 +39,36 @@ for (const [backend, store] of [
           "postgres://postgres:probe@127.0.0.1:5544/postgres",
       });
       const name = `forge_8i3_native_${crypto.randomUUID().replaceAll("-", "")}`;
-      await pool.query(`CREATE DATABASE "${name}"`);
+      try { await pool.query(`CREATE DATABASE "${name}"`); }
+      catch (error) { await pool.end(); throw error; }
       const previous = process.env.FORGE_PROJECTS_DATABASE_URL;
       process.env.FORGE_PROJECTS_DATABASE_URL = (
         process.env.TEST_PG_URL ??
         "postgres://postgres:probe@127.0.0.1:5544/postgres"
       ).replace(/\/[^/]*$/, `/${name}`);
-      t.after(async () => {
-        await stopApi?.();
-        await store.closeProjectStore();
-        await pool.query(`DROP DATABASE "${name}"`);
-        await pool.end();
-        if (previous === undefined)
-          delete process.env.FORGE_PROJECTS_DATABASE_URL;
-        else process.env.FORGE_PROJECTS_DATABASE_URL = previous;
-      });
+      cleanupPostgres = async () => {
+        try {
+          await store.closeProjectStore();
+          await pool.query(`DROP DATABASE "${name}"`);
+        } finally {
+          await pool.end();
+          if (previous === undefined)
+            delete process.env.FORGE_PROJECTS_DATABASE_URL;
+          else process.env.FORGE_PROJECTS_DATABASE_URL = previous;
+        }
+      };
     }
-    const env = await conversationHttpFixture(t, store, {
-      FORGE_PROJECTS_BACKEND: backend,
-      ...(backend === 'postgres' ? { FORGE_PROJECTS_DATABASE_URL: process.env.FORGE_PROJECTS_DATABASE_URL } : {}),
-    });
-    stopApi = env.stop;
+    let env;
+    try {
+      env = await conversationHttpFixture(t, store, {
+        FORGE_PROJECTS_BACKEND: backend,
+        ...(backend === 'postgres' ? { FORGE_PROJECTS_DATABASE_URL: process.env.FORGE_PROJECTS_DATABASE_URL } : {}),
+      });
+    } finally {
+      // The fixture registers its API stop before project setup can fail. Drop
+      // only after that hook, including when setup never returns an environment.
+      if (cleanupPostgres) t.after(cleanupPostgres);
+    }
     const { runtime, binding, doc: before } = env;
     let rounds = 0;
     const { provider } = await endpoint(t, family, (_req,res) => {

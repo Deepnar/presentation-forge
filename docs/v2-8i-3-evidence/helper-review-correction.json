@@ -1,0 +1,11 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "atUtc": "2026-10-25T18:01:53.241762+00:00",
+  "review": "docs/reviews/V2-8I-3-2ba82cb-source-harness.json",
+  "file": "docs/v2-8i-3-evidence/headless-check.mjs",
+  "oldSha256": "549e93a55213c55b480535ca1b9174e701dbadfcab3dff694743b473de3e1f99",
+  "newSha256": "80db5505b4394553a69b0e281a1fb3b234f14e4718607a2b2d436e4b2594d969",
+  "correction": "Register owned PostgreSQL drop in fixture-setup finally after API-stop hook, including setup failure. Close maintenance pool on create failure and restore environment in teardown finally.",
+  "productSourceChanged": false,
+  "testsOrGeneratorsExecutedBeforeCorrection": false
+}

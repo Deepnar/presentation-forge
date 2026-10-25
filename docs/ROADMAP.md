@@ -9137,7 +9137,9 @@ local inference. Only that separate transport correction is authorized; this aud
     **Look-ahead.** This supplies durable authenticated ingress before host/provider
     scheduling. The host must resolve policy/credentials and reuse I2's stateless
     worker plus existing rows, leases and approvals; client budgets never authorize
-    spending. The later Assistant must settle editor drafts before saved-revision
+    spending. Discovery must honor H's existing two-minute preparation deadline;
+    missed pickup reports expiry rather than reviving or silently retrying a turn.
+    The later Assistant must settle editor drafts before saved-revision
     capture and show truthful submission/preparation/decision/execution status.
     No additional work queue, browser-owned worker or second document is needed.
 
