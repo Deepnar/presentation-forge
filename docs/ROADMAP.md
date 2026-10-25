@@ -8902,7 +8902,7 @@ local inference. Only that separate transport correction is authorized; this aud
 | P0 — complete headless boundary | [Turn and approval ownership](#assistant-turn-approval-contract) | V2-8H independently accepted at22e7c97; durable bounded visible turns and atomic approval reuse the existing run queue. Hosted routes/UI remain in their own entry. |
 | P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | Connect accepted SearchProvider through canonical authority and preserve verifiable project-scoped citations; do not merely add a catalog name. |
 | P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
-| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Agree editing-only versus full creation surface, save/draft coordination, approval presentation and cancellation behavior. |
+| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 accepted, I2 worker under validation, then separately contracted authenticated submission/scheduling and the visible Assistant. |
 | P0 basic / P1 distributed | [Trace and spend admission](#assistant-trace-budget) | Make context/tool/instruction provenance observable, preserve unknown usage, and prevent parallel requests/retries bypassing account allowances. |
 | P0 pilot / P1 release | [Assistant qualification](#assistant-live-qualification) | Separate deterministic correctness from real-model usefulness, injection resistance, grounded claims and human slide quality. |
 | P2 vision; P0 honest quality gates | [Visual feedback](#assistant-visual-feedback) | Reuse deterministic checks and native renderers; qualify optional vision behind read-only revision-bound artifacts and bounded semantic proposals. |
@@ -9041,7 +9041,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
 <a id="assistant-surface-integration"></a>
 
-- [ ] **Assistant interaction and authenticated turn orchestration — direction required.**
+- [ ] **Assistant interaction and authenticated turn orchestration — existing-deck sequence approved; later contracts gated.**
   On2026-10-24 explicit continuation delegates dependency ordering. Following the
   recorded postH sequence, start with **V2-8I-1 authenticated conversation/approval
   transport** in [the bounded contract](V2-8I-1-EVAL.md), then prepare worker/provider
