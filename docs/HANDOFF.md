@@ -1,33 +1,21 @@
-# Current handoff — I2 implemented, validation pending
+# Current handoff — I2 corrections, final validation pending
 
-Branch/push: `v2` / `origin/v2`. Accepted baseline remains I1 source
-`5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`, with its separate acceptance/cleanup.
-The latest continuation authorizes [I2's bounded worker contract](V2-8I-2-EVAL.md),
-indexed in [the roadmap](ROADMAP.md#assistant-turn-worker). Separate plan review
-834264a is READY_FOR_IMPLEMENTATION; this is not implementation acceptance.
+Branch/push v2/origin/v2; accepted baseline remains independently accepted I1
+5170adc. Current I2 source 58662ecc074f7cc29bf29a0dd410d581ffca0eef corrects the CLI unfinished-work
+exit table and tests the internal bounded execution loop with actual B plans.
+H retains its one-batch invariant. Read [the eval](V2-8I-2-EVAL.md),
+[roadmap](ROADMAP.md#assistant-turn-worker), state and initial source review.
 
-Initial I2 source/tests: `b07052c2ccfa1de14735d73e000214efff4afc3e`. Worker, exact-turn
-lookup, adapter/CLI and three both-store/process entries are implemented. Syntax
-checks and lightweight governance pass; no behavioral test or final gate has run.
-The plan freezes234files (196bulk/26serial/12PG), including every inherited entry.
-All nine new-source gates are unexecuted. Do not reuse I1 passes as I2 evidence.
+Initial b07052c development completed108leaves:106pass,2invalid-fixture failures,
+0skip/0cancelled. Raw attempt/resource evidence is retained. That driver exited;
+no owned backend/generator/test process is active at this checkpoint. All nine
+final-source gates are unexecuted; primary inventory234files (196bulk/26serial/
+12PG). Perform fresh affected checks and full verification, independent exact-
+source review, guarded owned cleanup, scoped push and stop afterI2. No APIs/local
+inference, hosted scheduling/UI, deployment or migration is authorized.
 
-Next action within the current contract is fresh quiet admission and bounded
-development SQLite/adjacent checks, then narrow corrections and final-source
-validation. No validation process/backend/generator is active at this checkpoint.
-Use a newI2 namespace and new owned isolated PostgreSQL service; I1's service is
-removed. Before generators snapshot all-current evidence and ignored originals,
-including the17new I1 originals, plus five canonical output originals. Never run
-old finishers against restored originals or reconstruct ZIP bytes. Preserve failed
-attempts, exact source/delta and actual backend identity. PostgreSQL unavailable
-means its cases unexecuted. Keep BYOK locale separate.
-
-Use offline injected/loopback fixtures only: no real model APIs/local inference,
-provider defaults/fallback changes, deployment, paid infrastructure or migrations.
-The worker has no public execution/submit route, automatic approval or daemon.
-Later hosted scheduling/UI retain their roadmap contracts. Obtain separate exact-
-source ACCEPT/HOLD after validation, perform guarded owned cleanup after reviewer
-DB-slot release, commit/push scoped closeout and stop afterI2.
-
-Original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
-`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched.
+Use a fresh I2 backend namespace; I1 service is removed. Before generators,
+snapshot all-current historical evidence including ignored original PPTXs and
+five canonical originals. Restore exact bytes after captures; never run an old
+finisher on restored outputs. Preserve attempts and distinguish repeated tests.
+Original untracked .agents/ and both master/architecture prompt files are untouched.

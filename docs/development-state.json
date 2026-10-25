@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-8I-1-5170adc.json"
   },
   "implementationHead": {
-    "sha": "b07052c2ccfa1de14735d73e000214efff4afc3e",
-    "note": "I2 worker/lookup/CLI and three both-store/process test entries are implemented atb07052c, pending behavioral validation and independent review. Accepted baseline remainsI1source5170adc. No final gate has executed."
+    "sha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+    "note": "I2 corrected candidate: CLI unfinished-work exit table and internal canonical execution loop. Initial b07052c development108 leaves106pass2test-fixture failures are retained separately; all final gates remain unexecuted."
   },
   "activeMilestone": {
     "id": "V2-8I-2",

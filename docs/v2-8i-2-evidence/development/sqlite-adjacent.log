@@ -1,0 +1,689 @@
+TAP version 13
+# Subtest: repository state, document references and real Git ancestry validate
+ok 1 - repository state, document references and real Git ancestry validate
+  ---
+  duration_ms: 54.260549
+  type: 'test'
+  ...
+# Subtest: missing required role document fails closed
+ok 2 - missing required role document fails closed
+  ---
+  duration_ms: 37.675687
+  type: 'test'
+  ...
+# Subtest: malformed state JSON returns diagnostics instead of crashing
+ok 3 - malformed state JSON returns diagnostics instead of crashing
+  ---
+  duration_ms: 1.702103
+  type: 'test'
+  ...
+# Subtest: unknown review state, malformed SHA and extra properties are rejected
+ok 4 - unknown review state, malformed SHA and extra properties are rejected
+  ---
+  duration_ms: 12.848167
+  type: 'test'
+  ...
+# Subtest: known pending validation cannot disappear or be duplicated
+ok 5 - known pending validation cannot disappear or be duplicated
+  ---
+  duration_ms: 28.58055
+  type: 'test'
+  ...
+# Subtest: unaccepted implementation cannot replace the accepted baseline
+ok 6 - unaccepted implementation cannot replace the accepted baseline
+  ---
+  duration_ms: 18.152629
+  type: 'test'
+  ...
+# Subtest: passed validation needs existing matching evidence and its output log
+ok 7 - passed validation needs existing matching evidence and its output log
+  ---
+  duration_ms: 65.690945
+  type: 'test'
+  ...
+# Subtest: stale evidence from another implementation SHA is refused
+ok 8 - stale evidence from another implementation SHA is refused
+  ---
+  duration_ms: 17.066641
+  type: 'test'
+  ...
+# Subtest: self-reported totals must match the retained test output
+ok 9 - self-reported totals must match the retained test output
+  ---
+  duration_ms: 20.477563
+  type: 'test'
+  ...
+# Subtest: nonzero, cancelled, skipped and inconsistent totals never become passes
+ok 10 - nonzero, cancelled, skipped and inconsistent totals never become passes
+  ---
+  duration_ms: 55.255469
+  type: 'test'
+  ...
+# Subtest: existing output cannot substitute for actual visual inspection or 50 benchmark cells
+ok 11 - existing output cannot substitute for actual visual inspection or 50 benchmark cells
+  ---
+  duration_ms: 38.805582
+  type: 'test'
+  ...
+# Subtest: renaming a reviewer cannot substitute for a separate decision record
+ok 12 - renaming a reviewer cannot substitute for a separate decision record
+  ---
+  duration_ms: 25.907036
+  type: 'test'
+  ...
+# Subtest: legitimate recorded acceptance can advance the baseline after completed validation
+ok 13 - legitimate recorded acceptance can advance the baseline after completed validation
+  ---
+  duration_ms: 79.626452
+  type: 'test'
+  ...
+# Subtest: document paths, anchors and symlinks cannot leave the repository or point nowhere
+ok 14 - document paths, anchors and symlinks cannot leave the repository or point nowhere
+  ---
+  duration_ms: 40.076452
+  type: 'test'
+  ...
+# Subtest: Git verification rejects well-shaped nonexistent commits
+ok 15 - Git verification rejects well-shaped nonexistent commits
+  ---
+  duration_ms: 10.80183
+  type: 'test'
+  ...
+# Subtest: a passing subset cannot substitute for the full required file scope
+ok 16 - a passing subset cannot substitute for the full required file scope
+  ---
+  duration_ms: 14.430874
+  type: 'test'
+  ...
+# Subtest: name-filtered runs and implausibly small suite counts fail closed
+ok 17 - name-filtered runs and implausibly small suite counts fail closed
+  ---
+  duration_ms: 25.379683
+  type: 'test'
+  ...
+# Subtest: the TAP inventory records entry files without imported contract helpers
+ok 18 - the TAP inventory records entry files without imported contract helpers
+  ---
+  duration_ms: 70.552221
+  type: 'test'
+  ...
+# Subtest: new milestone keeps its own focused gate and rejects old evidence inventory
+ok 19 - new milestone keeps its own focused gate and rejects old evidence inventory
+  ---
+  duration_ms: 59.371625
+  type: 'test'
+  ...
+# Subtest: browser handoff requires its own complete focused evidence
+ok 20 - browser handoff requires its own complete focused evidence
+  ---
+  duration_ms: 49.558811
+  type: 'test'
+  ...
+# Subtest: project covers require their own unit, HTTP and complete Chrome evidence
+ok 21 - project covers require their own unit, HTTP and complete Chrome evidence
+  ---
+  duration_ms: 64.153128
+  type: 'test'
+  ...
+# Subtest: project discovery requires its own complete unit, HTTP and Chrome evidence
+ok 22 - project discovery requires its own complete unit, HTTP and Chrome evidence
+  ---
+  duration_ms: 64.766762
+  type: 'test'
+  ...
+# Subtest: production toolbar evidence includes its complete Chrome file and full shell regression
+ok 23 - production toolbar evidence includes its complete Chrome file and full shell regression
+  ---
+  duration_ms: 56.472239
+  type: 'test'
+  ...
+# Subtest: agent foundation requires complete tool and context behavioral evidence
+ok 24 - agent foundation requires complete tool and context behavioral evidence
+  ---
+  duration_ms: 58.747718
+  type: 'test'
+  ...
+# Subtest: provider boundary requires both protocol and durable backend files
+ok 25 - provider boundary requires both protocol and durable backend files
+  ---
+  duration_ms: 59.294224
+  type: 'test'
+  ...
+# Subtest: provider-run preparation requires both storage backends and boundary cases
+ok 26 - provider-run preparation requires both storage backends and boundary cases
+  ---
+  duration_ms: 60.748825
+  type: 'test'
+  ...
+# Subtest: bounded conversation requires both storage backends and boundary cases
+ok 27 - bounded conversation requires both storage backends and boundary cases
+  ---
+  duration_ms: 62.48322
+  type: 'test'
+  ...
+# Subtest: shared search requires normalization and complete HTTP transport evidence
+ok 28 - shared search requires normalization and complete HTTP transport evidence
+  ---
+  duration_ms: 58.806129
+  type: 'test'
+  ...
+# Subtest: model-stream correction requires new lifetime cases and both durable backends
+ok 29 - model-stream correction requires new lifetime cases and both durable backends
+  ---
+  duration_ms: 57.618391
+  type: 'test'
+  ...
+# Subtest: native identity correction has explicit scoped gates and complete export files
+ok 30 - native identity correction has explicit scoped gates and complete export files
+  ---
+  duration_ms: 75.921081
+  type: 'test'
+  ...
+# Subtest: durable turn approval requires state, both stores and independent-process evidence
+ok 31 - durable turn approval requires state, both stores and independent-process evidence
+  ---
+  duration_ms: 68.026446
+  type: 'test'
+  ...
+# Subtest: conversation HTTP acceptance requires both actual backend entry files
+ok 32 - conversation HTTP acceptance requires both actual backend entry files
+  ---
+  duration_ms: 56.803955
+  type: 'test'
+  ...
+# Subtest: turn-worker acceptance requires both stores and the process/CLI entry file
+ok 33 - turn-worker acceptance requires both stores and the process/CLI entry file
+  ---
+  duration_ms: 56.699878
+  type: 'test'
+  ...
+# Subtest: v2 core boundary
+    # Subtest: detects static, re-export, and literal dynamic imports
+    ok 1 - detects static, re-export, and literal dynamic imports
+      ---
+      duration_ms: 5.359446
+      type: 'test'
+      ...
+    # Subtest: fails closed on require() and non-literal dynamic import
+    ok 2 - fails closed on require() and non-literal dynamic import
+      ---
+      duration_ms: 0.605897
+      type: 'test'
+      ...
+    # Subtest: enforces package directions on synthetic edges
+    ok 3 - enforces package directions on synthetic edges
+      ---
+      duration_ms: 0.318777
+      type: 'test'
+      ...
+    # Subtest: confines node builtins to the named renderer adapter
+    ok 4 - confines node builtins to the named renderer adapter
+      ---
+      duration_ms: 0.14698
+      type: 'test'
+      ...
+    # Subtest: confines jszip to renderer-docx and the generated PPTX identity normalizer
+    ok 5 - confines jszip to renderer-docx and the generated PPTX identity normalizer
+      ---
+      duration_ms: 0.2173
+      type: 'test'
+      ...
+    # Subtest: repository packages contain zero boundary violations
+    ok 6 - repository packages contain zero boundary violations
+      ---
+      duration_ms: 210.268697
+      type: 'test'
+      ...
+    1..6
+ok 34 - v2 core boundary
+  ---
+  duration_ms: 217.846166
+  type: 'suite'
+  ...
+# Subtest: SQLite turn worker: exact-turn lookup returns one owner and generation-bound turn
+ok 35 - SQLite turn worker: exact-turn lookup returns one owner and generation-bound turn
+  ---
+  duration_ms: 57.495677
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: preparation returns private status and waits for a separate explicit decision
+ok 36 - SQLite turn worker: preparation returns private status and waits for a separate explicit decision
+  ---
+  duration_ms: 55.446149
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: provider-free approved execution reopens canonical history and cannot repeat an edit
+ok 37 - SQLite turn worker: provider-free approved execution reopens canonical history and cannot repeat an edit
+  ---
+  duration_ms: 43.976968
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: missing provider refuses before dispatch and never selects a fallback
+ok 38 - SQLite turn worker: missing provider refuses before dispatch and never selects a fallback
+  ---
+  duration_ms: 10.3032
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: invalid input, authority, accessors and options cannot invoke work
+ok 39 - SQLite turn worker: invalid input, authority, accessors and options cannot invoke work
+  ---
+  duration_ms: 7.643638
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: synchronous snapshots survive same-owner binding, input and option reuse
+ok 40 - SQLite turn worker: synchronous snapshots survive same-owner binding, input and option reuse
+  ---
+  duration_ms: 23.028079
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: a busy preparation is observed without retrying or double dispatch
+ok 41 - SQLite turn worker: a busy preparation is observed without retrying or double dispatch
+  ---
+  duration_ms: 27.458032
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: competing approved workers execute exactly one saved batch
+ok 42 - SQLite turn worker: competing approved workers execute exactly one saved batch
+  ---
+  duration_ms: 30.40377
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: pre-aborted preparation and approved work dispatch no new operations
+ok 43 - SQLite turn worker: pre-aborted preparation and approved work dispatch no new operations
+  ---
+  duration_ms: 25.083479
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: aborting dispatched preparation cancels its visible turn without publishing edits
+ok 44 - SQLite turn worker: aborting dispatched preparation cancels its visible turn without publishing edits
+  ---
+  duration_ms: 18.94191
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: clear during provider work refuses late publication and preserves the deck
+ok 45 - SQLite turn worker: clear during provider work refuses late publication and preserves the deck
+  ---
+  duration_ms: 21.13888
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: cancelled, rejected and cleared approval cannot execute
+ok 46 - SQLite turn worker: cancelled, rejected and cleared approval cannot execute
+  ---
+  duration_ms: 66.975685
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: owner revocation and deletion deny work without provider dispatch
+ok 47 - SQLite turn worker: owner revocation and deletion deny work without provider dispatch
+  ---
+  duration_ms: 16.895986
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: a human save after approval wins over queued execution
+ok 48 - SQLite turn worker: a human save after approval wins over queued execution
+  ---
+  duration_ms: 29.652558
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: provider refusal settles once without fallback, private result or automatic retry
+ok 49 - SQLite turn worker: provider refusal settles once without fallback, private result or automatic retry
+  ---
+  duration_ms: 18.694638
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: unexpected backend errors are fixed even on the final status read
+ok 50 - SQLite turn worker: unexpected backend errors are fixed even on the final status read
+  ---
+  duration_ms: 9.037969
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: approval before the final read returns current persisted status without executing
+ok 51 - SQLite turn worker: approval before the final read returns current persisted status without executing
+  ---
+  duration_ms: 23.380492
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: clear after lookup fences the cached approval and suppresses cached status
+ok 52 - SQLite turn worker: clear after lookup fences the cached approval and suppresses cached status
+  ---
+  duration_ms: 27.80784
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: revocation after publication is enforced by the final status read
+ok 53 - SQLite turn worker: revocation after publication is enforced by the final status read
+  ---
+  duration_ms: 19.918628
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: the advance-call cap yields a valid multi-step run and recovers through existing fences
+not ok 54 - SQLite turn worker: the advance-call cap yields a valid multi-step run and recovers through existing fences
+  ---
+  duration_ms: 23.490172
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-turn-worker-contract.js:44:31'
+  failureType: 'testCodeFailure'
+  error: 'Invalid durable run data.'
+  code: 'invalid-document'
+  stack: |-
+    invalidRun (file:///home/deepnar/Programs/presentations/packages/agent/run-state.ts:60:23)
+    loadState (file:///home/deepnar/Programs/presentations/packages/agent/turn-store.ts:105:62)
+    async file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:32:15
+    async file:///home/deepnar/Programs/presentations/src/projects/store.js:773:22
+  ...
+# Subtest: SQLite turn worker: shutdown after an entered step yields without inventing user cancellation
+not ok 55 - SQLite turn worker: shutdown after an entered step yields without inventing user cancellation
+  ---
+  duration_ms: 22.543634
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-turn-worker-contract.js:44:31'
+  failureType: 'testCodeFailure'
+  error: 'Invalid durable run data.'
+  code: 'invalid-document'
+  stack: |-
+    invalidRun (file:///home/deepnar/Programs/presentations/packages/agent/run-state.ts:60:23)
+    loadState (file:///home/deepnar/Programs/presentations/packages/agent/turn-store.ts:105:62)
+    async file:///home/deepnar/Programs/presentations/packages/agent/turns.ts:32:15
+    async file:///home/deepnar/Programs/presentations/src/projects/store.js:773:22
+  ...
+# Subtest: turn submission requires explicit generation and revision; authority fields refuse
+ok 56 - turn submission requires explicit generation and revision; authority fields refuse
+  ---
+  duration_ms: 3.559883
+  type: 'test'
+  ...
+# Subtest: turn admission preserves existing stricter bounds and refuses oversized visible input
+ok 57 - turn admission preserves existing stricter bounds and refuses oversized visible input
+  ---
+  duration_ms: 0.736653
+  type: 'test'
+  ...
+# Subtest: submission rejects accessors, executable objects and duplicate scope without invoking them
+ok 58 - submission rejects accessors, executable objects and duplicate scope without invoking them
+  ---
+  duration_ms: 0.40173
+  type: 'test'
+  ...
+# Subtest: metadata schemas reject unbounded accounting maps and inconsistent attempt settlements
+ok 59 - metadata schemas reject unbounded accounting maps and inconsistent attempt settlements
+  ---
+  duration_ms: 1.918074
+  type: 'test'
+  ...
+# Subtest: SQLite process: local CLI exposes the same generation-bound submit, read, decision and clear contracts
+ok 60 - SQLite process: local CLI exposes the same generation-bound submit, read, decision and clear contracts
+  ---
+  duration_ms: 2060.21489
+  type: 'test'
+  ...
+# Subtest: SQLite process: approve/approve across independent processes links exactly one canonical run
+ok 61 - SQLite process: approve/approve across independent processes links exactly one canonical run
+  ---
+  duration_ms: 403.0795
+  type: 'test'
+  ...
+# Subtest: SQLite process: reject/approve across independent processes has one terminal winner
+ok 62 - SQLite process: reject/approve across independent processes has one terminal winner
+  ---
+  duration_ms: 393.988287
+  type: 'test'
+  ...
+# Subtest: SQLite process: approve-before crash leaves neither decision/run or exactly one recoverable pair
+ok 63 - SQLite process: approve-before crash leaves neither decision/run or exactly one recoverable pair
+  ---
+  duration_ms: 320.772733
+  type: 'test'
+  ...
+# Subtest: SQLite process: approve-after crash leaves neither decision/run or exactly one recoverable pair
+ok 64 - SQLite process: approve-after crash leaves neither decision/run or exactly one recoverable pair
+  ---
+  duration_ms: 346.661646
+  type: 'test'
+  ...
+# Subtest: SQLite process: reserve-after crash observes conservative recovery and accounting
+ok 65 - SQLite process: reserve-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 336.998849
+  type: 'test'
+  ...
+# Subtest: SQLite process: dispatch-after crash observes conservative recovery and accounting
+ok 66 - SQLite process: dispatch-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 328.097453
+  type: 'test'
+  ...
+# Subtest: SQLite process: receipt-after crash observes conservative recovery and accounting
+ok 67 - SQLite process: receipt-after crash observes conservative recovery and accounting
+  ---
+  duration_ms: 315.810639
+  type: 'test'
+  ...
+# Subtest: SQLite process: reserve-after-read crash observes conservative recovery and accounting
+ok 68 - SQLite process: reserve-after-read crash observes conservative recovery and accounting
+  ---
+  duration_ms: 334.853374
+  type: 'test'
+  ...
+# Subtest: SQLite process: publication-before crash never reruns a dispatched provider conversation
+ok 69 - SQLite process: publication-before crash never reruns a dispatched provider conversation
+  ---
+  duration_ms: 349.997842
+  type: 'test'
+  ...
+# Subtest: SQLite process: publication-after crash never reruns a dispatched provider conversation
+ok 70 - SQLite process: publication-after crash never reruns a dispatched provider conversation
+  ---
+  duration_ms: 332.639394
+  type: 'test'
+  ...
+# Subtest: SQLite process: clear in another process fences pending publication and settles late receipt once
+ok 71 - SQLite process: clear in another process fences pending publication and settles late receipt once
+  ---
+  duration_ms: 634.339839
+  type: 'test'
+  ...
+# Subtest: SQLite process: cancel/commit serialization reports committed winner without duplicate edits
+ok 72 - SQLite process: cancel/commit serialization reports committed winner without duplicate edits
+  ---
+  duration_ms: 439.896724
+  type: 'test'
+  ...
+# Subtest: SQLite: read retains its original project when the caller reuses the binding
+ok 73 - SQLite: read retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 110.124961
+  type: 'test'
+  ...
+# Subtest: SQLite: export retains its original project when the caller reuses the binding
+ok 74 - SQLite: export retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 37.796685
+  type: 'test'
+  ...
+# Subtest: SQLite: inspect retains its original project when the caller reuses the binding
+ok 75 - SQLite: inspect retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 29.795636
+  type: 'test'
+  ...
+# Subtest: SQLite: submit retains its original project when the caller reuses the binding
+ok 76 - SQLite: submit retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 12.102198
+  type: 'test'
+  ...
+# Subtest: SQLite: clear retains its original project when the caller reuses the binding
+ok 77 - SQLite: clear retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 12.58501
+  type: 'test'
+  ...
+# Subtest: SQLite: cancel retains its original project when the caller reuses the binding
+ok 78 - SQLite: cancel retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 32.111676
+  type: 'test'
+  ...
+# Subtest: SQLite: decide retains its original project when the caller reuses the binding
+ok 79 - SQLite: decide retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 25.694203
+  type: 'test'
+  ...
+# Subtest: SQLite: prepare retains its original project when the caller reuses the binding
+ok 80 - SQLite: prepare retains its original project when the caller reuses the binding
+  ---
+  duration_ms: 23.789502
+  type: 'test'
+  ...
+# Subtest: SQLite: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate
+ok 81 - SQLite: submit replay, conflicting identity and explicit generation cannot enqueue or duplicate
+  ---
+  duration_ms: 12.685343
+  type: 'test'
+  ...
+# Subtest: SQLite: host reload approves stored canonical plan once, then replay survives own saved revision
+ok 82 - SQLite: host reload approves stored canonical plan once, then replay survives own saved revision
+  ---
+  duration_ms: 29.452771
+  type: 'test'
+  ...
+# Subtest: SQLite: all read/export/mutation operations recheck owner; copied export confers no authority
+ok 83 - SQLite: all read/export/mutation operations recheck owner; copied export confers no authority
+  ---
+  duration_ms: 22.714589
+  type: 'test'
+  ...
+# Subtest: SQLite: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting
+ok 84 - SQLite: clear invalidates decisions, cancels linked runs, removes bodies and preserves deck/history/accounting
+  ---
+  duration_ms: 25.157381
+  type: 'test'
+  ...
+# Subtest: SQLite: human save refuses new approval and preserves the pending visible proposal
+ok 85 - SQLite: human save refuses new approval and preserves the pending visible proposal
+  ---
+  duration_ms: 22.668015
+  type: 'test'
+  ...
+# Subtest: SQLite: reject is durable/idempotent, removes private plan and permits an explicit fresh turn
+ok 86 - SQLite: reject is durable/idempotent, removes private plan and permits an explicit fresh turn
+  ---
+  duration_ms: 22.572404
+  type: 'test'
+  ...
+# Subtest: SQLite: visible reply overflow settles usage, refuses without truncation and never retries
+ok 87 - SQLite: visible reply overflow settles usage, refuses without truncation and never retries
+  ---
+  duration_ms: 19.298829
+  type: 'test'
+  ...
+# Subtest: SQLite: publication loses to clear, but valid late usage settles once across generations
+ok 88 - SQLite: publication loses to clear, but valid late usage settles once across generations
+  ---
+  duration_ms: 17.992915
+  type: 'test'
+  ...
+# Subtest: SQLite: database-time expiry removes unapproved body and blocks approval at the boundary
+ok 89 - SQLite: database-time expiry removes unapproved body and blocks approval at the boundary
+  ---
+  duration_ms: 19.806444
+  type: 'test'
+  ...
+# Subtest: SQLite: precommit approval expiry rolls back both decision and canonical queue
+ok 90 - SQLite: precommit approval expiry rolls back both decision and canonical queue
+  ---
+  duration_ms: 25.186932
+  type: 'test'
+  ...
+# Subtest: SQLite: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once
+ok 91 - SQLite: dispatched worker loss refuses automatic continuation and deadline-unknown usage survives clear once
+  ---
+  duration_ms: 23.395505
+  type: 'test'
+  ...
+# Subtest: SQLite: project deletion cascades all new private and metadata child records
+ok 92 - SQLite: project deletion cascades all new private and metadata child records
+  ---
+  duration_ms: 19.984461
+  type: 'test'
+  ...
+# Subtest: SQLite: escaped controls and multibyte text remain readable/exportable/clearable after publication
+ok 93 - SQLite: escaped controls and multibyte text remain readable/exportable/clearable after publication
+  ---
+  duration_ms: 67.413212
+  type: 'test'
+  ...
+# Subtest: SQLite: final publication rechecks preparation lease after row writes; settled usage is preserved
+ok 94 - SQLite: final publication rechecks preparation lease after row writes; settled usage is preserved
+  ---
+  duration_ms: 19.238532
+  type: 'test'
+  ...
+# Subtest: SQLite: turn-count admission refuses before dispatch while read/export/clear remain available
+ok 95 - SQLite: turn-count admission refuses before dispatch while read/export/clear remain available
+  ---
+  duration_ms: 150.723187
+  type: 'test'
+  ...
+# Subtest: SQLite: private-bytes admission refuses before dispatch while read/export/clear remain available
+ok 96 - SQLite: private-bytes admission refuses before dispatch while read/export/clear remain available
+  ---
+  duration_ms: 393.185011
+  type: 'test'
+  ...
+# Subtest: SQLite: corrupt canonical digest refuses read/approve rather than executing a replacement plan
+ok 97 - SQLite: corrupt canonical digest refuses read/approve rather than executing a replacement plan
+  ---
+  duration_ms: 23.940638
+  type: 'test'
+  ...
+# Subtest: SQLite: reusing a committed decision key with different expected revisions is a conflict
+ok 98 - SQLite: reusing a committed decision key with different expected revisions is a conflict
+  ---
+  duration_ms: 28.832524
+  type: 'test'
+  ...
+# Subtest: SQLite: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear
+ok 99 - SQLite: bounded cross-generation settlement slots refuse new dispatch and expire without blocking clear
+  ---
+  duration_ms: 72.962182
+  type: 'test'
+  ...
+# Subtest: SQLite: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits
+ok 100 - SQLite: 16000 supplementary Unicode characters fit visible chat without weakening provider wire limits
+  ---
+  duration_ms: 44.594634
+  type: 'test'
+  ...
+# Subtest: SQLite: caller abort during publication row writes cannot commit a visible result
+ok 101 - SQLite: caller abort during publication row writes cannot commit a visible result
+  ---
+  duration_ms: 23.591142
+  type: 'test'
+  ...
+# Subtest: SQLite: abort after-claim is durable and cannot recover into an automatic retry
+ok 102 - SQLite: abort after-claim is durable and cannot recover into an automatic retry
+  ---
+  duration_ms: 12.949253
+  type: 'test'
+  ...
+# Subtest: SQLite: abort during-provider is durable and cannot recover into an automatic retry
+ok 103 - SQLite: abort during-provider is durable and cannot recover into an automatic retry
+  ---
+  duration_ms: 19.520591
+  type: 'test'
+  ...
+1..103
+# tests 108
+# suites 1
+# pass 106
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11807.250115
+# forge-test-file "test/dev-protocol.test.js"
+# forge-test-file "test/v2-core-boundary.test.js"
+# forge-test-file "test/v2-turn-worker-sqlite-8i.test.js"
+# forge-test-file "test/v2-turns-8h.test.js"
+# forge-test-file "test/v2-turns-process-8h.test.js"
+# forge-test-file "test/v2-turns-sqlite-8h.test.js"

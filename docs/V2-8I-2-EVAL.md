@@ -131,27 +131,44 @@ exact absence/port refusal. Update architecture/roadmap/state/handoff to actual
 facts, push scoped commits to origin/v2 and stop after I2; no dependent interface
 or scheduling implementation follows automatically.
 
-## Current status
+## Current status and corrections
 
-The separate [plan review](reviews/V2-8I-2-plan-3ffebec.md) is
-READY_FOR_IMPLEMENTATION, with no additional human direction required. Worker,
-exact-turn lookup, CLI and focused both-store/process contracts are implemented at
-`b07052c2ccfa1de14735d73e000214efff4afc3e`, pending behavioral validation.
-Only syntax checks have executed; no behavioral test, model, service or generator
-has run. All final validation remains unexecuted. Prior
-accepted gates are historical; no implementation acceptance is inferred.
+Plan review is READY_FOR_IMPLEMENTATION. Initial source `b07052c` completed a
+qualified-window development run:108leaf tests,106pass,2fail,0skip/0cancelled.
+[Raw results](v2-8i-2-evidence/development/checks.json) retain the source, command,
+resource qualification and log hash. Typecheck did not run after this failure.
+These are development attempts, not final-source gate passes.
 
-The implementation reports a work phase plus final persisted status, rather than
-claiming that a previously waiting turn is still waiting after a concurrent approval.
-It awaits the final lookup inside its sanitized error boundary. Approved work and
-observation skip otherwise unused provider-file loading. New tests exercise these
-seams, valid canonical multi-step/digest fixtures for the eight-call cap, real
-process kills and scoped CLI signals without changing normal one-batch approval.
+Both failures were incorrect fixtures: matching B parsePlan/digest does not satisfy
+H's stricter one-batch proposal invariant in turn-store.ts. The new tests now retain
+that rejection explicitly. The internal execution-loop helper exercises actual B
+nine-step runs, the eight-call cap, shutdown and renewal/recovery without changing
+H. Current H proposals cannot reach the cap; no CLI-cap execution is claimed.
+An entered one-batch H transaction may finish despite shutdown and must report
+its persisted success. The [initial source review](reviews/V2-8I-2-b07052c-source.md)
+corrects its initial mistaken fixture assessment and grants no acceptance.
 
+That review also found a product CLI status defect: unfinished busy/lease-lost/
+aborted/capped work could exit0. Corrected source uses this explicit table:
 
-A transitional governance check rejected an unaccepted task pointer equal to the
-accepted baseline. After committing the initial candidate and pointing at its
-actual SHA, the checker passed0errors/0warnings. This was a state-record correction,
-not a product behavior failure or executed regression gate. Source inspection also
-kept final status awaits inside the fixed-error boundary and skipped unused
-provider-file loading for approved work; those paths now have explicit tests.
+| Final result | Exit |
+|---|---|
+| Refusal or failed/expired/cancelled run or refused/expired/needs-user-action/cancelled turn |1|
+| Unfinished busy/lease-lost/aborted/step-limit, or preparing turn |1|
+| Persisted succeeded run, including a completion race |0|
+| Ordinary observation, settled reply/rejection or awaiting explicit decision |0|
+
+The succeeded run check precedes unfinished reasons. Real CLI held-run/held-
+preparation/provider-refusal/signal checks and a complete status table pin the
+behavior. There is no assertion weakening, H invariant relaxation or provider
+retry. Source inspection also keeps final status awaits inside the sanitized
+error boundary and skips unused provider-file loading for approved work.
+
+Corrected candidate: `58662ecc074f7cc29bf29a0dd410d581ffca0eef`. Final validation remains unexecuted;
+this source needs fresh affected checks, complete234-file matrix, build/type/
+benchmark/native/frontend evidence and a separate exact-source decision. Only
+injected/loopback providers are permitted. Accepted baseline remains I1 source.
+
+A transitional governance check initially rejected an unaccepted task pointer
+identical to its accepted baseline; committing and identifying the real candidate
+corrected the state record. It was not a behavioral regression gate.

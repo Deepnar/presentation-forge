@@ -1,5 +1,5 @@
 {
-  "implementationSha": "b07052c2ccfa1de14735d73e000214efff4afc3e",
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
   "inventoryIncludesWorkingTreeGovernanceTests": false,
   "inventoryMethod": "Exact I2 candidate inventory:234disjoint files (196bulk,26serial browser/build,12PostgreSQL including both-store process/CLI); complete union asserted before execution. Offline fixtures only. All new-source final gates remain unexecuted.",
   "bulk": [

@@ -1,0 +1,42 @@
+[
+  {
+    "implementationSha": "b07052c2ccfa1de14735d73e000214efff4afc3e",
+    "atUtc": "2026-10-25T12:32:27.217191+00:00",
+    "name": "sqlite-adjacent",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-turn-worker-sqlite-8i.test.js",
+      "test/v2-turns-8h.test.js",
+      "test/v2-turns-sqlite-8h.test.js",
+      "test/v2-turns-process-8h.test.js",
+      "test/v2-core-boundary.test.js",
+      "test/dev-protocol.test.js"
+    ],
+    "durationSeconds": 11.897659357000066,
+    "exitCode": 1,
+    "tests": {
+      "total": 108,
+      "pass": 106,
+      "fail": 2,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "log": "docs/v2-8i-2-evidence/development/sqlite-adjacent.log",
+    "logSha256": "4ce19c32934bbeec92fb172e70b675c46057ea88dcb3af4724dd8d808c091226"
+  }
+]

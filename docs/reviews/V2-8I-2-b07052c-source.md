@@ -10,11 +10,12 @@ implementer: `/root`.
 
 This is source review only. No test, service, model call, generator or resource
 qualification was executed by the reviewer. Root retains the execution slot.
-There is one narrow CLI-result discrepancy to correct/pin before replacement
-freeze; no additional material authority/privacy/recovery blocker was found in
-this pass. No implementation ACCEPT is supplied.
+The initial pass found a narrow CLI-result discrepancy. Subsequent implementer
+development execution exposed two invalid H fixtures that this source review
+missed; the corrected assessment below preserves that mistake and required fixture
+correction. No implementation ACCEPT is supplied.
 
-## Actionable finding
+## Actionable findings
 
 **[P2] CLI exits zero when an approved execution is refused or yields unfinished.**
 At exact candidate `src/agent/turn-cli.js:48–50`, exit status considers `result.ok`,
@@ -23,8 +24,10 @@ ignores the worker's disposition/reason. At `packages/agent/turn-worker.ts:85–
 a busy claim returns a successful status wrapper with `reason:'busy'` and an
 unchanged running run. A lost lease at lines90–98 likewise returns an authoritative
 status wrapper rather than `ok:false`. Both therefore exit0 from the CLI despite
-execution refusal. Aborted/capped unfinished execution also exits0, and observing
-another host's `preparing` turn exits0. Existing CLI cases at
+execution refusal. Pre-aborted still-queued approved execution also exits0, and
+observing another host's `preparing` turn exits0. A step-limit reason is likewise
+ignored by that exit classifier, but current valid one-batch H work cannot reach
+the cap; it is not a reachable CLI scenario. Existing CLI cases at
 `test/v2-turn-worker-process-contract.js:111–140` cover successful/replayed work,
 invalid input/config and signals during preparation; they do not pin these exits.
 
@@ -32,7 +35,7 @@ The persisted JSON is truthful and no extra work or corruption follows from this
 finding. The mismatch is with the planned refusal/noncompletion CLI semantics;
 shell callers cannot rely on exit status as intended. Narrow correction: preserve
 the metadata and canonical worker behavior, but explicitly classify CLI exit status
-and exercise real held-lease/cap/refused paths plus a lease-loss contract. Do not
+and exercise real held-lease/refused/abort paths plus a lease-loss contract. Do not
 add retry, cancellation, queueing or a second lease authority to fix an exit code.
 
 The implementer acknowledged this initial discrepancy during review and pinned
@@ -42,7 +45,9 @@ remain1. A final persisted succeeded run dominates a raced terminal refusal and
 returns0. Awaiting explicit decision and an ordinary settled reply return0. The
 new table is a bounded CLI clarification, not a new product-policy decision.
 Correction source and new assertions were not yet reviewed or executed in this
-note. Initial source/admission evidence must remain historical.
+note. Step-limit exit classification is defensive for the internal seam; it is not
+a reachable current-H CLI probe. Initial source/admission evidence must remain
+historical.
 
 ## Independently inspected source conclusions
 
@@ -83,14 +88,41 @@ note. Initial source/admission evidence must remain historical.
 
 ## Fixture and governance inspection
 
+**[P2, fixture correction] The cap/shutdown fixture is not a valid H proposal.**
 The shared normal preparation cases use an actual loopback ModelProvider and
-ordinary single-batch H approval. The cap/shutdown fixture at
-`test/v2-turn-worker-contract.js:27–40` expands only its bound-specific proposal,
-parses the valid canonical plan, updates its matching digest and then uses normal
-H decide. It does not loosen production approval or claim ordinary H naturally
-emits nine batches. Actual B receipts/fences are exercised after the cap and an
-entered-step abort. Assertions retain preserved scenes/history and no duplicate
-saved batch for normal repeated/racing execution.
+ordinary single-batch H approval. However, the fixture at
+`test/v2-turn-worker-contract.js:27–40` expands an H proposal to nine steps. It
+parses a valid B run plan and updates its digest, but H `loadState` additionally
+requires `canonical.steps.length===1` at `packages/agent/turn-store.ts:105`.
+Normal H decide therefore refuses the modified stored proposal. My initial source
+note incorrectly characterized this as a valid H fixture; I inspected B plan/digest
+validation without completing the H canonical invariant check. That statement is
+withdrawn. The tests cannot demonstrate worker cap/shutdown behavior as written.
+
+Root reported a resource-qualified initial-source development run of108 leaves:
+106pass/2fail, zero skips/cancellations. Both failures are these cap/shutdown
+fixtures at H's canonical load check. These counts are implementer-reported; this
+pass did not independently execute or reconcile the raw development log. They do
+not describe a passing suite. Preserve the raw failed attempt; do not relabel it as a pass or weaken H to accommodate the fixture.
+
+The proposed narrow correction is appropriate: extract the canonical claim/advance/
+renew loop into internal `packages/agent/turn-work-execution.ts`, injected with the
+existing runtime only inside the package. The public worker still accepts only
+explicit turn identity and derives its run ID from H; no extra work input, public
+adapter execution capability, approval route, queue or storage authority is added.
+Direct helper tests can exercise actual B nine-step plans, canonical leases,
+receipts, cap and yield/recovery on both stores. Normal H worker tests must retain
+the single-batch model/explicit-approval path and add a negative expanded-proposal
+assertion. Current valid H work cannot reach the eight-call cap; make that limit
+of current coverage explicit rather than claiming a real CLI cap scenario.
+
+An abort arriving after the actual one-step H transaction has entered may still
+leave a succeeded run, as B already permits. Test and report that persisted result;
+use the real B multi-step helper seam for between-step yield/recovery. The proposed
+helper and replacement assertions are not yet source-reviewed or executed here.
+No new public general-purpose executor or caller-supplied run ID belongs in the worker's
+public input. Assertions for human preservation, ordinary approval and H's strict
+canonical proposal invariant must remain intact.
 
 The child fixture uses IPC readiness before work, then real SIGKILL checkpoints.
 Preparation checkpoints follow committed reserved/dispatched/known rows. The
@@ -108,14 +140,15 @@ files into196bulk,26serial and12PostgreSQL entries; the process file containing
 both stores belongs to the isolated PostgreSQL group. Governance adds I2's focused
 three-file inventory requirement and a negative missing-process-entry assertion,
 preserving prior milestone requirements. The full union, actual counts and all
-behavior still require execution; source inspection alone proves no passing leaf.
+behavior still require complete execution; source inspection alone proves no
+passing leaf, and the reported initial108-leaf run has two retained fixture failures.
 
 Four distinct protocol/backend worker/native cases, all nine common gates,
 234-file full regression, actual backend/process/CLI evidence, current images and
 original archive/preservation/cleanup evidence, plus final separate execution and
-exact-source review remain pending. No leaf counts are inferred from I1 or the
-initial syntax/governance checks. The standing locale remains a separate failed
-probe, not a nonexistent-gate waiver.
+exact-source review remain pending. No final-gate leaf counts are inferred from
+I1, initial syntax/governance checks or the failed108-leaf development attempt. The
+standing locale remains a separate failed probe, not a nonexistent-gate waiver.
 
 Only this note was written by the reviewer. No product/test/state/evidence-helper,
 snapshot or archive was modified, and no push or acceptance was issued. Root owns
