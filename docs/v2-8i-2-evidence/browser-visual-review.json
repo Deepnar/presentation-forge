@@ -3,7 +3,7 @@
   "atUtc": "2026-10-25T13:33:29.311323+00:00",
   "inspectedBy": "/root",
   "images": 76,
-  "index": "out/v2-8i-2-validation/seed-captures.json",
+  "index": "docs/v2-8i-2-evidence/regression-images.json",
   "checkpointImages": 30,
   "remainingImages": 46,
   "remainingContactSheetsInspected": 8,

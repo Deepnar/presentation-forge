@@ -1,0 +1,43 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T13:37:14.296914+00:00",
+  "bulk": {
+    "total": 2528,
+    "pass": 2528,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "serial": {
+    "files": 26,
+    "total": 208,
+    "pass": 208,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "postgresCompleteFiles": 2,
+  "postgresTests": {
+    "total": 28,
+    "pass": 28,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "postgresUnexecutedPrimaryFiles": [
+    "test/v2-projects-6c-faults.test.js",
+    "test/v2-import-postgres-7b.test.js",
+    "test/v2-runtime-postgres-8b.test.js",
+    "test/v2-provider-postgres-8c.test.js",
+    "test/v2-provider-run-postgres-8d.test.js",
+    "test/v2-conversation-postgres-8e.test.js",
+    "test/v2-turns-postgres-8h.test.js",
+    "test/v2-conversation-http-postgres-8i.test.js",
+    "test/v2-turn-worker-postgres-8i.test.js",
+    "test/v2-turn-worker-process-8i.test.js"
+  ],
+  "primaryCompleteFiles": 224,
+  "primaryPlannedFiles": 234,
+  "activeBatch": "out/v2-8i-2-validation-batch-11.log",
+  "status": "Between-file resource admission; no failed/cancelled primary job. Remaining PG/command/native/visual and independent acceptance still pending."
+}

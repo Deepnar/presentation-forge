@@ -15,10 +15,10 @@ The exact new owned PG15.18 ID is
 name forge-v28i2-validation, loopback5544,1CPU/512MiB/tmpfs192MiB.
 Ownership/backup manifests are under docs/v2-8i-2-evidence; never recreate/reuse I1.
 
-Full coordinator batches1–9 completed successfully. Batch10 is active:
-out/v2-8i-2-validation-batch-10.log and coordinator.json/log. All26serial files
+Full coordinator batches1–10 completed successfully. Batch11 is active:
+out/v2-8i-2-validation-batch-11.log and coordinator.json/log. All26serial files
 passed208/208; bulk196files2528/2528; focused worker79/79; typecheck passed.
-All have0fail/skip/cancelled. PostgreSQL primary work has started (first17/17).
+All have0fail/skip/cancelled. PostgreSQL primary work has started (two files28/28).
 No other validation process may overlap. Resume audited bounded3job batches;
 never repeat preparation after snapshots. Exact source/ID/empty catalog and
 fresh admission are enforced. Five complete gates remain pending (PG contracts,
@@ -39,3 +39,8 @@ snapshot all-current historical evidence including ignored original PPTXs and
 five canonical originals. Restore exact bytes after captures; never run an old
 finisher on restored outputs. Preserve attempts and distinguish repeated tests.
 Original untracked .agents/ and both master/architecture prompt files are untouched.
+
+At the latest checkpoint batch11 is waiting for storage admission; no child test
+is active. Inspect actual logs/process/session32928 before any next action.
+The same /root/turn_contract_review reviewed source/helpers only; final independent
+tests/decision must wait for complete root validation/restoration and DB-slot release.

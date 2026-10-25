@@ -187,3 +187,12 @@ now underway in bounded serial batches; no primary totals are asserted yet.
 The focused three-file worker gate completed79/79,0fail/skip/cancelled,
 including actual SQLite/PostgreSQL contracts, independent child-process fault
 recovery and real CLI checks. It overlaps the complete primary matrix.
+
+
+Execution checkpoint:196bulk files2528/2528, all26serial files208/208, focused
+worker79/79 and corrected-development120/120/typecheck pass, all0fail/skip/cancel.
+The first two primary PostgreSQL files pass28/28; ten primary PG file executions
+and command/native/final visual completion remain pending. All76fresh browser
+screenshots are preserved/hash-verified and inspected, with inherited narrow/
+scroll/loading limitations retained. Resource admission pauses occur between jobs;
+no leaf cancellation or threshold relaxation has occurred. This is not acceptance.
