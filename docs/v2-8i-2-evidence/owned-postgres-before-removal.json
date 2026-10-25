@@ -1,0 +1,13 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T17:25:27.115807+00:00",
+  "id": "865d147c807070d1984ada6148346f2a9cffeea55e1f8e68315ba81f2af84d8d",
+  "name": "forge-v28i2-validation",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "port": 5544,
+  "runningBeforeStop": true,
+  "databaseQuery": "SELECT datname FROM pg_database WHERE NOT datistemplate AND datname <> 'postgres' ORDER BY datname",
+  "nonMaintenanceDatabases": [],
+  "projectDatabaseCount": 0,
+  "savedAndFsyncedBeforeStop": true
+}
