@@ -25,7 +25,32 @@ cleanup correction was committed at `d09b61c`, with old/new helper hashes in
 [the correction record](v2-8i-3-evidence/helper-review-correction.json). The same
 reviewer subsequently checked the exact delta and confirmed readiness, without
 executing tests or issuing implementation acceptance. Quiet-window qualification
-is running; recurring competing CPU spikes have prevented admission so far.
+did not admit execution; the admission-only attempt is closed below.
+
+## Admission-only checkpoint — behavioral execution unexecuted
+
+[The retained assessment](v2-8i-3-evidence/admission-only-2026-10-25/assessment.json)
+records 45 samples over 677.38 seconds: mean CPU 22.18%, peak 79.77%, five samples
+at or above 50%, and no qualified 180-second window under unchanged thresholds.
+Global I/O PSI/iowait provenance remains unresolved. Only the exact owned read-only
+sampler was interrupted (exit130); no test leaf was started or cancelled, and no
+backend, build, benchmark, generator or model call started. Unrelated work was
+untouched. Old evidence and original exports still hash-match.
+
+| Current-source behavioral result | Count |
+|---|---:|
+| Executed / pass / fail / skip / cancelled leaves | 0 / 0 / 0 / 0 / 0 |
+| Unexecuted primary entry files | 234 |
+| Unexecuted focused files, overlapping primary | 2 |
+| Unexecuted distinct persisted/native scenarios | 4 |
+| Unexecuted required gates | 9 |
+
+Production build, typecheck and all 50 benchmark cells remain unexecuted. Leaf totals
+are undetermined until actual execution; syntax/protocol checks and read-only
+review are not behavioral passes. Implementation acceptance remains pending; the
+recommendation is to withhold acceptance until full validation and independent
+review complete. Resume with fresh qualification/preparation in the linked runbook,
+then stop after I3. No validation process or I3 owned service remains.
 
 ## Bounded contract
 

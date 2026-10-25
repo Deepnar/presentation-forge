@@ -19,15 +19,30 @@ I2 trusted preparation and explicit approval/run execution remain authoritative.
 No provider dispatch occurs on submission. No frontend was changed.
 
 Source/helper readiness passed after the native setup-failure cleanup correction
-atd09b61c; its exact delta was independently rechecked without execution. The
-read-only sustained quiet sampler is active; competing CPU spikes have prevented
-admission. No DB/test/build/generator is active. Qualify a sustained
+at `d09b61c`; its exact delta was independently rechecked without execution.
+The [admission-only attempt](v2-8i-3-evidence/admission-only-2026-10-25/assessment.json)
+recorded 45 samples/677.38seconds, CPU peak79.77%, without a qualified window.
+Only the owned read-only sampler was stopped (exit130); zero test leaves were
+started/cancelled. No sampler, DB/test/build/generator or owned service remains.
+Qualify a fresh sustained
 quiet window, use fresh admission per job and the new I3 namespace/owned service.
 Save/fsync identity before use, verify final TCP readiness/empty catalog, and snapshot
 all current evidence/ignored originals plus five canonical outputs before generators.
 Never reuse/recreate a removed I2 instance or run an old finisher on restored outputs.
 I2 evidence, originals, prior failures and cleanup proofs remain untouched. No I3
 service, behavioral test, generator or model call has started at this checkpoint.
+
+The existing output namespace contains only admission samples, with no owned
+identity, snapshot or coordinator. Preserve that attempt and append fresh samples:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 -u docs/v2-8i-3-evidence/quiet_window.py
+PYTHONDONTWRITEBYTECODE=1 python3 -u docs/v2-8i-3-evidence/prepare-full-validation.py --prepare-only
+PYTHONDONTWRITEBYTECODE=1 python3 -u docs/v2-8i-3-evidence/run-validation.py --max-new-jobs 3
+```
+
+Do not use --resume before an acknowledged coordinator execution exists. Read
+the full runbook/ownership guards before preparation and stop on any failed check.
 
 No API-backed model, local inference, paid infrastructure, deployment or migration
 is authorized. Stop after complete I3 validation, separate acceptance and cleanup.

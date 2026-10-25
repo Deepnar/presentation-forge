@@ -25,58 +25,60 @@
       "id": "conversation-http",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
+      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
     },
     {
       "id": "non-browser-bulk",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
+      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
     },
     {
       "id": "serial-browser",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
+      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
     },
     {
       "id": "postgres-contract",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
+      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
     },
     {
       "id": "cross-process-faults",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
+      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
     },
     {
       "id": "production-build",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
+      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
     },
     {
       "id": "typecheck",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
+      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
     },
     {
       "id": "benchmark-50",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
+      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
     },
     {
       "id": "frontend-visual",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
+      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
     }
   ],
-  "knownBlockers": [],
+  "knownBlockers": [
+    "I3 behavioral validation awaits a qualified sustained quiet window; admission-only evidence records competing CPU spikes. No I3 backend or test started."
+  ],
   "standingFailures": [
     {
       "id": "byok-locale",

@@ -9134,8 +9134,12 @@ local inference. Only that separate transport correction is authorized; this aud
     [source/helper review](reviews/V2-8I-3-2ba82cb-source-harness.json) found no
     material product blocker and required one native fixture setup-failure cleanup
     correction. That correction is committed/hash-bound atd09b61c and its delta
-    was independently rechecked. Sustained quiet admission is waiting on competing
-    CPU spikes; no I3 backend/test/generator has started. Complete current-source
+    was independently rechecked. The first admission-only attempt retained45samples/
+    677.38seconds with CPUpeak79.77% and no qualified sustained window. Its exact
+    owned sampler was stopped; zero test leaves were started/cancelled and no I3
+    backend/test/generator exists. All234primary files plus4native scenarios and
+    nine gates remain unexecuted, not passing. Resume fresh quiet qualification
+    through the linked runbook. Complete current-source
     gates and original-byte preservation remain required. Stop after I3 acceptance/
     cleanup.
 

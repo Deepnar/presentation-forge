@@ -202,6 +202,14 @@ refusal were independently verified. There is no remaining I2 validation/review/
 cleanup blocker. [The current evaluation](V2-8I-2-EVAL.md) records exact evidence
 and limitations; dependent scope remains only in the linked roadmap entry.
 
+I3 is implemented/source-reviewed but its behavioral validation is currently
+resource-gated. The first admission-only attempt observed recurring CPU bursts
+without a qualified sustained window; no backend/test/generator was started.
+**Unblocks:** an appropriate shared-machine quiet window under the existing
+thresholds, followed by fresh admission and owned preparation. See
+[the current evaluation](V2-8I-3-EVAL.md) for exact samples and unexecuted counts.
+This is not a product ACCEPT/HOLD decision and does not reopen accepted I2.
+
 The active V2 task is recorded in `docs/development-state.json` and
 `docs/ROADMAP.md` §12. For V2-7A a quiet shared-machine
 window was obtained and all required validation executed against the isolated

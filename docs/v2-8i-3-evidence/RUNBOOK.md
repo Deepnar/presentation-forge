@@ -1,5 +1,11 @@
 # I3 exact-source validation
 
+Current checkpoint: source2ba82cb is unaccepted and behaviorally unexecuted.
+The first admission-only attempt qualified no window; its45samples/677.38seconds
+are retained separately. The read-only sampler is stopped. No owned identity,
+snapshot, coordinator or test exists. Preserve these samples and begin fresh
+qualification/initial preparation below; do not use --resume at this checkpoint.
+
 Read the contract, state and current HANDOFF first. `validation-plan.json` freezes
 source/tests. All providers are offline injected/loopback fixtures; no real model
 API, local inference, deployment or production database is authorized.
