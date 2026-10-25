@@ -1,0 +1,171 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "acceptedBaseline": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "taskEntry": "d8f1de6fec61eb0eb980fbfdafaa59fb4446ada8",
+  "atUtc": "2026-10-25T13:47:55.455084+00:00",
+  "recordedDocumentationHead": "6fa46d148dc0eff42b7f5582cc825f3d183eb7a7",
+  "workingSourceDelta": [],
+  "sourcePathsCompared": [
+    "app",
+    "packages",
+    "src",
+    "test",
+    "tools",
+    "schema",
+    "themes",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json",
+    "docs/development-state.schema.json"
+  ],
+  "changedSourceFiles": [
+    {
+      "path": "docs/development-state.schema.json",
+      "sha256": "595efe3893fc43eebd99258c53169fb7a3f4b9cf7150c9628342effd14b976b9",
+      "implementationBlob": "8559f58f29322820708929dded9796a21732f45f"
+    },
+    {
+      "path": "packages/agent/turn-work-execution.ts",
+      "sha256": "24599f95a2fa92b341523d1a309ccc551731a1dda2a91c2f36b5a7b807afebe2",
+      "implementationBlob": "ed28e18ce8b2046e300451120d59539d75699932"
+    },
+    {
+      "path": "packages/agent/turn-worker.ts",
+      "sha256": "beeab2e5756564515069a42b2897113a677f94d5a38d9259bdbb0294bcb36441",
+      "implementationBlob": "b273137b81b66bc3e66e3475e37014c338bb7393"
+    },
+    {
+      "path": "packages/agent/turns.ts",
+      "sha256": "33df1985680cd003d2d1669f061a9dbfd3e5795fc19732bb7b436d81ad14482e",
+      "implementationBlob": "4241f5a2c153a934ad8f5525c9cd39035335593e"
+    },
+    {
+      "path": "src/agent/index.js",
+      "sha256": "22529394f2ef183d8e305f02b3b14ca57275fda03fea588450ccd60499591501",
+      "implementationBlob": "7a170341a40767ea16195bd533960b976812bfdb"
+    },
+    {
+      "path": "src/agent/turn-cli.js",
+      "sha256": "06e6a99fb2ce1a8928fcaeacb139877d24703a5e7031277e78045bf30160c6db",
+      "implementationBlob": "df6d6b64d4af5ee56a13d057cfaa8c7710ded85e"
+    },
+    {
+      "path": "src/agent/turn-work-status.js",
+      "sha256": "b2e15b64fc634ba6038aba2a01e7143382d682876a54f4fe04247e6f14ba161e",
+      "implementationBlob": "85521d1609f91efb21a4a2e72ae06b3dbdefcfe9"
+    },
+    {
+      "path": "test/dev-protocol.test.js",
+      "sha256": "ad7bd7c8d82e08b3330644ed840fca51157cd68fdcc55de4f5c5c14999ca0e7b",
+      "implementationBlob": "17f95876277ae43612b315ce02b0efde527f0bfe"
+    },
+    {
+      "path": "test/v2-turn-worker-child.js",
+      "sha256": "935334fa12604c07c39e37b7c678e5baa7cb89e9883a2f06ef5563491167734d",
+      "implementationBlob": "a6f46f9d5e68eb2c64e2b48204363bb19fbcee88"
+    },
+    {
+      "path": "test/v2-turn-worker-contract.js",
+      "sha256": "29c01d0ee66e25841e6fad1f8f96d4b8b6557a882bc1c20502204fe9990d581a",
+      "implementationBlob": "264ab306a0f38af9efc3d51bf2cd1bfe964c99fe"
+    },
+    {
+      "path": "test/v2-turn-worker-postgres-8i.test.js",
+      "sha256": "bd59067863dddecc4294604c42e9222fed48be222d305b75a5655bca394d20f8",
+      "implementationBlob": "972303bbbba874c6496452818e1f99412ef85630"
+    },
+    {
+      "path": "test/v2-turn-worker-postgres-fixture.js",
+      "sha256": "51fcaf045f7da96c9f6b434d4df6684c00650b0c76c4044efabc36d195b670d6",
+      "implementationBlob": "07eec28db5955340c0b4989d80bf129888e96475"
+    },
+    {
+      "path": "test/v2-turn-worker-process-8i.test.js",
+      "sha256": "e757e32300cb8d7cc657dd3e4a5a84714a4ecc30d0ad2f794817a622569cc8ba",
+      "implementationBlob": "f37e99bc0121605a2708d33794a46b69cc2864ae"
+    },
+    {
+      "path": "test/v2-turn-worker-process-contract.js",
+      "sha256": "dab211e8369a7111dc970602d4cda5fcd94b98e294e564641a25008415c44da4",
+      "implementationBlob": "e0b5d5494863d8fb1194147b94f7a7b4d04a6161"
+    },
+    {
+      "path": "test/v2-turn-worker-sqlite-8i.test.js",
+      "sha256": "423c2ba2740e34cf751acb43f8ff42ad623940c4ed7b980daff2d3719f52afd8",
+      "implementationBlob": "73065351d687ed2b1dd8762e620eb0555faa9893"
+    },
+    {
+      "path": "test/v2-turns-contract.js",
+      "sha256": "bf6fc6c902d15850de28726201439608fa685240f29c2377fa52a3b550caf0b5",
+      "implementationBlob": "09bc8d95097b57cab42aa4bb835b63b3a31b49a1"
+    },
+    {
+      "path": "tools/dev-protocol-check.mjs",
+      "sha256": "7f37fc9cb4152443a2edf471e881bebdb25eb213451517b4a439e020350cf4fc",
+      "implementationBlob": "d25a5df0f03eaaaf88fe4200970124d8c967d223"
+    }
+  ],
+  "helperFiles": [
+    {
+      "path": "docs/v2-8i-2-evidence/assemble-results.py",
+      "sha256": "e2cf5fd6259c7511f243868c859f128597d130379bd6db1e13eafe311d3b2459"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/assess-resources.py",
+      "sha256": "eb688ad78b6107e5b7b1d5816df02fc627ad6eec6a147c40c0309d9398a83f49"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/cleanup-owned.py",
+      "sha256": "26c533a45c779face939ef94a1da57e935c7b49a87e005e6d7f321e78a1589d2"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/correction-checks.py",
+      "sha256": "e59288818377a39cf60bf1a1b62e706b8035543f849e71ddb4c0ba5cac8b5998"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/development-checks.py",
+      "sha256": "d8c63800c5a5a4236463950b82c61adaa33df9a1208c503c7d3c1bcd6fe4c94f"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/finish-evidence.py",
+      "sha256": "27e494f014efb79cfa06306c9b8f3a29b2e246b73a9baae47f3b36d267edac1a"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/headless-check.mjs",
+      "sha256": "b631f0f71896c6be85f5aa87ae8e51264597102d8d640d321802802604db669c"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/http-native.mjs",
+      "sha256": "0e16c58846657d8ca7b78234cbd4cac0e3d406e3930d874da4cc0f1d5f2cc95d"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/inspect-native-ids.mjs",
+      "sha256": "04918131ba2faa51e61e2b8c88a497823606c2b024b7795eff22832856aee387"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/native-review.mjs",
+      "sha256": "705f7073e580c063a79aedb08ace9bfec8fb650f4d337d504d29ab16d9d1a6c8"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/prepare-full-validation.py",
+      "sha256": "a5682ebf7e56ad2444df0867469a352e981173fdf0932c773213b8be1ef71706"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/quiet_window.py",
+      "sha256": "b7a5b9951282328d1f64b4e22c175b464f108760cc5b4aaf12985e73c3773450"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/run-validation.py",
+      "sha256": "349dd3ded3ced57ebfad0dd2b33f90d0ce97589b6d638ad4085c48ab02ce78dc"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/shell-native.mjs",
+      "sha256": "85f5cccb6cfd44b7ded1dc30100efbc18642ab4939a012b4ac63691a4d08eb06"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/verify-owned-cleanup.py",
+      "sha256": "cbf34ffe2754931834c08cc0867cff9482f778ba8fbb52381fee1dfd5f246c71"
+    }
+  ],
+  "modelsUsed": "Injected and loopback deterministic protocol fixtures only; no live model API or local inference."
+}

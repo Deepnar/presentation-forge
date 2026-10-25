@@ -1,46 +1,38 @@
-# Current handoff — I2 corrections, final validation pending
+# Current handoff — primary validation complete, native/review pending
 
-Branch/push v2/origin/v2; accepted baseline remains independently accepted I1
-5170adc. Current I2 source 58662ecc074f7cc29bf29a0dd410d581ffca0eef corrects the CLI unfinished-work
-exit table and tests the internal bounded execution loop with actual B plans.
-H retains its one-batch invariant. Read [the eval](V2-8I-2-EVAL.md),
-[roadmap](ROADMAP.md#assistant-turn-worker), state and initial source review.
+Branch v2/origin/v2. Accepted baseline remains I1 source5170adc; active I2 source
+58662ecc074f7cc29bf29a0dd410d581ffca0eef, no working product/test delta.
+Read docs/V2-8I-2-EVAL.md and development-state.json. Independent source/helper
+readiness exists; no implementation ACCEPT has been issued.
 
-Initial b07052c development completed108leaves:106pass,2invalid-fixture failures,
-0skip/0cancelled. Raw attempt/resource evidence is retained. That driver exited;
-the corrected driver has also finished:120/120 and typecheck pass. Full preparation
-finished: all6488historical files/196PPTXs and5canonical originals were snapshotted.
-The exact new owned PG15.18 ID is
-865d147c807070d1984ada6148346f2a9cffeea55e1f8e68315ba81f2af84d8d,
-name forge-v28i2-validation, loopback5544,1CPU/512MiB/tmpfs192MiB.
-Ownership/backup manifests are under docs/v2-8i-2-evidence; never recreate/reuse I1.
+Complete234primary files3015/3015:196bulk2528,26serial208,12PG279. Focused79
+and development120 overlap primary cases. Build/typecheck pass; all0fail/skip/
+cancelled. Source/primary manifests and raw gate records are in the I2 evidence.
+All76fresh browser images are preserved/hash-verified and visually inspected.
 
-Full coordinator batches1–10 completed successfully. Batch11 is active:
-out/v2-8i-2-validation-batch-11.log and coordinator.json/log. All26serial files
-passed208/208; bulk196files2528/2528; focused worker79/79; typecheck passed.
-All have0fail/skip/cancelled. PostgreSQL primary work has started (two files28/28).
-No other validation process may overlap. Resume audited bounded3job batches;
-never repeat preparation after snapshots. Exact source/ID/empty catalog and
-fresh admission are enforced. Five complete gates remain pending (PG contracts,
-cross-process faults, build, benchmark, combined visual/native evidence).
+Batch15 ACTIVE (session92484 belonged to completedbatch14; current batch15 log
+out/v2-8i-2-validation-batch-15.log, inspect actual process). It runs benchmark,
+four distinct both-store/protocol worker/native cases and separate BYOK locale.
+Then resume one bounded3job batch for native-review/shell-native/http-native.
+No browser/build/test process may overlap. Every resume checks exact source,
+owned identity/empty catalog and fresh admission. Never rerun preparation.
 
-All76fresh browser images were preserved and visually inspected; narrow matches
-accepted I1 exactly, and no new dialog clipping/overlap was observed. Known
-narrow/scroll/loading limits remain. Final native originals/rasters/identity audit
-and full historical restoration are still pending. Preserve all generated old
-folder modifications until new captures/exports are retained; do not commit them.
-primary inventory234files (196bulk/26serial/
-12PG). Perform fresh affected checks and full verification, independent exact-
-source review, guarded owned cleanup, scoped push and stop afterI2. No APIs/local
-inference, hosted scheduling/UI, deployment or migration is authorized.
+Owned PG15.18 ID865d147c807070d1984ada6148346f2a9cffeea55e1f8e68315ba81f2af84d8d,
+name forge-v28i2-validation,127.0.0.1:5544,1CPU/512MiB/tmpfs192MiB.
+All6488prior evidence files/196PPTXs and5canonical originals were snapshotted
+before generators. After all native/capture jobs, use new I2 helpers once to
+assemble/preserve final originals and restore/hash-verify prior bytes. Historical
+generated changes are intentional intermediate outputs; never stage them. Inspect
+all43fresh native/SVG/export rasters, audit15current original archives, record
+actual performance/resources and push a complete review packet. Do not run an old
+finisher on restored canonical outputs.
 
-Use a fresh I2 backend namespace; I1 service is removed. Before generators,
-snapshot all-current historical evidence including ignored original PPTXs and
-five canonical originals. Restore exact bytes after captures; never run an old
-finisher on restored outputs. Preserve attempts and distinguish repeated tests.
-Original untracked .agents/ and both master/architecture prompt files are untouched.
+Reuse /root/turn_contract_review for final independent exact-source decision
+only after root resource/DB-slot release; it has so far reviewed source/helpers
+without final test execution. Guarded cleanup requires its DB-slot release and
+actual saved/fsynced0catalog, then exact-ID absence/port refusal. Update state/
+roadmap/architecture/continuation/AGENTS/handoff after separate acceptance; push
+scoped evidence/docs and stop afterI2. No live model/local inference, deployment,
+new paid infra, public submit/worker routes, scheduling or UI is authorized.
 
-At the latest checkpoint batch11 is waiting for storage admission; no child test
-is active. Inspect actual logs/process/session32928 before any next action.
-The same /root/turn_contract_review reviewed source/helpers only; final independent
-tests/decision must wait for complete root validation/restoration and DB-slot release.
+Original untracked .agents/ and both master/architecture prompt files are intact.

@@ -1,0 +1,30 @@
+{
+  "id": "postgres-complete",
+  "kind": "tests",
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "command": "python3 docs/v2-8i-2-evidence/run-validation.py; exact per-file commands retained in coordinator",
+  "log": "docs/v2-8i-2-evidence/logs/postgres-complete.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 279,
+    "pass": 279,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-projects-6c-postgres.test.js",
+    "test/v2-projects-6c-concurrency.test.js",
+    "test/v2-projects-6c-faults.test.js",
+    "test/v2-import-postgres-7b.test.js",
+    "test/v2-runtime-postgres-8b.test.js",
+    "test/v2-provider-postgres-8c.test.js",
+    "test/v2-provider-run-postgres-8d.test.js",
+    "test/v2-conversation-postgres-8e.test.js",
+    "test/v2-turns-postgres-8h.test.js",
+    "test/v2-conversation-http-postgres-8i.test.js",
+    "test/v2-turn-worker-postgres-8i.test.js",
+    "test/v2-turn-worker-process-8i.test.js"
+  ],
+  "backend": "Owned PostgreSQL15.18; worker process file additionally exercises temporary SQLite."
+}

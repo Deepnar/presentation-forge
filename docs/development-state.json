@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
-    "note": "I2 corrected candidate58662ec:120/120 development tests and typecheck pass; full primary matrix/worker PostgreSQL/native/frontend gates and independent acceptance pending. Earlier106/108 failing fixture attempt retained separately."
+    "note": "I2 source58662ec completed the234-file primary matrix3015/3015, focused79/79, development120/120, production build and typecheck. Benchmark/native/final visual and independent acceptance remain pending; earlier failures retained."
   },
   "activeMilestone": {
     "id": "V2-8I-2",
@@ -47,21 +47,21 @@
     },
     {
       "id": "cross-process-faults",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-2-evidence/cross-process-faults.json",
+      "reason": "Exact-source complete isolated execution passed. Native/benchmark/final review still pending."
     },
     {
       "id": "production-build",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-2-evidence/production-build.json",
+      "reason": "Exact-source complete isolated execution passed. Native/benchmark/final review still pending."
     },
     {
       "id": "typecheck",
       "status": "passed",
-      "evidence": "docs/v2-8i-2-evidence/typecheck-development.json",
-      "reason": "Exact-source corrected development typecheck exited0; complete isolated matrix will repeat it."
+      "evidence": "docs/v2-8i-2-evidence/typecheck.json",
+      "reason": "Exact-source complete isolated execution passed. Native/benchmark/final review still pending."
     },
     {
       "id": "benchmark-50",
