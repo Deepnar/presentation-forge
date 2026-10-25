@@ -1,0 +1,161 @@
+TAP version 13
+# Subtest: PostgreSQL turn worker: exact-turn lookup returns one owner and generation-bound turn
+ok 1 - PostgreSQL turn worker: exact-turn lookup returns one owner and generation-bound turn
+  ---
+  duration_ms: 160.059646
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: preparation returns private status and waits for a separate explicit decision
+ok 2 - PostgreSQL turn worker: preparation returns private status and waits for a separate explicit decision
+  ---
+  duration_ms: 131.025803
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: provider-free approved execution reopens canonical history and cannot repeat an edit
+ok 3 - PostgreSQL turn worker: provider-free approved execution reopens canonical history and cannot repeat an edit
+  ---
+  duration_ms: 109.632449
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: missing provider refuses before dispatch and never selects a fallback
+ok 4 - PostgreSQL turn worker: missing provider refuses before dispatch and never selects a fallback
+  ---
+  duration_ms: 17.970829
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: invalid input, authority, accessors and options cannot invoke work
+ok 5 - PostgreSQL turn worker: invalid input, authority, accessors and options cannot invoke work
+  ---
+  duration_ms: 13.168861
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: synchronous snapshots survive same-owner binding, input and option reuse
+ok 6 - PostgreSQL turn worker: synchronous snapshots survive same-owner binding, input and option reuse
+  ---
+  duration_ms: 53.814212
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: a busy preparation is observed without retrying or double dispatch
+ok 7 - PostgreSQL turn worker: a busy preparation is observed without retrying or double dispatch
+  ---
+  duration_ms: 54.78532
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: competing approved workers execute exactly one saved batch
+ok 8 - PostgreSQL turn worker: competing approved workers execute exactly one saved batch
+  ---
+  duration_ms: 105.89586
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: pre-aborted preparation and approved work dispatch no new operations
+ok 9 - PostgreSQL turn worker: pre-aborted preparation and approved work dispatch no new operations
+  ---
+  duration_ms: 118.99489
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: aborting dispatched preparation cancels its visible turn without publishing edits
+ok 10 - PostgreSQL turn worker: aborting dispatched preparation cancels its visible turn without publishing edits
+  ---
+  duration_ms: 50.962773
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: clear during provider work refuses late publication and preserves the deck
+ok 11 - PostgreSQL turn worker: clear during provider work refuses late publication and preserves the deck
+  ---
+  duration_ms: 48.887902
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: cancelled, rejected and cleared approval cannot execute
+ok 12 - PostgreSQL turn worker: cancelled, rejected and cleared approval cannot execute
+  ---
+  duration_ms: 189.68867
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: owner revocation and deletion deny work without provider dispatch
+ok 13 - PostgreSQL turn worker: owner revocation and deletion deny work without provider dispatch
+  ---
+  duration_ms: 28.185959
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: a human save after approval wins over queued execution
+ok 14 - PostgreSQL turn worker: a human save after approval wins over queued execution
+  ---
+  duration_ms: 61.027497
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: provider refusal settles once without fallback, private result or automatic retry
+ok 15 - PostgreSQL turn worker: provider refusal settles once without fallback, private result or automatic retry
+  ---
+  duration_ms: 50.952702
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: unexpected backend errors are fixed even on the final status read
+ok 16 - PostgreSQL turn worker: unexpected backend errors are fixed even on the final status read
+  ---
+  duration_ms: 11.465079
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: approval before the final read returns current persisted status without executing
+ok 17 - PostgreSQL turn worker: approval before the final read returns current persisted status without executing
+  ---
+  duration_ms: 44.805788
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: clear after lookup fences the cached approval and suppresses cached status
+ok 18 - PostgreSQL turn worker: clear after lookup fences the cached approval and suppresses cached status
+  ---
+  duration_ms: 94.448963
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: revocation after publication is enforced by the final status read
+ok 19 - PostgreSQL turn worker: revocation after publication is enforced by the final status read
+  ---
+  duration_ms: 69.968035
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: an expanded B-valid plan cannot bypass the single-batch H proposal contract
+ok 20 - PostgreSQL turn worker: an expanded B-valid plan cannot bypass the single-batch H proposal contract
+  ---
+  duration_ms: 54.701476
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: the internal execution loop caps actual B steps without widening H proposals
+ok 21 - PostgreSQL turn worker: the internal execution loop caps actual B steps without widening H proposals
+  ---
+  duration_ms: 79.839644
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: shutdown after an entered B step yields without inventing user cancellation
+ok 22 - PostgreSQL turn worker: shutdown after an entered B step yields without inventing user cancellation
+  ---
+  duration_ms: 83.601067
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: an entered single-batch H commit reports persisted success despite shutdown
+ok 23 - PostgreSQL turn worker: an entered single-batch H commit reports persisted success despite shutdown
+  ---
+  duration_ms: 59.656236
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: a lease lost after claim yields fixed status and no edit, then recovers canonically
+ok 24 - PostgreSQL turn worker: a lease lost after claim yields fixed status and no edit, then recovers canonically
+  ---
+  duration_ms: 77.632591
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: the internal loop stops on actual renewal lease loss after one receipt
+ok 25 - PostgreSQL turn worker: the internal loop stops on actual renewal lease loss after one receipt
+  ---
+  duration_ms: 126.506357
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2312.642837
+# forge-test-file "test/v2-turn-worker-postgres-8i.test.js"

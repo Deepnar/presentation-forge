@@ -9083,12 +9083,13 @@ local inference. Only that separate transport correction is authorized; this aud
     Preserve all existing leases/approvals/accounting, copy authority before awaits,
     return private metadata only and validate both stores/process recovery with
     offline fixtures. [Plan review](reviews/V2-8I-2-plan-3ffebec.md) is ready for
-    implementation; the worker/CLI and both-store/process contracts are in progress,
-    with complete validation pending. Corrected development passed120/120 plus
-    typecheck; these overlap primary tests. Initial development passed106/108; two
-    invalid multi-batch H fixtures were corrected without relaxing the invariant.
-    Initial review also found and corrected a CLI unfinished-work exit-status
-    defect; the eval retains the exact table and failed attempt. There is no public
+    implementation. Source58662ec completes all234primary files3015/3015 plus
+    4distinct persisted/native cases, focused79/development120overlapping repeats,
+    build/type/50cells and119-image inspection. Initial106/108invalid-H-fixture
+    failures, the CLI status correction and reviewed helper guards remain retained.
+    All prior6488files/5canonical originals are restored and15new originals pass
+    native identity audit. Independent acceptance and owned cleanup are pending.
+    There is no public
     submission endpoint, provider registry/default, daemon, deployment or UI in
     this slice. Later authenticated submission/scheduling supplies trusted bindings
     and bounded durable discovery over these same rows; it must not add another

@@ -2,7 +2,7 @@
   "id": "postgres-complete",
   "kind": "tests",
   "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
-  "command": "python3 docs/v2-8i-2-evidence/run-validation.py; exact per-file commands retained in coordinator",
+  "command": "python3 docs/v2-8i-2-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8i-2-evidence/logs/postgres-complete.tap",
   "exitCode": 0,
   "tests": {
@@ -26,5 +26,5 @@
     "test/v2-turn-worker-postgres-8i.test.js",
     "test/v2-turn-worker-process-8i.test.js"
   ],
-  "backend": "Owned PostgreSQL15.18; worker process file additionally exercises temporary SQLite."
+  "backend": "Owned isolated PostgreSQL15.18; all twelve files. Designated contract23 and cross-process/fault checks are overlapping subsets."
 }

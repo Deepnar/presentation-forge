@@ -1,0 +1,11 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T14:00:07.424323+00:00",
+  "id": "865d147c807070d1984ada6148346f2a9cffeea55e1f8e68315ba81f2af84d8d",
+  "name": "forge-v28i2-validation",
+  "port": 5544,
+  "nonMaintenanceDatabases": [],
+  "rootTestBuildGeneratorCoordinatorActive": false,
+  "slot": "Released to /root/turn_contract_review after packet push; root will not execute tests or cleanup until explicit reviewer release.",
+  "isCleanupCount": false
+}

@@ -1,0 +1,40 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "acceptedBaseline": {
+    "sha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "provenance": "independent-review",
+    "source": "docs/reviews/V2-8I-1-5170adc.json"
+  },
+  "primaryFiles": 234,
+  "primaryTests": {
+    "total": 3015,
+    "pass": 3015,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "distinctNativeTests": 4,
+  "distinctRequiredPasses": 3019,
+  "focusedRepeatedPrimary": 79,
+  "developmentRepeatedPrimary": 120,
+  "requiredUnexecuted": 0,
+  "nineGatesPassed": true,
+  "independentAcceptance": "PENDING",
+  "ownedCleanup": "PENDING reviewer DB-slot release",
+  "imagesInspected": 119,
+  "newOriginalArchives": 15,
+  "historicalFilesRestored": 6488,
+  "historicalPptxCount": 196,
+  "canonicalOriginalsRestored": 5,
+  "allRestorationHashesVerified": true,
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "sourceManifest": "docs/v2-8i-2-evidence/source-manifest.json",
+  "sourceAndTestsChangedAfterFreeze": false,
+  "finalRecordCorrection": "docs/v2-8i-2-evidence/evidence-record-adjustments.json"
+}

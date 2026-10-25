@@ -131,68 +131,124 @@ exact absence/port refusal. Update architecture/roadmap/state/handoff to actual
 facts, push scoped commits to origin/v2 and stop after I2; no dependent interface
 or scheduling implementation follows automatically.
 
-## Current status and corrections
+## Final implementation and validation
 
-Plan review is READY_FOR_IMPLEMENTATION. Initial source `b07052c` completed a
-qualified-window development run:108leaf tests,106pass,2fail,0skip/0cancelled.
-[Raw results](v2-8i-2-evidence/development/checks.json) retain the source, command,
-resource qualification and log hash. Typecheck did not run after this failure.
-These are development attempts, not final-source gate passes.
+Source `58662ecc074f7cc29bf29a0dd410d581ffca0eef`; accepted baseline remains I1 source5170adc. Product/test working
+delta is empty. The [source manifest](v2-8i-2-evidence/source-manifest.json) names
+all17changed source/test/governance files and helper hashes. Exact source/helper
+[readiness review](reviews/V2-8I-2-58662ec-source-harness.md) found no remaining
+material source blocker; it did not execute tests or supply acceptance.
 
-Both failures were incorrect fixtures: matching B parsePlan/digest does not satisfy
-H's stricter one-batch proposal invariant in turn-store.ts. The new tests now retain
-that rejection explicitly. The internal execution-loop helper exercises actual B
-nine-step runs, the eight-call cap, shutdown and renewal/recovery without changing
-H. Current H proposals cannot reach the cap; no CLI-cap execution is claimed.
-An entered one-batch H transaction may finish despite shutdown and must report
-its persisted success. The [initial source review](reviews/V2-8I-2-b07052c-source.md)
-corrects its initial mistaken fixture assessment and grants no acceptance.
+| Executed group | Files/cases | Pass | Fail | Skip | Cancelled |
+|---|---:|---:|---:|---:|---:|
+| Primary nonbrowser bulk |196files|2528|0|0|0|
+| Primary serial browser/build |26files|208|0|0|0|
+| Primary PostgreSQL set |12files|279|0|0|0|
+| Complete primary matrix |234files|3015|0|0|0|
+| Distinct worker/persisted/native flows |4cases|4|0|0|0|
+| Focused worker repeat |3primary files|79|0|0|0|
+| Corrected development repeat |SQLite/adjacent113 + CLI7|120|0|0|0|
+| Separate standing BYOK locale |10cases|9|1|0|0|
 
-That review also found a product CLI status defect: unfinished busy/lease-lost/
-aborted/capped work could exit0. Corrected source uses this explicit table:
+There are3019distinct required primary/native passes. Focused79 and development120
+are repeated primary cases, not extra distinct coverage. Designated PG project/
+import23 and designated cross-process/fault19 are overlapping subsets;
+the additional worker/process28 produces47combined process cases in a separate
+complete report. All required cases
+executed; none remain skipped, cancelled or unexecuted. The locale failure is
+retained separately and is neither green nor a required-gate waiver.
 
-| Final result | Exit |
-|---|---|
-| Refusal or failed/expired/cancelled run or refused/expired/needs-user-action/cancelled turn |1|
-| Unfinished busy/lease-lost/aborted/step-limit, or preparing turn |1|
-| Persisted succeeded run, including a completion race |0|
-| Ordinary observation, settled reply/rejection or awaiting explicit decision |0|
+All nine gates pass. Production build/typecheck exit0 and canonical benchmark
+passes50cells (616ms compiler/ZIP; recorded documentation HEAD9be96f0, unchanged
+implementation58662ec). The [full matrix](v2-8i-2-evidence/full-matrix.json),
+[coordinator](v2-8i-2-evidence/logs/coordinator.json), gate JSON/TAP and
+[runbook](v2-8i-2-evidence/RUNBOOK.md) retain exact commands, ordering and source.
+All48ordered jobs ran through watchdogs and bounded serial isolation. Actual
+backends were temporary SQLite and the new owned PostgreSQL15.18 instance at
+loopback5544; [identity](v2-8i-2-evidence/owned-postgres.json) is exact and exclusive.
+No live model API/local inference, deployment or migration ran.
 
-The succeeded run check precedes unfinished reasons. Real CLI held-run/held-
-preparation/provider-refusal/signal checks and a complete status table pin the
-behavior. There is no assertion weakening, H invariant relaxation or provider
-retry. Source inspection also keeps final status awaits inside the sanitized
-error boundary and skips unused provider-file loading for approved work.
+## Corrections and failed attempts
 
-Corrected candidate: `58662ecc074f7cc29bf29a0dd410d581ffca0eef`. Corrected development passed120/120 (113SQLite/adjacent plus7realCLI),
-0fail/skip/cancelled, and typecheck exited0. See
-[exact correction records](v2-8i-2-evidence/correction-v2/checks.json).
-These test executions overlap the final primary inventory. Remaining final validation is pending;
-this source needs fresh affected checks, complete234-file matrix, build/type/
-benchmark/native/frontend evidence and a separate exact-source decision. Only
-injected/loopback providers are permitted. Accepted baseline remains I1 source.
+Initial sourceb07052c development executed108leaves:106pass/2fail/0skip/0cancelled;
+[raw evidence](v2-8i-2-evidence/development/checks.json) is retained. Both were
+incorrect fixtures: B parsePlan/digest validity does not satisfy H's one-batch
+proposal invariant. H stayed strict. A negative test now retains its rejection;
+actual multistep B runtime transactions exercise the extracted internal loop's
+cap, between-step shutdown, renewal and recovery. Current H work cannot reach
+the eight-call cap; no multistep H or reachable CLI-cap execution is claimed.
+The reviewer corrected its initial mistaken fixture assessment in the retained
+[initial source review](reviews/V2-8I-2-b07052c-source.md).
 
-A transitional governance check initially rejected an unaccepted task pointer
-identical to its accepted baseline; committing and identifying the real candidate
-corrected the state record. It was not a behavioral regression gate.
+Source review also found a product CLI status defect: unfinished busy/lost-lease/
+aborted/capped work could exit0. Corrected code returns1 for unsuccessful/refused,
+failed/expired/cancelled or unfinished work (including preparing turns). Final
+persisted succeeded run takes precedence in a completion race and returns0;
+ordinary observation, settled reply/rejection and awaiting explicit decision
+return0. Real CLI held-preparation/held-run/provider-refusal/signal probes and a
+complete exit table pass. An already-entered one-batch commit may finish after
+shutdown; its test asserts persisted success without inventing user cancellation.
+Final status awaits remain inside the sanitized error boundary; approved work/
+observation skip unused provider-file loading. No assertion was weakened.
 
+Review caught two validation-helper defects: a failed development child could
+leave its supervisor exiting0, and preparation could create a container before
+rejecting existing snapshots/coordinator artifacts. The corrected supervisor
+propagates failure/skip/cancel after preserving records. Preparation rejects
+stale artifacts/--resume before creation; only guarded same-ID pre-snapshot
+recovery is permitted. Two [negative guard probes](v2-8i-2-evidence/harness-guards/results.json)
+actually refused before backend creation. The original failed child always remained
+failed evidence despite its old supervisor exit defect. One admission-only
+coordinator was stopped to repair it: zero child jobs/leaves started/cancelled;
+[the exact attempt](v2-8i-2-evidence/correction-admission-attempt-1/record.json)
+is retained. A transitional governance pointer error was corrected before testing;
+it is not a product regression. Final governance also rejected an unsupported
+state enum and a combined47-case report at the designated19-case gate. The existing
+validated enum and separate designated/combined reports correct those metadata
+errors without changing product/tests or discarding cases. Their failed attempts
+are retained. No further product failure appeared in the final run.
 
-Final preparation recorded the new owned PG15.18 service, all6488historical
-files/196ignored original PPTXs and five canonical originals before generators.
-[Qualification provenance](v2-8i-2-evidence/qualification-provenance.json) retains
-the actual recent same-source180-second samples; preparation and every new job
-still require fresh30-second admission. No thresholds changed. Full execution is
-now underway in bounded serial batches; no primary totals are asserted yet.
+## Resources, performance and visual evidence
 
-The focused three-file worker gate completed79/79,0fail/skip/cancelled,
-including actual SQLite/PostgreSQL contracts, independent child-process fault
-recovery and real CLI checks. It overlaps the complete primary matrix.
+The [qualification provenance](v2-8i-2-evidence/qualification-provenance.json)
+retains actual recent same-source180-second samples followed by fresh30-second
+admission before preparation and every job. Resource thresholds were unchanged;
+intermittent CPU/storage contention delayed jobs between executions. The
+[resource assessment](v2-8i-2-evidence/resource-assessment.json) validates all job
+admissions over205samples, with0critical samples and no cancelled leaf. Elevated
+global I/O PSI/iowait provenance remains unresolved; no unrelated process was stopped.
 
+[Performance](v2-8i-2-evidence/performance.json) records120slides/120thumbnails
+opening in1540ms, maximum canvas delta0.0694122314453125px, fixture
+worker preparation45.9–103.0ms, approved execution9.9–28.1ms, reopen0.46–8.88ms,
+and1306-byte bounded runtime traces. Each protocol/backend sample used three
+fixture exchanges. These are local observations, not live-provider latency/content
+quality or production percentiles. Existing process-recovery measurements retain
+their stated clock/bootstrap/lease-wait limitations.
 
-Execution checkpoint:196bulk files2528/2528, all26serial files208/208, focused
-worker79/79 and corrected-development120/120/typecheck pass, all0fail/skip/cancel.
-The first two primary PostgreSQL files pass28/28; ten primary PG file executions
-and command/native/final visual completion remain pending. All76fresh browser
-screenshots are preserved/hash-verified and inspected, with inherited narrow/
-scroll/loading limitations retained. Resource admission pauses occur between jobs;
-no leaf cancellation or threshold relaxation has occurred. This is not acceptance.
+All119indexed images (76browser,43native/SVG/export) were visually inspected and
+hash-verified in [the visual review](v2-8i-2-evidence/VISUAL-REVIEW.md). Fifteen
+exact original PPTXs (8headless/5browser/2HTTP) pass per-part nonvisual identity
+checks:107OOXML parts,365properties, no duplicate IDs. No interactive Microsoft
+PowerPoint consumer session was executed. Before generators all6488historical
+files/196PPTXs, including ignored originals, and5canonical output originals were
+snapshotted; all were restored/hash-verified. No original bytes were reconstructed.
+
+## Limitations and recommendation
+
+Inherited narrow horizontal overflow/partial canvas, scroll/transition/loading
+captures, SVG first-run text styling, native chart-consumer differences and fixture
+fit limits remain unchanged. The signed-out/owner-revocation checks do not create
+an atomic in-flight logout/commit fence. A per-invocation step cap is not a hard DB
+query timeout. Unknown usage stays conservative; no network exactly-once guarantee
+or automatic retry/refund is claimed. Saved chat does not become provider context.
+
+The bounded worker adds no public submission/execution route, provider resolver/
+default/fallback, daemon, hosted scheduler or Assistant UI. Remaining parent work
+lives only in [the roadmap](ROADMAP.md#assistant-surface-integration). Offline
+correctness is not live Auto usefulness or full native PowerPoint qualification.
+
+Implementation recommendation: ACCEPT this bounded I2 contract after separate
+exact-source review. All implementer gates/evidence are complete; independent
+acceptance and guarded owned cleanup are still pending. The implementer has not
+accepted its own work. Stop after I2; do not advance a dependent feature.
