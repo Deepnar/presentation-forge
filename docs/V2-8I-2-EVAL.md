@@ -133,6 +133,25 @@ or scheduling implementation follows automatically.
 
 ## Current status
 
-Contract preparation only. Product implementation and current-source evaluations
-have not started. Prior accepted gates remain historical. A separate plan review
-will challenge this bounded scope before implementation; no acceptance is inferred.
+The separate [plan review](reviews/V2-8I-2-plan-3ffebec.md) is
+READY_FOR_IMPLEMENTATION, with no additional human direction required. Worker,
+exact-turn lookup, CLI and focused both-store/process contracts are implemented at
+`b07052c2ccfa1de14735d73e000214efff4afc3e`, pending behavioral validation.
+Only syntax checks have executed; no behavioral test, model, service or generator
+has run. All final validation remains unexecuted. Prior
+accepted gates are historical; no implementation acceptance is inferred.
+
+The implementation reports a work phase plus final persisted status, rather than
+claiming that a previously waiting turn is still waiting after a concurrent approval.
+It awaits the final lookup inside its sanitized error boundary. Approved work and
+observation skip otherwise unused provider-file loading. New tests exercise these
+seams, valid canonical multi-step/digest fixtures for the eight-call cap, real
+process kills and scoped CLI signals without changing normal one-batch approval.
+
+
+A transitional governance check rejected an unaccepted task pointer equal to the
+accepted baseline. After committing the initial candidate and pointing at its
+actual SHA, the checker passed0errors/0warnings. This was a state-record correction,
+not a product behavior failure or executed regression gate. Source inspection also
+kept final status awaits inside the fixed-error boundary and skipped unused
+provider-file loading for approved work; those paths now have explicit tests.

@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-8I-1-5170adc.json"
   },
   "implementationHead": {
-    "sha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
-    "note": "I1 exact source5170adc independently accepted;231primary files2933/2933 plus4distinct native scenarios, nine gates and231independent primary repeats pass. Locale remains9pass/1standing failure separately. Exact owned backend removed after saved/fsynced actual0catalog and verified absence/5544refusal. Stop afterI1; no dependent feature authorized."
+    "sha": "b07052c2ccfa1de14735d73e000214efff4afc3e",
+    "note": "I2 worker/lookup/CLI and three both-store/process test entries are implemented atb07052c, pending behavioral validation and independent review. Accepted baseline remainsI1source5170adc. No final gate has executed."
   },
   "activeMilestone": {
-    "id": "V2-8I-1",
-    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration",
-    "evalDoc": "docs/V2-8I-1-EVAL.md",
+    "id": "V2-8I-2",
+    "roadmapRef": "docs/ROADMAP.md#assistant-turn-worker",
+    "evalDoc": "docs/V2-8I-2-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "implemented-pending-validation",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8I-1-5170adc.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "conversation-http",
-      "status": "passed",
-      "evidence": "docs/v2-8i-1-evidence/conversation-http.json",
-      "reason": "Complete two-file SQLite/PostgreSQL HTTP gate34/34; separate repeat overlapping primary inventory. No failures/skips/cancellations."
+      "id": "turn-worker",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8i-1-evidence/non-browser-bulk.json",
-      "reason": "Complete195-file primary bulk2500/2500; no fail/skip/cancel. Browser/PG primary files remain separate."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8i-1-evidence/serial-browser.json",
-      "reason": "Complete26-file bounded serial browser/build inventory208/208, no fail/skip/cancel; visual inspection is a separate gate."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8i-1-evidence/postgres-contract.json",
-      "reason": "Designated actual owned PostgreSQL project/import contract23/23, overlapping complete225/225 backend group."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8i-1-evidence/cross-process-faults.json",
-      "reason": "Actual owned PostgreSQL independent-process/fault19/19, overlapping complete225/225 backend group."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8i-1-evidence/production-build.json",
-      "reason": "Complete frozen-source command exited0 under bounded serial resource admission."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8i-1-evidence/typecheck.json",
-      "reason": "Complete frozen-source command exited0 under bounded serial resource admission."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8i-1-evidence/benchmark-50.json",
-      "reason": "All50canonical cells completed; compiler/ZIP sample519ms, without raster in benchmark. Native visual evidence is separate."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8i-1-evidence/frontend-visual.json",
-      "reason": "All119current images manually inspected;15original archives verified. Inherited limitations retained; interactive Microsoft PowerPoint unexecuted."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New I2 source has not been behaviorally executed. Fresh quiet admission, owned backend and evidence snapshots are required; prior I1 results are historical."
     }
   ],
   "knownBlockers": [],
@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-2 bounded turn-worker orchestration \u2014 contract/plan review",
-    "authorized": true,
-    "roadmapRef": "docs/ROADMAP.md#assistant-turn-worker"
+    "id": "Authenticated submission and host scheduling \u2014 separate contract after I2",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
@@ -103,5 +103,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-24"
+  "updated": "2026-10-25"
 }

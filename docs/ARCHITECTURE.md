@@ -2742,3 +2742,24 @@ parity. The [I1 evaluation](V2-8I-1-EVAL.md) and
 [separate exact-source acceptance](reviews/V2-8I-1-5170adc.json) record complete
 validation and cleanup. Public orchestration and the visible Assistant retain
 their separate roadmap scope.
+
+
+### V2-8I-2 bounded explicit-turn worker
+
+The backend-injected `packages/agent/turn-worker.ts` composes H's exact-turn
+`inspect`/`prepare` with B's claim/advance/renew operations. Work takes a copied
+trusted project binding and exact generation/turn/worker IDs, derives linked run
+authority from storage, waits for explicit approval and caps each invocation at
+eight advance calls. The result explicitly projects metadata from a final owner/
+generation-checked read; request/reply/proposal/tool/provider bodies are omitted.
+Unexpected errors are replaced by fixed messages and known bounded codes.
+
+The `agent-chat work` adapter uses the same worker and existing operator provider
+configuration only for submitted turns. Approved execution and observation skip
+unused provider-file loading. Scoped CLI signals abort preparation through H or
+yield between approved run operations; an entered transaction retains existing B
+fences and may commit. No imported module starts a daemon, queue, HTTP worker or
+provider call. There is no new persistence authority.
+
+This implementation is under validation, not accepted. [I2's contract/evaluation](V2-8I-2-EVAL.md)
+records the pending gates; later integration lives only in the roadmap.

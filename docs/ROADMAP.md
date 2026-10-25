@@ -9082,7 +9082,9 @@ local inference. Only that separate transport correction is authorized; this aud
     stateless preparation/approved-run orchestration and operator CLI parity.
     Preserve all existing leases/approvals/accounting, copy authority before awaits,
     return private metadata only and validate both stores/process recovery with
-    offline fixtures. Plan review precedes implementation. There is no public
+    offline fixtures. [Plan review](reviews/V2-8I-2-plan-3ffebec.md) is ready for
+    implementation; the worker/CLI and both-store/process contracts are in progress,
+    with behavioral validation still unexecuted. There is no public
     submission endpoint, provider registry/default, daemon, deployment or UI in
     this slice. Later authenticated submission/scheduling supplies trusted bindings
     and bounded durable discovery over these same rows; it must not add another

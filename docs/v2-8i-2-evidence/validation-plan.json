@@ -1,7 +1,7 @@
 {
-  "implementationSha": "37d342afd745a710cebb7ceb2d7abc43e7a9efc4",
+  "implementationSha": "b07052c2ccfa1de14735d73e000214efff4afc3e",
   "inventoryIncludesWorkingTreeGovernanceTests": false,
-  "inventoryMethod": "I2 complete234-file inventory (196bulk,26serial,12PostgreSQL including both-store process/CLI); exact file union asserted. Implementation SHA provisional until source freeze; all gates unexecuted. Offline fixtures only.",
+  "inventoryMethod": "Exact I2 candidate inventory:234disjoint files (196bulk,26serial browser/build,12PostgreSQL including both-store process/CLI); complete union asserted before execution. Offline fixtures only. All new-source final gates remain unexecuted.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",
