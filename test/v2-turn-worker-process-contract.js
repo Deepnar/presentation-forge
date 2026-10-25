@@ -106,7 +106,7 @@ async function cliRig(t, e, handler) {
   }
   return { start, arrived, calls: () => calls };
 }
-function workerCliContract(label, setup) {
+export function workerCliContract(label, setup) {
   const check = (name, fn) => test(`${label} turn worker CLI: ${name}`, { timeout: 30000 }, fn);
   check('explicit provider preparation and provider-free approved work share stored authority', async t => {
     const e = await fixture(t, setup), s = await submit(e), cli = await cliRig(t, e);
@@ -129,6 +129,37 @@ function workerCliContract(label, setup) {
     const missing = await (await cli.start(workInput(s), { provider: '/fixture-private-key/missing' })).done;
     assert.equal(missing.code, 1); assert.equal(missing.stderr.includes('fixture-private-key'), false);
     assert.equal(cli.calls(), 0); assert.deepEqual((await e.store.getProject(e.binding)).doc, e.doc);
+  });
+  check('a held execution lease exits nonzero without an edit or provider access', async t => {
+    const e = await fixture(t, setup), q = await approved(e), cli = await cliRig(t, e);
+    assert.equal((await e.runtime.claim(e.binding, q.turn.run.id, 'other-host', 30000)).ok, true);
+    const value = await (await cli.start(workInput(q), { provider: '/unread-fixture-private-key/missing' })).done;
+    assert.equal(value.code, 1); assert.equal(value.value.reason, 'busy'); assert.equal(value.value.advances, 0);
+    assert.equal(value.value.run.status, 'running'); assert.equal(cli.calls(), 0); safeStatus(value.value);
+    assert.deepEqual((await e.store.getProject(e.binding)).doc, e.doc);
+    assert.equal((await e.runtime.inspect(e.binding, q.turn.run.id)).receipts.length, 0);
+  });
+  check('preparation already held by another host exits nonzero without dispatch', async t => {
+    let notify; const arrived = new Promise(resolve => { notify = resolve; });
+    const e = await fixture(t, setup, { handler: () => { notify(); } }), s = await submit(e), cli = await cliRig(t, e);
+    const controller = new AbortController();
+    const pending = createTurnWorker(e.store, e.provider).work(e.binding, workInput(s), { signal: controller.signal });
+    t.after(async () => { controller.abort(); await pending; });
+    await arrived;
+    const value = await (await cli.start(workInput(s, { workerId: 'other-host' }), { provider: '/unread-fixture-private-key/missing' })).done;
+    assert.equal(value.code, 1); assert.equal(value.value.turn.state, 'preparing'); assert.equal(value.value.advances, 0);
+    assert.equal(cli.calls(), 0); assert.equal(e.seen.length, 1); safeStatus(value.value);
+    controller.abort(); assert.equal((await pending).turn.state, 'cancelled');
+    assert.deepEqual((await e.store.getProject(e.binding)).doc, e.doc);
+  });
+  check('a provider refusal exits nonzero and retains only fixed private status', async t => {
+    const e = await fixture(t, setup), s = await submit(e), cli = await cliRig(t, e, (_req, res) => {
+      res.writeHead(503); res.end('fixture-private-key');
+    });
+    const value = await (await cli.start(workInput(s))).done;
+    assert.equal(value.code, 1); assert.equal(value.value.turn.state, 'refused'); assert.equal(cli.calls(), 1);
+    assert.equal(value.stderr.includes('fixture-private-key'), false); safeStatus(value.value);
+    assert.deepEqual((await e.store.getProject(e.binding)).doc, e.doc);
   });
   for (const signal of ['SIGTERM', 'SIGINT']) check(`${signal} during preparation closes the CLI without publishing`, async t => {
     const e = await fixture(t, setup), s = await submit(e), cli = await cliRig(t, e, () => {});

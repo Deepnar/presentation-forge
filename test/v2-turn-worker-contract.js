@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createTurnWorker } from '../packages/agent/turn-worker.ts';
+import { createRuntime } from '../packages/agent/runtime.ts';
+import { advanceTurnRun } from '../packages/agent/turn-work-execution.ts';
 import { createTurnService } from '../packages/agent/turns.ts';
 import { parsePlan, planDigest } from '../packages/agent/run-state.ts';
 import { fixture, proposed, submission, decision, rows, clockBackend } from './v2-turns-contract.js';
@@ -22,9 +24,8 @@ export function safeStatus(value) {
   assert.ok(text.length < 8192);
 }
 
-// Only this bound-specific fixture expands H's one-batch proposal. It remains a
-// valid canonical plan with a matching stored digest and ordinary H approval.
-export async function multiStep(e, count = 9) {
+// A matching B digest cannot relax H's stricter one-batch proposal invariant.
+async function expandedProposal(e, count = 9) {
   const p = await proposed(e);
   await e.store.withRuntimeTransaction(e.binding, async tx => {
     const [row] = await tx.query('SELECT payload,private_payload FROM v2_agent_proposals WHERE id=? AND project_id=?',
@@ -37,7 +38,19 @@ export async function multiStep(e, count = 9) {
     await tx.query('UPDATE v2_agent_proposals SET payload=?,private_payload=? WHERE id=? AND project_id=?',
       [JSON.stringify(meta), JSON.stringify(plan), meta.id, e.binding.id]);
   });
-  return e.service.decide(e.binding, decision(p, p.turn));
+  return p;
+}
+
+async function canonicalMultiStep(e) {
+  return e.runtime.start(e.binding, parsePlan({ ...e.plan, requestId: crypto.randomUUID(), maxSteps: 16,
+    steps: Array.from({ length: 9 }, () => structuredClone(e.plan.steps[0])) }));
+}
+function expectedCanonical(e) {
+  const scenes = structuredClone(e.doc.scenes);
+  scenes[0].elements[0].paragraphs[0].runs[0].text = 'Human-reviewed ';
+  scenes[0].elements[0].provenance = 'human';
+  scenes[0].elements[0].contentCustomized = true;
+  return scenes;
 }
 
 export function turnWorkerContract(label, setup) {
@@ -244,27 +257,65 @@ export function turnWorkerContract(label, setup) {
     });
     assert.equal(e.seen.length, 1);
   });
-  check('the advance-call cap yields a valid multi-step run and recovers through existing fences', async t => {
-    const e = await fixture(t, setup), q = await multiStep(e), c = clockBackend(e.store);
-    const a = await createTurnWorker(c.backend).work(e.binding, workInput(q));
-    assert.equal(a.advances, 8); assert.equal(a.reason, 'step-limit'); assert.equal(a.run.status, 'running'); assert.equal(a.run.cursor, 8);
-    const busy = await createTurnWorker(c.backend).work(e.binding, workInput(q, { workerId: 'different' }));
-    assert.equal(busy.reason, 'busy'); assert.equal(busy.advances, 0);
-    c.clock.offset = 11000;
-    const b = await createTurnWorker(c.backend).work(e.binding, workInput(q, { workerId: 'restarted' }));
-    assert.equal(b.advances, 1); assert.equal(b.run.status, 'succeeded');
-    assert.equal((await e.runtime.inspect(e.binding, q.turn.run.id)).receipts.length, 9);
-    assert.deepEqual((await e.store.getProject(e.binding)).doc.scenes, expectedReview(e.doc));
+  check('an expanded B-valid plan cannot bypass the single-batch H proposal contract', async t => {
+    const e = await fixture(t, setup), p = await expandedProposal(e);
+    await assert.rejects(e.service.decide(e.binding, decision(p, p.turn)), { code: 'invalid-document' });
+    await assert.rejects(createTurnWorker(e.store).work(e.binding, workInput(p)), { code: 'invalid-document' });
+    assert.deepEqual((await e.store.getProject(e.binding)).doc, e.doc);
   });
-  check('shutdown after an entered step yields without inventing user cancellation', async t => {
-    const e = await fixture(t, setup), q = await multiStep(e), controller = new AbortController(), c = clockBackend(e.store);
+  check('the internal execution loop caps actual B steps without widening H proposals', async t => {
+    const e = await fixture(t, setup), run = await canonicalMultiStep(e), c = clockBackend(e.store), runtime = createRuntime(c.backend);
+    const a = await advanceTurnRun(runtime, e.binding, run.id, 'first');
+    assert.deepEqual(a, { advances: 8, reason: 'step-limit' });
+    const saved = await runtime.inspect(e.binding, run.id);
+    assert.equal(saved.run.status, 'running'); assert.equal(saved.run.cursor, 8); assert.equal(saved.receipts.length, 8);
+    assert.deepEqual(await advanceTurnRun(runtime, e.binding, run.id, 'busy'), { advances: 0, reason: 'busy' });
+    c.clock.offset = 11000;
+    assert.deepEqual(await advanceTurnRun(runtime, e.binding, run.id, 'restarted'), { advances: 1, reason: null });
+    assert.equal((await runtime.inspect(e.binding, run.id)).run.status, 'succeeded');
+    assert.equal((await runtime.inspect(e.binding, run.id)).receipts.length, 9);
+    assert.deepEqual((await e.store.getProject(e.binding)).doc.scenes, expectedCanonical(e));
+    assert.equal((await e.store.listRevisions(e.binding)).revisions.length, 2);
+  });
+  check('shutdown after an entered B step yields without inventing user cancellation', async t => {
+    const e = await fixture(t, setup), run = await canonicalMultiStep(e), controller = new AbortController(), c = clockBackend(e.store);
     const backend = { withRuntimeTransaction: (binding, job) => c.backend.withRuntimeTransaction(binding, tx => job({ ...tx,
       saveScenes: async (...args) => { const value = await tx.saveScenes(...args); controller.abort(); return value; } })) };
-    const a = await createTurnWorker(backend).work(e.binding, workInput(q), { signal: controller.signal });
-    assert.equal(a.advances, 1); assert.equal(a.reason, 'aborted'); assert.equal(a.run.status, 'running');
-    assert.equal(a.turn.state, 'approved'); c.clock.offset = 11000;
-    const b = await createTurnWorker(c.backend).work(e.binding, workInput(q, { workerId: 'restart' }));
-    assert.equal(b.run.status, 'succeeded'); assert.equal(b.advances, 8);
+    assert.deepEqual(await advanceTurnRun(createRuntime(backend), e.binding, run.id, 'first', controller.signal), { advances: 1, reason: 'aborted' });
+    assert.equal((await e.runtime.inspect(e.binding, run.id)).run.status, 'running'); c.clock.offset = 11000;
+    assert.deepEqual(await advanceTurnRun(createRuntime(c.backend), e.binding, run.id, 'restart'), { advances: 8, reason: null });
+    assert.deepEqual((await e.store.getProject(e.binding)).doc.scenes, expectedCanonical(e));
+  });
+  check('an entered single-batch H commit reports persisted success despite shutdown', async t => {
+    const e = await fixture(t, setup), q = await approved(e), controller = new AbortController();
+    const backend = { withRuntimeTransaction: (binding, job) => e.store.withRuntimeTransaction(binding, tx => job({ ...tx,
+      saveScenes: async (...args) => { const value = await tx.saveScenes(...args); controller.abort(); return value; } })) };
+    const result = await createTurnWorker(backend).work(e.binding, workInput(q), { signal: controller.signal });
+    assert.equal(controller.signal.aborted, true); assert.equal(result.run.status, 'succeeded'); assert.equal(result.advances, 1);
     assert.deepEqual((await e.store.getProject(e.binding)).doc.scenes, expectedReview(e.doc));
+  });
+  check('a lease lost after claim yields fixed status and no edit, then recovers canonically', async t => {
+    const e = await fixture(t, setup), q = await approved(e), c = clockBackend(e.store); let expired = false;
+    const backend = { withRuntimeTransaction: async (...args) => {
+      const value = await c.backend.withRuntimeTransaction(...args);
+      if (!expired && value?.ok && value.lease && value.run?.status === 'running') { expired = true; c.clock.offset = 11000; }
+      return value;
+    } };
+    const value = await createTurnWorker(backend).work(e.binding, workInput(q));
+    assert.equal(value.reason, 'lease-lost'); assert.equal(value.advances, 0); assert.equal(value.run.status, 'running'); safeStatus(value);
+    assert.deepEqual((await e.store.getProject(e.binding)).doc, e.doc);
+    const recovered = await createTurnWorker(c.backend).work(e.binding, workInput(q, { workerId: 'restart' }));
+    assert.equal(recovered.run.status, 'succeeded'); assert.equal(recovered.advances, 1);
+  });
+  check('the internal loop stops on actual renewal lease loss after one receipt', async t => {
+    const e = await fixture(t, setup), run = await canonicalMultiStep(e), c = clockBackend(e.store); let expired = false;
+    const backend = { withRuntimeTransaction: async (...args) => {
+      const value = await c.backend.withRuntimeTransaction(...args);
+      if (!expired && value?.receipt) { expired = true; c.clock.offset = 11000; }
+      return value;
+    } };
+    assert.deepEqual(await advanceTurnRun(createRuntime(backend), e.binding, run.id, 'first'), { advances: 1, reason: 'lease-lost' });
+    assert.equal((await e.runtime.inspect(e.binding, run.id)).receipts.length, 1);
+    assert.deepEqual(await advanceTurnRun(createRuntime(c.backend), e.binding, run.id, 'restart'), { advances: 8, reason: null });
   });
 }
