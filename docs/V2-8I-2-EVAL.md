@@ -133,8 +133,9 @@ or scheduling implementation follows automatically.
 
 ## Final implementation and validation
 
-Source `58662ecc074f7cc29bf29a0dd410d581ffca0eef`; accepted baseline remains I1 source5170adc. Product/test working
-delta is empty. The [source manifest](v2-8i-2-evidence/source-manifest.json) names
+Source `58662ecc074f7cc29bf29a0dd410d581ffca0eef`, compared with accepted I1
+source5170adc, is now independently accepted. Product/test working delta is empty.
+The [source manifest](v2-8i-2-evidence/source-manifest.json) names
 all17changed source/test/governance files and helper hashes. Exact source/helper
 [readiness review](reviews/V2-8I-2-58662ec-source-harness.md) found no remaining
 material source blocker; it did not execute tests or supply acceptance.
@@ -234,7 +235,42 @@ PowerPoint consumer session was executed. Before generators all6488historical
 files/196PPTXs, including ignored originals, and5canonical output originals were
 snapshotted; all were restored/hash-verified. No original bytes were reconstructed.
 
-## Limitations and recommendation
+## Independent acceptance and cleanup
+
+Separate reviewer `/root/turn_contract_review` issued
+[ACCEPT](reviews/V2-8I-2-58662ec.json) for exact source58662ec against I1 source5170adc.
+The [review report](reviews/V2-8I-2-58662ec.md) is committed at0417fbb; independent
+evidence is committed at190bce3. It reviews primary packetb0b3bed and independently
+executes313/313 primary repeats across14files plus4/4 supplemental native repeats,
+with0fail/skip/cancelled and typecheck exit0. These317 successes repeat the3019
+distinct required cases; they do not increase that total. The remaining2702primary
+leaves/220files were inspected in evidence, not independently reexecuted. Planned
+independent checks unexecuted:0. All48jobs/admissions,205rootresource samples and
+17frozen source hashes were independently reconciled.
+
+The reviewer inspected all119packet images on20contact sheets and20full-size risk
+cases. Its32fresh native rasters hash-match inspected packet images; four fresh
+representative images were also opened full-size. Across15packet plus10fresh
+independent original PPTXs,177OOXML parts/595numeric nonvisual properties passed
+per-part uniqueness checks. The independent6847-file/211-PPTX snapshot and5canonical
+originals all still match, with no restoration/reconstruction needed. A usage-limit
+interruption came after all passed independent checks and preservation, before the
+decision. The same reviewer resumed, reverified evidence and completed its remaining
+read-only audits without rerunning completed checks.
+
+After explicit reviewer DB/TEST release, actual0projectDBs were saved/fsynced
+[before removal](v2-8i-2-evidence/owned-postgres-before-removal.json). One exact-ID
+stop exited0. The first two absence observations were false while port refusal was
+true; bounded final absence/5544refusal passed. Both the original
+[cleanup record](v2-8i-2-evidence/owned-postgres-cleanup.json) and
+[fresh read-only verification](v2-8i-2-evidence/owned-postgres-cleanup-verification.json)
+are retained and independently hash-verified/re-probed. No count was reconstructed,
+no replacement service was created and no unrelated service was modified. No
+validation process or owned service remains. The preserved packet-summary describes
+the pre-review checkpoint; [the closeout record](v2-8i-2-evidence/acceptance-closeout.json)
+attaches final acceptance and cleanup without changing those reviewed bytes.
+
+## Limitations and disposition
 
 Inherited narrow horizontal overflow/partial canvas, scroll/transition/loading
 captures, SVG first-run text styling, native chart-consumer differences and fixture
@@ -248,7 +284,7 @@ default/fallback, daemon, hosted scheduler or Assistant UI. Remaining parent wor
 lives only in [the roadmap](ROADMAP.md#assistant-surface-integration). Offline
 correctness is not live Auto usefulness or full native PowerPoint qualification.
 
-Implementation recommendation: ACCEPT this bounded I2 contract after separate
-exact-source review. All implementer gates/evidence are complete; independent
-acceptance and guarded owned cleanup are still pending. The implementer has not
-accepted its own work. Stop after I2; do not advance a dependent feature.
+The implementation recommendation to accept is resolved by the separate exact-source
+ACCEPT decision. All required validation, independent acceptance and guarded cleanup
+are complete. This accepts the bounded I2 contract only; parent V2-8 remains
+incomplete. Stop after I2; do not advance a dependent feature.

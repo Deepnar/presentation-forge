@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+    "sha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8I-1-5170adc.json"
+    "source": "docs/reviews/V2-8I-2-58662ec.json"
   },
   "implementationHead": {
     "sha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
-    "note": "Exact I2 source58662ec has complete primary3015/3015 plus4distinct native/persistence cases, focused79 and development120 overlapping repeats, all nine gates passed. Independent acceptance and guarded owned cleanup remain pending."
+    "note": "Exact I2 source58662ec independently accepted;3015 primary plus4 distinct native/persistence passes,313+4 independent overlapping repeats. All nine gates and exact-owned-service cleanup complete. Later commits contain evidence/documentation only; stop after I2."
   },
   "activeMilestone": {
     "id": "V2-8I-2",
@@ -15,65 +15,65 @@
     "evalDoc": "docs/V2-8I-2-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8I-2-58662ec.json",
+    "accepted": true
   },
   "validation": [
     {
       "id": "turn-worker",
       "status": "passed",
       "evidence": "docs/v2-8i-2-evidence/turn-worker.json",
-      "reason": "Complete exact-source isolated execution and required visual inspection passed; independent acceptance remains pending."
+      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
     },
     {
       "id": "non-browser-bulk",
       "status": "passed",
       "evidence": "docs/v2-8i-2-evidence/non-browser-bulk.json",
-      "reason": "Complete exact-source isolated execution and required visual inspection passed; independent acceptance remains pending."
+      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
     },
     {
       "id": "serial-browser",
       "status": "passed",
       "evidence": "docs/v2-8i-2-evidence/serial-browser.json",
-      "reason": "Complete exact-source isolated execution and required visual inspection passed; independent acceptance remains pending."
+      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
     },
     {
       "id": "postgres-contract",
       "status": "passed",
       "evidence": "docs/v2-8i-2-evidence/postgres-contract.json",
-      "reason": "Complete exact-source isolated execution and required visual inspection passed; independent acceptance remains pending."
+      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
     },
     {
       "id": "cross-process-faults",
       "status": "passed",
       "evidence": "docs/v2-8i-2-evidence/cross-process-faults.json",
-      "reason": "Complete exact-source isolated execution and required visual inspection passed; independent acceptance remains pending."
+      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
     },
     {
       "id": "production-build",
       "status": "passed",
       "evidence": "docs/v2-8i-2-evidence/production-build.json",
-      "reason": "Complete exact-source isolated execution and required visual inspection passed; independent acceptance remains pending."
+      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
     },
     {
       "id": "typecheck",
       "status": "passed",
       "evidence": "docs/v2-8i-2-evidence/typecheck.json",
-      "reason": "Complete exact-source isolated execution and required visual inspection passed; independent acceptance remains pending."
+      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
     },
     {
       "id": "benchmark-50",
       "status": "passed",
       "evidence": "docs/v2-8i-2-evidence/benchmark-50.json",
-      "reason": "Complete exact-source isolated execution and required visual inspection passed; independent acceptance remains pending."
+      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
     },
     {
       "id": "frontend-visual",
       "status": "passed",
       "evidence": "docs/v2-8i-2-evidence/frontend-visual.json",
-      "reason": "Complete exact-source isolated execution and required visual inspection passed; independent acceptance remains pending."
+      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
     }
   ],
   "knownBlockers": [],

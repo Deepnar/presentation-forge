@@ -1,0 +1,34 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T17:40:19.409521+00:00",
+  "sourceDelta": [],
+  "sourceFileHashesMatched": 17,
+  "helperHashesMatched": 15,
+  "preservation": {
+    "historical": {
+      "files": 6488,
+      "pptx": 196,
+      "allHashesMatch": true
+    },
+    "independent": {
+      "files": 6847,
+      "pptx": 211,
+      "allHashesMatch": true
+    },
+    "canonical": {
+      "files": 5,
+      "pptx": 5,
+      "allHashesMatch": true
+    }
+  },
+  "exactNewPptxOriginalsTracked": 25,
+  "acceptanceAndCleanupProofHashesMatch": true,
+  "protocol": {
+    "command": "npm run dev:protocol",
+    "exitCode": 0,
+    "stdout": "dev-protocol-check: 0 error(s), 0 warning(s)\n",
+    "stderr": "npm notice run presentation-forge@0.1.0 dev:protocol\nnpm notice run node tools/dev-protocol-check.mjs\n"
+  },
+  "additionalProductTestsExecuted": 0,
+  "reason": "Documentation-only attachment of committed independent acceptance; no source change."
+}

@@ -1,33 +1,48 @@
-# Current handoff — I2 fully validated, independent review pending
+# Current handoff — I2 accepted and closed
 
-Branch v2/origin/v2. Accepted baseline remains I1 source5170adc. Active implementation
-`58662ecc074f7cc29bf29a0dd410d581ffca0eef`, no product/test working delta. All nine implementer gates pass:
-234primary files3015/3015 plus4distinct native/persistence cases;79focused and120
-corrected-development repeats overlap primary cases. Build/type/50cells pass. Locale
-remains9pass/1standing failure separately. Initial108leaves106pass/2invalid-fixture
-failures and helper/admission corrections remain preserved, never relabeled green.
+Branch `v2`, authorized destination `origin/v2`. Exact accepted implementation is
+`58662ecc074f7cc29bf29a0dd410d581ffca0eef`, compared with I1 baseline
+`5170adcec56e65e08f4ec5c1e5067c127f1c4c9d`. Separate reviewer
+`/root/turn_contract_review` issued [ACCEPT](reviews/V2-8I-2-58662ec.json), committed
+at0417fbbe9027103cfbb5d50df4c6e0964aca2d89. Independent evidence is at190bce3.
+Later commits contain evidence/documentation only; do not replace the tested code
+pointer with a closeout documentation HEAD.
 
-All48ordered jobs finished; no root test/build/model/generator/coordinator is active.
-All119images were inspected,15original PPTXs passed107part/365property identity audit,
-all6488historical files/196PPTXs plus5canonical originals were restored/hash-verified.
-The finisher ran once; never rerun it on restored canonical outputs. Read eval,
-runbook, source/full-matrix/performance/resource/visual manifests in I2 evidence.
+All nine gates passed. The234-file primary inventory passed3015/3015 plus4distinct
+worker/native persistence cases:3019required passes,0fail/skip/cancelled/unexecuted.
+Focused79 and corrected-development120 repeat primary coverage. Independent review
+repeated313primary+4native cases successfully and typechecked; these overlap the
+same3019cases. Build/typecheck and all50benchmark cells passed. Separate standing
+locale remains9pass/1failure, without a required-gate waiver. Initial106pass/
+2invalid-H-fixture failures, the product CLI exit correction, helper/admission and
+governance metadata failures remain retained and separately classified.
 
-Next within this contract: commit/push the complete packet, release resource/DB
-slot to existing /root/turn_contract_review for separate exact-source ACCEPT/HOLD.
-It has so far inspected source/helpers only. Reviewer should snapshot all-current
-historical/I2 evidence and ignored originals before fresh generator probes, use a
-new independent namespace, obey quiet-window/serial/watchdog isolation, and retain
-actual counts, hashes, originals and exclusions. No live APIs/local inference.
-Do not self-accept or start a dependent feature.
+Read [the evaluation](V2-8I-2-EVAL.md),
+[closeout record](v2-8i-2-evidence/acceptance-closeout.json),
+[runbook](v2-8i-2-evidence/RUNBOOK.md) and source/full-matrix/performance/resource/
+visual records. Root inspected119images; reviewer inspected all119 plus fresh
+native evidence.25exact packet/fresh PPTXs pass177part/595property uniqueness audit.
+All6488historical files/196PPTXs and5canonical originals are restored/hash-verified;
+the independent6847-file/211-PPTX snapshot also matches. No bytes were reconstructed.
+The finisher ran once; never rerun it against restored canonical outputs. The root
+packet-summary remains its original pre-review snapshot; final status is attached
+in the separate closeout record.
 
-Owned PostgreSQL15.18 remains running for review only:
-865d147c807070d1984ada6148346f2a9cffeea55e1f8e68315ba81f2af84d8d,
-forge-v28i2-validation at127.0.0.1:5544,1CPU/512MiB/tmpfs192MiB. It must not be
-recreated or replaced. After explicit reviewer DB-slot release, save/fsync actual
-0projectDB catalog, remove only this exact ID with the new I2 cleanup helper,
-verify exact absence/5544refusal, then update accepted state only from its separate
-decision. Push scoped closeout and STOP afterI2. No deployment, migrations, paid
-infra, public submit/worker route, daemon, scheduling or UI implementation.
+No validation process, generator, coordinator or owned PostgreSQL service remains.
+After explicit reviewer DB/TEST release, actual0projectDBs were saved/fsynced before
+one exact-ID stop of865d147c807070d1984ada6148346f2a9cffeea55e1f8e68315ba81f2af84d8d.
+Initial absence=false observations are preserved; bounded absence/5544refusal and
+fresh root/independent verification passed. Never recreate or replace that service.
+For new reproduction, snapshot all current evidence/originals into a new namespace
+and admit a new owned backend in an appropriate quiet window.
 
-Original untracked .agents/ and both master/architecture prompt files are intact.
+The worker is headless and H proposals remain one edit batch. No live model API,
+local inference or interactive Microsoft PowerPoint qualification ran. Inherited
+locale, narrow/fit/native-consumer and shared-machine timing limits remain. No
+deployment, migration, paid infrastructure, public submit/worker route, daemon,
+hosted scheduling, Assistant UI or automatic provider context was added.
+
+I2 is complete. STOP at this boundary. The next candidate is recorded only in
+[the roadmap](ROADMAP.md#assistant-surface-integration), unauthorized until its
+concrete contract is prepared within a further instruction. Parent V2-8 is open.
+Original untracked `.agents/` and both master/architecture prompt files are intact.

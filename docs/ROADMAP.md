@@ -8902,7 +8902,7 @@ local inference. Only that separate transport correction is authorized; this aud
 | P0 — complete headless boundary | [Turn and approval ownership](#assistant-turn-approval-contract) | V2-8H independently accepted at22e7c97; durable bounded visible turns and atomic approval reuse the existing run queue. Hosted routes/UI remain in their own entry. |
 | P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | Connect accepted SearchProvider through canonical authority and preserve verifiable project-scoped citations; do not merely add a catalog name. |
 | P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
-| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 accepted, I2 worker under validation, then separately contracted authenticated submission/scheduling and the visible Assistant. |
+| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 transport and I2 headless worker independently accepted; authenticated submission/scheduling and the visible Assistant still need separate contracts. |
 | P0 basic / P1 distributed | [Trace and spend admission](#assistant-trace-budget) | Make context/tool/instruction provenance observable, preserve unknown usage, and prevent parallel requests/retries bypassing account allowances. |
 | P0 pilot / P1 release | [Assistant qualification](#assistant-live-qualification) | Separate deterministic correctness from real-model usefulness, injection resistance, grounded claims and human slide quality. |
 | P2 vision; P0 honest quality gates | [Visual feedback](#assistant-visual-feedback) | Reuse deterministic checks and native renderers; qualify optional vision behind read-only revision-bound artifacts and bounded semantic proposals. |
@@ -9076,35 +9076,56 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-turn-worker"></a>
 
-  - [ ] **V2-8I-2 bounded turn-worker orchestration — current authorized dependency.**
-    The2026-10-24 human continuation starts the next immediate work. Prepare and
-    implement [the bounded worker contract](V2-8I-2-EVAL.md): exact-turn H lookup,
+  - [x] **V2-8I-2 bounded turn-worker orchestration — independently accepted.**
+    The2026-10-24 human continuation authorized
+    [the bounded worker contract](V2-8I-2-EVAL.md): exact-turn H lookup,
     stateless preparation/approved-run orchestration and operator CLI parity.
     Preserve all existing leases/approvals/accounting, copy authority before awaits,
     return private metadata only and validate both stores/process recovery with
-    offline fixtures. [Plan review](reviews/V2-8I-2-plan-3ffebec.md) is ready for
+    offline fixtures. [Plan review](reviews/V2-8I-2-plan-3ffebec.md) preceded
     implementation. Source58662ec completes all234primary files3015/3015 plus
     4distinct persisted/native cases, focused79/development120overlapping repeats,
-    build/type/50cells and119-image inspection. Initial106/108invalid-H-fixture
+    build/type/50cells and119-image inspection. Initial106passes/2invalid-H-fixture
     failures, the CLI status correction and reviewed helper guards remain retained.
     All prior6488files/5canonical originals are restored and15new originals pass
-    native identity audit. Independent acceptance and owned cleanup are pending.
+    native identity audit. Separate [ACCEPT](reviews/V2-8I-2-58662ec.json) records
+    313primary+4native overlapping successful repeats, typecheck and119-image
+    inspection. The25packet/fresh original PPTXs pass177part/595property native
+    identity checks. All6847files/211PPTXs in the independent snapshot still match.
+    Cleanup saved/fsynced actual0projectDBs before one exact-ID stop and verified
+    bounded absence/5544refusal, with independent hash/probe confirmation. The
+    separate locale probe remains9pass/1standing failure; no required case remains
+    failed/skipped/cancelled/unexecuted. Stop after I2; no dependent implementation
+    is authorized by this acceptance.
     There is no public
     submission endpoint, provider registry/default, daemon, deployment or UI in
     this slice. Later authenticated submission/scheduling supplies trusted bindings
     and bounded durable discovery over these same rows; it must not add another
-    queue or tie workers to a browser connection. Scope/non-goals/common gates and
-    stop point are frozen in the linked contract; source/evidence acceptance is
-    separate. Keep I1's accepted source and originals intact.
+    queue or tie workers to a browser connection. This look-ahead is satisfied by
+    the stateless backend-injected worker, stored turn/run identities and metadata
+    result; no future host needs a second document or queue. Scope/non-goals/common
+    gates and stop point are frozen in the linked contract. I1's accepted source
+    and originals remain intact.
+
+    > **Learned.** A B-valid multistep plan can still violate H's one-batch
+    > proposal contract. Preserve H's rejection and exercise defensive loop bounds
+    > through actual standalone B transactions. CLI status must distinguish
+    > unfinished work from waiting for a human decision, while an entered commit
+    > can truthfully finish after shutdown. Evidence assembly must distinguish a
+    > designated gate from a larger overlapping process report; correcting that
+    > metadata must not discard cases, weaken the validator or rerun generators
+    > over restored originals. Reusable contract lessons are in TRAPS.md.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
-  Agree the promised surface before implementation: existing-deck editing versus
-  complete conversational creation/research. Keep the current placeholder until
-  the selected contract works. Thin authenticated submit/read/decide/cancel routes
-  delegate to the accepted V2-8H turn/run services; `agent-chat` already supplies
-  CLI parity. Derive authority from the session and retain explicit generation,
+  Existing-deck editing is the approved first capability. Agree the concrete
+  authenticated submission/scheduling contract and then the Assistant's editor
+  draft/save/proposal/cancel interaction before implementing each slice. Keep the
+  current placeholder until that interface contract works. Existing read/decide/
+  cancel/clear routes and the headless worker reuse accepted H/B authority; a
+  future thin submit route must do the same. `agent-chat` already supplies CLI
+  parity. Derive authority from the session and retain explicit generation,
   revision and decision bindings. Saved chat is not automatically provider context;
   agree that context policy separately if the surface promises continuity. Settle or explicitly
   handle pending editor drafts/saves before capturing a saved revision; preserve

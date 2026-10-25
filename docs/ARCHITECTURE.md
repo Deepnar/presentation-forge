@@ -2769,5 +2769,7 @@ persisted run success wins a completion race. Waiting for explicit approval and
 settled observation return0. A shutdown after an entered one-batch commit can
 therefore report success; shutdown does not invent user cancellation.
 
-This implementation is under validation, not accepted. [I2's contract/evaluation](V2-8I-2-EVAL.md)
-records the pending gates; later integration lives only in the roadmap.
+Exact source `58662ec` is [independently accepted](reviews/V2-8I-2-58662ec.json).
+[I2's contract/evaluation](V2-8I-2-EVAL.md) records completed validation, native
+inspection, cleanup and remaining qualification limits. Later integration lives
+only in the roadmap.

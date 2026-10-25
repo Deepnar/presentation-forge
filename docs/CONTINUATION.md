@@ -32,18 +32,34 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Active task and reproduction
+## Current accepted slice and reproduction
 
-The current authorized slice is **V2-8I-2 bounded explicit-turn worker** at source
-`58662ecc074f7cc29bf29a0dd410d581ffca0eef`, pending final validation and independent
-acceptance. Read [its contract/evaluation](V2-8I-2-EVAL.md),
+**V2-8I-2 bounded explicit-turn worker** is independently accepted at source
+`58662ecc074f7cc29bf29a0dd410d581ffca0eef` in
+[the exact-source decision](reviews/V2-8I-2-58662ec.json). Read
+[its contract/evaluation](V2-8I-2-EVAL.md),
 [current runbook](v2-8i-2-evidence/RUNBOOK.md), HANDOFF and state before executing
-anything. The accepted baseline remains I1 source5170adc. Corrected development
-passed120/120 plus typecheck; the earlier106pass/2invalid-fixture failures remain
-archived. The234-file primary inventory and both-store focused/native gates still
-need their complete recorded execution. No live model/local inference is allowed.
-The internal B loop can exercise multistep bounds; H proposals remain one batch.
-Stop after I2 review/cleanup/closeout; dependent scope stays in the roadmap.
+anything. All234primary files passed3015/3015 plus4distinct native/persistence
+cases. Focused79, corrected-development120 and independent313+4 successful repeats
+overlap those cases. All nine gates, build/typecheck/50cells and119-image inspection
+passed. The separate locale probe remains9pass/1standing failure. Initial106pass/
+2invalid-fixture failures and all helper/governance corrections remain archived.
+
+All6488historical files/196PPTXs and5canonical originals were restored/hash-verified;
+the independent6847-file/211-PPTX snapshot also matches. Twenty-five exact new
+original archives across both namespaces passed native identity inspection. Owned
+cleanup saved/fsynced actual0projectDBs before a single exact-ID stop; bounded
+absence/5544refusal and independent verification passed. No validation process or
+owned service remains. The root packet-summary is its preserved pre-review snapshot;
+[the closeout record](v2-8i-2-evidence/acceptance-closeout.json) attaches the decision
+and cleanup without rewriting reviewed evidence.
+
+For fresh reproduction use a new namespace, all-current snapshots and a new owned
+service in a quiet window. Never recreate the removed service or rerun finishers
+against restored canonical originals. No live model/local inference was used or
+authorized. The internal B loop exercises multistep bounds; H proposals remain one
+batch. I2 is complete; stop here. Dependent scope stays in the roadmap and needs
+its own concrete contract before implementation.
 
 ## Accepted prerequisite history
 

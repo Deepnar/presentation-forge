@@ -1,0 +1,90 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "comparedAcceptedBaseline": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "atUtc": "2026-10-25T17:39:14.798426+00:00",
+  "decision": "ACCEPT",
+  "decisionCommit": "0417fbbe9027103cfbb5d50df4c6e0964aca2d89",
+  "decisionRecord": {
+    "path": "docs/reviews/V2-8I-2-58662ec.json",
+    "sha256": "a3e1243e73ccea60353ec162e894f16cbbff054e7ea9cc8486303cf8a5b3ad67"
+  },
+  "independentEvidenceCommit": "190bce3abac386f1c33aa0446dddd5177eb4dce8",
+  "reviewedPrimaryPacketCommit": "b0b3beda928814fdd856c3f81dc1531a45f6d91a",
+  "preservedPreReviewSummary": {
+    "path": "docs/v2-8i-2-evidence/packet-summary.json",
+    "sha256": "5efde825264381dd97f27d9d10b86f1a79106367321cbad8b579b49d6e01136f"
+  },
+  "preReviewSummaryIntentionallyUnchanged": true,
+  "primary": {
+    "orderedJobs": 48,
+    "fullMatrixFiles": 234,
+    "fullMatrixPasses": 3015,
+    "distinctWorkerNativePasses": 4,
+    "distinctRequiredPasses": 3019,
+    "focusedPrimaryRepeats": 79,
+    "correctedDevelopmentPrimaryRepeats": 120,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "unexecutedRequiredCases": 0,
+    "nineGatesPassed": true,
+    "benchmarkCells": 50,
+    "fullMatrixIndependentlyDuplicated": false
+  },
+  "independentRepeatedPrimary": {
+    "total": 313,
+    "pass": 313,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentRepeatedNative": {
+    "total": 4,
+    "pass": 4,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentRepeatsNotAddedToDistinctRequiredTotal": true,
+  "standingLocale": {
+    "id": "byok-locale",
+    "source": "docs/ROADMAP.md#byok-locale-standing-failure",
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "independentlyRepeated": false,
+    "includedInSuccessfulRequiredTotal": false,
+    "formalRequiredGateWaiver": false,
+    "classification": "Separate inherited en_IN formatting assertion remains failed outside the nine required gates; no assertion or product change."
+  },
+  "sourceManifest": {
+    "path": "docs/v2-8i-2-evidence/source-manifest.json",
+    "sha256": "ac40f5ab8ee267f0d48cdd2cd00b0447030fb02dca4b73582d5b7ac8167bf83d"
+  },
+  "sourceDeltaAfterImplementation": [],
+  "cleanupRecords": [
+    {
+      "path": "docs/v2-8i-2-evidence/owned-postgres-before-removal.json",
+      "sha256": "da1af7aa3479d5360f89439891182eadd5408b1a1909f50d7e90beb797f9c4de"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/owned-postgres-cleanup.json",
+      "sha256": "5c02a6bb8b18b563083c934eb57c4b3407814e96bf0b9e6395b519e3f6329474"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/owned-postgres-cleanup-verification.json",
+      "sha256": "99af8b87736fee2f5a92445f7e204211feabd0a7b611753c5d63313bede071a7"
+    },
+    {
+      "path": "docs/v2-8i-2-evidence/independent/cleanup-verification.json",
+      "sha256": "a617b69a7e4316e30518e6ea6fcb6210afc4c888b1c760bc8de66badff85bb00"
+    }
+  ],
+  "cleanupComplete": true,
+  "ownedServiceRemaining": false,
+  "remainingValidationProcesses": false,
+  "nextFeatureAuthorized": false,
+  "stopAfter": "V2-8I-2"
+}

@@ -53,6 +53,8 @@ host-instance tool conversations, the shared web-search provider boundary and
 headless durable visible turns with atomic proposal approval are independently
 accepted. Owner-authenticated conversation read/export/decide/cancel/clear HTTP
 transport is also independently accepted; it exposes no preparation or execution.
+The bounded headless explicit-turn worker and operator CLI are independently
+accepted at `58662ec`; they reuse stored approval and canonical run authority.
 Saved chat does not automatically become provider context. Authenticated
 hosted turn orchestration, search-tool integration, live-provider qualification
 and the visible Assistant remain in the

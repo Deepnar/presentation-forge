@@ -195,6 +195,13 @@ verified. Earlier resource holds remain historical. There is no remaining I1
 validation/review/cleanup blocker. [The roadmap](ROADMAP.md#assistant-surface-integration)
 owns future scope; acceptance does not authorize dependent implementation.
 
+V2-8I-2 is independently accepted at58662ec with complete required validation,
+313primary+4native independent successful repeats and typecheck. Its owned service
+was removed after saved/fsynced actual0projectDBs; bounded exact-ID absence and5544
+refusal were independently verified. There is no remaining I2 validation/review/
+cleanup blocker. [The current evaluation](V2-8I-2-EVAL.md) records exact evidence
+and limitations; dependent scope remains only in the linked roadmap entry.
+
 The active V2 task is recorded in `docs/development-state.json` and
 `docs/ROADMAP.md` §12. For V2-7A a quiet shared-machine
 window was obtained and all required validation executed against the isolated
