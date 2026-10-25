@@ -23,9 +23,9 @@
   "validation": [
     {
       "id": "turn-worker",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-2-evidence/turn-worker.json",
+      "reason": "Three-file exact-source focused gate79/79, no failure/skip/cancel; actual both-store contracts/process kills/CLI. Overlaps primary inventory."
     },
     {
       "id": "non-browser-bulk",

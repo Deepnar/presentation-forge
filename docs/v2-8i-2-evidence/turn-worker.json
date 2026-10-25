@@ -1,0 +1,21 @@
+{
+  "id": "turn-worker",
+  "kind": "tests",
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-turn-worker-sqlite-8i.test.js test/v2-turn-worker-postgres-8i.test.js test/v2-turn-worker-process-8i.test.js",
+  "log": "docs/v2-8i-2-evidence/logs/turn-worker.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 79,
+    "pass": 79,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-turn-worker-sqlite-8i.test.js",
+    "test/v2-turn-worker-postgres-8i.test.js",
+    "test/v2-turn-worker-process-8i.test.js"
+  ],
+  "backend": "Temporary SQLite and exact owned PostgreSQL15.18; injected/loopback providers; overlaps complete primary inventory."
+}

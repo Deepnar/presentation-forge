@@ -183,3 +183,7 @@ files/196ignored original PPTXs and five canonical originals before generators.
 the actual recent same-source180-second samples; preparation and every new job
 still require fresh30-second admission. No thresholds changed. Full execution is
 now underway in bounded serial batches; no primary totals are asserted yet.
+
+The focused three-file worker gate completed79/79,0fail/skip/cancelled,
+including actual SQLite/PostgreSQL contracts, independent child-process fault
+recovery and real CLI checks. It overlaps the complete primary matrix.
