@@ -18,7 +18,10 @@ Only authenticated POST conversation/turns is new; H admission/replay/retention,
 I2 trusted preparation and explicit approval/run execution remain authoritative.
 No provider dispatch occurs on submission. No frontend was changed.
 
-Source/helper readiness review precedes expensive execution. Qualify a sustained
+Source/helper readiness passed after the native setup-failure cleanup correction
+atd09b61c; its exact delta was independently rechecked without execution. The
+read-only sustained quiet sampler is active; competing CPU spikes have prevented
+admission. No DB/test/build/generator is active. Qualify a sustained
 quiet window, use fresh admission per job and the new I3 namespace/owned service.
 Save/fsync identity before use, verify final TCP readiness/empty catalog, and snapshot
 all current evidence/ignored originals plus five canonical outputs before generators.

@@ -19,6 +19,13 @@ The [source manifest](v2-8i-3-evidence/source-manifest.json) binds seven changed
 source/test/governance files and the new validation helpers. Syntax/protocol checks
 pass; no behavioral test, service, generator or model execution has run yet.
 Full exact-source validation and independent implementation acceptance are pending.
+The [separate source/helper review](reviews/V2-8I-3-2ba82cb-source-harness.json)
+found no material product blocker. Its required native fixture setup-failure
+cleanup correction was committed at `d09b61c`, with old/new helper hashes in
+[the correction record](v2-8i-3-evidence/helper-review-correction.json). The same
+reviewer subsequently checked the exact delta and confirmed readiness, without
+executing tests or issuing implementation acceptance. Quiet-window qualification
+is running; recurring competing CPU spikes have prevented admission so far.
 
 ## Bounded contract
 

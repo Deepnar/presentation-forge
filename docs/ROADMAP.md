@@ -9130,9 +9130,14 @@ local inference. Only that separate transport correction is authorized; this aud
     identity-only parser clarification was committed before implementation.
     Source/tests `2ba82cb` implement the boundary with exact byte/encoding, replay,
     concurrent admission and both-protocol worker tests. Syntax/protocol checks
-    pass; behavioral execution remains unexecuted. Source/helpers need separate
-    readiness review; complete current-source gates and original-byte preservation
-    remain required. Stop after I3 acceptance/cleanup.
+    pass; behavioral execution remains unexecuted. Separate
+    [source/helper review](reviews/V2-8I-3-2ba82cb-source-harness.json) found no
+    material product blocker and required one native fixture setup-failure cleanup
+    correction. That correction is committed/hash-bound atd09b61c and its delta
+    was independently rechecked. Sustained quiet admission is waiting on competing
+    CPU spikes; no I3 backend/test/generator has started. Complete current-source
+    gates and original-byte preservation remain required. Stop after I3 acceptance/
+    cleanup.
 
     **Look-ahead.** This supplies durable authenticated ingress before host/provider
     scheduling. The host must resolve policy/credentials and reuse I2's stateless

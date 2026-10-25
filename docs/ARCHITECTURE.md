@@ -2773,3 +2773,26 @@ Exact source `58662ec` is [independently accepted](reviews/V2-8I-2-58662ec.json)
 [I2's contract/evaluation](V2-8I-2-EVAL.md) records completed validation, native
 inspection, cleanup and remaining qualification limits. Later integration lives
 only in the roadmap.
+
+### V2-8I-3 authenticated turn submission (validation pending)
+
+`POST /api/v2/projects/:id/conversation/turns` delegates to H submit through the
+existing private conversation transport. The session and project path supply the
+owner binding; administrator project access does not bypass private chat ownership.
+The accepted submission schema and transaction retain request identity/replay,
+generation and revision checks, active-turn admission, storage reservations and
+deadlines. A matching key returns its current saved turn; this response does not
+claim that submission invoked a provider or executed an edit.
+
+Only the exact Express-matching submission POST receives a 262,144-byte parser
+before the existing 8 KiB private prefix parser. It accepts UTF-8 application/json
+with absent/identity encoding, rejects ambiguous parameters/other charsets/
+compression and verifies actual UTF-8 bytes before decoding. The route also checks
+serialized UTF-8 size. Other methods and private paths keep the old admission cap.
+Parser/URI/backend refusals remain fixed private JSON; H busy, conflicting request
+and storage admission map to409. No provider, queue, scene or history authority is
+added; existing CLI submission remains the headless equivalent.
+
+Source `2ba82cb` is implemented, with behavioral validation and independent
+acceptance pending in [the I3 evaluation](V2-8I-3-EVAL.md). It leaves the visible
+Assistant and host execution policy at their roadmap boundaries.
