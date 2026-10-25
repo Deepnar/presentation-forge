@@ -1,0 +1,12 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "inspectedBy": "/root",
+  "index": "docs/v2-8i-2-evidence/pre-resume-browser-2/images.json",
+  "images": 19,
+  "contactSheetsInspected": 4,
+  "fullSize": [
+    "docs/v2-7b-1-evidence/imported-narrow.png"
+  ],
+  "allImageHashesVerified": true,
+  "observations": "Inspected save/reopen/conflict/recovery states, history preview/restoration, hosted persistence and imported chart/table/stat/transition captures. History dialogs and inspector controls remain visible; chart/table values and saved changes appear. Inherited partial narrow canvas/horizontal overflow remains. No newly overlapping controls or clipped modal observed in these19. Complete final visual/native gate remains pending."
+}
