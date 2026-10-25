@@ -15,18 +15,20 @@ The exact new owned PG15.18 ID is
 name forge-v28i2-validation, loopback5544,1CPU/512MiB/tmpfs192MiB.
 Ownership/backup manifests are under docs/v2-8i-2-evidence; never recreate/reuse I1.
 
-Full coordinator batches1–7 completed successfully: focused79/79,196bulk2528/2528,
-and19of26serial files/147passes, with0fail/skip/cancelled. Batch8 is active:
-out/v2-8i-2-validation-batch-8.log and coordinator.json/log. No other validation
-process may overlap. The coordinator bounds3new jobs, yields, then needs audited
---resume; never repeat preparation after snapshots. Exact source/ID/empty catalog
-and fresh admission are enforced. Focused worker, bulk and typecheck gates pass;
-six complete gates remain pending. Snapshots/historical generated changes must
-be preserved until all current outputs are captured and the new finisher restores
-all6488prior files and5canonical originals. Never commit generated historical
-changes. The11fresh workspace screenshots were inspected, including full-size
-narrow editor/history; narrow matches the accepted I1 capture exactly. Final
-119-style image inspection/native originals/shape audit are still pending.
+Full coordinator batches1–9 completed successfully. Batch10 is active:
+out/v2-8i-2-validation-batch-10.log and coordinator.json/log. All26serial files
+passed208/208; bulk196files2528/2528; focused worker79/79; typecheck passed.
+All have0fail/skip/cancelled. PostgreSQL primary work has started (first17/17).
+No other validation process may overlap. Resume audited bounded3job batches;
+never repeat preparation after snapshots. Exact source/ID/empty catalog and
+fresh admission are enforced. Five complete gates remain pending (PG contracts,
+cross-process faults, build, benchmark, combined visual/native evidence).
+
+All76fresh browser images were preserved and visually inspected; narrow matches
+accepted I1 exactly, and no new dialog clipping/overlap was observed. Known
+narrow/scroll/loading limits remain. Final native originals/rasters/identity audit
+and full historical restoration are still pending. Preserve all generated old
+folder modifications until new captures/exports are retained; do not commit them.
 primary inventory234files (196bulk/26serial/
 12PG). Perform fresh affected checks and full verification, independent exact-
 source review, guarded owned cleanup, scoped push and stop afterI2. No APIs/local

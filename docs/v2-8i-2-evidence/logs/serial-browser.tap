@@ -1,0 +1,1752 @@
+TAP version 13
+# Subtest: v2-7a workspace dashboard
+    # Subtest: shows the empty state first, then real projects
+    ok 1 - shows the empty state first, then real projects
+      ---
+      duration_ms: 2664.564959
+      type: 'test'
+      ...
+    # Subtest: creates a blank presentation that opens in the editor
+    ok 2 - creates a blank presentation that opens in the editor
+      ---
+      duration_ms: 2489.368038
+      type: 'test'
+      ...
+    # Subtest: creates from a layout with editable content
+    ok 3 - creates from a layout with editable content
+      ---
+      duration_ms: 2431.399524
+      type: 'test'
+      ...
+    # Subtest: renames from the top bar and returns to the dashboard
+    ok 4 - renames from the top bar and returns to the dashboard
+      ---
+      duration_ms: 2397.669814
+      type: 'test'
+      ...
+    # Subtest: deletes with confirmation from the dashboard
+    ok 5 - deletes with confirmation from the dashboard
+      ---
+      duration_ms: 2886.466682
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-7a workspace dashboard
+  ---
+  duration_ms: 13834.860328
+  type: 'suite'
+  ...
+# Subtest: v2-7a navigation and guards
+    # Subtest: back/forward and refresh keep the project
+    ok 1 - back/forward and refresh keep the project
+      ---
+      duration_ms: 3627.39427
+      type: 'test'
+      ...
+    # Subtest: unsaved changes guard the trip back with save and discard paths
+    ok 2 - unsaved changes guard the trip back with save and discard paths
+      ---
+      duration_ms: 2015.012309
+      type: 'test'
+      ...
+    # Subtest: switching projects from the dialog respects unsaved work
+    ok 3 - switching projects from the dialog respects unsaved work
+      ---
+      duration_ms: 2441.088628
+      type: 'test'
+      ...
+    1..3
+ok 2 - v2-7a navigation and guards
+  ---
+  duration_ms: 8083.887787
+  type: 'suite'
+  ...
+# Subtest: v2-7a editor shell
+    # Subtest: edits text, autosaves, and shows history access
+    ok 1 - edits text, autosaves, and shows history access
+      ---
+      duration_ms: 6140.222679
+      type: 'test'
+      ...
+    # Subtest: restores an older revision and exports native PowerPoint
+    ok 2 - restores an older revision and exports native PowerPoint
+      ---
+      duration_ms: 5025.969189
+      type: 'test'
+      ...
+    # Subtest: conflicts across sessions refuse instead of overwriting
+    ok 3 - conflicts across sessions refuse instead of overwriting
+      ---
+      duration_ms: 7692.633438
+      type: 'test'
+      ...
+    # Subtest: locks, hides, multi-selects, and undoes
+    ok 4 - locks, hides, multi-selects, and undoes
+      ---
+      duration_ms: 16262.870534
+      type: 'test'
+      ...
+    # Subtest: presents, assists honestly, and reads without editing
+    ok 5 - presents, assists honestly, and reads without editing
+      ---
+      duration_ms: 1690.281675
+      type: 'test'
+      ...
+    # Subtest: survives narrow viewports with usable rails
+    ok 6 - survives narrow viewports with usable rails
+      ---
+      duration_ms: 3776.863611
+      type: 'test'
+      ...
+    # Subtest: opens a large deck with a full filmstrip
+    ok 7 - opens a large deck with a full filmstrip
+      ---
+      duration_ms: 2061.14124
+      type: 'test'
+      ...
+    # Subtest: remounts cleanly with single-commit semantics
+    ok 8 - remounts cleanly with single-commit semantics
+      ---
+      duration_ms: 8245.227919
+      type: 'test'
+      ...
+    # Subtest: keyboard regions, shortcuts, dialogs, and focus return
+    ok 9 - keyboard regions, shortcuts, dialogs, and focus return
+      ---
+      duration_ms: 2099.653152
+      type: 'test'
+      ...
+    # Subtest: hosted anonymous users get a sign-in state, not an error
+    ok 10 - hosted anonymous users get a sign-in state, not an error
+      ---
+      duration_ms: 2315.435265
+      type: 'test'
+      ...
+    # Subtest: failed saves remain guarded after Done, sidebar navigation, and browser Back
+    ok 11 - failed saves remain guarded after Done, sidebar navigation, and browser Back
+      ---
+      duration_ms: 4856.333889
+      type: 'test'
+      ...
+    # Subtest: save and leave waits for the in-flight request and the newest engine revision
+    ok 12 - save and leave waits for the in-flight request and the newest engine revision
+      ---
+      duration_ms: 4038.617963
+      type: 'test'
+      ...
+    # Subtest: committing a pending text draft still guards and saves the new revision
+    ok 13 - committing a pending text draft still guards and saves the new revision
+      ---
+      duration_ms: 4054.32494
+      type: 'test'
+      ...
+    # Subtest: discard suppresses newer autosaves while history departure is delayed
+    ok 14 - discard suppresses newer autosaves while history departure is delayed
+      ---
+      duration_ms: 8454.891019
+      type: 'test'
+      ...
+    # Subtest: Done preserves failed edits for a later save and leave
+    ok 15 - Done preserves failed edits for a later save and leave
+      ---
+      duration_ms: 4029.57629
+      type: 'test'
+      ...
+    # Subtest: cancelling Save and switch prevents a delayed request from navigating
+    ok 16 - cancelling Save and switch prevents a delayed request from navigating
+      ---
+      duration_ms: 4959.125087
+      type: 'test'
+      ...
+    # Subtest: a failed discard-and-reload keeps the original document saveable
+    ok 17 - a failed discard-and-reload keeps the original document saveable
+      ---
+      duration_ms: 6056.085514
+      type: 'test'
+      ...
+    # Subtest: unbound standalone edits remain guarded through Done and re-entering Edit
+    ok 18 - unbound standalone edits remain guarded through Done and re-entering Edit
+      ---
+      duration_ms: 2411.43319
+      type: 'test'
+      ...
+    # Subtest: edits native chart data in the shell without moving the canvas
+    ok 19 - edits native chart data in the shell without moving the canvas
+      ---
+      duration_ms: 3770.089624
+      type: 'test'
+      ...
+    # Subtest: edits native table data in the shell without moving the canvas
+    ok 20 - edits native table data in the shell without moving the canvas
+      ---
+      duration_ms: 4213.18235
+      type: 'test'
+      ...
+    1..20
+ok 3 - v2-7a editor shell
+  ---
+  duration_ms: 102155.452064
+  type: 'suite'
+  ...
+1..3
+# tests 28
+# suites 3
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 126509.769945
+# forge-test-file "test/v2-edit-chrome-7a.test.js"
+
+TAP version 13
+# Subtest: a freeform slide requires non-empty html
+ok 1 - a freeform slide requires non-empty html
+  ---
+  duration_ms: 116.238294
+  type: 'test'
+  ...
+# Subtest: html is forbidden on non-freeform slides
+ok 2 - html is forbidden on non-freeform slides
+  ---
+  duration_ms: 0.317616
+  type: 'test'
+  ...
+# Subtest: a deck mixing native and freeform slides validates
+ok 3 - a deck mixing native and freeform slides validates
+  ---
+  duration_ms: 0.170335
+  type: 'test'
+  ...
+# Subtest: oversized html fails with a clear cap message
+ok 4 - oversized html fails with a clear cap message
+  ---
+  duration_ms: 0.694728
+  type: 'test'
+  ...
+# Subtest: the catalog and ops schema expose freeform's html field
+ok 5 - the catalog and ops schema expose freeform's html field
+  ---
+  duration_ms: 4.369237
+  type: 'test'
+  ...
+# Subtest: a script tag in freeform html never executes (sandbox)
+ok 6 - a script tag in freeform html never executes (sandbox)
+  ---
+  duration_ms: 652.111669
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 880.638506
+# forge-test-file "test/freeform.test.js"
+
+TAP version 13
+# Subtest: cache key covers html and viewport, in a stable way
+ok 1 - cache key covers html and viewport, in a stable way
+  ---
+  duration_ms: 1.395729
+  type: 'test'
+  ...
+# Subtest: a version prefix means a primitive change invalidates every plate
+ok 2 - a version prefix means a primitive change invalidates every plate
+  ---
+  duration_ms: 0.389772
+  type: 'test'
+  ...
+# Subtest: templates interpolate token paths and leave unknown paths literal
+ok 3 - templates interpolate token paths and leave unknown paths literal
+  ---
+  duration_ms: 0.292473
+  type: 'test'
+  ...
+# Subtest: plateHtmlFor: slide html overrides the theme, surfaces pick variants
+ok 4 - plateHtmlFor: slide html overrides the theme, surfaces pick variants
+  ---
+  duration_ms: 0.329422
+  type: 'test'
+  ...
+# Subtest: a content box without an h field still interpolates a real height
+ok 5 - a content box without an h field still interpolates a real height
+  ---
+  duration_ms: 0.201775
+  type: 'test'
+  ...
+# Subtest: default plate geometry is 16:9
+ok 6 - default plate geometry is 16:9
+  ---
+  duration_ms: 0.181974
+  type: 'test'
+  ...
+# Subtest: renderPlate writes a real PNG and the second call is a cache hit
+ok 7 - renderPlate writes a real PNG and the second call is a cache hit
+  ---
+  duration_ms: 619.692865
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 919.070565
+# forge-test-file "test/plate.test.js"
+
+TAP version 13
+# Subtest: v2-5c chrome editing
+    # Subtest: trusted drag moves through one engine command
+    ok 1 - trusted drag moves through one engine command
+      ---
+      duration_ms: 1663.190603
+      type: 'test'
+      ...
+    # Subtest: zoomed and scrolled drags convert coordinates
+    ok 2 - zoomed and scrolled drags convert coordinates
+      ---
+      duration_ms: 1624.353951
+      type: 'test'
+      ...
+    # Subtest: keyboard nudge, multiselect batch, delete, and undo buttons
+    ok 3 - keyboard nudge, multiselect batch, delete, and undo buttons
+      ---
+      duration_ms: 2454.103265
+      type: 'test'
+      ...
+    # Subtest: locked chrome rejects drags and Done restores navigation
+    ok 4 - locked chrome rejects drags and Done restores navigation
+      ---
+      duration_ms: 3114.499334
+      type: 'test'
+      ...
+    # Subtest: narrow viewport editing holds
+    ok 5 - narrow viewport editing holds
+      ---
+      duration_ms: 2134.079383
+      type: 'test'
+      ...
+    # Subtest: pointer displacement converts to scene displacement at every scale
+    ok 6 - pointer displacement converts to scene displacement at every scale
+      ---
+      duration_ms: 11015.331069
+      type: 'test'
+      ...
+    # Subtest: chart elements displace by the pointer delta on both axes
+    ok 7 - chart elements displace by the pointer delta on both axes
+      ---
+      duration_ms: 2136.204842
+      type: 'test'
+      ...
+    1..7
+ok 1 - v2-5c chrome editing
+  ---
+  duration_ms: 24147.400805
+  type: 'suite'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24709.16217
+# forge-test-file "test/v2-edit-chrome-5c.test.js"
+
+TAP version 13
+# Subtest: v2-5d chrome text editing
+    # Subtest: double-click opens the overlay and typed text commits once
+    ok 1 - double-click opens the overlay and typed text commits once
+      ---
+      duration_ms: 1674.153431
+      type: 'test'
+      ...
+    # Subtest: Escape cancels without mutation
+    ok 2 - Escape cancels without mutation
+      ---
+      duration_ms: 2100.372248
+      type: 'test'
+      ...
+    # Subtest: caret keys never navigate while editing; Ctrl+Enter commits
+    ok 3 - caret keys never navigate while editing; Ctrl+Enter commits
+      ---
+      duration_ms: 2821.080981
+      type: 'test'
+      ...
+    # Subtest: inserted text and shapes select, drag, undo, and redo
+    ok 4 - inserted text and shapes select, drag, undo, and redo
+      ---
+      duration_ms: 1853.761424
+      type: 'test'
+      ...
+    1..4
+ok 1 - v2-5d chrome text editing
+  ---
+  duration_ms: 8456.448045
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9005.109004
+# forge-test-file "test/v2-edit-chrome-5d.test.js"
+
+TAP version 13
+# Subtest: v2-5e chrome resize and style
+    # Subtest: handles align and an se drag resizes through one command
+    ok 1 - handles align and an se drag resizes through one command
+      ---
+      duration_ms: 1757.212352
+      type: 'test'
+      ...
+    # Subtest: zoomed scrolled resize converts on both axes
+    ok 2 - zoomed scrolled resize converts on both axes
+      ---
+      duration_ms: 1664.92703
+      type: 'test'
+      ...
+    # Subtest: style panel commits a fill and refreshes on undo
+    ok 3 - style panel commits a fill and refreshes on undo
+      ---
+      duration_ms: 2148.370901
+      type: 'test'
+      ...
+    # Subtest: repeated inserts cascade without stacking
+    ok 4 - repeated inserts cascade without stacking
+      ---
+      duration_ms: 2081.779928
+      type: 'test'
+      ...
+    # Subtest: double-click needs no stage jump after selection
+    ok 5 - double-click needs no stage jump after selection
+      ---
+      duration_ms: 2819.330157
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-5e chrome resize and style
+  ---
+  duration_ms: 10479.024094
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10985.506405
+# forge-test-file "test/v2-edit-chrome-5e.test.js"
+
+TAP version 13
+# Subtest: v2-5f chrome paragraphs and formatting
+    # Subtest: bullet list edits with an appended bullet in one revision
+    ok 1 - bullet list edits with an appended bullet in one revision
+      ---
+      duration_ms: 1695.86459
+      type: 'test'
+      ...
+    # Subtest: mixed-style body keeps per-paragraph paint through a wording edit
+    ok 2 - mixed-style body keeps per-paragraph paint through a wording edit
+      ---
+      duration_ms: 1577.246552
+      type: 'test'
+      ...
+    # Subtest: format panel recolors one paragraph and undo refreshes it
+    ok 3 - format panel recolors one paragraph and undo refreshes it
+      ---
+      duration_ms: 2659.361398
+      type: 'test'
+      ...
+    # Subtest: caret keys stay in multi-line drafts and Escape cancels whole
+    ok 4 - caret keys stay in multi-line drafts and Escape cancels whole
+      ---
+      duration_ms: 2336.454288
+      type: 'test'
+      ...
+    # Subtest: double-click needs no stage jump with the format bar below
+    ok 5 - double-click needs no stage jump with the format bar below
+      ---
+      duration_ms: 2313.534989
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-5f chrome paragraphs and formatting
+  ---
+  duration_ms: 10590.093973
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11143.155164
+# forge-test-file "test/v2-edit-chrome-5f.test.js"
+
+TAP version 13
+# Subtest: slide management in real chrome
+    # Subtest: adds a blank slide and navigates to it
+    ok 1 - adds a blank slide and navigates to it
+      ---
+      duration_ms: 1609.688473
+      type: 'test'
+      ...
+    # Subtest: duplicates a slide with content preserved
+    ok 2 - duplicates a slide with content preserved
+      ---
+      duration_ms: 2061.69158
+      type: 'test'
+      ...
+    # Subtest: drags to reorder with a marker and commits once
+    ok 3 - drags to reorder with a marker and commits once
+      ---
+      duration_ms: 2599.289334
+      type: 'test'
+      ...
+    # Subtest: multiselects and bulk-deletes with two-step confirm
+    ok 4 - multiselects and bulk-deletes with two-step confirm
+      ---
+      duration_ms: 2085.008408
+      type: 'test'
+      ...
+    # Subtest: detaches a slide with a visible manual state
+    ok 5 - detaches a slide with a visible manual state
+      ---
+      duration_ms: 2054.747049
+      type: 'test'
+      ...
+    # Subtest: holds on a narrow viewport
+    ok 6 - holds on a narrow viewport
+      ---
+      duration_ms: 2067.110929
+      type: 'test'
+      ...
+    1..6
+ok 1 - slide management in real chrome
+  ---
+  duration_ms: 12486.14774
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13106.985109
+# forge-test-file "test/v2-edit-chrome-5i.test.js"
+
+TAP version 13
+# Subtest: layers panel in real chrome
+    # Subtest: lists the tree and syncs selection both ways
+    ok 1 - lists the tree and syncs selection both ways
+      ---
+      duration_ms: 1606.181467
+      type: 'test'
+      ...
+    # Subtest: restacks overlapping text behind its card
+    ok 2 - restacks overlapping text behind its card
+      ---
+      duration_ms: 1574.471772
+      type: 'test'
+      ...
+    # Subtest: locks against drags and hides from projection
+    ok 3 - locks against drags and hides from projection
+      ---
+      duration_ms: 3253.807474
+      type: 'test'
+      ...
+    # Subtest: reorders from the keyboard without touching arrows
+    ok 4 - reorders from the keyboard without touching arrows
+      ---
+      duration_ms: 2379.496976
+      type: 'test'
+      ...
+    # Subtest: stays usable narrow and absent when read-only
+    ok 5 - stays usable narrow and absent when read-only
+      ---
+      duration_ms: 3569.07084
+      type: 'test'
+      ...
+    1..5
+ok 1 - layers panel in real chrome
+  ---
+  duration_ms: 12391.737806
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13065.844927
+# forge-test-file "test/v2-edit-chrome-5j.test.js"
+
+TAP version 13
+# Subtest: layout gallery in real chrome
+    # Subtest: opens the chooser with blank, layout, and duplicate actions
+    ok 1 - opens the chooser with blank, layout, and duplicate actions
+      ---
+      duration_ms: 1547.33854
+      type: 'test'
+      ...
+    # Subtest: browses categories with truthful previews for all 15 templates
+    ok 2 - browses categories with truthful previews for all 15 templates
+      ---
+      duration_ms: 1730.246701
+      type: 'test'
+      ...
+    # Subtest: inserts a title layout and edits its heading
+    ok 3 - inserts a title layout and edits its heading
+      ---
+      duration_ms: 1717.212985
+      type: 'test'
+      ...
+    # Subtest: inserts a comparison layout and restyles a card
+    ok 4 - inserts a comparison layout and restyles a card
+      ---
+      duration_ms: 1693.623718
+      type: 'test'
+      ...
+    # Subtest: inserts a chart template and edits its values
+    ok 5 - inserts a chart template and edits its values
+      ---
+      duration_ms: 2184.477192
+      type: 'test'
+      ...
+    # Subtest: undoes and redoes a template insertion exactly
+    ok 6 - undoes and redoes a template insertion exactly
+      ---
+      duration_ms: 2056.713707
+      type: 'test'
+      ...
+    # Subtest: reorders a template slide with the filmstrip drag
+    ok 7 - reorders a template slide with the filmstrip drag
+      ---
+      duration_ms: 2649.055391
+      type: 'test'
+      ...
+    # Subtest: cancelling the gallery mutates nothing
+    ok 8 - cancelling the gallery mutates nothing
+      ---
+      duration_ms: 1532.076721
+      type: 'test'
+      ...
+    # Subtest: stays usable on a narrow viewport
+    ok 9 - stays usable on a narrow viewport
+      ---
+      duration_ms: 2133.726776
+      type: 'test'
+      ...
+    1..9
+ok 1 - layout gallery in real chrome
+  ---
+  duration_ms: 17253.037288
+  type: 'suite'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17902.615857
+# forge-test-file "test/v2-edit-chrome-5k.test.js"
+
+TAP version 13
+# Subtest: v2-6a projects in real chrome
+    # Subtest: saves the current deck and reports a confirmed saved state
+    ok 1 - saves the current deck and reports a confirmed saved state
+      ---
+      duration_ms: 1944.161877
+      type: 'test'
+      ...
+    # Subtest: recovers the saved project after refresh with identical ids
+    ok 2 - recovers the saved project after refresh with identical ids
+      ---
+      duration_ms: 4418.619949
+      type: 'test'
+      ...
+    # Subtest: edits the reopened project and saves again
+    ok 3 - edits the reopened project and saves again
+      ---
+      duration_ms: 6432.084407
+      type: 'test'
+      ...
+    # Subtest: lists, renames, and deletes behind confirmation
+    ok 4 - lists, renames, and deletes behind confirmation
+      ---
+      duration_ms: 2821.863546
+      type: 'test'
+      ...
+    # Subtest: keeps both editors' work safe on a stale save
+    ok 5 - keeps both editors' work safe on a stale save
+      ---
+      duration_ms: 7898.071845
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-6a projects in real chrome
+  ---
+  duration_ms: 23917.064895
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25251.199606
+# forge-test-file "test/v2-edit-chrome-6a.test.js"
+
+TAP version 13
+# Subtest: v2-6b version history in real chrome
+    # Subtest: edits, saves, duplicates, and records three recoverable versions
+    ok 1 - edits, saves, duplicates, and records three recoverable versions
+      ---
+      duration_ms: 2882.248409
+      type: 'test'
+      ...
+    # Subtest: previews an older revision and restores it as a new revision
+    ok 2 - previews an older revision and restores it as a new revision
+      ---
+      duration_ms: 3905.874301
+      type: 'test'
+      ...
+    # Subtest: keeps the restored state across refresh and resumes autosave
+    ok 3 - keeps the restored state across refresh and resumes autosave
+      ---
+      duration_ms: 7323.264064
+      type: 'test'
+      ...
+    # Subtest: rejects a stale restore without touching the project
+    ok 4 - rejects a stale restore without touching the project
+      ---
+      duration_ms: 3330.74657
+      type: 'test'
+      ...
+    1..4
+ok 1 - v2-6b version history in real chrome
+  ---
+  duration_ms: 17870.648375
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19265.10299
+# forge-test-file "test/v2-edit-chrome-6b.test.js"
+
+TAP version 13
+# Subtest: v2-6c browser against postgres
+    # Subtest: saves, renames, versions, restores, and exports on the hosted backend
+    ok 1 - saves, renames, versions, restores, and exports on the hosted backend
+      ---
+      duration_ms: 4217.020063
+      type: 'test'
+      ...
+    # Subtest: reopens across a server restart with state intact
+    ok 2 - reopens across a server restart with state intact
+      ---
+      duration_ms: 5452.525186
+      type: 'test'
+      ...
+    # Subtest: two sessions on one project conflict instead of overwriting
+    ok 3 - two sessions on one project conflict instead of overwriting
+      ---
+      duration_ms: 4879.772891
+      type: 'test'
+      ...
+    1..3
+ok 1 - v2-6c browser against postgres
+  ---
+  duration_ms: 15607.398295
+  type: 'suite'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16530.761049
+# forge-test-file "test/v2-edit-chrome-6c.test.js"
+
+TAP version 13
+# Subtest: chart editing in real chrome
+    # Subtest: edits a value and a category through the panel in one revision
+    ok 1 - edits a value and a category through the panel in one revision
+      ---
+      duration_ms: 2279.334109
+      type: 'test'
+      ...
+    # Subtest: adds a category and a series, then refuses an unsafe pie switch
+    ok 2 - adds a category and a series, then refuses an unsafe pie switch
+      ---
+      duration_ms: 4079.929052
+      type: 'test'
+      ...
+    1..2
+ok 1 - chart editing in real chrome
+  ---
+  duration_ms: 6368.064558
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7079.25707
+# forge-test-file "test/v2-edit-chrome-chart.test.js"
+
+TAP version 13
+# Subtest: table editing in real chrome
+    # Subtest: edits a cell through the grid in one revision with undo/redo
+    ok 1 - edits a cell through the grid in one revision with undo/redo
+      ---
+      duration_ms: 2988.460372
+      type: 'test'
+      ...
+    # Subtest: adds a row and a column, then removes them
+    ok 2 - adds a row and a column, then removes them
+      ---
+      duration_ms: 4595.839262
+      type: 'test'
+      ...
+    # Subtest: stays usable on a narrow viewport
+    ok 3 - stays usable on a narrow viewport
+      ---
+      duration_ms: 2800.988338
+      type: 'test'
+      ...
+    1..3
+ok 1 - table editing in real chrome
+  ---
+  duration_ms: 10394.514883
+  type: 'suite'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11167.848286
+# forge-test-file "test/v2-edit-chrome-table.test.js"
+
+TAP version 13
+# Subtest: v2-4e font-gate pending state
+    # Subtest: a delayed successful gate does not fail prematurely
+    ok 1 - a delayed successful gate does not fail prematurely
+      ---
+      duration_ms: 2580.853805
+      type: 'test'
+      ...
+    # Subtest: the viewer with slow fonts still reaches ready, not failure
+    ok 2 - the viewer with slow fonts still reaches ready, not failure
+      ---
+      duration_ms: 4565.021536
+      type: 'test'
+      ...
+    1..2
+ok 1 - v2-4e font-gate pending state
+  ---
+  duration_ms: 7151.501192
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7847.115432
+# forge-test-file "test/v2-fontgate-4e.test.js"
+
+TAP version 13
+# Subtest: v2-4d font inventory
+    # Subtest: every V2 theme family is covered
+    ok 1 - every V2 theme family is covered
+      ---
+      duration_ms: 12.07316
+      type: 'test'
+      ...
+    # Subtest: every weight in committed scenes is covered
+    ok 2 - every weight in committed scenes is covered
+      ---
+      duration_ms: 1.842982
+      type: 'test'
+      ...
+    # Subtest: every manifest entry resolves to a real package file
+    ok 3 - every manifest entry resolves to a real package file
+      ---
+      duration_ms: 0.620538
+      type: 'test'
+      ...
+    # Subtest: production build ships every static face
+    ok 4 - production build ships every static face
+      ---
+      duration_ms: 660.398112
+      type: 'test'
+      ...
+    1..4
+ok 1 - v2-4d font inventory
+  ---
+  duration_ms: 675.960533
+  type: 'suite'
+  ...
+# Subtest: v2-4d projection uses scene families
+    # Subtest: display faces project verbatim
+    ok 1 - display faces project verbatim
+      ---
+      duration_ms: 2.079021
+      type: 'test'
+      ...
+    # Subtest: weights and italics project without CSS knowledge
+    ok 2 - weights and italics project without CSS knowledge
+      ---
+      duration_ms: 0.241365
+      type: 'test'
+      ...
+    # Subtest: readiness degrades honestly without a font API
+    ok 3 - readiness degrades honestly without a font API
+      ---
+      duration_ms: 1.161803
+      type: 'test'
+      ...
+    1..3
+ok 2 - v2-4d projection uses scene families
+  ---
+  duration_ms: 3.764018
+  type: 'suite'
+  ...
+1..2
+# tests 7
+# suites 2
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 780.074154
+# forge-test-file "test/v2-fonts-4d.test.js"
+
+TAP version 13
+# Subtest: v2-4f live browser integration
+    # Subtest: compiles a live deck and selects through the shared viewer path
+    ok 1 - compiles a live deck and selects through the shared viewer path
+      ---
+      duration_ms: 2216.297027
+      type: 'test'
+      ...
+    # Subtest: theme change recompiles, clears selection, and loads new faces
+    ok 2 - theme change recompiles, clears selection, and loads new faces
+      ---
+      duration_ms: 2638.204054
+      type: 'test'
+      ...
+    # Subtest: loading indicator shows while compiling, ready replaces it
+    ok 3 - loading indicator shows while compiling, ready replaces it
+      ---
+      duration_ms: 3597.535699
+      type: 'test'
+      ...
+    # Subtest: zoomed live slides scroll and keep overlays aligned
+    ok 4 - zoomed live slides scroll and keep overlays aligned
+      ---
+      duration_ms: 2101.742244
+      type: 'test'
+      ...
+    # Subtest: narrow viewports and fixture return keep working
+    ok 5 - narrow viewports and fixture return keep working
+      ---
+      duration_ms: 2591.212541
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-4f live browser integration
+  ---
+  duration_ms: 13897.420764
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14028.453467
+# forge-test-file "test/v2-live-chrome-4f.test.js"
+
+TAP version 13
+# Subtest: v2-3f-5 theme audit
+    # Subtest: classifies all 34 themes: 10 plate, 12 decor, 7 declared cardFill
+    ok 1 - classifies all 34 themes: 10 plate, 12 decor, 7 declared cardFill
+      ---
+      duration_ms: 91.937368
+      type: 'test'
+      ...
+    # Subtest: every plate template interpolates fully against mode-resolved tokens
+    ok 2 - every plate template interpolates fully against mode-resolved tokens
+      ---
+      duration_ms: 85.997285
+      type: 'test'
+      ...
+    # Subtest: plate templates reference only embedded data: assets
+    ok 3 - plate templates reference only embedded data: assets
+      ---
+      duration_ms: 20.380024
+      type: 'test'
+      ...
+    1..3
+ok 1 - v2-3f-5 theme audit
+  ---
+  duration_ms: 199.477525
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 native resolution
+    # Subtest: solid-only themes keep the legacy background shape exactly
+    ok 1 - solid-only themes keep the legacy background shape exactly
+      ---
+      duration_ms: 34.317389
+      type: 'test'
+      ...
+    # Subtest: decor themes resolve fills with alpha into the scene background
+    ok 2 - decor themes resolve fills with alpha into the scene background
+      ---
+      duration_ms: 5.396258
+      type: 'test'
+      ...
+    # Subtest: translucent cardFill survives with its declared opacity
+    ok 3 - translucent cardFill survives with its declared opacity
+      ---
+      duration_ms: 6.139776
+      type: 'test'
+      ...
+    # Subtest: undeclared cardFill stays opaque with no new keys
+    ok 4 - undeclared cardFill stays opaque with no new keys
+      ---
+      duration_ms: 4.04712
+      type: 'test'
+      ...
+    # Subtest: surface mapping follows composition family, never theme names
+    ok 5 - surface mapping follows composition family, never theme names
+      ---
+      duration_ms: 0.311275
+      type: 'test'
+      ...
+    # Subtest: flat backgrounds omit absent keys for byte-identical legacy scenes
+    ok 6 - flat backgrounds omit absent keys for byte-identical legacy scenes
+      ---
+      duration_ms: 1.92984
+      type: 'test'
+      ...
+    # Subtest: dividers read surface ink only when their surface plate is present
+    ok 7 - dividers read surface ink only when their surface plate is present
+      ---
+      duration_ms: 4.182131
+      type: 'test'
+      ...
+    1..7
+ok 2 - v2-3f-5 native resolution
+  ---
+  duration_ms: 56.946525
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 adapter seam
+    # Subtest: native themes resolve no assets
+    ok 1 - native themes resolve no assets
+      ---
+      duration_ms: 3.767468
+      type: 'test'
+      ...
+    # Subtest: plate themes resolve three hashed assets with sampled contrast
+    ok 2 - plate themes resolve three hashed assets with sampled contrast
+      ---
+      duration_ms: 3086.440313
+      type: 'test'
+      ...
+    # Subtest: resolution is deterministic across runs
+    ok 3 - resolution is deterministic across runs
+      ---
+      duration_ms: 35.400379
+      type: 'test'
+      ...
+    # Subtest: missing or hostile plates fail explicitly
+    ok 4 - missing or hostile plates fail explicitly
+      ---
+      duration_ms: 3.268459
+      type: 'test'
+      ...
+    # Subtest: corner sampling reads pixels, not declarations
+    ok 5 - corner sampling reads pixels, not declarations
+      ---
+      duration_ms: 16.5273
+      type: 'test'
+      ...
+    1..5
+ok 3 - v2-3f-5 adapter seam
+  ---
+  duration_ms: 3146.241097
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 scene integration
+    # Subtest: plate assets land on scenes by planned surface
+    ok 1 - plate assets land on scenes by planned surface
+      ---
+      duration_ms: 11.831102
+      type: 'test'
+      ...
+    # Subtest: plated dividers stay readable while content text is untouched
+    ok 2 - plated dividers stay readable while content text is untouched
+      ---
+      duration_ms: 2.814112
+      type: 'test'
+      ...
+    # Subtest: backgrounds never alter authored semantics or identity
+    ok 3 - backgrounds never alter authored semantics or identity
+      ---
+      duration_ms: 4.989701
+      type: 'test'
+      ...
+    # Subtest: every authored block stays represented with native charts on plates
+    ok 4 - every authored block stays represented with native charts on plates
+      ---
+      duration_ms: 1.798085
+      type: 'test'
+      ...
+    # Subtest: historical scenes without the new fields remain valid
+    ok 5 - historical scenes without the new fields remain valid
+      ---
+      duration_ms: 0.180989
+      type: 'test'
+      ...
+    # Subtest: recompile preserves customized geometry over dressed backgrounds
+    ok 6 - recompile preserves customized geometry over dressed backgrounds
+      ---
+      duration_ms: 4.103259
+      type: 'test'
+      ...
+    # Subtest: detached scenes stay authoritative
+    ok 7 - detached scenes stay authoritative
+      ---
+      duration_ms: 1.216907
+      type: 'test'
+      ...
+    # Subtest: decision-deck capacity is resolved on dressed themes
+    ok 8 - decision-deck capacity is resolved on dressed themes
+      ---
+      duration_ms: 36.364194
+      type: 'test'
+      ...
+    1..8
+ok 4 - v2-3f-5 scene integration
+  ---
+  duration_ms: 3220.344352
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 renderer projection
+    # Subtest: embeds the plate as the slide background image
+    ok 1 - embeds the plate as the slide background image
+      ---
+      duration_ms: 0.651204
+      type: 'test'
+      ...
+    # Subtest: keeps text, charts, and tables native above the plate
+    ok 2 - keeps text, charts, and tables native above the plate
+      ---
+      duration_ms: 0.262443
+      type: 'test'
+      ...
+    # Subtest: projects card translucency as OOXML transparency
+    ok 3 - projects card translucency as OOXML transparency
+      ---
+      duration_ms: 0.074802
+      type: 'test'
+      ...
+    # Subtest: draws decor dressing behind content on decor themes
+    ok 4 - draws decor dressing behind content on decor themes
+      ---
+      duration_ms: 13.619489
+      type: 'test'
+      ...
+    # Subtest: SVG projects the same resolved background above the flat fill
+    ok 5 - SVG projects the same resolved background above the flat fill
+      ---
+      duration_ms: 4.358801
+      type: 'test'
+      ...
+    # Subtest: SVG carries decor on decor themes
+    ok 6 - SVG carries decor on decor themes
+      ---
+      duration_ms: 1.239497
+      type: 'test'
+      ...
+    # Subtest: dark plates keep the accepted chrome opacities
+    ok 7 - dark plates keep the accepted chrome opacities
+      ---
+      duration_ms: 4910.755172
+      type: 'test'
+      ...
+    1..7
+ok 5 - v2-3f-5 renderer projection
+  ---
+  duration_ms: 8490.058945
+  type: 'suite'
+  ...
+# Subtest: v2-3f-5 background layer parity
+    # Subtest: accepts the combined scene as valid
+    ok 1 - accepts the combined scene as valid
+      ---
+      duration_ms: 0.27785
+      type: 'test'
+      ...
+    # Subtest: orders SVG flat fill, plate image, decor, then elements
+    ok 2 - orders SVG flat fill, plate image, decor, then elements
+      ---
+      duration_ms: 0.259455
+      type: 'test'
+      ...
+    # Subtest: keeps the PPTX background-before-decor order
+    ok 3 - keeps the PPTX background-before-decor order
+      ---
+      duration_ms: 7.456287
+      type: 'test'
+      ...
+    # Subtest: renders the combined scene deterministically
+    ok 4 - renders the combined scene deterministically
+      ---
+      duration_ms: 9.890142
+      type: 'test'
+      ...
+    1..4
+ok 6 - v2-3f-5 background layer parity
+  ---
+  duration_ms: 18.159516
+  type: 'suite'
+  ...
+1..6
+# tests 34
+# suites 6
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15359.288763
+# forge-test-file "test/v2-plate-3f5.test.js"
+
+TAP version 13
+# Subtest: v2-4e chrome selection
+    # Subtest: trusted clicks select, shift-click multi-selects, background clears
+    ok 1 - trusted clicks select, shift-click multi-selects, background clears
+      ---
+      duration_ms: 1121.067076
+      type: 'test'
+      ...
+    # Subtest: Escape clears and locked chrome never selects
+    ok 2 - Escape clears and locked chrome never selects
+      ---
+      duration_ms: 1578.201779
+      type: 'test'
+      ...
+    # Subtest: hit testing and overlays hold at 200% zoom
+    ok 3 - hit testing and overlays hold at 200% zoom
+      ---
+      duration_ms: 1563.740415
+      type: 'test'
+      ...
+    # Subtest: overlays align without displacing content, inspector reports ground truth
+    ok 4 - overlays align without displacing content, inspector reports ground truth
+      ---
+      duration_ms: 1572.622709
+      type: 'test'
+      ...
+    # Subtest: deep-link selection and narrow viewports keep working
+    ok 5 - deep-link selection and narrow viewports keep working
+      ---
+      duration_ms: 4174.261117
+      type: 'test'
+      ...
+    1..5
+ok 1 - v2-4e chrome selection
+  ---
+  duration_ms: 10016.208715
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10673.064332
+# forge-test-file "test/v2-selection-chrome.test.js"
+
+TAP version 13
+# Subtest: v2-4a browser smoke
+    # Subtest: mounts real scenes with stable identities
+    ok 1 - mounts real scenes with stable identities
+      ---
+      duration_ms: 2107.56852
+      type: 'test'
+      ...
+    # Subtest: deep links drive slide, zoom, and selection
+    ok 2 - deep links drive slide, zoom, and selection
+      ---
+      duration_ms: 1044.953407
+      type: 'test'
+      ...
+    # Subtest: captures evidence screenshots
+    ok 3 - captures evidence screenshots
+      ---
+      duration_ms: 4246.410076
+      type: 'test'
+      ...
+    1..3
+ok 1 - v2-4a browser smoke
+  ---
+  duration_ms: 8059.149157
+  type: 'suite'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8143.822007
+# forge-test-file "test/v2-viewer-smoke.test.js"
+
+TAP version 13
+# Subtest: imported native chart edits, undo/redo, saves and reopens without moving the canvas
+ok 1 - imported native chart edits, undo/redo, saves and reopens without moving the canvas
+  ---
+  duration_ms: 9227.09036
+  type: 'test'
+  ...
+# Subtest: imported native table edits, undo/redo, saves and reopens without moving the canvas
+ok 2 - imported native table edits, undo/redo, saves and reopens without moving the canvas
+  ---
+  duration_ms: 8846.34651
+  type: 'test'
+  ...
+# Subtest: an imported project keeps pending text guarded and is reachable at exact narrow viewport dimensions
+ok 3 - an imported project keeps pending text guarded and is reachable at exact narrow viewport dimensions
+  ---
+  duration_ms: 2342.846476
+  type: 'test'
+  ...
+# Subtest: the 60-slide import boundary opens all thumbnails; oversized input refuses atomically
+ok 4 - the 60-slide import boundary opens all thumbnails; oversized input refuses atomically
+  ---
+  duration_ms: 2199.741462
+  type: 'test'
+  ...
+# Subtest: imported stat qualifiers remain attached to their values in the real editor
+ok 5 - imported stat qualifiers remain attached to their values in the real editor
+  ---
+  duration_ms: 2258.56625
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25610.610132
+# forge-test-file "test/v2-import-chrome-7b.test.js"
+
+TAP version 13
+# handoff backend: sqlite; actual authenticated production server
+# Subtest: completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports
+ok 1 - completed chat after later turns opens a saved project by keyboard, then edits, saves, reopens, restores and exports
+  ---
+  duration_ms: 12692.093097
+  type: 'test'
+  ...
+# Subtest: both entry points and fresh tabs reopen the same human-edited dark project
+ok 2 - both entry points and fresh tabs reopen the same human-edited dark project
+  ---
+  duration_ms: 5353.037902
+  type: 'test'
+  ...
+# Subtest: a lost response after real creation retries safely after reload without a duplicate
+ok 3 - a lost response after real creation retries safely after reload without a duplicate
+  ---
+  duration_ms: 4064.765927
+  type: 'test'
+  ...
+# Subtest: a held successful response cannot navigate after leaving its source view
+ok 4 - a held successful response cannot navigate after leaving its source view
+  ---
+  duration_ms: 2536.246681
+  type: 'test'
+  ...
+# Subtest: an account change during a held response cannot open another account's project
+ok 5 - an account change during a held response cannot open another account's project
+  ---
+  duration_ms: 2197.356033
+  type: 'test'
+  ...
+# Subtest: a real second document's token storage event invalidates pending work with reload recovery
+ok 6 - a real second document's token storage event invalidates pending work with reload recovery
+  ---
+  duration_ms: 2572.220699
+  type: 'test'
+  ...
+# Subtest: a transient completed-chat source read can retry without losing dark mode
+ok 7 - a transient completed-chat source read can retry without losing dark mode
+  ---
+  duration_ms: 3018.289691
+  type: 'test'
+  ...
+# Subtest: unsupported content refuses visibly with keyboard focus and usable original access at narrow width
+ok 8 - unsupported content refuses visibly with keyboard focus and usable original access at narrow width
+  ---
+  duration_ms: 2519.20538
+  type: 'test'
+  ...
+# Subtest: changed and deleted imports refuse without replacing or resurrecting their projects
+ok 9 - changed and deleted imports refuse without replacing or resurrecting their projects
+  ---
+  duration_ms: 4236.990875
+  type: 'test'
+  ...
+# Subtest: incomplete generation and unavailable storage keep the original flow usable
+ok 10 - incomplete generation and unavailable storage keep the original flow usable
+  ---
+  duration_ms: 2595.019715
+  type: 'test'
+  ...
+# Subtest: 60-slide browser handoff opens all thumbnails and keeps the narrow inspector visible
+ok 11 - 60-slide browser handoff opens all thumbnails and keeps the narrow inspector visible
+  ---
+  duration_ms: 11969.259436
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 54356.461028
+# forge-test-file "test/v2-handoff-chrome-7b.test.js"
+
+TAP version 13
+# cover browser backend: sqlite; actual production server/CSP
+# Subtest: saved first-slide cover matches the canonical SVG and opens by keyboard
+ok 1 - saved first-slide cover matches the canonical SVG and opens by keyboard
+  ---
+  duration_ms: 2560.862372
+  type: 'test'
+  ...
+# Subtest: human edits, first-slide reorder and history restoration refresh the saved cover
+ok 2 - human edits, first-slide reorder and history restoration refresh the saved cover
+  ---
+  duration_ms: 3038.566438
+  type: 'test'
+  ...
+# Subtest: blank, detached, hidden, chart and table content remain honest read-only previews
+ok 3 - blank, detached, hidden, chart and table content remain honest read-only previews
+  ---
+  duration_ms: 1659.544679
+  type: 'test'
+  ...
+# Subtest: dark narrow cards retain usable preview and action bounds
+ok 4 - dark narrow cards retain usable preview and action bounds
+  ---
+  duration_ms: 13432.006699
+  type: 'test'
+  ...
+# Subtest: near-viewport work stays bounded and loading never shifts the cards
+ok 5 - near-viewport work stays bounded and loading never shifts the cards
+  ---
+  duration_ms: 2370.100617
+  type: 'test'
+  ...
+# Subtest: network and transient shipped-font failures have stable local recovery
+ok 6 - network and transient shipped-font failures have stable local recovery
+  ---
+  duration_ms: 4456.515202
+  type: 'test'
+  ...
+# Subtest: actual shipped font HTTP failure recovers on retry
+ok 7 - actual shipped font HTTP failure recovers on retry
+  ---
+  duration_ms: 2281.107061
+  type: 'test'
+  ...
+# Subtest: static font source outage recovers on retry
+ok 8 - static font source outage recovers on retry
+  ---
+  duration_ms: 1786.857933
+  type: 'test'
+  ...
+# Subtest: refresh rejects old revision work and deletion cannot resurrect a card
+ok 9 - refresh rejects old revision work and deletion cannot resurrect a card
+  ---
+  duration_ms: 2259.526681
+  type: 'test'
+  ...
+# Subtest: pending and settled account changes clear previews and guard navigation
+ok 10 - pending and settled account changes clear previews and guard navigation
+  ---
+  duration_ms: 5884.23948
+  type: 'test'
+  ...
+# Subtest: departure cancels preview work and timeout leaves Open usable
+ok 11 - departure cancels preview work and timeout leaves Open usable
+  ---
+  duration_ms: 19896.69619
+  type: 'test'
+  ...
+# Subtest: development StrictMode effect replay creates a fresh live cover loader
+ok 12 - development StrictMode effect replay creates a fresh live cover loader
+  ---
+  duration_ms: 2023.798639
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 62237.441552
+# forge-test-file "test/v2-project-covers-chrome-7c.test.js"
+
+TAP version 13
+# catalog browser backend: sqlite; actual production server/CSP
+# Subtest: one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+ok 1 - one Projects destination discovers both copies without automatic conversion and preserves explicit editor reopening
+  ---
+  duration_ms: 3692.106823
+  type: 'test'
+  ...
+# Subtest: report-only sources open the report, retain companion routes and return to Projects
+ok 2 - report-only sources open the report, retain companion routes and return to Projects
+  ---
+  duration_ms: 4058.298693
+  type: 'test'
+  ...
+# Subtest: title, generated content and type filters give honest results and can clear an empty search
+ok 3 - title, generated content and type filters give honest results and can clear an empty search
+  ---
+  duration_ms: 2227.693104
+  type: 'test'
+  ...
+# Subtest: partial source failures retain the healthy kind and retry only the failed catalog
+ok 4 - partial source failures retain the healthy kind and retry only the failed catalog
+  ---
+  duration_ms: 4541.193346
+  type: 'test'
+  ...
+# Subtest: stale content responses cannot overwrite newer queries or survive query clearing
+ok 5 - stale content responses cannot overwrite newer queries or survive query clearing
+  ---
+  duration_ms: 2950.21347
+  type: 'test'
+  ...
+# Subtest: generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+ok 6 - generated deletion names the selected copy, traps focus, cancels with Escape and retains saved edits
+  ---
+  duration_ms: 2687.358216
+  type: 'test'
+  ...
+# Subtest: saved deletion retains the generated original and its existing destination
+ok 7 - saved deletion retains the generated original and its existing destination
+  ---
+  duration_ms: 2680.370773
+  type: 'test'
+  ...
+# Subtest: account changes clear settled cards, cancel pending search and block a stale destructive action
+ok 8 - account changes clear settled cards, cancel pending search and block a stale destructive action
+  ---
+  duration_ms: 2495.951743
+  type: 'test'
+  ...
+# Subtest: keyboard project search respects pending text navigation guards and restores focus on entry
+ok 9 - keyboard project search respects pending text navigation guards and restores focus on entry
+  ---
+  duration_ms: 2499.808697
+  type: 'test'
+  ...
+# Subtest: settled narrow dark cards, filter controls and deletion dialog remain unobscured
+ok 10 - settled narrow dark cards, filter controls and deletion dialog remain unobscured
+  ---
+  duration_ms: 2531.878016
+  type: 'test'
+  ...
+# Subtest: empty and signed-out hosted catalogs show truthful recovery without false empty success
+ok 11 - empty and signed-out hosted catalogs show truthful recovery without false empty success
+  ---
+  duration_ms: 3566.209874
+  type: 'test'
+  ...
+# Subtest: content-search failure preserves title matches and has an independent retry
+ok 12 - content-search failure preserves title matches and has an independent retry
+  ---
+  duration_ms: 2467.707526
+  type: 'test'
+  ...
+# Subtest: leaving discovery aborts pending search and remounting starts a fresh lifetime
+ok 13 - leaving discovery aborts pending search and remounting starts a fresh lifetime
+  ---
+  duration_ms: 2485.343838
+  type: 'test'
+  ...
+# Subtest: pending deletion keeps focus inside the busy dialog and suppresses navigation shortcuts
+ok 14 - pending deletion keeps focus inside the busy dialog and suppresses navigation shortcuts
+  ---
+  duration_ms: 2256.866908
+  type: 'test'
+  ...
+# Subtest: failed deletions show a focused visible error within the selected-copy dialog and retry safely
+ok 15 - failed deletions show a focused visible error within the selected-copy dialog and retry safely
+  ---
+  duration_ms: 5425.848597
+  type: 'test'
+  ...
+# Subtest: development StrictMode discovery and modal cancellation restore the real invoker
+ok 16 - development StrictMode discovery and modal cancellation restore the real invoker
+  ---
+  duration_ms: 2615.417113
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 49825.270396
+# forge-test-file "test/v2-project-catalog-chrome-7c.test.js"
+
+TAP version 13
+# toolbar browser backend: sqlite; actual production server/CSP
+# Subtest: saved-project editor excludes fixture/compiler/discovery diagnostics while preserving normal controls
+ok 1 - saved-project editor excludes fixture/compiler/discovery diagnostics while preserving normal controls
+  ---
+  duration_ms: 2371.200672
+  type: 'test'
+  ...
+# Subtest: standalone viewer retains fixture selection, Live panel and Projects dialog with Escape focus return
+ok 2 - standalone viewer retains fixture selection, Live panel and Projects dialog with Escape focus return
+  ---
+  duration_ms: 2863.565639
+  type: 'test'
+  ...
+# Subtest: text and all existing shape insertions persist with exact undo/redo and reopen behavior
+ok 3 - text and all existing shape insertions persist with exact undo/redo and reopen behavior
+  ---
+  duration_ms: 15139.517666
+  type: 'test'
+  ...
+# Subtest: pending text uses guarded workspace navigation with Cancel and Save-and-leave preserving the draft
+ok 4 - pending text uses guarded workspace navigation with Cancel and Save-and-leave preserving the draft
+  ---
+  duration_ms: 3225.494195
+  type: 'test'
+  ...
+# Subtest: Cancel during an in-flight Save-and-leave cannot later navigate away
+ok 5 - Cancel during an in-flight Save-and-leave cannot later navigate away
+  ---
+  duration_ms: 4031.958716
+  type: 'test'
+  ...
+# Subtest: chart/table selection keeps the canvas stable and production inspector labels descriptive
+ok 6 - chart/table selection keeps the canvas stable and production inspector labels descriptive
+  ---
+  duration_ms: 10566.27565
+  type: 'test'
+  ...
+# Subtest: read-only mode keeps navigation and inspection usable without insertion or mutation
+ok 7 - read-only mode keeps navigation and inspection usable without insertion or mutation
+  ---
+  duration_ms: 2517.042125
+  type: 'test'
+  ...
+# Subtest: narrow light/dark controls remain reachable without toolbar height changes and History returns focus
+ok 8 - narrow light/dark controls remain reachable without toolbar height changes and History returns focus
+  ---
+  duration_ms: 5034.544051
+  type: 'test'
+  ...
+# Subtest: blank-slide history uses a human slide label rather than an internal scene identity
+ok 9 - blank-slide history uses a human slide label rather than an internal scene identity
+  ---
+  duration_ms: 2526.584265
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 48946.854437
+# forge-test-file "test/v2-editor-toolbar-chrome-7c.test.js"

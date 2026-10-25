@@ -35,9 +35,9 @@
     },
     {
       "id": "serial-browser",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Corrected source58662ec has120/120 development subset passes; complete both-store focused/primary/native gates require final isolated execution and independent review."
+      "status": "passed",
+      "evidence": "docs/v2-8i-2-evidence/serial-browser.json",
+      "reason": "All26 serial files208/208,0fail/skip/cancelled. Visual/native inspection is a separate pending gate."
     },
     {
       "id": "postgres-contract",
