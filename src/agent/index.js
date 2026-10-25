@@ -14,3 +14,8 @@ export async function turnService() {
   const { createTurnService } = await import("../../packages/agent/turns.ts");
   return createTurnService(await projectStore());
 }
+
+export async function turnWorker(provider) {
+  const { createTurnWorker } = await import("../../packages/agent/turn-worker.ts");
+  return createTurnWorker(await projectStore(), provider);
+}
