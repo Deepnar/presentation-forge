@@ -1,0 +1,33 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T17:28:47.067341+00:00",
+  "id": "865d147c807070d1984ada6148346f2a9cffeea55e1f8e68315ba81f2af84d8d",
+  "beforeRemoval": {
+    "file": "docs/v2-8i-2-evidence/owned-postgres-before-removal.json",
+    "sha256": "da1af7aa3479d5360f89439891182eadd5408b1a1909f50d7e90beb797f9c4de",
+    "actualProjectDatabaseCount": 0,
+    "savedAndFsyncedBeforeStop": true
+  },
+  "boundedCleanup": {
+    "file": "docs/v2-8i-2-evidence/owned-postgres-cleanup.json",
+    "sha256": "5c02a6bb8b18b563083c934eb57c4b3407814e96bf0b9e6395b519e3f6329474",
+    "stopExitCode": 0,
+    "firstTwoObservationsExactIdAbsent": false,
+    "finalExactIdAbsent": true,
+    "port5544ConnectionRefused": true
+  },
+  "rootReadOnlyVerification": {
+    "file": "docs/v2-8i-2-evidence/owned-postgres-cleanup-verification.json",
+    "sha256": "99af8b87736fee2f5a92445f7e204211feabd0a7b611753c5d63313bede071a7"
+  },
+  "independentReadOnlyVerification": {
+    "inspectExitCode": 1,
+    "inspectStderr": "error: no such object: 865d147c807070d1984ada6148346f2a9cffeea55e1f8e68315ba81f2af84d8d\n",
+    "matchingContainerIds": [],
+    "exactIdAbsent": true,
+    "port5544ConnectionRefused": true
+  },
+  "countReconstructed": false,
+  "additionalStopRemovalOrDatabaseRecreationIssued": false,
+  "unrelatedServicesModified": false
+}

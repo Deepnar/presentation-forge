@@ -1,0 +1,9 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T14:12:27.842148+00:00",
+  "id": "865d147c807070d1984ada6148346f2a9cffeea55e1f8e68315ba81f2af84d8d",
+  "version": "15.18",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "port": 5544,
+  "nonMaintenanceDatabases": []
+}

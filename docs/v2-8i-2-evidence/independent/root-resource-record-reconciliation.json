@@ -1,0 +1,14 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "resourceSamples": 205,
+  "all48JobFreshAdmissionsIndependentlyReconciled": true,
+  "allSourceManifestChangedPathsComplete": true,
+  "criticalSamples": 0,
+  "resourceSampleHashVerified": true,
+  "assemblerOldNewHashesVerified": true,
+  "designatedFaultCases": 19,
+  "combinedProcessCases": 47,
+  "separateAdditionalWorkerProcessCases": 28,
+  "validatorChangedForEvidenceRecordCorrection": false,
+  "noGeneratorOrFinisherRerunForRecordCorrection": true
+}

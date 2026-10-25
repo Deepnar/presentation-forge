@@ -1,0 +1,130 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "reviewedEvidenceCommit": "b0b3beda928814fdd856c3f81dc1531a45f6d91a",
+  "atUtc": "2026-10-25T17:28:47.359088+00:00",
+  "primaryRepeatedCounts": {
+    "total": 313,
+    "pass": 313,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "supplementalNativeRepeatedCounts": {
+    "total": 4,
+    "pass": 4,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "totalSuccessfulExecutions": 317,
+  "uniquePrimaryFilesRepeated": 14,
+  "newDistinctProductScenarios": 0,
+  "remainingPrimaryLeavesInspectedNotReexecuted": 2702,
+  "remainingPrimaryFilesInspectedNotReexecuted": 220,
+  "typecheckExitCode": 0,
+  "allLogHashesVerified": true,
+  "resourceSamples": 52,
+  "sampleSeconds": 781.8762976469998,
+  "cpuBusyMeanPercent": 17.898120396592812,
+  "cpuBusyPeakPercent": 69.22654813839273,
+  "ioPsiSomeRange": [
+    19.4,
+    48.73
+  ],
+  "criticalSamples": 0,
+  "freshAdmissions": [
+    {
+      "job": "worker-both",
+      "precedingReadySamples": [
+        "2026-10-25T14:10:38.401347+00:00",
+        "2026-10-25T14:10:53.446207+00:00"
+      ],
+      "seconds": 30.0463015790001,
+      "lastSampleAgeSeconds": 0.000198
+    },
+    {
+      "job": "http-both",
+      "precedingReadySamples": [
+        "2026-10-25T14:11:40.194233+00:00",
+        "2026-10-25T14:11:55.241591+00:00"
+      ],
+      "seconds": 30.043084126000394,
+      "lastSampleAgeSeconds": 0.000174
+    },
+    {
+      "job": "turns-both",
+      "precedingReadySamples": [
+        "2026-10-25T14:12:57.943881+00:00",
+        "2026-10-25T14:13:12.991737+00:00"
+      ],
+      "seconds": 30.08881534199918,
+      "lastSampleAgeSeconds": 0.000217
+    },
+    {
+      "job": "boundary",
+      "precedingReadySamples": [
+        "2026-10-25T14:13:59.355699+00:00",
+        "2026-10-25T14:14:14.401329+00:00"
+      ],
+      "seconds": 30.045364731000518,
+      "lastSampleAgeSeconds": 0.000181
+    },
+    {
+      "job": "runtime-both",
+      "precedingReadySamples": [
+        "2026-10-25T14:14:30.100959+00:00",
+        "2026-10-25T14:14:45.146364+00:00"
+      ],
+      "seconds": 30.039453747999687,
+      "lastSampleAgeSeconds": 0.000189
+    },
+    {
+      "job": "protocol",
+      "precedingReadySamples": [
+        "2026-10-25T14:15:24.995174+00:00",
+        "2026-10-25T14:15:40.040804+00:00"
+      ],
+      "seconds": 30.0424343020004,
+      "lastSampleAgeSeconds": 0.000165
+    },
+    {
+      "job": "typecheck",
+      "precedingReadySamples": [
+        "2026-10-25T14:15:57.220076+00:00",
+        "2026-10-25T14:16:12.268627+00:00"
+      ],
+      "seconds": 30.045103761000064,
+      "lastSampleAgeSeconds": 0.000178
+    },
+    {
+      "job": "worker-native-repeats",
+      "precedingReadySamples": [
+        "2026-10-25T14:16:29.207297+00:00",
+        "2026-10-25T14:16:44.252257+00:00"
+      ],
+      "seconds": 30.044553441999597,
+      "lastSampleAgeSeconds": 0.000194
+    }
+  ],
+  "preservation": {
+    "independentAllCurrentFiles": 6847,
+    "independentOriginalPptx": 211,
+    "implementerHistoricalFiles": 6488,
+    "implementerHistoricalPptx": 196,
+    "canonicalOriginals": 5,
+    "allHashesStillMatchAfterCleanup": true,
+    "restorationNeeded": false,
+    "reconstructed": false
+  },
+  "usageInterruption": {
+    "afterPassedChecksAndPreservation": true,
+    "decisionWrittenBeforeInterruption": false,
+    "completedChecksRerun": false,
+    "resumedAtHumanContinuationAfterQuotaReset": true
+  },
+  "dbTestSlotsExplicitlyReleasedBeforeCleanup": true,
+  "cleanupVerified": true,
+  "realModelApiCalls": 0,
+  "localInferenceCalls": 0,
+  "reviewEvidenceComplete": true
+}

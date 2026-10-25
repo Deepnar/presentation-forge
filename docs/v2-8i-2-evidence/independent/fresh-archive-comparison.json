@@ -1,0 +1,117 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "originalFreshArchives": 10,
+  "records": [
+    {
+      "fresh": "docs/v2-8i-2-evidence/independent/native/sqlite-openai-compatible/before.pptx",
+      "sha256": "cfd24be918b8541a2e256413029f66efb5268c0779e8d34e01f8359cbdae5e74",
+      "packetReference": "docs/v2-8i-2-evidence/native/sqlite-openai-compatible/before.pptx",
+      "packetSha256": "f5c8233a4128873f2518601a6e30952b3a447a0ab1135617230e63f372db5bb0",
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "fresh": "docs/v2-8i-2-evidence/independent/native/sqlite-openai-compatible/after.pptx",
+      "sha256": "929be9e0169d1bd6875dddbda444321efd37ae25488d01abd67c7bc937ef330c",
+      "packetReference": "docs/v2-8i-2-evidence/native/sqlite-openai-compatible/after.pptx",
+      "packetSha256": "587135257f8200a6773a17f55daeaf9c941e698866240e08999edc48d88c23b6",
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet2.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "fresh": "docs/v2-8i-2-evidence/independent/native/postgres-openai-compatible/before.pptx",
+      "sha256": "fe04fc638f6ba42790db6438eddc6ba7a4e4c2eaa9612f6f453521e812725b7c",
+      "packetReference": "docs/v2-8i-2-evidence/native/postgres-openai-compatible/before.pptx",
+      "packetSha256": "4e6c61870b83c2e390fa8b5a2c88852c3d74c19d83475872a9e494d121471a2e",
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet3.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "fresh": "docs/v2-8i-2-evidence/independent/native/postgres-openai-compatible/after.pptx",
+      "sha256": "8375aab0c63de97f06b384df2997344631f73e6dce140ef2f2d853af6afcbf62",
+      "packetReference": "docs/v2-8i-2-evidence/native/postgres-openai-compatible/after.pptx",
+      "packetSha256": "7a37d0f466ed392220af2c0bc10c4768e5302d6c6941aae10893c5a8d2eebf86",
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet4.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "fresh": "docs/v2-8i-2-evidence/independent/native/sqlite-anthropic/before.pptx",
+      "sha256": "862086444df04968a1e168f88431a4faf18af640f1a3b8fff0543b029862ce82",
+      "packetReference": "docs/v2-8i-2-evidence/native/sqlite-anthropic/before.pptx",
+      "packetSha256": "0955386b2ead8f4a20b342b20426e42fc0b41d8ac295582f38070f58750573ff",
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet5.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "fresh": "docs/v2-8i-2-evidence/independent/native/sqlite-anthropic/after.pptx",
+      "sha256": "2415213af48c9a6ed96c40378c5016623d0ab5bd888a8d929d95df751d6fc487",
+      "packetReference": "docs/v2-8i-2-evidence/native/sqlite-anthropic/after.pptx",
+      "packetSha256": "e0054235ddb56ddbe42dcf1f422c3d448c4ab6e06f08659377257a57bf4535c6",
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet6.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "fresh": "docs/v2-8i-2-evidence/independent/native/postgres-anthropic/before.pptx",
+      "sha256": "7c35228bfe80582af042ae4a9729ec4191921334b0ec73893002bd38fd4cdbaf",
+      "packetReference": "docs/v2-8i-2-evidence/native/postgres-anthropic/before.pptx",
+      "packetSha256": "240e999490b8f3dbdb4c07602775e42e76b5652280d0ad3773776ce20e87b141",
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet7.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "fresh": "docs/v2-8i-2-evidence/independent/native/postgres-anthropic/after.pptx",
+      "sha256": "d7b97d7435687561580574b5e2fed05c349369ef67ab0d95e9b3b7d57bff9b76",
+      "packetReference": "docs/v2-8i-2-evidence/native/postgres-anthropic/after.pptx",
+      "packetSha256": "34a59b1afe444ab6dd185d97f4ad19d263e72b8852efade36d6b5130919a48aa",
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet8.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "fresh": "docs/v2-8i-2-evidence/independent/http-archives/postgresql-approved.pptx",
+      "sha256": "c079d0cc4b62a85f7f9c3981ae921454b9fa5e260284824e421b063a5d18ab78",
+      "packetReference": "docs/v2-8i-2-evidence/http-archives/postgres-approved.pptx",
+      "packetSha256": "2f86d3ac1811ee2819cfeb714a2fd00b8ecd9eb4e0ee0325c40e49a1e39350a2",
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "fresh": "docs/v2-8i-2-evidence/independent/http-archives/sqlite-approved.pptx",
+      "sha256": "92ea2c1b2049bbd2bfaaf451adde09c5a8361d693155615e749822993dce8630",
+      "packetReference": "docs/v2-8i-2-evidence/http-archives/sqlite-approved.pptx",
+      "packetSha256": "a79e3fc812990b112e843d526e3238b76ea3b6a8bd6157945d109775944cc2c9",
+      "differentParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    }
+  ],
+  "noReconstruction": true
+}

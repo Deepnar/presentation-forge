@@ -1,0 +1,487 @@
+TAP version 13
+# Subtest: PostgreSQL turn worker: exact-turn lookup returns one owner and generation-bound turn
+ok 1 - PostgreSQL turn worker: exact-turn lookup returns one owner and generation-bound turn
+  ---
+  duration_ms: 132.723843
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: preparation returns private status and waits for a separate explicit decision
+ok 2 - PostgreSQL turn worker: preparation returns private status and waits for a separate explicit decision
+  ---
+  duration_ms: 113.518796
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: provider-free approved execution reopens canonical history and cannot repeat an edit
+ok 3 - PostgreSQL turn worker: provider-free approved execution reopens canonical history and cannot repeat an edit
+  ---
+  duration_ms: 97.681554
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: missing provider refuses before dispatch and never selects a fallback
+ok 4 - PostgreSQL turn worker: missing provider refuses before dispatch and never selects a fallback
+  ---
+  duration_ms: 20.723
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: invalid input, authority, accessors and options cannot invoke work
+ok 5 - PostgreSQL turn worker: invalid input, authority, accessors and options cannot invoke work
+  ---
+  duration_ms: 8.56763
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: synchronous snapshots survive same-owner binding, input and option reuse
+ok 6 - PostgreSQL turn worker: synchronous snapshots survive same-owner binding, input and option reuse
+  ---
+  duration_ms: 49.548947
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: a busy preparation is observed without retrying or double dispatch
+ok 7 - PostgreSQL turn worker: a busy preparation is observed without retrying or double dispatch
+  ---
+  duration_ms: 56.48837
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: competing approved workers execute exactly one saved batch
+ok 8 - PostgreSQL turn worker: competing approved workers execute exactly one saved batch
+  ---
+  duration_ms: 77.827152
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: pre-aborted preparation and approved work dispatch no new operations
+ok 9 - PostgreSQL turn worker: pre-aborted preparation and approved work dispatch no new operations
+  ---
+  duration_ms: 55.977168
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: aborting dispatched preparation cancels its visible turn without publishing edits
+ok 10 - PostgreSQL turn worker: aborting dispatched preparation cancels its visible turn without publishing edits
+  ---
+  duration_ms: 48.740158
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: clear during provider work refuses late publication and preserves the deck
+ok 11 - PostgreSQL turn worker: clear during provider work refuses late publication and preserves the deck
+  ---
+  duration_ms: 70.033313
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: cancelled, rejected and cleared approval cannot execute
+ok 12 - PostgreSQL turn worker: cancelled, rejected and cleared approval cannot execute
+  ---
+  duration_ms: 169.740567
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: owner revocation and deletion deny work without provider dispatch
+ok 13 - PostgreSQL turn worker: owner revocation and deletion deny work without provider dispatch
+  ---
+  duration_ms: 19.040009
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: a human save after approval wins over queued execution
+ok 14 - PostgreSQL turn worker: a human save after approval wins over queued execution
+  ---
+  duration_ms: 66.150251
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: provider refusal settles once without fallback, private result or automatic retry
+ok 15 - PostgreSQL turn worker: provider refusal settles once without fallback, private result or automatic retry
+  ---
+  duration_ms: 45.601238
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: unexpected backend errors are fixed even on the final status read
+ok 16 - PostgreSQL turn worker: unexpected backend errors are fixed even on the final status read
+  ---
+  duration_ms: 14.938963
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: approval before the final read returns current persisted status without executing
+ok 17 - PostgreSQL turn worker: approval before the final read returns current persisted status without executing
+  ---
+  duration_ms: 57.904535
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: clear after lookup fences the cached approval and suppresses cached status
+ok 18 - PostgreSQL turn worker: clear after lookup fences the cached approval and suppresses cached status
+  ---
+  duration_ms: 76.442339
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: revocation after publication is enforced by the final status read
+ok 19 - PostgreSQL turn worker: revocation after publication is enforced by the final status read
+  ---
+  duration_ms: 65.502691
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: an expanded B-valid plan cannot bypass the single-batch H proposal contract
+ok 20 - PostgreSQL turn worker: an expanded B-valid plan cannot bypass the single-batch H proposal contract
+  ---
+  duration_ms: 42.374064
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: the internal execution loop caps actual B steps without widening H proposals
+ok 21 - PostgreSQL turn worker: the internal execution loop caps actual B steps without widening H proposals
+  ---
+  duration_ms: 86.852526
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: shutdown after an entered B step yields without inventing user cancellation
+ok 22 - PostgreSQL turn worker: shutdown after an entered B step yields without inventing user cancellation
+  ---
+  duration_ms: 76.185952
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: an entered single-batch H commit reports persisted success despite shutdown
+ok 23 - PostgreSQL turn worker: an entered single-batch H commit reports persisted success despite shutdown
+  ---
+  duration_ms: 52.446518
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: a lease lost after claim yields fixed status and no edit, then recovers canonically
+ok 24 - PostgreSQL turn worker: a lease lost after claim yields fixed status and no edit, then recovers canonically
+  ---
+  duration_ms: 87.262833
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker: the internal loop stops on actual renewal lease loss after one receipt
+ok 25 - PostgreSQL turn worker: the internal loop stops on actual renewal lease loss after one receipt
+  ---
+  duration_ms: 88.97499
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: two independent preparation consumers dispatch only once
+ok 26 - SQLite turn worker process: two independent preparation consumers dispatch only once
+  ---
+  duration_ms: 587.186895
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: two independent approved consumers commit one receipt and one saved revision
+ok 27 - SQLite turn worker process: two independent approved consumers commit one receipt and one saved revision
+  ---
+  duration_ms: 537.676073
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: SIGKILL after reserved retains canonical preparation recovery
+ok 28 - SQLite turn worker process: SIGKILL after reserved retains canonical preparation recovery
+  ---
+  duration_ms: 386.904555
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: SIGKILL after dispatched retains canonical preparation recovery
+ok 29 - SQLite turn worker process: SIGKILL after dispatched retains canonical preparation recovery
+  ---
+  duration_ms: 393.367355
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: SIGKILL after receipt retains canonical preparation recovery
+ok 30 - SQLite turn worker process: SIGKILL after receipt retains canonical preparation recovery
+  ---
+  duration_ms: 357.762399
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: SIGKILL run-uncommitted reopens without lost or repeated edits
+ok 31 - SQLite turn worker process: SIGKILL run-uncommitted reopens without lost or repeated edits
+  ---
+  duration_ms: 427.758774
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: SIGKILL run-committed reopens without lost or repeated edits
+ok 32 - SQLite turn worker process: SIGKILL run-committed reopens without lost or repeated edits
+  ---
+  duration_ms: 393.532928
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: explicit provider preparation and provider-free approved work share stored authority
+ok 33 - SQLite turn worker CLI: explicit provider preparation and provider-free approved work share stored authority
+  ---
+  duration_ms: 1197.580683
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: unknown work authority and malformed provider inputs produce fixed private errors
+ok 34 - SQLite turn worker CLI: unknown work authority and malformed provider inputs produce fixed private errors
+  ---
+  duration_ms: 678.14495
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: a held execution lease exits nonzero without an edit or provider access
+ok 35 - SQLite turn worker CLI: a held execution lease exits nonzero without an edit or provider access
+  ---
+  duration_ms: 362.19528
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: preparation already held by another host exits nonzero without dispatch
+ok 36 - SQLite turn worker CLI: preparation already held by another host exits nonzero without dispatch
+  ---
+  duration_ms: 403.888419
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: a provider refusal exits nonzero and retains only fixed private status
+ok 37 - SQLite turn worker CLI: a provider refusal exits nonzero and retains only fixed private status
+  ---
+  duration_ms: 433.024313
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: SIGTERM during preparation closes the CLI without publishing
+ok 38 - SQLite turn worker CLI: SIGTERM during preparation closes the CLI without publishing
+  ---
+  duration_ms: 446.104459
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: SIGINT during preparation closes the CLI without publishing
+ok 39 - SQLite turn worker CLI: SIGINT during preparation closes the CLI without publishing
+  ---
+  duration_ms: 422.76354
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: two independent preparation consumers dispatch only once
+ok 40 - PostgreSQL turn worker process: two independent preparation consumers dispatch only once
+  ---
+  duration_ms: 657.83061
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: two independent approved consumers commit one receipt and one saved revision
+ok 41 - PostgreSQL turn worker process: two independent approved consumers commit one receipt and one saved revision
+  ---
+  duration_ms: 644.747819
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: SIGKILL after reserved retains canonical preparation recovery
+ok 42 - PostgreSQL turn worker process: SIGKILL after reserved retains canonical preparation recovery
+  ---
+  duration_ms: 540.959729
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: SIGKILL after dispatched retains canonical preparation recovery
+ok 43 - PostgreSQL turn worker process: SIGKILL after dispatched retains canonical preparation recovery
+  ---
+  duration_ms: 13078.24077
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: SIGKILL after receipt retains canonical preparation recovery
+ok 44 - PostgreSQL turn worker process: SIGKILL after receipt retains canonical preparation recovery
+  ---
+  duration_ms: 477.022866
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: SIGKILL run-uncommitted reopens without lost or repeated edits
+ok 45 - PostgreSQL turn worker process: SIGKILL run-uncommitted reopens without lost or repeated edits
+  ---
+  duration_ms: 559.737127
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: SIGKILL run-committed reopens without lost or repeated edits
+ok 46 - PostgreSQL turn worker process: SIGKILL run-committed reopens without lost or repeated edits
+  ---
+  duration_ms: 549.679682
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: explicit provider preparation and provider-free approved work share stored authority
+ok 47 - PostgreSQL turn worker CLI: explicit provider preparation and provider-free approved work share stored authority
+  ---
+  duration_ms: 1413.181562
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: unknown work authority and malformed provider inputs produce fixed private errors
+ok 48 - PostgreSQL turn worker CLI: unknown work authority and malformed provider inputs produce fixed private errors
+  ---
+  duration_ms: 676.378419
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: a held execution lease exits nonzero without an edit or provider access
+ok 49 - PostgreSQL turn worker CLI: a held execution lease exits nonzero without an edit or provider access
+  ---
+  duration_ms: 454.935192
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: preparation already held by another host exits nonzero without dispatch
+ok 50 - PostgreSQL turn worker CLI: preparation already held by another host exits nonzero without dispatch
+  ---
+  duration_ms: 471.14114
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: a provider refusal exits nonzero and retains only fixed private status
+ok 51 - PostgreSQL turn worker CLI: a provider refusal exits nonzero and retains only fixed private status
+  ---
+  duration_ms: 459.257225
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: SIGTERM during preparation closes the CLI without publishing
+ok 52 - PostgreSQL turn worker CLI: SIGTERM during preparation closes the CLI without publishing
+  ---
+  duration_ms: 437.216657
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: SIGINT during preparation closes the CLI without publishing
+ok 53 - PostgreSQL turn worker CLI: SIGINT during preparation closes the CLI without publishing
+  ---
+  duration_ms: 432.946308
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: exact-turn lookup returns one owner and generation-bound turn
+ok 54 - SQLite turn worker: exact-turn lookup returns one owner and generation-bound turn
+  ---
+  duration_ms: 109.739694
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: preparation returns private status and waits for a separate explicit decision
+ok 55 - SQLite turn worker: preparation returns private status and waits for a separate explicit decision
+  ---
+  duration_ms: 87.071608
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: provider-free approved execution reopens canonical history and cannot repeat an edit
+ok 56 - SQLite turn worker: provider-free approved execution reopens canonical history and cannot repeat an edit
+  ---
+  duration_ms: 54.096703
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: missing provider refuses before dispatch and never selects a fallback
+ok 57 - SQLite turn worker: missing provider refuses before dispatch and never selects a fallback
+  ---
+  duration_ms: 12.292432
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: invalid input, authority, accessors and options cannot invoke work
+ok 58 - SQLite turn worker: invalid input, authority, accessors and options cannot invoke work
+  ---
+  duration_ms: 8.815742
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: synchronous snapshots survive same-owner binding, input and option reuse
+ok 59 - SQLite turn worker: synchronous snapshots survive same-owner binding, input and option reuse
+  ---
+  duration_ms: 26.599067
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: a busy preparation is observed without retrying or double dispatch
+ok 60 - SQLite turn worker: a busy preparation is observed without retrying or double dispatch
+  ---
+  duration_ms: 24.791961
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: competing approved workers execute exactly one saved batch
+ok 61 - SQLite turn worker: competing approved workers execute exactly one saved batch
+  ---
+  duration_ms: 33.407244
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: pre-aborted preparation and approved work dispatch no new operations
+ok 62 - SQLite turn worker: pre-aborted preparation and approved work dispatch no new operations
+  ---
+  duration_ms: 22.895253
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: aborting dispatched preparation cancels its visible turn without publishing edits
+ok 63 - SQLite turn worker: aborting dispatched preparation cancels its visible turn without publishing edits
+  ---
+  duration_ms: 18.879909
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: clear during provider work refuses late publication and preserves the deck
+ok 64 - SQLite turn worker: clear during provider work refuses late publication and preserves the deck
+  ---
+  duration_ms: 20.903131
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: cancelled, rejected and cleared approval cannot execute
+ok 65 - SQLite turn worker: cancelled, rejected and cleared approval cannot execute
+  ---
+  duration_ms: 69.678949
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: owner revocation and deletion deny work without provider dispatch
+ok 66 - SQLite turn worker: owner revocation and deletion deny work without provider dispatch
+  ---
+  duration_ms: 15.996005
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: a human save after approval wins over queued execution
+ok 67 - SQLite turn worker: a human save after approval wins over queued execution
+  ---
+  duration_ms: 28.056536
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: provider refusal settles once without fallback, private result or automatic retry
+ok 68 - SQLite turn worker: provider refusal settles once without fallback, private result or automatic retry
+  ---
+  duration_ms: 18.312798
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: unexpected backend errors are fixed even on the final status read
+ok 69 - SQLite turn worker: unexpected backend errors are fixed even on the final status read
+  ---
+  duration_ms: 8.821491
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: approval before the final read returns current persisted status without executing
+ok 70 - SQLite turn worker: approval before the final read returns current persisted status without executing
+  ---
+  duration_ms: 24.145529
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: clear after lookup fences the cached approval and suppresses cached status
+ok 71 - SQLite turn worker: clear after lookup fences the cached approval and suppresses cached status
+  ---
+  duration_ms: 22.28175
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: revocation after publication is enforced by the final status read
+ok 72 - SQLite turn worker: revocation after publication is enforced by the final status read
+  ---
+  duration_ms: 17.918247
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: an expanded B-valid plan cannot bypass the single-batch H proposal contract
+ok 73 - SQLite turn worker: an expanded B-valid plan cannot bypass the single-batch H proposal contract
+  ---
+  duration_ms: 23.699909
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: the internal execution loop caps actual B steps without widening H proposals
+ok 74 - SQLite turn worker: the internal execution loop caps actual B steps without widening H proposals
+  ---
+  duration_ms: 38.412525
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: shutdown after an entered B step yields without inventing user cancellation
+ok 75 - SQLite turn worker: shutdown after an entered B step yields without inventing user cancellation
+  ---
+  duration_ms: 32.74197
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: an entered single-batch H commit reports persisted success despite shutdown
+ok 76 - SQLite turn worker: an entered single-batch H commit reports persisted success despite shutdown
+  ---
+  duration_ms: 27.717548
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: a lease lost after claim yields fixed status and no edit, then recovers canonically
+ok 77 - SQLite turn worker: a lease lost after claim yields fixed status and no edit, then recovers canonically
+  ---
+  duration_ms: 31.092407
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker: the internal loop stops on actual renewal lease loss after one receipt
+ok 78 - SQLite turn worker: the internal loop stops on actual renewal lease loss after one receipt
+  ---
+  duration_ms: 34.391116
+  type: 'test'
+  ...
+# Subtest: work exit table distinguishes unfinished work and final persisted success
+ok 79 - work exit table distinguishes unfinished work and final persisted success
+  ---
+  duration_ms: 0.291886
+  type: 'test'
+  ...
+1..79
+# tests 79
+# suites 0
+# pass 79
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 31526.306194
+# forge-test-file "test/v2-turn-worker-postgres-8i.test.js"
+# forge-test-file "test/v2-turn-worker-process-8i.test.js"
+# forge-test-file "test/v2-turn-worker-sqlite-8i.test.js"

@@ -1,0 +1,9 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "acceptedBaseline": "5170adcec56e65e08f4ec5c1e5067c127f1c4c9d",
+  "reviewedEvidenceCommit": "b0b3beda928814fdd856c3f81dc1531a45f6d91a",
+  "productTestGovernanceDeltaAfterFreeze": [],
+  "all17SourceManifestHashesAndFrozenBlobsVerified": true,
+  "allHelperManifestHashesVerified": true,
+  "sourceManifestSha256": "ac40f5ab8ee267f0d48cdd2cd00b0447030fb02dca4b73582d5b7ac8167bf83d"
+}
