@@ -175,3 +175,11 @@ injected/loopback providers are permitted. Accepted baseline remains I1 source.
 A transitional governance check initially rejected an unaccepted task pointer
 identical to its accepted baseline; committing and identifying the real candidate
 corrected the state record. It was not a behavioral regression gate.
+
+
+Final preparation recorded the new owned PG15.18 service, all6488historical
+files/196ignored original PPTXs and five canonical originals before generators.
+[Qualification provenance](v2-8i-2-evidence/qualification-provenance.json) retains
+the actual recent same-source180-second samples; preparation and every new job
+still require fresh30-second admission. No thresholds changed. Full execution is
+now underway in bounded serial batches; no primary totals are asserted yet.
