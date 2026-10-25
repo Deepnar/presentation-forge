@@ -34,7 +34,23 @@ because old eval wording predates review.
 
 ## Active task and reproduction
 
-The active slice **V2-8I-1 authenticated conversation/approval transport** is
+The current authorized slice is **V2-8I-2 bounded explicit-turn worker** at source
+`58662ecc074f7cc29bf29a0dd410d581ffca0eef`, pending final validation and independent
+acceptance. Read [its contract/evaluation](V2-8I-2-EVAL.md),
+[current runbook](v2-8i-2-evidence/RUNBOOK.md), HANDOFF and state before executing
+anything. The accepted baseline remains I1 source5170adc. Corrected development
+passed120/120 plus typecheck; the earlier106pass/2invalid-fixture failures remain
+archived. The234-file primary inventory and both-store focused/native gates still
+need their complete recorded execution. No live model/local inference is allowed.
+The internal B loop can exercise multistep bounds; H proposals remain one batch.
+Stop after I2 review/cleanup/closeout; dependent scope stays in the roadmap.
+
+## Accepted prerequisite history
+
+The following records are historical validation and cleanup, not the active
+runner or permission to rerun old evidence helpers against restored originals.
+
+The prerequisite **V2-8I-1 authenticated conversation/approval transport** is
 independently accepted at `5170adcec56e65e08f4ec5c1e5067c127f1c4c9d` in
 [the exact-source decision](reviews/V2-8I-1-5170adc.json). Read
 [the evaluation](V2-8I-1-EVAL.md), [runbook](v2-8i-1-evidence/RUNBOOK.md), state and
@@ -52,7 +68,7 @@ before a single stop and independently verified exact-ID absence/5544refusal.
 No process/service remains from this run. Do not rerun finishers against restored
 canonical originals or recreate a removed backend. For new reproduction use a
 fresh namespace, all-current snapshots and a new owned service in a quiet window.
-Stop after I1 acceptance; future scope lives only in the roadmap.
+I1 stopped after acceptance; later authorized scope is indexed above and in the roadmap.
 
 H was the previous accepted baseline at `22e7c97`, with its separate
 [decision](reviews/V2-8H-22e7c97.json). Its 2,898 primary cases, four distinct native
@@ -198,12 +214,12 @@ node --test test/v2-projects-6c-concurrency.test.js
 node --test test/v2-projects-6c-faults.test.js
 node_modules/.bin/vite build --config app/web/vite.config.js
 npm run typecheck
-node tools/v2-benchmark.mjs --out out/v2-8g-benchmark --raster none
+node tools/v2-benchmark.mjs --out out/v2-8i-2-benchmark --raster none
 ```
 
 Use a process-group watchdog for each browser file and run browser files strictly
 serially; each may rebuild shared dist. Bulk inventory and exact bounded runner
-commands are in [the current validation runbook](v2-8g-evidence/RUNBOOK.md) and its linked
+commands are in [the current validation runbook](v2-8i-2-evidence/RUNBOOK.md) and its linked
 `validation-plan.json`. Do not run plain npm test
 concurrently with browser/build validation. The benchmark must report all 50
 cells, not merely the 12 benchmark assertion tests. Render/preview and inspect
