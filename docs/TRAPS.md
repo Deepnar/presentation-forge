@@ -1994,3 +1994,15 @@ Run it again after linking the exact accepted decision. A formal standing-failur
 waiver must name an actual failed required gate; a separate diagnostic probe stays
 failed and explicitly acknowledged outside that gate inventory. I1 corrected only
 review metadata after this distinction was caught, preserving the locale failure.
+
+
+## Validating a nested contract requires every layer
+
+A plan valid for the generic run runtime is not automatically valid for a durable
+visible turn. H additionally requires one edit_content batch, matching scope,
+digest, turn identity and deadline. I2's first cap fixtures passed B parsePlan but
+were correctly refused at H loadState. Keep that negative test. Exercise future
+multistep bounds through the internal execution loop with actual canonical B
+transactions rather than mutating H fixtures and relaxing accepted invariants.
+The same distinction applies to shutdown: an entered one-step commit may finish;
+only a genuinely unfinished multistep run can demonstrate between-step yielding.

@@ -2761,5 +2761,13 @@ yield between approved run operations; an entered transaction retains existing B
 fences and may commit. No imported module starts a daemon, queue, HTTP worker or
 provider call. There is no new persistence authority.
 
+The internal `turn-work-execution.ts` loop delegates only to B. H still accepts
+one edit batch per proposal; the eight-call cap is defensive and is tested with
+actual standalone B multistep plans, without widening H. The CLI returns1 for
+refused/failed work and unfinished busy/lost-lease/aborted/capped work, while final
+persisted run success wins a completion race. Waiting for explicit approval and
+settled observation return0. A shutdown after an entered one-batch commit can
+therefore report success; shutdown does not invent user cancellation.
+
 This implementation is under validation, not accepted. [I2's contract/evaluation](V2-8I-2-EVAL.md)
 records the pending gates; later integration lives only in the roadmap.
