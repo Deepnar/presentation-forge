@@ -13,7 +13,12 @@ Accepted baseline: `58662ecc074f7cc29bf29a0dd410d581ffca0eef`, independently
 [accepted as I2](reviews/V2-8I-2-58662ec.json). Entry checkout:
 `aeeb9de5f504c04f7269a1bb6259df005dc5bcff`; branch/push: `v2`/`origin/v2`.
 Original `.agents/` and both untracked master/architecture prompt files stay intact.
-At plan preparation no new product code, tests, services or model calls have run.
+At plan preparation no new product code, tests, services or model calls had run.
+Source/tests are now committed at `2ba82cb5c321c21d5648f577469f69e82cdcfb24`.
+The [source manifest](v2-8i-3-evidence/source-manifest.json) binds seven changed
+source/test/governance files and the new validation helpers. Syntax/protocol checks
+pass; no behavioral test, service, generator or model execution has run yet.
+Full exact-source validation and independent implementation acceptance are pending.
 
 ## Bounded contract
 

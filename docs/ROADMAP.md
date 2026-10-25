@@ -9126,8 +9126,13 @@ local inference. Only that separate transport correction is authorized; this aud
     scene write or automatic approval occurs on submission. The separate 256 KiB
     POST parser preserves 8 KiB lifecycle/unsupported-path admission and accepted
     retention/owner policy. Existing unsupported `/submit` assertions stay intact.
-    Plan/source/helpers need separate review; complete current-source gates and
-    original-byte preservation remain required. Stop after I3 acceptance/cleanup.
+    [Plan review](reviews/V2-8I-3-plan-a20ebad.json) is ready; its required UTF-8/
+    identity-only parser clarification was committed before implementation.
+    Source/tests `2ba82cb` implement the boundary with exact byte/encoding, replay,
+    concurrent admission and both-protocol worker tests. Syntax/protocol checks
+    pass; behavioral execution remains unexecuted. Source/helpers need separate
+    readiness review; complete current-source gates and original-byte preservation
+    remain required. Stop after I3 acceptance/cleanup.
 
     **Look-ahead.** This supplies durable authenticated ingress before host/provider
     scheduling. The host must resolve policy/credentials and reuse I2's stateless

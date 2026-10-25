@@ -36,11 +36,12 @@ because old eval wording predates review.
 
 The 2026-10-25 continuation authorizes the next bounded dependency,
 [V2-8I-3 authenticated durable submission](ROADMAP.md#assistant-turn-submission).
-[Its contract](V2-8I-3-EVAL.md) is prepared for independent readiness review;
-implementation has not started. Read current HANDOFF before any execution.
-The state file retains accepted I2 until the new implementation is recorded;
-its old successful validation is not new I3 execution. No new service or model
-call has started. Preserve offline-only and quiet-window constraints.
+[Its contract](V2-8I-3-EVAL.md) passed separate plan readiness review. Source/tests
+are committed at `2ba82cb`; source/helper readiness and behavioral validation are
+pending. Read current HANDOFF before execution. The state file retains accepted
+I2 as baseline and indexes the unaccepted I3 source with nine unexecuted gates.
+No new service or model call has started. Preserve offline-only and quiet-window
+constraints; prior I2 success is not new I3 execution.
 
 ## Current accepted slice and reproduction
 

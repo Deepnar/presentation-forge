@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-8I-2-58662ec.json"
   },
   "implementationHead": {
-    "sha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
-    "note": "Exact I2 source58662ec independently accepted;3015 primary plus4 distinct native/persistence passes,313+4 independent overlapping repeats. All nine gates and exact-owned-service cleanup complete. Later commits contain evidence/documentation only; stop after I2."
+    "sha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+    "note": "I3 source/tests committed; syntax checks only. Complete behavioral validation and independent implementation acceptance remain pending."
   },
   "activeMilestone": {
-    "id": "V2-8I-2",
-    "roadmapRef": "docs/ROADMAP.md#assistant-turn-worker",
-    "evalDoc": "docs/V2-8I-2-EVAL.md",
+    "id": "V2-8I-3",
+    "roadmapRef": "docs/ROADMAP.md#assistant-turn-submission",
+    "evalDoc": "docs/V2-8I-3-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "implemented-pending-validation",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8I-2-58662ec.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "turn-worker",
-      "status": "passed",
-      "evidence": "docs/v2-8i-2-evidence/turn-worker.json",
-      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
+      "id": "conversation-http",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8i-2-evidence/non-browser-bulk.json",
-      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8i-2-evidence/serial-browser.json",
-      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8i-2-evidence/postgres-contract.json",
-      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8i-2-evidence/cross-process-faults.json",
-      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8i-2-evidence/production-build.json",
-      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8i-2-evidence/typecheck.json",
-      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8i-2-evidence/benchmark-50.json",
-      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8i-2-evidence/frontend-visual.json",
-      "reason": "Exact-source required validation passed and was independently assessed in docs/reviews/V2-8I-2-58662ec.json."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "New exact-source I3 execution pending a reviewed helper set and qualified quiet window; I2 results are not reused."
     }
   ],
   "knownBlockers": [],
@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-3 authenticated durable turn submission",
-    "authorized": true,
-    "roadmapRef": "docs/ROADMAP.md#assistant-turn-submission"
+    "id": "Host/provider scheduling and orchestration \u2014 separate contract after I3",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
