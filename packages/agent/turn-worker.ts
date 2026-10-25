@@ -4,8 +4,8 @@ import { invalidRun } from './run-state.ts';
 import { createRuntime, type Binding, type RuntimeBackend } from './runtime.ts';
 import { providerProfile, type ModelProvider } from './provider.ts';
 import { createTurnService } from './turns.ts';
+import { advanceTurnRun } from './turn-work-execution.ts';
 
-const MAX_ADVANCE_CALLS = 8;
 const ERRORS = new Set(['not-found', 'invalid-document', 'invalid-id', 'runtime-fenced',
   'store-misconfigured', 'storage-unavailable']);
 const ended = (status: string) => ['succeeded', 'failed', 'cancelled', 'expired'].includes(status);
@@ -82,22 +82,9 @@ export function createTurnWorker(backend: RuntimeBackend, provider?: ModelProvid
         if (!run) return invalidRun();
         if (ended(run.status)) return await status('observe', run.status);
         if (signal?.aborted) return await status('observe', 'aborted');
-        const claimed = await runtime.claim(trusted, run.id, workerId);
-        if (!claimed.ok) return await status('execute', claimed.code);
-        let lease = claimed.lease;
-        for (let call = 0; call < MAX_ADVANCE_CALLS; call++) {
-          if (signal?.aborted) return await status('execute', 'aborted');
-          const step = await runtime.advance(trusted, run.id, lease);
-          if (!step.ok) return await status('execute', step.code);
-          advances++;
-          if (ended(step.run.status)) return await status('execute');
-          if (signal?.aborted) return await status('execute', 'aborted');
-          if (call === MAX_ADVANCE_CALLS - 1) return await status('execute', 'step-limit');
-          const renewed = await runtime.renew(trusted, run.id, lease);
-          if (!renewed.ok) return await status('execute', renewed.code);
-          lease = renewed.lease;
-        }
-        return await status('execute', 'step-limit');
+        const executed = await advanceTurnRun(runtime, trusted, run.id, workerId, signal);
+        advances = executed.advances;
+        return await status('execute', executed.reason);
       } catch (error) {
         const original = (error as { code?: string })?.code;
         throw Object.assign(new Error('Turn worker operation failed.'), {

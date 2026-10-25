@@ -4,6 +4,7 @@ import { turnService, turnWorker } from './index.js';
 import { projectStore } from '../projects/backend.js';
 import { createModelProvider } from './model-provider.js';
 import { parseTurnWorkInput } from '../../packages/agent/turn-worker.ts';
+import { workExitCode } from './turn-work-status.js';
 
 async function jsonFile(file, limit) {
   if (!file || (await stat(file)).size > limit) throw new Error('input');
@@ -45,9 +46,8 @@ try {
     else result=await service[action](binding,input);
   }
   console.log(JSON.stringify(result));
-  if(!result.ok)process.exitCode=1;
-  if(action==='work' && result.ok && (['failed','expired','cancelled'].includes(result.run?.status) ||
-    ['refused','expired','needs-user-action','cancelled'].includes(result.turn.state)))process.exitCode=1;
+  if(action==='work')process.exitCode=workExitCode(result);
+  else if(!result.ok)process.exitCode=1;
 } catch(error) {
   const code=['not-found','invalid-document','invalid-id','runtime-fenced','store-misconfigured','storage-unavailable','worker-failed'].includes(error?.code)
     ? error.code : 'invalid-input';
