@@ -32,6 +32,16 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
+## Current work
+
+The 2026-10-25 continuation authorizes the next bounded dependency,
+[V2-8I-3 authenticated durable submission](ROADMAP.md#assistant-turn-submission).
+[Its contract](V2-8I-3-EVAL.md) is prepared for independent readiness review;
+implementation has not started. Read current HANDOFF before any execution.
+The state file retains accepted I2 until the new implementation is recorded;
+its old successful validation is not new I3 execution. No new service or model
+call has started. Preserve offline-only and quiet-window constraints.
+
 ## Current accepted slice and reproduction
 
 **V2-8I-2 bounded explicit-turn worker** is independently accepted at source
@@ -58,8 +68,8 @@ For fresh reproduction use a new namespace, all-current snapshots and a new owne
 service in a quiet window. Never recreate the removed service or rerun finishers
 against restored canonical originals. No live model/local inference was used or
 authorized. The internal B loop exercises multistep bounds; H proposals remain one
-batch. I2 is complete; stop here. Dependent scope stays in the roadmap and needs
-its own concrete contract before implementation.
+batch. I2 is complete; its stop boundary was observed. The later human continuation
+is recorded above; dependent scope still needs its own concrete contract.
 
 ## Accepted prerequisite history
 

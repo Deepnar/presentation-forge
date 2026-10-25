@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Authenticated submission and host scheduling \u2014 separate contract after I2",
-    "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
+    "id": "V2-8I-3 authenticated durable turn submission",
+    "authorized": true,
+    "roadmapRef": "docs/ROADMAP.md#assistant-turn-submission"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

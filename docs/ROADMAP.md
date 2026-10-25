@@ -9116,6 +9116,26 @@ local inference. Only that separate transport correction is authorized; this aud
     > metadata must not discard cases, weaken the validator or rerun generators
     > over restored originals. Reusable contract lessons are in TRAPS.md.
 
+  <a id="assistant-turn-submission"></a>
+
+  - [ ] **V2-8I-3 authenticated durable turn submission — current authorized slice.**
+    The 2026-10-25 continuation starts the next dependency after accepted I2.
+    [The concrete contract](V2-8I-3-EVAL.md) adds only owner-authenticated POST
+    `/conversation/turns` over H submit, with matching-key replay, private bounded
+    parsing and honest stale/busy/storage refusals. No provider dispatch, queue,
+    scene write or automatic approval occurs on submission. The separate 256 KiB
+    POST parser preserves 8 KiB lifecycle/unsupported-path admission and accepted
+    retention/owner policy. Existing unsupported `/submit` assertions stay intact.
+    Plan/source/helpers need separate review; complete current-source gates and
+    original-byte preservation remain required. Stop after I3 acceptance/cleanup.
+
+    **Look-ahead.** This supplies durable authenticated ingress before host/provider
+    scheduling. The host must resolve policy/credentials and reuse I2's stateless
+    worker plus existing rows, leases and approvals; client budgets never authorize
+    spending. The later Assistant must settle editor drafts before saved-revision
+    capture and show truthful submission/preparation/decision/execution status.
+    No additional work queue, browser-owned worker or second document is needed.
+
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
