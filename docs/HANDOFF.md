@@ -15,12 +15,18 @@ The exact new owned PG15.18 ID is
 name forge-v28i2-validation, loopback5544,1CPU/512MiB/tmpfs192MiB.
 Ownership/backup manifests are under docs/v2-8i-2-evidence; never recreate/reuse I1.
 
-Full coordinator batch1 is active: session62110,
-out/v2-8i-2-validation-batch-1.log and coordinator.json/log. It bounds3jobs, then
-yields with no active child. Inspect actual session/process/log/source/owned empty
-catalog before bounded --resume; never rerun preparation after snapshots. All
-browser/build work is serial, watchdog bounded, with fresh resource admission.
-Typecheck passes; eight complete gates remain pending;
+Full coordinator batches1–4 completed successfully: focused79/79,196bulk2528/2528,
+and10of26serial files/82passes, with0fail/skip/cancelled. Batch5 is active:
+out/v2-8i-2-validation-batch-5.log and coordinator.json/log. No other validation
+process may overlap. The coordinator bounds3new jobs, yields, then needs audited
+--resume; never repeat preparation after snapshots. Exact source/ID/empty catalog
+and fresh admission are enforced. Focused worker, bulk and typecheck gates pass;
+six complete gates remain pending. Snapshots/historical generated changes must
+be preserved until all current outputs are captured and the new finisher restores
+all6488prior files and5canonical originals. Never commit generated historical
+changes. The11fresh workspace screenshots were inspected, including full-size
+narrow editor/history; narrow matches the accepted I1 capture exactly. Final
+119-style image inspection/native originals/shape audit are still pending.
 primary inventory234files (196bulk/26serial/
 12PG). Perform fresh affected checks and full verification, independent exact-
 source review, guarded owned cleanup, scoped push and stop afterI2. No APIs/local

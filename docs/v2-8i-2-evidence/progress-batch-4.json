@@ -1,0 +1,32 @@
+{
+  "implementationSha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "atUtc": "2026-10-25T13:12:06.720680+00:00",
+  "primaryBulk": {
+    "total": 2528,
+    "pass": 2528,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "focusedWorker": {
+    "total": 79,
+    "pass": 79,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "serialCompletedFiles": 10,
+  "serialPlannedFiles": 26,
+  "serialCompletedTests": {
+    "total": 82,
+    "pass": 82,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "unexecutedSerialFiles": 16,
+  "completePrimaryPostgresFiles": 0,
+  "primaryPostgresFilesPlanned": 12,
+  "nextBatch": "out/v2-8i-2-validation-batch-5.log",
+  "status": "Partial execution; no complete browser/PG/build/benchmark/native/visual acceptance claim."
+}
