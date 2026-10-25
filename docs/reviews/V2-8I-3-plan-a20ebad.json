@@ -1,0 +1,65 @@
+{
+  "decision": "READY_FOR_IMPLEMENTATION",
+  "kind": "independent-plan-review",
+  "planSha": "a20ebadcdb2b2a6559c009d1d49b2389ed703ab6",
+  "acceptedBaseline": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "taskEntry": "aeeb9de5f504c04f7269a1bb6259df005dc5bcff",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-25",
+  "evidence": "docs/reviews/V2-8I-3-plan-a20ebad.md",
+  "implementationAcceptance": false,
+  "requiredBeforeImplementation": [
+    {
+      "id": "submission-wire-encoding",
+      "status": "agreed-contract-clarification-pending-commit",
+      "condition": "Specify UTF-8 application/json with optional UTF-8 charset and absent/identity Content-Encoding on the exact submission POST; reject compressed/other-charset bodies with private 415, use inflate:false plus the 262144-byte parser and operation-specific serialized-size guard, preserving lifecycle/unknown/wrong-method limits."
+    }
+  ],
+  "materialUnresolvedPolicyBlockers": [],
+  "authorityAssessment": "The current continuation authorizes this next bounded dependency; canonical H ownership/admission/replay and accepted retention/context policy are preserved. No additional product or data-policy direction is needed.",
+  "inspected": [
+    "docs/V2-8I-3-EVAL.md",
+    "docs/ROADMAP.md#assistant-turn-submission",
+    "docs/v2-8i-3-evidence/validation-plan.json",
+    "app/server/index.js",
+    "app/server/v2-conversation-routes.js",
+    "app/server/v2-projects-routes.js",
+    "packages/agent/turns.ts",
+    "packages/agent/turn-state.ts",
+    "packages/agent/turn-store.ts",
+    "packages/agent/turn-submission.schema.json",
+    "src/agent/index.js",
+    "src/agent/turn-cli.js",
+    "test/v2-conversation-http-contract.js",
+    "test/v2-conversation-http-8i.test.js",
+    "test/v2-conversation-http-postgres-8i.test.js",
+    "node_modules/body-parser/lib/read.js",
+    "node_modules/body-parser/lib/types/json.js"
+  ],
+  "inventory": {
+    "primaryFiles": 234,
+    "bulkFiles": 196,
+    "serialFiles": 26,
+    "postgresFiles": 12,
+    "focusedOverlappingFiles": 2,
+    "duplicates": 0,
+    "missing": 0,
+    "extra": 0
+  },
+  "executed": {
+    "tests": 0,
+    "services": 0,
+    "modelCalls": 0,
+    "generators": 0,
+    "note": "Read-only source/document inspection and lightweight inventory reconciliation only. No implementation or behavioral validation is claimed."
+  },
+  "scopeExclusions": [
+    "Provider dispatch, host scheduling, credentials/defaults/fallbacks and spending policy",
+    "Automatic approval, new queue, scene/history writers and public worker routes",
+    "UI, saved-chat context expansion, retention changes, paid infrastructure, deployment and migration",
+    "Live Auto quality and interactive Microsoft PowerPoint qualification"
+  ],
+  "stopPoint": "Separate exact-source I3 acceptance and cleanup; no dependent implementation is authorized by this plan-readiness record."
+}
