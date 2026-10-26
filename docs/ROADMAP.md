@@ -9190,8 +9190,8 @@ local inference. Only that separate transport correction is authorized; this aud
     the5Kfile was resource-cancelled after7pass/1CDPtimeout/1unfinished at>98%CPU.
     Its exact log is retained. Fresh180.701s quiet requalification and30s
     admission allowed the unchanged full-file retry to pass9/9; this supports an
-    environmental timing classification. Tenserialfiles82/82 now pass; remaining
-    ordered validation is active.
+    environmental timing classification. All26serialfiles208/208 now pass; remaining
+    PostgreSQL/command/native ordered validation is active.
     Exact-source acceptance remains pending;
     no PostgreSQL/full-validation result is inferred from development probes.
     Later host owner selection/provider policy and pickup remain separate contracts.

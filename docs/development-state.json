@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
-    "note": "Corrected8378a20: fresh focus48/48, bulk2570/2570 and10serialfiles82/82 pass. Resource-cancelled5K attempt retained; full unchanged9/9 retry passed after180.701squiet requalification. Guarded remaining execution active; final review/cleanup pending."
+    "note": "Corrected8378a20: fresh focus48/48, bulk2570/2570 and complete26serialfiles208/208 pass. Resource-cancelled5K attempt retained; unchanged9/9 retry passed after180.701squiet requalification. PostgreSQL/remaining ordered execution active; final review/cleanup pending."
   },
   "activeMilestone": {
     "id": "V2-8I-4",
@@ -35,9 +35,9 @@
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Pending complete26-file gate. Ten files pass82/82; cancelled5K attempt is retained separately and its unchanged full-file retry passed9/9 after fresh qualification. Remaining ordered execution active."
+      "status": "passed",
+      "evidence": "docs/v2-8i-4-corrected-evidence/serial-browser.json",
+      "reason": "Complete corrected-source26-file serial gate208/208,0fail/skip/cancelled. Retained resource-cancelled5K attempt resolved by unchanged full9/9 retry after fresh qualification."
     },
     {
       "id": "postgres-contract",

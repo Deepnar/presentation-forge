@@ -196,7 +196,8 @@ Corrected implementation is `8378a20a819de569ef7b10b747d7ba6c481f529e`.
 The current complete238-file inventory/helper/source manifests and fresh runbook
 are in [the corrected evidence lineage](v2-8i-4-corrected-evidence/RUNBOOK.md).
 Fresh corrected focused48/48 and198bulkfiles2570/2570 pass,0fail/skip/cancelled;
-remaining7gates are pending. Separate SOURCE/HELPER
+complete26serialfiles208/208 also pass,0fail/skip/cancelled. Remaining6gates
+are pending. Separate SOURCE/HELPER
 READY for8378a20/packetaa33b22 checked17helper/20source/147retired artifact hashes,
 including7original PPTXs and the unchanged ownership/adoption chain.
 [The delivered-message record](reviews/V2-8I-4-8378a20-source-harness.json) is
@@ -214,7 +215,8 @@ and fresh30second admission then allowed the unchanged full5Kfile to pass9/9,
 0fail/skip/cancelled. [The recovery record](v2-8i-4-corrected-evidence/resource-recovery-after-5k/retry-result.json)
 retains both qualifications and the full retry. The original timeout is classified
 as an environmental timing failure; it remains failed/incomplete historical evidence.
-Ten complete serial files now pass82/82. Remaining ordered execution is active;
+The full26-file serial gate now passes208/208,0fail/skip/cancelled. Remaining
+PostgreSQL/command/native ordered execution is active;
 full gates, separate exact-source acceptance and cleanup remain required.
 No partial pass from the original source is a corrected-source pass.
 
