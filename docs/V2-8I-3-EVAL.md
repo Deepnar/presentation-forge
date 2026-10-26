@@ -220,3 +220,8 @@ The bounded serial checkpoint preserves147/147 leaves across19of26complete files
 0fail/skip/cancelled, in [serial-progress-19-files](v2-8i-3-evidence/serial-progress-19-files/checkpoint.json).
 This checkpoint is incomplete and does not mark the serial gate passed. The
 remaining seven serial files and subsequent PostgreSQL checks are in progress.
+
+The complete26-file serial set subsequently passed208/208,0fail/skip/cancelled,
+with fresh per-job admission and no overlapping builds. The earlier19-file
+checkpoint and cancelled7A attempt remain chronological evidence. PostgreSQL and
+subsequent gates are still pending.

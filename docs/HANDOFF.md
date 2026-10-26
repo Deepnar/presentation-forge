@@ -33,10 +33,10 @@ yields, resume one coordinator with:
 
 PYTHONDONTWRITEBYTECODE=1 python3 -u docs/v2-8i-3-evidence/run-validation.py --resume --max-new-jobs 3
 
-The coordinator retains completed66HTTP/2545bulk, preserves the unacknowledged7A
-log under an exclusive filename and reruns all28browser leaves. It must not count
-partial leaves as a complete pass. Inspect actual process state and coordinator.json/
-log before resuming; never overlap coordinators/builds. Remaining gates are pending.
+All26serial files are complete208/208,0fail/skip/cancelled; raw files and serial-browser.json
+are preserved. The coordinator now moves to PostgreSQL. Bulk2545 and focused66 remain
+complete; remaining PostgreSQL/native/build/type/benchmark and visual gates are pending.
+Never overlap coordinators/builds; inspect actual processes and coordinator log first.
 
 Owned instance: dc1f24756ec8094a5cd356ce1626f3db18a25d74fe72561d9f938129d2105cd0,
 forge-v28i3-validation, loopback5544, pinned image/1CPU/512MiB/tmpfs192MiB in the
