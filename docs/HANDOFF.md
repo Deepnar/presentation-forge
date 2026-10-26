@@ -12,15 +12,17 @@ The service, synchronous input snapshots, purpose-built binary/byte-bounded
 SQLite/PostgreSQL queries and `agent-chat discover` are implemented. Four new
 entry files bring the primary inventory to238 (198bulk/26serial/14PG-process).
 Development results:10pure unit,13SQLite and6corrected SQLite CLI passes;
-35governance passes. One separate source-review finding was reproduced with raw
+35governance passes and8isolated snapshot-guard passes. One separate source-review finding was reproduced with raw
 invalid UTF-8 (5pass/1fail) and corrected discovery-only at1c83881. Raw development
 probes are retained separately and supply no full gate or PostgreSQL pass.
 
 Root owns Git/testing/database slots. The existing independent reviewer
 `/root/turn_contract_review` has finished the source-only early pass, released all
 slots, made no source/file/Git mutations and issued no implementation acceptance.
-Reuse that context at high effort only; avoid extra agents. It requires actual
-store/CLI/full gates and later exact-source review. No owned I4 backend or full
+Reuse that context at high effort only; avoid extra agents. Its helper pass required three pre-execution corrections (plan labels, complete
+source guards and mandatory snapshot verification); those are written/tested and
+await its exact-delta readiness. Actual store/CLI/full gates and later exact-source
+review remain required. No owned I4 backend or full
 validation coordinator exists yet. No live model/local inference is authorized.
 Shared-machine I/O PSI remains elevated; inspect actual corrected quiet samples,
 CPU/memory/backing-storage/competing work before expensive validation. Never stop

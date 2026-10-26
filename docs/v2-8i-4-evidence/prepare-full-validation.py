@@ -1,20 +1,15 @@
 import datetime, hashlib, json, os, pathlib, shutil, socket, subprocess, sys, time
 from quiet_window import Window
+from validation_guards import validate_source, validate_snapshots, digest
 
 root = pathlib.Path('docs/v2-8i-4-evidence')
 out = pathlib.Path(os.environ.get('FORGE_VALIDATION_OUT', 'out/v2-8i-4-validation'))
-sha = json.loads((root / 'validation-plan.json').read_text())['implementationSha']
-subprocess.run(['git', 'merge-base', '--is-ancestor', sha, 'HEAD'], check=True)
-subprocess.run(['git', 'diff', '--quiet', sha, '--', 'packages', 'src', 'test', 'app', 'tools', 'schema', 'themes', 'package.json', 'package-lock.json', 'tsconfig.json'], check=True)
-helper_manifest = json.loads((root/'helper-source-manifest.json').read_text())
-assert helper_manifest['implementationSha'] == sha
-for helper in helper_manifest['files']:
- assert hashlib.sha256(pathlib.Path(helper['path']).read_bytes()).hexdigest() == helper['sha256'], ('Validation helper drift', helper['path'])
-untracked = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard', '--', 'packages', 'src', 'test', 'app', 'tools', 'schema', 'themes'], text=True).splitlines()
-assert not untracked, ('Untracked implementation files invalidate the frozen source', untracked)
+plan = json.loads((root/'validation-plan.json').read_text())
+sha = plan['implementationSha']
+validate_source(root, plan)
 out.mkdir(parents=True, exist_ok=True)
 assert '--resume' not in sys.argv, 'Resume completed jobs through run-validation.py --resume, never backend preparation'
-artifacts=['backup','prior-generated-backup','coordinator.json','coordinator.log','coordinator-complete.json']
+artifacts=['backup','prior-generated-backup','coordinator.json','coordinator.log','coordinator-complete.json','snapshot-complete.json']
 assert not any((out/name).exists() for name in artifacts), 'Existing snapshot/execution requires audit; refuse backend creation'
 resume_owned = '--resume-owned-preparation' in sys.argv
 assert resume_owned or not (root/'owned-postgres.json').exists(), 'Do not replace an existing owned identity'
@@ -95,6 +90,11 @@ for source in map(pathlib.Path, [
     assert hashlib.sha256(destination.read_bytes()).hexdigest() == digest
     originals.append({'path': str(source), 'sha256': digest, 'bytes': source.stat().st_size})
 (out / 'prior-generated-backup/index.json').write_text(json.dumps(originals, indent=2) + '\n')
+proof={'implementationSha':sha,'complete':True,'historicalFiles':len(index),'canonicalFiles':len(originals),'historicalIndexSha256':digest(out/'backup/index.json'),'canonicalIndexSha256':digest(out/'prior-generated-backup/index.json')}
+with (out/'snapshot-complete.json').open('x') as stream:
+    json.dump(proof,stream,indent=2);stream.write('\n');stream.flush();os.fsync(stream.fileno())
+fd=os.open(out,os.O_RDONLY|os.O_DIRECTORY);os.fsync(fd);os.close(fd)
+validate_snapshots(root,out,sha,False)
 print('Snapshot verified', len(index), 'files;', sum(row['path'].endswith('.pptx') for row in index), 'evidence originals and', len(originals), 'canonical out originals', flush=True)
 
 if '--prepare-only' in sys.argv:

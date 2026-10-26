@@ -214,7 +214,13 @@ execution, PostgreSQL, query-plan assessment, faults, serial browser/build,
 benchmark, native/visual evidence and final separate acceptance remain pending.
 No I4 owned backend, generator, build, real model API or local inference has run.
 
-The new I4 helper namespace is being prepared and must pass source/helper readiness
-before qualification/preparation. Old I3 helpers/evidence remain frozen. All9state
+The first helper review found stale inherited plan labels, the missing frozen
+governance-schema guard and a coordinator path which could bypass incomplete
+snapshots. Those were corrected before any qualification/backend/generator: plan
+identity is I4, source guards bind the complete manifest, and both snapshot sets
+require a completion proof/index/backup hash verification before every coordinator
+entry, plus complete current originals on initial admission. Eight isolated guard
+oracles pass8/8 (separate development checks). Exact helper-delta readiness is
+pending before qualification/preparation. Old I3 helpers/evidence remain frozen. All9state
 checks remain explicitly unexecuted; accepted baseline remains2ba82cb. Stop after
 I4 independent acceptance and exact-owned cleanup; no dependent feature work.

@@ -35,7 +35,7 @@
     },
     {
       "path": "docs/v2-8i-4-evidence/prepare-full-validation.py",
-      "sha256": "12c2f1a9420788248513b3a011d0fac4797faa399843b9372b5f9f1644260e32"
+      "sha256": "68058e626831e94ec1bd28152aa983cbf74d199345feefec330000b2773ada18"
     },
     {
       "path": "docs/v2-8i-4-evidence/quiet_window.py",
@@ -43,15 +43,23 @@
     },
     {
       "path": "docs/v2-8i-4-evidence/run-validation.py",
-      "sha256": "f09463342069246a72e879dda155e8d455867770b6e87667705d5b1d79f77170"
+      "sha256": "d3da3269bdae5333679447d0d53254c69b239f7871c0e95d2a43f6c13c061214"
     },
     {
       "path": "docs/v2-8i-4-evidence/shell-native.mjs",
       "sha256": "373fadafc2a36d9e4d29b35b8824121c38485208286010628774206339ffdee3"
     },
     {
+      "path": "docs/v2-8i-4-evidence/test-validation-guards.py",
+      "sha256": "f617fc8b9ca8f3557ef972ed124adced41b73c06755687bf52d8d126e8742a59"
+    },
+    {
       "path": "docs/v2-8i-4-evidence/validation-plan.json",
-      "sha256": "35e8b587a1c3a1fcee2b4646542f36409f8c0f90e5ef41c284bb9bd8bf98af73"
+      "sha256": "3d27a97f83ee8cd168c658a0cf4874250e6b3e9bee722f3e7af838cf254c1270"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/validation_guards.py",
+      "sha256": "6603899fa71b94a092f632e8abb80ca09b2ec9f65e7cc6369d4f57fdeb861c66"
     },
     {
       "path": "docs/v2-8i-4-evidence/verify-owned-cleanup.py",

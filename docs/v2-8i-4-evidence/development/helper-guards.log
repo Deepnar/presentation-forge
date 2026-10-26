@@ -1,0 +1,13 @@
+test_changed_backup_is_refused_on_resume (__main__.SnapshotGuards.test_changed_backup_is_refused_on_resume) ... ok
+test_complete_initial_and_resume_snapshots (__main__.SnapshotGuards.test_complete_initial_and_resume_snapshots) ... ok
+test_duplicate_history_is_refused_even_with_matching_index_proof (__main__.SnapshotGuards.test_duplicate_history_is_refused_even_with_matching_index_proof) ... ok
+test_incomplete_preparation_has_no_admission (__main__.SnapshotGuards.test_incomplete_preparation_has_no_admission) ... ok
+test_missing_backup_is_refused_on_resume (__main__.SnapshotGuards.test_missing_backup_is_refused_on_resume) ... ok
+test_missing_canonical_original_is_refused (__main__.SnapshotGuards.test_missing_canonical_original_is_refused) ... ok
+test_missing_historical_original_is_not_hidden_by_updated_index (__main__.SnapshotGuards.test_missing_historical_original_is_not_hidden_by_updated_index) ... ok
+test_wrong_source_is_refused (__main__.SnapshotGuards.test_wrong_source_is_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.008s
+
+OK

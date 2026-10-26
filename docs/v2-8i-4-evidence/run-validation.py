@@ -1,5 +1,6 @@
 import datetime, hashlib, json, os, pathlib, re, shutil, subprocess, time, sys, signal
 from quiet_window import Window
+from validation_guards import validate_source, validate_snapshots
 root=pathlib.Path('docs/v2-8i-4-evidence');out=pathlib.Path(os.environ.get('FORGE_VALIDATION_OUT','out/v2-8i-4-validation'));out.mkdir(exist_ok=True)
 class Tee:
  def __init__(self,stream,file):self.stream,self.file=stream,file
@@ -17,18 +18,11 @@ else:
   'production-build','typecheck','benchmark-50','headless','byok-locale','native-review','shell-native','http-native']
  existing=[str(out/name) for name in ['coordinator.json','coordinator.log','coordinator-complete.json',*[name+'.log' for name in names]] if (out/name).exists()]
  assert not existing, ('Existing execution must be audited and resumed; never truncate it',existing)
-sys.stdout=Tee(sys.stdout,(out/'coordinator.log').open('a' if resume else 'w'))
-signal.signal(signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
 runs=json.loads((out/'coordinator.json').read_text()) if resume else []
 assert all(r['implementationSha']==sha for r in runs)
-subprocess.run(['git','merge-base','--is-ancestor',sha,'HEAD'],check=True)
-subprocess.run(['git','diff','--quiet',sha,'--','packages','src','test','app','tools','schema','themes','package.json','package-lock.json','tsconfig.json'],check=True)
-helper_manifest = json.loads((root/'helper-source-manifest.json').read_text())
-assert helper_manifest['implementationSha'] == sha
-for helper in helper_manifest['files']:
- assert hashlib.sha256(pathlib.Path(helper['path']).read_bytes()).hexdigest() == helper['sha256'], ('Validation helper drift', helper['path'])
-untracked = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard', '--', 'packages', 'src', 'test', 'app', 'tools', 'schema', 'themes'], text=True).splitlines()
-assert not untracked, ('Untracked implementation files invalidate the frozen source', untracked)
+assert not (out/'coordinator-complete.json').exists(), 'Ordered execution already complete; preserve frozen evidence'
+validate_source(root,plan)
+snapshot_check=validate_snapshots(root,out,sha,resume)
 owned_url='postgres://postgres:probe@127.0.0.1:5544/postgres'
 assert os.environ.get('TEST_PG_URL',owned_url)==owned_url, 'Refuse an external TEST_PG_URL; validation owns only loopback5544'
 owned=json.loads((root/'owned-postgres.json').read_text())
@@ -39,6 +33,10 @@ assert meta['NetworkSettings']['Ports']['5432/tcp']==[{'HostIp':'127.0.0.1','Hos
 query="SELECT datname FROM pg_database WHERE NOT datistemplate AND datname <> 'postgres' ORDER BY datname"
 databases=subprocess.check_output(['docker','exec',owned['id'],'psql','-U','postgres','-d','postgres','-At','-c',query],text=True).splitlines()
 assert databases==[], ('Owned backend contains leftover databases; audit before resuming',databases)
+sys.stdout=Tee(sys.stdout,(out/'coordinator.log').open('a' if resume else 'w'))
+signal.signal(signal.SIGTERM,lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
+with (out/'snapshot-entry-checks.jsonl').open('a') as stream:
+ stream.write(json.dumps({**snapshot_check,'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat()})+'\n')
 with (out/'owned-entry-checks.jsonl').open('a') as stream:
  stream.write(json.dumps({'implementationSha':sha,'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'id':owned['id'],'name':owned['name'],'imageId':owned['imageId'],'port':5544,'nonMaintenanceDatabases':databases,'resume':resume})+'\n')
 env={**os.environ,'LC_ALL':'C.UTF-8','TEST_PG_URL':owned_url,'FORGE_RUNTIME_SOURCE':sha,'FORGE_HTTP_EVIDENCE_DIR':str((out/'http').resolve()),'FORGE_RUNTIME_METRICS_PATH':str((out/'recovery-metrics.jsonl').resolve())}

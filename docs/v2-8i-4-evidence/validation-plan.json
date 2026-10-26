@@ -246,9 +246,9 @@
     "test/v2-turn-worker-process-8i.test.js",
     "test/v2-turns-postgres-8h.test.js"
   ],
-  "acceptedBaseline": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
-  "taskEntry": "aeeb9de5f504c04f7269a1bb6259df005dc5bcff",
-  "sourceFreeze": "Committed I3 source/tests; full validation and separate source/helper review pending.",
+  "acceptedBaseline": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "taskEntry": "dbaa73ab99ddaf7d73d3b786e6c65f056b646aae",
+  "sourceFreeze": "Committed I4 source/tests175a016; exact source/helper readiness precedes full validation.",
   "focused": [
     "test/v2-turn-discovery-8i.test.js",
     "test/v2-turn-discovery-sqlite-8i.test.js",
