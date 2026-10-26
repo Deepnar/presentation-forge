@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
-    "note": "Corrected I4source8378a20: strict byte decoding and BOM identity preservation. Development24/24 and governance35/35 pass; full238-file/nine-gate run and independent acceptance remain required. Source175 partial passes are retired, not transferred."
+    "note": "Corrected I4source8378a20 independently SOURCE/HELPER READY with packetaa33b22. Development24/24/governance35/35/helper12/12 pass; fresh qualification/all238/nine gates and independent acceptance pending. Source175 partial passes remain retired."
   },
   "activeMilestone": {
     "id": "V2-8I-4",
     "roadmapRef": "docs/ROADMAP.md#assistant-work-discovery",
     "evalDoc": "docs/V2-8I-4-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
