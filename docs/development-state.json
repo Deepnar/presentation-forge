@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
-    "note": "I4 implementation and development probes exist; full nine-gate validation and exact-source independent acceptance remain pending. Accepted baseline remainsI3."
+    "note": "I4source175a016 and helpers16c7469 independently ready for validation. Focused47/47 and bulk2569/2569 pass; all other gates and implementation acceptance remain pending. Fresh isolated PostgreSQL15.18 and all-original snapshots verified."
   },
   "activeMilestone": {
     "id": "V2-8I-4",
     "roadmapRef": "docs/ROADMAP.md#assistant-work-discovery",
     "evalDoc": "docs/V2-8I-4-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,21 +23,21 @@
   "validation": [
     {
       "id": "turn-discovery",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
+      "status": "passed",
+      "evidence": "docs/v2-8i-4-evidence/turn-discovery.json",
+      "reason": "Complete frozen-source execution passed with0fail/skip/cancelled; focused counts overlap primary matrix."
     },
     {
       "id": "non-browser-bulk",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
+      "status": "passed",
+      "evidence": "docs/v2-8i-4-evidence/non-browser-bulk.json",
+      "reason": "Complete frozen-source execution passed with0fail/skip/cancelled; focused counts overlap primary matrix."
     },
     {
       "id": "serial-browser",
-      "status": "unexecuted",
+      "status": "pending",
       "evidence": null,
-      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
+      "reason": "Bounded serial execution is in progress; a running/incomplete file is not a pass."
     },
     {
       "id": "postgres-contract",

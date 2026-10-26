@@ -23,8 +23,13 @@ Reuse that context at high effort only; avoid extra agents. Its helper pass requ
 source guards and mandatory snapshot verification); those are written/tested and
 received exact-delta SOURCE/HELPER READY at16c7469 after the additional
 hash-function alias correction/preparation-block oracle. Actual full store/CLI
-gates and later exact-source review remain required. The I4 sustained quiet sampler is active under root control before preparation.
-No owned I4 backend or full validation coordinator exists yet. No live model/local inference is authorized.
+gates and later exact-source review remain required. The I4 sustained quiet qualification and preparation passed. Exclusive owned
+PostgreSQL15.18 ID/configuration are in the new owned-postgres.json; root owns it.
+7423historical files/246PPTXs+5canonical originals are verified in snapshots before
+generation. The coordinator is active under root: focused47/47 and198bulk files
+2569/2569 passed, all0fail/skip/cancelled; focused overlaps primary. Bounded serial
+browser execution is running. Read coordinator.json before any continuation; never
+start a second coordinator or service. Remaining gates/review/cleanup are pending. No live model/local inference is authorized.
 Shared-machine I/O PSI remains elevated; inspect actual corrected quiet samples,
 CPU/memory/backing-storage/competing work before expensive validation. Never stop
 unrelated work. New I4 helper readiness and source binding precede180s qualification,

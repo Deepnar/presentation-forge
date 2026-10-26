@@ -231,3 +231,30 @@ authorizes validation only; no independent runtime execution/acceptance is claim
 The corrected sustained quiet sampler is now running before preparation. Old I3 helpers/evidence remain frozen. All9state
 checks remain explicitly unexecuted; accepted baseline remains2ba82cb. Stop after
 I4 independent acceptance and exact-owned cleanup; no dependent feature work.
+
+
+## Full-validation checkpoint
+
+The corrected quiet qualification passed180.587seconds: meanCPU5.730%,
+iowait9.979%, backing disk busy1.353%, weightedqueue0.0661. Raw elevated I/O PSI
+retains unresolved provenance. Fresh30-second admission preceded preparation.
+The exclusive saved/fsynced owned instance `forge-v28i4-validation` is actual
+PostgreSQL15.18 atloopback5544; exact ID/configuration are in
+[owned-postgres.json](v2-8i-4-evidence/owned-postgres.json). No other service is used.
+All7423historical files,246original PPTXs and5canonical outputs were snapshotted/
+hash-verified before generators; completion proof and first coordinator checks
+are retained. No restoration/cleanup or implementation acceptance is claimed yet.
+
+The exact-source focused gate passed47/47 across four entries (actual SQLite/PG
+and both-store CLI/process included), and198bulk files passed2569/2569 with
+0fail/skip/cancelled. These overlap; do not add47to the primary total.
+[The checkpoint](v2-8i-4-evidence/primary-matrix-checkpoint.json) records only
+completed primary files. Bounded serial browser execution is now active; remaining
+required gates/four distinct native cases/visual inspection and separate exact-source
+review are pending. Root owns all test/database/Git slots.
+
+Focused128-legitimate-turn samples traversed3pages with51maximum returned rawrows:
+SQLite8.283ms, PostgreSQL10.757ms. SQLite uses existing indexes and a temporary sort;
+PostgreSQL's retained plan includes sequential scans/hash joins and sorting.
+These small local samples meet the bounded metadata-read goal without a new index;
+there is no fixed physical-work/timeout or production-percentile guarantee.

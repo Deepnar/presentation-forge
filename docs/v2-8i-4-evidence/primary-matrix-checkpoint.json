@@ -1,0 +1,24 @@
+{
+  "implementationSha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
+  "atUtc": "2026-10-26T12:52:46.491625+00:00",
+  "completedPrimaryFiles": 198,
+  "requiredPrimaryFiles": 238,
+  "uncompletedPrimaryFiles": 40,
+  "tests": {
+    "total": 2569,
+    "pass": 2569,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "focused": {
+    "total": 47,
+    "pass": 47,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "focusedOverlapsPrimary": true,
+  "activeRun": "bounded serial coordinator; root retains allslots",
+  "accepted": false
+}

@@ -1,0 +1,15 @@
+{
+  "id": "e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce",
+  "name": "forge-v28i4-validation",
+  "port": 5544,
+  "createdAtUtc": "2026-10-26T12:46:28.316875205Z",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "autoRemove": true,
+  "cpus": 1.0,
+  "memoryBytes": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=192m"
+  },
+  "implementationSha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
+  "version": "15.18"
+}
