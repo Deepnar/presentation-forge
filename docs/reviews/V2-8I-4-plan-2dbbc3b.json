@@ -1,0 +1,71 @@
+{
+  "decision": "READY_FOR_IMPLEMENTATION",
+  "kind": "independent-plan-review",
+  "planSha": "2dbbc3b330bf6b16ac97bbe52d59a3bc3beef0dd",
+  "acceptedBaseline": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "taskEntry": "dbaa73ab99ddaf7d73d3b786e6c65f056b646aae",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-26",
+  "evidence": "docs/reviews/V2-8I-4-plan-2dbbc3b.md",
+  "implementationAcceptance": false,
+  "readinessConditions": [
+    {
+      "id": "sql-byte-materialization-guards",
+      "condition": "Bound every selected TEXT field in SQL by bytes, including identifiers/generation/header/turn payloads; use SQLite CAST-AS-BLOB length and PostgreSQL octet_length, bounded invalid sentinels, private refusal and actual NUL-prefixed SQLite corruption oracles."
+    },
+    {
+      "id": "binary-owner-and-cursor-identity",
+      "condition": "Use explicit bytewise owner equality and identical keyset order/comparisons; require well-formed UTF-8-roundtrippable/non-NUL discovery inputs and I2-consumable stored IDs/generation with existing nonblank 128 UTF-16-unit bounds, without changing H/worker contracts."
+    },
+    {
+      "id": "complete-result-byte-ceiling",
+      "condition": "Enforce 131072 UTF-8 bytes for the whole serialized result and exercise worst-case escaping/multibyte fields at limit 50."
+    },
+    {
+      "id": "dedicated-read-and-position-semantics",
+      "condition": "Use dedicated single-statement metadata SQL rather than project listing/runtime/H reads; cursor positions require no existence/ownership lookup. Preserve empty filtered-page progress and missing/corrupt-header refusal. Inspect actual index/query plans and many-row samples without no-sort/fixed-scan claims or an unapproved index/migration."
+    }
+  ],
+  "conditionStatus": "Agreed during review; contract clarification commit and narrow delta check required before product implementation.",
+  "materialUnresolvedPolicyBlockers": [],
+  "authorityAssessment": "Current continuation authorizes this immediate bounded owner-scoped host dependency. No additional product/surface/provider/spend/data-retention/context-policy direction is required.",
+  "paginationAssessment": "Raw scanned rows, including terminal/waiting rows, advance keyset; empty candidate pages may continue. Lookahead only determines raw hasMore; nextCursor is the last scanned position or null at end. No snapshot/notification/exactly-once/fair-scheduling guarantee.",
+  "hintAssessment": "Submitted/preparing/approved metadata is potential work only. Approved terminal runs may remain hinted; I2 must recheck ownership/generation/run/deadline/leases before any dispatch or edit. No reconciliation or private run payload read is authorized.",
+  "inspection": [
+    "docs/V2-8I-4-EVAL.md",
+    "docs/ROADMAP.md#assistant-work-discovery",
+    "src/agent/schema.js",
+    "src/projects/store.js",
+    "src/projects/store-postgres.js",
+    "src/projects/backend.js",
+    "packages/projects/document.js",
+    "packages/agent/runtime.ts",
+    "packages/agent/run-transaction.ts",
+    "packages/agent/turns.ts",
+    "packages/agent/turn-state.ts",
+    "packages/agent/turn-store.ts",
+    "packages/agent/turn-header.schema.json",
+    "packages/agent/turn-record.schema.json",
+    "packages/agent/turn-worker.ts",
+    "packages/tools/json.ts",
+    "src/agent/index.js",
+    "src/agent/turn-cli.js"
+  ],
+  "inventory": {
+    "acceptedExistingFiles": 234,
+    "proposedNewFiles": 4,
+    "expectedPrimaryFiles": 238,
+    "actualNewInventoryAndLeafCounts": "Unfrozen/unexecuted; must be verified after implementation."
+  },
+  "executed": {
+    "tests": 0,
+    "backendOrQueryPlans": 0,
+    "services": 0,
+    "models": 0,
+    "generators": 0,
+    "note": "Read-only source/document inspection only; no implementation or behavioral acceptance."
+  },
+  "stopPoint": "Separate exact-source I4 acceptance and owned cleanup; no dependent host/provider/scheduler/UI implementation automatically follows."
+}
