@@ -1,0 +1,27 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "atUtc": "2026-10-26T08:17:23.288852+00:00",
+  "id": "dc1f24756ec8094a5cd356ce1626f3db18a25d74fe72561d9f938129d2105cd0",
+  "port": 5544,
+  "beforeRemovalRecord": "docs/v2-8i-3-evidence/owned-postgres-before-removal.json",
+  "beforeRemovalSha256": "187e91f76556e35c4b145525a76a15ac04fdcaeb15c094c8e1e9c668a5d14169",
+  "initialCleanupRecord": "docs/v2-8i-3-evidence/owned-postgres-cleanup.json",
+  "initialCleanupSha256": "eb1f2fb85257c88e6e361470c6dd93c05ec103f52099406825573eac75a057c7",
+  "firstPostStopObservation": {
+    "atUtc": "2026-10-26T08:17:16.803515+00:00",
+    "exactIdAbsent": false,
+    "portConnectionRefused": true
+  },
+  "boundedCleanupExactIdAbsent": true,
+  "boundedCleanupPortConnectionRefused": true,
+  "inspectExitCode": 1,
+  "inspectStderr": "error: no such object: dc1f24756ec8094a5cd356ce1626f3db18a25d74fe72561d9f938129d2105cd0\n",
+  "matchingContainerIds": [],
+  "exactIdAbsent": true,
+  "portConnectionRefused": true,
+  "freshSavedProjectDatabaseCountBeforeStop": 0,
+  "savedCountReconstructed": false,
+  "additionalStopOrRemovalIssued": false,
+  "unrelatedServicesModified": false,
+  "classification": "Read-only verification after bounded cleanup; the first post-stop observation and final cleanup summary are distinguished, with both original records retained unchanged."
+}
