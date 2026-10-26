@@ -1,0 +1,244 @@
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 6.4 iowait 9.9 storage {'nvme0n1': {'busyPercent': 0.8866428450559172, 'weightedQueue': 0.019799468043729878, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 233.32706448839923}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 4.7 iowait 10.0 storage {'nvme0n1': {'busyPercent': 1.8260155088623091, 'weightedQueue': 0.1724422646005606, 'inflight': 0, 'readKiBps': 140.23799108062533, 'writeKiBps': 9823.033829783803}}
+turn-discovery-gate START
+turn-discovery-gate EXIT 0 {'total': 47, 'pass': 47, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 5.4 iowait 9.8 storage {'nvme0n1': {'busyPercent': 1.0999829526109373, 'weightedQueue': 0.06973225263218426, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1215.9811548862724}}
+RESOURCE WINDOW 0 of 30 stable seconds; CPU 5.6 iowait 9.6 storage {'nvme0n1': {'busyPercent': 2.5641160111485752, 'weightedQueue': 0.07287137990233127, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 960.5470860416683}}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 3.8 iowait 9.2 storage {'nvme0n1': {'busyPercent': 1.488994224689072, 'weightedQueue': 0.31189111170719314, 'inflight': 0, 'readKiBps': 5.051944690909352, 'writeKiBps': 3126.3560881953763}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 3.5 iowait 8.7 storage {'nvme0n1': {'busyPercent': 1.036442245264164, 'weightedQueue': 0.043783041001864365, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 454.4400613850565}}
+bulk START
+bulk RUNNING 15 seconds
+bulk RUNNING 30 seconds
+bulk RUNNING 45 seconds
+bulk RUNNING 60 seconds
+bulk RUNNING 75 seconds
+bulk RUNNING 90 seconds
+bulk RUNNING 105 seconds
+bulk RUNNING 120 seconds
+bulk EXIT 0 {'total': 2569, 'pass': 2569, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 7.2 iowait 10.2 storage {'nvme0n1': {'busyPercent': 0.47332054853515343, 'weightedQueue': 0.30165851860867177, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1247.4329724210975}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 6.5 iowait 10.1 storage {'nvme0n1': {'busyPercent': 0.43181062280864935, 'weightedQueue': 0.023317773631667062, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 321.2671033696351}}
+v2-edit-chrome-7a.test START
+v2-edit-chrome-7a.test RUNNING 15 seconds
+v2-edit-chrome-7a.test RUNNING 30 seconds
+v2-edit-chrome-7a.test RUNNING 45 seconds
+v2-edit-chrome-7a.test RUNNING 60 seconds
+v2-edit-chrome-7a.test RUNNING 75 seconds
+v2-edit-chrome-7a.test RUNNING 90 seconds
+v2-edit-chrome-7a.test RUNNING 105 seconds
+v2-edit-chrome-7a.test RUNNING 121 seconds
+v2-edit-chrome-7a.test EXIT 0 {'total': 28, 'pass': 28, 'fail': 0, 'skip': 0, 'cancelled': 0}
+COORDINATOR YIELD before freeform.test with no active test process
+turn-discovery-gate RETAINED recorded complete execution {'total': 47, 'pass': 47, 'fail': 0, 'skip': 0, 'cancelled': 0}
+bulk RETAINED recorded complete execution {'total': 2569, 'pass': 2569, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-7a.test RETAINED recorded complete execution {'total': 28, 'pass': 28, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 6.8 iowait 10.0 storage {'nvme0n1': {'busyPercent': 2.2199210209822438, 'weightedQueue': 0.14839472050169594, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 5356.609425764722}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 4.5 iowait 9.6 storage {'nvme0n1': {'busyPercent': 1.4017563874930878, 'weightedQueue': 0.052150652330903984, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 2112.33393823366}}
+freeform.test START
+freeform.test EXIT 0 {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 6.3 iowait 10.0 storage {'nvme0n1': {'busyPercent': 1.913285255153743, 'weightedQueue': 0.04539885919023341, 'inflight': 0, 'readKiBps': 6.399839181002067, 'writeKiBps': 886.9110465005364}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 4.8 iowait 9.8 storage {'nvme0n1': {'busyPercent': 0.8906832568373653, 'weightedQueue': 0.03403207667915903, 'inflight': 0, 'readKiBps': 1.0635023962237198, 'writeKiBps': 2586.1719520170304}}
+plate.test START
+plate.test EXIT 0 {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 5.0 iowait 9.9 storage {'nvme0n1': {'busyPercent': 1.3933079867388263, 'weightedQueue': 0.02966612699037214, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 555.9898856173115}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 4.7 iowait 7.0 storage {'nvme0n1': {'busyPercent': 1.7404665328858857, 'weightedQueue': 0.09346703861719241, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 2029.3042613205357}}
+v2-edit-chrome-5c.test START
+v2-edit-chrome-5c.test RUNNING 15 seconds
+v2-edit-chrome-5c.test EXIT 0 {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 4.6 iowait 9.2 storage {'nvme0n1': {'busyPercent': 2.099950520405934, 'weightedQueue': 0.29532637477454887, 'inflight': 0, 'readKiBps': 117.59722914273232, 'writeKiBps': 2665.0038731348454}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 2.6 iowait 9.2 storage {'nvme0n1': {'busyPercent': 3.7159903733889275, 'weightedQueue': 0.11241037068695307, 'inflight': 0, 'readKiBps': 280.26145642589836, 'writeKiBps': 3558.3100663105997}}
+v2-edit-chrome-5d.test START
+v2-edit-chrome-5d.test EXIT 0 {'total': 4, 'pass': 4, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 3.2 iowait 8.9 storage {'nvme0n1': {'busyPercent': 2.3132882664683345, 'weightedQueue': 0.12606421071733775, 'inflight': 0, 'readKiBps': 2.133291773112009, 'writeKiBps': 3934.323352561822}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 2.0 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.24597997779318181, 'weightedQueue': 0.010105123412044226, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 295.1759733518182}}
+v2-edit-chrome-5e.test START
+v2-edit-chrome-5e.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 3.0 iowait 8.7 storage {'nvme0n1': {'busyPercent': 1.2799809299056155, 'weightedQueue': 0.047199296790269574, 'inflight': 0, 'readKiBps': 3.199952324764039, 'writeKiBps': 2417.0306559717706}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 4.0 iowait 9.3 storage {'nvme0n1': {'busyPercent': 2.0541960944858317, 'weightedQueue': 0.09047769853058955, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 563.740546318442}}
+v2-edit-chrome-5f.test START
+v2-edit-chrome-5f.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 2.6 iowait 8.6 storage {'nvme0n1': {'busyPercent': 0.4933206919576372, 'weightedQueue': 0.02939924664234027, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 404.78962723875316}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 2.0 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.6182566381594962, 'weightedQueue': 0.09200722443147771, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 2273.588927425244}}
+v2-edit-chrome-5i.test START
+v2-edit-chrome-5i.test EXIT 0 {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 3.0 iowait 9.3 storage {'nvme0n1': {'busyPercent': 0.39999255493859714, 'weightedQueue': 0.022399583076561442, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 213.06270093062608}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 3.9 iowait 9.0 storage {'nvme0n1': {'busyPercent': 0.9705071540000766, 'weightedQueue': 0.0461323263613735, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1693.4685106373938}}
+v2-edit-chrome-5j.test START
+v2-edit-chrome-5j.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+COORDINATOR YIELD before v2-edit-chrome-5k.test with no active test process
+turn-discovery-gate RETAINED recorded complete execution {'total': 47, 'pass': 47, 'fail': 0, 'skip': 0, 'cancelled': 0}
+bulk RETAINED recorded complete execution {'total': 2569, 'pass': 2569, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-7a.test RETAINED recorded complete execution {'total': 28, 'pass': 28, 'fail': 0, 'skip': 0, 'cancelled': 0}
+freeform.test RETAINED recorded complete execution {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+plate.test RETAINED recorded complete execution {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5c.test RETAINED recorded complete execution {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5d.test RETAINED recorded complete execution {'total': 4, 'pass': 4, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5e.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5f.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5i.test RETAINED recorded complete execution {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5j.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 1.9 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.6733131061995937, 'weightedQueue': 0.032999008670178104, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1634.617560793469}}
+RESOURCE WINDOW 0 of 30 stable seconds; CPU 1.9 iowait 8.3 storage {'nvme0n1': {'busyPercent': 51.48241994475807, 'weightedQueue': 0.026060315881127536, 'inflight': 0, 'readKiBps': 3.456980678108755, 'writeKiBps': 285.0679451486604}}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 2.6 iowait 8.9 storage {'nvme0n1': {'busyPercent': 0.8709077388112786, 'weightedQueue': 0.056442799255784395, 'inflight': 0, 'readKiBps': 1.595556162707686, 'writeKiBps': 1054.9285495768984}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 2.1 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.7844562658603539, 'weightedQueue': 0.015822084006335953, 'inflight': 0, 'readKiBps': 374.51138760375454, 'writeKiBps': 67.2438570269278}}
+v2-edit-chrome-5k.test START
+v2-edit-chrome-5k.test RUNNING 15 seconds
+v2-edit-chrome-5k.test EXIT 0 {'total': 9, 'pass': 9, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 2.1 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.21333010034412941, 'weightedQueue': 0.006599899979396503, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 31.199527175328924}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 2.0 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.6315730037520284, 'weightedQueue': 0.021938851709280987, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 243.58773534183496}}
+v2-edit-chrome-6a.test START
+v2-edit-chrome-6a.test RUNNING 15 seconds
+v2-edit-chrome-6a.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 2.6 iowait 8.6 storage {'nvme0n1': {'busyPercent': 0.793311818558186, 'weightedQueue': 0.046598736232955636, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 2722.3261699699233}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 1.9 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.4853045599317996, 'weightedQueue': 0.024664108456807898, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 595.9274075655687}}
+v2-edit-chrome-6b.test START
+v2-edit-chrome-6b.test RUNNING 15 seconds
+v2-edit-chrome-6b.test EXIT 0 {'total': 4, 'pass': 4, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 3.9 iowait 8.2 storage {'nvme0n1': {'busyPercent': 1.3599700344202694, 'weightedQueue': 0.09659787156249855, 'inflight': 0, 'readKiBps': 26.399418315216998, 'writeKiBps': 1104.5089965821091}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 3.9 iowait 8.3 storage {'nvme0n1': {'busyPercent': 2.173353586114819, 'weightedQueue': 0.1114591426273563, 'inflight': 0, 'readKiBps': 2882.1194161554436, 'writeKiBps': 5397.360795755725}}
+v2-edit-chrome-6c.test START
+v2-edit-chrome-6c.test RUNNING 15 seconds
+v2-edit-chrome-6c.test EXIT 0 {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 2.0 iowait 8.4 storage {'nvme0n1': {'busyPercent': 1.1733026263609228, 'weightedQueue': 0.055465215064334536, 'inflight': 0, 'readKiBps': 5.333193756186013, 'writeKiBps': 2420.7366459328314}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 1.8 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.9767891093887912, 'weightedQueue': 0.025848364867499304, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 814.9211998329343}}
+v2-edit-chrome-chart.test START
+v2-edit-chrome-chart.test EXIT 0 {'total': 2, 'pass': 2, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 1.7 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.5933198268425213, 'weightedQueue': 0.008533139082678958, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 69.86507623943398}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 2.1 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.9902389358149293, 'weightedQueue': 0.08852337332251582, 'inflight': 0, 'readKiBps': 9.835930369168425, 'writeKiBps': 2151.144555332727}}
+v2-edit-chrome-table.test START
+v2-edit-chrome-table.test EXIT 0 {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 2.0 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.49332359867747705, 'weightedQueue': 0.02686613652257071, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 265.061436262385}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 2.3 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.850652161933405, 'weightedQueue': 0.12474016468351572, 'inflight': 0, 'readKiBps': 18.873844842897423, 'writeKiBps': 1145.987959404659}}
+v2-fontgate-4e.test START
+v2-fontgate-4e.test EXIT 0 {'total': 2, 'pass': 2, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 4.5 iowait 9.3 storage {'nvme0n1': {'busyPercent': 1.686630215101914, 'weightedQueue': 0.17052964783520538, 'inflight': 0, 'readKiBps': 29.332699393076766, 'writeKiBps': 2375.948650839218}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 3.6 iowait 10.1 storage {'nvme0n1': {'busyPercent': 0.903598102629499, 'weightedQueue': 0.025513358191891735, 'inflight': 0, 'readKiBps': 176.7331583084167, 'writeKiBps': 440.63695710579685}}
+v2-fonts-4d.test START
+v2-fonts-4d.test EXIT 0 {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+COORDINATOR YIELD before v2-live-chrome-4f.test with no active test process
+turn-discovery-gate RETAINED recorded complete execution {'total': 47, 'pass': 47, 'fail': 0, 'skip': 0, 'cancelled': 0}
+bulk RETAINED recorded complete execution {'total': 2569, 'pass': 2569, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-7a.test RETAINED recorded complete execution {'total': 28, 'pass': 28, 'fail': 0, 'skip': 0, 'cancelled': 0}
+freeform.test RETAINED recorded complete execution {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+plate.test RETAINED recorded complete execution {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5c.test RETAINED recorded complete execution {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5d.test RETAINED recorded complete execution {'total': 4, 'pass': 4, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5e.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5f.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5i.test RETAINED recorded complete execution {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5j.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5k.test RETAINED recorded complete execution {'total': 9, 'pass': 9, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-6a.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-6b.test RETAINED recorded complete execution {'total': 4, 'pass': 4, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-6c.test RETAINED recorded complete execution {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-chart.test RETAINED recorded complete execution {'total': 2, 'pass': 2, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-table.test RETAINED recorded complete execution {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-fontgate-4e.test RETAINED recorded complete execution {'total': 2, 'pass': 2, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-fonts-4d.test RETAINED recorded complete execution {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 1.8 iowait 8.5 storage {'nvme0n1': {'busyPercent': 0.8199718427680749, 'weightedQueue': 0.06393113798492552, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1469.8161942561394}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 2.1 iowait 8.5 storage {'nvme0n1': {'busyPercent': 0.5516311660372488, 'weightedQueue': 0.010301545871779947, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 74.9686693120502}}
+v2-live-chrome-4f.test START
+v2-live-chrome-4f.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 1.8 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.5999841334595691, 'weightedQueue': 0.03259913791796992, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1084.50465368003}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 1.9 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.9368402785709293, 'weightedQueue': 0.03660985769450936, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 615.7897660847782}}
+v2-plate-3f5.test START
+v2-plate-3f5.test EXIT 0 {'total': 34, 'pass': 34, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 2.6 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.26665845783493564, 'weightedQueue': 0.008266412192883004, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 35.99889180771631}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 2.0 iowait 8.4 storage {'nvme0n1': {'busyPercent': 1.3026726494829195, 'weightedQueue': 0.07643232382170191, 'inflight': 0, 'readKiBps': 2.126812488951705, 'writeKiBps': 4799.684084441761}}
+v2-selection-chrome.test START
+v2-selection-chrome.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 1.8 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.8266467098719535, 'weightedQueue': 0.02346610015120384, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 329.32538280382664}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 1.8 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.9237729889175927, 'weightedQueue': 0.04366322688624881, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1720.7431819463534}}
+v2-viewer-smoke.test START
+v2-viewer-smoke.test EXIT 0 {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 1.6 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.9066519349025914, 'weightedQueue': 0.049199200585155325, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1343.1781753248097}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 1.7 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.6112766809591936, 'weightedQueue': 0.018736959133749197, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 411.1500110625533}}
+v2-import-chrome-7b.test START
+v2-import-chrome-7b.test RUNNING 15 seconds
+v2-import-chrome-7b.test EXIT 0 {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 2.1 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.7399790069435089, 'weightedQueue': 0.017799495031884403, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 132.7962325974297}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 1.8 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.6912289785034167, 'weightedQueue': 0.0771650811579295, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1808.3613506847078}}
+v2-handoff-chrome-7b.test START
+v2-handoff-chrome-7b.test RUNNING 15 seconds
+v2-handoff-chrome-7b.test RUNNING 30 seconds
+v2-handoff-chrome-7b.test EXIT 0 {'total': 11, 'pass': 11, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 2.5 iowait 8.7 storage {'nvme0n1': {'busyPercent': 0.7933194651570996, 'weightedQueue': 0.04693251289668892, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 1186.6459226719642}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 4.7 iowait 9.5 storage {'nvme0n1': {'busyPercent': 0.637812598095642, 'weightedQueue': 0.013420640084929132, 'inflight': 0, 'readKiBps': 221.90563308744208, 'writeKiBps': 59.263420573053395}}
+v2-project-covers-chrome-7c.test START
+v2-project-covers-chrome-7c.test RUNNING 15 seconds
+v2-project-covers-chrome-7c.test RUNNING 30 seconds
+v2-project-covers-chrome-7c.test RUNNING 45 seconds
+v2-project-covers-chrome-7c.test EXIT 0 {'total': 12, 'pass': 12, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 0 of 30 stable seconds; CPU 5.5 iowait 8.7 storage {'nvme0n1': {'busyPercent': 2.3199328459867896, 'weightedQueue': 0.21826034878622844, 'inflight': 0, 'readKiBps': 3078.3108935714367, 'writeKiBps': 2502.327566291958}}
+RESOURCE WINDOW 0 of 30 stable seconds; CPU 5.7 iowait 9.2 storage {'nvme0n1': {'busyPercent': 1.9976620640114082, 'weightedQueue': 0.07672084205970724, 'inflight': 0, 'readKiBps': 13504.991962842307, 'writeKiBps': 17.521022754119993}}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 3.6 iowait 9.4 storage {'nvme0n1': {'busyPercent': 1.3754241476174478, 'weightedQueue': 0.08166165591409871, 'inflight': 0, 'readKiBps': 1030.1727528821696, 'writeKiBps': 899.9393553299861}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 5.0 iowait 9.2 storage {'nvme0n1': {'busyPercent': 1.0166950188606276, 'weightedQueue': 0.031098906459266256, 'inflight': 0, 'readKiBps': 299.027946723714, 'writeKiBps': 88.51227223021934}}
+v2-project-catalog-chrome-7c.test START
+v2-project-catalog-chrome-7c.test RUNNING 15 seconds
+v2-project-catalog-chrome-7c.test RUNNING 30 seconds
+v2-project-catalog-chrome-7c.test RUNNING 45 seconds
+v2-project-catalog-chrome-7c.test EXIT 0 {'total': 16, 'pass': 16, 'fail': 0, 'skip': 0, 'cancelled': 0}
+COORDINATOR YIELD before v2-editor-toolbar-chrome-7c.test with no active test process
+turn-discovery-gate RETAINED recorded complete execution {'total': 47, 'pass': 47, 'fail': 0, 'skip': 0, 'cancelled': 0}
+bulk RETAINED recorded complete execution {'total': 2569, 'pass': 2569, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-7a.test RETAINED recorded complete execution {'total': 28, 'pass': 28, 'fail': 0, 'skip': 0, 'cancelled': 0}
+freeform.test RETAINED recorded complete execution {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+plate.test RETAINED recorded complete execution {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5c.test RETAINED recorded complete execution {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5d.test RETAINED recorded complete execution {'total': 4, 'pass': 4, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5e.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5f.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5i.test RETAINED recorded complete execution {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5j.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-5k.test RETAINED recorded complete execution {'total': 9, 'pass': 9, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-6a.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-6b.test RETAINED recorded complete execution {'total': 4, 'pass': 4, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-6c.test RETAINED recorded complete execution {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-chart.test RETAINED recorded complete execution {'total': 2, 'pass': 2, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-edit-chrome-table.test RETAINED recorded complete execution {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-fontgate-4e.test RETAINED recorded complete execution {'total': 2, 'pass': 2, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-fonts-4d.test RETAINED recorded complete execution {'total': 7, 'pass': 7, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-live-chrome-4f.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-plate-3f5.test RETAINED recorded complete execution {'total': 34, 'pass': 34, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-selection-chrome.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-viewer-smoke.test RETAINED recorded complete execution {'total': 3, 'pass': 3, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-import-chrome-7b.test RETAINED recorded complete execution {'total': 5, 'pass': 5, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-handoff-chrome-7b.test RETAINED recorded complete execution {'total': 11, 'pass': 11, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-project-covers-chrome-7c.test RETAINED recorded complete execution {'total': 12, 'pass': 12, 'fail': 0, 'skip': 0, 'cancelled': 0}
+v2-project-catalog-chrome-7c.test RETAINED recorded complete execution {'total': 16, 'pass': 16, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 0.7 iowait 8.5 storage {'nvme0n1': {'busyPercent': 0.5599809625885245, 'weightedQueue': 0.040998606189516965, 'inflight': 0, 'readKiBps': 11.46627685300312, 'writeKiBps': 1283.4230347326516}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 0.8 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.5317146198054852, 'weightedQueue': 0.010900149706012446, 'inflight': 0, 'readKiBps': 186.1001169319198, 'writeKiBps': 31.902877188329114}}
+v2-editor-toolbar-chrome-7c.test START
+v2-editor-toolbar-chrome-7c.test RUNNING 15 seconds
+v2-editor-toolbar-chrome-7c.test RUNNING 30 seconds
+v2-editor-toolbar-chrome-7c.test EXIT 0 {'total': 9, 'pass': 9, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 0.8 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.9799851917702834, 'weightedQueue': 0.11466493400305357, 'inflight': 0, 'readKiBps': 9.866517577006935, 'writeKiBps': 1393.0456168184926}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 0.4 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.7776377773964702, 'weightedQueue': 0.014688713573044437, 'inflight': 0, 'readKiBps': 7.709913006665859, 'writeKiBps': 80.55529796619845}}
+v2-conversation-http-postgres-8i.test START
+v2-conversation-http-postgres-8i.test RUNNING 15 seconds
+v2-conversation-http-postgres-8i.test EXIT 0 {'total': 32, 'pass': 32, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 0.5 iowait 8.3 storage {'nvme0n1': {'busyPercent': 1.4399784603219778, 'weightedQueue': 0.04179937475101297, 'inflight': 0, 'readKiBps': 3.7332774897236463, 'writeKiBps': 1070.6506515171743}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 0.8 iowait 8.4 storage {'nvme0n1': {'busyPercent': 1.0567700109942026, 'weightedQueue': 0.07988915429025356, 'inflight': 0, 'readKiBps': 233.4198917365811, 'writeKiBps': 312.3785567089781}}
+v2-conversation-postgres-8e.test START
+v2-conversation-postgres-8e.test EXIT 0 {'total': 38, 'pass': 38, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 0.6 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.8733198115480552, 'weightedQueue': 0.029199547897560928, 'inflight': 0, 'readKiBps': 68.53227223445806, 'writeKiBps': 976.7848762444354}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 0.5 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.9172014004167878, 'weightedQueue': 0.039811857887656225, 'inflight': 0, 'readKiBps': 5.848820524396908, 'writeKiBps': 335.77546919605885}}
+v2-import-postgres-7b.test START
+v2-import-postgres-7b.test EXIT 0 {'total': 6, 'pass': 6, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 0.7 iowait 8.3 storage {'nvme0n1': {'busyPercent': 1.0333075440436548, 'weightedQueue': 0.028932611233222334, 'inflight': 0, 'readKiBps': 114.66380488742492, 'writeKiBps': 899.9775383606026}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 0.5 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.5383690540561442, 'weightedQueue': 0.0192084761262007, 'inflight': 1, 'readKiBps': 2.1268900900983474, 'writeKiBps': 275.6981279289983}}
+v2-projects-6c-concurrency.test START
+v2-projects-6c-concurrency.test EXIT 0 {'total': 11, 'pass': 11, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 0.5 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.8533136952856217, 'weightedQueue': 0.0327325800300969, 'inflight': 0, 'readKiBps': 7.199834303972434, 'writeKiBps': 847.9804846900867}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 0.5 iowait 8.5 storage {'nvme0n1': {'busyPercent': 0.6446793489232349, 'weightedQueue': 0.026252406476770903, 'inflight': 0, 'readKiBps': 43.06723897961404, 'writeKiBps': 160.57168113386965}}
+v2-projects-6c-faults.test START
+v2-projects-6c-faults.test EXIT 0 {'total': 8, 'pass': 8, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 0.5 iowait 8.5 storage {'nvme0n1': {'busyPercent': 0.5866539287281536, 'weightedQueue': 0.015666326505808646, 'inflight': 0, 'readKiBps': 2.6666087669461525, 'writeKiBps': 401.5912803020906}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 0.6 iowait 8.5 storage {'nvme0n1': {'busyPercent': 0.8374313535088719, 'weightedQueue': 0.029841799819482817, 'inflight': 0, 'readKiBps': 2.1268097866891984, 'writeKiBps': 245.38067913926628}}
+v2-projects-6c-postgres.test START
+v2-projects-6c-postgres.test EXIT 0 {'total': 17, 'pass': 17, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 0.7 iowait 8.3 storage {'nvme0n1': {'busyPercent': 0.6199827813835612, 'weightedQueue': 0.01406627600773456, 'inflight': 0, 'readKiBps': 21.866059386430976, 'writeKiBps': 139.72945266451012}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 0.6 iowait 8.4 storage {'nvme0n1': {'busyPercent': 0.8241682844675929, 'weightedQueue': 0.04586097711956767, 'inflight': 0, 'readKiBps': 8.773404318525989, 'writeKiBps': 2738.3655903278086}}
+v2-provider-postgres-8c.test START
+v2-provider-postgres-8c.test EXIT 0 {'total': 10, 'pass': 10, 'fail': 0, 'skip': 0, 'cancelled': 0}
+COORDINATOR YIELD before v2-provider-run-postgres-8d.test with no active test process

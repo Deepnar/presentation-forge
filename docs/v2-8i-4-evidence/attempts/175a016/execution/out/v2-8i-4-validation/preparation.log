@@ -1,0 +1,4 @@
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 6.0 iowait 10.0 storage {'nvme0n1': {'busyPercent': 1.2666451961863514, 'weightedQueue': 0.02579956268021674, 'inflight': 0, 'readKiBps': 0.0, 'writeKiBps': 380.7935452956021}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 5.2 iowait 9.9 storage {'nvme0n1': {'busyPercent': 1.7876071985696358, 'weightedQueue': 0.18015624964023358, 'inflight': 0, 'readKiBps': 23.65755251638626, 'writeKiBps': 1605.2579735556924}}
+Snapshot verified 7423 files; 246 evidence originals and 5 canonical out originals
+Owned backend and original snapshots ready; no test coordinator started.

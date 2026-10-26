@@ -1,0 +1,1 @@
+{"backend":"SQLite","source":"175a0163618e4a8ffcd68c51224b8eaef4e01440","case":"kill-after-commit-checkpoint","recoveryClaimThroughWorkerCommitMs":37.5412350000006,"excludesLeaseWait":true,"workerReadyBeforeClaim":true,"excludesWorkerBootstrap":true,"includesWorkerStoreSetup":true}

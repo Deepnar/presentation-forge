@@ -1,0 +1,72 @@
+TAP version 13
+# Subtest: layout gallery in real chrome
+    # Subtest: opens the chooser with blank, layout, and duplicate actions
+    ok 1 - opens the chooser with blank, layout, and duplicate actions
+      ---
+      duration_ms: 1547.517615
+      type: 'test'
+      ...
+    # Subtest: browses categories with truthful previews for all 15 templates
+    ok 2 - browses categories with truthful previews for all 15 templates
+      ---
+      duration_ms: 1680.03167
+      type: 'test'
+      ...
+    # Subtest: inserts a title layout and edits its heading
+    ok 3 - inserts a title layout and edits its heading
+      ---
+      duration_ms: 1639.112972
+      type: 'test'
+      ...
+    # Subtest: inserts a comparison layout and restyles a card
+    ok 4 - inserts a comparison layout and restyles a card
+      ---
+      duration_ms: 1645.808921
+      type: 'test'
+      ...
+    # Subtest: inserts a chart template and edits its values
+    ok 5 - inserts a chart template and edits its values
+      ---
+      duration_ms: 2148.78579
+      type: 'test'
+      ...
+    # Subtest: undoes and redoes a template insertion exactly
+    ok 6 - undoes and redoes a template insertion exactly
+      ---
+      duration_ms: 1560.115112
+      type: 'test'
+      ...
+    # Subtest: reorders a template slide with the filmstrip drag
+    ok 7 - reorders a template slide with the filmstrip drag
+      ---
+      duration_ms: 2664.274017
+      type: 'test'
+      ...
+    # Subtest: cancelling the gallery mutates nothing
+    ok 8 - cancelling the gallery mutates nothing
+      ---
+      duration_ms: 2013.802674
+      type: 'test'
+      ...
+    # Subtest: stays usable on a narrow viewport
+    ok 9 - stays usable on a narrow viewport
+      ---
+      duration_ms: 2149.49237
+      type: 'test'
+      ...
+    1..9
+ok 1 - layout gallery in real chrome
+  ---
+  duration_ms: 17055.365232
+  type: 'suite'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17509.870795
+# forge-test-file "test/v2-edit-chrome-5k.test.js"
