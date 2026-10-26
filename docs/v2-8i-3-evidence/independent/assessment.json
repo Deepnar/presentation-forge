@@ -1,0 +1,579 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "reviewedPacketSha": "8666ab0fcf295ffdf850f758771ad465e74a592f",
+  "primaryRepeatedFiles": [
+    "test/v2-turn-worker-sqlite-8i.test.js",
+    "test/v2-turn-worker-postgres-8i.test.js",
+    "test/v2-turn-worker-process-8i.test.js",
+    "test/v2-conversation-http-8i.test.js",
+    "test/v2-conversation-http-postgres-8i.test.js",
+    "test/v2-turns-8h.test.js",
+    "test/v2-turns-sqlite-8h.test.js",
+    "test/v2-turns-postgres-8h.test.js",
+    "test/v2-turns-process-8h.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/v2-runtime-8b.test.js",
+    "test/v2-runtime-process-8b.test.js",
+    "test/v2-runtime-postgres-8b.test.js",
+    "test/dev-protocol.test.js"
+  ],
+  "primaryRepeatedLeaves": 346,
+  "supplementalNativeRepeatedCases": 4,
+  "typecheckExitCode": 0,
+  "remainingPrimaryInspectedNotRerun": {
+    "files": 220,
+    "leaves": 2702
+  },
+  "allCaseExecutionsOverlapPacketCoverage": true,
+  "newDistinctScenarios": 0,
+  "independentlyReranBrowserBuildBenchmarkLocale": false,
+  "resourceRecords": {
+    "packet": {
+      "resourceSha256": "a9da854bd9b6152a0e873e918dddb1b2725aa5cd0f4261c7423830c7404d60f5",
+      "statistics": {
+        "samples": 225,
+        "sampleSeconds": 3381.5172329860025,
+        "cpuMeanPercent": 8.89311719423716,
+        "cpuPeakPercent": 79.76541204328313,
+        "criticalSamples": 3,
+        "ioPsiSomeAvg10Range": [
+          23.15,
+          86.51
+        ],
+        "unknownTaskSamples": 0
+      },
+      "freshAdmissionsVerified": 48,
+      "admissions": [
+        {
+          "job": "conversation-http-gate",
+          "versions": [
+            1,
+            1
+          ],
+          "readySampleSeconds": 30.032887039000002,
+          "lastSampleAgeSeconds": 0.000167
+        },
+        {
+          "job": "bulk",
+          "versions": [
+            1,
+            1
+          ],
+          "readySampleSeconds": 30.032163759000014,
+          "lastSampleAgeSeconds": 0.000148
+        },
+        {
+          "job": "v2-edit-chrome-7a.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.028949352000154,
+          "lastSampleAgeSeconds": 0.000173
+        },
+        {
+          "job": "freeform.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.033977523999965,
+          "lastSampleAgeSeconds": 0.000151
+        },
+        {
+          "job": "plate.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.034238237999944,
+          "lastSampleAgeSeconds": 0.00015
+        },
+        {
+          "job": "v2-edit-chrome-5c.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03403525199974,
+          "lastSampleAgeSeconds": 0.000194
+        },
+        {
+          "job": "v2-edit-chrome-5d.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.035123311000007,
+          "lastSampleAgeSeconds": 0.000136
+        },
+        {
+          "job": "v2-edit-chrome-5e.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.0341230060003,
+          "lastSampleAgeSeconds": 0.000159
+        },
+        {
+          "job": "v2-edit-chrome-5f.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.032928374999756,
+          "lastSampleAgeSeconds": 0.000128
+        },
+        {
+          "job": "v2-edit-chrome-5i.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.033362389000104,
+          "lastSampleAgeSeconds": 0.000125
+        },
+        {
+          "job": "v2-edit-chrome-5j.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.033321464999972,
+          "lastSampleAgeSeconds": 0.000237
+        },
+        {
+          "job": "v2-edit-chrome-5k.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.032678359999863,
+          "lastSampleAgeSeconds": 0.000137
+        },
+        {
+          "job": "v2-edit-chrome-6a.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.037465689999863,
+          "lastSampleAgeSeconds": 0.00021
+        },
+        {
+          "job": "v2-edit-chrome-6b.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03392362700015,
+          "lastSampleAgeSeconds": 0.00014
+        },
+        {
+          "job": "v2-edit-chrome-6c.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.036262803000227,
+          "lastSampleAgeSeconds": 0.000145
+        },
+        {
+          "job": "v2-edit-chrome-chart.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03394781199995,
+          "lastSampleAgeSeconds": 0.00018
+        },
+        {
+          "job": "v2-edit-chrome-table.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03853907699977,
+          "lastSampleAgeSeconds": 0.00014
+        },
+        {
+          "job": "v2-fontgate-4e.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03376636599978,
+          "lastSampleAgeSeconds": 0.00012
+        },
+        {
+          "job": "v2-fonts-4d.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03367501999992,
+          "lastSampleAgeSeconds": 0.000164
+        },
+        {
+          "job": "v2-live-chrome-4f.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.0360225190002,
+          "lastSampleAgeSeconds": 0.000114
+        },
+        {
+          "job": "v2-plate-3f5.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.034776742000304,
+          "lastSampleAgeSeconds": 0.000183
+        },
+        {
+          "job": "v2-selection-chrome.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.040179637000165,
+          "lastSampleAgeSeconds": 0.000127
+        },
+        {
+          "job": "v2-viewer-smoke.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.034065972000008,
+          "lastSampleAgeSeconds": 0.000173
+        },
+        {
+          "job": "v2-import-chrome-7b.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03358781199995,
+          "lastSampleAgeSeconds": 0.000163
+        },
+        {
+          "job": "v2-handoff-chrome-7b.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.034792428999936,
+          "lastSampleAgeSeconds": 0.00014
+        },
+        {
+          "job": "v2-project-covers-chrome-7c.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.037236312000005,
+          "lastSampleAgeSeconds": 0.00011
+        },
+        {
+          "job": "v2-project-catalog-chrome-7c.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03400181699999,
+          "lastSampleAgeSeconds": 0.000146
+        },
+        {
+          "job": "v2-editor-toolbar-chrome-7c.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.037566194999727,
+          "lastSampleAgeSeconds": 0.000126
+        },
+        {
+          "job": "v2-projects-6c-postgres.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03278856299994,
+          "lastSampleAgeSeconds": 0.000148
+        },
+        {
+          "job": "v2-projects-6c-concurrency.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.038868654999987,
+          "lastSampleAgeSeconds": 0.000155
+        },
+        {
+          "job": "v2-projects-6c-faults.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03691928199987,
+          "lastSampleAgeSeconds": 0.000144
+        },
+        {
+          "job": "v2-import-postgres-7b.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.036000087000048,
+          "lastSampleAgeSeconds": 0.000112
+        },
+        {
+          "job": "v2-runtime-postgres-8b.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03699668299987,
+          "lastSampleAgeSeconds": 0.000148
+        },
+        {
+          "job": "v2-provider-postgres-8c.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03622747899999,
+          "lastSampleAgeSeconds": 0.000108
+        },
+        {
+          "job": "v2-provider-run-postgres-8d.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03652120999959,
+          "lastSampleAgeSeconds": 0.000154
+        },
+        {
+          "job": "v2-conversation-postgres-8e.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.064625591000095,
+          "lastSampleAgeSeconds": 0.000135
+        },
+        {
+          "job": "v2-turns-postgres-8h.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03385422600013,
+          "lastSampleAgeSeconds": 0.000138
+        },
+        {
+          "job": "v2-conversation-http-postgres-8i.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.033856888000173,
+          "lastSampleAgeSeconds": 0.000112
+        },
+        {
+          "job": "v2-turn-worker-postgres-8i.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.033960221999678,
+          "lastSampleAgeSeconds": 0.000169
+        },
+        {
+          "job": "v2-turn-worker-process-8i.test",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.033462901000348,
+          "lastSampleAgeSeconds": 0.000127
+        },
+        {
+          "job": "production-build",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.033808551999755,
+          "lastSampleAgeSeconds": 0.000163
+        },
+        {
+          "job": "typecheck",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03424710499985,
+          "lastSampleAgeSeconds": 0.000172
+        },
+        {
+          "job": "benchmark-50",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.035912657000154,
+          "lastSampleAgeSeconds": 0.000153
+        },
+        {
+          "job": "headless",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.04325131700034,
+          "lastSampleAgeSeconds": 0.000197
+        },
+        {
+          "job": "byok-locale",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.035261210000044,
+          "lastSampleAgeSeconds": 0.000138
+        },
+        {
+          "job": "native-review",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.026034716999675,
+          "lastSampleAgeSeconds": 0.000157
+        },
+        {
+          "job": "shell-native",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.0280413710002,
+          "lastSampleAgeSeconds": 0.000143
+        },
+        {
+          "job": "http-native",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.0348023800002,
+          "lastSampleAgeSeconds": 0.000165
+        }
+      ]
+    },
+    "independent": {
+      "resourceSha256": "6f3b879e45904a7861a9ffb6921d7ee60fb7c7af554b66c81d6ba8f11d7a779b",
+      "statistics": {
+        "samples": 37,
+        "sampleSeconds": 555.8564662830022,
+        "cpuMeanPercent": 5.358314594303776,
+        "cpuPeakPercent": 14.66270057853946,
+        "criticalSamples": 0,
+        "ioPsiSomeAvg10Range": [
+          39.51,
+          84.86
+        ],
+        "unknownTaskSamples": 0
+      },
+      "freshAdmissionsVerified": 8,
+      "admissions": [
+        {
+          "job": "worker-both",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.07402390199968,
+          "lastSampleAgeSeconds": 0.00014
+        },
+        {
+          "job": "http-both",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.035874751000847,
+          "lastSampleAgeSeconds": 0.000191
+        },
+        {
+          "job": "turns-both",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.03569315599998,
+          "lastSampleAgeSeconds": 0.000156
+        },
+        {
+          "job": "boundary",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.037556845000836,
+          "lastSampleAgeSeconds": 0.000141
+        },
+        {
+          "job": "runtime-both",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.038146631000018,
+          "lastSampleAgeSeconds": 0.00015
+        },
+        {
+          "job": "protocol",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.039208896000673,
+          "lastSampleAgeSeconds": 0.000143
+        },
+        {
+          "job": "typecheck",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.043043243000284,
+          "lastSampleAgeSeconds": 0.000143
+        },
+        {
+          "job": "submission-native-repeats",
+          "versions": [
+            2,
+            2
+          ],
+          "readySampleSeconds": 30.035066755000116,
+          "lastSampleAgeSeconds": 0.000164
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Global I/O PSI/iowait provenance remains unresolved; local fixture timing is not production latency or live-provider quality.",
+    "Packet first2admissions retain legacy executable-link classification;46later and all8independent admissions use corrected flags. No historical flags reconstructed.",
+    "All packet119images viewed,17full-size; independent32fresh rasters equal inspected packet images by exact hashes.",
+    "No live API/local inference, deployment or interactive Microsoft PowerPoint session."
+  ],
+  "packetCriticalSamplesBelongExactlyToRetainedCancelled7A": true
+}

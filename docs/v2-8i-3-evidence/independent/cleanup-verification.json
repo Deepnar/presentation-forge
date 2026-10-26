@@ -1,0 +1,30 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "atUtc": "2026-10-26T08:19:47.442007+00:00",
+  "id": "dc1f24756ec8094a5cd356ce1626f3db18a25d74fe72561d9f938129d2105cd0",
+  "rootRecordsSha256": {
+    "owned-postgres-before-removal.json": "187e91f76556e35c4b145525a76a15ac04fdcaeb15c094c8e1e9c668a5d14169",
+    "owned-postgres-cleanup.json": "eb1f2fb85257c88e6e361470c6dd93c05ec103f52099406825573eac75a057c7",
+    "owned-postgres-cleanup-verification.json": "382cdb2a069cdbcb3eb578784d3633ff0a1ec20d8cb2a27c399cd492dc377b59"
+  },
+  "actualSavedPreStopProjectDatabaseCount": 0,
+  "firstPostStopObservation": {
+    "atUtc": "2026-10-26T08:17:16.803515+00:00",
+    "exactIdAbsent": false,
+    "portConnectionRefused": true
+  },
+  "boundedCleanupFinal": {
+    "exactIdAbsent": true,
+    "portConnectionRefused": true
+  },
+  "independentReadOnlyProbe": {
+    "inspectExitCode": 1,
+    "inspectStderr": "error: no such object: dc1f24756ec8094a5cd356ce1626f3db18a25d74fe72561d9f938129d2105cd0\n",
+    "matchingContainerIds": [],
+    "port": 5544,
+    "portConnectionRefused": true
+  },
+  "additionalStopOrDatabaseRecreation": false,
+  "savedCountReconstructed": false,
+  "unrelatedServiceChanges": false
+}

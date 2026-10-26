@@ -1,0 +1,39 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "atUtc": "2026-10-26T08:17:14.744445+00:00",
+  "records": [
+    {
+      "scope": "root-historical",
+      "manifest": "docs/v2-8i-3-evidence/backup-manifest.json",
+      "manifestSha256": "0d08c30af09e8fede823cce9acd578a41e604770bd76a8e9f59d841186200f21",
+      "files": 6965,
+      "pptx": 221,
+      "allCurrentHashesMatch": true
+    },
+    {
+      "scope": "root-canonical",
+      "manifest": "out/v2-8i-3-validation/prior-generated-backup/index.json",
+      "manifestSha256": "0d09ea20b7e85ba5512d29a34c294ed9f0ee00368157a760c7ac0e22a906513d",
+      "files": 5,
+      "pptx": 5,
+      "allCurrentHashesMatch": true
+    },
+    {
+      "scope": "independent-all-current",
+      "manifest": "docs/v2-8i-3-evidence/independent/backup-manifest.json",
+      "manifestSha256": "9e2e8ffced57392145bbc5e84c2fcb5da7ffcdd3d3a8f06652e05dd906e7260a",
+      "files": 7306,
+      "pptx": 236,
+      "allCurrentHashesMatch": true
+    },
+    {
+      "scope": "independent-canonical",
+      "manifest": "docs/v2-8i-3-evidence/independent/canonical-manifest.json",
+      "manifestSha256": "0d09ea20b7e85ba5512d29a34c294ed9f0ee00368157a760c7ac0e22a906513d",
+      "files": 5,
+      "pptx": 5,
+      "allCurrentHashesMatch": true
+    }
+  ],
+  "archiveReconstruction": false
+}

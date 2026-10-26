@@ -1,0 +1,10 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "acceptedBaseline": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+  "reviewedPacketSha": "8666ab0fcf295ffdf850f758771ad465e74a592f",
+  "independentContext": "/root/turn_contract_review",
+  "copiedCurrentHelper": "docs/v2-8i-3-evidence/headless-check.mjs",
+  "copiedCurrentHelperSha256": "80db5505b4394553a69b0e281a1fb3b234f14e4718607a2b2d436e4b2594d969",
+  "isolatedHelperSha256": "c9c7ac62d73b0fc90ddd3c7c583e6560c91a550d351a5bbb28abc856bfcebf5c",
+  "isolation": "Only import depth and output root changed in the copied current I3 native helper; no primary finisher or old helper will execute. All selected leaves and four native scenarios repeat root coverage."
+}

@@ -1,0 +1,96 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "comparisons": [
+    {
+      "freshOriginal": "docs/v2-8i-3-evidence/independent/native/sqlite-openai-compatible/before.pptx",
+      "packetOriginal": "docs/v2-8i-3-evidence/native/sqlite-openai-compatible/before.pptx",
+      "differentPayloadParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "freshOriginal": "docs/v2-8i-3-evidence/independent/native/sqlite-openai-compatible/after.pptx",
+      "packetOriginal": "docs/v2-8i-3-evidence/native/sqlite-openai-compatible/after.pptx",
+      "differentPayloadParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet2.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "freshOriginal": "docs/v2-8i-3-evidence/independent/native/postgres-openai-compatible/before.pptx",
+      "packetOriginal": "docs/v2-8i-3-evidence/native/postgres-openai-compatible/before.pptx",
+      "differentPayloadParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet3.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "freshOriginal": "docs/v2-8i-3-evidence/independent/native/postgres-openai-compatible/after.pptx",
+      "packetOriginal": "docs/v2-8i-3-evidence/native/postgres-openai-compatible/after.pptx",
+      "differentPayloadParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet4.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "freshOriginal": "docs/v2-8i-3-evidence/independent/native/sqlite-anthropic/before.pptx",
+      "packetOriginal": "docs/v2-8i-3-evidence/native/sqlite-anthropic/before.pptx",
+      "differentPayloadParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet5.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "freshOriginal": "docs/v2-8i-3-evidence/independent/native/sqlite-anthropic/after.pptx",
+      "packetOriginal": "docs/v2-8i-3-evidence/native/sqlite-anthropic/after.pptx",
+      "differentPayloadParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet6.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "freshOriginal": "docs/v2-8i-3-evidence/independent/native/postgres-anthropic/before.pptx",
+      "packetOriginal": "docs/v2-8i-3-evidence/native/postgres-anthropic/before.pptx",
+      "differentPayloadParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet7.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "freshOriginal": "docs/v2-8i-3-evidence/independent/native/postgres-anthropic/after.pptx",
+      "packetOriginal": "docs/v2-8i-3-evidence/native/postgres-anthropic/after.pptx",
+      "differentPayloadParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet8.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "freshOriginal": "docs/v2-8i-3-evidence/independent/http-archives/postgresql-approved.pptx",
+      "packetOriginal": "docs/v2-8i-3-evidence/http-archives/postgres-approved.pptx",
+      "differentPayloadParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    },
+    {
+      "freshOriginal": "docs/v2-8i-3-evidence/independent/http-archives/sqlite-approved.pptx",
+      "packetOriginal": "docs/v2-8i-3-evidence/http-archives/sqlite-approved.pptx",
+      "differentPayloadParts": [
+        "docProps/core.xml",
+        "ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx"
+      ],
+      "allPayloadsEqualExceptCreationModificationTimesAndZipMetadata": true
+    }
+  ],
+  "note": "Exact fresh originals retained; ZIP metadata and creation/modification timestamps may differ. No archive reconstruction."
+}

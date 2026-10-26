@@ -1,0 +1,427 @@
+TAP version 13
+# Subtest: SQLite: project, history and receipt commit once with distinct revisions
+ok 1 - SQLite: project, history and receipt commit once with distinct revisions
+  ---
+  duration_ms: 46.888065
+  type: 'test'
+  ...
+# Subtest: SQLite: request identity reopens exact state and refuses changed plans
+ok 2 - SQLite: request identity reopens exact state and refuses changed plans
+  ---
+  duration_ms: 8.928708
+  type: 'test'
+  ...
+# Subtest: SQLite: input and output snapshots do not mutate durable authority
+ok 3 - SQLite: input and output snapshots do not mutate durable authority
+  ---
+  duration_ms: 9.421477
+  type: 'test'
+  ...
+# Subtest: SQLite: foreign owner, foreign project and deleted project cannot inspect or act
+ok 4 - SQLite: foreign owner, foreign project and deleted project cannot inspect or act
+  ---
+  duration_ms: 6.042989
+  type: 'test'
+  ...
+# Subtest: SQLite: local ownerless projects retain local authority without widening scope
+ok 5 - SQLite: local ownerless projects retain local authority without widening scope
+  ---
+  duration_ms: 8.155055
+  type: 'test'
+  ...
+# Subtest: SQLite: read and noop receipts never invent durable project history
+ok 6 - SQLite: read and noop receipts never invent durable project history
+  ---
+  duration_ms: 8.342097
+  type: 'test'
+  ...
+# Subtest: SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+ok 7 - SQLite: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+  ---
+  duration_ms: 14.771178
+  type: 'test'
+  ...
+# Subtest: SQLite: human changes after start cause stale refusal without rebasing
+ok 8 - SQLite: human changes after start cause stale refusal without rebasing
+  ---
+  duration_ms: 7.056698
+  type: 'test'
+  ...
+# Subtest: SQLite: inspect-only and locked/hidden targets fail through canonical tools
+ok 9 - SQLite: inspect-only and locked/hidden targets fail through canonical tools
+  ---
+  duration_ms: 13.118863
+  type: 'test'
+  ...
+# Subtest: SQLite: failure budgets and concise traces survive a new runtime instance
+ok 10 - SQLite: failure budgets and concise traces survive a new runtime instance
+  ---
+  duration_ms: 8.6069
+  type: 'test'
+  ...
+# Subtest: SQLite: cancellation before work and after commit preserves transaction order
+ok 11 - SQLite: cancellation before work and after commit preserves transaction order
+  ---
+  duration_ms: 9.694676
+  type: 'test'
+  ...
+# Subtest: SQLite: lease takeover fences the previous worker even with reused worker name
+ok 12 - SQLite: lease takeover fences the previous worker even with reused worker name
+  ---
+  duration_ms: 135.574205
+  type: 'test'
+  ...
+# Subtest: SQLite: deadlines persist across restart and expire before effects
+ok 13 - SQLite: deadlines persist across restart and expire before effects
+  ---
+  duration_ms: 7.830775
+  type: 'test'
+  ...
+# Subtest: SQLite: after-project failure rolls project/history/receipt back together
+ok 14 - SQLite: after-project failure rolls project/history/receipt back together
+  ---
+  duration_ms: 11.001925
+  type: 'test'
+  ...
+# Subtest: SQLite: after-receipt failure rolls project/history/receipt back together
+ok 15 - SQLite: after-receipt failure rolls project/history/receipt back together
+  ---
+  duration_ms: 9.228998
+  type: 'test'
+  ...
+# Subtest: SQLite: final-fence failure rolls project/history/receipt back together
+ok 16 - SQLite: final-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 11.778531
+  type: 'test'
+  ...
+# Subtest: SQLite: deadline-fence failure rolls project/history/receipt back together
+ok 17 - SQLite: deadline-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 8.383021
+  type: 'test'
+  ...
+# Subtest: SQLite: records and traces are bounded and omit raw document/read contents
+ok 18 - SQLite: records and traces are bounded and omit raw document/read contents
+  ---
+  duration_ms: 7.35995
+  type: 'test'
+  ...
+# Subtest: SQLite: malformed/oversized/authority/layout data and duplicate grants are refused
+ok 19 - SQLite: malformed/oversized/authority/layout data and duplicate grants are refused
+  ---
+  duration_ms: 5.90501
+  type: 'test'
+  ...
+# Subtest: SQLite: concurrent advances sharing one lease reserve only one attempt
+ok 20 - SQLite: concurrent advances sharing one lease reserve only one attempt
+  ---
+  duration_ms: 8.058069
+  type: 'test'
+  ...
+# Subtest: SQLite: unsupported or corrupt durable records fail closed
+ok 21 - SQLite: unsupported or corrupt durable records fail closed
+  ---
+  duration_ms: 4.852158
+  type: 'test'
+  ...
+# Subtest: SQLite: renewal extends the current lease without changing its fence
+ok 22 - SQLite: renewal extends the current lease without changing its fence
+  ---
+  duration_ms: 192.718787
+  type: 'test'
+  ...
+# Subtest: SQLite: project deletion cascades runs and all step receipts
+ok 23 - SQLite: project deletion cascades runs and all step receipts
+  ---
+  duration_ms: 8.161531
+  type: 'test'
+  ...
+# Subtest: SQLite: corrupt receipt checkpoints refuse resume instead of skipping work
+ok 24 - SQLite: corrupt receipt checkpoints refuse resume instead of skipping work
+  ---
+  duration_ms: 7.614635
+  type: 'test'
+  ...
+# Subtest: SQLite: CLI start exits and a separate worker completes the saved project
+ok 25 - SQLite: CLI start exits and a separate worker completes the saved project
+  ---
+  duration_ms: 725.155536
+  type: 'test'
+  ...
+# Subtest: SQLite: schema-valid contradictory receipts and counters fail closed
+ok 26 - SQLite: schema-valid contradictory receipts and counters fail closed
+  ---
+  duration_ms: 18.04836
+  type: 'test'
+  ...
+# Subtest: persisted semantic plan schemas retain the canonical tool contract
+ok 27 - persisted semantic plan schemas retain the canonical tool contract
+  ---
+  duration_ms: 1.460605
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project, history and receipt commit once with distinct revisions
+ok 28 - PostgreSQL: project, history and receipt commit once with distinct revisions
+  ---
+  duration_ms: 102.269016
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: request identity reopens exact state and refuses changed plans
+ok 29 - PostgreSQL: request identity reopens exact state and refuses changed plans
+  ---
+  duration_ms: 15.325827
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: input and output snapshots do not mutate durable authority
+ok 30 - PostgreSQL: input and output snapshots do not mutate durable authority
+  ---
+  duration_ms: 14.509922
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act
+ok 31 - PostgreSQL: foreign owner, foreign project and deleted project cannot inspect or act
+  ---
+  duration_ms: 8.486002
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: local ownerless projects retain local authority without widening scope
+ok 32 - PostgreSQL: local ownerless projects retain local authority without widening scope
+  ---
+  duration_ms: 11.123781
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: read and noop receipts never invent durable project history
+ok 33 - PostgreSQL: read and noop receipts never invent durable project history
+  ---
+  duration_ms: 13.432148
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+ok 34 - PostgreSQL: multi-step text/chart/table preserve geometry, human content, styles and tombstones
+  ---
+  duration_ms: 30.031845
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: human changes after start cause stale refusal without rebasing
+ok 35 - PostgreSQL: human changes after start cause stale refusal without rebasing
+  ---
+  duration_ms: 19.446635
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools
+ok 36 - PostgreSQL: inspect-only and locked/hidden targets fail through canonical tools
+  ---
+  duration_ms: 62.468881
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: failure budgets and concise traces survive a new runtime instance
+ok 37 - PostgreSQL: failure budgets and concise traces survive a new runtime instance
+  ---
+  duration_ms: 40.725506
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: cancellation before work and after commit preserves transaction order
+ok 38 - PostgreSQL: cancellation before work and after commit preserves transaction order
+  ---
+  duration_ms: 35.444537
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: lease takeover fences the previous worker even with reused worker name
+ok 39 - PostgreSQL: lease takeover fences the previous worker even with reused worker name
+  ---
+  duration_ms: 154.601109
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: deadlines persist across restart and expire before effects
+ok 40 - PostgreSQL: deadlines persist across restart and expire before effects
+  ---
+  duration_ms: 22.372077
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: after-project failure rolls project/history/receipt back together
+ok 41 - PostgreSQL: after-project failure rolls project/history/receipt back together
+  ---
+  duration_ms: 26.601886
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: after-receipt failure rolls project/history/receipt back together
+ok 42 - PostgreSQL: after-receipt failure rolls project/history/receipt back together
+  ---
+  duration_ms: 28.369236
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: final-fence failure rolls project/history/receipt back together
+ok 43 - PostgreSQL: final-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 32.078683
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: deadline-fence failure rolls project/history/receipt back together
+ok 44 - PostgreSQL: deadline-fence failure rolls project/history/receipt back together
+  ---
+  duration_ms: 21.519877
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: records and traces are bounded and omit raw document/read contents
+ok 45 - PostgreSQL: records and traces are bounded and omit raw document/read contents
+  ---
+  duration_ms: 21.916964
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused
+ok 46 - PostgreSQL: malformed/oversized/authority/layout data and duplicate grants are refused
+  ---
+  duration_ms: 7.005727
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: concurrent advances sharing one lease reserve only one attempt
+ok 47 - PostgreSQL: concurrent advances sharing one lease reserve only one attempt
+  ---
+  duration_ms: 22.936217
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: unsupported or corrupt durable records fail closed
+ok 48 - PostgreSQL: unsupported or corrupt durable records fail closed
+  ---
+  duration_ms: 6.752011
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: renewal extends the current lease without changing its fence
+ok 49 - PostgreSQL: renewal extends the current lease without changing its fence
+  ---
+  duration_ms: 200.622621
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: project deletion cascades runs and all step receipts
+ok 50 - PostgreSQL: project deletion cascades runs and all step receipts
+  ---
+  duration_ms: 23.5505
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: corrupt receipt checkpoints refuse resume instead of skipping work
+ok 51 - PostgreSQL: corrupt receipt checkpoints refuse resume instead of skipping work
+  ---
+  duration_ms: 23.541757
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: CLI start exits and a separate worker completes the saved project
+ok 52 - PostgreSQL: CLI start exits and a separate worker completes the saved project
+  ---
+  duration_ms: 934.80322
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: schema-valid contradictory receipts and counters fail closed
+ok 53 - PostgreSQL: schema-valid contradictory receipts and counters fail closed
+  ---
+  duration_ms: 63.403806
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: two processes race for one lease and only one can claim
+ok 54 - PostgreSQL process: two processes race for one lease and only one can claim
+  ---
+  duration_ms: 379.326031
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill reserved then restart cannot lose or replay an edit
+ok 55 - PostgreSQL process: kill reserved then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1855.970106
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill after-project then restart cannot lose or replay an edit
+ok 56 - PostgreSQL process: kill after-project then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1842.56688
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit
+ok 57 - PostgreSQL process: kill after-receipt then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1897.422282
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: kill committed then restart cannot lose or replay an edit
+ok 58 - PostgreSQL process: kill committed then restart cannot lose or replay an edit
+  ---
+  duration_ms: 312.636599
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: restart resumes after a committed checkpoint without repeating it
+ok 59 - PostgreSQL process: restart resumes after a committed checkpoint without repeating it
+  ---
+  duration_ms: 1806.802798
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: crashed reservations exhaust the persisted step budget
+ok 60 - PostgreSQL process: crashed reservations exhaust the persisted step budget
+  ---
+  duration_ms: 1049.72262
+  type: 'test'
+  ...
+# Subtest: PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next
+ok 61 - PostgreSQL process: cancellation racing an in-flight commit keeps that commit and prevents the next
+  ---
+  duration_ms: 551.62275
+  type: 'test'
+  ...
+# Subtest: SQLite process: two processes race for one lease and only one can claim
+ok 62 - SQLite process: two processes race for one lease and only one can claim
+  ---
+  duration_ms: 343.716553
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill reserved then restart cannot lose or replay an edit
+ok 63 - SQLite process: kill reserved then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1790.599615
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill after-project then restart cannot lose or replay an edit
+ok 64 - SQLite process: kill after-project then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1826.549466
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill after-receipt then restart cannot lose or replay an edit
+ok 65 - SQLite process: kill after-receipt then restart cannot lose or replay an edit
+  ---
+  duration_ms: 1821.920221
+  type: 'test'
+  ...
+# Subtest: SQLite process: kill committed then restart cannot lose or replay an edit
+ok 66 - SQLite process: kill committed then restart cannot lose or replay an edit
+  ---
+  duration_ms: 273.797679
+  type: 'test'
+  ...
+# Subtest: SQLite process: restart resumes after a committed checkpoint without repeating it
+ok 67 - SQLite process: restart resumes after a committed checkpoint without repeating it
+  ---
+  duration_ms: 1785.099135
+  type: 'test'
+  ...
+# Subtest: SQLite process: crashed reservations exhaust the persisted step budget
+ok 68 - SQLite process: crashed reservations exhaust the persisted step budget
+  ---
+  duration_ms: 1038.658034
+  type: 'test'
+  ...
+# Subtest: SQLite process: cancellation racing an in-flight commit keeps that commit and prevents the next
+ok 69 - SQLite process: cancellation racing an in-flight commit keeps that commit and prevents the next
+  ---
+  duration_ms: 465.290233
+  type: 'test'
+  ...
+1..69
+# tests 69
+# suites 0
+# pass 69
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22962.141803
+# forge-test-file "test/v2-runtime-8b.test.js"
+# forge-test-file "test/v2-runtime-postgres-8b.test.js"
+# forge-test-file "test/v2-runtime-process-8b.test.js"

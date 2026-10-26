@@ -1,0 +1,59 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "backend": "postgres",
+  "family": "openai-compatible",
+  "providerExchangesMs": [
+    3.3764820000001237,
+    2.935838000000331,
+    3.4647500000000946
+  ],
+  "conversationAccounting": {
+    "reservedOutputTokens": 6144,
+    "knownInputTokens": 126,
+    "knownOutputTokens": 60,
+    "knownCacheReadTokens": 0,
+    "knownCacheWriteTokens": 0,
+    "knownAttempts": 3,
+    "unknownAttempts": 0
+  },
+  "visibleConversationBytes": 1352,
+  "runId": "37787e55-a08f-4d0a-98ca-a1133a89aca0",
+  "timings": {
+    "submitMs": 40.260379999999714,
+    "workerPreparationMs": 68.40575499999977,
+    "queueMs": 20.863476999999875,
+    "workerExecutionMs": 38.06376,
+    "reopenMs": 6.912333999999646
+  },
+  "traceBytes": 1326,
+  "trace": {
+    "run": {
+      "id": "37787e55-a08f-4d0a-98ca-a1133a89aca0",
+      "projectId": "p-bd004d786ac389323a456da2",
+      "projectRevision": 1,
+      "status": "succeeded",
+      "code": null,
+      "revision": 3,
+      "cursor": 1,
+      "attempts": 1,
+      "failures": 0,
+      "createdAt": 1793002563493,
+      "updatedAt": 1793002563529,
+      "deadlineAt": 1793003763398,
+      "stepCount": 1
+    },
+    "receipts": [
+      {
+        "step": 0,
+        "tool": "edit_content",
+        "ok": true,
+        "code": null,
+        "changed": true,
+        "projectRevision": 1,
+        "engineRevision": 1,
+        "runRevision": 3
+      }
+    ]
+  },
+  "limits": "Local samples, not production percentiles. Reopen after closing the pool/connection; actual kill recovery is tested separately. Mixed-run SVG inherits its first-run-style limitation."
+}

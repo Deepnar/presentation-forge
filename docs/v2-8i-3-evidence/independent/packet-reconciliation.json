@@ -1,0 +1,55 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "orderedJobs": 48,
+  "primaryGroups": {
+    "bulk": {
+      "files": 196,
+      "tests": {
+        "total": 2545,
+        "pass": 2545,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    "serial": {
+      "files": 26,
+      "tests": {
+        "total": 208,
+        "pass": 208,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    "postgres": {
+      "files": 12,
+      "tests": {
+        "total": 295,
+        "pass": 295,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    }
+  },
+  "primaryFiles": 234,
+  "primaryPasses": 3048,
+  "focusedOverlapping": {
+    "total": 66,
+    "pass": 66,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "supplementalNativeCases": 4,
+  "standingLocaleSeparate": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "rootLogsInspected": true,
+  "independentExecution": false
+}

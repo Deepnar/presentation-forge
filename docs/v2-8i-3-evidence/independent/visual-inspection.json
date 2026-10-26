@@ -1,0 +1,159 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "packetImagesHashVerifiedAndContactInspected": 119,
+  "contactSheetsViewed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "browserImages": 76,
+  "nativeSvgExportImages": 43,
+  "fullSizeViewed": [
+    {
+      "index": 1,
+      "source": "docs/v2-6a-evidence/conflict.png",
+      "file": "docs/v2-8i-3-evidence/regression-images/docs--v2-6a-evidence--conflict.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "125a5bb83f0cd460ac9319d86b0c646da6d8b063fb9f45cbe5fb22fa891e92aa"
+    },
+    {
+      "index": 21,
+      "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+      "file": "docs/v2-8i-3-evidence/regression-images/docs--v2-7a-evidence--editor-narrow-projects.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "a65267e31c0232b46352fa525bb19a0e214549682b535f50d2ab2e4f14e2f95f"
+    },
+    {
+      "index": 22,
+      "source": "docs/v2-7a-evidence/editor-narrow.png",
+      "file": "docs/v2-8i-3-evidence/regression-images/docs--v2-7a-evidence--editor-narrow.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+    },
+    {
+      "index": 37,
+      "source": "docs/v2-7b-2-evidence/refusal-narrow.png",
+      "file": "docs/v2-8i-3-evidence/regression-images/docs--v2-7b-2-evidence--refusal-narrow.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "76cb725b51d4a7ad1f00a5df69590aa6cad4bf3a9cb7641ca52b3a7557a01eaf"
+    },
+    {
+      "index": 46,
+      "source": "docs/v2-7c-1-evidence/covers-font-static-recovered.png",
+      "file": "docs/v2-8i-3-evidence/regression-images/docs--v2-7c-1-evidence--covers-font-static-recovered.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "d3e0b73fd77fee830901c38672450c6283b82ed9b8c9ee67fff3af5b56cea917"
+    },
+    {
+      "index": 48,
+      "source": "docs/v2-7c-1-evidence/covers-narrow-dark.png",
+      "file": "docs/v2-8i-3-evidence/regression-images/docs--v2-7c-1-evidence--covers-narrow-dark.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "d54b1f6836b4b6209777658cf91a955e96b83f1a582f7e46f405d1d56ed2ac5b"
+    },
+    {
+      "index": 64,
+      "source": "docs/v2-7c-2-evidence/catalog-narrow-dialog.png",
+      "file": "docs/v2-8i-3-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dialog.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "8346fa9cc820c6070acedfe520b8d79fd556aa0d4fc97b3286aef9516aad5ba2"
+    },
+    {
+      "index": 69,
+      "source": "docs/v2-7c-3-evidence/editor-readonly.png",
+      "file": "docs/v2-8i-3-evidence/regression-images/docs--v2-7c-3-evidence--editor-readonly.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "38899725b0e0eea147f2c7ad4f70ad3bbf43fdb5c7b8461df70f08d67354b48a"
+    },
+    {
+      "index": 72,
+      "source": "docs/v2-7c-3-evidence/editor-blank-history.png",
+      "file": "docs/v2-8i-3-evidence/regression-images/docs--v2-7c-3-evidence--editor-blank-history.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "13544477db8348af0d5da3a4ffb31c3511b8bff9069ac8c57a5b4e306436d3b2"
+    },
+    {
+      "index": 74,
+      "source": "docs/v2-7c-3-evidence/editor-table.png",
+      "file": "docs/v2-8i-3-evidence/regression-images/docs--v2-7c-3-evidence--editor-table.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "ad4c4f1108e96297f4b89f51649e93f48ab595a1a7ff71351513aab325d92399"
+    },
+    {
+      "index": 81,
+      "file": "docs/v2-8i-3-evidence/native/sqlite-openai-compatible/after-1.png",
+      "backend": "sqlite",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+    },
+    {
+      "index": 105,
+      "file": "docs/v2-8i-3-evidence/native/postgres-anthropic/after-1.png",
+      "backend": "postgres",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+    },
+    {
+      "index": 106,
+      "file": "docs/v2-8i-3-evidence/native/postgres-anthropic/after-1-svg.png",
+      "backend": "postgres",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "6c4a4edac7e1662f5fb838d059458fbda6b0caf7aa275ef32d259e33e0d22414"
+    },
+    {
+      "index": 109,
+      "file": "docs/v2-8i-3-evidence/native/http-sqlite-1.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+    },
+    {
+      "index": 111,
+      "file": "docs/v2-8i-3-evidence/native/http-postgres-1.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "028510eb4c367973409955653ad4107712c8c9369d21d6e49a2b05f1759c1e5b"
+    },
+    {
+      "index": 118,
+      "file": "docs/v2-8i-3-evidence/native/shell-chart.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "bdae197071e3f226f6d652a6f4d71ed3ac5a6e15c92342bbadd31095b561cf47"
+    },
+    {
+      "index": 119,
+      "file": "docs/v2-8i-3-evidence/native/shell-table.png",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "sha256": "64f377da7127d2ac26b63fb346d861e67966524c4c6703f741296f613a832f27"
+    }
+  ],
+  "findings": [
+    "No new material dialog clipping, overlapping action or unexplained canvas shift observed.",
+    "Inherited narrow partial canvas/toolbar overflow and left-edge sidebar overlap remain visible.",
+    "The font-recovery capture retains its scrolled heading; loading/transition captures do not prove settled previews.",
+    "Native italic second run and chart/table values 2.5/15.75 are preserved; SVG first-run styling and chart-consumer differences remain.",
+    "No independent browser or interactive Microsoft PowerPoint session ran."
+  ],
+  "newInteractiveBehaviorQualification": false,
+  "freshIndependentFullSizeViewed": [
+    "docs/v2-8i-3-evidence/independent/native/sqlite-openai-compatible/after-1.png",
+    "docs/v2-8i-3-evidence/independent/native/postgres-anthropic/after-1-svg.png",
+    "docs/v2-8i-3-evidence/independent/native/sqlite-openai-compatible/before-2.png",
+    "docs/v2-8i-3-evidence/independent/native/postgres-anthropic/after-2.png"
+  ]
+}
