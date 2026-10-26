@@ -61,7 +61,7 @@
     },
     {
       "path": "docs/v2-8i-3-evidence/assess-resources.py",
-      "sha256": "5702637d72c503cb1a59ce157f31de236d7f66679917842ba077566d5aa34511"
+      "sha256": "1d9c67a95148aaeff768123a702c929f916cdb46d9ec41736d247a87f9c67b80"
     },
     {
       "path": "docs/v2-8i-3-evidence/cleanup-owned.py",
@@ -93,7 +93,7 @@
     },
     {
       "path": "docs/v2-8i-3-evidence/quiet_window.py",
-      "sha256": "069754ef5a73e5f0212f7f30fbb03b7c480de47a35d1039634db85fd6895dbd1"
+      "sha256": "e68bfc367ec85a0bf035cf6560c129f12315fa8481787b53958ffd6230041e1c"
     },
     {
       "path": "docs/v2-8i-3-evidence/run-validation.py",
@@ -106,6 +106,10 @@
     {
       "path": "docs/v2-8i-3-evidence/verify-owned-cleanup.py",
       "sha256": "faa0d6bbfb25b2d69ce48ebef8c50569599bd53e6f1942cc625d4c2b8a5899b8"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/blocked-thread-classifier-correction/check-classifier.py",
+      "sha256": "99b8c584a02a2798289398b3c667b283df19afa471ab48d6e9b6b02fa2c958d0"
     }
   ],
   "modelsUsed": "No execution yet. Planned injected/loopback deterministic protocol fixtures only; no live API or local inference."

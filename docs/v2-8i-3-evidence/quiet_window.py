@@ -1,9 +1,31 @@
-import datetime, json, os, pathlib, re, subprocess, time
+import datetime, hashlib, json, os, pathlib, re, subprocess, time
 
 OUT = pathlib.Path(os.environ.get('FORGE_VALIDATION_OUT', 'out/v2-8i-3-validation'))
 SHA = json.loads(pathlib.Path('docs/v2-8i-3-evidence/validation-plan.json').read_text())['implementationSha']
 DEVICES = [p.name for p in pathlib.Path('/sys/block').iterdir() if (p / 'device').exists()]
 assert 'nvme0n1' in DEVICES
+CLASSIFIER_HASH = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()
+PF_KTHREAD = 0x00200000
+
+def classify_task(pid, tid):
+    source = pathlib.Path('/proc') / str(pid) / 'task' / str(tid) / 'stat'
+    try:
+        # The comm field may itself contain spaces and parentheses. Only the
+        # closing delimiter separates it from the fixed-position state fields.
+        raw = source.read_text()
+        leader, fields = raw.rsplit(')', 1)
+        assert int(leader.split('(', 1)[0]) == int(tid)
+        flags = int(fields.split()[6])
+        if flags < 0: raise ValueError('flags')
+        kernel = bool(flags & PF_KTHREAD)
+        return {'classification': 'kernel-thread' if kernel else 'userspace',
+                'userspace': not kernel, 'flags': flags, 'classificationSource': str(source)}
+    except (OSError, ValueError, IndexError, AssertionError) as error:
+        return {'classification': 'unknown', 'userspace': None, 'flags': None,
+                'classificationSource': str(source), 'classificationError': type(error).__name__}
+
+def blocks_admission(threads):
+    return any(thread['classification'] != 'kernel-thread' for thread in threads)
 
 def snapshot():
     cpu = list(map(int, pathlib.Path('/proc/stat').read_text().splitlines()[0].split()[1:9]))
@@ -30,13 +52,14 @@ class Window:
         for line in subprocess.check_output(['ps','-eLo','pid,tid,stat,wchan:38,comm'], text=True).splitlines()[1:]:
             fields = line.split()
             if len(fields)>=3 and fields[2].startswith('D'):
-                blocked.append({'pid':int(fields[0]),'tid':int(fields[1]),'state':fields[2],'name':fields[-1],'userspace':(pathlib.Path('/proc')/fields[0]/'exe').exists()})
+                blocked.append({'pid':int(fields[0]),'tid':int(fields[1]),'state':fields[2],'name':fields[-1],**classify_task(fields[0], fields[1])})
         busy = 100*(total-cpu[3]-cpu[4])/total if total else 100
         iowait = 100*cpu[4]/total if total else 100
         storage_quiet = all(d['busyPercent']<5 and d['weightedQueue']<0.5 and d['inflight']<=1 for d in disks.values())
-        ready = elapsed>=10 and busy<25 and iowait<20 and averages['cpu']<10 and averages['memory']<1 and available>8*1024*1024 and storage_quiet and not any(b['userspace'] for b in blocked)
+        ready = elapsed>=10 and busy<25 and iowait<20 and averages['cpu']<10 and averages['memory']<1 and available>8*1024*1024 and storage_quiet and not blocks_admission(blocked)
         critical = busy>85 or averages['memory']>5 or available<4*1024*1024 or any(d['busyPercent']>75 or d['weightedQueue']>8 for d in disks.values())
         record = {'implementationSha':SHA,'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'phase':phase,'sampleSeconds':elapsed,'cpuBusyPercent':busy,'cpuIoWaitPercent':iowait,'availableKiB':available,'pressure':pressure,'disks':disks,'blockedThreads':blocked,'ready':ready,'critical':critical,'limitation':'Elevated global I/O PSI/iowait has unresolved provenance; readiness uses sustained measured CPU/memory/backing-storage headroom, not an attribution to a graphics worker.'}
+        record.update(blockedClassifierVersion=2, blockedClassifierSha256=CLASSIFIER_HASH)
         with (OUT/'resource-window.jsonl').open('a') as stream:stream.write(json.dumps(record)+'\n')
         self.previous = now
         return record
@@ -57,7 +80,7 @@ class Window:
                 duration=sum(r['sampleSeconds'] for r in samples)
                 mean=lambda key:sum(r[key]*r['sampleSeconds'] for r in samples)/duration
                 disk_means={n:{k:sum(r['disks'][n][k]*r['sampleSeconds'] for r in samples)/duration for k in ['busyPercent','weightedQueue']} for n in DEVICES}
-                sustained=duration>=stable_seconds and mean('cpuBusyPercent')<25 and mean('cpuIoWaitPercent')<20 and all(d['busyPercent']<5 and d['weightedQueue']<0.5 for d in disk_means.values()) and all(not r['critical'] and r['cpuBusyPercent']<50 and r['availableKiB']>8*1024*1024 and not any(b['userspace'] for b in r['blockedThreads']) and all(d['busyPercent']<20 and d['weightedQueue']<2 for d in r['disks'].values()) and float(re.search(r'^some avg10=([\d.]+)',r['pressure']['memory']).group(1))<1 for r in samples)
+                sustained=duration>=stable_seconds and mean('cpuBusyPercent')<25 and mean('cpuIoWaitPercent')<20 and all(d['busyPercent']<5 and d['weightedQueue']<0.5 for d in disk_means.values()) and all(not r['critical'] and r['cpuBusyPercent']<50 and r['availableKiB']>8*1024*1024 and not blocks_admission(r['blockedThreads']) and all(d['busyPercent']<20 and d['weightedQueue']<2 for d in r['disks'].values()) and float(re.search(r'^some avg10=([\d.]+)',r['pressure']['memory']).group(1))<1 for r in samples)
                 stable=duration if sustained and fresh>=2 else 0
                 if stable:
                     (OUT/'sustained-window.json').write_text(json.dumps({'implementationSha':SHA,'sampleSeconds':duration,'samples':len(samples),'cpuBusyMeanPercent':mean('cpuBusyPercent'),'cpuIoWaitMeanPercent':mean('cpuIoWaitPercent'),'diskMeans':disk_means,'freshConsecutiveReadySamples':fresh,'method':'Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance.'},indent=2)+'\n')

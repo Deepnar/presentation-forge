@@ -1,0 +1,83 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "atUtc": "2026-10-26T07:17:11.286829+00:00",
+  "helperSha256": "e68bfc367ec85a0bf035cf6560c129f12315fa8481787b53958ffd6230041e1c",
+  "checks": [
+    {
+      "name": "PID1 is userspace despite an inaccessible executable link",
+      "pass": true,
+      "actual": "userspace"
+    },
+    {
+      "name": "the current interpreter is userspace",
+      "pass": true,
+      "actual": "userspace"
+    },
+    {
+      "name": "kthreadd is positively identified by its stat flags",
+      "pass": true,
+      "actual": "kernel-thread"
+    },
+    {
+      "name": "a missing thread is unknown",
+      "pass": true,
+      "actual": "unknown"
+    },
+    {
+      "name": "permission refusal is unknown",
+      "pass": true,
+      "actual": "unknown"
+    },
+    {
+      "name": "malformed stat is unknown",
+      "pass": true,
+      "actual": "unknown"
+    },
+    {
+      "name": "parentheses in comm do not move field9",
+      "pass": true,
+      "actual": "kernel-thread"
+    },
+    {
+      "name": "known kernel tasks are exempt",
+      "pass": true,
+      "actual": false
+    },
+    {
+      "name": "userspace tasks block admission",
+      "pass": true,
+      "actual": true
+    },
+    {
+      "name": "unknown tasks block admission",
+      "pass": true,
+      "actual": true
+    }
+  ],
+  "pass": 10,
+  "fail": 0,
+  "kind": "Read-only validation-metadata oracle checks; not primary product leaf cases.",
+  "kernelHeader": "/usr/lib/modules/7.2.8-1-cachyos/build/include/linux/sched.h",
+  "definition": "#define PF_KTHREAD\t\t0x00200000\t/* I am a kernel thread */",
+  "runtime": {
+    "pid1": {
+      "classification": "userspace",
+      "userspace": true,
+      "flags": 4194560,
+      "classificationSource": "/proc/1/task/1/stat"
+    },
+    "interpreter": {
+      "classification": "userspace",
+      "userspace": true,
+      "flags": 4194304,
+      "classificationSource": "/proc/35245/task/35245/stat"
+    },
+    "kthreadd": {
+      "classification": "kernel-thread",
+      "userspace": false,
+      "flags": 2129984,
+      "classificationSource": "/proc/2/task/2/stat"
+    }
+  },
+  "historicalFstrimFlagsReconstructed": false
+}

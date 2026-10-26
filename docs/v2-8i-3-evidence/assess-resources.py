@@ -50,6 +50,10 @@ def summarize(selected):
         'samplesWithUserspaceBlockedThreads': sum(
             any(thread['userspace'] for thread in row['blockedThreads']) for row in selected
         ),
+        'samplesWithUnknownBlockedThreads': sum(
+            any(thread.get('classification') == 'unknown' for thread in row['blockedThreads']) for row in selected
+        ),
+        'legacyClassifierSamples': sum(row.get('blockedClassifierVersion', 1) == 1 for row in selected),
     }
 
 
@@ -74,6 +78,7 @@ for run in runs:
         'job': run['name'], 'startedAtUtc': run['atUtc'],
         'precedingReadyAtUtc': [row['atUtc'] for row in preceding],
         'readySampleSeconds': seconds, 'lastSampleAgeSeconds': age,
+        'blockedClassifierVersions': [row.get('blockedClassifierVersion', 1) for row in preceding],
     })
 report = {
     'implementationSha': sha,
@@ -105,6 +110,8 @@ report = {
         'storageWeightedQueueBelow': 0.5,
         'storageInflightAtMost': 1,
         'userspaceBlockedThreads': 0,
+        'unknownBlockedThreads': 0,
+        'currentBlockedClassifier': 'Per-thread stat PF_KTHREAD; only positively identified kernel tasks are exempt. Unknown metadata blocks admission.',
     },
     'isolation': {
         'bulkFileConcurrency': 1,
@@ -116,6 +123,7 @@ report = {
     },
     'limitations': [
         'Global I/O PSI and iowait have unresolved provenance; no attribution to another workload.',
+        'Legacy exe.exists classifications remain as recorded and can misclassify inaccessible userspace tasks. Original flags were not retained; no historical classification is reconstructed. Corrected version2 samples bind the helper hash and explicit classification.',
         'Running samples are periodic observations, not continuous peak or per-process profiling.',
         'Short jobs can complete between running samples; admission samples remain available.',
         'Local fixture/backend timing is not live-provider latency or a production percentile.',

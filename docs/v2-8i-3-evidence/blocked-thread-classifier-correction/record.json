@@ -1,0 +1,27 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "atUtc": "2026-10-26T07:17:11.374926+00:00",
+  "finding": "An inaccessible executable link can return exists=false for userspace. Only positively identified PF_KTHREAD tasks may be exempt.",
+  "changes": [
+    {
+      "path": "docs/v2-8i-3-evidence/quiet_window.py",
+      "oldSha256": "069754ef5a73e5f0212f7f30fbb03b7c480de47a35d1039634db85fd6895dbd1",
+      "newSha256": "e68bfc367ec85a0bf035cf6560c129f12315fa8481787b53958ffd6230041e1c"
+    },
+    {
+      "path": "docs/v2-8i-3-evidence/assess-resources.py",
+      "oldSha256": "5702637d72c503cb1a59ce157f31de236d7f66679917842ba077566d5aa34511",
+      "newSha256": "1d9c67a95148aaeff768123a702c929f916cdb46d9ec41736d247a87f9c67b80"
+    }
+  ],
+  "unknownMetadataBlocksAdmission": true,
+  "thresholdsRelaxed": false,
+  "oldSamplesRetainedUnchanged": true,
+  "oldFstrimFlagsUnavailable": true,
+  "historicalFlagsReconstructed": false,
+  "priorDiskGuardCorrectlyInterruptedFile": true,
+  "sourceProductTestGovernanceDelta": [],
+  "checks": "docs/v2-8i-3-evidence/blocked-thread-classifier-correction/checks.json",
+  "freshQualificationRequiredBeforeRetry": true,
+  "preCorrectionRequalificationDoesNotSatisfyCorrectedGuard": true
+}
