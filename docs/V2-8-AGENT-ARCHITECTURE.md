@@ -351,7 +351,7 @@ conversation revision and seven cumulative safe-integer counters. Visible reques
 reply and trusted preparation inputs occupy private payloads; canonical pending
 plans are stored separately from operational metadata. Both budgets are 4 MiB per
 project; simultaneous count/record limits and final-result reservations are in
-`turn-state.ts` and the [approved contract](V2-8H-EVAL.md). Schemas own runtime
+`turn-limits.ts` (re-exported by `turn-state.ts`) and the [approved contract](V2-8H-EVAL.md). Schemas own runtime
 validation and generated TypeScript types. Serialized UTF-8 bounds include JSON
 escaping and multibyte text, with matching save/load bounds.
 
@@ -413,3 +413,29 @@ revision, replay, queue, cancellation and clear authority; session revocation is
 resolved per request. No public submission, preparation, execution or worker loop
 is introduced. The [main architecture](ARCHITECTURE.md#v2-8i-1-authenticated-conversation-lifecycle-transport)
 records the transport as built; future integration remains only in the roadmap.
+
+
+## V2-8I-2 explicit-turn worker and I3 submission
+
+The independently accepted [I2 worker](reviews/V2-8I-2-58662ec.json) consumes one
+explicit generation/turn identity under the canonical owner binding, using H's
+stored preparation and approval authority and B's run/receipt transactions.
+`agent-chat work` supplies operator parity; no browser lifetime owns execution.
+[The main architecture](ARCHITECTURE.md#v2-8i-2-bounded-explicit-turn-worker)
+records bounded advancement, recovery, shutdown and truthful status behavior.
+
+The independently accepted [I3 submission](reviews/V2-8I-3-2ba82cb.json) adds only
+owner-authenticated durable HTTP ingress over H submit, with the existing
+request/revision/generation and private-parser contracts. It performs no provider
+dispatch or execution. [Its architecture](ARCHITECTURE.md#v2-8i-3-authenticated-turn-submission)
+and [evaluation](V2-8I-3-EVAL.md) distinguish acceptance from later host policy.
+
+## V2-8I-4 owner-scoped discovery (validation pending)
+
+The implemented metadata discovery service and trusted operator command read
+bounded binary-ordered pages from the same canonical rows. SQL byte guards and
+domain identity checks exclude private chat/project/run bodies; filtered rows
+still advance the cursor. A hint grants no claim, reconciliation, provider or edit
+authority and must re-enter I2. No schema/index, HTTP/UI, scheduler or provider
+selection is added. [The main architecture](ARCHITECTURE.md#v2-8i-4-owner-scoped-work-discovery-validation-pending)
+and [I4 evaluation](V2-8I-4-EVAL.md) record exact scope and pending acceptance.

@@ -2018,3 +2018,17 @@ admission conservatively. Bind classifier versions/hashes to new samples. Preser
 old samples as recorded; a task that has exited cannot supply its former flags.
 I3's independent audit found this while a separate disk guard correctly cancelled
 a browser file. Completed partial leaves do not turn that file into a pass.
+
+
+## Validate preparation glue before trusting helper-only tests
+
+A shared snapshot validator can pass isolated tests while its actual caller still
+fails before producing the completion proof. I4's preparation loop reused an
+imported hash function's name for a digest string; only executing the actual
+snapshot/proof block exposed the collision. Keep a backend-free oracle for that
+glue, alongside corruption/missing/duplicate backup cases. A coordinator must
+require both complete snapshot indexes and verify backup hashes before any child
+work; initial admission also verifies every current original and the complete
+historical path set. A saved backend identity alone does not prove preservation
+finished. Resume may see regenerated originals but must still reject damaged
+backups. See the [I4 correction evidence](V2-8I-4-EVAL.md).
