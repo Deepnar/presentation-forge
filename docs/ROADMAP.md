@@ -9169,9 +9169,9 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-work-discovery"></a>
 
-  - [ ] **V2-8I-4 owner-scoped durable work discovery — current contract preparation.**
+  - [ ] **V2-8I-4 owner-scoped durable work discovery — implementation/validation pending.**
     The2026-10-26 continuation starts the next host/orchestration prerequisite
-    after acceptedI3. [The proposed bounded contract](V2-8I-4-EVAL.md) adds only
+    after acceptedI3. [The reviewed bounded contract](V2-8I-4-EVAL.md) adds only
     trusted owner-scoped metadata pagination and an operator discover command.
     It scans canonical metadata with bounded keyset pages, preserves null-owner
     isolation and returns potential-work hints which I2 must recheck. No private
@@ -9179,8 +9179,12 @@ local inference. Only that separate transport correction is authorized; this aud
     scheduler or public UI/HTTP surface is included. This is a prerequisite within
     the host entry, not a substitute lower-priority task or completion of hosted
     orchestration. [Conditional plan readiness](reviews/V2-8I-4-plan-2dbbc3b.json)
-    requires the pinned byte/Unicode/response/query-cost clarifications and a delta
-    check before code; current source remains acceptedI3.
+    was followed by the pinned byte/Unicode/response/query-cost clarifications at7215b97
+    and separate exact-delta readiness. The service/adapters/operator command and
+    four test entries now exist. Development unit/SQLite/CLI probes pass; source-only
+    review caught malformed UTF-8 replacement, reproduced and corrected narrowly.
+    Full238-file/nine-gate execution and exact-source acceptance remain pending;
+    no PostgreSQL/full-validation result is inferred from development probes.
     Later host owner selection/provider policy and pickup remain separate contracts.
 
   Subsequent slices still need

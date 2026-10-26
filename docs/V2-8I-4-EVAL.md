@@ -15,7 +15,7 @@ Accepted baseline `2ba82cb5c321c21d5648f577469f69e82cdcfb24`, separately accepte
 `dbaa73ab99ddaf7d73d3b786e6c65f056b646aae`; branch/push `v2`/`origin/v2`.
 The original `.agents/` and both untracked master/architecture prompt files remain
 untouched. I3 tests, original archives and cleanup are accepted prerequisites, not
-execution for this slice. No I4 code/tests/backend/model calls have run.
+execution for this slice. Entry was planning-only; current execution is below.
 
 This is the concrete proposed implementation contract. Separate plan-readiness
 review precedes source changes; implementation proceeds only within this bounded
@@ -191,9 +191,30 @@ follows automatically.
 
 Plan2dbbc3b received conditional readiness in
 [the separate review](reviews/V2-8I-4-plan-2dbbc3b.json), committed atc473afc.
-The required byte/identifier/result/query-cost clarifications above are committed
-before code; exact-delta readiness confirmation is still required. No new human
-policy decision is required within this pure discovery boundary. Source unchanged
-from acceptedI3; no I4 test, build,
-benchmark, database, provider or generator execution. No implementation acceptance
-is implied by planning or readiness. All intended runtime checks remain unexecuted.
+Required byte/identifier/result/query-cost clarifications were committed at7215b97.
+The separate `/root/turn_contract_review` context explicitly confirmed that exact
+pushed delta READY_FOR_IMPLEMENTATION, with all conditions satisfied and no new
+human policy decision. This paragraph records its delivered message; it is not a
+new acceptance decision. Source implementation then began within this contract.
+
+Current code implements the backend-injected read, both SQL adapters and operator
+command. The separate source-only review through9ec6602 found one narrow defect:
+CLI replacement decoding could change malformed UTF-8 into a different cursor.
+The actual byte-file test failed before correction (5pass/1fail); strict decoding
+was added for discovery only at1c83881, after which all6SQLite CLI cases passed.
+The valid literal-U+FFFD oracle remains accepted. No assertion was weakened.
+
+[Development raw probes](v2-8i-4-evidence/development/results.json) record10pure
+unit,13actualSQLite and6corrected SQLite CLI passes, with0skip/cancelled. They are
+partial development execution, not the required238-file matrix or PostgreSQL
+qualification. Their exact source/deltas and the failed probe are retained.
+Governance checks passed35/35 after adding the nine-gate discovery mapping and
+an oracle refusing each missing focused entry. Fresh frozen-source primary
+execution, PostgreSQL, query-plan assessment, faults, serial browser/build,
+benchmark, native/visual evidence and final separate acceptance remain pending.
+No I4 owned backend, generator, build, real model API or local inference has run.
+
+The new I4 helper namespace is being prepared and must pass source/helper readiness
+before qualification/preparation. Old I3 helpers/evidence remain frozen. All9state
+checks remain explicitly unexecuted; accepted baseline remains2ba82cb. Stop after
+I4 independent acceptance and exact-owned cleanup; no dependent feature work.

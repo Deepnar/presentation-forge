@@ -6,74 +6,74 @@
     "source": "docs/reviews/V2-8I-3-2ba82cb.json"
   },
   "implementationHead": {
-    "sha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
-    "note": "I3 independently accepted at exact source2ba82cb. All234primary files3048/3048 plus4distinct native flows;9gates/build/type/50cells/119images complete. Independent346+4overlapping repeats passed. Exact-owned cleanup verified; locale9/1 and residual limits retained. Stop after I3."
+    "sha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
+    "note": "I4 implementation and development probes exist; full nine-gate validation and exact-source independent acceptance remain pending. Accepted baseline remainsI3."
   },
   "activeMilestone": {
-    "id": "V2-8I-3",
-    "roadmapRef": "docs/ROADMAP.md#assistant-turn-submission",
-    "evalDoc": "docs/V2-8I-3-EVAL.md",
+    "id": "V2-8I-4",
+    "roadmapRef": "docs/ROADMAP.md#assistant-work-discovery",
+    "evalDoc": "docs/V2-8I-4-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8I-3-2ba82cb.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "conversation-http",
-      "status": "passed",
-      "evidence": "docs/v2-8i-3-evidence/conversation-http.json",
-      "reason": "All66 focused actual SQLite/PostgreSQL HTTP cases passed with0fail/skip/cancel. Overlaps primary files; no new distinct total inferred."
+      "id": "turn-discovery",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8i-3-evidence/non-browser-bulk.json",
-      "reason": "All2545 leaves across196 complete nonbrowser files passed with0fail/skip/cancelled."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8i-3-evidence/serial-browser.json",
-      "reason": "All26bounded serial files passed208/208 leaves with0fail/skip/cancelled. Earlier resource-cancelled7A is retained separately; its full-file retry passed."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
     },
     {
       "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8i-3-evidence/postgres-contract.json",
-      "reason": "Complete current-source execution passed on the actual owned backend where applicable; no fail/skip/cancelled. Subset counts overlap the primary inventory."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
     },
     {
       "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8i-3-evidence/cross-process-faults.json",
-      "reason": "Complete current-source execution passed on the actual owned backend where applicable; no fail/skip/cancelled. Subset counts overlap the primary inventory."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8i-3-evidence/production-build.json",
-      "reason": "Complete current-source execution passed on the actual owned backend where applicable; no fail/skip/cancelled. Subset counts overlap the primary inventory."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8i-3-evidence/typecheck.json",
-      "reason": "Complete current-source command passed; exact command/result retained."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
     },
     {
       "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8i-3-evidence/benchmark-50.json",
-      "reason": "Complete current-source command passed; exact command/result retained."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8i-3-evidence/frontend-visual.json",
-      "reason": "Completed current-source validation; visual gate includes119 inspected hash-indexed images and15original archive identity checks. Independent acceptance remains pending."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
     }
   ],
   "knownBlockers": [],
@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-4 \u2014 owner-scoped work discovery contract/readiness; implementation not started",
+    "id": "Hosted owner/provider policy and bounded pickup contract; not implementation authority",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-work-discovery"
+    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

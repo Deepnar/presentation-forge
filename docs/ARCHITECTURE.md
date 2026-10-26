@@ -2774,7 +2774,7 @@ Exact source `58662ec` is [independently accepted](reviews/V2-8I-2-58662ec.json)
 inspection, cleanup and remaining qualification limits. Later integration lives
 only in the roadmap.
 
-### V2-8I-3 authenticated turn submission (validation pending)
+### V2-8I-3 authenticated turn submission
 
 `POST /api/v2/projects/:id/conversation/turns` delegates to H submit through the
 existing private conversation transport. The session and project path supply the
@@ -2797,3 +2797,26 @@ Source `2ba82cb` is implemented, behaviorally validated and independently
 [accepted](reviews/V2-8I-3-2ba82cb.json); exact evidence and limits are in
 [the I3 evaluation](V2-8I-3-EVAL.md). It leaves the visible
 Assistant and host execution policy at their roadmap boundaries.
+
+
+### V2-8I-4 owner-scoped work discovery (validation pending)
+
+`createTurnDiscovery` snapshots an exact trusted owner and bounded keyset input,
+then consumes a purpose-built metadata statement in either project store. SQL
+compares owner/project/turn identifiers in explicit binary order, applies the owner
+predicate before limit+1 and byte-bounds every selected text field with invalid
+NULL sentinels. It joins operational header/turn rows without loading project,
+private-chat, proposal or run bodies. The domain validates header/turn identities
+and returns submitted/preparing/approved potential-work hints. Every scanned row
+advances pagination, including filtered terminal/waiting rows; empty items do not
+imply EOF. The serialized envelope has a131072-byte cap.
+
+`agent-chat discover --input FILE [--owner OWNER]` exposes the same read to the
+trusted operator, with discovery-only fatal UTF-8 decoding and fixed private errors.
+It accepts no project/provider flag and performs no reconciliation, claim, provider
+resolution, dispatch, approval or execution. Existing runtime-table initialization
+is retained without new DDL/indexes. Existing indexes may require physical scans
+and sorting; row/output bounds are not a hard database work/time guarantee.
+Returned hints must re-enter I2 for current ownership/generation/lease/approval
+checks. Source exists; full validation and separate acceptance remain pending in
+[the evaluation](V2-8I-4-EVAL.md). Hosted/UI policy remains in the roadmap.

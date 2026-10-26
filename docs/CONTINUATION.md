@@ -32,7 +32,18 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current accepted slice — I3 complete
+## Current active slice — I4 implementation
+
+The current continuation authorized the reviewed bounded
+[work-discovery contract](V2-8I-4-EVAL.md). Plan delta7215b97 was separately ready
+before source changes. Discovery code/tests exist; development probes pass10unit,
+13SQLite and6CLI cases. The retained fail-first UTF-8 probe caught and corrected
+one discovery-only CLI defect. Full238-file/nine-gate validation, a fresh owned
+PostgreSQL backend and separate exact-source acceptance remain pending. Read the
+current HANDOFF and state before starting any coordinator. Never execute frozen
+I3 helpers or recreate its removed service. No provider/model/UI/scheduler work.
+
+## Accepted predecessor — I3 complete
 
 [V2-8I-3 authenticated durable submission](ROADMAP.md#assistant-turn-submission)
 is independently accepted at source `2ba82cb5c321c21d5648f577469f69e82cdcfb24` in
@@ -51,9 +62,8 @@ No test/coordinator/service remains. No real API/local inference or interactive
 PowerPoint run occurred. Earlier admission/cancelled/classifier provenance and
 remaining visual/I/O limits are in the evaluation, not silently removed.
 
-Stop after I3 closeout; no dependent planning/implementation is authorized by
-acceptance. The next scope is only in the linked roadmap and requires its own
-contract/review gates. Do not recreate the removed backend or resume this completed
+I3 acceptance itself supplied no dependent authority. The later explicit continuation
+and separately ready I4 contract now authorize only that bounded discovery slice. Do not recreate the removed backend or resume this completed
 coordinator. AGENTS is current and requires direct repository work, with no relay
 or model-provider allowlist.
 
