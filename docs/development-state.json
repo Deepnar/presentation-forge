@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
-    "note": "Exact I3 source2ba82cb passes focusedHTTP66/66, bulk2545/2545 and the complete7A retry28/28. The resource-cancelled first browser attempt remains retained. Full remaining serial/PG/native/build/type/benchmark execution and independent acceptance are pending."
+    "note": "Exact I3 source2ba82cb passes focusedHTTP66/66, bulk2545/2545 and147/147 across19of26serial files. The resource-cancelled first browser attempt remains retained. Remaining execution and independent acceptance are pending."
   },
   "activeMilestone": {
     "id": "V2-8I-3",
@@ -37,7 +37,7 @@
       "id": "serial-browser",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Full-file retry and remaining serial entries are underway after independent classifier delta readiness and fresh corrected180-second qualification; prior interrupted file is retained separately, not passed."
+      "reason": "Incomplete checkpoint:147/147 leaves across19of26 complete files. Final seven browser files are underway; cancelled first7A remains separate."
     },
     {
       "id": "postgres-contract",

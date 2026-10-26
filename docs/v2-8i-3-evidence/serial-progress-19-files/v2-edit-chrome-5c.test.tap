@@ -1,0 +1,60 @@
+TAP version 13
+# Subtest: v2-5c chrome editing
+    # Subtest: trusted drag moves through one engine command
+    ok 1 - trusted drag moves through one engine command
+      ---
+      duration_ms: 1653.994341
+      type: 'test'
+      ...
+    # Subtest: zoomed and scrolled drags convert coordinates
+    ok 2 - zoomed and scrolled drags convert coordinates
+      ---
+      duration_ms: 2128.478643
+      type: 'test'
+      ...
+    # Subtest: keyboard nudge, multiselect batch, delete, and undo buttons
+    ok 3 - keyboard nudge, multiselect batch, delete, and undo buttons
+      ---
+      duration_ms: 2424.121456
+      type: 'test'
+      ...
+    # Subtest: locked chrome rejects drags and Done restores navigation
+    ok 4 - locked chrome rejects drags and Done restores navigation
+      ---
+      duration_ms: 3622.189603
+      type: 'test'
+      ...
+    # Subtest: narrow viewport editing holds
+    ok 5 - narrow viewport editing holds
+      ---
+      duration_ms: 2131.945984
+      type: 'test'
+      ...
+    # Subtest: pointer displacement converts to scene displacement at every scale
+    ok 6 - pointer displacement converts to scene displacement at every scale
+      ---
+      duration_ms: 5846.995278
+      type: 'test'
+      ...
+    # Subtest: chart elements displace by the pointer delta on both axes
+    ok 7 - chart elements displace by the pointer delta on both axes
+      ---
+      duration_ms: 2122.391852
+      type: 'test'
+      ...
+    1..7
+ok 1 - v2-5c chrome editing
+  ---
+  duration_ms: 19936.043561
+  type: 'suite'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 20474.606271
+# forge-test-file "test/v2-edit-chrome-5c.test.js"

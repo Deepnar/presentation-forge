@@ -1,0 +1,719 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "checkpointOnly": true,
+  "gateComplete": false,
+  "filesCompleted": 19,
+  "filesRequired": 26,
+  "tests": {
+    "total": 147,
+    "pass": 147,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "runs": [
+    {
+      "name": "v2-edit-chrome-7a.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-7a.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-7a.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:21:01.619058+00:00",
+      "durationSeconds": 125.108411,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-7a.test.log",
+      "tests": {
+        "total": 28,
+        "pass": 28,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "freeform.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/freeform.test.js"
+      ],
+      "files": [
+        "test/freeform.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:23:36.803435+00:00",
+      "durationSeconds": 0.915169,
+      "log": "out/v2-8i-3-validation/freeform.test.log",
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "plate.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/plate.test.js"
+      ],
+      "files": [
+        "test/plate.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:24:07.786696+00:00",
+      "durationSeconds": 0.664871,
+      "log": "out/v2-8i-3-validation/plate.test.log",
+      "tests": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-5c.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-5c.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-5c.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:25:16.891108+00:00",
+      "durationSeconds": 20.51135,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-5c.test.log",
+      "tests": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-5d.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-5d.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-5d.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:26:07.473360+00:00",
+      "durationSeconds": 8.931216,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-5d.test.log",
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-5e.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-5e.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-5e.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:26:46.472707+00:00",
+      "durationSeconds": 10.889959,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-5e.test.log",
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-5f.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-5f.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-5f.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:27:27.429232+00:00",
+      "durationSeconds": 11.038055,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-5f.test.log",
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-5i.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-5i.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-5i.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:28:08.533711+00:00",
+      "durationSeconds": 12.443571,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-5i.test.log",
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-5j.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-5j.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-5j.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:28:51.043831+00:00",
+      "durationSeconds": 11.951889,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-5j.test.log",
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-5k.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-5k.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-5k.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:29:33.061375+00:00",
+      "durationSeconds": 17.613538,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-5k.test.log",
+      "tests": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-6a.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-6a.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-6a.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:30:20.748759+00:00",
+      "durationSeconds": 25.167535,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-6a.test.log",
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-6b.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-6b.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-6b.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:31:23.758039+00:00",
+      "durationSeconds": 19.111813,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-6b.test.log",
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-6c.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-6c.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-6c.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:32:12.940217+00:00",
+      "durationSeconds": 17.17633,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-6c.test.log",
+      "tests": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-chart.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-chart.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-chart.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:33:00.187888+00:00",
+      "durationSeconds": 7.383139,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-chart.test.log",
+      "tests": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-edit-chrome-table.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-edit-chrome-table.test.js"
+      ],
+      "files": [
+        "test/v2-edit-chrome-table.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:33:37.644989+00:00",
+      "durationSeconds": 10.34424,
+      "log": "out/v2-8i-3-validation/v2-edit-chrome-table.test.log",
+      "tests": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-fontgate-4e.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-fontgate-4e.test.js"
+      ],
+      "files": [
+        "test/v2-fontgate-4e.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:34:18.049806+00:00",
+      "durationSeconds": 7.179307,
+      "log": "out/v2-8i-3-validation/v2-fontgate-4e.test.log",
+      "tests": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-fonts-4d.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-fonts-4d.test.js"
+      ],
+      "files": [
+        "test/v2-fonts-4d.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:34:55.303806+00:00",
+      "durationSeconds": 0.666159,
+      "log": "out/v2-8i-3-validation/v2-fonts-4d.test.log",
+      "tests": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-live-chrome-4f.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-live-chrome-4f.test.js"
+      ],
+      "files": [
+        "test/v2-live-chrome-4f.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:35:26.039753+00:00",
+      "durationSeconds": 14.29858,
+      "log": "out/v2-8i-3-validation/v2-live-chrome-4f.test.log",
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "name": "v2-plate-3f5.test",
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "command": [
+        "nice",
+        "-n",
+        "10",
+        "ionice",
+        "-c",
+        "2",
+        "-n",
+        "7",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=10s",
+        "15m",
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=./tools/validated-tap.mjs",
+        "test/v2-plate-3f5.test.js"
+      ],
+      "files": [
+        "test/v2-plate-3f5.test.js"
+      ],
+      "exitCode": 0,
+      "atUtc": "2026-10-26T07:36:10.411238+00:00",
+      "durationSeconds": 11.932911,
+      "log": "out/v2-8i-3-validation/v2-plate-3f5.test.log",
+      "tests": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    }
+  ]
+}

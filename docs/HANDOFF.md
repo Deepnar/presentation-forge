@@ -25,8 +25,10 @@ blocks admission. Ten metadata-oracle checks pass, outside product totals. Numer
 thresholds and product/tests2ba82cb are unchanged. The existing reviewer separately
 confirmed readiness of6504064, without acceptance. Fresh corrected qualification
 passed180.41s/12samples, with meanCPU6.73% and NVMe1.16%. The full7A retry passed
-28/28 and freeform6/6. The three-job batch yielded with no active test. A single coordinator is now
-resuming the remaining serial files in bounded eight-job batches. Inspect processes/coordinator logs; only after it
+28/28. Serial progress is147/147 across19of26files, preserved in
+serial-progress-19-files; the serial gate is still incomplete. One coordinator
+(exec session43127 at this checkpoint) is running the final seven browser files
+and then the first PostgreSQL file, in a bounded eight-job batch. Inspect processes/coordinator logs; only after it
 yields, resume one coordinator with:
 
 PYTHONDONTWRITEBYTECODE=1 python3 -u docs/v2-8i-3-evidence/run-validation.py --resume --max-new-jobs 3

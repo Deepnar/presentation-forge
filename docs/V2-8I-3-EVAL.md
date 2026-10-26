@@ -215,3 +215,8 @@ meanCPU6.73% and NVMe1.16%, after separate helper readiness review of6504064.
 The full7A retry then passed28/28,0fail/skip/cancelled; the cancelled first
 attempt remains excluded from complete primary totals. Bounded serial execution
 continues on unchanged runtime/test source2ba82cb.
+
+The bounded serial checkpoint preserves147/147 leaves across19of26complete files,
+0fail/skip/cancelled, in [serial-progress-19-files](v2-8i-3-evidence/serial-progress-19-files/checkpoint.json).
+This checkpoint is incomplete and does not mark the serial gate passed. The
+remaining seven serial files and subsequent PostgreSQL checks are in progress.
