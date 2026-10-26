@@ -1,0 +1,408 @@
+TAP version 13
+# Subtest: SQLite HTTP: local ownerless lifecycle retains the existing project access policy
+ok 1 - SQLite HTTP: local ownerless lifecycle retains the existing project access policy
+  ---
+  duration_ms: 821.363086
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: owner reads and exports only bounded visible state with private response headers
+ok 2 - SQLite HTTP: owner reads and exports only bounded visible state with private response headers
+  ---
+  duration_ms: 641.856577
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: anonymous and nonowner access cannot read or change a conversation
+ok 3 - SQLite HTTP: anonymous and nonowner access cannot read or change a conversation
+  ---
+  duration_ms: 625.694935
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: project administrator privileges do not grant cross-owner private chat access
+ok 4 - SQLite HTTP: project administrator privileges do not grant cross-owner private chat access
+  ---
+  duration_ms: 616.847798
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+ok 5 - SQLite HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+  ---
+  duration_ms: 794.260566
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: authority and execution payloads cannot replace the stored decision identity
+ok 6 - SQLite HTTP: authority and execution payloads cannot replace the stored decision identity
+  ---
+  duration_ms: 629.871968
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: private parser bounds and failures are sanitized before the shared parser
+ok 7 - SQLite HTTP: private parser bounds and failures are sanitized before the shared parser
+  ---
+  duration_ms: 510.166023
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+ok 8 - SQLite HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+  ---
+  duration_ms: 576.591745
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: rejection is durable and cannot create or replace a queued run
+ok 9 - SQLite HTTP: rejection is durable and cannot create or replace a queued run
+  ---
+  duration_ms: 538.661547
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: HTTP cancellation fences a claimed run before its edit can commit
+ok 10 - SQLite HTTP: HTTP cancellation fences a claimed run before its edit can commit
+  ---
+  duration_ms: 547.125772
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+ok 11 - SQLite HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+  ---
+  duration_ms: 554.591192
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: a newer human save refuses stale approval without losing the pending proposal
+ok 12 - SQLite HTTP: a newer human save refuses stale approval without losing the pending proposal
+  ---
+  duration_ms: 525.258423
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: logout revokes the next request and deleted projects remain absent
+ok 13 - SQLite HTTP: logout revokes the next request and deleted projects remain absent
+  ---
+  duration_ms: 519.364686
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: project ownership changes revoke the previous owner on every operation
+ok 14 - SQLite HTTP: project ownership changes revoke the previous owner on every operation
+  ---
+  duration_ms: 537.708977
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: lost HTTP response preserves the original committed decision for replay
+ok 15 - SQLite HTTP: lost HTTP response preserves the original committed decision for replay
+  ---
+  duration_ms: 566.200576
+  type: 'test'
+  ...
+# Subtest: SQLite HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+ok 16 - SQLite HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+  ---
+  duration_ms: 577.754767
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: persists one visible turn without dispatching, proposing, queueing or editing
+ok 17 - SQLite submission HTTP: persists one visible turn without dispatching, proposing, queueing or editing
+  ---
+  duration_ms: 616.152815
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: concurrent matching replay reuses one saved turn and current-view replay survives cancellation
+ok 18 - SQLite submission HTTP: concurrent matching replay reuses one saved turn and current-view replay survives cancellation
+  ---
+  duration_ms: 623.472369
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: distinct concurrent requests cannot admit two active turns
+ok 19 - SQLite submission HTTP: distinct concurrent requests cannot admit two active turns
+  ---
+  duration_ms: 605.399845
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: stale generation, conversation, project and cleared input fail without admission
+ok 20 - SQLite submission HTTP: stale generation, conversation, project and cleared input fail without admission
+  ---
+  duration_ms: 607.328243
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: extra authority, credentials, layout and execution fields are refused by the canonical schema
+ok 21 - SQLite submission HTTP: extra authority, credentials, layout and execution fields are refused by the canonical schema
+  ---
+  duration_ms: 617.834063
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: signed-out, cross-owner, administrator, deletion and revoked-session requests cannot submit
+ok 22 - SQLite submission HTTP: signed-out, cross-owner, administrator, deletion and revoked-session requests cannot submit
+  ---
+  duration_ms: 628.677826
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: local ownerless submission keeps the accepted project policy
+ok 23 - SQLite submission HTTP: local ownerless submission keeps the accepted project policy
+  ---
+  duration_ms: 610.572261
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: ownership is rechecked in H after session resolution
+ok 24 - SQLite submission HTTP: ownership is rechecked in H after session resolution
+  ---
+  duration_ms: 574.925144
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: large UTF-8 bodies and Express case/trailing-slash matches use the submission budget only
+ok 25 - SQLite submission HTTP: large UTF-8 bodies and Express case/trailing-slash matches use the submission budget only
+  ---
+  duration_ms: 591.099454
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: exact wire-byte admission counts padding, rejects overflow and keeps lifecycle caps
+ok 26 - SQLite submission HTTP: exact wire-byte admission counts padding, rejects overflow and keeps lifecycle caps
+  ---
+  duration_ms: 601.019964
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: compressed, non-UTF-8, ambiguous media and malformed private bodies are refused without echo
+ok 27 - SQLite submission HTTP: compressed, non-UTF-8, ambiguous media and malformed private bodies are refused without echo
+  ---
+  duration_ms: 514.829366
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: storage admission is a private conflict and explicit clear permits a new submission
+ok 28 - SQLite submission HTTP: storage admission is a private conflict and explicit clear permits a new submission
+  ---
+  duration_ms: 2902.39146
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: a lost response reopens the same committed turn without execution
+ok 29 - SQLite submission HTTP: a lost response reopens the same committed turn without execution
+  ---
+  duration_ms: 520.557907
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: unexpected submission backend errors remain fixed private JSON
+ok 30 - SQLite submission HTTP: unexpected submission backend errors remain fixed private JSON
+  ---
+  duration_ms: 500.072757
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: openai-compatible submission joins trusted preparation, explicit approval and canonical execution
+ok 31 - SQLite submission HTTP: openai-compatible submission joins trusted preparation, explicit approval and canonical execution
+  ---
+  duration_ms: 545.457432
+  type: 'test'
+  ...
+# Subtest: SQLite submission HTTP: anthropic submission joins trusted preparation, explicit approval and canonical execution
+ok 32 - SQLite submission HTTP: anthropic submission joins trusted preparation, explicit approval and canonical execution
+  ---
+  duration_ms: 621.550014
+  type: 'test'
+  ...
+# Subtest: production HTTP: disabled projects is an honest sanitized refusal
+ok 33 - production HTTP: disabled projects is an honest sanitized refusal
+  ---
+  duration_ms: 544.333467
+  type: 'test'
+  ...
+# Subtest: production HTTP: misconfigured backend is an honest sanitized refusal
+ok 34 - production HTTP: misconfigured backend is an honest sanitized refusal
+  ---
+  duration_ms: 578.62713
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: local ownerless lifecycle retains the existing project access policy
+ok 35 - PostgreSQL HTTP: local ownerless lifecycle retains the existing project access policy
+  ---
+  duration_ms: 852.341022
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: owner reads and exports only bounded visible state with private response headers
+ok 36 - PostgreSQL HTTP: owner reads and exports only bounded visible state with private response headers
+  ---
+  duration_ms: 664.727656
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: anonymous and nonowner access cannot read or change a conversation
+ok 37 - PostgreSQL HTTP: anonymous and nonowner access cannot read or change a conversation
+  ---
+  duration_ms: 701.232433
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: project administrator privileges do not grant cross-owner private chat access
+ok 38 - PostgreSQL HTTP: project administrator privileges do not grant cross-owner private chat access
+  ---
+  duration_ms: 695.185246
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+ok 39 - PostgreSQL HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+  ---
+  duration_ms: 1100.852304
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: authority and execution payloads cannot replace the stored decision identity
+ok 40 - PostgreSQL HTTP: authority and execution payloads cannot replace the stored decision identity
+  ---
+  duration_ms: 676.169184
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: private parser bounds and failures are sanitized before the shared parser
+ok 41 - PostgreSQL HTTP: private parser bounds and failures are sanitized before the shared parser
+  ---
+  duration_ms: 515.749245
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+ok 42 - PostgreSQL HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+  ---
+  duration_ms: 638.687877
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: rejection is durable and cannot create or replace a queued run
+ok 43 - PostgreSQL HTTP: rejection is durable and cannot create or replace a queued run
+  ---
+  duration_ms: 592.122496
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: HTTP cancellation fences a claimed run before its edit can commit
+ok 44 - PostgreSQL HTTP: HTTP cancellation fences a claimed run before its edit can commit
+  ---
+  duration_ms: 616.767356
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+ok 45 - PostgreSQL HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+  ---
+  duration_ms: 631.513294
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: a newer human save refuses stale approval without losing the pending proposal
+ok 46 - PostgreSQL HTTP: a newer human save refuses stale approval without losing the pending proposal
+  ---
+  duration_ms: 603.831269
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: logout revokes the next request and deleted projects remain absent
+ok 47 - PostgreSQL HTTP: logout revokes the next request and deleted projects remain absent
+  ---
+  duration_ms: 569.898216
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: project ownership changes revoke the previous owner on every operation
+ok 48 - PostgreSQL HTTP: project ownership changes revoke the previous owner on every operation
+  ---
+  duration_ms: 591.640036
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: lost HTTP response preserves the original committed decision for replay
+ok 49 - PostgreSQL HTTP: lost HTTP response preserves the original committed decision for replay
+  ---
+  duration_ms: 703.974858
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+ok 50 - PostgreSQL HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+  ---
+  duration_ms: 612.661611
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: persists one visible turn without dispatching, proposing, queueing or editing
+ok 51 - PostgreSQL submission HTTP: persists one visible turn without dispatching, proposing, queueing or editing
+  ---
+  duration_ms: 672.986087
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: concurrent matching replay reuses one saved turn and current-view replay survives cancellation
+ok 52 - PostgreSQL submission HTTP: concurrent matching replay reuses one saved turn and current-view replay survives cancellation
+  ---
+  duration_ms: 685.442655
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: distinct concurrent requests cannot admit two active turns
+ok 53 - PostgreSQL submission HTTP: distinct concurrent requests cannot admit two active turns
+  ---
+  duration_ms: 642.535134
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: stale generation, conversation, project and cleared input fail without admission
+ok 54 - PostgreSQL submission HTTP: stale generation, conversation, project and cleared input fail without admission
+  ---
+  duration_ms: 693.398099
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: extra authority, credentials, layout and execution fields are refused by the canonical schema
+ok 55 - PostgreSQL submission HTTP: extra authority, credentials, layout and execution fields are refused by the canonical schema
+  ---
+  duration_ms: 691.083949
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: signed-out, cross-owner, administrator, deletion and revoked-session requests cannot submit
+ok 56 - PostgreSQL submission HTTP: signed-out, cross-owner, administrator, deletion and revoked-session requests cannot submit
+  ---
+  duration_ms: 652.920872
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: local ownerless submission keeps the accepted project policy
+ok 57 - PostgreSQL submission HTTP: local ownerless submission keeps the accepted project policy
+  ---
+  duration_ms: 649.109165
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: ownership is rechecked in H after session resolution
+ok 58 - PostgreSQL submission HTTP: ownership is rechecked in H after session resolution
+  ---
+  duration_ms: 602.545264
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: large UTF-8 bodies and Express case/trailing-slash matches use the submission budget only
+ok 59 - PostgreSQL submission HTTP: large UTF-8 bodies and Express case/trailing-slash matches use the submission budget only
+  ---
+  duration_ms: 594.426981
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: exact wire-byte admission counts padding, rejects overflow and keeps lifecycle caps
+ok 60 - PostgreSQL submission HTTP: exact wire-byte admission counts padding, rejects overflow and keeps lifecycle caps
+  ---
+  duration_ms: 559.216988
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: compressed, non-UTF-8, ambiguous media and malformed private bodies are refused without echo
+ok 61 - PostgreSQL submission HTTP: compressed, non-UTF-8, ambiguous media and malformed private bodies are refused without echo
+  ---
+  duration_ms: 522.43435
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: storage admission is a private conflict and explicit clear permits a new submission
+ok 62 - PostgreSQL submission HTTP: storage admission is a private conflict and explicit clear permits a new submission
+  ---
+  duration_ms: 6155.070939
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: a lost response reopens the same committed turn without execution
+ok 63 - PostgreSQL submission HTTP: a lost response reopens the same committed turn without execution
+  ---
+  duration_ms: 684.364295
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: unexpected submission backend errors remain fixed private JSON
+ok 64 - PostgreSQL submission HTTP: unexpected submission backend errors remain fixed private JSON
+  ---
+  duration_ms: 627.437142
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: openai-compatible submission joins trusted preparation, explicit approval and canonical execution
+ok 65 - PostgreSQL submission HTTP: openai-compatible submission joins trusted preparation, explicit approval and canonical execution
+  ---
+  duration_ms: 764.657964
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: anthropic submission joins trusted preparation, explicit approval and canonical execution
+ok 66 - PostgreSQL submission HTTP: anthropic submission joins trusted preparation, explicit approval and canonical execution
+  ---
+  duration_ms: 707.418327
+  type: 'test'
+  ...
+1..66
+# tests 66
+# suites 0
+# pass 66
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 49811.419857
+# forge-test-file "test/v2-conversation-http-8i.test.js"
+# forge-test-file "test/v2-conversation-http-postgres-8i.test.js"

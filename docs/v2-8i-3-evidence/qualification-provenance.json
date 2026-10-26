@@ -1,0 +1,31 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "resumedAtUtc": "2026-10-26T06:58:12.717061+00:00",
+  "sourceAndHelpersMatchReviewedManifest": true,
+  "nodeVersion": "v24.16.0",
+  "kernelBootId": "186d76bc-2b44-4a6b-816d-4884efeb90cb",
+  "sustainedQualification": {
+    "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+    "sampleSeconds": 180.42232013300003,
+    "samples": 12,
+    "cpuBusyMeanPercent": 4.7223152233949675,
+    "cpuIoWaitMeanPercent": 10.32734926386966,
+    "diskMeans": {
+      "nvme0n1": {
+        "busyPercent": 2.3350769444126134,
+        "weightedQueue": 0.0899777809532266
+      }
+    },
+    "freshConsecutiveReadySamples": 6,
+    "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+  },
+  "priorAdmissionOnlyAttempt": "docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json",
+  "priorAttemptPreserved": true,
+  "resourceLogAppendsFreshSamplesWithoutReusingPriorWindow": true,
+  "ownedBackend": "docs/v2-8i-3-evidence/owned-postgres.json",
+  "snapshottedFiles": 6965,
+  "snapshottedOriginalPptx": 221,
+  "canonicalOriginals": 5,
+  "thresholdsRelaxed": false,
+  "realModelOrLocalInferenceAuthorized": false
+}
