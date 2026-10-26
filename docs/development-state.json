@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
-    "note": "Exact I3 source2ba82cb has passed the focused both-store HTTP gate66/66. Full primary/browser/native/build/type/benchmark execution and independent acceptance remain pending."
+    "note": "Exact I3 source2ba82cb passes focusedHTTP66/66, bulk2545/2545 and the complete7A retry28/28. The resource-cancelled first browser attempt remains retained. Full remaining serial/PG/native/build/type/benchmark execution and independent acceptance are pending."
   },
   "activeMilestone": {
     "id": "V2-8I-3",
@@ -29,15 +29,15 @@
     },
     {
       "id": "non-browser-bulk",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8i-3-evidence/non-browser-bulk.json",
+      "reason": "All2545 leaves across196 complete nonbrowser files passed with0fail/skip/cancelled."
     },
     {
       "id": "serial-browser",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
+      "reason": "Full-file retry and remaining serial entries are underway after independent classifier delta readiness and fresh corrected180-second qualification; prior interrupted file is retained separately, not passed."
     },
     {
       "id": "postgres-contract",

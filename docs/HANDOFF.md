@@ -14,14 +14,27 @@ PPTXs plus5canonical outputs. The earlier45sample/677.38s admission-only attempt
 remains unchanged. The focused actual SQLite/PostgreSQL HTTP gate passed66/66,
 0fail/skip/cancelled; it overlaps primary files, not extra distinct coverage.
 
-The coordinator is active at this checkpoint with --resume --max-new-jobs3,
-continuing bulk and then two serial browser/build entries. DO NOT start another
-coordinator/build/test while it is active. Actual completion is recorded in
-out/v2-8i-3-validation/coordinator.json and coordinator.log; inspect both and
-current processes before resuming. Use bounded batches only after the process
-has exited successfully; retain any failed/unacknowledged log before recovery:
+The first resume batch passed2545/2545 bulk leaves, then critical disk contention
+watchdog-cancelled7A. Its partial TAP has20passing and8uncompleted/unreported leaves,
+no complete summary; the file is not passed. Raw logs/resources/captures are retained
+in resource-interrupted-7a-attempt-1. That cancelled process group has exited.
+
+A read-only helper audit found exe.exists could hide permission-denied userspace
+blocked tasks. Correction6504064 uses per-thread stat PF_KTHREAD; unknown metadata
+blocks admission. Ten metadata-oracle checks pass, outside product totals. Numeric
+thresholds and product/tests2ba82cb are unchanged. The existing reviewer separately
+confirmed readiness of6504064, without acceptance. Fresh corrected qualification
+passed180.41s/12samples, with meanCPU6.73% and NVMe1.16%. The full7A retry passed
+28/28 and freeform6/6. The three-job batch yielded with no active test. A single coordinator is now
+resuming the remaining serial files in bounded eight-job batches. Inspect processes/coordinator logs; only after it
+yields, resume one coordinator with:
 
 PYTHONDONTWRITEBYTECODE=1 python3 -u docs/v2-8i-3-evidence/run-validation.py --resume --max-new-jobs 3
+
+The coordinator retains completed66HTTP/2545bulk, preserves the unacknowledged7A
+log under an exclusive filename and reruns all28browser leaves. It must not count
+partial leaves as a complete pass. Inspect actual process state and coordinator.json/
+log before resuming; never overlap coordinators/builds. Remaining gates are pending.
 
 Owned instance: dc1f24756ec8094a5cd356ce1626f3db18a25d74fe72561d9f938129d2105cd0,
 forge-v28i3-validation, loopback5544, pinned image/1CPU/512MiB/tmpfs192MiB in the

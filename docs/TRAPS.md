@@ -2006,3 +2006,15 @@ multistep bounds through the internal execution loop with actual canonical B
 transactions rather than mutating H fixtures and relaxing accepted invariants.
 The same distinction applies to shutdown: an entered one-step commit may finish;
 only a genuinely unfinished multistep run can demonstrate between-step yielding.
+
+## Executable-link visibility does not identify a kernel task
+
+`/proc/PID/exe.exists()` can return false because inspection is denied, including
+for a root-owned userspace process. Never use that result to exempt a blocked task
+from quiet-window admission. Read per-thread `/proc/PID/task/TID/stat` flags and
+positively require PF_KTHREAD; parse after the final comm closing parenthesis.
+Missing, inaccessible, malformed or raced-away metadata is unknown and must block
+admission conservatively. Bind classifier versions/hashes to new samples. Preserve
+old samples as recorded; a task that has exited cannot supply its former flags.
+I3's independent audit found this while a separate disk guard correctly cancelled
+a browser file. Completed partial leaves do not turn that file into a pass.

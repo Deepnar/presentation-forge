@@ -1,18 +1,22 @@
 # I3 exact-source validation
 
-Current checkpoint: source2ba82cb is unaccepted and behaviorally unexecuted.
-The first admission-only attempt qualified no window; its45samples/677.38seconds
-are retained separately. The read-only sampler is stopped. No owned identity,
-snapshot, coordinator or test exists. Preserve these samples and begin fresh
-qualification/initial preparation below; do not use --resume at this checkpoint.
+Current checkpoint: source2ba82cb is unaccepted; focused HTTP66/66 and bulk2545/2545
+have completed. Preparation and snapshots already exist, with the exact owned
+backend recorded in owned-postgres.json. Read HANDOFF and inspect coordinator.json
+and actual processes before resuming. Never repeat initial preparation or start a
+second coordinator. The first admission-only attempt and disk-cancelled7A attempt
+are retained separately. After the corrected classifier's fresh180-second window,
+the full7A retry passed28/28; bounded serial execution continues.
 
 Read the contract, state and current HANDOFF first. `validation-plan.json` freezes
 source/tests. All providers are offline injected/loopback fixtures; no real model
 API, local inference, deployment or production database is authorized.
 
 Use Node 24. Check Git, competing CPU/memory/storage and existing listeners before
-expensive work. Do not overlap browser/build jobs. After any development coordinator
-has released its slot, qualify a sustained window and prepare a fresh backend:
+expensive work. Do not overlap browser/build jobs. The following initial setup was
+completed on2026-10-26; it is historical reproduction guidance, not the current
+resume command. For an entirely new evidence namespace with no prior ownership,
+snapshots or coordinator, initial preparation requires:
 
 ```sh
 mkdir -p out/v2-8i-3-validation

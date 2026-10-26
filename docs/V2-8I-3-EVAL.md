@@ -65,9 +65,29 @@ five canonical outputs before any generator.
 The [focused HTTP gate](v2-8i-3-evidence/conversation-http.json) passed66/66 across
 the actual SQLite and PostgreSQL entries, with0fail/skip/cancelled. These two files
 overlap the complete primary inventory; no complete matrix total is inferred.
-The remaining full regression/native/build/typecheck/benchmark/visual gates are
+The196-file nonbrowser bulk set also passed2545/2545,0fail/skip/cancelled. The
+remaining full regression/native/build/typecheck/benchmark/visual gates are
 in progress or unexecuted, and implementation acceptance remains pending. Only
 injected/loopback providers are used; no real model API or local inference ran.
+
+The first7A browser attempt was cancelled by three critical backing-storage samples
+at97.87/97.96/98.27%busy. Its retained partial TAP records20passing leaves and8
+uncompleted/unreported leaves, no final summary and no reported leaf failure/skip/
+cancellation total. The file is cancelled, not passed; all28leaves must run again.
+[The interruption packet](v2-8i-3-evidence/resource-interrupted-7a-attempt-1/assessment.json)
+retains raw logs, samples and available captures. No Node/Chrome validation process
+remained; an unrelated system fstrim was observed and left untouched, without
+claiming exclusive causation of the disk contention.
+
+The resource audit then found executable-link visibility could misclassify a
+permission-denied userspace process as a kernel task. The validation helper now
+uses readable per-thread stat PF_KTHREAD flags; only positively identified kernel
+tasks are exempt, and unknown metadata blocks admission. Numeric resource
+thresholds are unchanged. [The correction record](v2-8i-3-evidence/blocked-thread-classifier-correction/record.json)
+binds old/new helper hashes and10passing metadata-oracle checks, separately from
+product leaf cases. Old samples remain unchanged; the disappeared trim task's old
+flags are unavailable and are not reconstructed. Fresh corrected qualification and
+admission are required before retry. Product/tests/governance remain exact2ba82cb.
 
 ## Bounded contract
 
@@ -189,3 +209,9 @@ decision, update architecture/roadmap/state/handoff, push scoped commits to orig
 and **STOP after I3**. No dependent scheduler or Assistant implementation follows
 automatically. Interactive Microsoft PowerPoint and live Auto quality remain
 unexecuted unless separately authorized; no claim of either follows from fixtures.
+
+Corrected classifier qualification passed180.41seconds across12fresh samples,
+meanCPU6.73% and NVMe1.16%, after separate helper readiness review of6504064.
+The full7A retry then passed28/28,0fail/skip/cancelled; the cancelled first
+attempt remains excluded from complete primary totals. Bounded serial execution
+continues on unchanged runtime/test source2ba82cb.

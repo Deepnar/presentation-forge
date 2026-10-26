@@ -9140,9 +9140,16 @@ local inference. Only that separate transport correction is authorized; this aud
     backend/test/generator existed at that checkpoint. On 2026-10-26 fresh180.42s
     qualification and exact owned PostgreSQL15.18 preparation succeeded, preserving
     all6965historical files/221PPTXs plus5canonical outputs. The two-file focused
-    HTTP gate passed66/66,0fail/skip/cancelled; it overlaps primary scope. Full234-file
-    regression/native/build/type/benchmark/visual execution is proceeding under
-    bounded serial isolation. Complete gates, original-byte preservation and
+    HTTP gate passed66/66,0fail/skip/cancelled; it overlaps primary scope. Nonbrowser
+    bulk passed2545/2545. First7A was watchdog-cancelled for critical disk activity,
+    with20passing and8uncompleted/unreported leaves; it is not a pass. Its raw
+    attempt is retained. A separate helper audit corrected permission-sensitive
+    blocked-task classification with per-thread PF_KTHREAD and conservative unknown
+    handling;10metadata-oracle checks pass, separately from product leaves. Full
+    browser retry followed separate helper readiness and fresh corrected180.41s
+    qualification; full7A passed28/28. Remaining234-file/native/build/type/benchmark/
+    visual execution stays in bounded serial isolation.
+    Complete gates, original-byte preservation and
     independent acceptance remain required. Stop after I3 acceptance/cleanup.
 
     **Look-ahead.** This supplies durable authenticated ingress before host/provider
