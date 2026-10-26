@@ -1,47 +1,43 @@
 # Presentation Forge handoff —2026-10-26
 
-Branch v2; push only origin/v2. Accepted baselineI3 `2ba82cb5c321c21d5648f577469f69e82cdcfb24`
-and [separate decision](reviews/V2-8I-3-2ba82cb.json) remain unchanged. Current active
-slice is [I4 owner-scoped work discovery](V2-8I-4-EVAL.md), within the2026-10-26
-continuation. Plan delta7215b97 received separate READY_FOR_IMPLEMENTATION before
-code. Resolve current source through development-state.json and Git; full gates
-are pending, not accepted. Preserve `.agents/` and both pre-existing untracked
-master/architecture prompt files.
+Branch v2; push only origin/v2. AcceptedI3baseline2ba82cb and its separate decision
+remain unchanged. Active I4 corrected source is8378a20a819de569ef7b10b747d7ba6c481f529e.
+Read AGENTS, state, [I4 evaluation](V2-8I-4-EVAL.md) and
+[corrected runbook](v2-8i-4-corrected-evidence/RUNBOOK.md). All9corrected gates are
+unexecuted; independent source/helper delta readiness is pending before fresh180s
+qualification and preparation. Root owns Git/test/database slots; no coordinator,
+test child or sampler is active. Reuse existing `/root/turn_contract_review` at
+high effort only; no extra agents.
 
-The service, synchronous input snapshots, purpose-built binary/byte-bounded
-SQLite/PostgreSQL queries and `agent-chat discover` are implemented. Four new
-entry files bring the primary inventory to238 (198bulk/26serial/14PG-process).
-Development results:10pure unit,13SQLite and6corrected SQLite CLI passes;
-35governance passes and9corrected isolated snapshot/preparation-guard passes. One separate source-review finding was reproduced with raw
-invalid UTF-8 (5pass/1fail) and corrected discovery-only at1c83881. Raw development
-probes are retained separately and supply no full gate or PostgreSQL pass.
+Source175's35jobs/231primary files2899passes plus47focused overlaps are RETIRED,
+not transferred. A raw SQLite malformed UTF-8 probe failed0/1 despite shelloverall0
+from a following cat. A real14-case oracle reproduced13pass/1fail. SQLite now
+selects capped BLOB metadata then fatal-decodes into the same text rows; invalid
+bytes fail privately and valid U+FFFD/BOM survive. An intermediate BOM false-refusal
+(23/24) was corrected in the discovery input decoder. Corrected development24/24,
+governance35/35 and snapshot/adoption guards12/12 pass; full gates remain pending.
 
-Root owns Git/testing/database slots. The existing independent reviewer
-`/root/turn_contract_review` has finished the source-only early pass, released all
-slots, made no source/file/Git mutations and issued no implementation acceptance.
-Reuse that context at high effort only; avoid extra agents. Its helper pass required three pre-execution corrections (plan labels, complete
-source guards and mandatory snapshot verification); those are written/tested and
-received exact-delta SOURCE/HELPER READY at16c7469 after the additional
-hash-function alias correction/preparation-block oracle. Actual full store/CLI
-gates and later exact-source review remain required. The I4 sustained quiet qualification and preparation passed. Exclusive owned
-PostgreSQL15.18 ID/configuration are in the new owned-postgres.json; root owns it.
-7423historical files/246PPTXs+5canonical originals are verified in snapshots before
-generation. The coordinator is active under root: focused47/47 and198bulk files
-2569/2569 passed, all0fail/skip/cancelled; focused overlaps primary. Bounded serial
-browser execution completed26files208/208. PostgreSQL/process primary execution
-is now running. Read coordinator.json before any continuation; never
-start a second coordinator or service. Remaining gates/review/cleanup are pending. No live model/local inference is authorized.
-Shared-machine I/O PSI remains elevated; inspect actual corrected quiet samples,
-CPU/memory/backing-storage/competing work before expensive validation. Never stop
-unrelated work. New I4 helper readiness and source binding precede180s qualification,
-30s fresh admissions, fresh exclusive owned PostgreSQL15.18(no image pull), all-original
-snapshots, bounded serial jobs and current visual/native inspection.
+Original source175 rawlogs/helper/plan/ownership and fresh screenshots/seven PPTXs
+are preserved under docs/v2-8i-4-evidence/attempts/175a016 (including frozen-tree).
+All7423historical files/246PPTXs+5canonical original bytes were restored/verified
+before correction. Do not rerun source175 coordinator/prepare/finisher/cleanup.
+New full source/helper/evidence namespace is docs/v2-8i-4-corrected-evidence;
+scratch out/v2-8i-4-corrected-validation. Need fresh quiet qualification, full new
+all-original snapshots and all238primary files/nine gates/4distinct native flows.
+Never retag prior passes. Browser/Vite/build remain bounded serial; locale separate.
 
-I3's coordinator/finisher and evidence are frozen; its exact owned service was
-removed after actual0catalog/fsync. Never recreate its old identity or rerun its
-finisher. New helpers use only the I4 namespace. No old green result counts as I4.
-Standing BYOK locale remains separate; unexecuted PostgreSQL is not passing.
-No new API/local model call, production deployment, migration, SDK or UI is in
-scope. Stop after complete I4 validation, independent ACCEPT/HOLD, exact-owned
-cleanup and pushed handoff. Future scope lives only in the
-[roadmap](ROADMAP.md#assistant-surface-integration).
+The one exclusive ownedI4 PostgreSQL15.18 service remains live, ID
+e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce,
+loopback5544. It was explicitly adopted for corrected8378a20 with original ownership
+bytes/hash, exact identity/resources/listener and actualemptycatalog saved/fsynced
+in corrected source-correction-adoption.json/owned-postgres.json. No second service
+was created, old ownership untouched. New prepare requires --resume-owned-preparation
+--prepare-only and has no creation path. After source/helper readiness, qualify
+fresh180s then prepare with fresh30s admission/new snapshots. All slots remainroot;
+no independent test/acceptance yet. Final cleanup only after all gates and explicit
+reviewer DB release: save/fsync ACTUAL0catalog then one exact-ID stop/fresh verification.
+
+Preserve `.agents/` and the two existing untracked master/architecture prompt files.
+No real API/local inference, UI/provider/scheduler/retention change, deployment,
+migration, index or SDK is in scope. Stop after complete I4 acceptance/cleanup and
+pushed handoff. Future work only in the roadmap.

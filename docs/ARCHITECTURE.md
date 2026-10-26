@@ -2805,7 +2805,9 @@ Assistant and host execution policy at their roadmap boundaries.
 then consumes a purpose-built metadata statement in either project store. SQL
 compares owner/project/turn identifiers in explicit binary order, applies the owner
 predicate before limit+1 and byte-bounds every selected text field with invalid
-NULL sentinels. It joins operational header/turn rows without loading project,
+NULL sentinels. SQLite selects capped BLOBs and fatal-decodes every non-null field
+with BOM identity preserved before exposing text rows; malformed UTF-8 cannot be
+replaced by the driver. It joins operational header/turn rows without loading project,
 private-chat, proposal or run bodies. The domain validates header/turn identities
 and returns submitted/preparing/approved potential-work hints. Every scanned row
 advances pagination, including filtered terminal/waiting rows; empty items do not

@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8I-3-2ba82cb.json"
   },
   "implementationHead": {
-    "sha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
-    "note": "I4source175a016: focused47/47,198bulkfiles2569/2569 and26serialfiles208/208 passed;0fail/skip/cancelled. PostgreSQL/process primary gates and remaining command/native/visual checks are active/pending. Accepted baseline remainsI3."
+    "sha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+    "note": "Corrected I4source8378a20: strict byte decoding and BOM identity preservation. Development24/24 and governance35/35 pass; full238-file/nine-gate run and independent acceptance remain required. Source175 partial passes are retired, not transferred."
   },
   "activeMilestone": {
     "id": "V2-8I-4",
     "roadmapRef": "docs/ROADMAP.md#assistant-work-discovery",
     "evalDoc": "docs/V2-8I-4-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "in-progress",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,57 +23,57 @@
   "validation": [
     {
       "id": "turn-discovery",
-      "status": "passed",
-      "evidence": "docs/v2-8i-4-evidence/turn-discovery.json",
-      "reason": "Complete frozen-source execution passed with0fail/skip/cancelled; focused counts overlap primary matrix."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
     },
     {
       "id": "non-browser-bulk",
-      "status": "passed",
-      "evidence": "docs/v2-8i-4-evidence/non-browser-bulk.json",
-      "reason": "Complete frozen-source execution passed with0fail/skip/cancelled; focused counts overlap primary matrix."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
     },
     {
       "id": "serial-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8i-4-evidence/serial-browser.json",
-      "reason": "All26complete serial files passed208/208;0fail/skip/cancelled, no concurrent Vite/build work."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
     },
     {
       "id": "postgres-contract",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
+      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
     },
     {
       "id": "cross-process-faults",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
+      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
     },
     {
       "id": "production-build",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
+      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
     },
     {
       "id": "typecheck",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
+      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
     },
     {
       "id": "benchmark-50",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
+      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
     },
     {
       "id": "frontend-visual",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Required I4 exact-source gate has not executed; development probes and I3 results are not gate passes."
+      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
     }
   ],
   "knownBlockers": [],

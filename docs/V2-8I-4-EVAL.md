@@ -66,7 +66,7 @@ turn fails fixed invalid-document rather than silently inventing a generation.
 Deleted project rows cannot become accessible orphan work.
 
 Never select private_payload, scene/project payload, proposal plans, requests,
-replies, credentials or run payloads. SQL must byte-bound EVERY returned TEXT field before materializing it in the
+replies, credentials or run payloads. SQL must byte-bound EVERY returned field before materializing it in the
 application: project/owner/turn/generation identifiers and header/turn payloads.
 Use SQLite length(CAST(value AS BLOB)) and PostgreSQL octet_length, not character
 length (SQLite TEXT length stops at embedded U+0000). At-risk fields return a
@@ -76,8 +76,10 @@ then existing UTF-8 payload byte ceilings, parseHeader/parseTurn invariants and
 row/header/generation identity. Decoded header/turn generation and IDs also meet
 I2's actual <=128UTF-16-code-unit nonblank lookup rule; JSON Schema's code-point
 maxLength alone cannot establish that a hint can be consumed unchanged.
-Malformed or oversized operational metadata refuses the whole page without echo
-or partial output. Existing idempotent runtime-table initialization may occur; no
+SQLite selects bounded BLOB values and fatal-decodes them before exposing the
+unchanged text-row interface; TEXT decoding by the driver must never replace raw
+identity bytes. Valid U+FFFD and BOM characters are preserved. Malformed or
+oversized operational metadata refuses the whole page without echo or partial output. Existing idempotent runtime-table initialization may occur; no
 new table/index/migration, conversation/turn/run row, project/history write, lease
 or accounting mutation is introduced. Use the existing owner/project/turn indexes without inventing a covering
 composite or C-collated index guarantee. Inspect actual both-store query plans;
@@ -187,75 +189,81 @@ Update architecture/roadmap/state/handoff, push scoped commits to origin/v2 and
 STOP after I4 acceptance/cleanup. No hosted provider/scheduler/UI implementation
 follows automatically.
 
-## Current execution status
+## Current execution status — corrected source
 
-Plan2dbbc3b received conditional readiness in
-[the separate review](reviews/V2-8I-4-plan-2dbbc3b.json), committed atc473afc.
-Required byte/identifier/result/query-cost clarifications were committed at7215b97.
-The separate `/root/turn_contract_review` context explicitly confirmed that exact
-pushed delta READY_FOR_IMPLEMENTATION, with all conditions satisfied and no new
-human policy decision. This paragraph records its delivered message; it is not a
-new acceptance decision. Source implementation then began within this contract.
+Accepted baseline remainsI3 `2ba82cb5c321c21d5648f577469f69e82cdcfb24`.
+Corrected implementation is `8378a20a819de569ef7b10b747d7ba6c481f529e`.
+The current complete238-file inventory/helper/source manifests and fresh runbook
+are in [the corrected evidence lineage](v2-8i-4-corrected-evidence/RUNBOOK.md).
+All9required corrected-source gates are unexecuted. Source/helper delta readiness,
+fresh180second qualification/admission, complete new originals snapshots, full
+execution, separate exact-source acceptance and cleanup remain required.
+No partial pass from the original source is a corrected-source pass.
 
-Current code implements the backend-injected read, both SQL adapters and operator
-command. The separate source-only review through9ec6602 found one narrow defect:
-CLI replacement decoding could change malformed UTF-8 into a different cursor.
-The actual byte-file test failed before correction (5pass/1fail); strict decoding
-was added for discovery only at1c83881, after which all6SQLite CLI cases passed.
-The valid literal-U+FFFD oracle remains accepted. No assertion was weakened.
+### Plan and original-source execution
 
-[Development raw probes](v2-8i-4-evidence/development/results.json) record10pure
-unit,13actualSQLite and6corrected SQLite CLI passes, with0skip/cancelled. They are
-partial development execution, not the required238-file matrix or PostgreSQL
-qualification. Their exact source/deltas and the failed probe are retained.
-Governance checks passed35/35 after adding the nine-gate discovery mapping and
-an oracle refusing each missing focused entry. Fresh frozen-source primary
-execution, PostgreSQL, query-plan assessment, faults, serial browser/build,
-benchmark, native/visual evidence and final separate acceptance remain pending.
-No I4 owned backend, generator, build, real model API or local inference has run.
+Plan2dbbc3b received conditional readiness atc473afc, followed by clarified
+byte/identifier/result/query-cost delta7215b97 and separate exact-delta readiness
+before code. Source review caught a malformed-file UTF-8 replacement defect;
+actual CLI test reproduced5pass/1fail, discovery-only strict decoding at1c83881
+passed6/6. Helper review caught stale plan labels, an incomplete source guard,
+coordinator snapshot bypass and then imported hash-function shadowing. Those were
+corrected before first preparation, with a real preparation-block fail-first oracle
+(8pass/1error→9/9). Original readiness at16c7469 was validation-only, not acceptance.
+[Its delivered message record](reviews/V2-8I-4-175a016-source-harness.json) remains.
 
-The first helper review found stale inherited plan labels, the missing frozen
-governance-schema guard and a coordinator path which could bypass incomplete
-snapshots. Those were corrected before any qualification/backend/generator: plan
-identity is I4, source guards bind the complete manifest, and both snapshot sets
-require a completion proof/index/backup hash verification before every coordinator
-entry, plus complete current originals on initial admission. Eight initial isolated guard oracles passed8/8. Delta review then caught a
-preparation-only imported hash-function name collision; a ninth oracle executes
-the actual snapshot/proof block without a backend and reproduced it (8pass/1error).
-The hash-function alias is corrected; all9guard/preparation oracles now pass9/9,
-with both logs retained and no backend created. These are separate development
-checks, not primary/gate totals. The separate reviewer confirmed SOURCE/HELPER
-READY for implementation175a016 with helpers16c7469, checking all16helper hashes.
-[This implementer-recorded delivered message](reviews/V2-8I-4-175a016-source-harness.json)
-authorizes validation only; no independent runtime execution/acceptance is claimed.
-The corrected sustained quiet sampler is now running before preparation. Old I3 helpers/evidence remain frozen. All9state
-checks remain explicitly unexecuted; accepted baseline remains2ba82cb. Stop after
-I4 independent acceptance and exact-owned cleanup; no dependent feature work.
+Original source175a016 qualified180.587seconds and used exclusive PostgreSQL15.18.
+Its35complete jobs passed231primary files2899/2899 (198bulk2569,26serial208,
+7PG122) plus47overlapping focused cases, with0fail/skip/cancelled. Seven primary
+files plus command/native/visual gates remained incomplete. All raw results, exact
+original ownership/helper bytes, current screenshots and seven actual browser/HTTP
+PPTXs are preserved in [the retired attempt](v2-8i-4-evidence/attempts/175a016/retirement.json).
+The additional raw corruption probe failed0pass/1fail; shell overall0 resulted
+from a following cat command and is explicitly not a pass.
 
+### Product regression and narrow corrections
 
-## Full-validation checkpoint
+The probe demonstrated that SQLite permits malformed TEXT and Node's replacement
+decoding can change a stored identifier before identity validation. A corresponding
+literal-U+FFFD TurnRecord could then produce a hint with different raw bytes.
+The committed actual-store oracle failed13pass/1fail before correction.
+SQLite now selects only already byte-capped BLOB fields; the adapter fatal-decodes
+all six non-null values, preserves nulls and maps decoding failure to fixed private
+invalid-document. SQL owner/join/keyset/order semantics and PostgreSQL are unchanged.
+No schema/index, H/I2 contract, provider or execution authority changed.
 
-The corrected quiet qualification passed180.587seconds: meanCPU5.730%,
-iowait9.979%, backing disk busy1.353%, weightedqueue0.0661. Raw elevated I/O PSI
-retains unresolved provenance. Fresh30-second admission preceded preparation.
-The exclusive saved/fsynced owned instance `forge-v28i4-validation` is actual
-PostgreSQL15.18 atloopback5544; exact ID/configuration are in
-[owned-postgres.json](v2-8i-4-evidence/owned-postgres.json). No other service is used.
-All7423historical files,246original PPTXs and5canonical outputs were snapshotted/
-hash-verified before generators; completion proof and first coordinator checks
-are retained. No restoration/cleanup or implementation acceptance is claimed yet.
+A valid leading-BOM control exposed an additional false refusal in the discovery
+identifier round-trip decoder (intermediate23pass/1fail of24); preserving BOM there
+corrected it. All24unit/SQLite cases now pass24/24, including malformed ID,
+generation, header and turn bytes plus valid U+FFFD/BOM controls. Governance35/35
+and corrected snapshot/adoption helper12/12 also pass. These are development checks,
+not the fresh238-file matrix. Raw probes, failures and corrected logs are retained
+under corrected-evidence/development. No assertion was weakened.
 
-The exact-source focused gate passed47/47 across four entries (actual SQLite/PG
-and both-store CLI/process included), and198bulk files passed2569/2569 with
-0fail/skip/cancelled. These overlap; do not add47to the primary total.
-[The checkpoint](v2-8i-4-evidence/primary-matrix-checkpoint.json) records only
-completed primary files. All26bounded serial files now passed208/208 with0fail/skip/cancelled,
-including complete7A28/28, workspace/handoff/toolbar and actual PostgreSQL browser
-coverage. PostgreSQL/process primary files are now active; remaining required gates,
-four distinct native cases/visual inspection and separate exact-source review are pending. Root owns all test/database/Git slots.
+### Preservation and backend lineage
 
-Focused128-legitimate-turn samples traversed3pages with51maximum returned rawrows:
-SQLite8.283ms, PostgreSQL10.757ms. SQLite uses existing indexes and a temporary sort;
-PostgreSQL's retained plan includes sequential scans/hash joins and sorting.
-These small local samples meet the bounded metadata-read goal without a new index;
-there is no fixed physical-work/timeout or production-percentile guarantee.
+Before correction, all7423historical files/246original PPTXs and5canonical outputs
+were restored and hash-verified from actual backups, without reconstruction.
+The retired attempt retains fresh old-source artifacts separately. No original
+service was replaced or stopped. The same exclusively ownedI4 ID
+`e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce`
+is explicitly adopted for corrected source in
+[the saved/fsynced identity chain](v2-8i-4-corrected-evidence/source-correction-adoption.json).
+Original ownership bytes/hash, exact identity/resources/final TCP listener and
+actual PostgreSQL15.18 empty catalog were verified. Preparation/coordinator recheck
+that chain; corrected preparation has no container creation path. Fresh qualification
+and snapshots are still required before new generators. Root owns all slots.
+
+### Limits and stop point
+
+Original-source local128-turn/3page samples were8.283msSQLite/10.757msPG; these are
+retired samples, not corrected performance. PostgreSQL plans showed sequential
+scans/hash joins/sorting; SQLite used existing indexes and a temporary sort.
+No fixed physical-work/timeout or production-percentile guarantee is made.
+Original-source120-slide opening was1539ms, chart/table canvas delta<0.031px and
+initial full-size screenshots showed no new overlap; corrected final frontend/
+native evidence must execute again. Inherited narrow partial canvas/overflow,
+SVG mixed-run/chart-consumer differences, standing BYOK locale failure, unexplained
+I/O PSI/iowait, live-provider qualification and interactive PowerPoint limits remain.
+No real model API or local inference has run. Stop after I4 independent acceptance
+and exact-owned cleanup; no hosted provider/scheduler/Assistant implementation.

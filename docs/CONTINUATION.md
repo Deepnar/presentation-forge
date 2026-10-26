@@ -32,16 +32,17 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current active slice — I4 implementation
+## Current active slice — I4 corrected validation
 
-The current continuation authorized the reviewed bounded
-[work-discovery contract](V2-8I-4-EVAL.md). Plan delta7215b97 was separately ready
-before source changes. Discovery code/tests exist; development probes pass10unit,
-13SQLite and6CLI cases. The retained fail-first UTF-8 probe caught and corrected
-one discovery-only CLI defect. Full238-file/nine-gate validation, a fresh owned
-PostgreSQL backend and separate exact-source acceptance remain pending. Read the
-current HANDOFF and state before starting any coordinator. Never execute frozen
-I3 helpers or recreate its removed service. No provider/model/UI/scheduler work.
+[The I4 contract](V2-8I-4-EVAL.md) is authorized within the current continuation.
+Source175 partial validation was retired after a demonstrated SQLite raw UTF-8
+replacement/identity defect. Corrected source8378a20 preserves bytes/BOM correctly;
+development24/24, governance35/35 and helper12/12 pass. All238/nine gates must run
+fresh in [the corrected lineage](v2-8i-4-corrected-evidence/RUNBOOK.md), after separate
+source/helper readiness and fresh qualification/snapshots. No partial pass transfers.
+The exact exclusive service is explicitly adopted, not recreated; read HANDOFF and
+actual identity/catalog before action. Original artifacts were preserved/restored.
+Never execute retired I4/I3 helpers. No real model/API, UI/provider/scheduler feature.
 
 ## Accepted predecessor — I3 complete
 

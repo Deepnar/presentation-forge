@@ -9183,7 +9183,10 @@ local inference. Only that separate transport correction is authorized; this aud
     and separate exact-delta readiness. The service/adapters/operator command and
     four test entries now exist. Development unit/SQLite/CLI probes pass; source-only
     review caught malformed UTF-8 replacement, reproduced and corrected narrowly.
-    Full238-file/nine-gate execution and exact-source acceptance remain pending;
+    A later actual SQLite malformed-byte oracle retired source175 partial execution;
+    bounded BLOB/fatal decoding and valid BOM identity are narrowly corrected at
+    source8378a20. All238files/nine gates must run fresh in corrected evidence; no
+    old partial pass transfers. Exact-source acceptance remains pending;
     no PostgreSQL/full-validation result is inferred from development probes.
     Later host owner selection/provider policy and pickup remain separate contracts.
 
