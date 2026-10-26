@@ -24,7 +24,7 @@ const KINDS = {
 
 const MILESTONES = {
   'V2-8I-4': {
-    plan: 'docs/v2-8i-4-evidence/validation-plan.json',
+    plan: 'docs/v2-8i-4-corrected-evidence/validation-plan.json',
     focused: 'turn-discovery',
     files: ['test/v2-turn-discovery-8i.test.js', 'test/v2-turn-discovery-sqlite-8i.test.js', 'test/v2-turn-discovery-postgres-8i.test.js', 'test/v2-turn-discovery-process-8i.test.js'],
   },

@@ -384,8 +384,8 @@ test('submission HTTP acceptance requires both actual backend entry files', t =>
 
 test('turn-discovery acceptance requires input, both stores and process/CLI coverage', t => {
   const f = fixture(t);
-  mkdirSync(path.join(f.dir, 'docs/v2-8i-4-evidence'), { recursive: true });
-  cpSync(path.join(ROOT, 'docs/v2-8i-4-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8i-4-evidence/validation-plan.json'));
+  mkdirSync(path.join(f.dir, 'docs/v2-8i-4-corrected-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8i-4-corrected-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8i-4-corrected-evidence/validation-plan.json'));
   f.state.activeMilestone.id = 'V2-8I-4'; hasError(f.check(), /inventory.*contract/);
   f.state.validation[0].id = 'turn-discovery'; assert.deepEqual(f.check().errors, []);
   for (const entry of ['test/v2-turn-discovery-8i.test.js', 'test/v2-turn-discovery-sqlite-8i.test.js',
