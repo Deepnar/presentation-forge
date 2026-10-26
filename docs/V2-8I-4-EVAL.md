@@ -35,12 +35,17 @@ HTTP authorization source.
 ### Scope and input
 
 Snapshot/validate a plain exact trusted owner binding before any await, with the
-accepted owner semantics (nonempty string up to128characters or explicit null).
+accepted owner length/identity semantics (nonempty string up to128UTF-16code units
+or explicit null), with raw discovery owner/cursor identifiers required to round-trip
+through UTF-8 unchanged and contain no U+0000. These stricter new discovery inputs
+leave every existing H/I2/CLI action contract unchanged.
 No administrator bypass, owner wildcard, omitted-owner fallback across accounts,
 project payload, provider/configuration or executable/accessor input is accepted.
 Input is exactly `{limit,cursor}`: integer limit1..50; cursor null initially or
 exact `{projectId,turnId}`. Project IDs retain the canonical64-character ID rule;
-turn IDs retain the existing nonblank128-character rule. Bound/snapshot JSON and
+turn IDs retain I2's actual nonblank128-UTF-16-code-unit lookup rule. A syntactically
+valid foreign, deleted or nonexistent cursor position needs no existence/ownership
+lookup; the owner predicate still scopes all returned rows. Bound/snapshot JSON and
 reject extra fields, unsafe values, getters, symbols and malformed cursors before
 backend I/O. A cursor supplies pagination only, never ownership or work authority.
 The CLI permits no --project or --provider on discover, requires --input and emits
@@ -52,21 +57,33 @@ Both existing SQLite/PostgreSQL adapters provide one purpose-built owner-scoped
 metadata page method. Use parameterized owner predicates and keyset pagination
 ordered by `(project_id,turn_id)` with explicit equivalent binary ordering across
 stores, including non-ASCII accepted turn IDs. Read at most limit+1 rows from
-canonical projects/turns/conversation headers in a single statement. Owner filtering
-applies in SQL before limiting; exact null sees only ownerless projects. Join to
+canonical projects/turns/conversation headers in a single statement. Exact bytewise owner matching
+applies in SQL before limiting, independently of database collation; exact null
+sees only ownerless projects. Never implement this through listProjects (which
+loads project bodies) or withRuntimeTransaction (which loads scenes/permits writes). Join to
 the existing project row and header; a missing/mismatched header on a retained
 turn fails fixed invalid-document rather than silently inventing a generation.
 Deleted project rows cannot become accessible orphan work.
 
 Never select private_payload, scene/project payload, proposal plans, requests,
-replies, credentials or run payloads. SQL must bound returned header/turn metadata
-text before materializing it in the application; then enforce existing UTF-8 byte
-limits and parseHeader/parseTurn invariants and row/header/generation identity.
+replies, credentials or run payloads. SQL must byte-bound EVERY returned TEXT field before materializing it in the
+application: project/owner/turn/generation identifiers and header/turn payloads.
+Use SQLite length(CAST(value AS BLOB)) and PostgreSQL octet_length, not character
+length (SQLite TEXT length stops at embedded U+0000). At-risk fields return a
+bounded invalid sentinel, never an unbounded original or silently filtered/truncated
+row. Enforce canonical per-field limits and raw-identifier UTF-8/non-NUL validity,
+then existing UTF-8 payload byte ceilings, parseHeader/parseTurn invariants and
+row/header/generation identity. Decoded header/turn generation and IDs also meet
+I2's actual <=128UTF-16-code-unit nonblank lookup rule; JSON Schema's code-point
+maxLength alone cannot establish that a hint can be consumed unchanged.
 Malformed or oversized operational metadata refuses the whole page without echo
 or partial output. Existing idempotent runtime-table initialization may occur; no
 new table/index/migration, conversation/turn/run row, project/history write, lease
-or accounting mutation is introduced. Existing indexes support the query; inspect
-the actual both-store query plans. Row/returned-byte bounds are not a claim of a
+or accounting mutation is introduced. Use the existing owner/project/turn indexes without inventing a covering
+composite or C-collated index guarantee. Inspect actual both-store query plans;
+retain legitimate many-row samples, possible sorts/scans and latency. If measured
+plans cannot meet the bounded operational goal, stop for a scoped decision before
+adding an index or another discovery architecture. Row/returned-byte bounds are not a claim of a
 hard database timeout or fixed physical work under arbitrarily corrupt storage.
 
 Scan up to limit rows, using the extra row only for hasMore. Return candidates
@@ -80,7 +97,10 @@ No process-local watermark or second durable work queue is created.
 Return only `{ok:true,items,scannedRows,hasMore,nextCursor}`; each item is
 `{projectId,generation,turnId,turnRevision,state,preparationDeadline,leaseUntil}`.
 Do not return request keys/digests, visible/private bodies, proposal/run contents
-or an administrator/owner capability. Approved records can refer to finished runs:
+or an administrator/owner capability. The ENTIRE serialized result, including
+cursor/envelope, is capped at131072UTF-8bytes before output (CLI adds only a final
+newline); fixed failure replaces any oversized result, with no partial output.
+Approved records can refer to finished runs:
 these are potential-work hints, not a runnable/lease/approval guarantee. The later
 host must invoke I2 under its trusted owner binding and let canonical inspection
 recheck ownership, generation, current turn/run state, deadlines and leases.
@@ -122,7 +142,11 @@ process/CLI entry files. Required behavior:
   awaiting-decision rows; no duplicates/omissions on a quiescent store.
 - Oversized/malformed/missing/mismatched headers/metadata fail privately; private
   bodies/project scenes are not loaded. All domain/storage byte and returned-row
-  limits remain enforced. Actual query plans and at-limit many-row samples are
+  limits remain enforced. Actual-store SQLite NUL-prefixed oversized TEXT/IDs
+  must hit bounded invalid sentinels; PostgreSQL has no literal-NUL TEXT storage,
+  so exercise its actual oversized/invalid byte bounds and both-store pre-I/O
+  non-NUL/UTF-8 identifier rejection without fake storage support. At-limit escaped
+  identifiers exercise the complete131072-byte result ceiling. Actual query plans and at-limit many-row samples are
   retained, with no invented production latency or physical-scan claims.
 - Database row bytes, revisions/history, conversations, leases, attempts and
   accounting remain unchanged on discovery, including expired/leased turns.
@@ -165,6 +189,11 @@ follows automatically.
 
 ## Current execution status
 
-Contract preparation only. Source unchanged from acceptedI3; no I4 test, build,
+Plan2dbbc3b received conditional readiness in
+[the separate review](reviews/V2-8I-4-plan-2dbbc3b.json), committed atc473afc.
+The required byte/identifier/result/query-cost clarifications above are committed
+before code; exact-delta readiness confirmation is still required. No new human
+policy decision is required within this pure discovery boundary. Source unchanged
+from acceptedI3; no I4 test, build,
 benchmark, database, provider or generator execution. No implementation acceptance
 is implied by planning or readiness. All intended runtime checks remain unexecuted.

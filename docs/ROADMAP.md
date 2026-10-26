@@ -9178,7 +9178,9 @@ local inference. Only that separate transport correction is authorized; this aud
     body/scene reads, provider selection/spend, automatic claims/reconciliation,
     scheduler or public UI/HTTP surface is included. This is a prerequisite within
     the host entry, not a substitute lower-priority task or completion of hosted
-    orchestration. Readiness review precedes code; current source remains I3.
+    orchestration. [Conditional plan readiness](reviews/V2-8I-4-plan-2dbbc3b.json)
+    requires the pinned byte/Unicode/response/query-cost clarifications and a delta
+    check before code; current source remains acceptedI3.
     Later host owner selection/provider policy and pickup remain separate contracts.
 
   Subsequent slices still need
