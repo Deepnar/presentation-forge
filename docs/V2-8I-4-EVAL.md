@@ -249,9 +249,10 @@ The exact-source focused gate passed47/47 across four entries (actual SQLite/PG
 and both-store CLI/process included), and198bulk files passed2569/2569 with
 0fail/skip/cancelled. These overlap; do not add47to the primary total.
 [The checkpoint](v2-8i-4-evidence/primary-matrix-checkpoint.json) records only
-completed primary files. Bounded serial browser execution is now active; remaining
-required gates/four distinct native cases/visual inspection and separate exact-source
-review are pending. Root owns all test/database/Git slots.
+completed primary files. All26bounded serial files now passed208/208 with0fail/skip/cancelled,
+including complete7A28/28, workspace/handoff/toolbar and actual PostgreSQL browser
+coverage. PostgreSQL/process primary files are now active; remaining required gates,
+four distinct native cases/visual inspection and separate exact-source review are pending. Root owns all test/database/Git slots.
 
 Focused128-legitimate-turn samples traversed3pages with51maximum returned rawrows:
 SQLite8.283ms, PostgreSQL10.757ms. SQLite uses existing indexes and a temporary sort;

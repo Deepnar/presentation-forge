@@ -28,7 +28,8 @@ PostgreSQL15.18 ID/configuration are in the new owned-postgres.json; root owns i
 7423historical files/246PPTXs+5canonical originals are verified in snapshots before
 generation. The coordinator is active under root: focused47/47 and198bulk files
 2569/2569 passed, all0fail/skip/cancelled; focused overlaps primary. Bounded serial
-browser execution is running. Read coordinator.json before any continuation; never
+browser execution completed26files208/208. PostgreSQL/process primary execution
+is now running. Read coordinator.json before any continuation; never
 start a second coordinator or service. Remaining gates/review/cleanup are pending. No live model/local inference is authorized.
 Shared-machine I/O PSI remains elevated; inspect actual corrected quiet samples,
 CPU/memory/backing-storage/competing work before expensive validation. Never stop

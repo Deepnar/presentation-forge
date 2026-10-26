@@ -1,12 +1,12 @@
 {
   "implementationSha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
-  "atUtc": "2026-10-26T12:52:46.491625+00:00",
-  "completedPrimaryFiles": 198,
+  "atUtc": "2026-10-26T13:16:38.105592+00:00",
+  "completedPrimaryFiles": 224,
   "requiredPrimaryFiles": 238,
-  "uncompletedPrimaryFiles": 40,
+  "uncompletedPrimaryFiles": 14,
   "tests": {
-    "total": 2569,
-    "pass": 2569,
+    "total": 2777,
+    "pass": 2777,
     "fail": 0,
     "skip": 0,
     "cancelled": 0
@@ -19,6 +19,6 @@
     "cancelled": 0
   },
   "focusedOverlapsPrimary": true,
-  "activeRun": "bounded serial coordinator; root retains allslots",
+  "activeRun": "PostgreSQL/process coordinator; root retains allslots",
   "accepted": false
 }

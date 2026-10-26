@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
-    "note": "I4source175a016 and helpers16c7469 independently ready for validation. Focused47/47 and bulk2569/2569 pass; all other gates and implementation acceptance remain pending. Fresh isolated PostgreSQL15.18 and all-original snapshots verified."
+    "note": "I4source175a016: focused47/47,198bulkfiles2569/2569 and26serialfiles208/208 passed;0fail/skip/cancelled. PostgreSQL/process primary gates and remaining command/native/visual checks are active/pending. Accepted baseline remainsI3."
   },
   "activeMilestone": {
     "id": "V2-8I-4",
@@ -35,9 +35,9 @@
     },
     {
       "id": "serial-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Bounded serial execution is in progress; a running/incomplete file is not a pass."
+      "status": "passed",
+      "evidence": "docs/v2-8i-4-evidence/serial-browser.json",
+      "reason": "All26complete serial files passed208/208;0fail/skip/cancelled, no concurrent Vite/build work."
     },
     {
       "id": "postgres-contract",
