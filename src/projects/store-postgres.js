@@ -40,6 +40,7 @@ import {
 import { canAccessProject } from "./store.js";
 
 import { validateImportRequest, replayImportedProject } from "../../packages/projects/import-request.js";
+import { turnDiscoveryQuery } from './turn-discovery-query.js';
 
 export { canAccessProject };
 
@@ -720,6 +721,15 @@ async function ensureRuntimeSchema(p) {
     ready.catch(() => runtimeEnsured.delete(p));
   }
   return runtimeEnsured.get(p);
+}
+
+export async function readTurnMetadataPage(input) {
+  const { sql, params } = turnDiscoveryQuery(input, 'postgres');
+  try {
+    const p = await pool();
+    await ensureRuntimeSchema(p);
+    return (await p.query(sql, params)).rows;
+  } catch (error) { throw storageUnavailable(error); }
 }
 
 export async function withRuntimeTransaction({ owner = null, id }, job) {

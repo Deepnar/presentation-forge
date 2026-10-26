@@ -47,6 +47,7 @@ import {
 } from "./history.js";
 
 import { validateImportRequest, replayImportedProject } from "../../packages/projects/import-request.js";
+import { turnDiscoveryQuery } from './turn-discovery-query.js';
 
 function storageFailure(error) {
   if (error?.code?.startsWith("ERR_SQLITE") || ["EACCES", "EPERM", "EROFS", "ENOSPC"].includes(error?.code)) {
@@ -705,6 +706,16 @@ export function restoreRevision(args) {
 }
 
 export function closeProjectStore() { closeDb(); }
+
+export async function readTurnMetadataPage(input) {
+  const { sql, params } = turnDiscoveryQuery(input, 'sqlite');
+  return serializeWrite(async () => {
+    const { RUN_DDL } = await import('../agent/schema.js');
+    const db = ensureSchema();
+    db.exec(RUN_DDL);
+    return db.prepare(sql).all(...params);
+  }).catch(error => { throw storageFailure(error); });
+}
 
 // A host-only transaction seam; callbacks must contain local validation, never I/O
 // to providers. Project/history and runtime effects share this one commit boundary.
