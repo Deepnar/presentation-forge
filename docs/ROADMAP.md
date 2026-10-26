@@ -9167,6 +9167,20 @@ local inference. Only that separate transport correction is authorized; this aud
     capture and show truthful submission/preparation/decision/execution status.
     No additional work queue, browser-owned worker or second document is needed.
 
+  <a id="assistant-work-discovery"></a>
+
+  - [ ] **V2-8I-4 owner-scoped durable work discovery — current contract preparation.**
+    The2026-10-26 continuation starts the next host/orchestration prerequisite
+    after acceptedI3. [The proposed bounded contract](V2-8I-4-EVAL.md) adds only
+    trusted owner-scoped metadata pagination and an operator discover command.
+    It scans canonical metadata with bounded keyset pages, preserves null-owner
+    isolation and returns potential-work hints which I2 must recheck. No private
+    body/scene reads, provider selection/spend, automatic claims/reconciliation,
+    scheduler or public UI/HTTP surface is included. This is a prerequisite within
+    the host entry, not a substitute lower-priority task or completion of hosted
+    orchestration. Readiness review precedes code; current source remains I3.
+    Later host owner selection/provider policy and pickup remain separate contracts.
+
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.

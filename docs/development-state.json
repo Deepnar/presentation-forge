@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Host/provider scheduling and orchestration \u2014 separate contract after I3",
+    "id": "V2-8I-4 \u2014 owner-scoped work discovery contract/readiness; implementation not started",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
+    "roadmapRef": "docs/ROADMAP.md#assistant-work-discovery"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
