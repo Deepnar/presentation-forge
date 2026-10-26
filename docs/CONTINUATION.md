@@ -32,26 +32,32 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current work
+## Current accepted slice — I3 complete
 
-The 2026-10-25 continuation authorizes the next bounded dependency,
-[V2-8I-3 authenticated durable submission](ROADMAP.md#assistant-turn-submission).
-[Its contract](V2-8I-3-EVAL.md) passed separate plan readiness review. Source/tests
-are committed at `2ba82cb`; source/helper readiness passed after the documented
-setup-failure cleanup correction. On 2026-10-26 fresh quiet qualification and owned
-preparation succeeded. All234primary files pass3048/3048, plus4distinct HTTP/native
-flows; all9gates, build/type/50cells and119-image inspection complete. Focused66
-and designated subsets overlap. Cancelled7A and classifier correction chronology
-are retained separately; full retry passed28/28. All6965historical files and5
-canonical outputs are restored. Finisher already ran once; never rerun it against
-restored outputs. Read HANDOFF before doing anything: independent acceptance and
-owned-backend cleanup remain pending. State retains accepted I2/unaccepted I3.
-No coordinator is active; do not rerun preparation or create a competing service.
-Prior admission-only45samples/677.38seconds remain historical; no model calls or
-inference ran. The existing reviewer must complete exact-source review and its
-DB checks before actual0catalog/exact-ID cleanup and acceptance attachment.
+[V2-8I-3 authenticated durable submission](ROADMAP.md#assistant-turn-submission)
+is independently accepted at source `2ba82cb5c321c21d5648f577469f69e82cdcfb24` in
+[the exact-source decision](reviews/V2-8I-3-2ba82cb.json), from I2baseline58662ec.
+Read [the evaluation](V2-8I-3-EVAL.md), current HANDOFF and state. All234primary
+files pass3048/3048 plus4distinct native flows; focused66 and independent346+4
+are overlapping repeats. All9gates/build/type/50cells/119images complete; standing
+locale9pass/1fail remains separate. No product correction was needed in final run.
 
-## Current accepted slice and reproduction
+Historical6965files/221original PPTXs and5canonical outputs were restored;
+independent7306files/236PPTXs+5canonical originals still match. The finisher ran
+ONCE and the packet is frozen: never rerun it against restored originals. Exact
+owned cleanup saved/fsynced actual0catalog before single stop, then verified bounded
+and fresh independent absence/5544refusal, retaining first transient absent=false.
+No test/coordinator/service remains. No real API/local inference or interactive
+PowerPoint run occurred. Earlier admission/cancelled/classifier provenance and
+remaining visual/I/O limits are in the evaluation, not silently removed.
+
+Stop after I3 closeout; no dependent planning/implementation is authorized by
+acceptance. The next scope is only in the linked roadmap and requires its own
+contract/review gates. Do not recreate the removed backend or resume this completed
+coordinator. AGENTS is current and requires direct repository work, with no relay
+or model-provider allowlist.
+
+## Previous accepted slice — I2 historical reproduction
 
 **V2-8I-2 bounded explicit-turn worker** is independently accepted at source
 `58662ecc074f7cc29bf29a0dd410d581ffca0eef` in

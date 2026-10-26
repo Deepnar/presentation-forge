@@ -8902,7 +8902,7 @@ local inference. Only that separate transport correction is authorized; this aud
 | P0 — complete headless boundary | [Turn and approval ownership](#assistant-turn-approval-contract) | V2-8H independently accepted at22e7c97; durable bounded visible turns and atomic approval reuse the existing run queue. Hosted routes/UI remain in their own entry. |
 | P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | Connect accepted SearchProvider through canonical authority and preserve verifiable project-scoped citations; do not merely add a catalog name. |
 | P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
-| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 transport and I2 headless worker independently accepted; authenticated submission/scheduling and the visible Assistant still need separate contracts. |
+| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 transport and I2 headless worker independently accepted; authenticated submission is independently accepted at2ba82cb; host/provider scheduling and the visible Assistant still need separate contracts. |
 | P0 basic / P1 distributed | [Trace and spend admission](#assistant-trace-budget) | Make context/tool/instruction provenance observable, preserve unknown usage, and prevent parallel requests/retries bypassing account allowances. |
 | P0 pilot / P1 release | [Assistant qualification](#assistant-live-qualification) | Separate deterministic correctness from real-model usefulness, injection resistance, grounded claims and human slide quality. |
 | P2 vision; P0 honest quality gates | [Visual feedback](#assistant-visual-feedback) | Reuse deterministic checks and native renderers; qualify optional vision behind read-only revision-bound artifacts and bounded semantic proposals. |
@@ -9118,7 +9118,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-turn-submission"></a>
 
-  - [ ] **V2-8I-3 authenticated durable turn submission — current authorized slice.**
+  - [x] **V2-8I-3 authenticated durable turn submission — independently accepted.**
     The 2026-10-25 continuation starts the next dependency after accepted I2.
     [The concrete contract](V2-8I-3-EVAL.md) adds only owner-authenticated POST
     `/conversation/turns` over H submit, with matching-key replay, private bounded
@@ -9128,34 +9128,35 @@ local inference. Only that separate transport correction is authorized; this aud
     retention/owner policy. Existing unsupported `/submit` assertions stay intact.
     [Plan review](reviews/V2-8I-3-plan-a20ebad.json) is ready; its required UTF-8/
     identity-only parser clarification was committed before implementation.
-    Source/tests `2ba82cb` implement the boundary with exact byte/encoding, replay,
-    concurrent admission and both-protocol worker tests. All234primary files pass3048/3048 plus4distinct authenticated/native flows;
-    build/typecheck/50cells pass and all119images are inspected. Separate
-    [source/helper review](reviews/V2-8I-3-2ba82cb-source-harness.json) found no
-    material product blocker and required one native fixture setup-failure cleanup
-    correction. That correction is committed/hash-bound atd09b61c and its delta
-    was independently rechecked. The first admission-only attempt retained45samples/
-    677.38seconds with CPUpeak79.77% and no qualified sustained window. Its exact
-    owned sampler was stopped; zero test leaves were started/cancelled and no I3
-    backend/test/generator existed at that checkpoint. On 2026-10-26 fresh180.42s
-    qualification and exact owned PostgreSQL15.18 preparation succeeded, preserving
-    all6965historical files/221PPTXs plus5canonical outputs. The two-file focused
-    HTTP gate passed66/66,0fail/skip/cancelled; it overlaps primary scope. Nonbrowser
-    bulk passed2545/2545. First7A was watchdog-cancelled for critical disk activity,
-    with20passing and8uncompleted/unreported leaves; it is not a pass. Its raw
-    attempt is retained. A separate helper audit corrected permission-sensitive
-    blocked-task classification with per-thread PF_KTHREAD and conservative unknown
-    handling;10metadata-oracle checks pass, separately from product leaves. Full
-    browser retry followed separate helper readiness and fresh corrected180.41s
-    qualification; full7A passed28/28. Remaining234-file/native/build/type/benchmark/
-    visual execution stays in bounded serial isolation.
-    All9gates are now complete: bulk2545,serial208,PG295; focused66 and
-    designated23/19/47subsets overlap. Locale9pass/1standing failure remains
-    separate. All6965prior files/221PPTXs and5canonical outputs are restored;
-    15new original archives pass107part/365property native-ID audit. Maximum
-    canvas delta0.10291px;120slides opened1540ms. No product correction was needed.
-    Independent acceptance and exact-owned backend cleanup remain required.
-    Stop after I3 acceptance/cleanup.
+    Source/tests/governance `2ba82cb` are independently
+    [accepted](reviews/V2-8I-3-2ba82cb.json), against I2baseline58662ec and packet8666ab0.
+    All234primary files pass3048/3048 (bulk2545,serial208,PG295), plus4distinct
+    authenticated/native flows; focused66 and designated23/19/47subsets overlap.
+    All9gates/build/typecheck/50cells and119-image inspection pass. Independent
+    execution passed346primary+4native overlapping repeats/typecheck;25original
+    PPTXs pass177part/595nonvisual-property identity checks. Locale9pass/1standing
+    failure remains separate. No product correction was required by the final run.
+    All6965prior files/221PPTXs and5canonical outputs were restored; the independent
+    snapshot7306files/236PPTXs+5canonical originals remains hash-identical.
+    Maximum canvas delta0.10291px;120slides opened1540ms. Exact-owned cleanup saved/
+    fsynced actual0catalog before one stop; bounded/fresh independent absence and
+    5544refusal pass, retaining the transient first absent=false observation.
+    Initial admission-only45samples/677.38seconds admitted no tests. The disk-
+    cancelled first7A retains20passes/8unfinished/unreported; full28-case retry
+    passed. Native setup-failure teardown and PF_KTHREAD/unknown classification
+    helpers were narrowly corrected and separately reviewed;10metadata checks,
+    unchanged thresholds, raw old/new provenance and corrected180.41s requalification
+    are retained. Earlier flags remain unavailable, not reconstructed. Live models,
+    interactive PowerPoint and inherited responsive/SVG/I/O limits remain explicit.
+    Stop after I3; no dependent planning or implementation follows automatically.
+
+    > **Learned.** Durable authenticated ingress need not own provider execution.
+    > Route-specific byte/encoding admission must preserve smaller lifecycle limits,
+    > and matching replay must retain the domain service's identity/revision order.
+    > Exe-link visibility cannot prove a blocked task is a kernel thread; unknown
+    > metadata must block resource admission, and corrected classification cannot
+    > reconstruct old flags. Cancelled files and overlapping repeats need separate
+    > accounting. Reusable parser/resource/ownership lessons are in TRAPS.md.
 
     **Look-ahead.** This supplies durable authenticated ingress before host/provider
     scheduling. The host must resolve policy/credentials and reuse I2's stateless
@@ -9170,11 +9171,11 @@ local inference. Only that separate transport correction is authorized; this aud
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
   Existing-deck editing is the approved first capability. Agree the concrete
-  authenticated submission/scheduling contract and then the Assistant's editor
+  host/provider scheduling contract and then the Assistant's editor
   draft/save/proposal/cancel interaction before implementing each slice. Keep the
   current placeholder until that interface contract works. Existing read/decide/
-  cancel/clear routes and the headless worker reuse accepted H/B authority; a
-  future thin submit route must do the same. `agent-chat` already supplies CLI
+  cancel/clear routes and the headless worker reuse accepted H/B authority; the accepted
+  submit route also delegates to H. `agent-chat` already supplies CLI
   parity. Derive authority from the session and retain explicit generation,
   revision and decision bindings. Saved chat is not automatically provider context;
   agree that context policy separately if the surface promises continuity. Settle or explicitly

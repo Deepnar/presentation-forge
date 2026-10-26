@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "58662ecc074f7cc29bf29a0dd410d581ffca0eef",
+    "sha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8I-2-58662ec.json"
+    "source": "docs/reviews/V2-8I-3-2ba82cb.json"
   },
   "implementationHead": {
     "sha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
-    "note": "Exact I3 source2ba82cb passes3048/3048 primary leaves plus4distinct HTTP-submission/native flows; all9gates complete. Focused66 overlaps. Locale9/1 remains separate; cancelled first7A retained. Independent implementation acceptance pending."
+    "note": "I3 independently accepted at exact source2ba82cb. All234primary files3048/3048 plus4distinct native flows;9gates/build/type/50cells/119images complete. Independent346+4overlapping repeats passed. Exact-owned cleanup verified; locale9/1 and residual limits retained. Stop after I3."
   },
   "activeMilestone": {
     "id": "V2-8I-3",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8I-3-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8I-3-2ba82cb.json",
+    "accepted": true
   },
   "validation": [
     {

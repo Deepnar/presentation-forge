@@ -202,14 +202,14 @@ refusal were independently verified. There is no remaining I2 validation/review/
 cleanup blocker. [The current evaluation](V2-8I-2-EVAL.md) records exact evidence
 and limitations; dependent scope remains only in the linked roadmap entry.
 
-I3's first admission-only resource hold is historical. On 2026-10-26 fresh quiet
-qualification and exact owned preparation succeeded without relaxing thresholds;
-all9gates now pass, including3048primary leaves plus4distinct native flows and
-119-image inspection. The cancelled browser attempt was fully retried; classifier
-correction and legacy resource provenance remain explicit. [The evaluation](V2-8I-3-EVAL.md)
-records exact results and limits. Independent acceptance and exact-owned cleanup
-remain pending; no product regression or unavailable backend blocks validation.
-This does not reopen accepted I2 or authorize dependent work.
+I3's admission-only hold and cancelled first browser attempt are historical. Full
+validation passed all9gates/3048primary+4distinct native cases/119images, with actual
+PostgreSQL and unchanged quiet thresholds. Separate exact-source
+[ACCEPT](reviews/V2-8I-3-2ba82cb.json) accepts2ba82cb; exact-owned cleanup and fresh
+independent verification are complete. There is no remaining I3 validation/review/
+cleanup blocker. [The evaluation](V2-8I-3-EVAL.md) retains helper/resource chronology,
+standing locale and inherited limitations. Dependent scope remains gated in the
+roadmap; acceptance supplies no implementation/deployment authority.
 
 The active V2 task is recorded in `docs/development-state.json` and
 `docs/ROADMAP.md` §12. For V2-7A a quiet shared-machine

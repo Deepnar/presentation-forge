@@ -18,7 +18,7 @@ Source/tests are now committed at `2ba82cb5c321c21d5648f577469f69e82cdcfb24`.
 The [source manifest](v2-8i-3-evidence/source-manifest.json) binds seven changed
 source/test/governance files and the new validation helpers. Syntax/protocol checks
 passed at the initial checkpoint; resumed execution is recorded below.
-Full exact-source validation is complete; independent implementation acceptance is pending.
+Full exact-source validation and separate implementation acceptance are complete.
 The [separate source/helper review](reviews/V2-8I-3-2ba82cb-source-harness.json)
 found no material product blocker. Its required native fixture setup-failure
 cleanup correction was committed at `d09b61c`, with old/new helper hashes in
@@ -27,13 +27,14 @@ reviewer subsequently checked the exact delta and confirmed readiness, without
 executing tests or issuing implementation acceptance. Quiet-window qualification
 did not admit execution; the admission-only attempt is closed below.
 
-## Current result — validated, pending independent acceptance
+## Current result — independently accepted
 
 Implementation source/tests/governance remain exact `2ba82cb`; there is no working
-source delta. All nine required gates pass. Root recommends acceptance of this
-bounded submission boundary, subject to the separate exact-source decision. The
-accepted baseline remains I2 until that decision is attached. No product regression
-was found or product correction required in the final run. Validation-helper
+source delta. All nine required gates pass. Separate
+[ACCEPT](reviews/V2-8I-3-2ba82cb.json), committed at3a955a6, accepts this exact
+source against I2baseline58662ec after reviewing packet8666ab0 and actual cleanup.
+The state now attaches that decision. No product regression was found or product
+correction required in the final run. Validation-helper
 corrections and the cancelled attempt are retained below.
 
 | Execution | Pass | Fail | Skip | Cancelled | Unexecuted |
@@ -57,8 +58,10 @@ and typecheck exit0; canonical benchmark completes all50cells (compiler/ZIP478ms
 All119 current images were inspected and hash-verified;15exact original PPTXs
 passed107part/365nonvisual-property identity checks without duplicate per-part IDs.
 All6965prior evidence files/221original PPTXs and5canonical outputs were restored
-and hash-verified; no archive was reconstructed. The owned backend is still live
-solely for independent checks, then exact-ID cleanup after DB-slot release.
+and hash-verified; no archive was reconstructed. After the independent DB-slot release, actual0catalog was saved/fsynced before
+one exact-ID stop. The first observation retained absent=false/portrefused, then
+bounded and fresh independent checks confirmed exactIDabsent/5544refusal. All
+original cleanup records are retained; there was no secondstop or reconstruction.
 
 The120slide/120thumbnail deck opened in1540ms. Maximum measured canvas change across
 six chart/table observations is0.1029052734375px. Four local loopback/store samples
@@ -82,6 +85,15 @@ passed. Numeric quiet thresholds and assertions were never weakened. All48final
 ordered jobs have verified fresh30second admissions; first2use legacy classifier
 provenance, remaining46use corrected version2. Historical flags remain unavailable,
 not retrospectively inferred.
+
+Independent execution passed346/346 primary repeats across14files,4/4 supplemental
+native repeats and typecheck, all overlapping the3052distinct cases. The reviewer
+inspected all119images with17packet/4fresh full-size views,32fresh raster matches
+and25original PPTX archives/177parts/595nonvisual properties. Its snapshot7306files/
+236PPTXs plus5canonical outputs remains hash-identical. See the
+[separate report](reviews/V2-8I-3-2ba82cb.md) for independently executed versus
+inspected coverage and residuals. No required case is unexecuted. Acceptance
+applies to I3 only. Stop here; no dependent planning/implementation is authorized.
 
 The following chronology retains earlier incomplete checkpoints; none overrides
 the current complete results above.

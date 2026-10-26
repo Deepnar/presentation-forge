@@ -1,44 +1,54 @@
-# Current handoff — I3 final independent review pending
+# Current handoff — I3 accepted; stop point reached
 
-Branch v2; accepted I2 baseline58662ecc074f7cc29bf29a0dd410d581ffca0eef.
-Unaccepted I3 runtime/test/governance source2ba82cb5c321c21d5648f577469f69e82cdcfb24
-is unchanged. Read AGENTS/protocol, state, ROADMAP active entry,
-[V2-8I-3-EVAL](V2-8I-3-EVAL.md) and [runbook](v2-8i-3-evidence/RUNBOOK.md).
-Stop after I3 acceptance/cleanup. No dependent implementation is authorized.
+Branch `v2`. Exact accepted source/tests/governance:
+`2ba82cb5c321c21d5648f577469f69e82cdcfb24`, against prior I2
+`58662ecc074f7cc29bf29a0dd410d581ffca0eef`. Separate reviewer
+`/root/turn_contract_review` issued [ACCEPT](reviews/V2-8I-3-2ba82cb.json), committed
+at3a955a6, on packet8666ab0. State attaches that actual decision. Read AGENTS,
+protocol/state, [evaluation](V2-8I-3-EVAL.md), ROADMAP active entry and TRAPS/BLOCKED.
+Stop after I3. No dependent planning/feature implementation is authorized.
 
-All48ordered jobs completed. Primary234files3048/3048 (bulk2545,serial208,PG295),
-plus4distinct authenticated HTTP-submission/native both-store/both-protocol cases.
-Focused66 and designatedPG23/fault19/combinedprocess47 overlap primary scope.
-Build/typecheck/50benchmarkcells pass; all119images inspected/hash-verified.
-15original new native archives pass107part/365nonvisual-property identity checks.
-No product regression/correction occurred. Locale9pass/1standingfail remains
-separate. All9gates pass; accepted=false/review=pending until actual decision.
+I3 adds owner-authenticated POST `/api/v2/projects/:id/conversation/turns` over H
+submit. Matching retries return the persisted turn; private parser/revision/owner
+refusals retain existing authority. No provider dispatch, automatic approval, new
+queue or scene/history write occurs on submission. The visible Assistant remains
+at its roadmap boundary. Direct repository workflow is current in AGENTS; there
+is no Hermes/opencode relay or model-provider allowlist.
 
-All6965historical files/221original PPTXs and5canonical output originals are
-restored/hash-verified. Finisher already ran ONCE. Do not rerun it against restored
-outputs or execute old helpers. Original archives are retained under this I3
-namespace, including ignored PPTXs which must be force-staged explicitly.
-No coordinator/test/generator is active at this checkpoint.
+All48ordered jobs finished:234disjoint primary files3048/3048 (bulk2545,serial208,
+PG295), plus4distinct authenticated HTTP-submission/native both-store/both-protocol
+flows. Fail/skip/cancelled/unexecuted required cases:0. Focused66, designatedPG23/
+fault19/combinedprocess47 and independent346primary+4native repeats overlap. Build/
+typecheck/50cells pass.119packet images inspected/hash-verified; independent review
+repeated typecheck, viewed all119 plus17packet/4fresh full-size views and audited
+25original PPTXs/177parts/595nonvisual properties without per-part duplicate IDs.
+Locale remains separate9pass/1standingfailure, no waiver or green relabeling.
+No product regression/correction was required in the final run.
 
-First admission-only attempt45samples/677.38s admitted no test. First7A was
-resource-cancelled after20passes/8unfinished/unreported; full retry28/28passed.
-All raw chronology remains. Helper6504064 corrected permission-sensitive blocked
-thread classification with positive PF_KTHREAD and conservative unknown handling;
-10metadata checks/separate review and fresh180.41s qualification preceded retry.
-Numeric thresholds/assertions unchanged. First2final job admissions retain legacy
-classifier provenance; remaining46are corrected. No historical flags reconstructed.
+Root restored/hash-verified6965historical files/221original PPTXs+5canonical outputs;
+independent snapshot7306files/236PPTXs+5canonical originals still matches. Fresh
+originals are committed, including ignored PPTXs. Finisher already ran ONCE;
+packet evidence is frozen. Never rerun it against restored canonical originals,
+reconstruct archives or execute old helpers.
 
-Exact owned PostgreSQL15.18 is LIVE for independent reviewer checks only:
-dc1f24756ec8094a5cd356ce1626f3db18a25d74fe72561d9f938129d2105cd0,
-forge-v28i3-validation, loopback5544, pinned image/1CPU/512MiB/tmpfs192MiB.
-Never recreate/replace it, rerun preparation or use another project's DB.
-Root is preparing the final packet for existing reviewer/turn_contract_review.
-After explicit DB-slot release, root must save/fsync ACTUAL0projectDB catalog
-before single exact-ID stop, bounded absence/5544refusal and independent read-only
-cleanup verification. Only the reviewer can issue exact-source ACCEPT/HOLD.
+Exact owned PostgreSQL dc1f24756ec8094a5cd356ce1626f3db18a25d74fe72561d9f938129d2105cd0
+was removed AFTER independent DB/TEST-slot release. Actual0catalog was saved/fsynced
+before one exact-ID stop. First post-stop absent=false/portrefused is retained;
+bounded and fresh independent exact-IDabsence/matchingIDs[]/5544refusal pass.
+No further stop, replacement or reconstructed count. All DB/TEST/GIT slots released;
+no coordinator/test/helper/owned service remains. Do not recreate or resume it.
 
-Native/visual limitations and exact performance live in the evaluation: no live
-model API/local inference or interactive PowerPoint session; inherited narrow
-canvas/overflow, SVG run/chart differences and unresolved global I/O provenance.
-No deployment/migration/paid infrastructure. Original .agents/ and both untracked
-master/architecture prompt files remain intact.
+Initial admission-only45samples/677.38s admitted no test. First7A disk-cancelled
+file has20passes/8unfinished-unreported and unavailable leaf cancellation totals;
+full28-case retry passed. Helper teardown/PF_KTHREAD corrections and10metadata
+checks are reviewed, thresholds/assertions unchanged. Two final admissions retain
+legacy classifier provenance;46corrected admissions plus8independent admissions
+are recorded. Historical flags remain unavailable. No live model API/local inference
+ran. Local measurements:120slides opened1540ms; maxcanvas0.10291px; benchmark478ms.
+Inherited narrow partial canvas/overflow, SVG run/chart differences, unresolved I/O
+provenance and unexecuted interactive PowerPoint/live quality remain limitations.
+
+The next scope exists only in [the roadmap](ROADMAP.md#assistant-surface-integration)
+and needs its own concrete contract and gates. No deployment/migration/paid infra.
+Original untracked `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
+`PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` are preserved.

@@ -2793,6 +2793,7 @@ Parser/URI/backend refusals remain fixed private JSON; H busy, conflicting reque
 and storage admission map to409. No provider, queue, scene or history authority is
 added; existing CLI submission remains the headless equivalent.
 
-Source `2ba82cb` is implemented and behaviorally validated; independent
-acceptance is pending in [the I3 evaluation](V2-8I-3-EVAL.md). It leaves the visible
+Source `2ba82cb` is implemented, behaviorally validated and independently
+[accepted](reviews/V2-8I-3-2ba82cb.json); exact evidence and limits are in
+[the I3 evaluation](V2-8I-3-EVAL.md). It leaves the visible
 Assistant and host execution policy at their roadmap boundaries.
