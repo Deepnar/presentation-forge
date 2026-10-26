@@ -1,0 +1,34 @@
+✔ SQLite discovery CLI: separate processes resume filtered pagination without writes or hidden polling (925.109594ms)
+✔ SQLite discovery CLI: omitting owner enumerates only explicit null-owner projects (490.805475ms)
+✔ SQLite discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch (2136.509642ms)
+✔ SQLite discovery CLI: corrupt operational metadata produces no partial output or private echo (206.474453ms)
+✖ SQLite discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid (209.078098ms)
+✔ SQLite discovery CLI: approved hints require explicit canonical work and replays preserve one edit (902.847973ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4874.071941
+
+✖ failing tests:
+
+test at test/v2-turn-discovery-process-contract.js:40:33
+✖ SQLite discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid (209.078098ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-turn-discovery-process-contract.js:95:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

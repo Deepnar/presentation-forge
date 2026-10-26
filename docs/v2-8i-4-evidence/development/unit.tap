@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: discovery rejects authority, unsafe values and invalid identifiers before backend I/O
+ok 1 - discovery rejects authority, unsafe values and invalid identifiers before backend I/O
+  ---
+  duration_ms: 2.429116
+  type: 'test'
+  ...
+# Subtest: discovery snapshots owner and nested cursor before its first await
+ok 2 - discovery snapshots owner and nested cursor before its first await
+  ---
+  duration_ms: 1.346238
+  type: 'test'
+  ...
+# Subtest: empty filtered pages progress by scanned rows, without treating candidates as a snapshot
+ok 3 - empty filtered pages progress by scanned rows, without treating candidates as a snapshot
+  ---
+  duration_ms: 0.585809
+  type: 'test'
+  ...
+# Subtest: metadata hints preserve expired preparation, live leases and approved turns without claiming work
+ok 4 - metadata hints preserve expired preparation, live leases and approved turns without claiming work
+  ---
+  duration_ms: 0.484998
+  type: 'test'
+  ...
+# Subtest: bytewise traversal handles supplementary Unicode independently of UTF-16 sort order
+ok 5 - bytewise traversal handles supplementary Unicode independently of UTF-16 sort order
+  ---
+  duration_ms: 0.445689
+  type: 'test'
+  ...
+# Subtest: malformed metadata and unconsumable generation refuse privately without partial results
+ok 6 - malformed metadata and unconsumable generation refuse privately without partial results
+  ---
+  duration_ms: 1.145263
+  type: 'test'
+  ...
+# Subtest: backend accessors, excess rows, duplicates and ordering errors cannot escape the page contract
+ok 7 - backend accessors, excess rows, duplicates and ordering errors cannot escape the page contract
+  ---
+  duration_ms: 0.618815
+  type: 'test'
+  ...
+# Subtest: complete result remains within its UTF-8 ceiling for fifty heavily escaped hints
+ok 8 - complete result remains within its UTF-8 ceiling for fifty heavily escaped hints
+  ---
+  duration_ms: 3.032181
+  type: 'test'
+  ...
+# Subtest: unexpected backend exceptions retain fixed private failure while known storage codes survive
+ok 9 - unexpected backend exceptions retain fixed private failure while known storage codes survive
+  ---
+  duration_ms: 0.304607
+  type: 'test'
+  ...
+# Subtest: query parameters carry owner/cursor values and every selected text has a SQL byte guard
+ok 10 - query parameters carry owner/cursor values and every selected text has a SQL byte guard
+  ---
+  duration_ms: 0.377076
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 183.129544

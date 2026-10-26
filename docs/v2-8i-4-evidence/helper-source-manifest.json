@@ -1,0 +1,61 @@
+{
+  "implementationSha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
+  "files": [
+    {
+      "path": "docs/v2-8i-4-evidence/assemble-results.py",
+      "sha256": "3364ae89d9a2feae0c7ae26b2749e7ae99c6e7bea37d12034eab8501b81ae94c"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/assess-resources.py",
+      "sha256": "10f405886e1b6043737b17d745e47b423fcf742d7e69b8d23aff0dd8a3ddb0cc"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/cleanup-owned.py",
+      "sha256": "d961440cbf134e650bec9e068975ec47f230e56129f1be5d025ece2faa032131"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/finish-evidence.py",
+      "sha256": "6cf7e5e3cb67c7f337b7acf3bf7616c59a12ca43a79bc261e97af06dcba1f7d7"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/headless-check.mjs",
+      "sha256": "0ade01e87bd204ff4bb67f546a776e4bf7bad765408b3c778c07c1c0576c6086"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/http-native.mjs",
+      "sha256": "b74132e7840d1ffc4b607901065daed362b2d251fa03eae6160d28d1d8b76417"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/inspect-native-ids.mjs",
+      "sha256": "2d022cb4cb064d93cfa3ff4e100e938eeee16d4e793bfa6bdc8ea36ebcc301be"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/native-review.mjs",
+      "sha256": "a6a190489f2dea16dbb81d44547c0e66efd8cac541e9a628815e1f6bc855a40d"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/prepare-full-validation.py",
+      "sha256": "12c2f1a9420788248513b3a011d0fac4797faa399843b9372b5f9f1644260e32"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/quiet_window.py",
+      "sha256": "cb59addd7c0a82c702ff660929b36304e524ba9dddf64a07e75b7fd8e4b92355"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/run-validation.py",
+      "sha256": "f09463342069246a72e879dda155e8d455867770b6e87667705d5b1d79f77170"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/shell-native.mjs",
+      "sha256": "373fadafc2a36d9e4d29b35b8824121c38485208286010628774206339ffdee3"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/validation-plan.json",
+      "sha256": "35e8b587a1c3a1fcee2b4646542f36409f8c0f90e5ef41c284bb9bd8bf98af73"
+    },
+    {
+      "path": "docs/v2-8i-4-evidence/verify-owned-cleanup.py",
+      "sha256": "c87f9bed340d5afec5e2ddab27de15818f73533b4cdee1ddb275a40568c7b6cd"
+    }
+  ]
+}

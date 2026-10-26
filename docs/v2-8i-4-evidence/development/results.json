@@ -1,0 +1,37 @@
+{
+  "phase": "lightweight development probes; not full I4 gates",
+  "unit": {
+    "source": "9ec660296b6162c49db8f53d82d68488d98cfd3b",
+    "pass": 10,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "sqlite": {
+    "source": "9ec660296b6162c49db8f53d82d68488d98cfd3b",
+    "delta": "actual-store test files then untracked plus CLI indentation; no exercised behavior delta",
+    "pass": 13,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "cliBeforeCorrection": {
+    "source": "07d24dd",
+    "delta": "CLI indentation only",
+    "pass": 5,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0,
+    "classification": "product regression: malformed UTF-8 replaced before identifier validation"
+  },
+  "cliAfterCorrection": {
+    "source": "1c8388168c59574675ac7ec300dc9d4f449bc2e5",
+    "delta": "tested working-tree bytes subsequently committed unchanged",
+    "pass": 6,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "postgresql": "unexecuted; no owned I4 backend created",
+  "liveProviderOrLocalInference": false
+}

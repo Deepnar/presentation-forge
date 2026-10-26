@@ -1,0 +1,90 @@
+TAP version 13
+# Subtest: SQLite: empty discovery creates no chat, run, revision or accounting row
+ok 1 - SQLite: empty discovery creates no chat, run, revision or accounting row
+  ---
+  duration_ms: 30.87721
+  type: 'test'
+  ...
+# Subtest: SQLite: SQL owner predicates isolate null, case and Unicode identities before page limits
+ok 2 - SQLite: SQL owner predicates isolate null, case and Unicode identities before page limits
+  ---
+  duration_ms: 16.129664
+  type: 'test'
+  ...
+# Subtest: SQLite: keyset pagination progresses across empty filtered pages and multiple projects
+ok 3 - SQLite: keyset pagination progresses across empty filtered pages and multiple projects
+  ---
+  duration_ms: 11.702401
+  type: 'test'
+  ...
+# Subtest: SQLite: foreign, deleted and nonexistent cursor positions need no existence capability
+ok 4 - SQLite: foreign, deleted and nonexistent cursor positions need no existence capability
+  ---
+  duration_ms: 7.559073
+  type: 'test'
+  ...
+# Subtest: SQLite: Unicode cursor order matches binary database order for BMP and supplementary IDs
+ok 5 - SQLite: Unicode cursor order matches binary database order for BMP and supplementary IDs
+  ---
+  duration_ms: 7.059036
+  type: 'test'
+  ...
+# Subtest: SQLite: at-limit pages materialize at most51rows and preserve all stored bytes
+ok 6 - SQLite: at-limit pages materialize at most51rows and preserve all stored bytes
+  ---
+  duration_ms: 39.219481
+  type: 'test'
+  ...
+# {"sample":"128legitimate bounded turn records, one owner/project","pages":3,"scanned":128,"elapsedMs":4.862359999999967,"physicalWorkBoundClaimed":false}
+# {"queryPlan":[{"id":11,"parent":0,"notused":61,"detail":"SEARCH p USING INDEX idx_v2_projects_owner (owner=?)"},{"id":17,"parent":0,"notused":62,"detail":"SEARCH t USING INDEX idx_v2_agent_turn_project (project_id=?)"},{"id":23,"parent":0,"notused":47,"detail":"SEARCH h USING INDEX sqlite_autoindex_v2_agent_conversations_1 (project_id=?) LEFT-JOIN"},{"id":88,"parent":0,"notused":0,"detail":"USE TEMP B-TREE FOR ORDER BY"}],"noNewIndex":true}
+# Subtest: SQLite: oversized multibyte metadata and missing/mismatched headers refuse bounded private pages
+ok 7 - SQLite: oversized multibyte metadata and missing/mismatched headers refuse bounded private pages
+  ---
+  duration_ms: 6.870201
+  type: 'test'
+  ...
+# Subtest: SQLite: NUL-prefixed oversized SQLite TEXT and IDs never materialize unbounded
+ok 8 - SQLite: NUL-prefixed oversized SQLite TEXT and IDs never materialize unbounded
+  ---
+  duration_ms: 17.201815
+  type: 'test'
+  ...
+# Subtest: SQLite: private chat and project bodies are never loaded by discovery
+ok 9 - SQLite: private chat and project bodies are never loaded by discovery
+  ---
+  duration_ms: 24.122596
+  type: 'test'
+  ...
+# Subtest: SQLite: discovery never reconciles expired preparation or changes a live lease
+ok 10 - SQLite: discovery never reconciles expired preparation or changes a live lease
+  ---
+  duration_ms: 5.518111
+  type: 'test'
+  ...
+# Subtest: SQLite: discovered submissions are fenced by clear and ownership change before I2
+ok 11 - SQLite: discovered submissions are fenced by clear and ownership change before I2
+  ---
+  duration_ms: 10.696765
+  type: 'test'
+  ...
+# Subtest: SQLite: a human save fences a discovered preparation before any provider dispatch
+ok 12 - SQLite: a human save fences a discovered preparation before any provider dispatch
+  ---
+  duration_ms: 10.380797
+  type: 'test'
+  ...
+# Subtest: SQLite: discovered approved and terminal hints still use stored approval and canonical execution
+ok 13 - SQLite: discovered approved and terminal hints still use stored approval and canonical execution
+  ---
+  duration_ms: 60.615424
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 503.813168

@@ -1,0 +1,121 @@
+{
+  "implementationSha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
+  "acceptedBaseline": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "atUtc": "2026-10-26T12:30:17.370073+00:00",
+  "workingSourceDelta": [],
+  "sourcePathsCompared": [
+    "app",
+    "packages",
+    "src",
+    "test",
+    "tools",
+    "schema",
+    "themes",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json",
+    "docs/development-state.schema.json"
+  ],
+  "changedSourceFiles": [
+    {
+      "path": "docs/development-state.schema.json",
+      "sha256": "4fb7d44812dc6ec1e2d2d271f5bc9daf798ccc5d545562da92bea4d9dd505156",
+      "implementationBlob": "92ca78e0ed48f9a30b6da4e23e6d35bea156441b"
+    },
+    {
+      "path": "packages/agent/turn-discovery-input.ts",
+      "sha256": "3ad310d4540ff8e2bd50b659a11765200e66f3c9813d149ae21adf43cb7ab95c",
+      "implementationBlob": "ee7064f03e2578e077639ece35db71ce1fe525e5"
+    },
+    {
+      "path": "packages/agent/turn-discovery.ts",
+      "sha256": "64911a62e63578f04ebda40981bcc47ea9987fe212f2b68bcbb7c31b3d6abc64",
+      "implementationBlob": "a3de10cf22e097c113f733ca2184022ad0ed06c7"
+    },
+    {
+      "path": "packages/agent/turn-limits.ts",
+      "sha256": "ab4c199b016844c8f8915b395de5a103e4455b3d0dddf8c4c42fa3a6c4d52769",
+      "implementationBlob": "bb621ae63ee9fa06a4caecc6e47749ed90ecdcdd"
+    },
+    {
+      "path": "packages/agent/turn-state.ts",
+      "sha256": "673aac3b0e0526eaf52e0873ec6b301f20513c0fa37d6fa0761b2999e609c85b",
+      "implementationBlob": "7e12964df6ca1f5ddaafeedc964fdab38a9e1bb5"
+    },
+    {
+      "path": "src/agent/index.js",
+      "sha256": "b7e7e352845acca22ddc51d533b51c3609c9e3a549d4145511bc0230c1700bf3",
+      "implementationBlob": "4aa2f607279ab52e54139e7772974d009eaa08af"
+    },
+    {
+      "path": "src/agent/turn-cli.js",
+      "sha256": "bd634044a4efd428b90bf3c63fa08fa6a9b2a5e37bfd05f7908117263a01a004",
+      "implementationBlob": "1c09fd4780267707ee7dfe2df28d4c33d0368246"
+    },
+    {
+      "path": "src/projects/store-postgres.js",
+      "sha256": "97bced3170547bf697079c342f6e2fb64b5de4c41ef801d806c458f8e537ef1b",
+      "implementationBlob": "f5dfad4da0087018e41f07274901798464b4d050"
+    },
+    {
+      "path": "src/projects/store.js",
+      "sha256": "60531a1bbe5726836d47b4025d50d1552e043f6efa3769615e3a77093791c12a",
+      "implementationBlob": "cc6c98470f7f837290f72707d0834085024d4aa5"
+    },
+    {
+      "path": "src/projects/turn-discovery-query.js",
+      "sha256": "99118a1c0560470eacf7ebbc5b5e00e4de850392e4d6708c61198439f5b9d980",
+      "implementationBlob": "d7251324d1faf982b6ef04e5205279604a3ad1d2"
+    },
+    {
+      "path": "test/dev-protocol.test.js",
+      "sha256": "5b75c3ff4896b02393182e509e23b88a4be659f1928c6e9479177523df283ea6",
+      "implementationBlob": "8e9b6559501286b1a3cbc580ed78418c37518f1f"
+    },
+    {
+      "path": "test/v2-turn-discovery-8i.test.js",
+      "sha256": "90496423c65569f1c8f88503c02de952a18f435542d77541b7852e71f774ad13",
+      "implementationBlob": "132393fa04bede91d072387f6e724edfff9c73f9"
+    },
+    {
+      "path": "test/v2-turn-discovery-contract.js",
+      "sha256": "70f6c2b7fd9370f3b5f9a628e1e4e23a787076cf11bf9d009736770931930e46",
+      "implementationBlob": "b7693fc3ed9274d3c4639b84d427ef7f793ad4bc"
+    },
+    {
+      "path": "test/v2-turn-discovery-data.js",
+      "sha256": "d2d9910b22d2e2217821e5bbf9526eea285d491aea2cf986a2c3713c20eed5ed",
+      "implementationBlob": "9187d85a6d633526bb5ef2cb76bf3e0f066a1694"
+    },
+    {
+      "path": "test/v2-turn-discovery-fixture.js",
+      "sha256": "26e0a148dcd6335414d169919b09329f22731ac8a377b899f563090d689548d2",
+      "implementationBlob": "8eabc8f3d9f8913716d1e30fe4f5ec2011582832"
+    },
+    {
+      "path": "test/v2-turn-discovery-postgres-8i.test.js",
+      "sha256": "e6dbf25bc6fb314a05de02ded6d877fb8bc6886802391614bb709e639a118fce",
+      "implementationBlob": "1437beebe33601af19b4c7db5b5f1b5d3555f216"
+    },
+    {
+      "path": "test/v2-turn-discovery-process-8i.test.js",
+      "sha256": "5d048bc675bc3caa9e4c92ed16c79878b56481deffaa64e9ab07f9f727ce6eff",
+      "implementationBlob": "1cfcc7e8b8c8f8cb0c0f48f4446bb21ad56c8a37"
+    },
+    {
+      "path": "test/v2-turn-discovery-process-contract.js",
+      "sha256": "0853b190b22efa82b3a900644c46bb2522669a4f6a17e5a6c3ff08e1d43a71d6",
+      "implementationBlob": "e25ed43dc40be7509329dbe74fe56d2bcd6fc7f5"
+    },
+    {
+      "path": "test/v2-turn-discovery-sqlite-8i.test.js",
+      "sha256": "aeedfcfd16594bace95c58c03601ae3bd9517087df78b38b91fc7a0dea451a6e",
+      "implementationBlob": "1c20c0d33888435df52fd36009eb27d7ffd9dd50"
+    },
+    {
+      "path": "tools/dev-protocol-check.mjs",
+      "sha256": "74f6f9487cc618d41036f2b1f5d6296139ef157fb48dbd815c1d48d089d1b6f0",
+      "implementationBlob": "830e29750ab32f346b785e7ad78f2f2dd7e7f6bc"
+    }
+  ]
+}
