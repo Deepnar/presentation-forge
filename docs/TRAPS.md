@@ -2032,3 +2032,16 @@ work; initial admission also verifies every current original and the complete
 historical path set. A saved backend identity alone does not prove preservation
 finished. Resume may see regenerated originals but must still reject damaged
 backups. See the [I4 correction evidence](V2-8I-4-EVAL.md).
+
+## Text drivers can replace bytes before identity validation
+
+SQLite can store malformed UTF-8 inside TEXT. A driver that replaces invalid bytes
+with U+FFFD changes the identity before domain checks; a matching replacement
+character in valid JSON can then make corrupted metadata appear consistent. SQL
+byte caps alone do not prevent this. Select already capped BLOB values at a strict
+metadata boundary and fatal-decode every non-null field before exposing text rows.
+Retain SQL owner/order semantics and bounded invalid sentinels. Include actual
+stored-byte corruption probes, valid literal U+FFFD and leading-BOM controls;
+TextDecoder's default BOM handling can otherwise create a separate false refusal.
+CLI JSON files need the same explicit byte policy. I4's two fail-first oracles and
+BOM control exposed these distinct boundaries; decoded-string mocks missed them.
