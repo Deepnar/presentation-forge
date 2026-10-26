@@ -713,7 +713,15 @@ export async function readTurnMetadataPage(input) {
     const { RUN_DDL } = await import('../agent/schema.js');
     const db = ensureSchema();
     db.exec(RUN_DDL);
-    return db.prepare(sql).all(...params);
+    const rows = db.prepare(sql).all(...params);
+    // SQLite permits malformed TEXT; driver replacement decoding loses identity.
+    const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
+    try {
+      return rows.map(row => Object.fromEntries(Object.entries(row).map(([key, value]) =>
+        [key, value === null ? null : decoder.decode(value)])));
+    } catch {
+      throw Object.assign(new Error('Invalid discovery metadata.'), { code: 'invalid-document' });
+    }
   }).catch(error => { throw storageFailure(error); });
 }
 

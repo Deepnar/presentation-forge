@@ -8,7 +8,7 @@ export function turnDiscoveryQuery(input, dialect) {
   const parameter = value => { params.push(value); return pg ? `$${params.length}` : '?'; };
   const binary = value => `${value} COLLATE ${pg ? '"C"' : 'BINARY'}`;
   const size = value => pg ? `octet_length(${value})` : `length(CAST(${value} AS BLOB))`;
-  const bounded = (value, bytes, name) => `CASE WHEN ${size(value)} <= ${bytes} THEN ${value} ELSE NULL END AS ${name}`;
+  const bounded = (value, bytes, name) => `CASE WHEN ${size(value)} <= ${bytes} THEN ${pg ? value : `CAST(${value} AS BLOB)`} ELSE NULL END AS ${name}`;
   const owner = `${binary('p.owner')} ${pg ? 'IS NOT DISTINCT FROM' : 'IS'} ${parameter(request.owner)}`;
   let after = '';
   if (request.cursor) after = ` AND (${binary('p.id')} > ${parameter(request.cursor.projectId)} OR

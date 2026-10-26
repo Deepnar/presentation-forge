@@ -20,7 +20,7 @@ export function discoveryRecord(input: unknown, keys: string[]) {
 }
 export function discoveryIdentifier(value: unknown, maximum = 128): value is string {
   return typeof value === 'string' && value.trim().length > 0 && value.length <= maximum &&
-    !value.includes('\0') && new TextDecoder('utf-8', { fatal: true })
+    !value.includes('\0') && new TextDecoder('utf-8', { fatal: true, ignoreBOM: true })
       .decode(new TextEncoder().encode(value)) === value;
 }
 export function discoveryProjectId(value: unknown): value is string {
