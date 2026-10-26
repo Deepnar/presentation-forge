@@ -9186,7 +9186,10 @@ local inference. Only that separate transport correction is authorized; this aud
     A later actual SQLite malformed-byte oracle retired source175 partial execution;
     bounded BLOB/fatal decoding and valid BOM identity are narrowly corrected at
     source8378a20. All238files/nine gates must run fresh in corrected evidence; no
-    old partial pass transfers. Exact-source acceptance remains pending;
+    old partial pass transfers. Corrected freshfocus48/bulk2570 and9serial73 pass;
+    the5Kfile was resource-cancelled after7pass/1CDPtimeout/1unfinished at>98%CPU.
+    Its exact log is retained and an unchanged full-file quiet retry is required.
+    Exact-source acceptance remains pending;
     no PostgreSQL/full-validation result is inferred from development probes.
     Later host owner selection/provider policy and pickup remain separate contracts.
 

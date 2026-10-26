@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: layout gallery in real chrome
+    # Subtest: opens the chooser with blank, layout, and duplicate actions
+    ok 1 - opens the chooser with blank, layout, and duplicate actions
+      ---
+      duration_ms: 1547.222977
+      type: 'test'
+      ...
+    # Subtest: browses categories with truthful previews for all 15 templates
+    ok 2 - browses categories with truthful previews for all 15 templates
+      ---
+      duration_ms: 1689.187879
+      type: 'test'
+      ...
+    # Subtest: inserts a title layout and edits its heading
+    ok 3 - inserts a title layout and edits its heading
+      ---
+      duration_ms: 1675.788961
+      type: 'test'
+      ...
+    # Subtest: inserts a comparison layout and restyles a card
+    ok 4 - inserts a comparison layout and restyles a card
+      ---
+      duration_ms: 2195.804953
+      type: 'test'
+      ...
+    # Subtest: inserts a chart template and edits its values
+    ok 5 - inserts a chart template and edits its values
+      ---
+      duration_ms: 2211.283569
+      type: 'test'
+      ...
+    # Subtest: undoes and redoes a template insertion exactly
+    ok 6 - undoes and redoes a template insertion exactly
+      ---
+      duration_ms: 2109.747937
+      type: 'test'
+      ...
+    # Subtest: reorders a template slide with the filmstrip drag
+    ok 7 - reorders a template slide with the filmstrip drag
+      ---
+      duration_ms: 2182.750254
+      type: 'test'
+      ...
+    # Subtest: cancelling the gallery mutates nothing
+    not ok 8 - cancelling the gallery mutates nothing
+      ---
+      duration_ms: 40910.589949
+      type: 'test'
+      location: '/home/deepnar/Programs/presentations/test/v2-edit-chrome-5k.test.js:396:3'
+      failureType: 'testCodeFailure'
+      error: 'CDP Runtime.evaluate timed out'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        Timeout.<anonymous> (file:///home/deepnar/Programs/presentations/tools/chrome-shot.mjs:14:56)
+        listOnTimeout (node:internal/timers:605:17)
+        process.processTimers (node:internal/timers:541:7)
+      ...
+# Interrupted while running: test/v2-edit-chrome-5k.test.js at /home/deepnar/Programs/presentations/test/v2-edit-chrome-5k.test.js:1:1

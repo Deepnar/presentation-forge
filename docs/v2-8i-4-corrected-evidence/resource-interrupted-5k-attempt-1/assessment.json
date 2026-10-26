@@ -1,0 +1,102 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "file": "test/v2-edit-chrome-5k.test.js",
+  "fileSha256": "73dced862527b8c43c26784e287564a3aecd711831346e97fb394b2dea3fe958",
+  "supervisorExitCode": 130,
+  "reportedChildExitCode": 1,
+  "classification": "Environment-associated CDP timing failure plus guard cancellation; full unchanged-file quiet retry required before final product conclusion.",
+  "completedLeafPass": 7,
+  "completedLeafFail": 1,
+  "expectedLeafCases": 9,
+  "unfinishedLeafCases": 1,
+  "leafCancellationTotal": null,
+  "noFinalTapSummary": true,
+  "criticalCpuSamplesPercent": [
+    98.94575931685203,
+    99.95329629811711,
+    99.33790494206669
+  ],
+  "criticalReason": "Three consecutive CPU busy samples above85%; actual98.946%,99.953%,99.338%. No threshold/assertion change.",
+  "ownedBrowserPid458513AbsentOnFreshCheck": true,
+  "otherProcessesStopped": false,
+  "ownedBackendLeftRunning": true,
+  "sameSourceRetained": true,
+  "resumeOnlyAfterFreshQualification": true,
+  "records": [
+    {
+      "source": "out/v2-8i-4-corrected-validation/v2-edit-chrome-5k.test.log",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/v2-edit-chrome-5k.test.log",
+      "sha256": "f6348d92183d33478d542d8a4ba13be239606a8d504359a3a5ffd067e43102d9"
+    },
+    {
+      "source": "out/v2-8i-4-corrected-validation/interrupted.json",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/interrupted.json",
+      "sha256": "1990910b0da568af04fa92da9a3c7d3445f7321aaa266b1e0b471ab8cb86807e"
+    },
+    {
+      "source": "out/v2-8i-4-corrected-validation/coordinator.json",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/coordinator.json",
+      "sha256": "a1f7d616c80497fcaeee38676e84d31857aff360d2b42a480033728b0e7a335e"
+    },
+    {
+      "source": "out/v2-8i-4-corrected-validation/coordinator.log",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/coordinator.log",
+      "sha256": "f665fb39e575ea8269f5d833d9e73d5892de133ea28fa0fe6d0297c79e2acf65"
+    },
+    {
+      "source": "out/v2-8i-4-corrected-validation/coordinator-terminal.log",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/coordinator-terminal.log",
+      "sha256": "2e874dca8e47ed912971556f074f1f7a2cf6dde25e6602251619d8c2b753e4bc"
+    },
+    {
+      "source": "out/v2-8i-4-corrected-validation/resource-window.jsonl",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/resource-window.jsonl",
+      "sha256": "0c1ef08c11ba9f0cdb02b52f97c91a2efc3a87864ed29466ce7f413e4a982072"
+    },
+    {
+      "source": "out/v2-8i-4-corrected-validation/sustained-window.json",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/sustained-window.json",
+      "sha256": "4b50764da689ecb4630d6e62c2a661207ff61d8e8e661499ce685341636ef651"
+    },
+    {
+      "source": "out/v2-8i-4-corrected-validation/qualification.log",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/qualification.log",
+      "sha256": "15f169ddf5a03f4694b1a5b2ed74e04088ae215e46257b9f5363c7f390daa15f"
+    },
+    {
+      "source": "out/layout-gallery/chooser.png",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/partial-generated/out/layout-gallery/chooser.png",
+      "sha256": "6b9962606bb252f6f9e3e39370a529ff351af6de4d1230d31d04f0ec4cb82667"
+    },
+    {
+      "source": "out/layout-gallery/gallery-all.png",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/partial-generated/out/layout-gallery/gallery-all.png",
+      "sha256": "497c1458c40334d952797fda4ee96dc17a8932e908b152df557e2e25567336c9"
+    },
+    {
+      "source": "out/layout-gallery/gallery-data.png",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/partial-generated/out/layout-gallery/gallery-data.png",
+      "sha256": "31342c0fbe1315740906446d43288190190d20e794d5a5765e23038004eaf8ba"
+    },
+    {
+      "source": "out/layout-gallery/title-edited.png",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/partial-generated/out/layout-gallery/title-edited.png",
+      "sha256": "9b473ec3b3051ce3dca056282252e6a16dd6a8d6b46061f9a0a45d8a18e772c9"
+    },
+    {
+      "source": "out/layout-gallery/chart-edited.png",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/partial-generated/out/layout-gallery/chart-edited.png",
+      "sha256": "ad5e8ecabf41439ee706834bc039110da99bff19553485015c9afc441d6e6bc8"
+    },
+    {
+      "source": "out/layout-gallery/reordered.png",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/partial-generated/out/layout-gallery/reordered.png",
+      "sha256": "952cbec1cc62003d1fed9f125b64423f0dce4f4945778421d095eb47f6397a90"
+    },
+    {
+      "source": "out/layout-gallery/comparison-styled.png",
+      "file": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/partial-generated/out/layout-gallery/comparison-styled.png",
+      "sha256": "816a756b8d5e149d62e226873288612f8344d16f096ba89463346dfa502868ec"
+    }
+  ]
+}

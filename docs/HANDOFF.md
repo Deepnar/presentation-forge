@@ -7,10 +7,14 @@ Read AGENTS, state, [I4 evaluation](V2-8I-4-EVAL.md) and
 remaining7gates are pending. independent source/helper delta is READY for8378a20/packetaa33b22
 (17helper/20source/147retired artifact hashes verified). Fresh180.561s qualification/preparation passed;7659historical files/253PPTXs
 plus5canonical originals were snapshotted/verified. Full corrected coordinator is
-ACTIVE underroot (out/v2-8i-4-corrected-validation/coordinator.json/log; terminal
-log coordinator-terminal.log). It runs all50finite jobs, each bounded/serial with
-fresh resource admission. Browser7A is active. Do not start another coordinator
-or touch the database slot. Root owns Git/test/database/Git slots. Reuse existing `/root/turn_contract_review` at
+STOPPED after critical CPU contention during v2-edit-chrome-5k. Nine complete
+serial files73/73 and fresh focus48/bulk2570 remain acknowledged. The cancelled
+5K attempt has7pass/1CDPtimeout/1unfinished, no finalTAPsummary; root archived it
+under corrected-evidence/resource-interrupted-5k-attempt-1. It is not a pass.
+No test/coordinator/browser remains active; exact owned backend remains live.
+New180s quiet requalification is ACTIVE underroot, then guarded --resume must retain the
+unacknowledged log and rerun the entire unchanged5K file. Root owns allslots.
+Reuse existing `/root/turn_contract_review` at
 high effort only; no extra agents.
 
 Source175's35jobs/231primary files2899passes plus47focused overlaps are RETIRED,

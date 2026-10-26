@@ -1,0 +1,6 @@
+{
+  "name": "v2-edit-chrome-5k.test",
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "exitCode": 1,
+  "classification": "cancelled coordinator/job; incomplete execution is not a pass"
+}
