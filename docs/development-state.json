@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
-    "note": "Exact I3 source2ba82cb passes focusedHTTP66/66, bulk2545/2545 and all26serial files208/208. PostgreSQL/native/build/type/benchmark execution and independent acceptance remain pending."
+    "note": "Exact I3 source2ba82cb passes3048/3048 primary leaves across all234files and production build. Focused66 overlaps. Additional native flows/typecheck/benchmark/visual and independent acceptance remain pending."
   },
   "activeMilestone": {
     "id": "V2-8I-3",
@@ -41,21 +41,21 @@
     },
     {
       "id": "postgres-contract",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8i-3-evidence/postgres-contract.json",
+      "reason": "Complete current-source execution passed on the actual owned backend where applicable; no fail/skip/cancelled. Subset counts overlap the primary inventory."
     },
     {
       "id": "cross-process-faults",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8i-3-evidence/cross-process-faults.json",
+      "reason": "Complete current-source execution passed on the actual owned backend where applicable; no fail/skip/cancelled. Subset counts overlap the primary inventory."
     },
     {
       "id": "production-build",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8i-3-evidence/production-build.json",
+      "reason": "Complete current-source execution passed on the actual owned backend where applicable; no fail/skip/cancelled. Subset counts overlap the primary inventory."
     },
     {
       "id": "typecheck",

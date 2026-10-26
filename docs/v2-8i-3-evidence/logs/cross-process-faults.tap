@@ -1,0 +1,165 @@
+TAP version 13
+# Subtest: v2-6c two processes, one postgres
+    # Subtest: same-base saves across instances yield one 200 and one 409
+    ok 1 - same-base saves across instances yield one 200 and one 409
+      ---
+      duration_ms: 158.426147
+      type: 'test'
+      ...
+    # Subtest: save versus rename across instances keeps one winner
+    ok 2 - save versus rename across instances keeps one winner
+      ---
+      duration_ms: 14.790194
+      type: 'test'
+      ...
+    # Subtest: save versus restore across instances keeps one winner
+    ok 3 - save versus restore across instances keeps one winner
+      ---
+      duration_ms: 16.426745
+      type: 'test'
+      ...
+    # Subtest: restore versus restore across instances keeps one winner
+    ok 4 - restore versus restore across instances keeps one winner
+      ---
+      duration_ms: 13.203337
+      type: 'test'
+      ...
+    # Subtest: rename versus rename across instances keeps one winner
+    ok 5 - rename versus rename across instances keeps one winner
+      ---
+      duration_ms: 9.821131
+      type: 'test'
+      ...
+    # Subtest: delete during a concurrent save leaves exactly one consistent outcome
+    ok 6 - delete during a concurrent save leaves exactly one consistent outcome
+      ---
+      duration_ms: 7.765858
+      type: 'test'
+      ...
+    # Subtest: history initialization racing with saves yields one baseline
+    ok 7 - history initialization racing with saves yields one baseline
+      ---
+      duration_ms: 23.647644
+      type: 'test'
+      ...
+    # Subtest: concurrent mixed mutations keep prune accounting exact
+    ok 8 - concurrent mixed mutations keep prune accounting exact
+      ---
+      duration_ms: 15.365756
+      type: 'test'
+      ...
+    # Subtest: same owner email works across instances; cross-owner denied
+    ok 9 - same owner email works across instances; cross-owner denied
+      ---
+      duration_ms: 26.957012
+      type: 'test'
+      ...
+    # Subtest: rapid creates mint distinct ids across instances
+    ok 10 - rapid creates mint distinct ids across instances
+      ---
+      duration_ms: 41.351991
+      type: 'test'
+      ...
+    1..10
+ok 1 - v2-6c two processes, one postgres
+  ---
+  duration_ms: 1127.884849
+  type: 'suite'
+  ...
+# Subtest: v2-6c two processes, one sqlite file
+    # Subtest: same-base saves across sqlite processes yield one 200 and one 409
+    ok 1 - same-base saves across sqlite processes yield one 200 and one 409
+      ---
+      duration_ms: 64.960777
+      type: 'test'
+      ...
+    1..1
+ok 2 - v2-6c two processes, one sqlite file
+  ---
+  duration_ms: 1568.153638
+  type: 'suite'
+  ...
+1..2
+# tests 11
+# suites 2
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3658.487783
+# forge-test-file "test/v2-projects-6c-concurrency.test.js"
+
+TAP version 13
+# Subtest: v2-6c transaction faults
+    # Subtest: terminated backend mid-transaction rolls back with nothing saved
+    ok 1 - terminated backend mid-transaction rolls back with nothing saved
+      ---
+      duration_ms: 190.853368
+      type: 'test'
+      ...
+    # Subtest: history-insert failure rolls back the project write
+    ok 2 - history-insert failure rolls back the project write
+      ---
+      duration_ms: 15.521803
+      type: 'test'
+      ...
+    # Subtest: prune failure rolls back the whole save
+    ok 3 - prune failure rolls back the whole save
+      ---
+      duration_ms: 84.679287
+      type: 'test'
+      ...
+    # Subtest: unreachable database reports storage-unavailable and never saved
+    ok 4 - unreachable database reports storage-unavailable and never saved
+      ---
+      duration_ms: 2.079412
+      type: 'test'
+      ...
+    # Subtest: pool exhaustion fails loudly instead of hanging or half-writing
+    ok 5 - pool exhaustion fails loudly instead of hanging or half-writing
+      ---
+      duration_ms: 5528.154939
+      type: 'test'
+      ...
+    # Subtest: killed writer processes leave consistent history
+    ok 6 - killed writer processes leave consistent history
+      ---
+      duration_ms: 2019.947612
+      type: 'test'
+      ...
+    1..6
+ok 1 - v2-6c transaction faults
+  ---
+  duration_ms: 7859.438994
+  type: 'suite'
+  ...
+# Subtest: v2-6c misconfiguration over HTTP
+    # Subtest: postgres selected without a URL answers 503 honestly, never sqlite
+    ok 1 - postgres selected without a URL answers 503 honestly, never sqlite
+      ---
+      duration_ms: 388.859431
+      type: 'test'
+      ...
+    # Subtest: aborted HTTP saves leave consistent history
+    ok 2 - aborted HTTP saves leave consistent history
+      ---
+      duration_ms: 2761.043447
+      type: 'test'
+      ...
+    1..2
+ok 2 - v2-6c misconfiguration over HTTP
+  ---
+  duration_ms: 3950.7311
+  type: 'suite'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11983.925525
+# forge-test-file "test/v2-projects-6c-faults.test.js"

@@ -1,0 +1,20 @@
+{
+  "id": "cross-process-faults",
+  "kind": "tests",
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "command": "python3 docs/v2-8i-3-evidence/run-validation.py; exact isolated commands retained in coordinator records",
+  "log": "docs/v2-8i-3-evidence/logs/cross-process-faults.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 19,
+    "pass": 19,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-projects-6c-concurrency.test.js",
+    "test/v2-projects-6c-faults.test.js"
+  ],
+  "backend": "Actual owned isolated PostgreSQL15.18; designated19-case gate"
+}

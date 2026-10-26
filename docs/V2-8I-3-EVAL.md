@@ -225,3 +225,10 @@ The complete26-file serial set subsequently passed208/208,0fail/skip/cancelled,
 with fresh per-job admission and no overlapping builds. The earlier19-file
 checkpoint and cancelled7A attempt remain chronological evidence. PostgreSQL and
 subsequent gates are still pending.
+
+The complete primary inventory subsequently passed3048/3048 across234files:
+196bulk2545,26serial208,12PostgreSQL295;0fail/skip/cancelled. Designated
+PostgreSQL23 and concurrency/fault19 overlap those cases. Production build passed.
+[The primary checkpoint](v2-8i-3-evidence/primary-matrix-checkpoint.json) preserves
+exact commands/counts; additional native/type/benchmark/visual gates and review
+remain pending.

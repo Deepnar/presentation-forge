@@ -25,18 +25,23 @@ blocks admission. Ten metadata-oracle checks pass, outside product totals. Numer
 thresholds and product/tests2ba82cb are unchanged. The existing reviewer separately
 confirmed readiness of6504064, without acceptance. Fresh corrected qualification
 passed180.41s/12samples, with meanCPU6.73% and NVMe1.16%. The full7A retry passed
-28/28. Serial progress is147/147 across19of26files, preserved in
-serial-progress-19-files; the serial gate is still incomplete. One coordinator
-(exec session43127 at this checkpoint) is running the final seven browser files
-and then the first PostgreSQL file, in a bounded eight-job batch. Inspect processes/coordinator logs; only after it
-yields, resume one coordinator with:
+28/28. All26serial files are complete208/208,0fail/skip/cancelled. Earlier partial
+checkpoint147/147 and cancelled7A remain retained, not current gate statuses.
+All234primary files have completed3048/3048 leaves: bulk2545,serial208,PG295,
+0fail/skip/cancelled. Designated PostgreSQL23/fault19 and focusedHTTP66 overlap.
+Production build and typecheck passed; type evidence will be assembled with the
+remaining jobs. Root inspected all76browser captures on13contact sheets plus four
+full-size risk cases; final manifest hash matching and native inspection are pending.
 
-PYTHONDONTWRITEBYTECODE=1 python3 -u docs/v2-8i-3-evidence/run-validation.py --resume --max-new-jobs 3
+One coordinator (exec session65511 at this checkpoint) is active for benchmark,
+additional flows, separate locale and then native jobs. Inspect actual processes
+and coordinator.json/log before resuming; never overlap coordinators/builds. Only
+after a clean yield, resume with:
 
-All26serial files are complete208/208,0fail/skip/cancelled; raw files and serial-browser.json
-are preserved. The coordinator now moves to PostgreSQL. Bulk2545 and focused66 remain
-complete; remaining PostgreSQL/native/build/type/benchmark and visual gates are pending.
-Never overlap coordinators/builds; inspect actual processes and coordinator log first.
+PYTHONDONTWRITEBYTECODE=1 python3 -u docs/v2-8i-3-evidence/run-validation.py --resume --max-new-jobs 8
+
+Remaining gates are benchmark/visual plus final evidence assembly and independent
+acceptance. No source correction was required by this complete primary run.
 
 Owned instance: dc1f24756ec8094a5cd356ce1626f3db18a25d74fe72561d9f938129d2105cd0,
 forge-v28i3-validation, loopback5544, pinned image/1CPU/512MiB/tmpfs192MiB in the

@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: cold cross-process creation races initialize safely and commit one project/history/receipt
+ok 1 - cold cross-process creation races initialize safely and commit one project/history/receipt
+  ---
+  duration_ms: 585.290311
+  type: 'test'
+  ...
+# Subtest: same-process concurrent imports return one current project without extra history
+ok 2 - same-process concurrent imports return one current project without extra history
+  ---
+  duration_ms: 231.68504
+  type: 'test'
+  ...
+# Subtest: changed sources, deleted targets and owner mismatches refuse without overwrites
+ok 3 - changed sources, deleted targets and owner mismatches refuse without overwrites
+  ---
+  duration_ms: 33.845959
+  type: 'test'
+  ...
+# Subtest: a history trigger fault rolls back reservation and project; retry can create
+ok 4 - a history trigger fault rolls back reservation and project; retry can create
+  ---
+  duration_ms: 25.878719
+  type: 'test'
+  ...
+# Subtest: a lost response and pool restart replay the committed current project
+ok 5 - a lost response and pool restart replay the committed current project
+  ---
+  duration_ms: 14.998013
+  type: 'test'
+  ...
+# Subtest: a terminated backend during history insertion rolls back every creation row
+ok 6 - a terminated backend during history insertion rolls back every creation row
+  ---
+  duration_ms: 56.891922
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1043.545632
+# forge-test-file "test/v2-import-postgres-7b.test.js"

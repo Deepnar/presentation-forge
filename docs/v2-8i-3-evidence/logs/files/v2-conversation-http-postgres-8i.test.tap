@@ -1,0 +1,203 @@
+TAP version 13
+# Subtest: PostgreSQL HTTP: local ownerless lifecycle retains the existing project access policy
+ok 1 - PostgreSQL HTTP: local ownerless lifecycle retains the existing project access policy
+  ---
+  duration_ms: 947.227804
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: owner reads and exports only bounded visible state with private response headers
+ok 2 - PostgreSQL HTTP: owner reads and exports only bounded visible state with private response headers
+  ---
+  duration_ms: 782.720541
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: anonymous and nonowner access cannot read or change a conversation
+ok 3 - PostgreSQL HTTP: anonymous and nonowner access cannot read or change a conversation
+  ---
+  duration_ms: 701.120698
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: project administrator privileges do not grant cross-owner private chat access
+ok 4 - PostgreSQL HTTP: project administrator privileges do not grant cross-owner private chat access
+  ---
+  duration_ms: 685.333887
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+ok 5 - PostgreSQL HTTP: pagination is exact and rejects repeated, bracketed or nondecimal inputs
+  ---
+  duration_ms: 1104.728285
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: authority and execution payloads cannot replace the stored decision identity
+ok 6 - PostgreSQL HTTP: authority and execution payloads cannot replace the stored decision identity
+  ---
+  duration_ms: 711.705774
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: private parser bounds and failures are sanitized before the shared parser
+ok 7 - PostgreSQL HTTP: private parser bounds and failures are sanitized before the shared parser
+  ---
+  duration_ms: 603.07021
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+ok 8 - PostgreSQL HTTP: HTTP approval reopens one canonical run and preserves edits, styling and history
+  ---
+  duration_ms: 737.350311
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: rejection is durable and cannot create or replace a queued run
+ok 9 - PostgreSQL HTTP: rejection is durable and cannot create or replace a queued run
+  ---
+  duration_ms: 673.927894
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: HTTP cancellation fences a claimed run before its edit can commit
+ok 10 - PostgreSQL HTTP: HTTP cancellation fences a claimed run before its edit can commit
+  ---
+  duration_ms: 670.985985
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+ok 11 - PostgreSQL HTTP: HTTP clear preserves committed deck/history/accounting and invalidates prior approvals
+  ---
+  duration_ms: 634.97137
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: a newer human save refuses stale approval without losing the pending proposal
+ok 12 - PostgreSQL HTTP: a newer human save refuses stale approval without losing the pending proposal
+  ---
+  duration_ms: 608.966177
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: logout revokes the next request and deleted projects remain absent
+ok 13 - PostgreSQL HTTP: logout revokes the next request and deleted projects remain absent
+  ---
+  duration_ms: 609.965502
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: project ownership changes revoke the previous owner on every operation
+ok 14 - PostgreSQL HTTP: project ownership changes revoke the previous owner on every operation
+  ---
+  duration_ms: 636.744244
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: lost HTTP response preserves the original committed decision for replay
+ok 15 - PostgreSQL HTTP: lost HTTP response preserves the original committed decision for replay
+  ---
+  duration_ms: 635.583173
+  type: 'test'
+  ...
+# Subtest: PostgreSQL HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+ok 16 - PostgreSQL HTTP: unexpected host errors are sanitized and final expiry fencing maps to conflict
+  ---
+  duration_ms: 514.824963
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: persists one visible turn without dispatching, proposing, queueing or editing
+ok 17 - PostgreSQL submission HTTP: persists one visible turn without dispatching, proposing, queueing or editing
+  ---
+  duration_ms: 604.776364
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: concurrent matching replay reuses one saved turn and current-view replay survives cancellation
+ok 18 - PostgreSQL submission HTTP: concurrent matching replay reuses one saved turn and current-view replay survives cancellation
+  ---
+  duration_ms: 693.110548
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: distinct concurrent requests cannot admit two active turns
+ok 19 - PostgreSQL submission HTTP: distinct concurrent requests cannot admit two active turns
+  ---
+  duration_ms: 678.063621
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: stale generation, conversation, project and cleared input fail without admission
+ok 20 - PostgreSQL submission HTTP: stale generation, conversation, project and cleared input fail without admission
+  ---
+  duration_ms: 669.715855
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: extra authority, credentials, layout and execution fields are refused by the canonical schema
+ok 21 - PostgreSQL submission HTTP: extra authority, credentials, layout and execution fields are refused by the canonical schema
+  ---
+  duration_ms: 691.467519
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: signed-out, cross-owner, administrator, deletion and revoked-session requests cannot submit
+ok 22 - PostgreSQL submission HTTP: signed-out, cross-owner, administrator, deletion and revoked-session requests cannot submit
+  ---
+  duration_ms: 661.699399
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: local ownerless submission keeps the accepted project policy
+ok 23 - PostgreSQL submission HTTP: local ownerless submission keeps the accepted project policy
+  ---
+  duration_ms: 674.549059
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: ownership is rechecked in H after session resolution
+ok 24 - PostgreSQL submission HTTP: ownership is rechecked in H after session resolution
+  ---
+  duration_ms: 602.317133
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: large UTF-8 bodies and Express case/trailing-slash matches use the submission budget only
+ok 25 - PostgreSQL submission HTTP: large UTF-8 bodies and Express case/trailing-slash matches use the submission budget only
+  ---
+  duration_ms: 653.403866
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: exact wire-byte admission counts padding, rejects overflow and keeps lifecycle caps
+ok 26 - PostgreSQL submission HTTP: exact wire-byte admission counts padding, rejects overflow and keeps lifecycle caps
+  ---
+  duration_ms: 649.258718
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: compressed, non-UTF-8, ambiguous media and malformed private bodies are refused without echo
+ok 27 - PostgreSQL submission HTTP: compressed, non-UTF-8, ambiguous media and malformed private bodies are refused without echo
+  ---
+  duration_ms: 620.024622
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: storage admission is a private conflict and explicit clear permits a new submission
+ok 28 - PostgreSQL submission HTTP: storage admission is a private conflict and explicit clear permits a new submission
+  ---
+  duration_ms: 6006.363849
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: a lost response reopens the same committed turn without execution
+ok 29 - PostgreSQL submission HTTP: a lost response reopens the same committed turn without execution
+  ---
+  duration_ms: 681.10488
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: unexpected submission backend errors remain fixed private JSON
+ok 30 - PostgreSQL submission HTTP: unexpected submission backend errors remain fixed private JSON
+  ---
+  duration_ms: 612.022095
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: openai-compatible submission joins trusted preparation, explicit approval and canonical execution
+ok 31 - PostgreSQL submission HTTP: openai-compatible submission joins trusted preparation, explicit approval and canonical execution
+  ---
+  duration_ms: 792.560689
+  type: 'test'
+  ...
+# Subtest: PostgreSQL submission HTTP: anthropic submission joins trusted preparation, explicit approval and canonical execution
+ok 32 - PostgreSQL submission HTTP: anthropic submission joins trusted preparation, explicit approval and canonical execution
+  ---
+  duration_ms: 761.256513
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27681.810407
+# forge-test-file "test/v2-conversation-http-postgres-8i.test.js"
