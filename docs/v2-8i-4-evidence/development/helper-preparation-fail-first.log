@@ -1,0 +1,24 @@
+test_actual_preparation_snapshot_block_writes_a_verifiable_proof (__main__.SnapshotGuards.test_actual_preparation_snapshot_block_writes_a_verifiable_proof) ... ERROR
+test_changed_backup_is_refused_on_resume (__main__.SnapshotGuards.test_changed_backup_is_refused_on_resume) ... ok
+test_complete_initial_and_resume_snapshots (__main__.SnapshotGuards.test_complete_initial_and_resume_snapshots) ... ok
+test_duplicate_history_is_refused_even_with_matching_index_proof (__main__.SnapshotGuards.test_duplicate_history_is_refused_even_with_matching_index_proof) ... ok
+test_incomplete_preparation_has_no_admission (__main__.SnapshotGuards.test_incomplete_preparation_has_no_admission) ... ok
+test_missing_backup_is_refused_on_resume (__main__.SnapshotGuards.test_missing_backup_is_refused_on_resume) ... ok
+test_missing_canonical_original_is_refused (__main__.SnapshotGuards.test_missing_canonical_original_is_refused) ... ok
+test_missing_historical_original_is_not_hidden_by_updated_index (__main__.SnapshotGuards.test_missing_historical_original_is_not_hidden_by_updated_index) ... ok
+test_wrong_source_is_refused (__main__.SnapshotGuards.test_wrong_source_is_refused) ... ok
+
+======================================================================
+ERROR: test_actual_preparation_snapshot_block_writes_a_verifiable_proof (__main__.SnapshotGuards.test_actual_preparation_snapshot_block_writes_a_verifiable_proof)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/deepnar/Programs/presentations/docs/v2-8i-4-evidence/test-validation-guards.py", line 101, in test_actual_preparation_snapshot_block_writes_a_verifiable_proof
+    exec(compile(block, 'actual-preparation-snapshot-block', 'exec'), environment)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "actual-preparation-snapshot-block", line 30, in <module>
+TypeError: 'str' object is not callable
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.007s
+
+FAILED (errors=1)

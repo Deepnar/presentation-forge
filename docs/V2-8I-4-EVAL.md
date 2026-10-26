@@ -219,8 +219,12 @@ governance-schema guard and a coordinator path which could bypass incomplete
 snapshots. Those were corrected before any qualification/backend/generator: plan
 identity is I4, source guards bind the complete manifest, and both snapshot sets
 require a completion proof/index/backup hash verification before every coordinator
-entry, plus complete current originals on initial admission. Eight isolated guard
-oracles pass8/8 (separate development checks). Exact helper-delta readiness is
+entry, plus complete current originals on initial admission. Eight initial isolated guard oracles passed8/8. Delta review then caught a
+preparation-only imported hash-function name collision; a ninth oracle executes
+the actual snapshot/proof block without a backend and reproduced it (8pass/1error).
+The hash-function alias is corrected; all9guard/preparation oracles now pass9/9,
+with both logs retained and no backend created. These are separate development
+checks, not primary/gate totals. Exact helper-delta readiness is
 pending before qualification/preparation. Old I3 helpers/evidence remain frozen. All9state
 checks remain explicitly unexecuted; accepted baseline remains2ba82cb. Stop after
 I4 independent acceptance and exact-owned cleanup; no dependent feature work.

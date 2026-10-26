@@ -35,7 +35,7 @@
     },
     {
       "path": "docs/v2-8i-4-evidence/prepare-full-validation.py",
-      "sha256": "68058e626831e94ec1bd28152aa983cbf74d199345feefec330000b2773ada18"
+      "sha256": "9dea32433739975aee99785f3b866312b542a3e649f405d53a01f5517e08723a"
     },
     {
       "path": "docs/v2-8i-4-evidence/quiet_window.py",
@@ -51,7 +51,7 @@
     },
     {
       "path": "docs/v2-8i-4-evidence/test-validation-guards.py",
-      "sha256": "f617fc8b9ca8f3557ef972ed124adced41b73c06755687bf52d8d126e8742a59"
+      "sha256": "acc96c5340f715097512b36dd3d3bb74b9844d0b2de0884dcb332471da65d47f"
     },
     {
       "path": "docs/v2-8i-4-evidence/validation-plan.json",

@@ -4,12 +4,14 @@ import importlib.util
 import json
 import os
 import pathlib
+import shutil
 import tempfile
 import unittest
 
 spec = importlib.util.spec_from_file_location('guards', pathlib.Path(__file__).with_name('validation_guards.py'))
 guards = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(guards)
+PREPARATION = pathlib.Path(__file__).resolve().with_name('prepare-full-validation.py').read_text()
 
 
 class SnapshotGuards(unittest.TestCase):
@@ -86,6 +88,18 @@ class SnapshotGuards(unittest.TestCase):
         self.historical.append(copy.deepcopy(self.historical[0]))
         self.write_indexes()
         with self.assertRaises(AssertionError): self.check(True)
+
+    def test_actual_preparation_snapshot_block_writes_a_verifiable_proof(self):
+        shutil.rmtree(self.out)
+        self.out.mkdir(parents=True)
+        (self.root/'backup-manifest.json').unlink()
+        block = PREPARATION[PREPARATION.index('index = []'):PREPARATION.index("print('Snapshot verified'")]
+        environment = {'root': self.root, 'out': self.out, 'sha': 'source',
+                       'digest': guards.digest, 'file_digest': guards.digest,
+                       'validate_snapshots': guards.validate_snapshots,
+                       'pathlib': pathlib, 'hashlib': hashlib, 'json': json, 'shutil': shutil, 'os': os}
+        exec(compile(block, 'actual-preparation-snapshot-block', 'exec'), environment)
+        self.assertTrue(self.check()['allBackupHashesMatch'])
 
 
 if __name__ == '__main__':

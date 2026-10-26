@@ -1,6 +1,6 @@
 import datetime, hashlib, json, os, pathlib, shutil, socket, subprocess, sys, time
 from quiet_window import Window
-from validation_guards import validate_source, validate_snapshots, digest
+from validation_guards import validate_source, validate_snapshots, digest as file_digest
 
 root = pathlib.Path('docs/v2-8i-4-evidence')
 out = pathlib.Path(os.environ.get('FORGE_VALIDATION_OUT', 'out/v2-8i-4-validation'))
@@ -90,7 +90,7 @@ for source in map(pathlib.Path, [
     assert hashlib.sha256(destination.read_bytes()).hexdigest() == digest
     originals.append({'path': str(source), 'sha256': digest, 'bytes': source.stat().st_size})
 (out / 'prior-generated-backup/index.json').write_text(json.dumps(originals, indent=2) + '\n')
-proof={'implementationSha':sha,'complete':True,'historicalFiles':len(index),'canonicalFiles':len(originals),'historicalIndexSha256':digest(out/'backup/index.json'),'canonicalIndexSha256':digest(out/'prior-generated-backup/index.json')}
+proof={'implementationSha':sha,'complete':True,'historicalFiles':len(index),'canonicalFiles':len(originals),'historicalIndexSha256':file_digest(out/'backup/index.json'),'canonicalIndexSha256':file_digest(out/'prior-generated-backup/index.json')}
 with (out/'snapshot-complete.json').open('x') as stream:
     json.dump(proof,stream,indent=2);stream.write('\n');stream.flush();os.fsync(stream.fileno())
 fd=os.open(out,os.O_RDONLY|os.O_DIRECTORY);os.fsync(fd);os.close(fd)
