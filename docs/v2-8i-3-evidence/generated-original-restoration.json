@@ -1,0 +1,33 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "originalFilesRestored": 5,
+  "allBaselineHashesMatched": true,
+  "originalByteReconstruction": false,
+  "index": [
+    {
+      "path": "out/v2-7a-validation/shell-chart.pptx",
+      "sha256": "d529524d800edc5d23966da387d956111c4df389b7b078f80e01d3afde9fbb48",
+      "bytes": 70668
+    },
+    {
+      "path": "out/v2-7a-validation/shell-table.pptx",
+      "sha256": "cc2e20f39d899448102f2b004fd7f15e38da609c18f8ea1b2ea976f22efb32f3",
+      "bytes": 72451
+    },
+    {
+      "path": "out/v2-7b-1-validation/browser/imported-chart.pptx",
+      "sha256": "ded44c071f4f79aac18c3e50e61bb078f8fcca1661b36faf77c529d297ca25ae",
+      "bytes": 92783
+    },
+    {
+      "path": "out/v2-7b-1-validation/browser/imported-table.pptx",
+      "sha256": "329d35568baa343a2e1a192e70c4b3db61c6d4b06da07615c1f75fa94ce6d997",
+      "bytes": 92770
+    },
+    {
+      "path": "out/v2-7b-2-validation/browser/handoff.pptx",
+      "sha256": "846eaf78eaccbb1fa6fdbaab96b08d3a6e6910d28168cfe84b85f423cf2db3ee",
+      "bytes": 92763
+    }
+  ]
+}

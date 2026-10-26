@@ -1,12 +1,12 @@
 # I3 exact-source validation
 
-Current checkpoint: source2ba82cb is unaccepted; focused HTTP66/66 and bulk2545/2545
-have completed. Preparation and snapshots already exist, with the exact owned
-backend recorded in owned-postgres.json. Read HANDOFF and inspect coordinator.json
-and actual processes before resuming. Never repeat initial preparation or start a
-second coordinator. The first admission-only attempt and disk-cancelled7A attempt
-are retained separately. After the corrected classifier's fresh180-second window,
-the full7A retry passed28/28; bounded serial execution continues.
+Current checkpoint: all48ordered jobs and final evidence assembly completed.
+Source2ba82cb is validated but unaccepted pending separate review. All234primary
+files pass3048/3048 plus4distinct HTTP/native cases; all9gates pass. Historical
+6965files and5canonical originals are restored. The finisher already ran ONCE;
+never rerun it against restored outputs. Read current HANDOFF for slot/service
+ownership. Do not rerun preparation/coordinator or create another backend. The
+owned PostgreSQL remains live only until independent checks and exact-ID cleanup.
 
 Read the contract, state and current HANDOFF first. `validation-plan.json` freezes
 source/tests. All providers are offline injected/loopback fixtures; no real model

@@ -2,7 +2,7 @@
   "id": "conversation-http",
   "kind": "tests",
   "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
-  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-conversation-http-8i.test.js test/v2-conversation-http-postgres-8i.test.js",
+  "command": "python3 docs/v2-8i-3-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8i-3-evidence/logs/conversation-http.tap",
   "exitCode": 0,
   "tests": {
@@ -16,5 +16,5 @@
     "test/v2-conversation-http-8i.test.js",
     "test/v2-conversation-http-postgres-8i.test.js"
   ],
-  "backend": "Actual temporary SQLite and owned PostgreSQL15.18; loopback provider fixtures only. Focused repeat overlaps primary inventory."
+  "backend": "Actual SQLite and owned PostgreSQL authenticated submission and lifecycle contracts, including canonical preparation/approval/execution with loopback providers. Overlaps primary matrix."
 }

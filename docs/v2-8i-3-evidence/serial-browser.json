@@ -2,7 +2,7 @@
   "id": "serial-browser",
   "kind": "tests",
   "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
-  "command": "python3 docs/v2-8i-3-evidence/run-validation.py; isolated commands in raw coordinator",
+  "command": "python3 docs/v2-8i-3-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8i-3-evidence/logs/serial-browser.tap",
   "exitCode": 0,
   "tests": {
@@ -40,5 +40,5 @@
     "test/v2-project-catalog-chrome-7c.test.js",
     "test/v2-editor-toolbar-chrome-7c.test.js"
   ],
-  "backend": "Temporary SQLite, isolated owned PostgreSQL browser suite, and standalone fixtures"
+  "backend": "Temporary SQLite production routes, isolated PostgreSQL browser suite and standalone fixtures"
 }
