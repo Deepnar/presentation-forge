@@ -1,0 +1,306 @@
+TAP version 13
+# Subtest: discovery rejects authority, unsafe values and invalid identifiers before backend I/O
+ok 1 - discovery rejects authority, unsafe values and invalid identifiers before backend I/O
+  ---
+  duration_ms: 3.653094
+  type: 'test'
+  ...
+# Subtest: discovery snapshots owner and nested cursor before its first await
+ok 2 - discovery snapshots owner and nested cursor before its first await
+  ---
+  duration_ms: 1.381757
+  type: 'test'
+  ...
+# Subtest: empty filtered pages progress by scanned rows, without treating candidates as a snapshot
+ok 3 - empty filtered pages progress by scanned rows, without treating candidates as a snapshot
+  ---
+  duration_ms: 0.593627
+  type: 'test'
+  ...
+# Subtest: metadata hints preserve expired preparation, live leases and approved turns without claiming work
+ok 4 - metadata hints preserve expired preparation, live leases and approved turns without claiming work
+  ---
+  duration_ms: 0.483027
+  type: 'test'
+  ...
+# Subtest: bytewise traversal handles supplementary Unicode independently of UTF-16 sort order
+ok 5 - bytewise traversal handles supplementary Unicode independently of UTF-16 sort order
+  ---
+  duration_ms: 0.471534
+  type: 'test'
+  ...
+# Subtest: malformed metadata and unconsumable generation refuse privately without partial results
+ok 6 - malformed metadata and unconsumable generation refuse privately without partial results
+  ---
+  duration_ms: 1.059259
+  type: 'test'
+  ...
+# Subtest: backend accessors, excess rows, duplicates and ordering errors cannot escape the page contract
+ok 7 - backend accessors, excess rows, duplicates and ordering errors cannot escape the page contract
+  ---
+  duration_ms: 0.576348
+  type: 'test'
+  ...
+# Subtest: complete result remains within its UTF-8 ceiling for fifty heavily escaped hints
+ok 8 - complete result remains within its UTF-8 ceiling for fifty heavily escaped hints
+  ---
+  duration_ms: 3.223479
+  type: 'test'
+  ...
+# Subtest: unexpected backend exceptions retain fixed private failure while known storage codes survive
+ok 9 - unexpected backend exceptions retain fixed private failure while known storage codes survive
+  ---
+  duration_ms: 0.339234
+  type: 'test'
+  ...
+# Subtest: query parameters carry owner/cursor values and every selected text has a SQL byte guard
+ok 10 - query parameters carry owner/cursor values and every selected text has a SQL byte guard
+  ---
+  duration_ms: 0.414326
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: empty discovery creates no chat, run, revision or accounting row
+ok 11 - PostgreSQL: empty discovery creates no chat, run, revision or accounting row
+  ---
+  duration_ms: 71.115441
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: SQL owner predicates isolate null, case and Unicode identities before page limits
+ok 12 - PostgreSQL: SQL owner predicates isolate null, case and Unicode identities before page limits
+  ---
+  duration_ms: 28.417581
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: keyset pagination progresses across empty filtered pages and multiple projects
+ok 13 - PostgreSQL: keyset pagination progresses across empty filtered pages and multiple projects
+  ---
+  duration_ms: 21.779222
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: foreign, deleted and nonexistent cursor positions need no existence capability
+ok 14 - PostgreSQL: foreign, deleted and nonexistent cursor positions need no existence capability
+  ---
+  duration_ms: 10.021113
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: Unicode cursor order matches binary database order for BMP and supplementary IDs
+ok 15 - PostgreSQL: Unicode cursor order matches binary database order for BMP and supplementary IDs
+  ---
+  duration_ms: 7.939935
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: at-limit pages materialize at most51rows and preserve all stored bytes
+ok 16 - PostgreSQL: at-limit pages materialize at most51rows and preserve all stored bytes
+  ---
+  duration_ms: 51.81653
+  type: 'test'
+  ...
+# {"sample":"128legitimate bounded turn records, one owner/project","pages":3,"scanned":128,"elapsedMs":11.866824000000008,"physicalWorkBoundClaimed":false}
+# {"queryPlan":[{"QUERY PLAN":[{"Plan":{"Node Type":"Limit","Parallel Aware":false,"Async Capable":false,"Startup Cost":75.29,"Total Cost":75.32,"Plan Rows":12,"Plan Width":256,"Plans":[{"Node Type":"Sort","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Startup Cost":75.29,"Total Cost":75.32,"Plan Rows":12,"Plan Width":256,"Sort Key":["((p.id)::text) COLLATE \\"C\\"","((t.id)::text) COLLATE \\"C\\""],"Plans":[{"Node Type":"Hash Join","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Join Type":"Inner","Startup Cost":35.71,"Total Cost":75.07,"Plan Rows":12,"Plan Width":256,"Inner Unique":false,"Hash Cond":"((t.project_id)::text = (p.id)::text)","Plans":[{"Node Type":"Seq Scan","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Relation Name":"v2_agent_turns","Alias":"t","Startup Cost":0,"Total Cost":34.25,"Plan Rows":925,"Plan Width":128},{"Node Type":"Hash","Parent Relationship":"Inner","Parallel Aware":false,"Async Capable":false,"Startup Cost":35.65,"Total Cost":35.65,"Plan Rows":5,"Plan Width":96,"Plans":[{"Node Type":"Hash Join","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Join Type":"Right","Startup Cost":14.53,"Total Cost":35.65,"Plan Rows":5,"Plan Width":96,"Inner Unique":true,"Hash Cond":"((h.project_id)::text = (p.id)::text)","Plans":[{"Node Type":"Seq Scan","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Relation Name":"v2_agent_conversations","Alias":"h","Startup Cost":0,"Total Cost":18.8,"Plan Rows":880,"Plan Width":64},{"Node Type":"Hash","Parent Relationship":"Inner","Parallel Aware":false,"Async Capable":false,"Startup Cost":14.5,"Total Cost":14.5,"Plan Rows":2,"Plan Width":64,"Plans":[{"Node Type":"Seq Scan","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Relation Name":"v2_projects","Alias":"p","Startup Cost":0,"Total Cost":14.5,"Plan Rows":2,"Plan Width":64,"Filter":"(NOT ((owner)::text IS DISTINCT FROM 'discovery-24bf28b9-265a-4604-8b39-41cd56902049'::text))"}]}]}]}]}]}]}}]}],"noNewIndex":true}
+# Subtest: PostgreSQL: oversized multibyte metadata and missing/mismatched headers refuse bounded private pages
+ok 17 - PostgreSQL: oversized multibyte metadata and missing/mismatched headers refuse bounded private pages
+  ---
+  duration_ms: 8.887999
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: private chat and project bodies are never loaded by discovery
+ok 18 - PostgreSQL: private chat and project bodies are never loaded by discovery
+  ---
+  duration_ms: 92.298784
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: discovery never reconciles expired preparation or changes a live lease
+ok 19 - PostgreSQL: discovery never reconciles expired preparation or changes a live lease
+  ---
+  duration_ms: 54.201172
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: discovered submissions are fenced by clear and ownership change before I2
+ok 20 - PostgreSQL: discovered submissions are fenced by clear and ownership change before I2
+  ---
+  duration_ms: 21.875195
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: a human save fences a discovered preparation before any provider dispatch
+ok 21 - PostgreSQL: a human save fences a discovered preparation before any provider dispatch
+  ---
+  duration_ms: 17.117984
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: discovered approved and terminal hints still use stored approval and canonical execution
+ok 22 - PostgreSQL: discovered approved and terminal hints still use stored approval and canonical execution
+  ---
+  duration_ms: 201.050229
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: separate processes resume filtered pagination without writes or hidden polling
+ok 23 - SQLite discovery CLI: separate processes resume filtered pagination without writes or hidden polling
+  ---
+  duration_ms: 1012.688975
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: omitting owner enumerates only explicit null-owner projects
+ok 24 - SQLite discovery CLI: omitting owner enumerates only explicit null-owner projects
+  ---
+  duration_ms: 479.404962
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch
+ok 25 - SQLite discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch
+  ---
+  duration_ms: 2200.890048
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: corrupt operational metadata produces no partial output or private echo
+ok 26 - SQLite discovery CLI: corrupt operational metadata produces no partial output or private echo
+  ---
+  duration_ms: 231.651984
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid
+ok 27 - SQLite discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid
+  ---
+  duration_ms: 445.131734
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: approved hints require explicit canonical work and replays preserve one edit
+ok 28 - SQLite discovery CLI: approved hints require explicit canonical work and replays preserve one edit
+  ---
+  duration_ms: 1012.991636
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: separate processes resume filtered pagination without writes or hidden polling
+ok 29 - PostgreSQL discovery CLI: separate processes resume filtered pagination without writes or hidden polling
+  ---
+  duration_ms: 1032.789138
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: omitting owner enumerates only explicit null-owner projects
+ok 30 - PostgreSQL discovery CLI: omitting owner enumerates only explicit null-owner projects
+  ---
+  duration_ms: 540.132052
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch
+ok 31 - PostgreSQL discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch
+  ---
+  duration_ms: 2410.655966
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: corrupt operational metadata produces no partial output or private echo
+ok 32 - PostgreSQL discovery CLI: corrupt operational metadata produces no partial output or private echo
+  ---
+  duration_ms: 294.394884
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid
+ok 33 - PostgreSQL discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid
+  ---
+  duration_ms: 500.419796
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: approved hints require explicit canonical work and replays preserve one edit
+ok 34 - PostgreSQL discovery CLI: approved hints require explicit canonical work and replays preserve one edit
+  ---
+  duration_ms: 1367.141246
+  type: 'test'
+  ...
+# Subtest: SQLite: empty discovery creates no chat, run, revision or accounting row
+ok 35 - SQLite: empty discovery creates no chat, run, revision or accounting row
+  ---
+  duration_ms: 37.355873
+  type: 'test'
+  ...
+# Subtest: SQLite: SQL owner predicates isolate null, case and Unicode identities before page limits
+ok 36 - SQLite: SQL owner predicates isolate null, case and Unicode identities before page limits
+  ---
+  duration_ms: 18.348949
+  type: 'test'
+  ...
+# Subtest: SQLite: keyset pagination progresses across empty filtered pages and multiple projects
+ok 37 - SQLite: keyset pagination progresses across empty filtered pages and multiple projects
+  ---
+  duration_ms: 15.979551
+  type: 'test'
+  ...
+# Subtest: SQLite: foreign, deleted and nonexistent cursor positions need no existence capability
+ok 38 - SQLite: foreign, deleted and nonexistent cursor positions need no existence capability
+  ---
+  duration_ms: 8.900081
+  type: 'test'
+  ...
+# Subtest: SQLite: Unicode cursor order matches binary database order for BMP and supplementary IDs
+ok 39 - SQLite: Unicode cursor order matches binary database order for BMP and supplementary IDs
+  ---
+  duration_ms: 8.498729
+  type: 'test'
+  ...
+# Subtest: SQLite: at-limit pages materialize at most51rows and preserve all stored bytes
+ok 40 - SQLite: at-limit pages materialize at most51rows and preserve all stored bytes
+  ---
+  duration_ms: 31.003139
+  type: 'test'
+  ...
+# {"sample":"128legitimate bounded turn records, one owner/project","pages":3,"scanned":128,"elapsedMs":7.0448599999999715,"physicalWorkBoundClaimed":false}
+# {"queryPlan":[{"id":11,"parent":0,"notused":61,"detail":"SEARCH p USING INDEX idx_v2_projects_owner (owner=?)"},{"id":17,"parent":0,"notused":62,"detail":"SEARCH t USING INDEX idx_v2_agent_turn_project (project_id=?)"},{"id":23,"parent":0,"notused":47,"detail":"SEARCH h USING INDEX sqlite_autoindex_v2_agent_conversations_1 (project_id=?) LEFT-JOIN"},{"id":94,"parent":0,"notused":0,"detail":"USE TEMP B-TREE FOR ORDER BY"}],"noNewIndex":true}
+# Subtest: SQLite: oversized multibyte metadata and missing/mismatched headers refuse bounded private pages
+ok 41 - SQLite: oversized multibyte metadata and missing/mismatched headers refuse bounded private pages
+  ---
+  duration_ms: 7.263591
+  type: 'test'
+  ...
+# Subtest: SQLite: NUL-prefixed oversized SQLite TEXT and IDs never materialize unbounded
+ok 42 - SQLite: NUL-prefixed oversized SQLite TEXT and IDs never materialize unbounded
+  ---
+  duration_ms: 19.85697
+  type: 'test'
+  ...
+# Subtest: SQLite: raw malformed UTF-8 refuses metadata without replacing identifier bytes
+ok 43 - SQLite: raw malformed UTF-8 refuses metadata without replacing identifier bytes
+  ---
+  duration_ms: 8.135473
+  type: 'test'
+  ...
+# Subtest: SQLite: private chat and project bodies are never loaded by discovery
+ok 44 - SQLite: private chat and project bodies are never loaded by discovery
+  ---
+  duration_ms: 30.302781
+  type: 'test'
+  ...
+# Subtest: SQLite: discovery never reconciles expired preparation or changes a live lease
+ok 45 - SQLite: discovery never reconciles expired preparation or changes a live lease
+  ---
+  duration_ms: 6.689374
+  type: 'test'
+  ...
+# Subtest: SQLite: discovered submissions are fenced by clear and ownership change before I2
+ok 46 - SQLite: discovered submissions are fenced by clear and ownership change before I2
+  ---
+  duration_ms: 12.58134
+  type: 'test'
+  ...
+# Subtest: SQLite: a human save fences a discovered preparation before any provider dispatch
+ok 47 - SQLite: a human save fences a discovered preparation before any provider dispatch
+  ---
+  duration_ms: 14.011066
+  type: 'test'
+  ...
+# Subtest: SQLite: discovered approved and terminal hints still use stored approval and canonical execution
+ok 48 - SQLite: discovered approved and terminal hints still use stored approval and canonical execution
+  ---
+  duration_ms: 69.989506
+  type: 'test'
+  ...
+1..48
+# tests 48
+# suites 0
+# pass 48
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13497.873588
+# forge-test-file "test/v2-turn-discovery-8i.test.js"
+# forge-test-file "test/v2-turn-discovery-postgres-8i.test.js"
+# forge-test-file "test/v2-turn-discovery-process-8i.test.js"
+# forge-test-file "test/v2-turn-discovery-sqlite-8i.test.js"

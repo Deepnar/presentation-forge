@@ -1,0 +1,15 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "sampleSeconds": 180.56064906199754,
+  "samples": 12,
+  "cpuBusyMeanPercent": 1.31194109214936,
+  "cpuIoWaitMeanPercent": 9.01471673994046,
+  "diskMeans": {
+    "nvme0n1": {
+      "busyPercent": 0.8440377279972656,
+      "weightedQueue": 0.03830291946738247
+    }
+  },
+  "freshConsecutiveReadySamples": 12,
+  "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+}

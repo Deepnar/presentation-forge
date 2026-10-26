@@ -1,0 +1,23 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "atUtc": "2026-10-26T13:53:34.879096+00:00",
+  "completedPrimaryFiles": 198,
+  "requiredPrimaryFiles": 238,
+  "uncompletedPrimaryFiles": 40,
+  "primaryTests": {
+    "total": 2570,
+    "pass": 2570,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "focusedOverlap": {
+    "total": 48,
+    "pass": 48,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "activeRun": "Full ordered coordinator through50finite bounded serial jobs; source8378 only; root owns allslots",
+  "accepted": false
+}

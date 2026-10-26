@@ -195,13 +195,18 @@ Accepted baseline remainsI3 `2ba82cb5c321c21d5648f577469f69e82cdcfb24`.
 Corrected implementation is `8378a20a819de569ef7b10b747d7ba6c481f529e`.
 The current complete238-file inventory/helper/source manifests and fresh runbook
 are in [the corrected evidence lineage](v2-8i-4-corrected-evidence/RUNBOOK.md).
-All9required corrected-source gates are unexecuted. Separate SOURCE/HELPER
+Fresh corrected focused48/48 and198bulkfiles2570/2570 pass,0fail/skip/cancelled;
+remaining7gates are pending. Separate SOURCE/HELPER
 READY for8378a20/packetaa33b22 checked17helper/20source/147retired artifact hashes,
 including7original PPTXs and the unchanged ownership/adoption chain.
 [The delivered-message record](reviews/V2-8I-4-8378a20-source-harness.json) is
 source-only and supplies no independent runtime pass or implementation acceptance.
-A fresh quiet sampler is now active before180second qualification/admission, complete new originals snapshots, full
-execution, separate exact-source acceptance and cleanup remain required.
+Fresh qualification/preparation passed180.561seconds(meanCPU1.312%,iowait9.015%,
+diskbusy0.844%,weightedqueue0.0383), followed by fresh30second admission. New7659
+historical files/253PPTXs+5canonical originals are verified in complete snapshots.
+The ordered50-job coordinator is active in corrected scratch; browser execution
+has begun. Full remaining execution, separate exact-source acceptance and cleanup
+remain required.
 No partial pass from the original source is a corrected-source pass.
 
 ### Plan and original-source execution

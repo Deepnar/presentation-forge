@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
-    "note": "Corrected I4source8378a20 independently SOURCE/HELPER READY with packetaa33b22. Development24/24/governance35/35/helper12/12 pass; fresh qualification/all238/nine gates and independent acceptance pending. Source175 partial passes remain retired."
+    "note": "Corrected8378a20: fresh focused48/48 and bulk198files2570/2570 pass;0fail/skip/cancelled. Full ordered coordinator is active; remaining7gates, four native cases, final visuals and separate acceptance remain pending. No source175 pass transfers."
   },
   "activeMilestone": {
     "id": "V2-8I-4",
@@ -23,21 +23,21 @@
   "validation": [
     {
       "id": "turn-discovery",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
+      "status": "passed",
+      "evidence": "docs/v2-8i-4-corrected-evidence/turn-discovery.json",
+      "reason": "Complete fresh corrected-source execution passed0fail/skip/cancelled; focused overlaps primary."
     },
     {
       "id": "non-browser-bulk",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
+      "status": "passed",
+      "evidence": "docs/v2-8i-4-corrected-evidence/non-browser-bulk.json",
+      "reason": "Complete fresh corrected-source execution passed0fail/skip/cancelled; focused overlaps primary."
     },
     {
       "id": "serial-browser",
-      "status": "unexecuted",
+      "status": "pending",
       "evidence": null,
-      "reason": "Corrected-source exact gate has not run. Source175 partial results are historical only after the demonstrated SQLite decoding regression."
+      "reason": "Corrected-source bounded serial browser execution is active; incomplete files do not pass."
     },
     {
       "id": "postgres-contract",
