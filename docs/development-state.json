@@ -7,14 +7,14 @@
   },
   "implementationHead": {
     "sha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
-    "note": "Exact I3 source2ba82cb passes3048/3048 primary leaves across all234files and production build. Focused66 overlaps. Additional native flows/typecheck/benchmark/visual and independent acceptance remain pending."
+    "note": "Exact I3 source2ba82cb passes3048/3048 primary leaves plus4distinct HTTP-submission/native flows; all9gates complete. Focused66 overlaps. Locale9/1 remains separate; cancelled first7A retained. Independent implementation acceptance pending."
   },
   "activeMilestone": {
     "id": "V2-8I-3",
     "roadmapRef": "docs/ROADMAP.md#assistant-turn-submission",
     "evalDoc": "docs/V2-8I-3-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -59,21 +59,21 @@
     },
     {
       "id": "typecheck",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8i-3-evidence/typecheck.json",
+      "reason": "Complete current-source command passed; exact command/result retained."
     },
     {
       "id": "benchmark-50",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8i-3-evidence/benchmark-50.json",
+      "reason": "Complete current-source command passed; exact command/result retained."
     },
     {
       "id": "frontend-visual",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8i-3-evidence/frontend-visual.json",
+      "reason": "Completed current-source validation; visual gate includes119 inspected hash-indexed images and15original archive identity checks. Independent acceptance remains pending."
     }
   ],
   "knownBlockers": [],

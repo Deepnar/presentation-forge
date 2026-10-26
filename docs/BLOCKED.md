@@ -204,10 +204,12 @@ and limitations; dependent scope remains only in the linked roadmap entry.
 
 I3's first admission-only resource hold is historical. On 2026-10-26 fresh quiet
 qualification and exact owned preparation succeeded without relaxing thresholds;
-the both-store HTTP gate passed66/66. Full validation is proceeding with fresh
-admission per job. [The current evaluation](V2-8I-3-EVAL.md) records exact completed
-and unexecuted gates; acceptance still requires their completion and independent
-review. This does not reopen accepted I2 or authorize dependent work.
+all9gates now pass, including3048primary leaves plus4distinct native flows and
+119-image inspection. The cancelled browser attempt was fully retried; classifier
+correction and legacy resource provenance remain explicit. [The evaluation](V2-8I-3-EVAL.md)
+records exact results and limits. Independent acceptance and exact-owned cleanup
+remain pending; no product regression or unavailable backend blocks validation.
+This does not reopen accepted I2 or authorize dependent work.
 
 The active V2 task is recorded in `docs/development-state.json` and
 `docs/ROADMAP.md` §12. For V2-7A a quiet shared-machine

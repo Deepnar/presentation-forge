@@ -9129,8 +9129,8 @@ local inference. Only that separate transport correction is authorized; this aud
     [Plan review](reviews/V2-8I-3-plan-a20ebad.json) is ready; its required UTF-8/
     identity-only parser clarification was committed before implementation.
     Source/tests `2ba82cb` implement the boundary with exact byte/encoding, replay,
-    concurrent admission and both-protocol worker tests. Syntax/protocol checks
-    pass; behavioral execution remains unexecuted. Separate
+    concurrent admission and both-protocol worker tests. All234primary files pass3048/3048 plus4distinct authenticated/native flows;
+    build/typecheck/50cells pass and all119images are inspected. Separate
     [source/helper review](reviews/V2-8I-3-2ba82cb-source-harness.json) found no
     material product blocker and required one native fixture setup-failure cleanup
     correction. That correction is committed/hash-bound atd09b61c and its delta
@@ -9149,8 +9149,13 @@ local inference. Only that separate transport correction is authorized; this aud
     browser retry followed separate helper readiness and fresh corrected180.41s
     qualification; full7A passed28/28. Remaining234-file/native/build/type/benchmark/
     visual execution stays in bounded serial isolation.
-    Complete gates, original-byte preservation and
-    independent acceptance remain required. Stop after I3 acceptance/cleanup.
+    All9gates are now complete: bulk2545,serial208,PG295; focused66 and
+    designated23/19/47subsets overlap. Locale9pass/1standing failure remains
+    separate. All6965prior files/221PPTXs and5canonical outputs are restored;
+    15new original archives pass107part/365property native-ID audit. Maximum
+    canvas delta0.10291px;120slides opened1540ms. No product correction was needed.
+    Independent acceptance and exact-owned backend cleanup remain required.
+    Stop after I3 acceptance/cleanup.
 
     **Look-ahead.** This supplies durable authenticated ingress before host/provider
     scheduling. The host must resolve policy/credentials and reuse I2's stateless

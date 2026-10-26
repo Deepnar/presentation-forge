@@ -39,15 +39,17 @@ The 2026-10-25 continuation authorizes the next bounded dependency,
 [Its contract](V2-8I-3-EVAL.md) passed separate plan readiness review. Source/tests
 are committed at `2ba82cb`; source/helper readiness passed after the documented
 setup-failure cleanup correction. On 2026-10-26 fresh quiet qualification and owned
-preparation succeeded; actual both-store focused HTTP contracts passed66/66.
-Full validation is now proceeding. Read current HANDOFF before execution; never
-start a competing coordinator. State retains accepted I2 and the unaccepted I3
-source; other gates remain pending. Preserve offline-only and quiet-window
-constraints; prior I2 success is not new I3 execution. The first admission-only
-attempt is retained (45samples/677.38seconds, no qualified window); its sampler
-was stopped with zero executed/cancelled test leaves and no owned backend created.
-Current HANDOFF/runbook give the actual owned identity and continuation commands;
-do not repeat initial preparation after an owned identity/snapshot already exists.
+preparation succeeded. All234primary files pass3048/3048, plus4distinct HTTP/native
+flows; all9gates, build/type/50cells and119-image inspection complete. Focused66
+and designated subsets overlap. Cancelled7A and classifier correction chronology
+are retained separately; full retry passed28/28. All6965historical files and5
+canonical outputs are restored. Finisher already ran once; never rerun it against
+restored outputs. Read HANDOFF before doing anything: independent acceptance and
+owned-backend cleanup remain pending. State retains accepted I2/unaccepted I3.
+No coordinator is active; do not rerun preparation or create a competing service.
+Prior admission-only45samples/677.38seconds remain historical; no model calls or
+inference ran. The existing reviewer must complete exact-source review and its
+DB checks before actual0catalog/exact-ID cleanup and acceptance attachment.
 
 ## Current accepted slice and reproduction
 

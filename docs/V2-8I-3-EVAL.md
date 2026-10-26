@@ -18,7 +18,7 @@ Source/tests are now committed at `2ba82cb5c321c21d5648f577469f69e82cdcfb24`.
 The [source manifest](v2-8i-3-evidence/source-manifest.json) binds seven changed
 source/test/governance files and the new validation helpers. Syntax/protocol checks
 passed at the initial checkpoint; resumed execution is recorded below.
-Full exact-source validation and independent implementation acceptance are pending.
+Full exact-source validation is complete; independent implementation acceptance is pending.
 The [separate source/helper review](reviews/V2-8I-3-2ba82cb-source-harness.json)
 found no material product blocker. Its required native fixture setup-failure
 cleanup correction was committed at `d09b61c`, with old/new helper hashes in
@@ -27,7 +27,66 @@ reviewer subsequently checked the exact delta and confirmed readiness, without
 executing tests or issuing implementation acceptance. Quiet-window qualification
 did not admit execution; the admission-only attempt is closed below.
 
-## Admission-only checkpoint — behavioral execution unexecuted
+## Current result — validated, pending independent acceptance
+
+Implementation source/tests/governance remain exact `2ba82cb`; there is no working
+source delta. All nine required gates pass. Root recommends acceptance of this
+bounded submission boundary, subject to the separate exact-source decision. The
+accepted baseline remains I2 until that decision is attached. No product regression
+was found or product correction required in the final run. Validation-helper
+corrections and the cancelled attempt are retained below.
+
+| Execution | Pass | Fail | Skip | Cancelled | Unexecuted |
+|---|---:|---:|---:|---:|---:|
+| 196 nonbrowser files | 2545 | 0 | 0 | 0 | 0 |
+| 26 bounded serial files | 208 | 0 | 0 | 0 | 0 |
+| 12 actual PostgreSQL files | 295 | 0 | 0 | 0 | 0 |
+| Primary total — 234 disjoint files | 3048 | 0 | 0 | 0 | 0 |
+| Additional HTTP-submission/native flows | 4 | 0 | 0 | 0 | 0 |
+| Focused HTTP repeats — overlap primary | 66 | 0 | 0 | 0 | 0 |
+| Separate standing en_IN locale probe | 9 | 1 | 0 | 0 | 0 |
+
+Distinct required flow total is3052/3052. Designated PostgreSQL23, concurrency/
+fault19 and combined process47 are overlapping subsets, not extra coverage. Build
+and typecheck exit0; canonical benchmark completes all50cells (compiler/ZIP478ms).
+[Full matrix](v2-8i-3-evidence/full-matrix.json),
+[ordered commands/raw logs](v2-8i-3-evidence/logs/coordinator.json),
+[performance](v2-8i-3-evidence/performance.json) and
+[visual inspection](v2-8i-3-evidence/VISUAL-REVIEW.md) bind the same source.
+
+All119 current images were inspected and hash-verified;15exact original PPTXs
+passed107part/365nonvisual-property identity checks without duplicate per-part IDs.
+All6965prior evidence files/221original PPTXs and5canonical outputs were restored
+and hash-verified; no archive was reconstructed. The owned backend is still live
+solely for independent checks, then exact-ID cleanup after DB-slot release.
+
+The120slide/120thumbnail deck opened in1540ms. Maximum measured canvas change across
+six chart/table observations is0.1029052734375px. Four local loopback/store samples
+measure authenticated submit23.52–36.07ms, preparation35.68–96.42ms, canonical
+execution8.63–29.28ms. Existing process recovery measured31.56ms(SQLite)/68.22ms(PG),
+excluding lease wait and worker bootstrap, including worker store setup. These are
+local samples, not live-provider/production latency or quality.
+
+Remaining limitations: inherited narrow horizontal overflow/partial canvas, source
+loading/transition/scroll capture limits, SVG mixed-run styling and chart-consumer
+differences; unresolved global I/O PSI/iowait provenance; no live Auto/local
+inference or interactive Microsoft PowerPoint execution. Those are outside this
+submission-only slice and retain their [roadmap scope](ROADMAP.md#v2-8-remaining).
+Saved visible chat is not automatically provider context. No scheduler/provider
+policy, Assistant UI, semantic creation or search integration was added.
+
+The first7A file was watchdog-cancelled after20passes with8uncompleted/unreported
+leaves and no TAP summary. It is one cancelled file, excluded from final complete
+totals; individual cancellation totals are unavailable. The full28-case retry
+passed. Numeric quiet thresholds and assertions were never weakened. All48final
+ordered jobs have verified fresh30second admissions; first2use legacy classifier
+provenance, remaining46use corrected version2. Historical flags remain unavailable,
+not retrospectively inferred.
+
+The following chronology retains earlier incomplete checkpoints; none overrides
+the current complete results above.
+
+## Historical admission-only checkpoint — 2026-10-25
 
 [The retained assessment](v2-8i-3-evidence/admission-only-2026-10-25/assessment.json)
 records 45 samples over 677.38 seconds: mean CPU 22.18%, peak 79.77%, five samples
@@ -37,7 +96,7 @@ sampler was interrupted (exit130); no test leaf was started or cancelled, and no
 backend, build, benchmark, generator or model call started. Unrelated work was
 untouched. Old evidence and original exports still hash-match.
 
-| Current-source behavioral result | Count |
+| Result at that historical checkpoint | Count |
 |---|---:|
 | Executed / pass / fail / skip / cancelled leaves | 0 / 0 / 0 / 0 / 0 |
 | Unexecuted primary entry files | 234 |
