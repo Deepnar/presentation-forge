@@ -12,7 +12,7 @@ The service, synchronous input snapshots, purpose-built binary/byte-bounded
 SQLite/PostgreSQL queries and `agent-chat discover` are implemented. Four new
 entry files bring the primary inventory to238 (198bulk/26serial/14PG-process).
 Development results:10pure unit,13SQLite and6corrected SQLite CLI passes;
-35governance passes and8isolated snapshot-guard passes. One separate source-review finding was reproduced with raw
+35governance passes and9corrected isolated snapshot/preparation-guard passes. One separate source-review finding was reproduced with raw
 invalid UTF-8 (5pass/1fail) and corrected discovery-only at1c83881. Raw development
 probes are retained separately and supply no full gate or PostgreSQL pass.
 
@@ -21,9 +21,10 @@ Root owns Git/testing/database slots. The existing independent reviewer
 slots, made no source/file/Git mutations and issued no implementation acceptance.
 Reuse that context at high effort only; avoid extra agents. Its helper pass required three pre-execution corrections (plan labels, complete
 source guards and mandatory snapshot verification); those are written/tested and
-await its exact-delta readiness. Actual store/CLI/full gates and later exact-source
-review remain required. No owned I4 backend or full
-validation coordinator exists yet. No live model/local inference is authorized.
+received exact-delta SOURCE/HELPER READY at16c7469 after the additional
+hash-function alias correction/preparation-block oracle. Actual full store/CLI
+gates and later exact-source review remain required. The I4 sustained quiet sampler is active under root control before preparation.
+No owned I4 backend or full validation coordinator exists yet. No live model/local inference is authorized.
 Shared-machine I/O PSI remains elevated; inspect actual corrected quiet samples,
 CPU/memory/backing-storage/competing work before expensive validation. Never stop
 unrelated work. New I4 helper readiness and source binding precede180s qualification,

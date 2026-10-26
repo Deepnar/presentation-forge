@@ -224,7 +224,10 @@ preparation-only imported hash-function name collision; a ninth oracle executes
 the actual snapshot/proof block without a backend and reproduced it (8pass/1error).
 The hash-function alias is corrected; all9guard/preparation oracles now pass9/9,
 with both logs retained and no backend created. These are separate development
-checks, not primary/gate totals. Exact helper-delta readiness is
-pending before qualification/preparation. Old I3 helpers/evidence remain frozen. All9state
+checks, not primary/gate totals. The separate reviewer confirmed SOURCE/HELPER
+READY for implementation175a016 with helpers16c7469, checking all16helper hashes.
+[This implementer-recorded delivered message](reviews/V2-8I-4-175a016-source-harness.json)
+authorizes validation only; no independent runtime execution/acceptance is claimed.
+The corrected sustained quiet sampler is now running before preparation. Old I3 helpers/evidence remain frozen. All9state
 checks remain explicitly unexecuted; accepted baseline remains2ba82cb. Stop after
 I4 independent acceptance and exact-owned cleanup; no dependent feature work.
