@@ -380,3 +380,19 @@ test('submission HTTP acceptance requires both actual backend entry files', t =>
   writeFileSync(log, readFileSync(log, 'utf8').replace('# forge-test-file "test/v2-conversation-http-postgres-8i.test.js"\n', ''));
   hasError(f.check(), /complete required scope/);
 });
+
+
+test('turn-discovery acceptance requires input, both stores and process/CLI coverage', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8i-4-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8i-4-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8i-4-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8I-4'; hasError(f.check(), /inventory.*contract/);
+  f.state.validation[0].id = 'turn-discovery'; assert.deepEqual(f.check().errors, []);
+  for (const entry of ['test/v2-turn-discovery-8i.test.js', 'test/v2-turn-discovery-sqlite-8i.test.js',
+    'test/v2-turn-discovery-postgres-8i.test.js', 'test/v2-turn-discovery-process-8i.test.js']) {
+    f.evidence(); assert.deepEqual(f.check().errors, []);
+    const log = path.join(f.dir, 'docs/output.tap');
+    writeFileSync(log, readFileSync(log, 'utf8').replace(`# forge-test-file "${entry}"\n`, ''));
+    hasError(f.check(), /complete required scope/);
+  }
+});

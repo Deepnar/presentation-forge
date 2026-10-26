@@ -17,12 +17,17 @@ const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
   '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'native-pptx': 'tests', 'turn-approval': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
-  'conversation-http': 'tests', 'turn-worker': 'tests', 'postgres-contract': 'tests', 'cross-process-faults': 'tests',
+  'conversation-http': 'tests', 'turn-worker': 'tests', 'turn-discovery': 'tests', 'postgres-contract': 'tests', 'cross-process-faults': 'tests',
   'production-build': 'command', typecheck: 'command',
   'benchmark-50': 'benchmark', 'frontend-visual': 'visual',
 };
 
 const MILESTONES = {
+  'V2-8I-4': {
+    plan: 'docs/v2-8i-4-evidence/validation-plan.json',
+    focused: 'turn-discovery',
+    files: ['test/v2-turn-discovery-8i.test.js', 'test/v2-turn-discovery-sqlite-8i.test.js', 'test/v2-turn-discovery-postgres-8i.test.js', 'test/v2-turn-discovery-process-8i.test.js'],
+  },
   'V2-8I-3': {
     plan: 'docs/v2-8i-3-evidence/validation-plan.json',
     focused: 'conversation-http',
