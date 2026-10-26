@@ -128,6 +128,43 @@ export function discoveryContract(label, setup) {
         [column === 'payload' ? row.turn_payload : column === 'id' ? row.turn_id : row.generation, e.doc.id]);
     }
   });
+  if (label === 'SQLite') check('raw malformed UTF-8 refuses metadata without replacing identifier bytes', async t => {
+    const e = await setup(t), [row] = await seedMetadata(e, ['submitted']);
+    const originalHeader = (await rawQuery(e, 'SELECT payload FROM v2_agent_conversations WHERE project_id=?', [e.doc.id]))[0].payload;
+    const bad = Buffer.from([0xc3, 0x28]);
+    const malformed = value => {
+      const [before, after] = JSON.stringify(value).split('MALFORMED');
+      assert.equal(typeof after, 'string'); return Buffer.concat([Buffer.from(before), bad, Buffer.from(after)]);
+    };
+    for (const field of ['id', 'generation', 'header', 'turn']) {
+      const meta = JSON.parse(row.turn_payload), header = JSON.parse(originalHeader);
+      await rawQuery(e, 'UPDATE v2_agent_turns SET id=?,generation=?,payload=? WHERE project_id=?', [row.turn_id, row.generation, row.turn_payload, e.doc.id]);
+      await rawQuery(e, 'UPDATE v2_agent_conversations SET payload=? WHERE project_id=?', [originalHeader, e.doc.id]);
+      if (field === 'id') {
+        meta.id = '�(';
+        await rawQuery(e, 'UPDATE v2_agent_turns SET id=CAST(? AS TEXT),payload=? WHERE project_id=?', [bad, JSON.stringify(meta), e.doc.id]);
+      } else if (field === 'generation') {
+        meta.generation = header.generation = '�(';
+        await rawQuery(e, 'UPDATE v2_agent_turns SET generation=CAST(? AS TEXT),payload=? WHERE project_id=?', [bad, JSON.stringify(meta), e.doc.id]);
+        await rawQuery(e, 'UPDATE v2_agent_conversations SET payload=? WHERE project_id=?', [JSON.stringify(header), e.doc.id]);
+      } else if (field === 'header') {
+        meta.generation = '�('; header.generation = 'MALFORMED';
+        await rawQuery(e, 'UPDATE v2_agent_turns SET generation=?,payload=? WHERE project_id=?', [meta.generation, JSON.stringify(meta), e.doc.id]);
+        await rawQuery(e, 'UPDATE v2_agent_conversations SET payload=CAST(? AS TEXT) WHERE project_id=?', [malformed(header), e.doc.id]);
+      } else {
+        meta.id = 'MALFORMED';
+        await rawQuery(e, 'UPDATE v2_agent_turns SET id=?,payload=CAST(? AS TEXT) WHERE project_id=?', ['�(', malformed(meta), e.doc.id]);
+      }
+      await assert.rejects(() => page(e), error => {
+        assert.equal(error.code, 'invalid-document'); assert.equal(error.message, 'Turn discovery operation failed.'); return true;
+      });
+    }
+    const meta = JSON.parse(row.turn_payload), header = JSON.parse(originalHeader);
+    meta.id = '\uFEFF�('; meta.generation = header.generation = '\uFEFFgeneration�(';
+    await rawQuery(e, 'UPDATE v2_agent_turns SET id=?,generation=?,payload=? WHERE project_id=?', [meta.id, meta.generation, JSON.stringify(meta), e.doc.id]);
+    await rawQuery(e, 'UPDATE v2_agent_conversations SET payload=? WHERE project_id=?', [JSON.stringify(header), e.doc.id]);
+    const valid = await page(e); assert.equal(valid.items[0].turnId, meta.id); assert.equal(valid.items[0].generation, meta.generation);
+  });
   check('private chat and project bodies are never loaded by discovery', async t => {
     const e = await setup(t); const [row] = await seedMetadata(e, ['submitted']);
     const secret = 'PRIVATE_BODY_NOT_JSON'.repeat(100000);

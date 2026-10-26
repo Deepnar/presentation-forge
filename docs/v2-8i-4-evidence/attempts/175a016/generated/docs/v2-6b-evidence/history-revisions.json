@@ -1,0 +1,49 @@
+{
+  "project": "p-58d06184cc101a00e045f00d",
+  "revisions": [
+    {
+      "projectId": "p-58d06184cc101a00e045f00d",
+      "revision": 2,
+      "createdAt": "2026-10-26T13:02:04.447Z",
+      "kind": "save",
+      "saveOrigin": "unknown",
+      "actor": null,
+      "agentId": null,
+      "envelopeIds": [],
+      "summary": "saved rev 2 · 13 slides",
+      "sceneCount": 13,
+      "title": "Project 10/26/2026, 6:32:03 PM",
+      "restoredFrom": null,
+      "recoverable": true
+    },
+    {
+      "projectId": "p-58d06184cc101a00e045f00d",
+      "revision": 1,
+      "createdAt": "2026-10-26T13:02:04.009Z",
+      "kind": "save",
+      "saveOrigin": "unknown",
+      "actor": null,
+      "agentId": null,
+      "envelopeIds": [],
+      "summary": "saved rev 1 · 12 slides",
+      "sceneCount": 12,
+      "title": "Project 10/26/2026, 6:32:03 PM",
+      "restoredFrom": null,
+      "recoverable": true
+    },
+    {
+      "projectId": "p-58d06184cc101a00e045f00d",
+      "revision": 0,
+      "createdAt": "2026-10-26T13:02:03.567Z",
+      "kind": "create",
+      "actor": null,
+      "agentId": null,
+      "envelopeIds": [],
+      "summary": "created with 12 slides",
+      "sceneCount": 12,
+      "title": "Project 10/26/2026, 6:32:03 PM",
+      "restoredFrom": null,
+      "recoverable": true
+    }
+  ]
+}
