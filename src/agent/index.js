@@ -19,3 +19,8 @@ export async function turnWorker(provider) {
   const { createTurnWorker } = await import("../../packages/agent/turn-worker.ts");
   return createTurnWorker(await projectStore(), provider);
 }
+
+export async function turnDiscovery() {
+  const { createTurnDiscovery } = await import('../../packages/agent/turn-discovery.ts');
+  return createTurnDiscovery(await projectStore());
+}
