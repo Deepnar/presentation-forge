@@ -1,0 +1,30 @@
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 4.0 iowait 10.2 storage {'nvme0n1': {'busyPercent': 4.779890256906292, 'weightedQueue': 0.08346475037164125, 'inflight': 0, 'readKiBps': 0.799981632955028, 'writeKiBps': 626.6522791481052}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 4.1 iowait 10.6 storage {'nvme0n1': {'busyPercent': 2.0355837807674937, 'weightedQueue': 0.2928978884548783, 'inflight': 0, 'readKiBps': 828.0701602285543, 'writeKiBps': 8363.455400431778}}
+conversation-http-gate START
+conversation-http-gate RUNNING 15 seconds
+conversation-http-gate RUNNING 30 seconds
+conversation-http-gate RUNNING 45 seconds
+conversation-http-gate EXIT 0 {'total': 66, 'pass': 66, 'fail': 0, 'skip': 0, 'cancelled': 0}
+COORDINATOR YIELD before bulk with no active test process
+conversation-http-gate RETAINED recorded complete execution {'total': 66, 'pass': 66, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 3.7 iowait 10.1 storage {'nvme0n1': {'busyPercent': 0.5866513540494619, 'weightedQueue': 0.021999425776854823, 'inflight': 0, 'readKiBps': 4.266555302177904, 'writeKiBps': 328.2580985613125}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 5.2 iowait 10.3 storage {'nvme0n1': {'busyPercent': 1.3837357084440625, 'weightedQueue': 0.037387474430075146, 'inflight': 0, 'readKiBps': 1327.02250212442, 'writeKiBps': 1380.5757350714139}}
+bulk START
+bulk RUNNING 15 seconds
+bulk RUNNING 30 seconds
+bulk RUNNING 45 seconds
+bulk RUNNING 60 seconds
+bulk RUNNING 75 seconds
+bulk RUNNING 90 seconds
+bulk RUNNING 105 seconds
+bulk RUNNING 120 seconds
+bulk EXIT 0 {'total': 2545, 'pass': 2545, 'fail': 0, 'skip': 0, 'cancelled': 0}
+RESOURCE WINDOW 15 of 30 stable seconds; CPU 6.6 iowait 10.3 storage {'nvme0n1': {'busyPercent': 1.1399715912239599, 'weightedQueue': 0.06379841010534092, 'inflight': 0, 'readKiBps': 88.5311270845274, 'writeKiBps': 600.2517080339493}}
+RESOURCE WINDOW 30 of 30 stable seconds; CPU 6.5 iowait 10.0 storage {'nvme0n1': {'busyPercent': 0.7645071761409146, 'weightedQueue': 0.2537499035939018, 'inflight': 0, 'readKiBps': 170.7177763765103, 'writeKiBps': 1855.292719281795}}
+v2-edit-chrome-7a.test START
+v2-edit-chrome-7a.test RUNNING 15 seconds
+v2-edit-chrome-7a.test RUNNING 30 seconds
+v2-edit-chrome-7a.test RUNNING 45 seconds
+v2-edit-chrome-7a.test RUNNING 60 seconds
+v2-edit-chrome-7a.test RUNNING 75 seconds
+v2-edit-chrome-7a.test RUNNING 90 seconds

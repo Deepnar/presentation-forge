@@ -1,0 +1,199 @@
+{
+  "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "atUtc": "2026-10-26T07:07:18.659168+00:00",
+  "classification": "Environmental critical backing-storage contention; watchdog cancelled the file. No source or assertion correction.",
+  "coordinatorExitCode": 130,
+  "jobExitCode": 1,
+  "completedLeafPasses": 20,
+  "reportedLeafFailures": 0,
+  "reportedLeafSkips": 0,
+  "reportedLeafCancellations": 0,
+  "uncompletedOrUnreportedLeaves": 8,
+  "expectedFullFileLeaves": 28,
+  "noFinalLeafSummaryEmitted": true,
+  "individualUnreportedCancellationCountsUnavailable": true,
+  "cancelledFiles": 1,
+  "completePass": false,
+  "retainedSuccessfulGroups": {
+    "focusedBothStoreHttp": 66,
+    "bulk": 2545
+  },
+  "focusedOverlapsPrimary": true,
+  "threeCriticalSamples": [
+    {
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "atUtc": "2026-10-26T07:03:07.972323+00:00",
+      "phase": "running:v2-edit-chrome-7a.test",
+      "sampleSeconds": 15.050780283999984,
+      "cpuBusyPercent": 6.363440512737653,
+      "cpuIoWaitPercent": 13.946787310820273,
+      "availableKiB": 48764448,
+      "pressure": {
+        "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2259566\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1776\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1758\n",
+        "io": "some avg10=50.50 avg60=45.72 avg300=43.29 total=336287867\nfull avg10=48.47 avg60=43.24 avg300=41.48 total=324191568\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 97.86868004218363,
+          "weightedQueue": 1.7771171657082725,
+          "inflight": 1,
+          "readKiBps": 67.23903883414108,
+          "writeKiBps": 2013.7161946493559
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 227,
+          "tid": 227,
+          "state": "D<",
+          "name": "kworker/u101:0+i915_flip",
+          "userspace": false
+        },
+        {
+          "pid": 27074,
+          "tid": 27074,
+          "state": "Ds",
+          "name": "fstrim",
+          "userspace": false
+        }
+      ],
+      "ready": false,
+      "critical": true,
+      "limitation": "Elevated global I/O PSI/iowait has unresolved provenance; readiness uses sustained measured CPU/memory/backing-storage headroom, not an attribution to a graphics worker."
+    },
+    {
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "atUtc": "2026-10-26T07:03:23.017297+00:00",
+      "phase": "running:v2-edit-chrome-7a.test",
+      "sampleSeconds": 15.044060168999977,
+      "cpuBusyPercent": 8.69448037947391,
+      "cpuIoWaitPercent": 13.839478223372144,
+      "availableKiB": 47827348,
+      "pressure": {
+        "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2300252\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1776\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1758\n",
+        "io": "some avg10=46.50 avg60=45.49 avg300=43.35 total=343116717\nfull avg10=44.14 avg60=42.97 avg300=41.50 total=330664906\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 97.9589275398359,
+          "weightedQueue": 1.0029207428384637,
+          "inflight": 1,
+          "readKiBps": 0.0,
+          "writeKiBps": 98.64358313708114
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 5456,
+          "tid": 5456,
+          "state": "D<",
+          "name": "kworker/u101:2+i915_flip",
+          "userspace": false
+        },
+        {
+          "pid": 27074,
+          "tid": 27074,
+          "state": "Ds",
+          "name": "fstrim",
+          "userspace": false
+        }
+      ],
+      "ready": false,
+      "critical": true,
+      "limitation": "Elevated global I/O PSI/iowait has unresolved provenance; readiness uses sustained measured CPU/memory/backing-storage headroom, not an attribution to a graphics worker."
+    },
+    {
+      "implementationSha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+      "atUtc": "2026-10-26T07:03:38.068700+00:00",
+      "phase": "running:v2-edit-chrome-7a.test",
+      "sampleSeconds": 15.045176663000007,
+      "cpuBusyPercent": 11.169214266559399,
+      "cpuIoWaitPercent": 12.341110217216412,
+      "availableKiB": 45732256,
+      "pressure": {
+        "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2345118\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1776\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1759\n",
+        "io": "some avg10=42.70 avg60=44.52 avg300=43.24 total=349317322\nfull avg10=39.69 avg60=41.83 avg300=41.32 total=336347028\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 98.27069718868873,
+          "weightedQueue": 2.0872470096830518,
+          "inflight": 1,
+          "readKiBps": 7.444246253049129,
+          "writeKiBps": 1593.3345640901225
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 27074,
+          "tid": 27074,
+          "state": "Ds",
+          "name": "fstrim",
+          "userspace": false
+        }
+      ],
+      "ready": false,
+      "critical": true,
+      "limitation": "Elevated global I/O PSI/iowait has unresolved provenance; readiness uses sustained measured CPU/memory/backing-storage headroom, not an attribution to a graphics worker."
+    }
+  ],
+  "concurrentObservation": "An unrelated system fstrim was observed during these samples; no exclusive causal attribution is made. It was not stopped or modified.",
+  "noNodeOrChromeValidationProcessRemainingOnReadOnlyCheck": true,
+  "partialCaptures": [
+    {
+      "source": "docs/v2-7a-evidence/dashboard-empty.png",
+      "file": "docs/v2-8i-3-evidence/resource-interrupted-7a-attempt-1/partial-captures/dashboard-empty.png",
+      "sha256": "cbb16226066408fadb749a9a7b2ddd1a64232eb22e6ed7598fff6871da0d803f"
+    },
+    {
+      "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+      "file": "docs/v2-8i-3-evidence/resource-interrupted-7a-attempt-1/partial-captures/dashboard-hosted-anon.png",
+      "sha256": "a05bcfea958aa061733e0f8cf91135b31087397816f4010042a55c70ef5ab18b"
+    },
+    {
+      "source": "docs/v2-7a-evidence/dashboard.png",
+      "file": "docs/v2-8i-3-evidence/resource-interrupted-7a-attempt-1/partial-captures/dashboard.png",
+      "sha256": "9d3efc6d4e53629d39447754e0aa96cf5bd7a23a15ee8e634f7f6fb9431d6778"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-blank.png",
+      "file": "docs/v2-8i-3-evidence/resource-interrupted-7a-attempt-1/partial-captures/editor-blank.png",
+      "sha256": "c53990e3b986153a4d9064780777644319311d1692247db24f3cbced05261cac"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-history.png",
+      "file": "docs/v2-8i-3-evidence/resource-interrupted-7a-attempt-1/partial-captures/editor-history.png",
+      "sha256": "3844aca36b6122ebccb63bef3b1717553b9f5c828d4af5311595c207d2d425d5"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+      "file": "docs/v2-8i-3-evidence/resource-interrupted-7a-attempt-1/partial-captures/editor-narrow-projects.png",
+      "sha256": "4db6facfe9fd13418a389c7a09566b554a93eb9854d2dfb411c5226cf5edcf51"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-narrow.png",
+      "file": "docs/v2-8i-3-evidence/resource-interrupted-7a-attempt-1/partial-captures/editor-narrow.png",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-readonly.png",
+      "file": "docs/v2-8i-3-evidence/resource-interrupted-7a-attempt-1/partial-captures/editor-readonly.png",
+      "sha256": "44796071cf8b6926f30af3b3d9981b9dd9eff5739c3f232903e0b087d2d6d95d"
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-shell.png",
+      "file": "docs/v2-8i-3-evidence/resource-interrupted-7a-attempt-1/partial-captures/editor-shell.png",
+      "sha256": "09833395a1941c3540d7ed811f2d861604861df9f5e5935cfd92548e95b58c33"
+    },
+    {
+      "source": "docs/v2-7a-evidence/large-deck.json",
+      "file": "docs/v2-8i-3-evidence/resource-interrupted-7a-attempt-1/partial-captures/large-deck.json",
+      "sha256": "a48ebae2b442b32711d3bdd3486c441e7892d89b2f37bd717f20c098b8e0782d"
+    }
+  ],
+  "thresholdsRelaxed": false,
+  "ownedBackendRetainedForSameSourceRecovery": true
+}
