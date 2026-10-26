@@ -1,0 +1,73 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "files": [
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/adopt-owned.py",
+      "sha256": "004e8fb45f404008903f5b74d46e4001d3d58e2b5c1a94cb546bb86e03f487db"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/assemble-results.py",
+      "sha256": "34d1f2209372494c9124187c20ae20448ed0ad46011833177020c2d9b1555a0f"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/assess-resources.py",
+      "sha256": "9013d31d02a0fb9a12f51564c876bbba96d9e72e3daeaf5a5b50c0ace5076ef9"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/cleanup-owned.py",
+      "sha256": "a7d386f0023b4dedfcf2076bd34fcaceded15ad712fdec665510360b10ca198b"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/finish-evidence.py",
+      "sha256": "5ae5c0284ba33446a070fb48212806127cf1d1b52aebfd77dfdd2e30df745689"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/headless-check.mjs",
+      "sha256": "a457fb6e9f64a2ebc49f81a83eb67500f5b9d8a516048a92ca006977413ed132"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/http-native.mjs",
+      "sha256": "e3e4d3650ebe02a869535f2b485e7cef27c131fbd46e8db6838bf8086a76391a"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/inspect-native-ids.mjs",
+      "sha256": "638ed0635d0de425329bb20005687ce75a9bbdad2ec284a0a4e5e68a9fa98b53"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/native-review.mjs",
+      "sha256": "8ca423e3991dc8fadeeb7eadf7bea26b1d40e826c1750ec39fea006349679369"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/prepare-full-validation.py",
+      "sha256": "56ad1531fe73d992509ff188ff4b130d4c559ea5da5642b6ca61af28183046de"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/quiet_window.py",
+      "sha256": "f5a6890574c97b822b5a060330ab17e9bf3127b8f2b8cd6ad848f45124af1e88"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/run-validation.py",
+      "sha256": "2d556871ee77ca35988a9d32a2a0cbbfe05696f6ce6f52e49d94eb2b6f992ef6"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/shell-native.mjs",
+      "sha256": "69eb263e3b60c9f1aadd2f56fc8cce513be7211926aee75817e8fdcee402619c"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/test-validation-guards.py",
+      "sha256": "8860259c89fd185848960e1fbb11290fb1400119b7a860caa5976443ef8dfb80"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/validation-plan.json",
+      "sha256": "edaff69ef613dd44bffc63dcab0fa41655746ba83b43158be7ea102fe58e7846"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/validation_guards.py",
+      "sha256": "55a84a4c9c629d4318cd161a48ba6f61f84882b7f95c859019d6065f2dba6bff"
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/verify-owned-cleanup.py",
+      "sha256": "e40deadf447df2f0962a667f1b0394c9d1d85d49783f212ba9a7ec48aa2b9199"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "implementationSha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
+  "atUtc": "2026-10-26T12:55:26.311939+00:00",
+  "mode": "Full-size image inspection after the complete28-case7A file, before historical restoration; final overall gate still pending",
+  "images": [
+    {
+      "source": "docs/v2-7a-evidence/editor-shell.png",
+      "sha256": "bcd25eaddf835b3bdac10c8f1b5876af99efc7a88c62a2e45f2a2fb29f98b30a",
+      "inspected": true
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-narrow.png",
+      "sha256": "80654b35825d5de0c9443179253c8e27ca96da01cd1bce71e62d94b46171d6ef",
+      "inspected": true
+    },
+    {
+      "source": "docs/v2-7a-evidence/dashboard.png",
+      "sha256": "e14fedf484b37d18d602859a872e8afc3d54ea5df8e4bfe11f223656cca0c9c5",
+      "inspected": true
+    },
+    {
+      "source": "docs/v2-7a-evidence/dashboard-hosted-anon.png",
+      "sha256": "0c9e8682ad09fd04814b3260163d3162f1bf8da91726beeb1a7467ba6ea23759",
+      "inspected": true
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+      "sha256": "8a94ed7fc192e246f446425073ef65334ca270f58ecbedc978dce3b5166f2577",
+      "inspected": true
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-readonly.png",
+      "sha256": "44796071cf8b6926f30af3b3d9981b9dd9eff5739c3f232903e0b087d2d6d95d",
+      "inspected": true
+    }
+  ],
+  "observations": [
+    "Dashboard controls and card actions are separated; blank previews belong to blank-slide fixtures.",
+    "Hosted signed-out login and narrow history dialog fit the captured viewport with close controls visible.",
+    "Read-only header/disabled editing and truthful Assistant placeholder remain visible.",
+    "Narrow inspector remains visible; partial canvas and horizontal toolbar clipping remain inherited limitations, not newly fixed.",
+    "History content scrolls within its dialog; no new dialog/control overlap observed."
+  ],
+  "measurements": {
+    "largeDeckSlides": 120,
+    "largeDeckThumbs": 120,
+    "openMs": 1539,
+    "chartCanvasMaxDeltaPx": 0.03066253662109375,
+    "tableCanvasMaxDeltaPx": 0.01891326904296875
+  },
+  "limitations": "Not a new accessibility certification or final119-image/native gate. No UI change in I4."
+}

@@ -1,0 +1,8 @@
+{
+  "source": "9ec660296b6162c49db8f53d82d68488d98cfd3b",
+  "phase": "lightweight pure unit preflight, not full validation qualification",
+  "cpuBusyPercent": 6.441092539747251,
+  "memAvailableKiB": 41039376,
+  "ioPressure": "some avg10=70.82 avg60=69.14 avg300=60.60 total=12591851399\nfull avg10=69.33 avg60=67.32 avg300=58.49 total=12285076455\n",
+  "memoryPressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=620345\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=594560\n"
+}

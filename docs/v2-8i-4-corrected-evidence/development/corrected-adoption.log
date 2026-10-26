@@ -1,0 +1,25 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "previousImplementationSha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
+  "atUtc": "2026-10-26T13:35:22.998862+00:00",
+  "originalOwnershipRecord": "docs/v2-8i-4-evidence/attempts/175a016/frozen-records/docs/v2-8i-4-evidence/owned-postgres.json",
+  "originalOwnershipSha256": "266e4bef2a7c9a7e8e22cabb509b0a4f263bc777cdac3bf7a3360f4ca206f78f",
+  "identity": {
+    "id": "e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce",
+    "name": "forge-v28i4-validation",
+    "port": 5544,
+    "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+    "autoRemove": true,
+    "cpus": 1.0,
+    "memoryBytes": 536870912,
+    "tmpfs": {
+      "/var/lib/postgresql/data": "rw,size=192m"
+    }
+  },
+  "sourceCorrectionOnly": true,
+  "nonMaintenanceDatabases": [],
+  "actualVersion": "15.18",
+  "newContainerCreated": false,
+  "oldOwnershipReplaced": false,
+  "priorOriginalsRestored": "docs/v2-8i-4-evidence/attempts/175a016/retirement.json"
+}

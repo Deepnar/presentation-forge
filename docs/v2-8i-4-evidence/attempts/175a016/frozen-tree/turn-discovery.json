@@ -1,0 +1,22 @@
+{
+  "id": "turn-discovery",
+  "kind": "tests",
+  "implementationSha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
+  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-turn-discovery-8i.test.js test/v2-turn-discovery-sqlite-8i.test.js test/v2-turn-discovery-postgres-8i.test.js test/v2-turn-discovery-process-8i.test.js",
+  "log": "docs/v2-8i-4-evidence/logs/turn-discovery.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 47,
+    "pass": 47,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-turn-discovery-8i.test.js",
+    "test/v2-turn-discovery-sqlite-8i.test.js",
+    "test/v2-turn-discovery-postgres-8i.test.js",
+    "test/v2-turn-discovery-process-8i.test.js"
+  ],
+  "backend": "Actual SQLite and exclusive owned PostgreSQL15.18 where applicable; offline fixtures only. Focused counts overlap primary inventory."
+}

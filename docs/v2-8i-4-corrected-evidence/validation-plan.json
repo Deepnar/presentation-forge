@@ -1,7 +1,7 @@
 {
-  "implementationSha": "175a0163618e4a8ffcd68c51224b8eaef4e01440",
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
   "inventoryIncludesWorkingTreeGovernanceTests": false,
-  "inventoryMethod": "I4 actual238 disjoint primary files:198 bulk,26 serial browser/build,14 PostgreSQL/process. Four new discovery entries; complete union asserted before execution. Development partial probes supply no full I4 gate pass.",
+  "inventoryMethod": "Corrected I4 actual238 disjoint primary files:198bulk/26serial/14PG-process. New actual raw-byte corruption oracle stays in the existing SQLite entry. No source175 partial passes transfer.",
   "bulk": [
     "test/account-cleanup.test.js",
     "test/auth.test.js",

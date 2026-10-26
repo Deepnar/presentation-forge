@@ -1,0 +1,217 @@
+[
+  {
+    "source": "docs/v2-8i-4-evidence/RUNBOOK.md",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/RUNBOOK.md",
+    "sha256": "fa9ba1e985c0e2552b64393e66c1cd52b4f94352107af467ac94be0b48f5fa20"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/assemble-results.py",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/assemble-results.py",
+    "sha256": "3364ae89d9a2feae0c7ae26b2749e7ae99c6e7bea37d12034eab8501b81ae94c"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/assess-resources.py",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/assess-resources.py",
+    "sha256": "10f405886e1b6043737b17d745e47b423fcf742d7e69b8d23aff0dd8a3ddb0cc"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/backup-manifest.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/backup-manifest.json",
+    "sha256": "74da729c9faec6397eacda7e943132323b78d47800964d013afe0f31547df26f"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/cleanup-owned.py",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/cleanup-owned.py",
+    "sha256": "d961440cbf134e650bec9e068975ec47f230e56129f1be5d025ece2faa032131"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/development/cli-utf8-corrected.tap",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/development/cli-utf8-corrected.tap",
+    "sha256": "fd8ba8cffa6a1b5842037e4f544d2f2450de958061598796df67d25f57f59d9c"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/development/cli-utf8-fail-first.tap",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/development/cli-utf8-fail-first.tap",
+    "sha256": "6919aa35a23f92331236a8c0bc0281ada485bef2abcbd01d924ddc695bb45bf9"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/development/governance-attempt-1.tap",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/development/governance-attempt-1.tap",
+    "sha256": "d1dcb8316fc275eea3d8c5b1b0cf478abd5a3f07478f71b537ba2a60e4431ace"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/development/helper-guards.log",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/development/helper-guards.log",
+    "sha256": "032b0107d2fd509478d9217cc24d664cc8c17d5cf274df669b49ac5e15f30064"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/development/helper-preparation-corrected.log",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/development/helper-preparation-corrected.log",
+    "sha256": "de6f78697375b5b56888ee4d385577a65042410d86ee6a094362836793381291"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/development/helper-preparation-fail-first.log",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/development/helper-preparation-fail-first.log",
+    "sha256": "6372908048680915def147953279c1a1cc22280c72a2785accb2990743409737"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/development/results.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/development/results.json",
+    "sha256": "ec68f68a93370fcbe5a2b42b15fa656d92419d7df94b56d40899c3030406e8e9"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/development/sqlite-attempt-1.tap",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/development/sqlite-attempt-1.tap",
+    "sha256": "60562c0ed821eab7b9354ce415bf97c923ec28d6a9d813f533c985b33bc05160"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/development/unit-preflight.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/development/unit-preflight.json",
+    "sha256": "f22d8dd92ea4e5b2348cc326ee83e6abf12b1536442417dd23d913486db78d33"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/development/unit.tap",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/development/unit.tap",
+    "sha256": "9ebb46fcbcbf3c55723361aeff4651579761b0aecb79cdbb9df96f83c6e7c898"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/early-shell-inspection.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/early-shell-inspection.json",
+    "sha256": "d7a52073818f7cb24745c3399cc7ae7a20fb192ce41cf2eaeec21fe0f46b2f89"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/finish-evidence.py",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/finish-evidence.py",
+    "sha256": "6cf7e5e3cb67c7f337b7acf3bf7616c59a12ca43a79bc261e97af06dcba1f7d7"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/headless-check.mjs",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/headless-check.mjs",
+    "sha256": "0ade01e87bd204ff4bb67f546a776e4bf7bad765408b3c778c07c1c0576c6086"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/helper-source-manifest.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/helper-source-manifest.json",
+    "sha256": "2f273a43991ef6501c209f35cb5b1d0faded2aaa0cb4345abd3ef66293f9e9c9"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/http-native.mjs",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/http-native.mjs",
+    "sha256": "b74132e7840d1ffc4b607901065daed362b2d251fa03eae6160d28d1d8b76417"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/inspect-native-ids.mjs",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/inspect-native-ids.mjs",
+    "sha256": "2d022cb4cb064d93cfa3ff4e100e938eeee16d4e793bfa6bdc8ea36ebcc301be"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/logs/non-browser-bulk.tap",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/logs/non-browser-bulk.tap",
+    "sha256": "3739a55dbd354b9b031776cdabcda8f9158ad2d26200e2f75e2f180bb8f72e6f"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/logs/serial-browser.tap",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/logs/serial-browser.tap",
+    "sha256": "c75f972e9b5d8c5aeebedc67ceea711f899508c13ab3ded625b58cb9840bab27"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/logs/turn-discovery.tap",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/logs/turn-discovery.tap",
+    "sha256": "bfaa8271d1ee57c379c3b6fd1fcac3b7fcafb17b63c98bae0dca24089db4d90c"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/native-review.mjs",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/native-review.mjs",
+    "sha256": "a6a190489f2dea16dbb81d44547c0e66efd8cac541e9a628815e1f6bc855a40d"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/non-browser-bulk.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/non-browser-bulk.json",
+    "sha256": "2e075f27ee424d1080c0ef7a96b8317d5fdd2776334ee2ddb7ac96bbca272a4f"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/owned-entry-checks.jsonl",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/owned-entry-checks.jsonl",
+    "sha256": "450629fd05625e9aa3a8e00a686260f333ae966eb47f17d502468d1763685ca0"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/owned-postgres.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/owned-postgres.json",
+    "sha256": "266e4bef2a7c9a7e8e22cabb509b0a4f263bc777cdac3bf7a3360f4ca206f78f"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/prepare-full-validation.py",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/prepare-full-validation.py",
+    "sha256": "9dea32433739975aee99785f3b866312b542a3e649f405d53a01f5517e08723a"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/primary-matrix-checkpoint.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/primary-matrix-checkpoint.json",
+    "sha256": "f02ae1d32969dfa129966026b4b67e9cd1f77c87f27a58d6b02ea4b338b8a7f7"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/quiet_window.py",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/quiet_window.py",
+    "sha256": "cb59addd7c0a82c702ff660929b36304e524ba9dddf64a07e75b7fd8e4b92355"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/run-validation.py",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/run-validation.py",
+    "sha256": "d3da3269bdae5333679447d0d53254c69b239f7871c0e95d2a43f6c13c061214"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/serial-browser.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/serial-browser.json",
+    "sha256": "cc7ef327308a52e4e8a0d8d691afc64907ed81334530bff71168168501123ed0"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/shell-native.mjs",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/shell-native.mjs",
+    "sha256": "373fadafc2a36d9e4d29b35b8824121c38485208286010628774206339ffdee3"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/snapshot-complete.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/snapshot-complete.json",
+    "sha256": "569ae5b040678cad4c4d8213733953474ff7eb68b4a3e1d200f1dc8a436b12ad"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/snapshot-entry-checks.jsonl",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/snapshot-entry-checks.jsonl",
+    "sha256": "c7d65f8279373beae070ccffd3279ec0c511bd89183ce19e054443f9c208c4c4"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/source-manifest.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/source-manifest.json",
+    "sha256": "71809eab4c9130fa83a1b7080e35c86b16154ec88426cb141cf346b5244e3f13"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/sustained-window.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/sustained-window.json",
+    "sha256": "3375e039859d45951857aafef50a02e2d21b1df9e8dc1834c76ce82f8ee7fb6d"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/test-validation-guards.py",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/test-validation-guards.py",
+    "sha256": "acc96c5340f715097512b36dd3d3bb74b9844d0b2de0884dcb332471da65d47f"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/turn-discovery.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/turn-discovery.json",
+    "sha256": "7badd48a87143c75527add7468eb6a464fd7a354c48cab4c2e6d84b89fa04829"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/validation-plan.json",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/validation-plan.json",
+    "sha256": "3d27a97f83ee8cd168c658a0cf4874250e6b3e9bee722f3e7af838cf254c1270"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/validation_guards.py",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/validation_guards.py",
+    "sha256": "6603899fa71b94a092f632e8abb80ca09b2ec9f65e7cc6369d4f57fdeb861c66"
+  },
+  {
+    "source": "docs/v2-8i-4-evidence/verify-owned-cleanup.py",
+    "file": "docs/v2-8i-4-evidence/attempts/175a016/frozen-tree/verify-owned-cleanup.py",
+    "sha256": "c87f9bed340d5afec5e2ddab27de15818f73533b4cdee1ddb275a40568c7b6cd"
+  }
+]
