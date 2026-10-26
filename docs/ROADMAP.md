@@ -9137,11 +9137,13 @@ local inference. Only that separate transport correction is authorized; this aud
     was independently rechecked. The first admission-only attempt retained45samples/
     677.38seconds with CPUpeak79.77% and no qualified sustained window. Its exact
     owned sampler was stopped; zero test leaves were started/cancelled and no I3
-    backend/test/generator exists. All234primary files plus4native scenarios and
-    nine gates remain unexecuted, not passing. Resume fresh quiet qualification
-    through the linked runbook. Complete current-source
-    gates and original-byte preservation remain required. Stop after I3 acceptance/
-    cleanup.
+    backend/test/generator existed at that checkpoint. On 2026-10-26 fresh180.42s
+    qualification and exact owned PostgreSQL15.18 preparation succeeded, preserving
+    all6965historical files/221PPTXs plus5canonical outputs. The two-file focused
+    HTTP gate passed66/66,0fail/skip/cancelled; it overlaps primary scope. Full234-file
+    regression/native/build/type/benchmark/visual execution is proceeding under
+    bounded serial isolation. Complete gates, original-byte preservation and
+    independent acceptance remain required. Stop after I3 acceptance/cleanup.
 
     **Look-ahead.** This supplies durable authenticated ingress before host/provider
     scheduling. The host must resolve policy/credentials and reuse I2's stateless

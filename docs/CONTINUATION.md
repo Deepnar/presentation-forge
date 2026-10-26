@@ -38,14 +38,16 @@ The 2026-10-25 continuation authorizes the next bounded dependency,
 [V2-8I-3 authenticated durable submission](ROADMAP.md#assistant-turn-submission).
 [Its contract](V2-8I-3-EVAL.md) passed separate plan readiness review. Source/tests
 are committed at `2ba82cb`; source/helper readiness passed after the documented
-setup-failure cleanup correction. Behavioral validation awaits a qualified quiet
-window. Read current HANDOFF before execution. The state file retains accepted
-I2 as baseline and indexes the unaccepted I3 source with nine unexecuted gates.
-No new service or model call has started. Preserve offline-only and quiet-window
+setup-failure cleanup correction. On 2026-10-26 fresh quiet qualification and owned
+preparation succeeded; actual both-store focused HTTP contracts passed66/66.
+Full validation is now proceeding. Read current HANDOFF before execution; never
+start a competing coordinator. State retains accepted I2 and the unaccepted I3
+source; other gates remain pending. Preserve offline-only and quiet-window
 constraints; prior I2 success is not new I3 execution. The first admission-only
 attempt is retained (45samples/677.38seconds, no qualified window); its sampler
 was stopped with zero executed/cancelled test leaves and no owned backend created.
-Current HANDOFF/runbook give fresh qualification and initial preparation commands.
+Current HANDOFF/runbook give the actual owned identity and continuation commands;
+do not repeat initial preparation after an owned identity/snapshot already exists.
 
 ## Current accepted slice and reproduction
 

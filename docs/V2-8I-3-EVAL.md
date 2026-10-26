@@ -17,7 +17,7 @@ At plan preparation no new product code, tests, services or model calls had run.
 Source/tests are now committed at `2ba82cb5c321c21d5648f577469f69e82cdcfb24`.
 The [source manifest](v2-8i-3-evidence/source-manifest.json) binds seven changed
 source/test/governance files and the new validation helpers. Syntax/protocol checks
-pass; no behavioral test, service, generator or model execution has run yet.
+passed at the initial checkpoint; resumed execution is recorded below.
 Full exact-source validation and independent implementation acceptance are pending.
 The [separate source/helper review](reviews/V2-8I-3-2ba82cb-source-harness.json)
 found no material product blocker. Its required native fixture setup-failure
@@ -51,6 +51,23 @@ review are not behavioral passes. Implementation acceptance remains pending; the
 recommendation is to withhold acceptance until full validation and independent
 review complete. Resume with fresh qualification/preparation in the linked runbook,
 then stop after I3. No validation process or I3 owned service remains.
+
+## Resumed validation — 2026-10-26
+
+Fresh qualification passed after the host restart: 180.42 seconds, mean CPU4.72%
+and backing-storage busy2.34%, with unchanged thresholds and fresh admission.
+[Provenance](v2-8i-3-evidence/qualification-provenance.json) distinguishes the new
+window from the preserved prior attempt. A new exact owned PostgreSQL15.18 instance
+at loopback5544 is recorded in [the ownership record](v2-8i-3-evidence/owned-postgres.json).
+Preparation snapshotted/hash-verified all6965historical files/221original PPTXs and
+five canonical outputs before any generator.
+
+The [focused HTTP gate](v2-8i-3-evidence/conversation-http.json) passed66/66 across
+the actual SQLite and PostgreSQL entries, with0fail/skip/cancelled. These two files
+overlap the complete primary inventory; no complete matrix total is inferred.
+The remaining full regression/native/build/typecheck/benchmark/visual gates are
+in progress or unexecuted, and implementation acceptance remains pending. Only
+injected/loopback providers are used; no real model API or local inference ran.
 
 ## Bounded contract
 

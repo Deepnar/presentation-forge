@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
-    "note": "I3 source/tests committed; syntax checks only. Complete behavioral validation and independent implementation acceptance remain pending."
+    "note": "Exact I3 source2ba82cb has passed the focused both-store HTTP gate66/66. Full primary/browser/native/build/type/benchmark execution and independent acceptance remain pending."
   },
   "activeMilestone": {
     "id": "V2-8I-3",
@@ -23,62 +23,60 @@
   "validation": [
     {
       "id": "conversation-http",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
+      "status": "passed",
+      "evidence": "docs/v2-8i-3-evidence/conversation-http.json",
+      "reason": "All66 focused actual SQLite/PostgreSQL HTTP cases passed with0fail/skip/cancel. Overlaps primary files; no new distinct total inferred."
     },
     {
       "id": "non-browser-bulk",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
+      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
     },
     {
       "id": "serial-browser",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
+      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
     },
     {
       "id": "postgres-contract",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
+      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
     },
     {
       "id": "cross-process-faults",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
+      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
     },
     {
       "id": "production-build",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
+      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
     },
     {
       "id": "typecheck",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
+      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
     },
     {
       "id": "benchmark-50",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
+      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
     },
     {
       "id": "frontend-visual",
       "status": "unexecuted",
       "evidence": null,
-      "reason": "Unexecuted: sustained shared-machine admission did not qualify; see docs/v2-8i-3-evidence/admission-only-2026-10-25/assessment.json. Prior I2 passes are not I3 execution."
+      "reason": "Current-source full execution is now proceeding after fresh quiet qualification and owned preparation; this gate has not completed yet."
     }
   ],
-  "knownBlockers": [
-    "I3 behavioral validation awaits a qualified sustained quiet window; admission-only evidence records competing CPU spikes. No I3 backend or test started."
-  ],
+  "knownBlockers": [],
   "standingFailures": [
     {
       "id": "byok-locale",
@@ -105,5 +103,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-25"
+  "updated": "2026-10-26"
 }
