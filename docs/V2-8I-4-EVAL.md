@@ -204,14 +204,18 @@ source-only and supplies no independent runtime pass or implementation acceptanc
 Fresh qualification/preparation passed180.561seconds(meanCPU1.312%,iowait9.015%,
 diskbusy0.844%,weightedqueue0.0383), followed by fresh30second admission. New7659
 historical files/253PPTXs+5canonical originals are verified in complete snapshots.
-The ordered coordinator is currently stopped at the resource guard during5K.
+The ordered coordinator was stopped at the resource guard during5K.
 Nine complete serial files passed73/73; the interrupted5K attempt records7passes,
 1CDPtimeout and1unfinished leaf, with no finalTAPsummary. Three actualCPU busy
 samples98.946%,99.953%,99.338% triggered unchanged critical85% protection. The
 [complete attempt](v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/assessment.json)
-is preserved; no other workload was stopped. Same-source full-file retry follows
-fresh qualification; this is not a pass or a final product-regression conclusion. Full remaining execution, separate exact-source acceptance and cleanup
-remain required.
+is preserved; no other workload was stopped. Fresh180.701second requalification (12samples,meanCPU9.018%,iowait8.802%)
+and fresh30second admission then allowed the unchanged full5Kfile to pass9/9,
+0fail/skip/cancelled. [The recovery record](v2-8i-4-corrected-evidence/resource-recovery-after-5k/retry-result.json)
+retains both qualifications and the full retry. The original timeout is classified
+as an environmental timing failure; it remains failed/incomplete historical evidence.
+Ten complete serial files now pass82/82. Remaining ordered execution is active;
+full gates, separate exact-source acceptance and cleanup remain required.
 No partial pass from the original source is a corrected-source pass.
 
 ### Plan and original-source execution

@@ -6,14 +6,16 @@ Read AGENTS, state, [I4 evaluation](V2-8I-4-EVAL.md) and
 [corrected runbook](v2-8i-4-corrected-evidence/RUNBOOK.md). Fresh corrected focus48/48 and198bulkfiles2570/2570 pass,0fail/skip/cancelled;
 remaining7gates are pending. independent source/helper delta is READY for8378a20/packetaa33b22
 (17helper/20source/147retired artifact hashes verified). Fresh180.561s qualification/preparation passed;7659historical files/253PPTXs
-plus5canonical originals were snapshotted/verified. Full corrected coordinator is
-STOPPED after critical CPU contention during v2-edit-chrome-5k. Nine complete
-serial files73/73 and fresh focus48/bulk2570 remain acknowledged. The cancelled
+plus5canonical originals were snapshotted/verified. Full corrected coordinator RESUMED after fresh180.701s quiet requalification
+(12samples,meanCPU9.018%) and30s admission. Tencomplete serialfiles82/82 and
+fresh focus48/bulk2570 are acknowledged. Unchanged full5Kretry passed9/9;
+original critical-CPU/CDPtimeout is an environmental timing failure. The cancelled
 5K attempt has7pass/1CDPtimeout/1unfinished, no finalTAPsummary; root archived it
 under corrected-evidence/resource-interrupted-5k-attempt-1. It is not a pass.
-No test/coordinator/browser remains active; exact owned backend remains live.
-New180s quiet requalification is ACTIVE underroot, then guarded --resume must retain the
-unacknowledged log and rerun the entire unchanged5K file. Root owns allslots.
+Guarded coordinator is ACTIVE underroot, execsession50441, terminal
+out/v2-8i-4-corrected-validation/coordinator-terminal-resume-2.log. Everynewjob
+gets30sadmission. Retained cancellation and recovery directories are immutable.
+Exact owned backend remains live. Root owns allslots.
 Reuse existing `/root/turn_contract_review` at
 high effort only; no extra agents.
 

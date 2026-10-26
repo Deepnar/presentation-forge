@@ -9188,7 +9188,10 @@ local inference. Only that separate transport correction is authorized; this aud
     source8378a20. All238files/nine gates must run fresh in corrected evidence; no
     old partial pass transfers. Corrected freshfocus48/bulk2570 and9serial73 pass;
     the5Kfile was resource-cancelled after7pass/1CDPtimeout/1unfinished at>98%CPU.
-    Its exact log is retained and an unchanged full-file quiet retry is required.
+    Its exact log is retained. Fresh180.701s quiet requalification and30s
+    admission allowed the unchanged full-file retry to pass9/9; this supports an
+    environmental timing classification. Tenserialfiles82/82 now pass; remaining
+    ordered validation is active.
     Exact-source acceptance remains pending;
     no PostgreSQL/full-validation result is inferred from development probes.
     Later host owner selection/provider policy and pickup remain separate contracts.

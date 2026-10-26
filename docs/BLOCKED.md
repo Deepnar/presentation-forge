@@ -305,11 +305,9 @@ Two are worth naming because they look like engineering and are not:
   engineering.
 
 
-Current I4 validation has a temporary measured resource hold: corrected-source5K
-was stopped after three CPU-busy samples above98%, with partial7pass/1CDPtimeout/
-1unfinished and no final TAP summary. No other workload is stopped. Fresh sustained
-quiet qualification unblocks the unchanged full-file retry; root owns its sampler
-and the exact adopted validation backend. This is not missing product direction
-or a passing test. Scope/retry authority remains in
-[the roadmap](ROADMAP.md#assistant-work-discovery) and
-[the evaluation](V2-8I-4-EVAL.md).
+I4's critical-CPU resource hold is resolved by fresh180.701second quiet
+requalification and unchanged full5Kretry9/9,0fail/skip/cancelled. The original
+7pass/1timeout/1unfinished attempt remains retained. Remaining ordered validation,
+independent exact-source decision and exact-owned cleanup are active requirements,
+not absent product direction. See [the evaluation](V2-8I-4-EVAL.md) and
+[roadmap](ROADMAP.md#assistant-work-discovery).

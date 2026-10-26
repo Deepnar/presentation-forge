@@ -1,0 +1,46 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "recordedAtUtc": "2026-10-26T14:18:18.950266+00:00",
+  "retry": {
+    "name": "v2-edit-chrome-5k.test",
+    "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "ionice",
+      "-c",
+      "2",
+      "-n",
+      "7",
+      "timeout",
+      "--signal=TERM",
+      "--kill-after=10s",
+      "15m",
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=./tools/validated-tap.mjs",
+      "test/v2-edit-chrome-5k.test.js"
+    ],
+    "files": [
+      "test/v2-edit-chrome-5k.test.js"
+    ],
+    "exitCode": 0,
+    "atUtc": "2026-10-26T14:17:09.726329+00:00",
+    "durationSeconds": 17.505609,
+    "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-5k.test.log",
+    "tests": {
+      "total": 9,
+      "pass": 9,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "retainedRetryLog": "docs/v2-8i-4-corrected-evidence/resource-recovery-after-5k/full-file-retry.tap",
+  "retryLogSha256": "570af01d05897a54ac96b5aa4f9608276a74e05b79bb6f098504d161352f0ce1",
+  "classification": "Environmental timing failure under measured critical CPU contention; full unchanged file passes after fresh180squalification and30sadmission. Original7pass/1timeout/1unfinished attempt remains separately retained.",
+  "sourceAssertionsTimeoutsChanged": false,
+  "originalAttempt": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/assessment.json"
+}

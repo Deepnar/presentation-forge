@@ -1,0 +1,31 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "recordedAtUtc": "2026-10-26T14:17:21.960933+00:00",
+  "qualification": {
+    "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+    "sampleSeconds": 180.70113693199892,
+    "samples": 12,
+    "cpuBusyMeanPercent": 9.017555298458273,
+    "cpuIoWaitMeanPercent": 8.801685066248965,
+    "diskMeans": {
+      "nvme0n1": {
+        "busyPercent": 1.5041410619474034,
+        "weightedQueue": 0.11716583724632239
+      }
+    },
+    "freshConsecutiveReadySamples": 12,
+    "method": "Duration-weighted sustained headroom with bounded peaks, no observed userspace D threads or memory pressure, followed by two fresh acceptable samples. Raw PSI/iowait retains unresolved provenance."
+  },
+  "purpose": "Fresh same-source requalification after retained critical-CPU cancellation; full unchanged5K retry remains required.",
+  "initialQualificationRetained": "docs/v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/sustained-window.json",
+  "files": [
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/resource-recovery-after-5k/sustained-window.json",
+      "sha256": "4fb2447835889b5f1b1d8c4b15852e63143e12f878fb69963d845a49844b9f4a"
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/resource-recovery-after-5k/requalification-after-5k.log",
+      "sha256": "4dcf1dc8b0c3895bc7e61ea1b2b21d13a9cefd82dfa910a3b2e2c37ece4489be"
+    }
+  ]
+}
