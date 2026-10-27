@@ -1,0 +1,523 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "archives": [
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/native/sqlite-openai-compatible/before.pptx",
+      "sha256": "f99ec8d5954819046cc93408055d7cdb94047c6cbc224016080a8b5a7210a747",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/native/sqlite-openai-compatible/after.pptx",
+      "sha256": "c393edcca57fb7707a2393f7d82d05def50466feefa55ed3cd7728db9246ee8a",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/native/postgres-openai-compatible/before.pptx",
+      "sha256": "291bb56310b960f25b7287e8144e0a27f176e7d8ca3f5e050261623429870826",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/native/postgres-openai-compatible/after.pptx",
+      "sha256": "a52f4f188a3e9399c13252bb187b0748a829f36162506cf273a25c0c31ba59cf",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/native/sqlite-anthropic/before.pptx",
+      "sha256": "022401f44be2b29cf9bf1c84dc7a90cd83f5ae06e14287582aa2546b748a3cc2",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/native/sqlite-anthropic/after.pptx",
+      "sha256": "a23770650eed51e5ef8cb45e7ba701fb96c99a42022758561dbf67bffacf2702",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/native/postgres-anthropic/before.pptx",
+      "sha256": "45d04b49ac528421fe5cfd2fbc1a5b74c4a7c3d8b83831529c105cbb77eef4ec",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/native/postgres-anthropic/after.pptx",
+      "sha256": "85ebc8877be730d3a01e29bdcaf76dfa416259589bc42bd83534363b5b6561bd",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-chart.pptx",
+      "sha256": "813738277e46387653c803336aca351e17f9af20e778471a76146bb7a3e19c15",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 3
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 5
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/browser-archives/out--v2-7b-1-validation--browser--imported-table.pptx",
+      "sha256": "e03f1097cbc007c7361a079f5b00051fdf199dd150654c43e047590781c3ff19",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 3
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 5
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/browser-archives/out--v2-7b-2-validation--browser--handoff.pptx",
+      "sha256": "39a89e205123829f41b0cf0195dff078b1cafaf5f848921ecef19b2938ee9807",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 3
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 5
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide3.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/browser-archives/out--v2-7a-validation--shell-chart.pptx",
+      "sha256": "0369709d3ede2297e1be5044c377e4d0d5e0bb3a09f4df8326537b7efa006496",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 6
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/browser-archives/out--v2-7a-validation--shell-table.pptx",
+      "sha256": "8c3fcb4f1ec4d5ecfb547989ea1f2b11c9fc46d6e74edb225e0fa109dbc95c63",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/http-archives/sqlite-approved.pptx",
+      "sha256": "38836e5e6ae34b7ef431b52e1fc38f8302af8d22ec0e3144f200a47181effe27",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/http-archives/postgres-approved.pptx",
+      "sha256": "f01f56d98afc30b9ee98d4bd00d44581b5264df5a11a003f77633dd0bf915ff0",
+      "parts": [
+        {
+          "part": "ppt/slideLayouts/slideLayout1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/slides/slide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide1.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slides/slide2.xml",
+          "nonvisualProperties": 2
+        },
+        {
+          "part": "ppt/notesSlides/notesSlide2.xml",
+          "nonvisualProperties": 4
+        },
+        {
+          "part": "ppt/slideMasters/slideMaster1.xml",
+          "nonvisualProperties": 1
+        },
+        {
+          "part": "ppt/notesMasters/notesMaster1.xml",
+          "nonvisualProperties": 7
+        }
+      ]
+    }
+  ]
+}

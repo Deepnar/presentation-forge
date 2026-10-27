@@ -1,0 +1,17 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "packetSha": "78ab07ec72e29b325407158c9ef8ae45e08cabab",
+  "atUtc": "2026-10-27T06:43:57.468967+00:00",
+  "sampleSeconds": 5.000413001000197,
+  "cpuBusyPercent": 8.409354785204844,
+  "cpuIoWaitPercent": 8.351302040139327,
+  "availableKiB": 28236676,
+  "pressure": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.60 total=33188985\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.09 total=4917727\nfull avg10=0.00 avg60=0.00 avg300=0.08 total=4699481\n",
+    "io": "some avg10=45.73 avg60=44.70 avg300=40.61 total=883436775\nfull avg10=45.19 avg60=43.52 avg300=38.62 total=820552714\n"
+  },
+  "nvmeBusyPercent": 1.399884369271066,
+  "selection": "Short fresh observation for bounded unit/temporary-SQLite/CLI checks only; no broad resource sweep or rendering.",
+  "readyForSelectedLightweightChecks": true
+}

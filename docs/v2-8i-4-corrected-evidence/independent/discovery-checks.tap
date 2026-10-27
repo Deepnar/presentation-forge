@@ -1,0 +1,192 @@
+TAP version 13
+# Subtest: SQLite discovery CLI: separate processes resume filtered pagination without writes or hidden polling
+ok 1 - SQLite discovery CLI: separate processes resume filtered pagination without writes or hidden polling
+  ---
+  duration_ms: 1039.813195
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: omitting owner enumerates only explicit null-owner projects
+ok 2 - SQLite discovery CLI: omitting owner enumerates only explicit null-owner projects
+  ---
+  duration_ms: 536.1041
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch
+ok 3 - SQLite discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch
+  ---
+  duration_ms: 2728.880192
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: corrupt operational metadata produces no partial output or private echo
+ok 4 - SQLite discovery CLI: corrupt operational metadata produces no partial output or private echo
+  ---
+  duration_ms: 290.61639
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid
+ok 5 - SQLite discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid
+  ---
+  duration_ms: 557.810324
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: approved hints require explicit canonical work and replays preserve one edit
+ok 6 - SQLite discovery CLI: approved hints require explicit canonical work and replays preserve one edit
+  ---
+  duration_ms: 1385.520362
+  type: 'test'
+  ...
+# Subtest: discovery rejects authority, unsafe values and invalid identifiers before backend I/O
+ok 7 - discovery rejects authority, unsafe values and invalid identifiers before backend I/O
+  ---
+  duration_ms: 3.820488
+  type: 'test'
+  ...
+# Subtest: discovery snapshots owner and nested cursor before its first await
+ok 8 - discovery snapshots owner and nested cursor before its first await
+  ---
+  duration_ms: 1.574838
+  type: 'test'
+  ...
+# Subtest: empty filtered pages progress by scanned rows, without treating candidates as a snapshot
+ok 9 - empty filtered pages progress by scanned rows, without treating candidates as a snapshot
+  ---
+  duration_ms: 0.698176
+  type: 'test'
+  ...
+# Subtest: metadata hints preserve expired preparation, live leases and approved turns without claiming work
+ok 10 - metadata hints preserve expired preparation, live leases and approved turns without claiming work
+  ---
+  duration_ms: 0.579096
+  type: 'test'
+  ...
+# Subtest: bytewise traversal handles supplementary Unicode independently of UTF-16 sort order
+ok 11 - bytewise traversal handles supplementary Unicode independently of UTF-16 sort order
+  ---
+  duration_ms: 0.55623
+  type: 'test'
+  ...
+# Subtest: malformed metadata and unconsumable generation refuse privately without partial results
+ok 12 - malformed metadata and unconsumable generation refuse privately without partial results
+  ---
+  duration_ms: 1.304725
+  type: 'test'
+  ...
+# Subtest: backend accessors, excess rows, duplicates and ordering errors cannot escape the page contract
+ok 13 - backend accessors, excess rows, duplicates and ordering errors cannot escape the page contract
+  ---
+  duration_ms: 0.677736
+  type: 'test'
+  ...
+# Subtest: complete result remains within its UTF-8 ceiling for fifty heavily escaped hints
+ok 14 - complete result remains within its UTF-8 ceiling for fifty heavily escaped hints
+  ---
+  duration_ms: 3.887375
+  type: 'test'
+  ...
+# Subtest: unexpected backend exceptions retain fixed private failure while known storage codes survive
+ok 15 - unexpected backend exceptions retain fixed private failure while known storage codes survive
+  ---
+  duration_ms: 0.367967
+  type: 'test'
+  ...
+# Subtest: query parameters carry owner/cursor values and every selected text has a SQL byte guard
+ok 16 - query parameters carry owner/cursor values and every selected text has a SQL byte guard
+  ---
+  duration_ms: 0.453315
+  type: 'test'
+  ...
+# Subtest: SQLite: empty discovery creates no chat, run, revision or accounting row
+ok 17 - SQLite: empty discovery creates no chat, run, revision or accounting row
+  ---
+  duration_ms: 38.479504
+  type: 'test'
+  ...
+# Subtest: SQLite: SQL owner predicates isolate null, case and Unicode identities before page limits
+ok 18 - SQLite: SQL owner predicates isolate null, case and Unicode identities before page limits
+  ---
+  duration_ms: 20.28824
+  type: 'test'
+  ...
+# Subtest: SQLite: keyset pagination progresses across empty filtered pages and multiple projects
+ok 19 - SQLite: keyset pagination progresses across empty filtered pages and multiple projects
+  ---
+  duration_ms: 15.112852
+  type: 'test'
+  ...
+# Subtest: SQLite: foreign, deleted and nonexistent cursor positions need no existence capability
+ok 20 - SQLite: foreign, deleted and nonexistent cursor positions need no existence capability
+  ---
+  duration_ms: 9.483448
+  type: 'test'
+  ...
+# Subtest: SQLite: Unicode cursor order matches binary database order for BMP and supplementary IDs
+ok 21 - SQLite: Unicode cursor order matches binary database order for BMP and supplementary IDs
+  ---
+  duration_ms: 9.895298
+  type: 'test'
+  ...
+# Subtest: SQLite: at-limit pages materialize at most51rows and preserve all stored bytes
+ok 22 - SQLite: at-limit pages materialize at most51rows and preserve all stored bytes
+  ---
+  duration_ms: 36.291041
+  type: 'test'
+  ...
+# {"sample":"128legitimate bounded turn records, one owner/project","pages":3,"scanned":128,"elapsedMs":11.146878999999956,"physicalWorkBoundClaimed":false}
+# {"queryPlan":[{"id":11,"parent":0,"notused":61,"detail":"SEARCH p USING INDEX idx_v2_projects_owner (owner=?)"},{"id":17,"parent":0,"notused":62,"detail":"SEARCH t USING INDEX idx_v2_agent_turn_project (project_id=?)"},{"id":23,"parent":0,"notused":47,"detail":"SEARCH h USING INDEX sqlite_autoindex_v2_agent_conversations_1 (project_id=?) LEFT-JOIN"},{"id":94,"parent":0,"notused":0,"detail":"USE TEMP B-TREE FOR ORDER BY"}],"noNewIndex":true}
+# Subtest: SQLite: oversized multibyte metadata and missing/mismatched headers refuse bounded private pages
+ok 23 - SQLite: oversized multibyte metadata and missing/mismatched headers refuse bounded private pages
+  ---
+  duration_ms: 10.332904
+  type: 'test'
+  ...
+# Subtest: SQLite: NUL-prefixed oversized SQLite TEXT and IDs never materialize unbounded
+ok 24 - SQLite: NUL-prefixed oversized SQLite TEXT and IDs never materialize unbounded
+  ---
+  duration_ms: 24.888471
+  type: 'test'
+  ...
+# Subtest: SQLite: raw malformed UTF-8 refuses metadata without replacing identifier bytes
+ok 25 - SQLite: raw malformed UTF-8 refuses metadata without replacing identifier bytes
+  ---
+  duration_ms: 9.501362
+  type: 'test'
+  ...
+# Subtest: SQLite: private chat and project bodies are never loaded by discovery
+ok 26 - SQLite: private chat and project bodies are never loaded by discovery
+  ---
+  duration_ms: 33.760612
+  type: 'test'
+  ...
+# Subtest: SQLite: discovery never reconciles expired preparation or changes a live lease
+ok 27 - SQLite: discovery never reconciles expired preparation or changes a live lease
+  ---
+  duration_ms: 8.474399
+  type: 'test'
+  ...
+# Subtest: SQLite: discovered submissions are fenced by clear and ownership change before I2
+ok 28 - SQLite: discovered submissions are fenced by clear and ownership change before I2
+  ---
+  duration_ms: 13.568353
+  type: 'test'
+  ...
+# Subtest: SQLite: a human save fences a discovered preparation before any provider dispatch
+ok 29 - SQLite: a human save fences a discovered preparation before any provider dispatch
+  ---
+  duration_ms: 15.740679
+  type: 'test'
+  ...
+# Subtest: SQLite: discovered approved and terminal hints still use stored approval and canonical execution
+ok 30 - SQLite: discovered approved and terminal hints still use stored approval and canonical execution
+  ---
+  duration_ms: 73.61812
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7631.074745

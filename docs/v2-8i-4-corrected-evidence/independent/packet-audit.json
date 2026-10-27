@@ -1,0 +1,688 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "packetSha": "78ab07ec72e29b325407158c9ef8ae45e08cabab",
+  "sourceChangedFiles": 20,
+  "sourceHashesMatch": true,
+  "sourceRuntimeTestGovernanceDeltaEmpty": true,
+  "orderedJobsInspected": 50,
+  "primaryFiles": 238,
+  "primaryTests": {
+    "total": 3097,
+    "pass": 3097,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "focusedOverlap": {
+    "total": 48,
+    "pass": 48,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "additionalNativeCases": {
+    "total": 4,
+    "pass": 4,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "retainedPGProcessGroup": {
+    "files": 14,
+    "tests": {
+      "total": 319,
+      "pass": 319,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "qualification": "Includes SQLite halves of both-store process files; not319individual PostgreSQL-only cases. Inspected historical execution, not independently replayed."
+  },
+  "standingLocale": {
+    "total": 10,
+    "pass": 9,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "allImageHashesMatch": true,
+  "images": 119,
+  "visualInspection": {
+    "contactSheets": 20,
+    "contactImages": 119,
+    "fullSizeImages": [
+      "docs/v2-8i-4-corrected-evidence/regression-images/docs--v2-7a-evidence--editor-narrow-projects.png",
+      "docs/v2-8i-4-corrected-evidence/regression-images/docs--v2-7c-2-evidence--catalog-narrow-dialog.png",
+      "docs/v2-8i-4-corrected-evidence/native/sqlite-openai-compatible/after-1.png",
+      "docs/v2-8i-4-corrected-evidence/native/postgres-openai-compatible/after-1.png",
+      "docs/v2-8i-4-corrected-evidence/native/postgres-anthropic/after-1.png",
+      "docs/v2-8i-4-corrected-evidence/native/shell-table.png"
+    ],
+    "newRenders": 0
+  },
+  "historicalPreservation": {
+    "files": 7659,
+    "pptx": 253,
+    "canonicalOriginals": 5,
+    "allCurrentHashesMatch": true,
+    "originalByteReconstruction": false
+  },
+  "nativeStructuralInspection": {
+    "archives": 15,
+    "parts": 107,
+    "nonvisualProperties": 365,
+    "allOriginalHashesMatch": true,
+    "withinPartDuplicates": 0,
+    "renderersExecuted": false
+  },
+  "rawJobs": [
+    {
+      "job": "turn-discovery-gate",
+      "log": "out/v2-8i-4-corrected-validation/turn-discovery-gate.log",
+      "sha256": "821f38af29275d0946a83088c6498dcaa1233b18b75ea87e2ac5457f9f47fc3c",
+      "exitCode": 0,
+      "tests": {
+        "total": 48,
+        "pass": 48,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "bulk",
+      "log": "out/v2-8i-4-corrected-validation/bulk.log",
+      "sha256": "a81b75e31eeae2959cf6437c9797eeb4f99e3db5ecbeacb056fcf91417361ff8",
+      "exitCode": 0,
+      "tests": {
+        "total": 2570,
+        "pass": 2570,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-7a.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-7a.test.log",
+      "sha256": "2e25b965d5a0943780c365de2ee36a7c42cbf1d10ccf8223c9c78407fb1f8492",
+      "exitCode": 0,
+      "tests": {
+        "total": 28,
+        "pass": 28,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "freeform.test",
+      "log": "out/v2-8i-4-corrected-validation/freeform.test.log",
+      "sha256": "900e87aec15aa30fbfa3c1d70a06cdd84c720ea78529797456706c1fbe818a3c",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "plate.test",
+      "log": "out/v2-8i-4-corrected-validation/plate.test.log",
+      "sha256": "88aae89b0ba23b4803c915625993944a254066e3d0bb761054e3fff004368e8e",
+      "exitCode": 0,
+      "tests": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-5c.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-5c.test.log",
+      "sha256": "3276ffc721173aae4f40f8b3c05334a46f8665124687a350765741ed4420b500",
+      "exitCode": 0,
+      "tests": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-5d.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-5d.test.log",
+      "sha256": "a2bf4e6ca3dae1ca5ccd1015102452e4229a80d97bfaa468738467b42431280f",
+      "exitCode": 0,
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-5e.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-5e.test.log",
+      "sha256": "003e418008ed6a1ae22c47ea84f3d46e8090bde0ced4fbdf60cb1ca76d10432c",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-5f.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-5f.test.log",
+      "sha256": "e485a1d22b0695dcf37904317bc861da9dda64617fb4ae37210e5b0d0fa3c6af",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-5i.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-5i.test.log",
+      "sha256": "f95ea7abfc17687472296fe96b82633e2b4c42a5ea3586bea3696eb27810ccf0",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-5j.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-5j.test.log",
+      "sha256": "7874db27521c6595815ca5ac4d4bdcff83e2efbc2c21dc846103198402793305",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-5k.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-5k.test.log",
+      "sha256": "570af01d05897a54ac96b5aa4f9608276a74e05b79bb6f098504d161352f0ce1",
+      "exitCode": 0,
+      "tests": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-6a.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-6a.test.log",
+      "sha256": "ab53476b2ab03cf338644039fcc92a6e33feb8984491fa54053f7dd569f61ce8",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-6b.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-6b.test.log",
+      "sha256": "34b0779057eb3dae5c5ce5d9da30e2ff59ba5c73cce076128a244a6901ba5f25",
+      "exitCode": 0,
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-6c.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-6c.test.log",
+      "sha256": "8b3b20ed490dc1c921e81e0dc73fb6b102f5021fbccd751ee2fa4fe630b14be0",
+      "exitCode": 0,
+      "tests": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-chart.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-chart.test.log",
+      "sha256": "641963b693f3532dfa3f304f2de346e0991f145b65185a0a95dd82caf5ae51a3",
+      "exitCode": 0,
+      "tests": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-edit-chrome-table.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-edit-chrome-table.test.log",
+      "sha256": "9b672b55d9427e97819c3c0d7904007ef6ed5fce2d4affee3170b4c66bce1367",
+      "exitCode": 0,
+      "tests": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-fontgate-4e.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-fontgate-4e.test.log",
+      "sha256": "af18bb9a36990c95c2abdc4c81ffa58a95a379783ac8d4fd88ae1efba976ffdd",
+      "exitCode": 0,
+      "tests": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-fonts-4d.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-fonts-4d.test.log",
+      "sha256": "eab47f2d839520bae54bf5751cbbf2f2ca673e7b09c57794f54aee42253b0374",
+      "exitCode": 0,
+      "tests": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-live-chrome-4f.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-live-chrome-4f.test.log",
+      "sha256": "3815713f9ca1f7ea7a48504e1982cb47397e7487943a20b5d37f40c53a9d38dc",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-plate-3f5.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-plate-3f5.test.log",
+      "sha256": "4fa85de19482bc1aab3a981d6e2e7bc642f1601e41c31533c549fb1b03df1052",
+      "exitCode": 0,
+      "tests": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-selection-chrome.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-selection-chrome.test.log",
+      "sha256": "74173707c70bd533a594a28371ed708c0ca76801eb88e1f71adff8a643162a4a",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-viewer-smoke.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-viewer-smoke.test.log",
+      "sha256": "52e1fd1ca68f06adcd3b3b3d2e540f78a9c1c9410b8b89a56357bc1a0bbff037",
+      "exitCode": 0,
+      "tests": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-import-chrome-7b.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-import-chrome-7b.test.log",
+      "sha256": "82fa8429446296b1afa9523a6391b4060593c3269a4f08c2e4e504b9c7e8c8c0",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-handoff-chrome-7b.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-handoff-chrome-7b.test.log",
+      "sha256": "7a48722183fac36ac4cca1c32411b3d133055b2b8cad3f8840c9da687f521fcb",
+      "exitCode": 0,
+      "tests": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-project-covers-chrome-7c.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-project-covers-chrome-7c.test.log",
+      "sha256": "82852ab916d5c2d55efb7444ef863e5f0b4828717606da2e0ac5ddca8151c605",
+      "exitCode": 0,
+      "tests": {
+        "total": 12,
+        "pass": 12,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-project-catalog-chrome-7c.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-project-catalog-chrome-7c.test.log",
+      "sha256": "afee3e0113eb39683a40edccfc06cd9a51d7c2f193733f162ab23a6bceeee949",
+      "exitCode": 0,
+      "tests": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-editor-toolbar-chrome-7c.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-editor-toolbar-chrome-7c.test.log",
+      "sha256": "f20d2122dfb72a807a16f74738687b90395ceb5490a2dfc64c16c4ea4ae46348",
+      "exitCode": 0,
+      "tests": {
+        "total": 9,
+        "pass": 9,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-conversation-http-postgres-8i.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-conversation-http-postgres-8i.test.log",
+      "sha256": "bc1480637b58918f6d199a857f336c0e773993c361200f3e6615ea326d0ed124",
+      "exitCode": 0,
+      "tests": {
+        "total": 32,
+        "pass": 32,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-conversation-postgres-8e.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-conversation-postgres-8e.test.log",
+      "sha256": "affcf3feba589826e37277bd6f008b528c59eb5292392d2b5ae63eb1db87fe1a",
+      "exitCode": 0,
+      "tests": {
+        "total": 38,
+        "pass": 38,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-import-postgres-7b.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-import-postgres-7b.test.log",
+      "sha256": "0314698f5a9e7184cb66607880c106d65ba17403f88987ea68c8ab09a2bd351d",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-projects-6c-concurrency.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-projects-6c-concurrency.test.log",
+      "sha256": "24052dd03a3b5ba61925a63382492fe6eed3506573d565410dd680a91cd9b973",
+      "exitCode": 0,
+      "tests": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-projects-6c-faults.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-projects-6c-faults.test.log",
+      "sha256": "c4b222f802a631422a89ff121b96a7d6f94d676bf364747a6483608eb067cf87",
+      "exitCode": 0,
+      "tests": {
+        "total": 8,
+        "pass": 8,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-projects-6c-postgres.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-projects-6c-postgres.test.log",
+      "sha256": "527aa408029ab70c6726ba4f72662f9d073ed7824043a2561722ad682f0eee55",
+      "exitCode": 0,
+      "tests": {
+        "total": 17,
+        "pass": 17,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-provider-postgres-8c.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-provider-postgres-8c.test.log",
+      "sha256": "2d8cf360ea6615e582135d7a238532469f07b3cb01918c42deaf42a34a8a9248",
+      "exitCode": 0,
+      "tests": {
+        "total": 10,
+        "pass": 10,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-provider-run-postgres-8d.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-provider-run-postgres-8d.test.log",
+      "sha256": "04601adc9466f8f7125e315b4f9d679201304c05ecb147122c7e6c5086564080",
+      "exitCode": 0,
+      "tests": {
+        "total": 42,
+        "pass": 42,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-runtime-postgres-8b.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-runtime-postgres-8b.test.log",
+      "sha256": "bdea7cab9b33818d2ab84267c049714cef248a2a047d2824c8365234c78b0ffa",
+      "exitCode": 0,
+      "tests": {
+        "total": 34,
+        "pass": 34,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-turn-discovery-postgres-8i.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-turn-discovery-postgres-8i.test.log",
+      "sha256": "277a021b476eb1c296fdab97d1ce13a3256a753031bfa534046a59fdd48cf6e4",
+      "exitCode": 0,
+      "tests": {
+        "total": 12,
+        "pass": 12,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-turn-discovery-process-8i.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-turn-discovery-process-8i.test.log",
+      "sha256": "023b487c4331ba4b5d0a4d27914bf06b1b968296acab62fe202483a933a607ad",
+      "exitCode": 0,
+      "tests": {
+        "total": 12,
+        "pass": 12,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-turn-worker-postgres-8i.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-turn-worker-postgres-8i.test.log",
+      "sha256": "212b7e5d5d53db0137d7e5d926148c84c6276050a197217842195ed63dec9c0e",
+      "exitCode": 0,
+      "tests": {
+        "total": 25,
+        "pass": 25,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-turn-worker-process-8i.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-turn-worker-process-8i.test.log",
+      "sha256": "adfcf125b047d286841f792284ab6791cd8840cde899a00342b7e35f12720d87",
+      "exitCode": 0,
+      "tests": {
+        "total": 28,
+        "pass": 28,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "v2-turns-postgres-8h.test",
+      "log": "out/v2-8i-4-corrected-validation/v2-turns-postgres-8h.test.log",
+      "sha256": "c43c010004f54efcf1b00001038197edb593d640e316d66aac268b3eb1591ac8",
+      "exitCode": 0,
+      "tests": {
+        "total": 44,
+        "pass": 44,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "production-build",
+      "log": "out/v2-8i-4-corrected-validation/production-build.log",
+      "sha256": "fdcdd8e0e958fb12381be9ae27268245bee0de393f8d806e521058a911254237",
+      "exitCode": 0,
+      "tests": null
+    },
+    {
+      "job": "typecheck",
+      "log": "out/v2-8i-4-corrected-validation/typecheck.log",
+      "sha256": "5b7f3df27a2b67b5ec58d28781702999fd5e43a5c7f20576d631e777f0477c88",
+      "exitCode": 0,
+      "tests": null
+    },
+    {
+      "job": "benchmark-50",
+      "log": "out/v2-8i-4-corrected-validation/benchmark-50.log",
+      "sha256": "d85e6e865bd7c8b124ceb2b61189b944ddc0de24c36e289e7e56ba964035be4d",
+      "exitCode": 0,
+      "tests": null
+    },
+    {
+      "job": "headless",
+      "log": "out/v2-8i-4-corrected-validation/headless.log",
+      "sha256": "c79d70b8666332a9f8a7f567d0469e595777f19ac7983d83eeda9a0aac036274",
+      "exitCode": 0,
+      "tests": null
+    },
+    {
+      "job": "byok-locale",
+      "log": "out/v2-8i-4-corrected-validation/byok-locale.log",
+      "sha256": "41d4e7f166a38023ed49aae560f8ecfea0e0baf484fbebc0a253072bad4e9eb7",
+      "exitCode": 1,
+      "tests": {
+        "total": 10,
+        "pass": 9,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "job": "native-review",
+      "log": "out/v2-8i-4-corrected-validation/native-review.log",
+      "sha256": "c5d8077f587916a6af3af80022d73bbc6127c2cf0d5b25498581d49d537dfbd0",
+      "exitCode": 0,
+      "tests": null
+    },
+    {
+      "job": "shell-native",
+      "log": "out/v2-8i-4-corrected-validation/shell-native.log",
+      "sha256": "223f061a6a603fa03e03758dbe27f04ecf0df653cdf3e178a452cc5bcffb104a",
+      "exitCode": 0,
+      "tests": null
+    },
+    {
+      "job": "http-native",
+      "log": "out/v2-8i-4-corrected-validation/http-native.log",
+      "sha256": "ba6d56568c7a92b4e8786e4dd4c240eccb958a167fb229157c556af6476294bb",
+      "exitCode": 0,
+      "tests": null
+    }
+  ]
+}

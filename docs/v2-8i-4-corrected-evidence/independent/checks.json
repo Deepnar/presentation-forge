@@ -1,0 +1,43 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "packetSha": "78ab07ec72e29b325407158c9ef8ae45e08cabab",
+  "atUtc": "2026-10-27T06:44:07.099203+00:00",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "3m",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "test/v2-turn-discovery-8i.test.js",
+    "test/v2-turn-discovery-sqlite-8i.test.js",
+    "docs/v2-8i-4-corrected-evidence/independent/sqlite-cli-repeat.mjs"
+  ],
+  "files": [
+    "test/v2-turn-discovery-8i.test.js",
+    "test/v2-turn-discovery-sqlite-8i.test.js",
+    "docs/v2-8i-4-corrected-evidence/independent/sqlite-cli-repeat.mjs"
+  ],
+  "exitCode": 0,
+  "tests": {
+    "total": 30,
+    "pass": 30,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "overlap": "All selected cases repeat current primary/focused discovery coverage. SQLite-only process wrapper avoids importing the unavailable PG setup; no new primary cases added.",
+  "excluded": "No PG suite/services, broad bulk/browser/build/typecheck/benchmark or native generators repeated under focused review direction. Retained evidence inspected separately.",
+  "temporarySQLiteOnly": true,
+  "generatorsExecuted": false
+}

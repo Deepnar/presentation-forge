@@ -1,0 +1,136 @@
+{
+  "decision": "ACCEPT",
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "acceptedBaseline": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+  "packetSha": "78ab07ec72e29b325407158c9ef8ae45e08cabab",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "kind": "independent-review",
+  "reviewDate": "2026-10-27",
+  "evidence": "docs/reviews/V2-8I-4-8378a20.md",
+  "scope": "Bounded trusted owner-scoped metadata discovery and operator discover CLI only; canonical H/I2 work authority unchanged.",
+  "sourceInspection": {
+    "changedFiles": 20,
+    "exactHashesMatch": true,
+    "runtimeTestGovernanceDeltaEmpty": true,
+    "materialProductFindings": []
+  },
+  "independentlyExecuted": {
+    "tests": {
+      "total": 30,
+      "pass": 30,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "composition": {
+      "pure": 10,
+      "actualSQLite": 14,
+      "SQLiteCLIProcess": 6
+    },
+    "rawEvidence": "docs/v2-8i-4-corrected-evidence/independent/checks.json",
+    "allCasesRepeatPrimary": true,
+    "newPrimaryCases": 0,
+    "postgresql": "unexecuted; removed owned backend unavailable, no setup-skip suite invoked",
+    "typecheckBuildBrowserBenchmarkNativeGenerators": "not repeated under explicit focused-validation direction; retained exact-source evidence inspected"
+  },
+  "inspectedExecution": {
+    "orderedJobs": 50,
+    "primaryFiles": 238,
+    "primaryTests": {
+      "total": 3097,
+      "pass": 3097,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "focusedOverlap": {
+      "total": 48,
+      "pass": 48,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "additionalDistinctNativeCases": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "postgresProcessGroup": {
+      "files": 14,
+      "tests": {
+        "total": 319,
+        "pass": 319,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "qualification": "Includes SQLite halves of both-store process files; not319individual PostgreSQL-only cases. Inspected historical execution, not independently replayed."
+    },
+    "allNineRequiredSourceGates": "passed in retained current-source execution; independently inspected, not rerun",
+    "audit": "docs/v2-8i-4-corrected-evidence/independent/packet-audit.json"
+  },
+  "inspectedArtifacts": {
+    "imageHashes": 119,
+    "imagesViewedInContactSheets": 119,
+    "contactSheets": 20,
+    "fullSizeRiskCases": 6,
+    "originalPptxArchives": 15,
+    "ooxmlParts": 107,
+    "nonvisualProperties": 365,
+    "withinPartDuplicates": 0,
+    "newRenderExecution": false,
+    "historicalCurrentHashesMatched": {
+      "files": 7659,
+      "pptx": 253,
+      "canonicalOriginals": 5
+    },
+    "reconstructedOriginalBytes": false
+  },
+  "standingLocale": {
+    "tests": {
+      "total": 10,
+      "pass": 9,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "assessment": "Acknowledged separate inherited diagnostic outside the nine required gates; no formal validation waiver or new discovery failure."
+  },
+  "cleanupAssessment": {
+    "plannedSavedZeroThenSingleStopCompletedOrProven": false,
+    "operationalProvenanceLimitationAcceptedForSource": true,
+    "id": "e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce",
+    "currentExactIdAbsent": true,
+    "currentPortConnectionRefused": true,
+    "preRemovalDatabaseCount": null,
+    "preRemovalObservationSaved": false,
+    "removalCause": "unavailable",
+    "independentObservation": "docs/v2-8i-4-corrected-evidence/independent/backend-absence.json",
+    "cleanupPassedClaimed": false,
+    "countReconstructed": false,
+    "additionalStopOrRemovalIssued": false,
+    "serviceRecreated": false,
+    "reason": "Source correctness and all retained actual validation gates are established; adoption/ownership during execution and current absence are recorded, focused behavior independently passes, and historical originals match. Missing pre-removal catalog/removal provenance is not evidence of an application defect or an ongoing owned service. Accept this explicit operational limit without marking the planned cleanup procedure passed or converting unexecuted evidence to a pass."
+  },
+  "priorAttempts": {
+    "source175": "retired 231-file/2899 primary and47 focused partial passes; raw malformed-byte probe0/1 remains failed even though trailing cat made shell exit0; no passes transfer",
+    "productCorrections": "CLI strict input decoding, SQLite capped-BLOB/fatal decoding and BOM identity corrections retain fail-first evidence",
+    "helperCorrections": "Plan identity, full source guard, snapshot prerequisite and preparation hash-shadow failures retained",
+    "corrected5KAttempt": "cancelled/incomplete:7 reported passes,1CDP timeout,1unfinished, no final TAP/cancellation total; unchanged full retry9/9 after fresh quiet qualification"
+  },
+  "residualLimits": [
+    "No current independent PostgreSQL replay; retained14-file319/319 group includes SQLite halves of process files.",
+    "No saved pre-removal catalog or known removal cause; cleanup protocol completion is not certified.",
+    "Periodic resource measurements and unresolved global I/O PSI/iowait; local query/latency samples do not establish fixed physical work or production percentiles.",
+    "Inherited narrow partial-canvas/toolbar overflow, SVG mixed-run and chart-consumer differences.",
+    "Offline injected/loopback providers only; no live-provider quality/latency or interactive Microsoft PowerPoint qualification."
+  ],
+  "testSlotReleased": true,
+  "databaseSlotAcquired": false,
+  "noFurtherExecutionRequiredAbsentNewConcern": true,
+  "stopPoint": "I4 documentation/commit/push closeout only. Acceptance permits planning, not dependent host/provider/scheduler/Assistant implementation, deployment, migrations or paid infrastructure."
+}

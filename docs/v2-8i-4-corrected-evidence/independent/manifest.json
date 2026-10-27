@@ -1,0 +1,41 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "packetSha": "78ab07ec72e29b325407158c9ef8ae45e08cabab",
+  "files": [
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/independent/backend-absence.json",
+      "sha256": "20bf3675bfcbf45e0f7f9b43d4ea2650bdba810bea508c3932700a368493fb03",
+      "bytes": 670
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/independent/checks.json",
+      "sha256": "30ec704ffab70b19b4e646a58a7882432831462c8ebb6346ec4672e6cb96b52e",
+      "bytes": 1320
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/independent/discovery-checks.tap",
+      "sha256": "c701fd840a2e1b0727b7ddf0f46628b636e031487b403d60d685cfaae53625ba",
+      "bytes": 8081
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/independent/native-structure.json",
+      "sha256": "3e5b4b033accc162371dcbe0f4ec38c96eb6eeeb72bb6c3d4a06487794f18b8d",
+      "bytes": 14799
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/independent/packet-audit.json",
+      "sha256": "aeeb0a84d20303f9e5628d1a63fa59ef6ccf5229ff4b5b495c350f30330388d4",
+      "bytes": 19420
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/independent/resource-preflight.json",
+      "sha256": "5b4cf8aa73fa648be5862173e04df1612b7591655669c7c118fe01d03ccff761",
+      "bytes": 934
+    },
+    {
+      "path": "docs/v2-8i-4-corrected-evidence/independent/sqlite-cli-repeat.mjs",
+      "sha256": "01bc683e7009a6eb0ed5a9a1b6dde822557273682f35bfb8f333529f49804802",
+      "bytes": 231
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "atUtc": "2026-10-27T06:43:57.515003+00:00",
+  "id": "e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce",
+  "inspectExitCode": 1,
+  "inspectStderr": "error: no such object: e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce\n",
+  "matchingContainerIds": [],
+  "exactIdAbsent": true,
+  "portConnectionRefused": true,
+  "preRemovalCatalogCount": null,
+  "preRemovalObservationAvailable": false,
+  "additionalStopOrRemovalIssued": false,
+  "serviceRecreated": false,
+  "classification": "Independent read-only current absence; no past catalog or removal cause inferred."
+}
