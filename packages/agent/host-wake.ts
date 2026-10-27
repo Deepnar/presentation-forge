@@ -1,20 +1,23 @@
+import { parseTurnTarget, sameTurnTarget, type TurnTarget } from './turn-target.ts';
 import { cloneJson } from '../tools/json.ts';
 import { parsePickupBinding } from './turn-pickup.ts';
 import { parseTurnDiscoveryInput, type DiscoveryCursor } from './turn-discovery-input.ts';
 
 export type WakeIdentity = { owner: string; userId: number };
+export type WakeRequest = WakeIdentity & { target?: TurnTarget };
 type Admission = { ok: true; status: 'accepted' | 'coalesced' } |
   { ok: false; code: string; retryAfter?: number };
 type Session = { pickup(input: { cursor: DiscoveryCursor | null; maxScannedRows: number;
   maxWorkItems: number; maxElapsedMs: number }, options: { signal: AbortSignal }): Promise<unknown> };
 export type WakeServices = {
   enabled(): boolean;
-  open(identity: WakeIdentity, signal: AbortSignal): Promise<Session>;
+  open(identity: WakeRequest, signal: AbortSignal): Promise<Session>;
 };
 export const WAKE_LIMITS = Object.freeze({ owners: 2, records: 128, cycles: 2,
   elapsedMs: 110000, cooldownMs: 5000, drainMs: 5000 });
 const allowed = new Set(['host-disabled', 'owner-ineligible', 'host-misconfigured',
-  'store-misconfigured', 'storage-unavailable', 'host-closed', 'wake-expired']);
+  'store-misconfigured', 'storage-unavailable', 'host-closed', 'wake-expired', 'not-found', 'stale-generation',
+  'stale-conversation', 'stale-project', 'invalid-document', 'invalid-id', 'runtime-fenced']);
 const failure = (code: string, retryAfter?: number): Admission =>
   ({ ok: false, code, ...(retryAfter === undefined ? {} : { retryAfter }) });
 export function parseWakeIdentity(input: unknown): WakeIdentity {
@@ -23,6 +26,13 @@ export function parseWakeIdentity(input: unknown): WakeIdentity {
       !Number.isSafeInteger(value.userId) || value.userId < 1) throw new Error('Invalid wake identity.');
   const { owner } = parsePickupBinding({ owner: value.owner });
   return Object.freeze({ owner, userId: value.userId });
+}
+function parseWakeRequest(input: unknown): WakeRequest {
+  const value = cloneJson(input, 4096) as WakeRequest;
+  if (value && Object.keys(value).sort().join(',') === 'owner,target,userId')
+    return Object.freeze({ ...parseWakeIdentity({ owner: value.owner, userId: value.userId }),
+      target: parseTurnTarget(value.target) });
+  return parseWakeIdentity(value);
 }
 function continuation(input: unknown, dirty: boolean): { cursor: DiscoveryCursor | null } | null {
   const result = cloneJson(input, 131072) as any;
@@ -34,7 +44,7 @@ function continuation(input: unknown, dirty: boolean): { cursor: DiscoveryCursor
   const { cursor } = parseTurnDiscoveryInput({ limit: 1, cursor: result.nextCursor });
   return { cursor: dirty ? null : cursor };
 }
-type Job = { identity: WakeIdentity; dirty: boolean; controller: AbortController;
+type Job = { identity: WakeRequest; dirty: boolean; controller: AbortController;
   admission: Promise<Admission>; done: Promise<void> | null };
 
 // Wake hints are ephemeral; durable turns and canonical leases remain authority.
@@ -44,14 +54,15 @@ export function createHostWake(services: WakeServices, { now = () => performance
   let closed = false;
   return Object.freeze({
     async wake(input: unknown): Promise<Admission> {
-      let identity: WakeIdentity;
-      try { identity = parseWakeIdentity(input); } catch { return failure('invalid-input'); }
+      let identity: WakeRequest;
+      try { identity = parseWakeRequest(input); } catch { return failure('invalid-input'); }
       if (closed) return failure('host-closed');
       try { if (enabled() !== true) return failure('host-disabled'); }
       catch { return failure('host-disabled'); }
       const previous = active.get(identity.owner);
       if (previous) {
         if (previous.identity.userId !== identity.userId) return failure('owner-ineligible');
+        if (!sameTurnTarget(previous.identity.target, identity.target)) return failure('host-busy', 1);
         previous.dirty = true;
         const result = await previous.admission;
         return result.ok ? { ok: true, status: 'coalesced' } : result;
