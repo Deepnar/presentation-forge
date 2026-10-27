@@ -41,7 +41,7 @@ export function createAssistantController({ api, bridge, onChange, now = () => p
     try {
       const result = await bridge.syncSaved({ turn, requested, token: api.token, current });
       if (current()) publish({ pendingSaved: result?.deferred === true,
-        ...(result?.loaded ? { notice: 'Saved Assistant changes loaded. Session undo was cleared; use Version history to restore.' } : {}) });
+        ...(result?.loaded ? { error: null, notice: 'Saved Assistant changes loaded. Session undo was cleared; use Version history to restore.' } : {}) });
     } catch (error) {
       if (current()) publish({ pendingSaved: true });
       problem(error);
