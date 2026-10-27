@@ -1,0 +1,22 @@
+{
+  "id": "cross-process-complete",
+  "kind": "tests",
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "command": "python3 docs/v2-8i-4-corrected-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
+  "log": "docs/v2-8i-4-corrected-evidence/logs/cross-process-complete.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 59,
+    "pass": 59,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-projects-6c-concurrency.test.js",
+    "test/v2-projects-6c-faults.test.js",
+    "test/v2-turn-worker-process-8i.test.js",
+    "test/v2-turn-discovery-process-8i.test.js"
+  ],
+  "backend": "Temporary SQLite and owned PostgreSQL15; actual process/fault/worker/discovery CLI cases, overlapping primary/focused inventories"
+}

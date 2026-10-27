@@ -1,0 +1,11 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "atUtc": "2026-10-26T13:46:58.871753+00:00",
+  "id": "e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce",
+  "sameRecordedIdentity": true,
+  "sourceCorrectionAdoption": true,
+  "finalTcpReady": true,
+  "version": "15.18",
+  "nonMaintenanceDatabases": [],
+  "snapshotOrTestExistedBeforeRecovery": false
+}

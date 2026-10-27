@@ -1,0 +1,35 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "atUtc": "2026-10-26T14:00:16.960470+00:00",
+  "mode": "Fresh full-size image inspection after complete corrected7A28/28; final visual gate remains pending",
+  "images": [
+    {
+      "source": "docs/v2-7a-evidence/editor-shell.png",
+      "sha256": "cfdcade90d1698487fd3d877249965a11d49b525fb54d546f581f94209d3a9a0",
+      "inspected": true
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-narrow-projects.png",
+      "sha256": "624da0001e25ad7586acedaa913cb1776f80227461c0049bf7e9b9645faf95a9",
+      "inspected": true
+    },
+    {
+      "source": "docs/v2-7a-evidence/editor-readonly.png",
+      "sha256": "965724375cc9f9a3f8fd69007f03d489b975aeae4e571f6fafcd5f92c1205cb4",
+      "inspected": true
+    }
+  ],
+  "observations": [
+    "Desktop history modal and narrow history dialog fit their captured viewports with close/preview controls visible.",
+    "Read-only header and truthful Assistant placeholder remain visible; blank canvas is the blank-slide fixture.",
+    "Inherited narrow canvas/toolbar limitations remain; no UI redesign or fix is claimed."
+  ],
+  "measurements": {
+    "largeDeckSlides": 120,
+    "largeDeckThumbs": 120,
+    "openMs": 1543,
+    "chartCanvasMaxDeltaPx": 0.0770111083984375,
+    "tableCanvasMaxDeltaPx": 0.077117919921875
+  },
+  "source175EvidenceNotTransferred": true
+}

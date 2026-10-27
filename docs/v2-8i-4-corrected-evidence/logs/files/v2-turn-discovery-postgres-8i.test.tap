@@ -1,0 +1,85 @@
+TAP version 13
+# Subtest: PostgreSQL: empty discovery creates no chat, run, revision or accounting row
+ok 1 - PostgreSQL: empty discovery creates no chat, run, revision or accounting row
+  ---
+  duration_ms: 89.05185
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: SQL owner predicates isolate null, case and Unicode identities before page limits
+ok 2 - PostgreSQL: SQL owner predicates isolate null, case and Unicode identities before page limits
+  ---
+  duration_ms: 79.55971
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: keyset pagination progresses across empty filtered pages and multiple projects
+ok 3 - PostgreSQL: keyset pagination progresses across empty filtered pages and multiple projects
+  ---
+  duration_ms: 42.844183
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: foreign, deleted and nonexistent cursor positions need no existence capability
+ok 4 - PostgreSQL: foreign, deleted and nonexistent cursor positions need no existence capability
+  ---
+  duration_ms: 14.508638
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: Unicode cursor order matches binary database order for BMP and supplementary IDs
+ok 5 - PostgreSQL: Unicode cursor order matches binary database order for BMP and supplementary IDs
+  ---
+  duration_ms: 15.185273
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: at-limit pages materialize at most51rows and preserve all stored bytes
+ok 6 - PostgreSQL: at-limit pages materialize at most51rows and preserve all stored bytes
+  ---
+  duration_ms: 68.245431
+  type: 'test'
+  ...
+# {"sample":"128legitimate bounded turn records, one owner/project","pages":3,"scanned":128,"elapsedMs":17.594423000000006,"physicalWorkBoundClaimed":false}
+# {"queryPlan":[{"QUERY PLAN":[{"Plan":{"Node Type":"Limit","Parallel Aware":false,"Async Capable":false,"Startup Cost":75.29,"Total Cost":75.32,"Plan Rows":12,"Plan Width":256,"Plans":[{"Node Type":"Sort","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Startup Cost":75.29,"Total Cost":75.32,"Plan Rows":12,"Plan Width":256,"Sort Key":["((p.id)::text) COLLATE \\"C\\"","((t.id)::text) COLLATE \\"C\\""],"Plans":[{"Node Type":"Hash Join","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Join Type":"Inner","Startup Cost":35.71,"Total Cost":75.07,"Plan Rows":12,"Plan Width":256,"Inner Unique":false,"Hash Cond":"((t.project_id)::text = (p.id)::text)","Plans":[{"Node Type":"Seq Scan","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Relation Name":"v2_agent_turns","Alias":"t","Startup Cost":0,"Total Cost":34.25,"Plan Rows":925,"Plan Width":128},{"Node Type":"Hash","Parent Relationship":"Inner","Parallel Aware":false,"Async Capable":false,"Startup Cost":35.65,"Total Cost":35.65,"Plan Rows":5,"Plan Width":96,"Plans":[{"Node Type":"Hash Join","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Join Type":"Right","Startup Cost":14.53,"Total Cost":35.65,"Plan Rows":5,"Plan Width":96,"Inner Unique":true,"Hash Cond":"((h.project_id)::text = (p.id)::text)","Plans":[{"Node Type":"Seq Scan","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Relation Name":"v2_agent_conversations","Alias":"h","Startup Cost":0,"Total Cost":18.8,"Plan Rows":880,"Plan Width":64},{"Node Type":"Hash","Parent Relationship":"Inner","Parallel Aware":false,"Async Capable":false,"Startup Cost":14.5,"Total Cost":14.5,"Plan Rows":2,"Plan Width":64,"Plans":[{"Node Type":"Seq Scan","Parent Relationship":"Outer","Parallel Aware":false,"Async Capable":false,"Relation Name":"v2_projects","Alias":"p","Startup Cost":0,"Total Cost":14.5,"Plan Rows":2,"Plan Width":64,"Filter":"(NOT ((owner)::text IS DISTINCT FROM 'discovery-84822d85-dcc3-4992-8b61-50a423efd869'::text))"}]}]}]}]}]}]}}]}],"noNewIndex":true}
+# Subtest: PostgreSQL: oversized multibyte metadata and missing/mismatched headers refuse bounded private pages
+ok 7 - PostgreSQL: oversized multibyte metadata and missing/mismatched headers refuse bounded private pages
+  ---
+  duration_ms: 10.63449
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: private chat and project bodies are never loaded by discovery
+ok 8 - PostgreSQL: private chat and project bodies are never loaded by discovery
+  ---
+  duration_ms: 89.838869
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: discovery never reconciles expired preparation or changes a live lease
+ok 9 - PostgreSQL: discovery never reconciles expired preparation or changes a live lease
+  ---
+  duration_ms: 44.124171
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: discovered submissions are fenced by clear and ownership change before I2
+ok 10 - PostgreSQL: discovered submissions are fenced by clear and ownership change before I2
+  ---
+  duration_ms: 18.952858
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: a human save fences a discovered preparation before any provider dispatch
+ok 11 - PostgreSQL: a human save fences a discovered preparation before any provider dispatch
+  ---
+  duration_ms: 17.06699
+  type: 'test'
+  ...
+# Subtest: PostgreSQL: discovered approved and terminal hints still use stored approval and canonical execution
+ok 12 - PostgreSQL: discovered approved and terminal hints still use stored approval and canonical execution
+  ---
+  duration_ms: 208.902767
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1071.88887
+# forge-test-file "test/v2-turn-discovery-postgres-8i.test.js"

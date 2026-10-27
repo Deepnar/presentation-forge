@@ -1,0 +1,32 @@
+{
+  "id": "postgres-complete",
+  "kind": "tests",
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "command": "python3 docs/v2-8i-4-corrected-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
+  "log": "docs/v2-8i-4-corrected-evidence/logs/postgres-complete.tap",
+  "exitCode": 0,
+  "tests": {
+    "total": 319,
+    "pass": 319,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "files": [
+    "test/v2-conversation-http-postgres-8i.test.js",
+    "test/v2-conversation-postgres-8e.test.js",
+    "test/v2-import-postgres-7b.test.js",
+    "test/v2-projects-6c-concurrency.test.js",
+    "test/v2-projects-6c-faults.test.js",
+    "test/v2-projects-6c-postgres.test.js",
+    "test/v2-provider-postgres-8c.test.js",
+    "test/v2-provider-run-postgres-8d.test.js",
+    "test/v2-runtime-postgres-8b.test.js",
+    "test/v2-turn-discovery-postgres-8i.test.js",
+    "test/v2-turn-discovery-process-8i.test.js",
+    "test/v2-turn-worker-postgres-8i.test.js",
+    "test/v2-turn-worker-process-8i.test.js",
+    "test/v2-turns-postgres-8h.test.js"
+  ],
+  "backend": "Owned isolated PostgreSQL15.18; all fourteen files. Designated contract23 and cross-process/fault checks are overlapping subsets."
+}

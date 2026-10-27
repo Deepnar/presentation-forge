@@ -1,0 +1,179 @@
+TAP version 13
+# Subtest: SQLite turn worker process: two independent preparation consumers dispatch only once
+ok 1 - SQLite turn worker process: two independent preparation consumers dispatch only once
+  ---
+  duration_ms: 396.863065
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: two independent approved consumers commit one receipt and one saved revision
+ok 2 - SQLite turn worker process: two independent approved consumers commit one receipt and one saved revision
+  ---
+  duration_ms: 404.933462
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: SIGKILL after reserved retains canonical preparation recovery
+ok 3 - SQLite turn worker process: SIGKILL after reserved retains canonical preparation recovery
+  ---
+  duration_ms: 299.46236
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: SIGKILL after dispatched retains canonical preparation recovery
+ok 4 - SQLite turn worker process: SIGKILL after dispatched retains canonical preparation recovery
+  ---
+  duration_ms: 288.133994
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: SIGKILL after receipt retains canonical preparation recovery
+ok 5 - SQLite turn worker process: SIGKILL after receipt retains canonical preparation recovery
+  ---
+  duration_ms: 285.136421
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: SIGKILL run-uncommitted reopens without lost or repeated edits
+ok 6 - SQLite turn worker process: SIGKILL run-uncommitted reopens without lost or repeated edits
+  ---
+  duration_ms: 304.131329
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker process: SIGKILL run-committed reopens without lost or repeated edits
+ok 7 - SQLite turn worker process: SIGKILL run-committed reopens without lost or repeated edits
+  ---
+  duration_ms: 302.480139
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: explicit provider preparation and provider-free approved work share stored authority
+ok 8 - SQLite turn worker CLI: explicit provider preparation and provider-free approved work share stored authority
+  ---
+  duration_ms: 857.210287
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: unknown work authority and malformed provider inputs produce fixed private errors
+ok 9 - SQLite turn worker CLI: unknown work authority and malformed provider inputs produce fixed private errors
+  ---
+  duration_ms: 490.143264
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: a held execution lease exits nonzero without an edit or provider access
+ok 10 - SQLite turn worker CLI: a held execution lease exits nonzero without an edit or provider access
+  ---
+  duration_ms: 293.506773
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: preparation already held by another host exits nonzero without dispatch
+ok 11 - SQLite turn worker CLI: preparation already held by another host exits nonzero without dispatch
+  ---
+  duration_ms: 271.953158
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: a provider refusal exits nonzero and retains only fixed private status
+ok 12 - SQLite turn worker CLI: a provider refusal exits nonzero and retains only fixed private status
+  ---
+  duration_ms: 292.26542
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: SIGTERM during preparation closes the CLI without publishing
+ok 13 - SQLite turn worker CLI: SIGTERM during preparation closes the CLI without publishing
+  ---
+  duration_ms: 320.315271
+  type: 'test'
+  ...
+# Subtest: SQLite turn worker CLI: SIGINT during preparation closes the CLI without publishing
+ok 14 - SQLite turn worker CLI: SIGINT during preparation closes the CLI without publishing
+  ---
+  duration_ms: 320.282695
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: two independent preparation consumers dispatch only once
+ok 15 - PostgreSQL turn worker process: two independent preparation consumers dispatch only once
+  ---
+  duration_ms: 525.333854
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: two independent approved consumers commit one receipt and one saved revision
+ok 16 - PostgreSQL turn worker process: two independent approved consumers commit one receipt and one saved revision
+  ---
+  duration_ms: 545.09869
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: SIGKILL after reserved retains canonical preparation recovery
+ok 17 - PostgreSQL turn worker process: SIGKILL after reserved retains canonical preparation recovery
+  ---
+  duration_ms: 416.413003
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: SIGKILL after dispatched retains canonical preparation recovery
+ok 18 - PostgreSQL turn worker process: SIGKILL after dispatched retains canonical preparation recovery
+  ---
+  duration_ms: 369.042246
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: SIGKILL after receipt retains canonical preparation recovery
+ok 19 - PostgreSQL turn worker process: SIGKILL after receipt retains canonical preparation recovery
+  ---
+  duration_ms: 386.97118
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: SIGKILL run-uncommitted reopens without lost or repeated edits
+ok 20 - PostgreSQL turn worker process: SIGKILL run-uncommitted reopens without lost or repeated edits
+  ---
+  duration_ms: 418.866811
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker process: SIGKILL run-committed reopens without lost or repeated edits
+ok 21 - PostgreSQL turn worker process: SIGKILL run-committed reopens without lost or repeated edits
+  ---
+  duration_ms: 412.827749
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: explicit provider preparation and provider-free approved work share stored authority
+ok 22 - PostgreSQL turn worker CLI: explicit provider preparation and provider-free approved work share stored authority
+  ---
+  duration_ms: 1188.710597
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: unknown work authority and malformed provider inputs produce fixed private errors
+ok 23 - PostgreSQL turn worker CLI: unknown work authority and malformed provider inputs produce fixed private errors
+  ---
+  duration_ms: 590.502
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: a held execution lease exits nonzero without an edit or provider access
+ok 24 - PostgreSQL turn worker CLI: a held execution lease exits nonzero without an edit or provider access
+  ---
+  duration_ms: 410.560224
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: preparation already held by another host exits nonzero without dispatch
+ok 25 - PostgreSQL turn worker CLI: preparation already held by another host exits nonzero without dispatch
+  ---
+  duration_ms: 374.87731
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: a provider refusal exits nonzero and retains only fixed private status
+ok 26 - PostgreSQL turn worker CLI: a provider refusal exits nonzero and retains only fixed private status
+  ---
+  duration_ms: 402.971342
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: SIGTERM during preparation closes the CLI without publishing
+ok 27 - PostgreSQL turn worker CLI: SIGTERM during preparation closes the CLI without publishing
+  ---
+  duration_ms: 375.47862
+  type: 'test'
+  ...
+# Subtest: PostgreSQL turn worker CLI: SIGINT during preparation closes the CLI without publishing
+ok 28 - PostgreSQL turn worker CLI: SIGINT during preparation closes the CLI without publishing
+  ---
+  duration_ms: 365.487236
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12180.32898
+# forge-test-file "test/v2-turn-worker-process-8i.test.js"

@@ -1,13 +1,13 @@
 {
   "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
-  "sampleSeconds": 180.56064906199754,
+  "sampleSeconds": 180.70113693199892,
   "samples": 12,
-  "cpuBusyMeanPercent": 1.31194109214936,
-  "cpuIoWaitMeanPercent": 9.01471673994046,
+  "cpuBusyMeanPercent": 9.017555298458273,
+  "cpuIoWaitMeanPercent": 8.801685066248965,
   "diskMeans": {
     "nvme0n1": {
-      "busyPercent": 0.8440377279972656,
-      "weightedQueue": 0.03830291946738247
+      "busyPercent": 1.5041410619474034,
+      "weightedQueue": 0.11716583724632239
     }
   },
   "freshConsecutiveReadySamples": 12,

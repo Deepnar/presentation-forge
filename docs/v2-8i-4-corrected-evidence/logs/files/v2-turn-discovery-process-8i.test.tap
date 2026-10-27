@@ -1,0 +1,83 @@
+TAP version 13
+# Subtest: SQLite discovery CLI: separate processes resume filtered pagination without writes or hidden polling
+ok 1 - SQLite discovery CLI: separate processes resume filtered pagination without writes or hidden polling
+  ---
+  duration_ms: 961.383132
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: omitting owner enumerates only explicit null-owner projects
+ok 2 - SQLite discovery CLI: omitting owner enumerates only explicit null-owner projects
+  ---
+  duration_ms: 471.983651
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch
+ok 3 - SQLite discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch
+  ---
+  duration_ms: 2417.184105
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: corrupt operational metadata produces no partial output or private echo
+ok 4 - SQLite discovery CLI: corrupt operational metadata produces no partial output or private echo
+  ---
+  duration_ms: 261.587846
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid
+ok 5 - SQLite discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid
+  ---
+  duration_ms: 492.243417
+  type: 'test'
+  ...
+# Subtest: SQLite discovery CLI: approved hints require explicit canonical work and replays preserve one edit
+ok 6 - SQLite discovery CLI: approved hints require explicit canonical work and replays preserve one edit
+  ---
+  duration_ms: 1163.057351
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: separate processes resume filtered pagination without writes or hidden polling
+ok 7 - PostgreSQL discovery CLI: separate processes resume filtered pagination without writes or hidden polling
+  ---
+  duration_ms: 1172.456552
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: omitting owner enumerates only explicit null-owner projects
+ok 8 - PostgreSQL discovery CLI: omitting owner enumerates only explicit null-owner projects
+  ---
+  duration_ms: 560.066167
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch
+ok 9 - PostgreSQL discovery CLI: invalid input and forbidden authority flags refuse privately before dispatch
+  ---
+  duration_ms: 2298.694674
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: corrupt operational metadata produces no partial output or private echo
+ok 10 - PostgreSQL discovery CLI: corrupt operational metadata produces no partial output or private echo
+  ---
+  duration_ms: 273.039141
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid
+ok 11 - PostgreSQL discovery CLI: malformed UTF-8 input is refused while a literal replacement character remains valid
+  ---
+  duration_ms: 488.124283
+  type: 'test'
+  ...
+# Subtest: PostgreSQL discovery CLI: approved hints require explicit canonical work and replays preserve one edit
+ok 12 - PostgreSQL discovery CLI: approved hints require explicit canonical work and replays preserve one edit
+  ---
+  duration_ms: 1217.971031
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12043.856647
+# forge-test-file "test/v2-turn-discovery-process-8i.test.js"

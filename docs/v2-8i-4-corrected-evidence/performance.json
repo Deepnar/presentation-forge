@@ -1,0 +1,187 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "localProtocolAndBackendSamples": {
+    "sqlite-openai-compatible": {
+      "timingsMs": {
+        "submitMs": 35.46630600000003,
+        "discoverySubmittedMs": 2.056085999999823,
+        "workerPreparationMs": 67.41255000000001,
+        "queueMs": 15.229965999999877,
+        "discoveryApprovedMs": 0.5808489999999438,
+        "workerExecutionMs": 15.203803999999991,
+        "reopenMs": 0.5161829999999554
+      },
+      "providerExchangesMs": [
+        7.687151999999969,
+        3.368752000000086,
+        3.5864630000000943
+      ],
+      "traceBytes": 1326,
+      "visibleConversationBytes": 1352,
+      "conversationAccounting": {
+        "reservedOutputTokens": 6144,
+        "knownInputTokens": 126,
+        "knownOutputTokens": 60,
+        "knownCacheReadTokens": 0,
+        "knownCacheWriteTokens": 0,
+        "knownAttempts": 3,
+        "unknownAttempts": 0
+      },
+      "protocolFixture": true
+    },
+    "postgres-openai-compatible": {
+      "timingsMs": {
+        "submitMs": 43.06223799999998,
+        "discoverySubmittedMs": 1.750528999999915,
+        "workerPreparationMs": 87.78821799999969,
+        "queueMs": 21.33492000000024,
+        "discoveryApprovedMs": 1.0214779999996608,
+        "workerExecutionMs": 20.446037000000615,
+        "reopenMs": 8.919472999999925
+      },
+      "providerExchangesMs": [
+        4.188431999999921,
+        8.473284000000149,
+        3.2055609999997614
+      ],
+      "traceBytes": 1326,
+      "visibleConversationBytes": 1352,
+      "conversationAccounting": {
+        "reservedOutputTokens": 6144,
+        "knownInputTokens": 126,
+        "knownOutputTokens": 60,
+        "knownCacheReadTokens": 0,
+        "knownCacheWriteTokens": 0,
+        "knownAttempts": 3,
+        "unknownAttempts": 0
+      },
+      "protocolFixture": true
+    },
+    "sqlite-anthropic": {
+      "timingsMs": {
+        "submitMs": 29.25271900000007,
+        "discoverySubmittedMs": 0.576097000000118,
+        "workerPreparationMs": 32.81194599999981,
+        "queueMs": 11.390905000000203,
+        "discoveryApprovedMs": 0.38530200000059267,
+        "workerExecutionMs": 8.872918000000027,
+        "reopenMs": 0.44418099999984406
+      },
+      "providerExchangesMs": [
+        5.228809000000183,
+        2.35262000000057,
+        2.599514000000454
+      ],
+      "traceBytes": 1326,
+      "visibleConversationBytes": 1353,
+      "conversationAccounting": {
+        "reservedOutputTokens": 6144,
+        "knownInputTokens": 147,
+        "knownOutputTokens": 60,
+        "knownCacheReadTokens": 9,
+        "knownCacheWriteTokens": 12,
+        "knownAttempts": 3,
+        "unknownAttempts": 0
+      },
+      "protocolFixture": true
+    },
+    "postgres-anthropic": {
+      "timingsMs": {
+        "submitMs": 32.68801100000019,
+        "discoverySubmittedMs": 1.1247510000002876,
+        "workerPreparationMs": 58.85982299999978,
+        "queueMs": 19.967780999999377,
+        "discoveryApprovedMs": 0.9381750000002285,
+        "workerExecutionMs": 21.724001999999928,
+        "reopenMs": 5.875818999999865
+      },
+      "providerExchangesMs": [
+        3.050709999999526,
+        2.456162000000404,
+        2.4056540000001405
+      ],
+      "traceBytes": 1326,
+      "visibleConversationBytes": 1353,
+      "conversationAccounting": {
+        "reservedOutputTokens": 6144,
+        "knownInputTokens": 147,
+        "knownOutputTokens": 60,
+        "knownCacheReadTokens": 9,
+        "knownCacheWriteTokens": 12,
+        "knownAttempts": 3,
+        "unknownAttempts": 0
+      },
+      "protocolFixture": true
+    }
+  },
+  "actualExistingRuntimeProcessRecovery": [
+    {
+      "backend": "SQLite",
+      "source": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 33.39683199999945,
+      "excludesLeaseWait": true,
+      "workerReadyBeforeClaim": true,
+      "excludesWorkerBootstrap": true,
+      "includesWorkerStoreSetup": true
+    },
+    {
+      "backend": "PostgreSQL",
+      "source": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+      "case": "kill-after-commit-checkpoint",
+      "recoveryClaimThroughWorkerCommitMs": 82.98067099999935,
+      "excludesLeaseWait": true,
+      "workerReadyBeforeClaim": true,
+      "excludesWorkerBootstrap": true,
+      "includesWorkerStoreSetup": true
+    }
+  ],
+  "largeDeck": {
+    "project": "p-c1119cc6721b9288cebcc2c3",
+    "slides": 120,
+    "thumbs": 120,
+    "openMs": 1543
+  },
+  "canvasMeasurements": [
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/measurements/docs--v2-7a-evidence--canvas-chart.json",
+      "kind": null,
+      "maxDeltaPx": 0.0770111083984375
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/measurements/docs--v2-7a-evidence--canvas-table.json",
+      "kind": null,
+      "maxDeltaPx": 0.077117919921875
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/measurements/out--v2-7b-1-validation--browser--canvas-table.json",
+      "kind": null,
+      "maxDeltaPx": 0.10216522216796875
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/measurements/out--v2-7b-1-validation--browser--canvas-chart.json",
+      "kind": null,
+      "maxDeltaPx": 0.06934356689453125
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/measurements/out--v2-7c-3-validation--browser--canvas.json",
+      "kind": "chart",
+      "maxDeltaPx": 0
+    },
+    {
+      "file": "docs/v2-8i-4-corrected-evidence/measurements/out--v2-7c-3-validation--browser--canvas.json",
+      "kind": "table",
+      "maxDeltaPx": 0
+    }
+  ],
+  "maximumCanvasDeltaPx": 0.10216522216796875,
+  "limitation": "Local fixtures, not live provider latency/content quality or production percentiles. Current runtime recovery excludes lease wait and worker module bootstrap, includes worker store setup; historical claim-then-spawn timings are not comparable. No conversational network exactly-once claim.",
+  "benchmark": {
+    "cells": 50,
+    "compilerAndZipMs": 558,
+    "recordedGitHead": "33d091e"
+  },
+  "resourceAssessment": "docs/v2-8i-4-corrected-evidence/resource-assessment.json",
+  "resourceSamples": "docs/v2-8i-4-corrected-evidence/resource-window.jsonl",
+  "environmentLimitation": "Elevated global I/O PSI/iowait has unresolved provenance; all local latency measurements retain that limitation."
+}

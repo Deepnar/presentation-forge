@@ -1,0 +1,34 @@
+[
+  {
+    "source": "out/v2-8i-4-corrected-validation/http/sqlite-approved.pptx",
+    "originalArchive": "docs/v2-8i-4-corrected-evidence/http-archives/sqlite-approved.pptx",
+    "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+    "sha256": "38836e5e6ae34b7ef431b52e1fc38f8302af8d22ec0e3144f200a47181effe27",
+    "bytes": 84212,
+    "backend": "sqlite",
+    "job": "bulk",
+    "slideCount": 2,
+    "nativeAssertions": "passed",
+    "rasters": [
+      "docs/v2-8i-4-corrected-evidence/native/http-sqlite-1.png",
+      "docs/v2-8i-4-corrected-evidence/native/http-sqlite-2.png"
+    ],
+    "provenance": "Authenticated production HTTP approval, canonical run execution, and authenticated PPTX export; offline provider fixture."
+  },
+  {
+    "source": "out/v2-8i-4-corrected-validation/http/postgresql-approved.pptx",
+    "originalArchive": "docs/v2-8i-4-corrected-evidence/http-archives/postgres-approved.pptx",
+    "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+    "sha256": "f01f56d98afc30b9ee98d4bd00d44581b5264df5a11a003f77633dd0bf915ff0",
+    "bytes": 84212,
+    "backend": "postgres",
+    "job": "v2-conversation-http-postgres-8i.test",
+    "slideCount": 2,
+    "nativeAssertions": "passed",
+    "rasters": [
+      "docs/v2-8i-4-corrected-evidence/native/http-postgres-1.png",
+      "docs/v2-8i-4-corrected-evidence/native/http-postgres-2.png"
+    ],
+    "provenance": "Authenticated production HTTP approval, canonical run execution, and authenticated PPTX export; offline provider fixture."
+  }
+]

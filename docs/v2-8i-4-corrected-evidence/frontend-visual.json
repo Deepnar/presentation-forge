@@ -1,0 +1,13 @@
+{
+  "id": "frontend-visual",
+  "kind": "visual",
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "command": "Inspect119 indexed existing browser/native/SVG/export images and full-size risk cases; verify image hashes,15native identities and measured canvas stability.",
+  "log": "docs/v2-8i-4-corrected-evidence/VISUAL-REVIEW.md",
+  "exitCode": 0,
+  "inspected": true,
+  "images": 119,
+  "maximumCanvasDeltaPx": 0.10216522216796875,
+  "largeDeckOpenMs": 1543,
+  "interactivePowerPointExecuted": false
+}

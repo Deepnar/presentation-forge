@@ -2,7 +2,7 @@
   "id": "turn-discovery",
   "kind": "tests",
   "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
-  "command": "nice -n 10 ionice -c 2 -n 7 timeout --signal=TERM --kill-after=10s 15m node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-turn-discovery-8i.test.js test/v2-turn-discovery-sqlite-8i.test.js test/v2-turn-discovery-postgres-8i.test.js test/v2-turn-discovery-process-8i.test.js",
+  "command": "python3 docs/v2-8i-4-corrected-evidence/run-validation.py; exact isolated commands retained in logs/coordinator.json",
   "log": "docs/v2-8i-4-corrected-evidence/logs/turn-discovery.tap",
   "exitCode": 0,
   "tests": {
@@ -18,5 +18,5 @@
     "test/v2-turn-discovery-postgres-8i.test.js",
     "test/v2-turn-discovery-process-8i.test.js"
   ],
-  "backend": "Actual SQLite and exclusively owned PostgreSQL15.18 where applicable; offline fixtures only. Focused counts overlap primary."
+  "backend": "Pure/input, actual SQLite/PostgreSQL metadata pagination and both-store operator CLI/process contracts. Overlaps primary matrix."
 }
