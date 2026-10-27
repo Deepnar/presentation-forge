@@ -1,0 +1,57 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-27",
+  "reviewedPlanSha": "d5f789a0846c9f9e186b04f5f16509228e27d3a0",
+  "acceptedBaseline": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "plan": "docs/V2-8I-8-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-visible-editor",
+  "assessment": "The existing rail, bounded single-turn semantic context, stored proposal approval and exact target wake form a coherent existing-deck surface. No new editor document, provider policy, background queue or layout authority is needed. Scope is substantial but bounded to one usable editor interaction; focused client/availability/browser/type gates cover the changed boundaries without a historical replay.",
+  "requiredPreCodeClarifications": [
+    {
+      "id": "action-settlement-and-authority",
+      "condition": "Use two-stage capture: pin session epoch/token, project/document and shown scope at user intent; finalize the immutable saved revision/conversation identity/request payload only after successful draft/save settlement under that same binding. Guard after every await and before each write, including parent save requests: existing apiSave dynamically reads localStorage and must not silently retoken an old action. Keep exact request/decision bodies and keys for ambiguous replay, not refreshed/rebound variants.",
+      "staleProposal": "Approval retains the stored proposal project revision. Saving newer human content can make that proposal permanently stale; refreshing metadata cannot rebase its edits. Surface a new deliberate request or canonical cancel/recovery rather than a newly rebound approval."
+    },
+    {
+      "id": "truthful-read-scope",
+      "condition": "Selected objects restricts editable targets. The accepted readableSlides grant still permits semantic reads of the current saved slide through get_slide, including protected/hidden semantic content projected by the existing tools. Disclose the current-slide read context and selected edit boundary; do not promise selection-only model visibility or silently change tool/context policy."
+    },
+    {
+      "id": "cancel-during-pending-wake",
+      "condition": "After durable submission, Cancel must remain reachable while wake admission waits. Abort/supersede the UI-owned wake request if needed, then issue canonical H cancellation bound to the saved generation/turn; do not wait up to110seconds merely to release a UI mutation lock. Browser abort is not cancellation, and late wake/action callbacks cannot revive the superseded UI state."
+    }
+  ],
+  "criticalImplementationConditions": [
+    "Prepare validated replacement documents off to the side; recheck session/project/document, local engine/saved revisions, pending saves and inline/data/title drafts after all asynchronous preparation, immediately before synchronous detach/attach. Existing attachLoadedProject only checks viewer identity and is insufficient unchanged. Suppress stale autosave/attachment callbacks; preserve valid slide/selection/zoom/scroll and announce undo reset.",
+    "Keep chart/table editors mounted across rail tabs, hidden/inert when inactive, with dirty callbacks. Block Assistant send/approve/refresh on unapplied grids while preserving accepted selection/revision remount policies.",
+    "Availability reads exact private numeric/email identity and canonical owner-scoped project without admin bypass, policy.open, provider/key lookup, reservation or worker. enabled is advisory flags only; action-time checks remain independent.",
+    "Polling/pages, retries and action disposal must preserve bound generation/revision and finite budgets. Refusal/storage-limit/stale states never trigger new request keys, automatic approval, history deletion, deadline revival or hidden owner-wide wake.",
+    "Retain real text rendering, explicit stored semantic proposal decisions, keyboard/IME/focus protections and measured narrow/desktop canvas stability. One isolated production-bundle browser file plus scoped screenshots is justified by this visible change; no old render/native/PG matrix by default."
+  ],
+  "directionUpdate": "During review the coordinator reported human selection of Existing Assistant tab (Recommended). This record supplies plan readiness only; pin these conditions before runtime code. It does not independently select the surface or accept an implementation.",
+  "inspectedSeams": [
+    "app/web/src/components/SceneViewer.jsx",
+    "app/web/src/lib/v2project.js",
+    "packages/tools/session.ts",
+    "packages/agent/conversation-request.schema.json",
+    "packages/agent/turns.ts",
+    "app/server/v2-conversation-routes.js",
+    "accepted I7 target transport/worker boundary"
+  ],
+  "executed": {
+    "tests": 0,
+    "services": 0,
+    "browserCalls": 0,
+    "builds": 0,
+    "modelCalls": 0,
+    "generators": 0
+  },
+  "implementationAccepted": false,
+  "slots": "Root retained Git/test/DB slots; reviewer acquired none.",
+  "writes": "Only this plan-review JSON; no source/state/roadmap/Git mutations.",
+  "stopPoint": "Plan readiness complete. No activation, live model use, deployment or future implementation acceptance follows."
+}

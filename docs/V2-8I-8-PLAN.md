@@ -9,9 +9,11 @@ Its closeout is complete; runtime/test/governance bytes at entry match that sour
 Original .agents/ and the two untracked prompt documents remain untouched.
 
 The 2026-10-27 continuation authorizes the immediate next planning work. This
-is a **proposed surface contract**, not implementation approval. The roadmap
-requires agreeing the Assistant's draft/save/proposal/cancel interaction before
-changing the placeholder. Keep the accepted I7 state/validation until a new
+was a proposed surface contract. The human has now selected **Existing Assistant
+tab (Recommended)** on2026-10-27, authorizing this bounded implementation and
+focused offline validation. The [independent plan review](reviews/V2-8I-8-plan-d5f789a.json)
+requires the clarifications below, pinned before code. The roadmap
+requires agreeing that interaction; the choice now supplies direction. Keep the accepted I7 state/validation until a new
 approved implementation exists. No service, browser/build, model or GPU work is
 needed to prepare this contract. No live inference, configuration activation,
 deployment, irreversible migration or new paid infrastructure is authorized.
@@ -73,8 +75,13 @@ as they already do; capture that separately from unexpected content-driven shift
    agent-chat availability --owner OWNER --project ID (no --provider/input).
    It supplies trusted current numeric identity and returns the same projection.
    Hosted flags remain default-off; tests enable only isolated fixtures.
-3. **One immutable action snapshot.** Pin token/session epoch, project, saved
-   revision, generation, conversation revision, selected scope and request key.
+3. **Two-stage immutable capture.** Pin token/session epoch, project, request text
+   and selected scope at user intent; after successful bridge settlement finalize
+   immutable saved/conversation revisions and the submission payload. All related
+   saves/chat requests retain that captured credential and epoch across awaits;
+   they cannot reread a replacement token and save under another account. Approval
+   retains the clicked stored proposal revision; a human save making it stale
+   requires a fresh explicit request, never rebinding the old approval.
    Reject stale callbacks after account/project change, unmount or newer request.
    Use exact authenticated fetch headers and AbortController for UI-owned reads;
    browser abort/disconnect does not cancel durable work. A changed token clears
@@ -100,7 +107,10 @@ as they already do; capture that separately from unexpected content-driven shift
    targets are only semantic text/chart/table elements within that scope, excluding
    locked/hidden objects and protected ancestors; selection contains at most32
    exact object identities and editable targets at most256. Refuse excess/invalid
-   scope visibly rather than truncating it. With no editable targets use inspect
+   scope visibly rather than truncating it. Selection limits **edits**, while the
+   readableSlides grant still permits semantic reads of the current saved slide.
+   Disclose that boundary beside the scope; do not promise selection-only provider
+   visibility merely because the initial read selects objects. With no editable targets use inspect
    mode, with a visible questions-only explanation. Server tools remain authority
    even if a client is altered. No raw scene, coordinates, colors/fonts, API key,
    URL, provider profile, worker ID or claimed approval is supplied as model content.
@@ -165,7 +175,10 @@ as they already do; capture that separately from unexpected content-driven shift
   auth/stale/budget/refusal states surface directly. An error-only Retry processing
   action can wake the same saved target deliberately, without a second submit or
   approval; it must still re-enter canonical checks. No routine second wake button.
-- Cancel targets the saved generation/turn and uses H cancellation; it does not
+- Cancel remains reachable once submit is durably acknowledged even if wake
+  admission is still pending. Supersede/abort only the UI wake request/retry lane
+  as needed, then use canonical H cancel for the current bound generation/turn.
+  Late wake receipts cannot resurrect an older UI action. Cancel targets the saved generation/turn and uses H cancellation; it does not
   mean merely stopping a fetch, and an already-entered commit can finish. Clear
   requires confirmation that saved visible chat/proposals will be removed and
   pending work cancelled, while deck/history remain. It uses exact generation/
@@ -260,5 +273,5 @@ actual screenshot inspection. No live content-quality or latency qualification.
 After scoped implementation: independent exact-source ACCEPT/HOLD with retained
 focused evidence and narrow new challenges; update as-built architecture, roadmap,
 evaluation, state and handoff, commit/push scoped paths to origin/v2 and stop after
-I8. Until the human agrees this surface contract, stop at planning and leave the
-Assistant placeholder unchanged. No implicit dependent implementation or activation.
+I8. Human surface direction is now pinned; no implicit dependent implementation
+or activation follows this approved slice.

@@ -54,8 +54,8 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-8 existing-deck browser Assistant; surface direction pending",
-    "authorized": false,
+    "id": "V2-8I-8 existing-deck browser Assistant",
+    "authorized": true,
     "roadmapRef": "docs/ROADMAP.md#assistant-visible-editor"
   },
   "docs": {

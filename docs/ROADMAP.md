@@ -9343,7 +9343,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-visible-editor"></a>
 
-  - [ ] **V2-8I-8 existing-deck browser Assistant — surface direction pending.**
+  - [ ] **V2-8I-8 existing-deck browser Assistant — approved implementation.**
     Continuation from accepted I7 source3da0801, entry HEAD3b35c39, prepares
     [the concrete surface contract](V2-8I-8-PLAN.md). Recommend the existing
     right-rail Assistant tab: freeform current-slide/selection requests, saved
@@ -9356,7 +9356,10 @@ local inference. Only that separate transport correction is authorized; this aud
     when execution flags are off, without any provider/key lookup. No activation,
     new provider/context/storage policy, layout authority or creation/research
     feature is authorized. The alternative dedicated chat page needs a revised
-    navigation/context contract. Agree this surface before code; planning only.
+    navigation/context contract. Human selected Existing Assistant tab on2026-10-27.
+    The separate plan review pins two-stage credential/revision capture, truthful
+    selected-edit/current-slide-read scope and canonical Cancel during pending
+    wake admission before code. Implementation/offline tests are authorized.
     Focused new client/integration/Chrome/typecheck gates replace a routine old
     matrix; browser/build waits for a quiet window. Stop after I8 exact-source
     review if approved; no feature follows automatically.

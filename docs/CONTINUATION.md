@@ -32,13 +32,13 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current continuation — I8 surface planning
+## Current authorized slice — I8 browser Assistant
 
 The2026-10-27 continuation prepares [the I8 contract](V2-8I-8-PLAN.md), linked in
 [the roadmap](ROADMAP.md#assistant-visible-editor). It proposes the current rail,
 freeform scoped requests, canonical approval/wake and explicit draft/history
-policies. Surface direction is pending; no I8 runtime/UI implementation or tests
-are authorized by the plan. Accepted I7 and its evidence remain unchanged. Read
+policies. Human approved Existing Assistant tab; plan-review clarifications are
+pinned before code. Scoped implementation and offline checks are authorized. Accepted I7 and its evidence remain unchanged. Read
 HANDOFF for current plan review/direction state before any code.
 
 ## Latest accepted slice — I7 exact-turn wake complete
