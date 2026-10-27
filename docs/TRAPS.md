@@ -2045,3 +2045,15 @@ stored-byte corruption probes, valid literal U+FFFD and leading-BOM controls;
 TextDecoder's default BOM handling can otherwise create a separate false refusal.
 CLI JSON files need the same explicit byte policy. I4's two fail-first oracles and
 BOM control exposed these distinct boundaries; decoded-string mocks missed them.
+
+
+## Atomic admission does not make settlement atomic
+
+An existing reservation helper can be transactional while its settlement helper
+updates event and lifetime counters in separate statements. A host decorator must
+bind the exact private reservation to its account and original estimate, then
+commit both settlement updates together. Inject a failure between those updates
+against the real database: both must roll back to the reservation. Unknown or
+aborted usage retains the estimate; normalized cached input is already part of
+input usage. Known usage above estimate must be charged in full and close further
+dispatch rather than be clipped. [I5 evidence](V2-8I-5-EVAL.md) covers these seams.

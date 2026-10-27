@@ -4,8 +4,10 @@ Accepted entry baseline8378a20a819de569ef7b10b747d7ba6c481f529e (I4), separately
 accepted in [its decision](reviews/V2-8I-4-8378a20.json). Branch/push v2/origin/v2.
 The human2026-10-27 answer “Approve Auto-only (Recommended)” authorizes
 [the clarified contract](V2-8I-5-PLAN.md), after independent plan reviewf67bab6.
-Source5cf5b5cff53c781291ba094163c68eb189bfbc66 passed its final focused gates and
-is pending separate acceptance. This report does not self-accept it.
+Source5cf5b5cff53c781291ba094163c68eb189bfbc66 is independently accepted in
+[the exact-source decision](reviews/V2-8I-5-5cf5b5c.json), from the separate
+reviewer context /root/turn_contract_review. Acceptance covers the approved
+default-disabled offline contract; it authorizes no activation or real model spend.
 
 ## Implementation and bounded behavior
 
@@ -68,7 +70,14 @@ justify only these short headless checks, not expensive validation. They took
 5.6seconds combined. No unrelated process was interrupted. All32 selected new
 cases executed; the excluded unchanged historical matrix, PG, browser/build/
 benchmark/native and live-provider work are unexecuted in I5, not passes.
-Independent exact-source implementation review is pending.
+Independent review inspected all32 required and36 affected leaves, the four gate
+records and exact source hashes. It executed three new supplemental challenges,
+3/3pass and0fail/skip/cancelled: competing sessions against one remaining actual
+account reservation, in-flight preparation cancellation, and actual CLI SIGTERM.
+These remain separate from retained68 cases. No prior passing case was repeated.
+[Review evidence](v2-8i-5-evidence/independent/packet-audit.json) and
+[the report](reviews/V2-8I-5-5cf5b5c.md) record commands, resource observations
+and explicit test-slot release. No blocking product regression remains.
 
 ## Development failures and corrections
 
@@ -94,6 +103,8 @@ Assistant/wake integration, provider search/creation and native consumer qualifi
 retain their roadmap contracts. Standing BYOK locale and I4's unavailable historical
 pre-removal count remain inherited limitations, not new I5 test results.
 
-After complete focused validation and separate exact-source ACCEPT/HOLD, update
-state/roadmap/handoff, push scoped changes and stop after I5. No activation or
-real model spend is authorized by implementation acceptance.
+All four required gates and independent acceptance are complete. State, roadmap,
+working agreement and handoff now identify accepted I5. The frozen implementation
+SHA remains distinct from later evidence/documentation commits. Stop after the
+scoped origin/v2 push; no dependent implementation, activation or real model spend.
+No atomic in-flight account-revocation fence or hard SQL deadline is claimed.

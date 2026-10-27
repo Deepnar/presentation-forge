@@ -9227,13 +9227,13 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-auto-host-pickup"></a>
 
-  - [ ] **V2-8I-5 explicit Auto host policy and bounded pickup — approved implementation.**
-    The2026-10-27 continuation starts planning the immediate dependency after
-    acceptedI4. [The concrete proposal](V2-8I-5-PLAN.md) recommends an Auto-only,
-    default-disabled, operator-invoked finite pickup bridge. Bind exact project
-    owner email to the current account ID, require account admission before any
-    provider network call, retain conservative unknown-usage reservations and
-    delegate every turn/run effect to I2. No generic key/route fallback, automatic
+  - [x] **V2-8I-5 explicit Auto host policy and bounded pickup — independently accepted.**
+    The2026-10-27 approved contract is built and accepted after I4.
+    [The concrete contract](V2-8I-5-PLAN.md) supplies an Auto-only, default-disabled,
+    operator-invoked finite pickup bridge. It binds exact project owner email to the
+    current account ID, requires account admission before provider network calls,
+    retains conservative unknown-usage reservations and delegates every turn/run
+    effect to I2. No generic key/route fallback, automatic
     approval, daemon, HTTP/UI surface, model evaluation or production activation.
     One-row discovery advances only through completed work; sequential scan/work/
     elapsed/output caps preserve bounded resume and existing two-minute expiry.
@@ -9246,22 +9246,37 @@ local inference. Only that separate transport correction is authorized; this aud
     recovery, unfinished-cursor and atomic/account-estimation clarifications before
     code. Source5cf5b5c is implemented with32/32new unit/SQLite/CLI tests,
     typecheck and36/36directly affected governance checks passing.
-    [Evaluation](V2-8I-5-EVAL.md) and retained raw results await independent
-    exact-source acceptance. No real-model use or production activation is approved.
+    [Independent ACCEPT](reviews/V2-8I-5-5cf5b5c.json) names exact5cf5b5c and
+    inspected packetb0fa687, adding3/3new narrow concurrency/cancellation/signal
+    challenges without repeating prior suites. All final checks0fail/skip/cancelled.
+    [Evaluation](V2-8I-5-EVAL.md) retains every failure/correction and actual result.
+    No real-model use or production activation occurred or is approved.
     The Auto-only recommendation keeps hosted quality and billing ownership explicit;
     BYOK/local integration remains separately scoped, without removing legacy support.
+
+    **Look-ahead.** Authenticated wake/scheduling and the visible Assistant can reuse
+    this explicit owner/account/provider path and canonical H/I2 authority. They
+    need their own bounded contracts; no second queue, scene or approval capability.
+
+    > **Learned.** Exact owner email and current account ID need explicit binding.
+    > Existing admission is atomic, but the two settlement counters require a shared
+    > transaction. Unknown usage retains estimates; known over-estimate usage closes
+    > further dispatch after full charging. Resume positions record completed work,
+    > and canonical post-reconciliation state determines safe preparation. Three new
+    > independent boundary challenges added evidence without duplicating the suite.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
   Existing-deck editing is the approved first capability. Agree the concrete
-  host/provider scheduling contract and then the Assistant's editor
-  draft/save/proposal/cancel interaction before implementing each slice. Keep the
+  authenticated wake/scheduling contract over acceptedI5 and then the Assistant's
+  editor draft/save/proposal/cancel interaction before implementing each slice. Keep the
   current placeholder until that interface contract works. Existing read/decide/
   cancel/clear routes and the headless worker reuse accepted H/B authority; the accepted
   submit route also delegates to H. AcceptedI4 supplies owner-scoped potential-work
-  pages; the host must recheck each hint through I2 before preparation/execution. `agent-chat` already supplies CLI
-  parity. Derive authority from the session and retain explicit generation,
+  pages; acceptedI5 adds default-disabled Auto/account policy and finite explicit
+  pickup, rechecking each hint through I2 before preparation/execution.
+  `agent-chat` supplies CLI parity. Derive authority from the session and retain explicit generation,
   revision and decision bindings. Saved chat is not automatically provider context;
   agree that context policy separately if the surface promises continuity. Settle or explicitly
   handle pending editor drafts/saves before capturing a saved revision; preserve
@@ -9358,9 +9373,10 @@ over the same run queue. Visible chat is not automatic provider context. V2-8F
 independently accepts the provider-neutral web-search boundary and SearXNG transport/
 normalization. I1/I2/I3/I4 independently accept authenticated lifecycle/submission,
 explicit-turn work and owner-scoped metadata discovery. These primitives provide
-no automatic provider policy, scheduling or execution from submission/discovery.
-The remaining parent milestone integrates authenticated hosted
-orchestration, the visible Assistant, canonical search/source and semantic creation
+no scheduling or execution from submission/discovery. AcceptedI5 adds explicit
+Auto-only/account-bound operator pickup, disabled by default; it is separate from
+authenticated wake or browser orchestration. The remaining parent milestone
+integrates authenticated hosted orchestration, the visible Assistant, canonical search/source and semantic creation
 tools, and qualifies live providers. Its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing
 resolved layout as model input.

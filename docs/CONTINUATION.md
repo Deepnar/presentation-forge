@@ -32,17 +32,20 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current authorized slice — I5 Auto host pickup
+## Latest accepted slice — I5 Auto host pickup complete
 
-The human approved Auto-only/default-disabled owner-bound pickup on2026-10-27.
-Read [the clarified contract](V2-8I-5-PLAN.md), [evaluation](V2-8I-5-EVAL.md),
-state and HANDOFF. Source5cf5b5c passed all four focused gates (32new cases and
-typecheck) plus36affected governance cases; independent review is pending. Use new
-test entries/typecheck and affected governance
-only. No old matrix, model/GPU call, PostgreSQL recreation or artifact generator.
-I4 remains the accepted baseline until a separate exact-source decision accepts I5.
+The human-approved Auto-only/default-disabled bridge is independently accepted
+at source5cf5b5cff53c781291ba094163c68eb189bfbc66 in
+[the exact-source decision](reviews/V2-8I-5-5cf5b5c.json). Read
+[the contract](V2-8I-5-PLAN.md), [evaluation](V2-8I-5-EVAL.md), state and HANDOFF.
+Required unit19/SQLite8/CLI5 all pass, typecheck passes, affected governance36/36
+passes and independent new challenges3/3 pass; all0fail/skip/cancelled. Only
+new/affected behavior ran. No old matrix/model/GPU/service/artifact execution or
+production activation occurred. Source is frozen; later commits are docs/evidence.
+Stop after I5 closeout. Acceptance permits planning, with later authority and scope
+solely in [the roadmap](ROADMAP.md#assistant-surface-integration).
 
-## Latest accepted slice — I4 complete
+## Accepted predecessor — I4 complete
 
 Owner-scoped work discovery is independently accepted at exact source
 `8378a20a819de569ef7b10b747d7ba6c481f529e` in
@@ -64,8 +67,8 @@ that removed service. No test/browser/coordinator/owned service remains.
 human-directed default: test new/changed behaviour and affected boundaries, reuse
 accepted old evidence, and broaden only for concrete risk/release reasons. Do not
 repeat the full historical matrix by habit. I4's broad run completed before that
-instruction arrived; review used only30focused repeats. Stop after I4; acceptance
-permits planning only, with later scope in [roadmap](ROADMAP.md#v2-8-remaining).
+instruction arrived; review used only30focused repeats. I4 closeout is complete;
+later scope remains in [the roadmap](ROADMAP.md#v2-8-remaining).
 
 ## Accepted predecessor — I3 complete
 

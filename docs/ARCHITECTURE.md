@@ -2825,7 +2825,7 @@ checks. Exact source8378a20 is [independently accepted](reviews/V2-8I-4-8378a20.
 review and the unavailable pre-removal service-count provenance. Hosted/UI policy
 remains in the roadmap.
 
-### V2-8I-5 explicit Auto host policy and pickup (review pending)
+### V2-8I-5 explicit Auto host policy and pickup (accepted at5cf5b5c)
 
 The backend-injected pickup loop in packages/agent/turn-pickup.ts reads one I4 row
 at a time and delegates inspection/work to H/I2. A completed position advances;
@@ -2840,6 +2840,11 @@ network; normalized known usage updates the existing event/lifetime counters in
 one transaction, while unknown/aborted or failed settlement retains its estimate.
 Actual-over-estimate usage closes further provider dispatch. Account admission is
 for the existing single-account-database deployment, not shared-host quota control.
-Operator agent-chat pickup exposes the headless boundary with truthful bounded
-continuation/failure exits. No server auto-start, HTTP/UI, queue/schema or renderer
-change. [The evaluation](V2-8I-5-EVAL.md) records focused execution and pending review.
+Trusted configuration is config/agent-host.json (version1, an explicitly listed
+Auto model and canonical capability limits), alongside the existing models.yaml
+Auto profile. Both files are bounded local reads; no model discovery occurs.
+FORGE_AGENT_HOST_ENABLED=1 and hosted mode are required; this slice created no
+activation configuration. Operator agent-chat pickup exposes the headless boundary
+with truthful bounded continuation/failure exits. No server auto-start, HTTP/UI, queue/schema or renderer
+change. [The evaluation](V2-8I-5-EVAL.md) records focused execution and the separate
+[exact-source acceptance](reviews/V2-8I-5-5cf5b5c.json). The bridge stays disabled.

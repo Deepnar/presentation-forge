@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+    "sha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8I-4-8378a20.json"
+    "source": "docs/reviews/V2-8I-5-5cf5b5c.json"
   },
   "implementationHead": {
     "sha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
-    "note": "Frozen approved Auto-only/default-disabled I5: final new unit19, SQLite8 and CLI5 all pass, typecheck passes; affected governance36/36. Separate implementation acceptance pending; no old matrix/model/GPU/service run."
+    "note": "Independently accepted Auto-only/default-disabled I5. Required32/32, affected governance36/36, independent supplemental3/3, typecheck0. No old matrix/model/GPU/service run or production activation. Source remains frozen; later commits are evidence/docs only."
   },
   "activeMilestone": {
     "id": "V2-8I-5",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8I-5-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8I-5-5cf5b5c.json",
+    "accepted": true
   },
   "validation": [
     {

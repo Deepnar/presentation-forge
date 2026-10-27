@@ -98,5 +98,16 @@
     "live provider and local inference"
   ],
   "environment": "Node24.16.0; serial nice10 ionice2:7; temporary SQLite and injected/loopback fixtures, no persistent services. Shared I/O pressure precludes heavy sweeps; four short new-behavior gates finished in5.6seconds.",
-  "acceptance": "pending separate exact-source independent review"
+  "acceptance": {
+    "decision": "ACCEPT",
+    "source": "docs/reviews/V2-8I-5-5cf5b5c.json",
+    "independentNewChallenges": {
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "productionActivationAuthorized": false
+  }
 }

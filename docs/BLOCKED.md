@@ -307,9 +307,9 @@ Two are worth naming because they look like engineering and are not:
 
 I4's critical-CPU resource hold is resolved by fresh180.701second quiet
 requalification and unchanged full5Kretry9/9,0fail/skip/cancelled. The original
-7pass/1timeout/1unfinished attempt remains retained. Remaining ordered validation,
-independent exact-source decision and exact-owned cleanup are active requirements,
-not absent product direction. See [the evaluation](V2-8I-4-EVAL.md) and
+7pass/1timeout/1unfinished attempt remains retained. The later completed validation
+and acceptance are recorded below; these earlier requirements are historical, not
+current blockers. See [the evaluation](V2-8I-4-EVAL.md) and
 [roadmap](ROADMAP.md#assistant-work-discovery).
 
 I4 is independently accepted at8378a20 after completed source validation and
@@ -320,3 +320,10 @@ does not certify cleanup. Current independent PG replay remains unexecuted; no
 service recreation or additional broad run is required. No ongoing I4 product/
 validation/review blocker remains. [Evaluation](V2-8I-4-EVAL.md) preserves the gap;
 [roadmap](ROADMAP.md#assistant-surface-integration) owns future gated scope.
+
+I5 is independently accepted at5cf5b5c with four focused gates complete (32new
+runtime tests and typecheck),36affected governance cases and3new independent
+challenges passing. No ongoing I5 validation/review blocker or persistent service
+exists. The Auto-only bridge remains disabled; live-provider use and activation
+are unexecuted. [Evaluation](V2-8I-5-EVAL.md) records bounded acceptance;
+[the roadmap](ROADMAP.md#assistant-surface-integration) owns later gated scope.
