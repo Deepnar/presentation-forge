@@ -54,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Assistant editor interaction contract; direction required before implementation",
+    "id": "V2-8I-7 exact-turn wake; targeting direction pending",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
+    "roadmapRef": "docs/ROADMAP.md#assistant-targeted-wake"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

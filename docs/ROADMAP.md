@@ -9267,7 +9267,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-authenticated-wake"></a>
 
-  - [ ] **V2-8I-6 authenticated finite wake — independently accepted.**
+  - [x] **V2-8I-6 authenticated finite wake — independently accepted.**
     The 2026-10-27 continuation prepares the immediate dependency after accepted I5
     `5cf5b5c`, from entry HEAD `be0e1af`. [The proposed contract](V2-8I-6-PLAN.md)
     recommends an explicit authenticated wake endpoint over finite I5 pickup,
@@ -9302,6 +9302,22 @@ local inference. Only that separate transport correction is authorized; this aud
     > until settlement. A202 hint and an already-admitted coalesced receipt are not
     > dispatch/completion guarantees. Narrow independent timer tests established
     > these lifecycle boundaries without waiting real110seconds or retesting old work.
+
+  <a id="assistant-targeted-wake"></a>
+
+  - [ ] **V2-8I-7 exact-turn wake — direction pending.**
+    The continuation from accepted I6 `dce5628`, entry HEAD `33e45b7`, prepares
+    [the concrete contract](V2-8I-7-PLAN.md). Recommend exact project/generation/turn
+    wake for the future Assistant's Send/Approve path, sharing I6 admission/caps and
+    I5 Auto policy while going straight to H/I2 instead of scanning owner history.
+    Preserve the owner-wide endpoint; refuse distinct active targets as busy rather
+    than silently coalescing/dropping them. No new queue, scheduler, approval or
+    renderer authority. The alternative resumable owner-wide fairness direction
+    needs a revised contract if chosen. Agree targeting before code; current work
+    is planning only, with no tests/models/services/configuration changes. Proposed
+    focused target/affected-coordinator, SQLite/CLI, HTTP-process and typecheck gates
+    reuse accepted unchanged evidence and avoid the historical matrix. No UI or
+    activation follows automatically. Stop at direction until the contract is agreed.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
