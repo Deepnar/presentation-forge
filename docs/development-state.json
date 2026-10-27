@@ -54,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Remaining V2-8 capability planning",
+    "id": "V2-8J-1 bounded canonical web research preparation",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
+    "roadmapRef": "docs/ROADMAP.md#assistant-web-research-preparation"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

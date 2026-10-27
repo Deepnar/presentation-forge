@@ -9043,6 +9043,28 @@ local inference. Only that separate transport correction is authorized; this aud
   qualification. Source persistence/query disclosure needs an agreed data policy.
   No page-fetch/SSRF permission, vector store or unbounded search loop is implied.
 
+  <a id="assistant-web-research-preparation"></a>
+
+  - [ ] **V2-8J-1 bounded canonical web research preparation — contract proposed.**
+    The2026-10-27 continuation starts the next dependency after accepted I8,
+    source b9c2d20 and planning HEAD2e6bf40. [Concrete contract](V2-8J-1-PLAN.md)
+    proposes an explicitly granted headless inspect-only web_search capability:
+    canonical request/result, provider normalization/history, scoped session,
+    bounded injected search and model continuation. Base tools and queued plans/
+    receipts retain current authority. No persistence/UI/activation/model run.
+    Human direction is required on scoped private-content query disclosure;
+    implementation remains unauthorized until recorded. Offline tests only.
+    Grant absence must preserve existing default-off editing behavior. Source
+    registry/locator/retention and later research-backed creation remain separate.
+    Look-ahead reuses this capability/catalog seam without another document/queue.
+
+  Dependency sequence after I8: establish the granted canonical read-only search
+  seam, then agree immutable project source registry/retention/resolution and
+  verified locator boundaries before research-backed semantic creation. The
+  semantic-creation entry retains deterministic compile/preservation/approval
+  authority. Qualification/spend/surface entries below still own their gates;
+  none is automatically authorized by this planning entry.
+
 <a id="assistant-semantic-creation"></a>
 
 - [ ] **Canonical semantic creation and regeneration tools.**

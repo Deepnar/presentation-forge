@@ -1,33 +1,22 @@
 # Presentation Forge handoff — 2026-10-27
 
-Branch v2, origin/v2 only. I8 accepted exact source
-b9c2d2075da21608a92a458c1395ede0bbe67297; separate decision
-[ACCEPT](reviews/V2-8I-8-b9c2d20.json) reviewed packet841176d and preserves limits.
-Later commits are documentation/evidence only. Acceptance metadata and scoped
-closeout are complete. Stop after I8; no dependent implementation/activation is
-approved. All future scope/authority is solely in ROADMAP.md#v2-8-remaining.
+Branch v2, origin/v2 only. Entry HEAD2e6bf40a4549d987384bda113fc056a3a34cb00f;
+accepted source remains I8 b9c2d2075da21608a92a458c1395ede0bbe67297, with its separate
+ACCEPT in reviews/V2-8I-8-b9c2d20.json. I8 validation/closeout complete. Current
+continuation prepares the next contract only, registered solely at
+ROADMAP.md#assistant-web-research-preparation. Read V2-8J-1-PLAN.md.
 
-The approved existing Assistant tab delivers freeform saved-slide/selection
-requests, explicit semantic proposals/approval and canonical exact wake. Grid/
-title/inline/save/auth guards preserve human work; authoritative loading clears
-session undo and Version history restores it. Availability has shared CLI parity.
-No new model layout/scene/queue, store schema/query, compiler or renderer change.
-Execution stays default-off, with no real API/local model/GPU evaluation, production
-activation, migration or deployment. Full creation/research is not claimed.
+Recommendation is a trusted-grant, headless inspect-only canonical web_search
+conversation over accepted SearchProvider and scoped reads. This adds no durable
+sources/UI/activation. New query disclosure requires human direction before code;
+state.nextCandidate.authorized remains false. Independent plan readiness review
+is pending. Do not implement before the decision or treat a readiness review as
+policy approval. No re-approval of accepted I8 surface/retention is needed.
 
-Selected product26/26: client14, availability/integration5, Chrome7 distinct cases.
-Governance4/4, typecheck0, four serial builds0, final independent3/3. Chrome is an
-explicit selected-case composite, not an all-green whole-file process. Five prior
-successes plus corrected dark and save/stale checks retain actual raw exits and
-source applicability. All root attempts114=106pass/8fail, no skips/cancellations;
-selected30includes governance and excludes repeats. Read V2-8I-8-EVAL.md, manifest,
-visual/provenance and independent audit for exact results and missing originals.
-Old matrix/PG/native/benchmark/large-deck/live qualification unexecuted this slice;
-BYOK locale, I7 initial SQLite timing and I4 unavailable pre-removal count/cause
-remain separate. Do not recreate old infrastructure or replay historical helpers.
-
-All fixture APIs/Chrome/listeners/stores/temp directories use completed cleanup
-hooks; no persistent validation service acquired. Fresh cleanup metadata confirms
-pre-existing API PID1723 is preserved (Node24 comm=MainThread). Original .agents/
-and two untracked master-prompt documents remain untouched. Review directory and
-acceptance record are committed with the scoped closeout. No owned job remains.
+Startup recovered clean tracked state and preserved original .agents/ plus the
+two master-prompt documents. Planning inspected canonical tool/provider/context/
+search schemas and seams; no product/model/browser/build/database/GPU execution,
+services or production changes. Existing I8 product26/26, governance4/4 and final
+independent3/3 are prior evidence, not new runs. Retain all I8 provenance limits,
+BYOK locale and I7/I4 inherited uncertainty. Pre-existing local API remains
+untouched; no owned slot acquired. Later scope lives only in the roadmap.
