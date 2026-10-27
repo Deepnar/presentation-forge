@@ -669,9 +669,9 @@ describe("v2-7a editor shell", () => {
       const asst = await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((n) => n.getAttribute('aria-label') === 'Assistant'); const r = b.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
       await page.click(asst[0], asst[1]);
       await waitFor(page, `document.querySelector('[data-assistant-panel]') !== null`, 60000);
-      const panelText = await page.evaluate(`document.querySelector('[data-assistant-panel]').textContent`);
-      assert.ok(panelText.includes("not available"), "assistant states its limits");
-      assert.equal(await page.evaluate(`document.querySelectorAll('[data-assistant-panel] input, [data-assistant-panel] textarea').length`), 0, "no fake composer");
+      await waitFor(page, `document.querySelector('[data-assistant-status]')?.textContent.includes('disabled on this host')`, 10000);
+      assert.equal(await page.evaluate(`document.querySelector('[data-assistant-panel] button[type=submit]').disabled`), true, "default-off Assistant cannot submit");
+      assert.equal(await page.evaluate(`document.querySelectorAll('[data-assistant-panel] textarea').length`), 1, "real composer preserves unsent messages");
       // Read-only: leave edit mode, navigate slides by keyboard.
       const done = await page.evaluate(byText("Done"));
       await page.click(done[0], done[1]);

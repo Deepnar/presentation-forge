@@ -264,9 +264,12 @@ export async function openViewer(url, { w = 1440, h = 900, timeoutMs = 90000 } =
     // Trusted key press against the focused element (keydown +
     // keyup). Windows key codes: Enter 13, Escape 27, Left 37,
     // Up 38, Right 39, Down 40.
-    async key(code, keyName) {
+    async key(code, keyName, { text } = {}) {
       await send(g.ws, seq++, "Input.dispatchKeyEvent", {
         type: "rawKeyDown", windowsVirtualKeyCode: code, key: keyName,
+      });
+      if (text !== undefined) await send(g.ws, seq++, "Input.dispatchKeyEvent", {
+        type: "char", text, unmodifiedText: text, windowsVirtualKeyCode: code, key: keyName,
       });
       await send(g.ws, seq++, "Input.dispatchKeyEvent", {
         type: "keyUp", windowsVirtualKeyCode: code, key: keyName,
