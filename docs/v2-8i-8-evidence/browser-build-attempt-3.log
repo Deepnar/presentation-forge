@@ -1,0 +1,150 @@
+vite v8.2.1 building client environment for production...
+[2Ktransforming...✓ 165 modules transformed.
+rendering chunks...
+computing gzip size...
+app/web/dist/scenes.html                                                    0.95 kB │ gzip:  0.46 kB
+app/web/dist/index.html                                                     2.73 kB │ gzip:  1.23 kB
+app/web/dist/assets/ibm-plex-mono-vietnamese-500-normal-C8zxqsMH.woff       5.61 kB
+app/web/dist/assets/ibm-plex-mono-vietnamese-400-normal-DDuiU_S-.woff       5.62 kB
+app/web/dist/assets/ibm-plex-mono-cyrillic-ext-500-normal-BIfNGwUT.woff     5.77 kB
+app/web/dist/assets/ibm-plex-mono-cyrillic-ext-400-normal-DMdlQ8Kv.woff     5.82 kB
+app/web/dist/assets/ibm-plex-mono-vietnamese-400-normal-BulugwFq.woff2      5.86 kB
+app/web/dist/assets/ibm-plex-mono-vietnamese-500-normal-DZ4AoWbu.woff2      6.04 kB
+app/web/dist/assets/ibm-plex-mono-cyrillic-ext-400-normal-xuaO2J-f.woff2    6.91 kB
+app/web/dist/assets/ibm-plex-mono-cyrillic-ext-500-normal-BqneJy0T.woff2    6.97 kB
+app/web/dist/assets/ibm-plex-mono-cyrillic-400-normal-CEL4l2ZJ.woff         7.20 kB
+app/web/dist/assets/ibm-plex-mono-cyrillic-500-normal-Ael50iVv.woff         7.20 kB
+app/web/dist/assets/poppins-latin-700-normal-Qrb0O0WB.woff2                 7.81 kB
+app/web/dist/assets/poppins-latin-600-normal-zEkxB9Mr.woff2                 8.00 kB
+app/web/dist/assets/ibm-plex-mono-cyrillic-400-normal-BSMlKf0J.woff2        8.35 kB
+app/web/dist/assets/ibm-plex-mono-cyrillic-500-normal-Bq9vWWag.woff2        8.46 kB
+app/web/dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2            10.25 kB
+app/web/dist/assets/inter-vietnamese-wght-italic-K3WlGtc8.woff2            10.59 kB
+app/web/dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2             11.23 kB
+app/web/dist/assets/ibm-plex-mono-latin-ext-400-normal-D3D2R8hC.woff       11.76 kB
+app/web/dist/assets/ibm-plex-mono-latin-ext-500-normal-CZ70TYgx.woff       11.76 kB
+app/web/dist/assets/inter-greek-ext-wght-italic-DcOpz6Lw.woff2             12.09 kB
+app/web/dist/assets/oswald-latin-500-normal-B-eyT0Dw.woff2                 12.70 kB
+app/web/dist/assets/space-grotesk-latin-700-normal-RjhwGPKo.woff2          12.84 kB
+app/web/dist/assets/karla-latin-400-normal-C_jajTY_.woff2                  13.14 kB
+app/web/dist/assets/ibm-plex-mono-latin-400-normal-CvHOgSBP.woff           13.14 kB
+app/web/dist/assets/ibm-plex-mono-latin-500-normal-CB9ihrfo.woff           13.15 kB
+app/web/dist/assets/space-grotesk-latin-600-normal-DjKNqYRj.woff2          13.28 kB
+app/web/dist/assets/karla-latin-700-normal-DFuMffT3.woff2                  13.30 kB
+app/web/dist/assets/space-grotesk-latin-500-normal-lFbtlQH6.woff2          13.31 kB
+app/web/dist/assets/ibm-plex-mono-latin-ext-400-normal-BmRBH3aV.woff2      13.34 kB
+app/web/dist/assets/space-grotesk-latin-400-normal-CJ-V5oYT.woff2          13.38 kB
+app/web/dist/assets/ibm-plex-mono-latin-ext-500-normal-CAhNIIs5.woff2      13.43 kB
+app/web/dist/assets/karla-latin-600-normal-BH_u9dis.woff2                  13.43 kB
+app/web/dist/assets/bebas-neue-latin-400-normal-9mHNbWWO.woff2             13.76 kB
+app/web/dist/assets/manrope-latin-500-normal-BYYD-dBL.woff2                14.04 kB
+app/web/dist/assets/outfit-latin-700-normal-Cu9v6i1X.woff2                 14.06 kB
+app/web/dist/assets/syne-latin-700-normal-AF3Rs61n.woff2                   14.07 kB
+app/web/dist/assets/manrope-latin-400-normal-PaqtzbVb.woff2                14.10 kB
+app/web/dist/assets/outfit-latin-600-normal-B7SfZ07L.woff2                 14.14 kB
+app/web/dist/assets/manrope-latin-600-normal-4f0koTD-.woff2                14.17 kB
+app/web/dist/assets/manrope-latin-700-normal-BZp_XxE4.woff2                14.21 kB
+app/web/dist/assets/syne-latin-600-normal-BiwQbQXw.woff2                   14.34 kB
+app/web/dist/assets/public-sans-latin-700-normal-BqJmxWdE.woff2            14.60 kB
+app/web/dist/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2          14.70 kB
+app/web/dist/assets/ibm-plex-mono-latin-500-normal-DSY6xOcd.woff2          14.88 kB
+app/web/dist/assets/bodoni-moda-latin-700-normal-_PBEXphw.woff2            14.98 kB
+app/web/dist/assets/fraunces-latin-500-normal-DnGCNyPD.woff2               18.00 kB
+app/web/dist/assets/fraunces-latin-600-normal-BFCDtZfi.woff2               18.09 kB
+app/web/dist/assets/fraunces-latin-700-normal-CEOla-zY.woff2               18.21 kB
+app/web/dist/assets/archivo-black-latin-400-normal-BTVu2TQR.woff2          18.60 kB
+app/web/dist/assets/anton-latin-400-normal-Byf51wtH.woff2                  18.61 kB
+app/web/dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2              18.74 kB
+app/web/dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2                 18.99 kB
+app/web/dist/assets/inter-cyrillic-wght-italic-DzZdc28x.woff2              19.98 kB
+app/web/dist/assets/source-serif-4-latin-400-normal-DJ5YJwmz.woff2         20.08 kB
+app/web/dist/assets/inter-greek-wght-italic-CILZdfAp.woff2                 20.48 kB
+app/web/dist/assets/lora-latin-400-normal-DnxXpLNu.woff2                   21.14 kB
+app/web/dist/assets/source-serif-4-latin-600-normal-DouSKlru.woff2         21.53 kB
+app/web/dist/assets/source-serif-4-latin-700-normal-CGGdTIBe.woff2         21.71 kB
+app/web/dist/assets/lora-latin-500-normal-Dh16O2IA.woff2                   21.90 kB
+app/web/dist/assets/lora-latin-600-normal-B-3RcLOQ.woff2                   21.91 kB
+app/web/dist/assets/cormorant-garamond-latin-700-normal-DajfzrDU.woff2     22.34 kB
+app/web/dist/assets/ibm-plex-sans-latin-400-normal-CDDApCn2.woff2          22.58 kB
+app/web/dist/assets/ibm-plex-sans-latin-700-normal-Bxkt5Cjx.woff2          22.83 kB
+app/web/dist/assets/playfair-display-latin-700-normal-CuDiGg7c.woff2       23.22 kB
+app/web/dist/assets/ibm-plex-sans-latin-500-normal-6ng42L7E.woff2          24.18 kB
+app/web/dist/assets/ibm-plex-sans-latin-600-normal-CuJfVYMP.woff2          24.25 kB
+app/web/dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2          25.96 kB
+app/web/dist/assets/inter-cyrillic-ext-wght-italic-B5xAaiFk.woff2          27.38 kB
+app/web/dist/assets/merriweather-latin-900-normal-CRmIFSJV.woff2           47.29 kB
+app/web/dist/assets/merriweather-latin-300-normal-C5yjfxyF.woff2           47.33 kB
+app/web/dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                 48.25 kB
+app/web/dist/assets/merriweather-latin-700-normal-DoUP8Ce-.woff2           48.66 kB
+app/web/dist/assets/merriweather-latin-400-normal-G4kZaoXi.woff2           49.16 kB
+app/web/dist/assets/inter-latin-wght-italic-DpCbqKDY.woff2                 51.83 kB
+app/web/dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2             85.06 kB
+app/web/dist/assets/inter-latin-ext-wght-italic-0pjOp8NU.woff2             91.90 kB
+app/web/dist/assets/scenes-CHm8yaGH.css                                     1.94 kB │ gzip:  0.59 kB
+app/web/dist/assets/styles-B5kjo0-U.css                                    99.73 kB │ gzip: 17.02 kB
+app/web/dist/assets/lora-latin-400-normal-Doy-e-Ck.js                       0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/lora-latin-500-normal-pn05y5dd.js                       0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/lora-latin-600-normal-BH_u3qkO.js                       0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/syne-latin-600-normal-ODThDTpm.js                       0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/syne-latin-700-normal-Bx_vfjmn.js                       0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/anton-latin-400-normal-CC_myC_r.js                      0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/karla-latin-400-normal-DcknTY-E.js                      0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/karla-latin-600-normal-5MuSw9bY.js                      0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/karla-latin-700-normal-Bryq2H8b.js                      0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/oswald-latin-500-normal-JPDINrnk.js                     0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/outfit-latin-600-normal-cHJKuii8.js                     0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/outfit-latin-700-normal-I7DxtQNc.js                     0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/manrope-latin-400-normal-ZEPhiM1b.js                    0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/manrope-latin-500-normal-N4DZ2zse.js                    0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/manrope-latin-600-normal-BEFxiIkH.js                    0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/manrope-latin-700-normal-DOMfCF2y.js                    0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/poppins-latin-600-normal-D7rWVteU.js                    0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/poppins-latin-700-normal-C54itZGP.js                    0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/fraunces-latin-500-normal-RIaXblWl.js                   0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/fraunces-latin-600-normal-6LsNx7t7.js                   0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/fraunces-latin-700-normal-B5DoQvqb.js                   0.07 kB │ gzip:  0.09 kB
+app/web/dist/assets/bebas-neue-latin-400-normal-_qdTatq8.js                 0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/bodoni-moda-latin-700-normal-DE75WDJc.js                0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/public-sans-latin-700-normal-DnIaZ767.js                0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/merriweather-latin-300-normal-3px75Hd2.js               0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/merriweather-latin-400-normal-DKYfAS3E.js               0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/merriweather-latin-700-normal-eJCmUy4p.js               0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/merriweather-latin-900-normal-D6ZogCW4.js               0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/archivo-black-latin-400-normal-DyZ96PDb.js              0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/ibm-plex-sans-latin-400-normal-CERV5JSY.js              0.08 kB │ gzip:  0.09 kB
+app/web/dist/assets/ibm-plex-sans-latin-500-normal-W9Z25pkS.js              0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/ibm-plex-sans-latin-600-normal-BgNgDsLF.js              0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/ibm-plex-sans-latin-700-normal-ghbIZ5G7.js              0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/space-grotesk-latin-400-normal-DXrBv4hE.js              0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/space-grotesk-latin-500-normal-De3TuE8_.js              0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/space-grotesk-latin-600-normal-BY-fguib.js              0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/space-grotesk-latin-700-normal-BE62I30O.js              0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/source-serif-4-latin-400-normal-2QXQiVZ7.js             0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/source-serif-4-latin-600-normal-DS8OoFpQ.js             0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/source-serif-4-latin-700-normal-ZArRrtix.js             0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/playfair-display-latin-700-normal-C--p702O.js           0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/cormorant-garamond-latin-700-normal-BrKq1_cV.js         0.08 kB │ gzip:  0.10 kB
+app/web/dist/assets/scenes-C9jdPl2A.js                                      0.45 kB │ gzip:  0.30 kB
+app/web/dist/assets/budget-D04BCd_D.js                                      2.17 kB │ gzip:  0.83 kB
+app/web/dist/assets/Footer-yvCbsfgA.js                                      2.60 kB │ gzip:  0.78 kB
+app/web/dist/assets/ScriptView-ympwspW1.js                                  4.48 kB │ gzip:  1.72 kB
+app/web/dist/assets/TourThemes-BHcWvvpj.js                                  5.32 kB │ gzip:  2.05 kB
+app/web/dist/assets/Themes-DCKvVJgb.js                                      5.84 kB │ gzip:  2.34 kB
+app/web/dist/assets/ResearchView-6NKybgjY.js                               11.63 kB │ gzip:  3.45 kB
+app/web/dist/assets/deckContext-CxilrDDh.js                                11.99 kB │ gzip:  4.44 kB
+app/web/dist/assets/ReportView-D-txloz_.js                                 12.34 kB │ gzip:  3.92 kB
+app/web/dist/assets/Workspace-CY2tORrJ.js                                  23.50 kB │ gzip:  7.49 kB
+app/web/dist/assets/engine-DHZjKnMy.js                                     26.37 kB │ gzip:  6.67 kB
+app/web/dist/assets/Home-Dmufdfah.js                                       30.34 kB │ gzip:  8.58 kB
+app/web/dist/assets/scene-edit-BJZSX6QV.js                                 35.36 kB │ gzip:  9.07 kB
+app/web/dist/assets/Admin-DypPZEZo.js                                      35.72 kB │ gzip:  8.69 kB
+app/web/dist/assets/fonts-DMVzSHvg.js                                      54.74 kB │ gzip: 17.50 kB
+app/web/dist/assets/Legal-Bzu2CUoT.js                                      65.53 kB │ gzip: 18.38 kB
+app/web/dist/assets/scene-DRWL44g2.js                                      68.76 kB │ gzip:  7.67 kB
+app/web/dist/assets/ChatView-DBjVciGE.js                                   77.84 kB │ gzip: 20.54 kB
+app/web/dist/assets/DeckDetail-CxKsUNwi.js                                 86.89 kB │ gzip: 19.65 kB
+app/web/dist/assets/main-CEW7PH5M.js                                      123.61 kB │ gzip: 33.38 kB
+app/web/dist/assets/SceneViewer-DbvbpuiH.js                               179.03 kB │ gzip: 38.84 kB
+app/web/dist/assets/styles-BmlmmaEc.js                                    199.65 kB │ gzip: 63.25 kB
+
+✓ built in 435ms

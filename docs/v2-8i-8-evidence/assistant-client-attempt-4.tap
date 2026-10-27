@@ -1,0 +1,95 @@
+TAP version 13
+# Subtest: Assistant scope is semantic, bounds edits and discloses current-slide reads
+ok 1 - Assistant scope is semantic, bounds edits and discloses current-slide reads
+  ---
+  duration_ms: 1.954563
+  type: 'test'
+  ...
+# Subtest: Assistant scope cannot edit a protected ancestor or silently truncate large target sets
+ok 2 - Assistant scope cannot edit a protected ancestor or silently truncate large target sets
+  ---
+  duration_ms: 0.486403
+  type: 'test'
+  ...
+# Subtest: Assistant API pins credential across awaits and never forwards a replacement session
+ok 3 - Assistant API pins credential across awaits and never forwards a replacement session
+  ---
+  duration_ms: 17.271144
+  type: 'test'
+  ...
+# Subtest: Assistant API keeps fixed private failure and bounded retry data
+ok 4 - Assistant API keeps fixed private failure and bounded retry data
+  ---
+  duration_ms: 2.853572
+  type: 'test'
+  ...
+# Subtest: Send freezes user intent first and captures revision only after successful settlement
+ok 5 - Send freezes user intent first and captures revision only after successful settlement
+  ---
+  duration_ms: 1.832273
+  type: 'test'
+  ...
+# Subtest: failed save preserves message and does not submit or wake
+ok 6 - failed save preserves message and does not submit or wake
+  ---
+  duration_ms: 0.530407
+  type: 'test'
+  ...
+# Subtest: an ambiguous submission retries its exact body and key without another settlement
+ok 7 - an ambiguous submission retries its exact body and key without another settlement
+  ---
+  duration_ms: 0.928513
+  type: 'test'
+  ...
+# Subtest: Cancel remains reachable while wake admission is unresolved; late receipt cannot resurrect the turn
+ok 8 - Cancel remains reachable while wake admission is unresolved; late receipt cannot resurrect the turn
+  ---
+  duration_ms: 3.729701
+  type: 'test'
+  ...
+# Subtest: stale proposal after human save cannot rebind approval to the newer revision
+ok 9 - stale proposal after human save cannot rebind approval to the newer revision
+  ---
+  duration_ms: 0.484534
+  type: 'test'
+  ...
+# Subtest: clear retains its confirmed generation and revision rather than rebinding to a poll
+ok 10 - clear retains its confirmed generation and revision rather than rebinding to a poll
+  ---
+  duration_ms: 0.372246
+  type: 'test'
+  ...
+# Subtest: polling is finite and hidden/disposed sessions retain no timers or private state
+ok 11 - polling is finite and hidden/disposed sessions retain no timers or private state
+  ---
+  duration_ms: 3.02218
+  type: 'test'
+  ...
+# Subtest: default-off availability reads existing chat without submission or work
+ok 12 - default-off availability reads existing chat without submission or work
+  ---
+  duration_ms: 0.284833
+  type: 'test'
+  ...
+# Subtest: revoked authority latches the panel closed against late successful reads
+ok 13 - revoked authority latches the panel closed against late successful reads
+  ---
+  duration_ms: 0.292919
+  type: 'test'
+  ...
+# Subtest: wake backoff keeps one captured target and makes at most one automatic retry
+ok 14 - wake backoff keeps one captured target and makes at most one automatic retry
+  ---
+  duration_ms: 0.854491
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 229.959242
+# forge-test-file "test/v2-assistant-client-8i.test.js"

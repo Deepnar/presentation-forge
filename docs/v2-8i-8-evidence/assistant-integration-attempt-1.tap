@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: Assistant integration: availability is owner-bound metadata with no provider/configuration work
+not ok 1 - Assistant integration: availability is owner-bound metadata with no provider/configuration work
+  ---
+  duration_ms: 58.954673
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-assistant-integration-8i.test.js:6:29'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'not-found'
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-assistant-integration-8i.test.js:11:3)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: Assistant integration: availability pins account identity across asynchronous backend opening
+ok 2 - Assistant integration: availability pins account identity across asynchronous backend opening
+  ---
+  duration_ms: 8.244844
+  type: 'test'
+  ...
+# Subtest: Assistant integration: production availability is private default-off and cannot create a conversation or dispatch
+ok 3 - Assistant integration: production availability is private default-off and cannot create a conversation or dispatch
+  ---
+  duration_ms: 686.225668
+  type: 'test'
+  ...
+# Subtest: Assistant integration: production availability rejects anonymous cookie-only foreign and query authority
+not ok 4 - Assistant integration: production availability rejects anonymous cookie-only foreign and query authority
+  ---
+  duration_ms: 489.14291
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-assistant-integration-8i.test.js:6:29'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    200 !== 404
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 404
+  actual: 200
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-assistant-integration-8i.test.js:32:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Assistant integration: operator availability shares the projection and refuses execution overrides
+ok 5 - Assistant integration: operator availability shares the projection and refuses execution overrides
+  ---
+  duration_ms: 565.45523
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 3
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2140.143388
+# forge-test-file "test/v2-assistant-integration-8i.test.js"

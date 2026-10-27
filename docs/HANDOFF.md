@@ -1,30 +1,32 @@
 # Presentation Forge handoff — 2026-10-27
 
-Branch v2, origin/v2 only. Entry HEAD3b35c39ea1ec951f5e42624171d106b2c9681fdd.
-Accepted source remains I7 **3da0801f64e88f7911f655cee288bb9b750c7c3d**, with its
-[independent ACCEPT](reviews/V2-8I-7-3da0801.json); closeout is complete. Current
-continuation prepares [I8's surface contract](V2-8I-8-PLAN.md), solely registered
-in [the roadmap](ROADMAP.md#assistant-visible-editor). Human approved Existing Assistant tab; scoped implementation and offline tests
-are authorized. Plan-review capture/read-scope/Cancel clarifications are pinned
-before code. No activation or real/local model call is authorized.
+Branch v2; push origin/v2 only. Frozen I8 source
+b9c2d2075da21608a92a458c1395ede0bbe67297 is pushed; this handoff records its scoped documentation/evidence packet. Accepted baseline remains I7 3da0801f64e88f7911f655cee288bb9b750c7c3d.
+Human approved Existing Assistant tab; scope/stop in ROADMAP.md#assistant-visible-editor.
+Read V2-8I-8-PLAN.md and V2-8I-8-EVAL.md. Implementation and selected validation
+complete; separate /root/i8_source_review is inspecting final source/evidence for
+ACCEPT/HOLD. Root must not self-accept. Stop after I8 review/docs/push closeout.
 
-Recommended surface is the existing right-rail Assistant tab, freeform requests
-on the current slide/selection, saved chat and explicit proposal Approve/Reject.
-The concrete contract covers default-off availability with headless parity,
-draft/save barriers, exact target wake, bounded polling/retry, auth/navigation
-cleanup, guarded saved-scene refresh and truthful session-undo/History behavior.
-Alternative dedicated page needs a revised contract. Preserve chart/table grid
-drafts across tab changes; they are Apply-only and are not committed by saveNow.
-No cross-turn model memory, creation/research, provider expansion or second scene.
+Default-off Assistant supports current-slide/selected-object freeform requests,
+explicit semantic proposal approval, canonical exact wake and guarded loading.
+Grid/title/inline/save/auth guards preserve human work; loading clears session undo
+and Version history restores it. No activation, live/API/local inference, deployment,
+migration, schema/query, compiler/renderer or dependent capability work occurred.
+Availability has shared CLI parity and no provider access. Independent recovery
+finding is narrowly fixed and its extended3 challenge cases pass at frozen source.
 
-At this handoff no runtime code has changed. Planning has read source/docs, searched local UI guidance and run the light
-protocol check. No product/browser/build/database/model/GPU checks or services.
-I7's retained33/33, governance4/4, typecheck0 and independent2/2 are accepted prior
-evidence, not new execution. Its initial SQLite wait remains unexplained; BYOK
-locale and other inherited limits stay separate. No old broad rerun is needed.
+Selected product26/26 (client14, integration5, Chrome7 distinct selected-case coverage),
+governance4/4, typecheck0 and four serial build exits0. No all-green whole-file
+Chrome process is claimed: retain5 successes from full2 + corrected dark + corrected
+save/stale case. All root attempts114 executions=106pass/8fail, no skips/cancellations;
+primary30includes governance and excludes repeats. See source-manifest, raw logs,
+collector and visual index. Earlier failures/provenance limits are explicit in EVAL.
+Old matrix/PG/native/benchmark/large-deck/live qualification unexecuted this slice;
+standing BYOK locale, I7 initial SQLite timing and missing I4 pre-removal provenance
+remain. No old helper/service recreated. Independent final3/3 is separate evidence.
 
-Original .agents/ and two untracked prompt documents remain untouched. No owned
-service/test/database slot acquired. Preserve the pre-existing local API; never
-replay I4 helpers or recreate its removed backend. Its unavailable pre-removal
-count/cause stays unknown. The separate plan readiness record is docs/reviews/V2-8I-8-plan-d5f789a.json.
-Proceed only with the approved I8 contract; stop after independent source review.
+All owned fixture APIs/Chrome/processes/stores cleaned up; no persistent service
+acquired. Pre-existing PID1723 local API left untouched. Original .agents/ and two
+untracked master-prompt documents preserved. Do not replay old validators/generators
+or recreate removed I4 database. After separate decision, update acceptance only
+from that record, run lightweight dev:protocol, commit/push scoped paths and stop.

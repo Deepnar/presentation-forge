@@ -1,0 +1,53 @@
+{
+  "admitted": true,
+  "samples": [
+    {
+      "atUtc": "2026-10-27T13:47:02.318706+00:00",
+      "intervalSeconds": 15.000430913001765,
+      "cpuBusyPercent": 10.229725989482425,
+      "cpuIoWaitPercent": 8.40575698865209,
+      "availableKiB": 24760028,
+      "pressure": {
+        "cpu": "some avg10=0.33 avg60=0.56 avg300=0.47 total=473476575\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=25191636\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=24484906\n",
+        "io": "some avg10=40.24 avg60=39.52 avg300=40.29 total=10910469929\nfull avg10=39.50 avg60=38.07 avg300=38.58 total=10061114082\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 2.3265998291922467,
+          "weightedQueue": 0.14239590931675183,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [],
+      "ready": true,
+      "classifierVersion": 2,
+      "observerSha256": "9e9135b9894398f349da1244699eb483b7908efd3533767889633738e0f23279"
+    },
+    {
+      "atUtc": "2026-10-27T13:47:17.361288+00:00",
+      "intervalSeconds": 15.044410958998924,
+      "cpuBusyPercent": 9.069324425057287,
+      "cpuIoWaitPercent": 8.296292206178736,
+      "availableKiB": 22082652,
+      "pressure": {
+        "cpu": "some avg10=0.06 avg60=0.43 avg300=0.44 total=473486227\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=25191640\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=24484909\n",
+        "io": "some avg10=43.16 avg60=40.40 avg300=40.44 total=10917165334\nfull avg10=42.79 avg60=39.20 avg300=38.80 total=10067744512\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 2.0140369790866313,
+          "weightedQueue": 0.050384159410814075,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [],
+      "ready": true,
+      "classifierVersion": 2,
+      "observerSha256": "9e9135b9894398f349da1244699eb483b7908efd3533767889633738e0f23279"
+    }
+  ],
+  "scope": "One bounded serial production build/Chrome file at nice10/idle I/O, GPU disabled; no old matrix. Existing CPU<25%, iowait<20%, CPU PSI<10, memory PSI<1, available>8GiB and physical storage busy<5%/queue<.5/inflight<=1 with two fresh15s ready samples. Unknown/userspace D threads block.",
+  "limitation": "Global I/O PSI has unresolved provenance and remains reported; admission uses sustained measured CPU/memory/backing-storage headroom, no attribution to a graphics worker."
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "run": "assistant-browser-attempt-1.json",
+    "admission": null,
+    "ageSeconds": null,
+    "limit": "First raw observation unavailable; no reconstructed record"
+  },
+  {
+    "run": "assistant-browser-attempt-2.json",
+    "admission": "docs/v2-8i-8-evidence/browser-admission-attempt-5.json",
+    "ageSeconds": 21.334,
+    "limit": "Admitted under retained CPU/memory/backing-storage bounds; I/O PSI provenance unresolved"
+  },
+  {
+    "run": "assistant-browser-save-attempt-1.json",
+    "admission": "docs/v2-8i-8-evidence/browser-admission-attempt-7.json",
+    "ageSeconds": 40.521,
+    "limit": "Admitted under retained CPU/memory/backing-storage bounds; I/O PSI provenance unresolved"
+  },
+  {
+    "run": "assistant-browser-save-attempt-2.json",
+    "admission": "docs/v2-8i-8-evidence/browser-admission-attempt-9.json",
+    "ageSeconds": 57.171,
+    "limit": "Admitted under retained CPU/memory/backing-storage bounds; I/O PSI provenance unresolved"
+  }
+]

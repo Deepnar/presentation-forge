@@ -342,3 +342,10 @@ cause remains unresolved, explicitly accepted for default-off source without liv
 latency qualification. [Evaluation](V2-8I-7-EVAL.md) retains all prior attempts and
 scope limits; [the roadmap](ROADMAP.md#assistant-surface-integration) alone owns
 later interface/fairness/activation decisions. No production activation follows.
+
+
+I8 frozen source b9c2d20 has focused validation complete; exact-source independent
+review is pending. No missing backend/model execution blocks this offline/default-
+off slice. [Evaluation](V2-8I-8-EVAL.md) exposes selected-case browser evidence and
+provenance limits. Scope/remaining authority is solely in
+[the roadmap](ROADMAP.md#assistant-visible-editor).

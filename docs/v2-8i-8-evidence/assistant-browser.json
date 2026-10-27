@@ -1,0 +1,68 @@
+{
+  "id": "assistant-browser",
+  "implementationSha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+  "kind": "tests",
+  "command": "python3 docs/v2-8i-8-evidence/collect-evidence.py (collect seven previously executed selected cases; no new test execution)",
+  "exitCode": 0,
+  "log": "docs/v2-8i-8-evidence/assistant-browser-selected.tap",
+  "tests": {
+    "total": 7,
+    "pass": 7,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "backend": "Actual isolated Express production bundle + temporary SQLite, loopback provider only; Chrome --disable-gpu",
+  "executionMode": "Composite selected-case coverage; no all-green full-file process is claimed",
+  "constituents": [
+    {
+      "test": "Assistant Chrome: normal chat proposes text/chart/table, approves once, loads canonical history and restores",
+      "raw": "assistant-browser-attempt-2.json",
+      "rawLog": "docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap",
+      "rawProcessExitCode": 1,
+      "outcome": "pass"
+    },
+    {
+      "test": "Assistant Chrome: chart/table Apply-only drafts survive rail switching and block Send",
+      "raw": "assistant-browser-attempt-2.json",
+      "rawLog": "docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap",
+      "rawProcessExitCode": 1,
+      "outcome": "pass"
+    },
+    {
+      "test": "Assistant Chrome: selection scope limits edits, rejection and confirmed clear preserve deck/history",
+      "raw": "assistant-browser-attempt-2.json",
+      "rawLog": "docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap",
+      "rawProcessExitCode": 1,
+      "outcome": "pass"
+    },
+    {
+      "test": "Assistant Chrome: in-flight processing can be cancelled without clearing the saved message or changing the scene",
+      "raw": "assistant-browser-attempt-2.json",
+      "rawLog": "docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap",
+      "rawProcessExitCode": 1,
+      "outcome": "pass"
+    },
+    {
+      "test": "Assistant Chrome: composer navigation warns, default-off/read-only state cannot send and account change clears private chat",
+      "raw": "assistant-browser-attempt-2.json",
+      "rawLog": "docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap",
+      "rawProcessExitCode": 1,
+      "outcome": "pass"
+    },
+    {
+      "test": "Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas",
+      "raw": "assistant-browser-save-attempt-1.json",
+      "rawLog": "docs/v2-8i-8-evidence/assistant-browser-save-attempt-1.tap",
+      "rawProcessExitCode": 1,
+      "outcome": "pass"
+    },
+    {
+      "test": "Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale",
+      "raw": "assistant-browser-save-attempt-2.json",
+      "rawLog": "docs/v2-8i-8-evidence/assistant-browser-save-attempt-2.tap",
+      "rawProcessExitCode": 0,
+      "outcome": "pass"
+    }
+  ]
+}

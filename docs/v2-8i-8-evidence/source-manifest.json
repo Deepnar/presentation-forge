@@ -1,0 +1,97 @@
+{
+  "implementationSha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+  "basis": "Exact byte equality except explicitly reviewed browser recovery/capture deltas below. No SHA-only reruns.",
+  "gates": {
+    "assistant-client": {
+      "raw": "assistant-client-attempt-6.json",
+      "matchingSourceHashes": {
+        "app/web/src/lib/v2assistant.js": "0e673f3b5b5748c874d866ecd133a7a1eba7393bad1c6a0ccf97d0d466f3b87d",
+        "app/web/src/lib/assistantController.js": "e0322e0fee0d9887e26b025bee3b2cc2cd3ebb50f26300278bf55fbcb1f313d5",
+        "test/v2-assistant-client-8i.test.js": "1e32becd1d514f021e844e39451b95b0147c35f3c940c6608c6e46ccdd14cd00"
+      }
+    },
+    "assistant-integration": {
+      "raw": "assistant-integration-attempt-2.json",
+      "matchingSourceHashes": {
+        "src/agent/assistant-availability.js": "f8cbbfbae1b97b1abb5cb9aae73b8a086780db7e35fb0184559be57d9af4f8cc",
+        "src/agent/turn-cli.js": "b043ab4d920c55db5984e00b22866e3d7df9489b710a7bc8bda4eb8d78d2bf88",
+        "app/server/v2-agent-routes.js": "0be0dd15305b2aa09b1ccbb61589088918acd41d61b3099232a83943630ff55f",
+        "app/server/index.js": "41c0c193eda19044f1085c3a68529e6c790ff737b64b5c04f0e0065882032f6d",
+        "test/v2-assistant-integration-8i.test.js": "6897c0d3b311abeafb4f8599d3b5c5091b561e63489c4def46f963d7e50c8068"
+      }
+    },
+    "governance": {
+      "raw": "governance-attempt-2.json",
+      "matchingSourceHashes": {
+        "tools/dev-protocol-check.mjs": "a9ef1b7b206394594cb4d8b6481fdda9d47ccf991a77bfcee1391df3e6c1fe14",
+        "docs/development-state.schema.json": "4e98f80c25bcaebfbab5c40af673ceee5ab6152e8f28223d070ea47fade65c6e",
+        "test/dev-protocol.test.js": "6a19a6e8ddea4da979351b3aad232a1aa3c02b058ad8d1b41f983544cb3d4625"
+      }
+    },
+    "typecheck": {
+      "raw": "typecheck-attempt-1.json",
+      "unchanged": "No package TypeScript/tsconfig/package manifest changed after the retained invocation; JSX covered by production builds/browser."
+    },
+    "assistant-browser": {
+      "selectedCases": [
+        {
+          "test": "Assistant Chrome: normal chat proposes text/chart/table, approves once, loads canonical history and restores",
+          "raw": "assistant-browser-attempt-2.json",
+          "rawLog": "docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap",
+          "rawProcessExitCode": 1,
+          "outcome": "pass"
+        },
+        {
+          "test": "Assistant Chrome: chart/table Apply-only drafts survive rail switching and block Send",
+          "raw": "assistant-browser-attempt-2.json",
+          "rawLog": "docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap",
+          "rawProcessExitCode": 1,
+          "outcome": "pass"
+        },
+        {
+          "test": "Assistant Chrome: selection scope limits edits, rejection and confirmed clear preserve deck/history",
+          "raw": "assistant-browser-attempt-2.json",
+          "rawLog": "docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap",
+          "rawProcessExitCode": 1,
+          "outcome": "pass"
+        },
+        {
+          "test": "Assistant Chrome: in-flight processing can be cancelled without clearing the saved message or changing the scene",
+          "raw": "assistant-browser-attempt-2.json",
+          "rawLog": "docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap",
+          "rawProcessExitCode": 1,
+          "outcome": "pass"
+        },
+        {
+          "test": "Assistant Chrome: composer navigation warns, default-off/read-only state cannot send and account change clears private chat",
+          "raw": "assistant-browser-attempt-2.json",
+          "rawLog": "docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap",
+          "rawProcessExitCode": 1,
+          "outcome": "pass"
+        },
+        {
+          "test": "Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas",
+          "raw": "assistant-browser-save-attempt-1.json",
+          "rawLog": "docs/v2-8i-8-evidence/assistant-browser-save-attempt-1.tap",
+          "rawProcessExitCode": 1,
+          "outcome": "pass"
+        },
+        {
+          "test": "Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale",
+          "raw": "assistant-browser-save-attempt-2.json",
+          "rawLog": "docs/v2-8i-8-evidence/assistant-browser-save-attempt-2.tap",
+          "rawProcessExitCode": 0,
+          "outcome": "pass"
+        }
+      ],
+      "unchangedFirstFiveBodies": true,
+      "matchingWebPaths": 97,
+      "webRecoveryDelta": "After full attempt2, syncSaved catch retains pendingSaved on blocked/failed loads, and successful loading clears its old error. Final controller also gives availability/export UI reads owned AbortControllers. Independent final challenges on frozen source cover recovery/auth/owned-read aborts. Prior successful load/no-load/browser branches unchanged.",
+      "sharedHarnessDelta": "capture adds theme/viewport/background JSON only; corrected sixth sets data-theme, seventh uses plain editable text plus canonical turn counts. First five case bodies unchanged.",
+      "savedCaseControllerSha256": "56b802af3f49f65feb5bd17943804f5f3f2fd3bb4e882966251d8605fa3e27ed",
+      "finalControllerSha256": "e0322e0fee0d9887e26b025bee3b2cc2cd3ebb50f26300278bf55fbcb1f313d5",
+      "testSha256": "97ec0774ea33a395f6ad91b79e0138bda147abb7be4985980cef8e2f4f5f78aa",
+      "helperSha256": "f882eb5848b4358f4a4905da35f9ce4a2f70973b891528d3ce054adb93b4dcc8"
+    }
+  }
+}

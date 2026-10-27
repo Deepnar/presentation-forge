@@ -1,0 +1,141 @@
+TAP version 13
+# Subtest: Assistant Chrome: normal chat proposes text/chart/table, approves once, loads canonical history and restores
+ok 1 - Assistant Chrome: normal chat proposes text/chart/table, approves once, loads canonical history and restores
+  ---
+  duration_ms: 10893.005479
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: chart/table Apply-only drafts survive rail switching and block Send
+ok 2 - Assistant Chrome: chart/table Apply-only drafts survive rail switching and block Send
+  ---
+  duration_ms: 2861.249448
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: selection scope limits edits, rejection and confirmed clear preserve deck/history
+ok 3 - Assistant Chrome: selection scope limits edits, rejection and confirmed clear preserve deck/history
+  ---
+  duration_ms: 4681.802717
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: in-flight processing can be cancelled without clearing the saved message or changing the scene
+ok 4 - Assistant Chrome: in-flight processing can be cancelled without clearing the saved message or changing the scene
+  ---
+  duration_ms: 4738.214504
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: composer navigation warns, default-off/read-only state cannot send and account change clears private chat
+ok 5 - Assistant Chrome: composer navigation warns, default-off/read-only state cannot send and account change clears private chat
+  ---
+  duration_ms: 3019.103504
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas
+ok 6 - Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas
+  ---
+  duration_ms: 3104.380545
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale
+not ok 7 - Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale
+  ---
+  duration_ms: 12248.710548
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-assistant-chrome-8i.test.js:12:31'
+  failureType: 'testCodeFailure'
+  error: |-
+    Browser condition: document.querySelector('[data-text-edit]'); F
+    ← Workspace
+    Slides
+    Save
+    Saved · rev 0
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    1 / 2
+    Slides
+    Layers
+    + Slide ▾
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Slide 1 · Custom
+    ⋯
+    Unrelated private slide
+    Slide 2
+    ⋯
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    Slide 1 of 2 · 1 selected · Custom slide
+    Edit failed: op-rejected: rich runs are read-only in this slice (1 paragraph(s), 2 run(s)) — editing would flatten their formatting
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Inspector
+    Assistant
+    ×
+    Assistant
+    Export chat
+    Clear chat
+    
+    Edits require your approval.
+    
+    Ask a question or describe a change to this slide.
+    
+    Scope
+    Current slide
+    Selected objects
+    
+    Uses the current saved slide. Earlier chat is saved for reference and is not automatically sent.
+    
+    Message
+    Send
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-assistant-chrome-8i.test.js:19:9)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-assistant-chrome-8i.test.js:160:3)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 41896.028772
+# forge-test-file "test/v2-assistant-chrome-8i.test.js"

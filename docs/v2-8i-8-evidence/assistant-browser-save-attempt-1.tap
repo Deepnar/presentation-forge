@@ -1,0 +1,39 @@
+TAP version 13
+# Subtest: Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas
+ok 1 - Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas
+  ---
+  duration_ms: 3255.632697
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale
+not ok 2 - Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale
+  ---
+  duration_ms: 6868.074376
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-assistant-chrome-8i.test.js:12:31'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-assistant-chrome-8i.test.js:177:10)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10457.399848
+# forge-test-file "test/v2-assistant-chrome-8i.test.js"

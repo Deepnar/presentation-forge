@@ -1,0 +1,7 @@
+{
+  "command": "node node_modules/vite/bin/vite.js build --config app/web/vite.config.js",
+  "code": 0,
+  "signal": null,
+  "durationMs": 745,
+  "log": "docs/v2-8i-8-evidence/browser-build.log"
+}

@@ -1,0 +1,81 @@
+{
+  "implementationSha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+  "inspected": true,
+  "images": [
+    {
+      "path": "docs/v2-8i-8-evidence/desktop-proposal-light.png",
+      "sha256": "b355ddf2f980d5578a6e7c21c56b6a4a00e3cdef751aa7b0e8473bb569f34b00",
+      "dimensions": [
+        1360,
+        757
+      ],
+      "inspectedBy": "/root",
+      "observation": "Labeled data proposal; actions/disclosure inside scroll timeline, no canvas shift."
+    },
+    {
+      "path": "docs/v2-8i-8-evidence/desktop-applied-light.png",
+      "sha256": "8891ecbe31a1b2825a200051d86a0f344bca2b7b1b33dbae6c17de01413caf0b",
+      "dimensions": [
+        1360,
+        757
+      ],
+      "inspectedBy": "/root",
+      "observation": "Canonical saved content loaded, status and History visible."
+    },
+    {
+      "path": "docs/v2-8i-8-evidence/inspector-grid-draft.png",
+      "sha256": "4499dbf48bf9f926b9a2e1afe82527bbac314afd52f08dd513c0ffa806c5756c",
+      "dimensions": [
+        1360,
+        757
+      ],
+      "inspectedBy": "/root",
+      "observation": "Apply-only table value00123 retained through tab switches."
+    },
+    {
+      "path": "docs/v2-8i-8-evidence/clear-confirmation.png",
+      "sha256": "26e03aa7849302ba13cdba5e3b2f9a4fd00956696f59410125e351c4d2dfae5c",
+      "dimensions": [
+        1360,
+        757
+      ],
+      "inspectedBy": "/root",
+      "observation": "Settled modal controls/body fit."
+    },
+    {
+      "path": "docs/v2-8i-8-evidence/disabled-readonly.png",
+      "sha256": "43eafa304ac6989049cbfce02e884687f1db66989b46cc1b95ec3572a5ec6146",
+      "dimensions": [
+        1360,
+        757
+      ],
+      "inspectedBy": "/root",
+      "observation": "Disabled processing plus read-only message; unsent composer retained."
+    },
+    {
+      "path": "docs/v2-8i-8-evidence/narrow-assistant-dark.png",
+      "sha256": "8cfe9ae5ca724854da4eaec227d877ff24cb3892d0ad00dc3714847993306420",
+      "dimensions": [
+        375,
+        812
+      ],
+      "inspectedBy": "/root",
+      "observation": "375px dark modal rail fits, focus inside then returns to Assistant; no stacked rails."
+    },
+    {
+      "path": "docs/v2-8i-8-evidence/stale-proposal-human-save-dark.png",
+      "sha256": "b553deebed8eb3104aa3aecfb6e7970aab0daeaa23c6d5fc9c372855d3c98833",
+      "dimensions": [
+        1360,
+        757
+      ],
+      "inspectedBy": "/root",
+      "observation": "Dark stale refusal; original human content retained. Inserted text intentionally overlaps chart in this fixture."
+    }
+  ],
+  "desktopCanvasMaxDeltaPx": 0.003814697265625,
+  "narrowCanvasMaxDeltaPx": 0,
+  "limits": "Message/proposal and narrow typing rectangles measured; tab/grid views inspected visually. Historical mislabeled narrow-light original unavailable, final truthful dark retained.",
+  "capturedSource": "c6abdb2b657a2929bddba5e2d48083328945fd42",
+  "applicability": "Captured c6abdb2; final controller read-abort cleanup changes no rendering/success flow. Earlier five light captures from4041e4d are bound in source-manifest.json."
+}

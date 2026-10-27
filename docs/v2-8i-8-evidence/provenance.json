@@ -1,0 +1,6 @@
+{
+  "admission": "Chronological attempt1 full raw overwritten before unique names; no reconstructed raw. Earlier observed CPU10.50/9.42 and backing busy3.36/2.22 survived only tool-output summary. Attempt2 retained separately. Attempt3 at13:47UTC initially named attempt1 due filling file gap; renamed3 from its timestamp. Subsequent names use max+1. Recent holds/admissions all retained.",
+  "image": "Initial attempt1 originals retained. Attempt2 mislabeled narrow dark was actually light and overwritten by corrected dark; earlier original unavailable. Current truthful dark inspected and metadata retained. All current images copied to before-final-save-rerun before last targeted check.",
+  "backend": "All fixtures SQLite own temporary stores and actual isolated Express; no live model/API/local inference or activation.",
+  "standing": "I4 missing pre-removal catalog count/cause stays unavailable; no old helpers/service re-created."
+}

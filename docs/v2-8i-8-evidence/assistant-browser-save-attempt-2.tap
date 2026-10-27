@@ -1,0 +1,17 @@
+TAP version 13
+# Subtest: Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale
+ok 1 - Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale
+  ---
+  duration_ms: 9002.478947
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9294.009791
+# forge-test-file "test/v2-assistant-chrome-8i.test.js"

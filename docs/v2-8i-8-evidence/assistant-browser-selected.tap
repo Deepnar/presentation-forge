@@ -1,0 +1,59 @@
+TAP version 13
+# Evidence selection digest, not a new all-green whole-file execution.
+# Each selected leaf passed in its cited raw invocation; all failed attempts remain retained.
+# Source docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap; process exit 1; selected leaf Assistant Chrome: normal chat proposes text/chart/table, approves once, loads canonical history and restores
+# Subtest: Assistant Chrome: normal chat proposes text/chart/table, approves once, loads canonical history and restores
+ok 1 - Assistant Chrome: normal chat proposes text/chart/table, approves once, loads canonical history and restores
+  ---
+  duration_ms: 10893.005479
+  type: 'test'
+  ...
+# Source docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap; process exit 1; selected leaf Assistant Chrome: chart/table Apply-only drafts survive rail switching and block Send
+# Subtest: Assistant Chrome: chart/table Apply-only drafts survive rail switching and block Send
+ok 2 - Assistant Chrome: chart/table Apply-only drafts survive rail switching and block Send
+  ---
+  duration_ms: 2861.249448
+  type: 'test'
+  ...
+# Source docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap; process exit 1; selected leaf Assistant Chrome: selection scope limits edits, rejection and confirmed clear preserve deck/history
+# Subtest: Assistant Chrome: selection scope limits edits, rejection and confirmed clear preserve deck/history
+ok 3 - Assistant Chrome: selection scope limits edits, rejection and confirmed clear preserve deck/history
+  ---
+  duration_ms: 4681.802717
+  type: 'test'
+  ...
+# Source docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap; process exit 1; selected leaf Assistant Chrome: in-flight processing can be cancelled without clearing the saved message or changing the scene
+# Subtest: Assistant Chrome: in-flight processing can be cancelled without clearing the saved message or changing the scene
+ok 4 - Assistant Chrome: in-flight processing can be cancelled without clearing the saved message or changing the scene
+  ---
+  duration_ms: 4738.214504
+  type: 'test'
+  ...
+# Source docs/v2-8i-8-evidence/assistant-browser-attempt-2.tap; process exit 1; selected leaf Assistant Chrome: composer navigation warns, default-off/read-only state cannot send and account change clears private chat
+# Subtest: Assistant Chrome: composer navigation warns, default-off/read-only state cannot send and account change clears private chat
+ok 5 - Assistant Chrome: composer navigation warns, default-off/read-only state cannot send and account change clears private chat
+  ---
+  duration_ms: 3019.103504
+  type: 'test'
+  ...
+# Source docs/v2-8i-8-evidence/assistant-browser-save-attempt-1.tap; process exit 1; selected leaf Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas
+# Subtest: Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas
+ok 6 - Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas
+  ---
+  duration_ms: 3255.632697
+  type: 'test'
+  ...
+# Source docs/v2-8i-8-evidence/assistant-browser-save-attempt-2.tap; process exit 0; selected leaf Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale
+# Subtest: Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale
+ok 7 - Assistant Chrome: Send settles pending inline text and waits for its save; a later human save makes approval stale
+  ---
+  duration_ms: 9002.478947
+  type: 'test'
+  ...
+1..7
+# tests 7
+# pass 7
+# fail 0
+# skipped 0
+# cancelled 0
+# forge-test-file "test/v2-assistant-chrome-8i.test.js"

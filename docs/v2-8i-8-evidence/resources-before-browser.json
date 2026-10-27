@@ -1,0 +1,11 @@
+{
+  "cpuBusyPercent": 17.04,
+  "load": "4.94 5.92 6.31 4/2629 962236",
+  "memAvailable": "MemAvailable:   21690788 kB",
+  "pressure": {
+    "cpu": "some avg10=0.20 avg60=0.70 avg300=1.35 total=468956777\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.01 avg300=0.06 total=25178404\nfull avg10=0.00 avg60=0.01 avg300=0.05 total=24471694\n",
+    "io": "some avg10=43.07 avg60=39.94 avg300=37.70 total=10575049671\nfull avg10=42.04 avg60=37.02 avg300=33.73 total=9738218369\n"
+  },
+  "purpose": "Admission observation before the one isolated production build/browser file; not a pass."
+}

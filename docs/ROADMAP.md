@@ -8920,7 +8920,7 @@ local inference. Only that separate transport correction is authorized; this aud
 | P0 — complete headless boundary | [Turn and approval ownership](#assistant-turn-approval-contract) | V2-8H independently accepted at22e7c97; durable bounded visible turns and atomic approval reuse the existing run queue. Hosted routes/UI remain in their own entry. |
 | P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | Connect accepted SearchProvider through canonical authority and preserve verifiable project-scoped citations; do not merely add a catalog name. |
 | P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
-| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 transport and I2 headless worker independently accepted; authenticated submission is independently accepted at2ba82cb; host/provider scheduling and the visible Assistant still need separate contracts. |
+| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 transport and I2 headless worker independently accepted; authenticated submission is independently accepted at2ba82cb; host policy and exact wake are accepted; the visible Assistant now has its approved I8 contract and scoped validation under review. |
 | P0 basic / P1 distributed | [Trace and spend admission](#assistant-trace-budget) | Make context/tool/instruction provenance observable, preserve unknown usage, and prevent parallel requests/retries bypassing account allowances. |
 | P0 pilot / P1 release | [Assistant qualification](#assistant-live-qualification) | Separate deterministic correctness from real-model usefulness, injection resistance, grounded claims and human slide quality. |
 | P2 vision; P0 honest quality gates | [Visual feedback](#assistant-visual-feedback) | Reuse deterministic checks and native renderers; qualify optional vision behind read-only revision-bound artifacts and bounded semantic proposals. |
@@ -9343,7 +9343,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-visible-editor"></a>
 
-  - [ ] **V2-8I-8 existing-deck browser Assistant — approved implementation.**
+  - [ ] **V2-8I-8 existing-deck browser Assistant — validated, independent review pending.**
     Continuation from accepted I7 source3da0801, entry HEAD3b35c39, prepares
     [the concrete surface contract](V2-8I-8-PLAN.md). Recommend the existing
     right-rail Assistant tab: freeform current-slide/selection requests, saved
@@ -9363,14 +9363,28 @@ local inference. Only that separate transport correction is authorized; this aud
     Focused new client/integration/Chrome/typecheck gates replace a routine old
     matrix; browser/build waits for a quiet window. Stop after I8 exact-source
     review if approved; no feature follows automatically.
+    Frozen source b9c2d20; [evaluation](V2-8I-8-EVAL.md) records26/26 selected
+    product leaves, governance4/4, typecheck0, four serial production builds0 and
+    independent final3/3. Chrome7/7 is an explicit selected-case composite, with
+    all earlier failures and reviewed source deltas retained. Narrow fixes address
+    availability doc:null refusal and explicit saved-load recovery; no canonical
+    engine/schema/renderer change. Default-off, offline fixtures only. Exact-source
+    independent ACCEPT/HOLD remains required before marking this item complete.
+
+    > **Learned.** A completed durable edit and safely attached editor revision
+    > are separate states: retain explicit loading recovery when drafts block it.
+    > A client capturing fetch at mount requires canonical persistence assertions
+    > when a late test interceptor would otherwise observe nothing. Look-ahead:
+    > saved turn identity, scoped semantic commands and exact wake remain reusable
+    > for later capability/context contracts without replacing the panel.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
   Existing-deck editing is the approved first capability. I7 exact targeting is
-  independently accepted; agree the Assistant's editor draft/save/proposal/cancel
-  interaction contract in the I8 proposal above before implementation, reusing I7. Keep the
-  current placeholder until that interface contract works. Existing read/decide/
+  independently accepted; the human-approved I8 contract above is implemented and
+  validated under independent review. Its existing tab reuses I7 and preserves
+  editor draft/save/proposal/cancel boundaries; acceptance is recorded separately. Existing read/decide/
   cancel/clear routes and the headless worker reuse accepted H/B authority; the accepted
   submit route also delegates to H. AcceptedI4 supplies owner-scoped potential-work
   pages; acceptedI5 adds default-disabled Auto/account policy and finite explicit

@@ -6,44 +6,44 @@
     "source": "docs/reviews/V2-8I-7-3da0801.json"
   },
   "implementationHead": {
-    "sha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
-    "note": "Independently accepted exact-target source. Required33/33, selected governance4/4, typecheck0 and independent new2/2; tested working bytes match source. Initial SQLite timeout cause remains unresolved and recorded. Later commits are docs/evidence only; default-off, no UI/activation/live/PG qualification."
+    "sha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+    "note": "Frozen I8 runtime/tests/governance source under independent review. Selected product26/26, governance4/4, typecheck0, builds0; Chrome selected-case composite preserves all failures and source applicability, no all-green full-file claim. Offline/default-off; no production activation."
   },
   "activeMilestone": {
-    "id": "V2-8I-7",
-    "roadmapRef": "docs/ROADMAP.md#assistant-targeted-wake",
-    "evalDoc": "docs/V2-8I-7-EVAL.md",
+    "id": "V2-8I-8",
+    "roadmapRef": "docs/ROADMAP.md#assistant-visible-editor",
+    "evalDoc": "docs/V2-8I-8-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8I-7-3da0801.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "target-wake",
+      "id": "assistant-client",
       "status": "passed",
-      "evidence": "docs/v2-8i-7-evidence/target-wake.json",
-      "reason": "Selected new/affected scope executed; applicable tested working bytes match frozen source. Earlier attempts retained separately."
+      "evidence": "docs/v2-8i-8-evidence/assistant-client.json",
+      "reason": "Selected executed scope complete; exact hashes or explicit reviewed case applicability in source-manifest.json. All earlier failures retained."
     },
     {
-      "id": "target-wake-sqlite",
+      "id": "assistant-integration",
       "status": "passed",
-      "evidence": "docs/v2-8i-7-evidence/target-wake-sqlite.json",
-      "reason": "Selected new/affected scope executed; applicable tested working bytes match frozen source. Earlier attempts retained separately."
+      "evidence": "docs/v2-8i-8-evidence/assistant-integration.json",
+      "reason": "Selected executed scope complete; exact hashes or explicit reviewed case applicability in source-manifest.json. All earlier failures retained."
     },
     {
-      "id": "target-wake-http",
+      "id": "assistant-browser",
       "status": "passed",
-      "evidence": "docs/v2-8i-7-evidence/target-wake-http.json",
-      "reason": "Selected new/affected scope executed; applicable tested working bytes match frozen source. Earlier attempts retained separately."
+      "evidence": "docs/v2-8i-8-evidence/assistant-browser.json",
+      "reason": "Selected executed scope complete; exact hashes or explicit reviewed case applicability in source-manifest.json. All earlier failures retained."
     },
     {
       "id": "typecheck",
       "status": "passed",
-      "evidence": "docs/v2-8i-7-evidence/typecheck.json",
-      "reason": "Selected new/affected scope executed; applicable tested working bytes match frozen source. Earlier attempts retained separately."
+      "evidence": "docs/v2-8i-8-evidence/typecheck.json",
+      "reason": "Selected executed scope complete; exact hashes or explicit reviewed case applicability in source-manifest.json. All earlier failures retained."
     }
   ],
   "knownBlockers": [],
@@ -54,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-8 existing-deck browser Assistant",
-    "authorized": true,
-    "roadmapRef": "docs/ROADMAP.md#assistant-visible-editor"
+    "id": "Remaining V2-8 capability planning",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#v2-8-remaining"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

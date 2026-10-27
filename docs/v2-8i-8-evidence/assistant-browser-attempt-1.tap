@@ -1,0 +1,138 @@
+TAP version 13
+# Subtest: Assistant Chrome: normal chat proposes text/chart/table, approves once, loads canonical history and restores
+ok 1 - Assistant Chrome: normal chat proposes text/chart/table, approves once, loads canonical history and restores
+  ---
+  duration_ms: 10871.478658
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: chart/table Apply-only drafts survive rail switching and block Send
+not ok 2 - Assistant Chrome: chart/table Apply-only drafts survive rail switching and block Send
+  ---
+  duration_ms: 11988.747817
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-assistant-chrome-8i.test.js:12:31'
+  failureType: 'testCodeFailure'
+  error: |-
+    Browser condition: document.querySelector('[data-chart-editor]'); F
+    ← Workspace
+    Slides
+    Save
+    Saved · rev 0
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    1 / 2
+    Slides
+    Layers
+    + Slide ▾
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Slide 1 · Custom
+    ⋯
+    Unrelated private slide
+    Slide 2
+    ⋯
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    Slide 1 of 2 · Custom slide
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Inspector
+    Assistant
+    ×
+    Nothing selected. Click the slide to select an object, or double-click text to edit it.
+    Slide 1 of 2
+    Layout Custom slide
+    Objects 3
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-assistant-chrome-8i.test.js:19:9)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-assistant-chrome-8i.test.js:78:65)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Assistant Chrome: selection scope limits edits, rejection and confirmed clear preserve deck/history
+ok 3 - Assistant Chrome: selection scope limits edits, rejection and confirmed clear preserve deck/history
+  ---
+  duration_ms: 4821.992056
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: in-flight processing can be cancelled without clearing the saved message or changing the scene
+ok 4 - Assistant Chrome: in-flight processing can be cancelled without clearing the saved message or changing the scene
+  ---
+  duration_ms: 4128.075011
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: composer navigation warns, default-off/read-only state cannot send and account change clears private chat
+ok 5 - Assistant Chrome: composer navigation warns, default-off/read-only state cannot send and account change clears private chat
+  ---
+  duration_ms: 2965.749772
+  type: 'test'
+  ...
+# Subtest: Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas
+not ok 6 - Assistant Chrome: narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas
+  ---
+  duration_ms: 2541.849427
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-assistant-chrome-8i.test.js:12:31'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /Line one\nLine two/. Input:
+    
+    'Line oneLine two'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'Line oneLine two'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-assistant-chrome-8i.test.js:124:10)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 37646.379319
+# forge-test-file "test/v2-assistant-chrome-8i.test.js"

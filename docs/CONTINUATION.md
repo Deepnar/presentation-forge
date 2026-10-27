@@ -34,12 +34,14 @@ because old eval wording predates review.
 
 ## Current authorized slice — I8 browser Assistant
 
-The2026-10-27 continuation prepares [the I8 contract](V2-8I-8-PLAN.md), linked in
-[the roadmap](ROADMAP.md#assistant-visible-editor). It proposes the current rail,
-freeform scoped requests, canonical approval/wake and explicit draft/history
-policies. Human approved Existing Assistant tab; plan-review clarifications are
-pinned before code. Scoped implementation and offline checks are authorized. Accepted I7 and its evidence remain unchanged. Read
-HANDOFF for current plan review/direction state before any code.
+Human approved the existing Assistant tab; frozen source
+b9c2d2075da21608a92a458c1395ede0bbe67297 is implemented and validated under separate
+exact-source review. Read [contract](V2-8I-8-PLAN.md), [evaluation](V2-8I-8-EVAL.md),
+state and HANDOFF; [roadmap](ROADMAP.md#assistant-visible-editor) alone owns scope.
+Selected product26/26, governance4/4, typecheck0 and independent final3/3 pass.
+Chrome7/7 is selected-case coverage, not a green whole-file process. Preserve
+all failed attempts and applicability/provenance notes. No real/local model,
+activation or dependent feature authorized. Stop after I8 review/docs/push closeout.
 
 ## Latest accepted slice — I7 exact-turn wake complete
 
