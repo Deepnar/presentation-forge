@@ -1,8 +1,10 @@
 # V2-8J-1 — bounded canonical web research preparation
 
-Status: proposed contract; human query-disclosure direction pending. Separate
-plan review found the boundary ready for direction with the clarifications below.
-Readiness is not implementation authorization or source acceptance.
+Status: approved for scoped implementation and offline validation. On2026-10-27
+the human selected Approve scoped implementation (Recommended), approving the
+explicit grant/query-disclosure mechanism below. No live calls or activation.
+Separate plan readiness is recorded; implementation acceptance still requires
+exact-source independent review.
 [Readiness record](reviews/V2-8J-1-plan-11696f9.json) verifies all six pinned
 clarifications at2a640cd and forms part of this contract.
 Accepted baseline b9c2d2075da21608a92a458c1395ede0bbe67297; planning entry

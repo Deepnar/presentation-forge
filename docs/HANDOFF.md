@@ -8,13 +8,12 @@ ROADMAP.md#assistant-web-research-preparation. Read V2-8J-1-PLAN.md.
 
 Recommendation is a trusted-grant, headless inspect-only canonical web_search
 conversation over accepted SearchProvider and scoped reads. This adds no durable
-sources/UI/activation. New query disclosure requires human direction before code;
-state.nextCandidate.authorized remains false. Independent plan review found the boundary ready for direction, with technical
+sources/UI/activation. Human approved the scoped grant/query-disclosure implementation on2026-10-27;
+state.nextCandidate.authorized is true. Offline code/tests may proceed. Independent plan review found the boundary ready for direction, with technical
 clarifications pinned in the plan before code. Separate READY_FOR_DIRECTION in
 reviews/V2-8J-1-plan-11696f9.json names final plan2a640cd and all six requirements.
-Human query-disclosure approval is the remaining gate; this does not authorize
-live API/local model/search calls or activation. Do not implement before the decision or treat a readiness review as
-policy approval. No re-approval of accepted I8 surface/retention is needed.
+Human query-disclosure direction is recorded in the contract; it does not authorize
+live API/local model/search calls or activation. Implement only the approved contract; readiness alone was not policy approval. No re-approval of accepted I8 surface/retention is needed.
 
 Startup recovered clean tracked state and preserved original .agents/ plus the
 two master-prompt documents. Planning inspected canonical tool/provider/context/

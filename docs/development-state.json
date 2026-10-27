@@ -55,7 +55,7 @@
   ],
   "nextCandidate": {
     "id": "V2-8J-1 bounded canonical web research preparation",
-    "authorized": false,
+    "authorized": true,
     "roadmapRef": "docs/ROADMAP.md#assistant-web-research-preparation"
   },
   "docs": {

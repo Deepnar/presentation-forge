@@ -35,8 +35,8 @@ because old eval wording predates review.
 ## Current planning — J1 canonical web research
 
 The next continuation prepares [V2-8J-1](V2-8J-1-PLAN.md), registered in
-[the roadmap](ROADMAP.md#assistant-web-research-preparation). Human direction on
-trusted query disclosure is pending; no implementation is authorized. Read HANDOFF
+[the roadmap](ROADMAP.md#assistant-web-research-preparation). Human approved scoped
+trusted query disclosure on2026-10-27; offline implementation is authorized. Read HANDOFF
 for plan-readiness/direction state. Accepted I8 and its evidence remain unchanged.
 
 ## Latest accepted slice — I8 browser Assistant complete

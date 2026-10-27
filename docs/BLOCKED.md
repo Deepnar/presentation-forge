@@ -352,7 +352,7 @@ provenance limits. Scope/remaining authority is solely in
 
 
 J1 planning is READY_FOR_DIRECTION at plan2a640cd with its separate
-[review](reviews/V2-8J-1-plan-11696f9.json). Human query-disclosure direction is
-pending; implementation remains unauthorized. No product validation or external
+[review](reviews/V2-8J-1-plan-11696f9.json). Human query-disclosure direction was approved on2026-10-27; scoped offline
+implementation is authorized and no policy blocker remains. No product validation or external
 service is needed to resolve this policy gate. Scope/continuation is solely in
 [the roadmap](ROADMAP.md#assistant-web-research-preparation); accepted I8 is unchanged.
