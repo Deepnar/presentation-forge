@@ -2877,7 +2877,7 @@ before later work; wake does not guarantee owner-wide progress.
 record exact source, focused tests and limitations. No production activation or
 live model qualification occurred.
 
-### V2-8I-7 exact-turn wake (source3da0801; review pending)
+### V2-8I-7 exact-turn wake (accepted at3da0801)
 
 The project-scoped POST /api/v2/projects/:id/conversation/wake accepts exact
 {generation,turnId} under the same private Bearer account snapshot, eligibility
@@ -2904,4 +2904,5 @@ same adapter, exact2048-byte generation/turnId JSON, trusted numeric account loo
 overrides are refused. Independent CLI processes rely on canonical leases and
 shared account admission, not HTTP-local caps. No schema/query, UI or renderer
 change; owner-wide wake remains finite. [Evaluation](V2-8I-7-EVAL.md) records focused
-execution, earlier harness/timing uncertainty and pending separate source review.
+execution, earlier harness/timing uncertainty and the separate
+[independent acceptance](reviews/V2-8I-7-3da0801.json).

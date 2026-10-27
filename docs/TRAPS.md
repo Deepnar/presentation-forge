@@ -2069,3 +2069,18 @@ and recheck it before work. Account and meter AsyncLocalStorage contexts must bo
 be exited before background resources are created; runAsAccount(null) only calls
 the function and retains inherited context. [I6 evidence](V2-8I-6-EVAL.md) covers
 actual account recreation and empty contexts across asynchronous boundaries.
+
+**Coalesced wake receipts acknowledge the already admitted hint.** Exact work must
+compare project, generation and turn before setting a shared owner's dirty bit;
+different targets/modes are busy, not replacements. First inspection belongs
+inside reserved capacity/deadline. Pending identical callers share its outcome;
+already-admitted callers do not get fresh-validity guarantees. Re-enter canonical
+authority before every real invocation rather than adding unbounded coalesced
+reads outside the slot. See [I7's contract](V2-8I-7-PLAN.md).
+
+**Negative admission tests must release deferred work even when assertions fail.**
+Register cleanup before the assertion, release the deferred operation before
+awaiting close, and give the test itself a bound. An outer process-group watchdog
+must preserve partial output and actual timeout/exit even when no TAP summary
+exists. A wrapper exception before saving captured output loses provenance; do
+not turn that absence into zero tests or a pass.

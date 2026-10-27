@@ -32,17 +32,21 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current authorized slice — I7 exact-turn wake
+## Latest accepted slice — I7 exact-turn wake complete
 
-Human approved exact project/generation/turn targeting on2026-10-27. Read
-[the pinned contract](V2-8I-7-PLAN.md) and its independent plan review. I6 remains
-the accepted baseline. Shared admission, first-inspection versus coalesced-receipt
-semantics and direct H/I2 work are bounded there. Source3da0801 is implemented with33/33 focused product leaves, four affected
-governance cases and typecheck0; read its evaluation and preserve earlier failed
-attempts/timing uncertainty. Independent exact-source review is pending; no UI, activation or model calls.
-Current state is in HANDOFF; later work remains solely in the roadmap.
+Human approved exact project/generation/turn targeting on2026-10-27. Exact source
+3da0801f64e88f7911f655cee288bb9b750c7c3d is [independently accepted](reviews/V2-8I-7-3da0801.json)
+from I6 baseline dce5628. Read [contract](V2-8I-7-PLAN.md), [evaluation](V2-8I-7-EVAL.md),
+state and HANDOFF. Required33/33 (new19 plus affected14), selected governance4/4,
+typecheck0 and new independent2/2 pass. Earlier fail-first harness limitations and
+SQLite7/1 then isolated1/1 then final8/8 remain explicit; its initial cause is
+unresolved. Source hashes match frozen bytes, with no SHA-only reruns or old matrix.
+Shared finite admission and direct H/I2 target work remain default-off. No UI,
+activation, real API/local inference or renderer change. Owned fixtures are closed,
+and the pre-existing local API is untouched. Stop after I7 docs/commit/push closeout;
+subsequent contracts and authority exist solely in the roadmap.
 
-## Latest accepted slice — I6 explicit finite wake complete
+## Accepted predecessor — I6 explicit finite wake complete
 
 Human-approved explicit wake is independently accepted at source
 `dce562834f2d4641280d8df6f61dd4872d566b87` in

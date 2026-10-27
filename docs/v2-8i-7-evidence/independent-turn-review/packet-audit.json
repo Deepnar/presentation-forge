@@ -1,0 +1,227 @@
+{
+  "atUtc": "2026-10-27T12:57:36.302585+00:00",
+  "implementationSha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "packetSha": "a1beb50bfb3a7811e05a6f04dd5c5020c230097b",
+  "acceptedBaseline": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "head": "a1beb50bfb3a7811e05a6f04dd5c5020c230097b",
+  "originV2": "a1beb50bfb3a7811e05a6f04dd5c5020c230097b",
+  "changedRuntimeTestGovernancePaths": [
+    "app/server/index.js",
+    "app/server/v2-agent-routes.js",
+    "docs/development-state.schema.json",
+    "packages/agent/host-wake.ts",
+    "packages/agent/turn-target.ts",
+    "src/agent/host-wake.js",
+    "src/agent/target-work.js",
+    "src/agent/turn-cli.js",
+    "test/dev-protocol.test.js",
+    "test/v2-target-wake-8i.test.js",
+    "test/v2-target-wake-fixture.js",
+    "test/v2-target-wake-http-8i.test.js",
+    "test/v2-target-wake-sqlite-8i.test.js",
+    "tools/dev-protocol-check.mjs"
+  ],
+  "allChangedPathsCoveredByManifest": true,
+  "checkedSourcePaths": {
+    "app/server/index.js": "42872864af95265531350392a5396104eda2f4a09366227439fc388c36166e2b",
+    "app/server/v2-agent-routes.js": "ade682d06848160e124c82d00dfcb3172f34cdf8462ab4eb80102e2122c2fd1f",
+    "packages/agent/host-wake.ts": "e042d12bf76b1575d05bb62f923c5ef9fd8c956864ed0c2047926edbaccf36fd",
+    "packages/agent/turn-target.ts": "e3f2ad22a355d7641b7e0cc2444720a2d45a846bd7e41d381cb5e13886f46f43",
+    "src/agent/host-wake.js": "39823146b6864ca0e51fc99c95211b4f54acc3ec163616de57951fc22572b178",
+    "src/agent/target-work.js": "c96d85959b606ecc25ffae82e305f014cdb9ce41a136c1c317274ca0a6a30018",
+    "src/agent/turn-cli.js": "b280f54b80a4ec322055da410e4082e4d43ded53a39dbca7bb8f6a9ff20c8f5f",
+    "test/v2-host-wake-8i.test.js": "d52e055e46dd5b1f0ecc61c61d0b343a3459a3e3b7c57fb8628fb37445ce9e4f",
+    "test/v2-target-wake-8i.test.js": "bb8ea1516d2fa0c90fcf9ddb30f7d739edfa40b270d451c44d3c5b6fae70d40a",
+    "test/v2-target-wake-fixture.js": "756f08982251972d278a93b8f0e7e4c8a3dd9f84b8b03c6cedb6d73e9bf65775",
+    "test/v2-target-wake-sqlite-8i.test.js": "63d4cd106eadc21cba050e3d790949ee5198a0ee4ccde0c4c7e20b07d52e3543",
+    "test/v2-target-wake-http-8i.test.js": "12dde4b9fea02e2fea8755a047c3f83a81195ea7e224647d19a0562a500c416f",
+    "docs/development-state.schema.json": "38d240b7aff4c8480fdd35583b022a9e0a65e864c6d7c15ecbcd572f9718fb90",
+    "test/dev-protocol.test.js": "4e301554fcdd12b0e01874ab485effc7b1ade6bcdeb642948511044f7ca40ab7",
+    "tools/dev-protocol-check.mjs": "c2919e83044ba9e7bf7d725da9668455b227c128386afc6a2413a83ea05a05ab"
+  },
+  "sourceCount": 15,
+  "gates": [
+    {
+      "id": "target-wake",
+      "invocation": "docs/v2-8i-7-evidence/target-wake-attempt-1.json",
+      "applicableHashCount": 9,
+      "matched": true
+    },
+    {
+      "id": "target-wake-sqlite",
+      "invocation": "docs/v2-8i-7-evidence/target-wake-sqlite-attempt-2.json",
+      "applicableHashCount": 9,
+      "matched": true
+    },
+    {
+      "id": "target-wake-http",
+      "invocation": "docs/v2-8i-7-evidence/target-wake-http-attempt-1.json",
+      "applicableHashCount": 9,
+      "matched": true
+    },
+    {
+      "id": "typecheck",
+      "invocation": "docs/v2-8i-7-evidence/typecheck-attempt-1.json",
+      "applicableHashCount": 2,
+      "matched": true
+    },
+    {
+      "id": "governance",
+      "invocation": "docs/v2-8i-7-evidence/governance-attempt-1.json",
+      "applicableHashCount": 3,
+      "matched": true
+    }
+  ],
+  "currentRuntimeTestGovernanceDeltaEmpty": true,
+  "inspectedRawLogs": [
+    {
+      "path": "docs/v2-8i-7-evidence/target-wake-attempt-1.tap",
+      "sha256": "68999514ada03b9fe495c94f0f46ab8931c253d78af330179531db641f45a3c8",
+      "tests": {
+        "total": 19,
+        "pass": 19,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "finalCredit": true
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/target-wake-sqlite-attempt-1.tap",
+      "sha256": "336d06e8b234edacb6f224b3184648832ecde1d54f6fb620474aa45b67d2b691",
+      "tests": {
+        "total": 8,
+        "pass": 7,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "finalCredit": false
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/human-save-diagnostic.tap",
+      "sha256": "472d740056b82974cc1436fc989b9657a18edeece085599f238572dff5cba9a1",
+      "tests": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "finalCredit": false
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/target-wake-sqlite-attempt-2.tap",
+      "sha256": "37be9cb5295506c29fe0ee23a8e8f2a40abc17bb376ec8f0d3962eb5196e9ab3",
+      "tests": {
+        "total": 8,
+        "pass": 8,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "finalCredit": true
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/target-wake-http-attempt-1.tap",
+      "sha256": "996f45dd2aae53d3942fa67f887b6f4bfa668a6394ae130e55b06bb786bcd846",
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "finalCredit": true
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/governance-attempt-1.tap",
+      "sha256": "83623742b4024a562683dd607a5c578017b6d34ddc80611d981d86cddf89113a",
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "finalCredit": true
+    }
+  ],
+  "finalGateRecords": [
+    {
+      "path": "docs/v2-8i-7-evidence/target-wake.json",
+      "sha256": "0543af69db9eed89ce25006d1c57327a834e6bd00e264b4712fc08854817763d",
+      "exitCode": 0
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/target-wake-sqlite.json",
+      "sha256": "736b0995b2a0265c6c2e010fd5a0c92b389a38a933c225e6e256263556069f63",
+      "exitCode": 0
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/target-wake-http.json",
+      "sha256": "660ead7ae49348a35bb55747accaf0ee4d62a13e67ab05973889e3980a49258a",
+      "exitCode": 0
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/typecheck.json",
+      "sha256": "bf7ac7c849c547eefb76a8732c8123c449d839fa8f2bdefced192e877fdcabd4",
+      "exitCode": 0
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/governance.json",
+      "sha256": "ba91f209cfe8451e615c2861a798e3d5c34e05368778a4e6aa8ffcc2f6627423",
+      "exitCode": 0
+    }
+  ],
+  "priorAttemptHashes": [
+    {
+      "path": "docs/v2-8i-7-evidence/fail-first-harness.json",
+      "sha256": "7d3141a46d4f649f0cd25781b20e0d63d1425ca7f69b924062f3572633069077"
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/fail-first.json",
+      "sha256": "03fbb643a9559837fa911e7d838ca6011eaab92768547660f685c4a61d5ebd33"
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/fail-first.log",
+      "sha256": "71f29b0124005b7de3fd4b8cd84bb5eb4b797d7cabdac306eaed1585f595139b"
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/human-save-diagnostic.json",
+      "sha256": "aa2b81e13dd2f26640c8b58abccc4bbf72d8ab3b40f13badca33e0618149e616"
+    }
+  ],
+  "inspectedRequired": {
+    "total": 33,
+    "pass": 33,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "composition": {
+    "new": 19,
+    "affectedAcceptedI6Coordinator": 14
+  },
+  "inspectedAffectedGovernance": {
+    "total": 4,
+    "pass": 4,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "unchangedGovernanceBodiesUnexecuted": 34,
+  "inspectedTypecheckExitCode": 0,
+  "independentSupplemental": {
+    "total": 2,
+    "pass": 2,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentAttempts": 1,
+  "testSlotReleased": true,
+  "persistentServiceOrDatabaseSlotAcquired": false,
+  "initialSQLiteFailureAssessment": "Initial7/1 timed out awaiting initial proposal before human save, with no captured initial canonical state or receipt. Cause remains unknown. Isolated1/1 and final8/8 retain five-second state wait and add admission assertion; passing later attempts do not prove original cause. No unsafe effect is established by that timeout; residual uncertainty accepted for default-off finite-hint source, not a latency/live qualification.",
+  "syntheticHistoryScope": "101 approved index hints are synthetic metadata from one completed template, not101new canonical reconstructed runs. No-discovery backend rejection plus real canonical prepare/approve/execute/replay establish target independence and authority."
+}

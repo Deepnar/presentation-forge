@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "dce562834f2d4641280d8df6f61dd4872d566b87",
+    "sha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8I-6-dce5628.json"
+    "source": "docs/reviews/V2-8I-7-3da0801.json"
   },
   "implementationHead": {
     "sha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
-    "note": "Exact-target source; final focused33/33, typecheck0, four affected governance cases. Working bytes bound by source-manifest; first SQLite timeout and fail-first harness limits retained. Independent review pending; no UI/activation/live/PG qualification."
+    "note": "Independently accepted exact-target source. Required33/33, selected governance4/4, typecheck0 and independent new2/2; tested working bytes match source. Initial SQLite timeout cause remains unresolved and recorded. Later commits are docs/evidence only; default-off, no UI/activation/live/PG qualification."
   },
   "activeMilestone": {
     "id": "V2-8I-7",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8I-7-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8I-7-3da0801.json",
+    "accepted": true
   },
   "validation": [
     {

@@ -1,0 +1,100 @@
+{
+  "decision": "ACCEPT",
+  "implementationSha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "acceptedBaseline": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "packetSha": "a1beb50bfb3a7811e05a6f04dd5c5020c230097b",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "kind": "independent-review",
+  "reviewDate": "2026-10-27",
+  "evidence": "docs/reviews/V2-8I-7-3da0801.md",
+  "scope": "Approved exact project/generation/turn wake sharing finite I6 admission and pinned I5 Auto work-auto operator path; default-off, no activation/UI.",
+  "materialFindings": [],
+  "sourceInspection": {
+    "runtimeFiles": 7,
+    "changedRuntimeTestGovernancePaths": 14,
+    "matchedManifestPathsIncludingAffectedUnchangedTest": 15,
+    "allInvocationFrozenAndCurrentHashesMatch": true,
+    "changedPathsCovered": true,
+    "currentSourceDeltaEmpty": true
+  },
+  "independentlyExecuted": {
+    "tests": {
+      "total": 2,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "attempts": 1,
+    "newSupplementalCases": 2,
+    "primaryRepeats": 0,
+    "backend": "Temporary actual SQLite/account stores, unused loopback fixture listener; zero provider requests.",
+    "evidence": "docs/v2-8i-7-evidence/independent-turn-review/packet-audit.json",
+    "cases": [
+      "Deadline during reserved canonical target preflight refuses first and pending-coalesced receipts; late return dispatches nothing.",
+      "Account recreation after target preflight cannot use captured old-numeric-ID work session."
+    ],
+    "timerLimit": "Controlled callback delivery; not real110-second deadline latency qualification."
+  },
+  "inspectedExecution": {
+    "requiredTests": {
+      "total": 33,
+      "pass": 33,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "composition": {
+      "new": 19,
+      "directlyAffectedI6Coordinator": 14
+    },
+    "selectedGovernance": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "unchangedGovernanceBodiesUnexecuted": 34,
+    "typecheckExitCode": 0,
+    "requiredGates": 4,
+    "overlap": "Initial diagnostic1/1 and exploratory4 overlap final scope, no additional credit. Independent2 are new supplemental challenges, not added to primary33."
+  },
+  "priorAttemptAssessment": {
+    "firstFailFirst": "Watchdog timeout; captured TAP/counts/exit unavailable. No credit.",
+    "secondFailFirst": "Partial raw two failures before30s group kill exit-9, no completed totals or pass credit.",
+    "firstSQLite": {
+      "total": 8,
+      "pass": 7,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0,
+      "exitCode": 1
+    },
+    "failureStage": "Awaiting initial proposal before human save; initial state/refusal not retained. Cause remains unresolved, not proven environmental or a diagnosed product regression.",
+    "laterEvidence": "Isolated1/1 then final8/8, same five-second wait/behavioral assertions with added admission diagnostic. No source weakening; later success does not prove original cause."
+  },
+  "syntheticHistoryLimit": "101 seeded approved index metadata hints are not canonical reconstructed runs. Forbidden discovery call plus actual canonical prepare/approve/execute/replay/history establish targeted reach/authority.",
+  "excludedUnexecuted": [
+    "PostgreSQL; historical bulk/browser/build/benchmark/native/raster/visual/export matrix",
+    "34 unchanged governance bodies",
+    "Real APIs/local inference/GPU, production activation, UI and interactive PowerPoint"
+  ],
+  "residualLimits": [
+    "Initial SQLite proposal-wait timeout remains causally unresolved; no live/latency reliability qualification.",
+    "Finite hint does not guarantee completion/availability/fairness; owner-wide prefix behavior unchanged.",
+    "Capacity is instance-local; shared account DB and canonical leases remain cross-process authority; CLI claims no HTTP-local capacity.",
+    "Unknown usage retains conservative estimates; no billing guarantee.",
+    "No hard SQL deadline/atomic in-flight revocation or global graceful shutdown guarantee; entered commits can finish.",
+    "Admitted coalesced acknowledgement can arrive after target mutation/deletion/close and makes no fresh-validity promise.",
+    "Elevated shared I/O/memory pressure; short fixture timings are not production metrics.",
+    "Standing BYOK locale, inherited visual/native/live-provider and I4 missing-removal provenance remain acknowledged separately."
+  ],
+  "testSlotReleased": true,
+  "persistentServiceOrDatabaseSlotAcquired": false,
+  "reviewerCommittedOrPushed": false,
+  "productionActivationAuthorized": false,
+  "stopPoint": "I7 documentation closeout only; no dependent implementation, UI, activation, deployment, migration or provider spend."
+}

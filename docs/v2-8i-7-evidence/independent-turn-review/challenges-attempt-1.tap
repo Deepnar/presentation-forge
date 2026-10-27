@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: deadline during actual H preflight refuses all pending receipts and late inspection dispatches nothing
+ok 1 - deadline during actual H preflight refuses all pending receipts and late inspection dispatches nothing
+  ---
+  duration_ms: 64.360058
+  type: 'test'
+  ...
+# Subtest: account recreated after successful target preflight cannot use the captured work session
+ok 2 - account recreated after successful target preflight cannot use the captured work session
+  ---
+  duration_ms: 15.291083
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 445.916356

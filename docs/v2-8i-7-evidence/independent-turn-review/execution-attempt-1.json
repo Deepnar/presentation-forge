@@ -1,0 +1,31 @@
+{
+  "implementationSha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "packetSha": "a1beb50bfb3a7811e05a6f04dd5c5020c230097b",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "3",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "docs/v2-8i-7-evidence/independent-turn-review/challenges.test.mjs"
+  ],
+  "atUtc": "2026-10-27T12:55:58.113857+00:00",
+  "durationMs": 515,
+  "exitCode": 0,
+  "timedOut": false,
+  "tests": {
+    "total": 2,
+    "pass": 2,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8i-7-evidence/independent-turn-review/challenges-attempt-1.tap",
+  "backend": "temporary SQLite/account store; unused loopback fixture listener; no provider/network requests",
+  "scope": "Two new supplemental race challenges; no primary repeats. Deadline callback delivery is controlled, not a110second timing measurement."
+}

@@ -6,7 +6,7 @@ The 2026-10-27 continuation authorizes preparing the immediate dependency after
 accepted I6. Entry HEAD33e45b7f252bd33970ad535e371b75602d245b9d; accepted source
 dce562834f2d4641280d8df6f61dd4872d566b87 is independently accepted in
 [the I6 decision](reviews/V2-8I-6-dce5628.json). Branch/push v2/origin/v2.
-Runtime/test/governance delta from accepted source is empty; original three
+At planning entry, runtime/test/governance delta from accepted source was empty; original three
 untracked paths remain untouched. I6 has no pending validation/review blocker.
 Its roadmap checkbox was stale despite the exact-source decision; this planning
 also corrects that documentation inconsistency, without rerunning product tests.
@@ -31,7 +31,7 @@ cursor lifetime, insertion/wrap/restart and cross-project scheduling policy, whi
 the editor already knows its exact target. Choose it only with a revised concrete
 contract; do not silently widen this targeted proposal into a persistent scheduler.
 
-## Proposed bounded implementation
+## Approved bounded implementation
 
 1. **Project-scoped transport.** Add POST
    /api/v2/projects/:id/conversation/wake with exact JSON {generation,turnId},
@@ -126,7 +126,7 @@ specific targeting primitive does not need to be replaced to support it.
 
 ## Approved focused gates and acceptance
 
-Four proposed gates: (1) new target/coalescing unit contracts plus the directly
+Four selected gates: (1) new target/coalescing unit contracts plus the directly
 affected accepted I6 coordinator file; (2) new actual SQLite/CLI process integration;
 (3) new HTTP/production-process target tests; (4) typecheck. The old14-case I6 unit
 file is selected because its shared coordinator behavior changes, not as a routine
@@ -158,3 +158,6 @@ approval fences, canonical durable edits/history, private outputs, operator pari
 focused checks and separate exact-source ACCEPT/HOLD. Update as-built architecture,
 state/evaluation/roadmap/continuity, commit focused changes to origin/v2 and stop
 after I7. No next feature, production activation, live model spend or UI follows.
+
+Exact source3da0801 is now independently accepted; see [evaluation](V2-8I-7-EVAL.md)
+and [decision](reviews/V2-8I-7-3da0801.json). This does not authorize later work.

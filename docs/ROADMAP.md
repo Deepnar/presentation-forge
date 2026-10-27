@@ -9305,7 +9305,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-targeted-wake"></a>
 
-  - [ ] **V2-8I-7 exact-turn wake — validated, independent review pending.**
+  - [x] **V2-8I-7 exact-turn wake — independently accepted.**
     The continuation from accepted I6 `dce5628`, entry HEAD `33e45b7`, prepares
     [the concrete contract](V2-8I-7-PLAN.md). Recommend exact project/generation/turn
     wake for the future Assistant's Send/Approve path, sharing I6 admission/caps and
@@ -9322,15 +9322,31 @@ local inference. Only that separate transport correction is authorized; this aud
     [evaluation](V2-8I-7-EVAL.md) retains33/33 selected product leaves, typecheck0
     and4/4 affected governance cases. Earlier watchdog/harness attempts and the
     initial SQLite7/1 timing uncertainty remain explicit. Source hashes bind
-    working execution to frozen bytes. Stop after exact-source independent review.
+    working execution to frozen bytes. Separate [ACCEPT](reviews/V2-8I-7-3da0801.json)
+    reviews exact3da0801 and packeta1beb50, adding2/2 new independent deadline/
+    account-recreation challenges without repeating the primary suites. It accepts
+    the original SQLite timing uncertainty explicitly. No product correction,
+    waiver or activation. Stop after I7 handoff.
+
+    **Look-ahead.** The existing-deck Assistant can issue exact target wake during
+    Send/Approve using saved generation/turn identity. Its draft/save/navigation,
+    status and bounded retry interaction still needs its own concrete contract;
+    no owner-history scheduler or extra wake button is needed for this primitive.
+
+    > **Learned.** Coalescing must compare the complete target before setting dirty;
+    > otherwise a truthful-looking receipt can silently lose a different turn.
+    > First admission and an already-admitted receipt have different validity
+    > claims. Rechecking canonical state and numeric account on actual work avoids
+    > using an old inspection as authority. Synthetic index prefixes test metadata
+    > pressure, while forbidden discovery and real canonical edits establish the
+    > direct path. A later pass does not explain an uncaptured earlier timeout.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
-  Existing-deck editing is the approved first capability. I7 implements exact
-  targeting and is awaiting independent review; agree the Assistant's editor draft/save/proposal/cancel interaction
-  contract before surface implementation, reusing the I7 target boundary after
-  acceptance. Keep the
+  Existing-deck editing is the approved first capability. I7 exact targeting is
+  independently accepted; agree the Assistant's editor draft/save/proposal/cancel
+  interaction contract before surface implementation, reusing I7. Keep the
   current placeholder until that interface contract works. Existing read/decide/
   cancel/clear routes and the headless worker reuse accepted H/B authority; the accepted
   submit route also delegates to H. AcceptedI4 supplies owner-scoped potential-work
@@ -9347,12 +9363,12 @@ local inference. Only that separate transport correction is authorized; this aud
   recovery, truthful queued/running/completed status and cancellation. Do not let
   browser/SSE lifetime own workers. Recovery, owner revocation and multiple tabs/
   hosts must reuse canonical revisions, existing history and explicit turn policy.
-  Use I7 exact project/generation/turn wake for known Send/Approve targets after
-  its separate acceptance. General owner-wide fairness remains a different future
-  contract before any surface promises automatic progress across all projects. I6 restarts from null
-  and spends at most two cycles; accepted I4 also returns approved terminal hints,
-  so a long prefix can consume those cycles before later submitted work. Qualify
-  a progress/targeting contract rather than treating202 as guaranteed processing.
+  Use accepted I7 exact project/generation/turn wake for known Send/Approve
+  targets. General owner-wide fairness remains a separate future contract before
+  any surface promises progress across all projects. I6 restarts from null and
+  spends at most two cycles; accepted I4 returns approved terminal hints, so a
+  long prefix can consume those cycles. I7 bypasses that scan for known targets.
+  A202 remains a hint; the interface must show canonical saved status.
 
 <a id="assistant-trace-budget"></a>
 

@@ -334,3 +334,11 @@ typecheck0 and independent3/3 new challenges. No ongoing I6 validation/review or
 service blocker remains. [Evaluation](V2-8I-6-EVAL.md) retains the finite-hint,
 progress, close and offline limits. Later interface/progress direction is in
 [the roadmap](ROADMAP.md#assistant-surface-integration), not approval for activation.
+
+I7 exact target wake is independently accepted at3da0801: required33/33,
+selected governance4/4, typecheck0 and new independent2/2. No ongoing I7 source/
+validation/review blocker or owned service remains. Its initial SQLite wait's
+cause remains unresolved, explicitly accepted for default-off source without live
+latency qualification. [Evaluation](V2-8I-7-EVAL.md) retains all prior attempts and
+scope limits; [the roadmap](ROADMAP.md#assistant-surface-integration) alone owns
+later interface/fairness/activation decisions. No production activation follows.

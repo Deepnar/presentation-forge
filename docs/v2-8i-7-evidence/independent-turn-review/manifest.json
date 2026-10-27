@@ -1,0 +1,26 @@
+{
+  "implementationSha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "packetSha": "a1beb50bfb3a7811e05a6f04dd5c5020c230097b",
+  "files": [
+    {
+      "path": "docs/v2-8i-7-evidence/independent-turn-review/challenges-attempt-1.tap",
+      "sha256": "8b96c15c2164d2d3d45d272f12dccb221cc0933b5a4c26ba2077a22643505ab2"
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/independent-turn-review/challenges.test.mjs",
+      "sha256": "1654ee30cf113c4ed71f7bd87126c459381ef0071d4a68d722f269ea7a62f718"
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/independent-turn-review/execution-attempt-1.json",
+      "sha256": "312229891b2b6a62ec3557c66b89261df02f19a4c46af4e948ae94adc95d3d3e"
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/independent-turn-review/packet-audit.json",
+      "sha256": "59b129a9f77b15f78d05bed8bac94837118e3188616a469c38061c6e7f647d74"
+    },
+    {
+      "path": "docs/v2-8i-7-evidence/independent-turn-review/resources.json",
+      "sha256": "c010f4c705fa0116efe1bc0e9327334fab61092a0d2f6962154329ab5bb88950"
+    }
+  ]
+}

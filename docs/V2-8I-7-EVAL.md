@@ -5,8 +5,9 @@ accepted baseline **dce562834f2d4641280d8df6f61dd4872d566b87**. Entry33e45b7;
 proposalb026dd8 and approved clarification78a0056 precede runtime code. Human
 selected **Exact project and turn (Recommended)** on2026-10-27. Read the
 [approved contract](V2-8I-7-PLAN.md), [plan review](reviews/V2-8I-7-plan-b026dd8.json)
-and [roadmap](ROADMAP.md#assistant-targeted-wake). Implementation acceptance is
-pending a separate exact-source decision. No dependent feature is authorized.
+and [roadmap](ROADMAP.md#assistant-targeted-wake). Separate [independent ACCEPT](reviews/V2-8I-7-3da0801.json) reviewed exact source
+and packeta1beb50, with2/2 new supplemental challenges. No dependent feature is
+authorized; later commits record only documentation and evidence.
 
 ## Result and architectural boundaries
 
@@ -132,8 +133,31 @@ CLI has no HTTP receipt/host-capacity promise. Restart needs an explicit wake;
 ambiguous dispatched work cannot automatically replay. No Assistant, scheduler,
 search tool integration, provider expansion or activation follows acceptance.
 
-Recommendation: independent exact-source review of the bounded contract and
-retained evidence, with narrow new challenges, especially the first-run timing
-uncertainty. Root does not accept its own implementation. All temporary process,
-HTTP listener and database cleanup hooks completed; no persistent service acquired.
+Initial recommendation was independent exact-source review, especially the
+first-run timing uncertainty. The separate reviewer accepted the bounded source,
+explicitly preserving that uncertainty. Independent new challenges **2/2**, exit0,
+0fail/skip/cancelled, took515ms: held actual H preflight past a controlled deadline
+refused first/pending coalesced receipts without work; account recreation after
+preflight refused the captured old-ID work session before configuration/provider.
+No primary or governance suite was repeated. The controlled timer is not a real
+110second latency measurement. [Independent audit](v2-8i-7-evidence/independent-turn-review/packet-audit.json)
+checks all14 changed runtime/test/governance paths using15 unique matching source
+paths including the affected unchanged unit file. No material defect or required
+waiver. Root records the independent decision and does not self-accept.
+All temporary process, HTTP listener and database cleanup hooks completed; no persistent service acquired.
 Stop after review and documentation/commit/push closeout to origin/v2.
+
+
+## Scoped file inventory
+
+Runtime: packages/agent/host-wake.ts and turn-target.ts; src/agent/host-wake.js,
+target-work.js and turn-cli.js; app/server/index.js and v2-agent-routes.js.
+Tests: new test/v2-target-wake-{8i,sqlite-8i,http-8i}.test.js and
+test/v2-target-wake-fixture.js;
+existing test/dev-protocol.test.js. Governance: tools/dev-protocol-check.mjs and
+docs/development-state.schema.json. No existing H/I2/I5 engine, discovery SQL/store,
+UI or renderer source changed. Contract/evaluation, architecture, roadmap, AGENTS,
+BLOCKED/TRAPS, state/continuity/handoff and scoped review/evidence records describe
+acceptance and limits. The original three unrelated untracked paths are preserved.
+The long-running pre-existing local API was observed and left untouched; no owned
+validation process, service or database remains.

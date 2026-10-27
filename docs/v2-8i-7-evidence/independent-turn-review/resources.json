@@ -1,0 +1,51 @@
+{
+  "before": {
+    "atUtc": "2026-10-27T12:55:33.082753+00:00",
+    "cpu": [
+      10515532,
+      24435,
+      975719,
+      43155470,
+      4891931,
+      72849,
+      36847,
+      0
+    ],
+    "pressure": {
+      "cpu": "some avg10=1.98 avg60=6.28 avg300=3.56 total=421616918\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+      "memory": "some avg10=0.15 avg60=0.26 avg300=0.45 total=19123762\nfull avg10=0.15 avg60=0.22 avg300=0.43 total=18496579\n",
+      "io": "some avg10=35.85 avg60=29.02 avg300=32.06 total=9750073196\nfull avg10=31.64 avg60=23.15 avg300=28.23 total=8992427265\n"
+    },
+    "memory": [
+      "MemTotal:       65245268 kB",
+      "MemAvailable:   16052920 kB",
+      "SwapFree:       41844016 kB"
+    ]
+  },
+  "after": {
+    "atUtc": "2026-10-27T12:55:35.083117+00:00",
+    "cpu": [
+      10516025,
+      24436,
+      975780,
+      43159295,
+      4892407,
+      72853,
+      36850,
+      0
+    ],
+    "pressure": {
+      "cpu": "some avg10=1.62 avg60=6.07 avg300=3.54 total=421625532\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+      "memory": "some avg10=0.12 avg60=0.25 avg300=0.45 total=19123762\nfull avg10=0.12 avg60=0.21 avg300=0.42 total=18496579\n",
+      "io": "some avg10=35.33 avg60=29.15 avg300=32.06 total=9750743687\nfull avg10=31.70 avg60=23.44 avg300=28.25 total=8993082624\n"
+    },
+    "memory": [
+      "MemTotal:       65245268 kB",
+      "MemAvailable:   18463272 kB",
+      "SwapFree:       41844052 kB"
+    ]
+  },
+  "intervalSeconds": 2,
+  "cpuBusyPercent": 11.557,
+  "scope": "Two supplemental race checks only, temporary SQLite/loopback fixture, serial nice10/idle-I/O under20second process-group watchdog. No broad suite or performance/no-contention qualification."
+}

@@ -66,7 +66,11 @@ at `5cf5b5c`; they remain disabled by default, bind account budgets explicitly a
 reuse canonical turn/run authority. Explicit authenticated finite host wake is
 independently accepted at `dce5628`; it pins Bearer/account identity and remains
 separately disabled by default. Wake acknowledges a finite hint, not guaranteed
-owner-wide progress or completion. No always-on scheduler or Assistant is enabled.
+owner-wide progress or completion. Exact project/generation/turn wake and the Auto work-auto operator path are
+independently accepted at `3da0801`; they reuse the same finite host capacity and
+canonical H/I2 authority without owner-history scanning. Different active targets
+are busy; coalesced receipts confer no fresh-validity or completion guarantee.
+No always-on scheduler or Assistant is enabled.
 Saved chat does not automatically become provider context. Further host progress/
 scheduling, additional provider routing, search-tool integration,
 live-provider qualification and the visible Assistant remain in the
