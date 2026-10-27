@@ -1,0 +1,80 @@
+{
+  "decision": "ACCEPT",
+  "implementationSha": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "acceptedBaseline": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+  "packetSha": "fd2eed8fcc40fd14cb8fe232b8ac3897c12f9b9e",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "kind": "independent-review",
+  "reviewDate": "2026-10-27",
+  "evidence": "docs/reviews/V2-8I-6-dce5628.md",
+  "scope": "Human-approved explicit authenticated owner/account wake over unchanged I5/H/I2; finite instance-local coordinator, default-disabled; no activation or UI.",
+  "materialFindings": [],
+  "sourceInspection": {
+    "runtimeTestGovernanceFiles": 14,
+    "allHashesMatch": true,
+    "scopedChangedPathManifestExact": true,
+    "frozenSourceDeltaEmpty": true
+  },
+  "independentlyExecuted": {
+    "tests": {
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "newSupplementalChallenges": 3,
+    "primaryRepeats": 0,
+    "backend": "none; injected services and empty discovery backend",
+    "timerDelivery": "Controlled actual coordinator timer callbacks; no real110second/5second timing qualification.",
+    "evidence": "docs/v2-8i-6-evidence/independent/packet-audit.json",
+    "firstAttempt": "Exit1 before challenge bodies loaded due reviewer import-depth error; one failed file wrapper retained with original source/log, no product failure or final pass credit."
+  },
+  "inspectedExecution": {
+    "requiredTests": {
+      "total": 26,
+      "pass": 26,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "composition": {
+      "coordinator": 14,
+      "actualSQLiteAuth": 6,
+      "HTTPProductionProcess": 6
+    },
+    "distinctAffectedGovernance": {
+      "total": 37,
+      "pass": 37,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "typecheckExitCode": 0,
+    "requiredGateCount": 4,
+    "overlap": "Required26 and governance37 are distinct63; initial13 overlaps and adds no credit. Independent3 are supplemental, not primary repeats.",
+    "chronology": "Final tested working bytes match frozen Git bytes; initial13 predates post-opening enablement guard and14th case, and its first shell lacked a separately retained Node exit."
+  },
+  "acknowledgementRace": "Already-admitted same-owner hint can deliver coalesced after close; independently verified close aborts and clears follow-up. Pending policy opening remains refused after close/expiry. No response-delivery atomicity or dispatch guarantee claimed.",
+  "excludedUnexecuted": [
+    "PostgreSQL and historical bulk/browser/build/benchmark/native/raster sweeps",
+    "Live APIs/local inference/GPU and production activation",
+    "Assistant UI, automatic submit/approval trigger, always-on scheduling and deployment"
+  ],
+  "residualLimits": [
+    "Single shared account database and instance-local concurrency/cooldown limits.",
+    "Finite hint does not guarantee complete drain, dispatch or starvation-free progress; approved terminal historical prefix may consume both cycles.",
+    "Unknown usage may retain conservative reservation estimates; no billing guarantee.",
+    "No hard SQL deadline or atomic in-flight account/session revocation fence.",
+    "Server close notification can follow unrelated draining; no immediate close-initiation abort or graceful global signal guarantee; entered canonical work can finish.",
+    "High shared I/O pressure; short resource/timer/fixture measurements are not production latency qualification.",
+    "Standing BYOK locale, inherited visual/native/live-provider limits and I4 absence provenance remain separate; no inferred zero catalog or cleanup replay."
+  ],
+  "testSlotReleased": true,
+  "persistentServiceOrDatabaseSlotAcquired": false,
+  "productionActivationAuthorized": false,
+  "reviewerCommittedOrPushed": false,
+  "stopPoint": "I6 documentation closeout only; no dependent implementation, activation, deployment, migration or real provider spend."
+}

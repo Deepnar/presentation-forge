@@ -1,0 +1,47 @@
+{
+  "before": {
+    "atUtc": "2026-10-27T12:17:40.794140+00:00",
+    "cpu": [
+      9422399,
+      19251,
+      859064,
+      39315180,
+      4446993,
+      65421,
+      33151,
+      0,
+      0,
+      0
+    ],
+    "pressure": {
+      "cpu": "some avg10=0.03 avg60=1.36 avg300=1.49 total=374575563\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+      "memory": "some avg10=0.00 avg60=0.02 avg300=0.00 total=11653439\nfull avg10=0.00 avg60=0.02 avg300=0.00 total=11228825\n",
+      "io": "some avg10=37.97 avg60=34.70 avg300=35.63 total=8921195566\nfull avg10=36.39 avg60=33.21 avg300=33.98 total=8219730680\n"
+    },
+    "meminfo": "MemTotal:       65245268 kB\nMemFree:        17697036 kB\nMemAvailable:   24911716 kB\nBuffers:              36 kB\nCached:          9985980 kB\nSwapCached:         4788 kB\nActive:         27598780 kB\nInactive:       11581148 kB\nActive(anon):   25652080 kB\nInactive(anon):  5924004 kB\nActive(file):    1946700 kB\nInactive(file):  5657144 kB\nUnevictable:     1262528 kB\nMlocked:           40172 kB\nSwapTotal:      65245180 kB\nSwapFree:       55464800 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:              5344 kB\nWriteback:             0 kB\nAnonPages:      30206528 kB\nMapped:          2271908 kB\nShmem:           2067072 kB\nKReclaimable:     338396 kB\nSlab:             695604 kB\nSReclaimable:     338396 kB\nSUnreclaim:       357208 kB\nKernelStack:       40624 kB\nPageTables:       197760 kB\nSecPageTables:      2360 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    97867812 kB\nCommitted_AS:   71431556 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      483152 kB\nVmallocChunk:          0 kB\nPercpu:            24672 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:  15554560 kB\nShmemHugePages:  1318912 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:              0 kB\nCmaFree:               0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nGPUActive:             0 kB\nGPUReclaim:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1650432 kB\nDirectMap2M:    57526272 kB\nDirectMap1G:     9437184 kB\n"
+  },
+  "after": {
+    "atUtc": "2026-10-27T12:17:42.794519+00:00",
+    "cpu": [
+      9422908,
+      19251,
+      859121,
+      39319058,
+      4447387,
+      65426,
+      33155,
+      0,
+      0,
+      0
+    ],
+    "pressure": {
+      "cpu": "some avg10=0.02 avg60=1.32 avg300=1.48 total=374580270\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+      "memory": "some avg10=0.00 avg60=0.02 avg300=0.00 total=11653614\nfull avg10=0.00 avg60=0.02 avg300=0.00 total=11228999\n",
+      "io": "some avg10=39.06 avg60=35.00 avg300=35.69 total=8921984573\nfull avg10=37.59 avg60=33.54 avg300=34.04 total=8220502591\n"
+    },
+    "meminfo": "MemTotal:       65245268 kB\nMemFree:        21872404 kB\nMemAvailable:   29087776 kB\nBuffers:              36 kB\nCached:         10038012 kB\nSwapCached:         4788 kB\nActive:         23209192 kB\nInactive:       11581856 kB\nActive(anon):   21262492 kB\nInactive(anon):  5924020 kB\nActive(file):    1946700 kB\nInactive(file):  5657836 kB\nUnevictable:     1313988 kB\nMlocked:           40172 kB\nSwapTotal:      65245180 kB\nSwapFree:       55464900 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:              5816 kB\nWriteback:             0 kB\nAnonPages:      25816888 kB\nMapped:          2343912 kB\nShmem:           2118536 kB\nKReclaimable:     338396 kB\nSlab:             695652 kB\nSReclaimable:     338396 kB\nSUnreclaim:       357256 kB\nKernelStack:       40656 kB\nPageTables:       189544 kB\nSecPageTables:      2360 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    97867812 kB\nCommitted_AS:   66041212 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      483312 kB\nVmallocChunk:          0 kB\nPercpu:            24672 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:  11130880 kB\nShmemHugePages:  1370112 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:              0 kB\nCmaFree:               0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nGPUActive:             0 kB\nGPUReclaim:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1650432 kB\nDirectMap2M:    57526272 kB\nDirectMap1G:     9437184 kB\n"
+  },
+  "intervalSeconds": 2,
+  "cpuBusyPercent": 11.863,
+  "scope": "Three tiny pure/injected coordinator challenges only; no DB, network, provider, build, renderer or historical suite. Elevated global I/O remains a limitation. Serial nice10/ionice2:7 under external20s watchdog."
+}

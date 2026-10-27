@@ -1,0 +1,24 @@
+{
+  "implementationSha": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "packetSha": "fd2eed8fcc40fd14cb8fe232b8ac3897c12f9b9e",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "2",
+    "-n",
+    "7",
+    "timeout",
+    "20s",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "docs/v2-8i-6-evidence/independent/challenges.test.mjs"
+  ],
+  "atUtc": "2026-10-27T12:18:06.957464+00:00",
+  "durationMs": 1872,
+  "exitCode": 1,
+  "scope": "Three supplemental injected challenges, not required-suite repeats. Controlled timer callbacks test deadline/drain branches without110second/5second sleeps. No DB/network/model calls."
+}

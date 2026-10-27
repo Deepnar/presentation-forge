@@ -1,0 +1,38 @@
+{
+  "implementationSha": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "packetSha": "fd2eed8fcc40fd14cb8fe232b8ac3897c12f9b9e",
+  "files": [
+    {
+      "path": "docs/v2-8i-6-evidence/independent/challenges-attempt-1-source.txt",
+      "sha256": "bf16d8b469c5a19cfa7c1278dc66f384b719e38a328427cb1c6f18ec50218d94"
+    },
+    {
+      "path": "docs/v2-8i-6-evidence/independent/challenges-attempt-1.log",
+      "sha256": "6ceb2bd3507ca95201cbc3009f9ea256d8f4e1060cb15bbc89b857859af97ed4"
+    },
+    {
+      "path": "docs/v2-8i-6-evidence/independent/challenges-attempt-2.tap",
+      "sha256": "fe6c85539a29425ebeb82ca3b6c322af3875105803eefefc66657e06cf46a249"
+    },
+    {
+      "path": "docs/v2-8i-6-evidence/independent/challenges.test.mjs",
+      "sha256": "13f03be551e9218df4c280e4eb571fe61eda9a27ae36ad855b0d748ec927063f"
+    },
+    {
+      "path": "docs/v2-8i-6-evidence/independent/execution-attempt-1.json",
+      "sha256": "ff0fa5dc20cf87fda61a9ee26dd65df4f76579ac487ab1c5bcd0a0f302d7da74"
+    },
+    {
+      "path": "docs/v2-8i-6-evidence/independent/execution-attempt-2.json",
+      "sha256": "d19417e5220256820cf60df5d3d0a4bdf911b2defda09a2c4e9d43b89043d2f0"
+    },
+    {
+      "path": "docs/v2-8i-6-evidence/independent/packet-audit.json",
+      "sha256": "4c85c4fc862b0b94f6d798b058edf452c40000fdbb7f02358c98c374aeaa21f5"
+    },
+    {
+      "path": "docs/v2-8i-6-evidence/independent/resource-observation.json",
+      "sha256": "fccdb44b3fddc06372d8258f0b9a0c6b75202305da3cc5312c20f999a134c79a"
+    }
+  ]
+}

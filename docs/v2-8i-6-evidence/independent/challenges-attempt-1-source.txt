@@ -1,0 +1,78 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { createHostWake } from '../../../../packages/agent/host-wake.ts';
+import { createAutoHostWake } from '../../../../src/agent/host-wake.js';
+import { runAsAccount, currentAccount } from '../../../../src/account.js';
+import { withMeter, newMeter, currentMeter } from '../../../../src/usage.js';
+const deferred = () => { let resolve; const promise = new Promise(r => { resolve = r; }); return { promise, resolve }; };
+const tick = () => new Promise(r => setImmediate(r));
+const identity = n => ({ owner: `review-owner-${n}`, userId: n });
+const done = () => ({ ok: true, complete: true, stopReason: null, nextCursor: null, results: [] });
+
+test('timer-expired unabortable openings refuse admission, retain both slots, and report incomplete drain', async () => {
+  const originalSet = globalThis.setTimeout, originalClear = globalThis.clearTimeout;
+  const timers = new Map(); let nextId = 1, clock = 0, opens = 0, work = 0;
+  const pending = deferred();
+  globalThis.setTimeout = (fn, ms) => { const id = nextId++; timers.set(id, { fn, ms }); return id; };
+  globalThis.clearTimeout = id => { timers.delete(id); };
+  const fire = ms => { for (const [id, timer] of [...timers]) if (timer.ms === ms) { timers.delete(id); timer.fn(); } };
+  const api = createHostWake({ enabled: () => true, open: async () => {
+    opens++; await pending.promise; return { pickup: async () => { work++; return done(); } };
+  } }, { now: () => clock });
+  try {
+    const first = api.wake(identity(1)), second = api.wake(identity(2));
+    assert.equal(opens, 2); clock = 110000; fire(110000);
+    assert.deepEqual(await first, { ok: false, code: 'wake-expired' });
+    assert.deepEqual(await second, { ok: false, code: 'wake-expired' });
+    assert.deepEqual(await api.wake(identity(3)), { ok: false, code: 'host-busy', retryAfter: 1 });
+    assert.equal(opens, 2);
+    const closing = api.close(); fire(5000);
+    assert.deepEqual(await closing, { drained: false });
+    assert.deepEqual(await api.wake(identity(3)), { ok: false, code: 'host-closed' });
+    pending.resolve(); await tick();
+    assert.equal(work, 0); assert.deepEqual(await api.close(), { drained: true });
+    assert.equal(timers.size, 0);
+  } finally { pending.resolve(); await tick(); globalThis.setTimeout = originalSet; globalThis.clearTimeout = originalClear; }
+});
+
+test('coalesced receipt may arrive after close for an already-admitted job but adds no work or dirty follow-up', async () => {
+  const held = deferred(); let calls = 0, signal;
+  const api = createHostWake({ enabled: () => true, open: async () => ({ pickup: async (_input, options) => {
+    calls++; signal = options.signal; await held.promise; return done();
+  } }) });
+  try {
+    assert.deepEqual(await api.wake(identity(1)), { ok: true, status: 'accepted' });
+    const repeated = api.wake(identity(1));
+    const closing = api.close();
+    assert.equal(signal.aborted, true);
+    assert.deepEqual(await repeated, { ok: true, status: 'coalesced' });
+    assert.deepEqual(await api.wake(identity(1)), { ok: false, code: 'host-closed' });
+    held.resolve(); assert.deepEqual(await closing, { drained: true });
+    assert.equal(calls, 1);
+  } finally { held.resolve(); await api.close(); }
+});
+
+test('successful detached adapter discovery and policy await execute with empty account/meter context', async () => {
+  const caller = { email: 'review-request', userId: 999 }, meter = newMeter(), read = deferred();
+  const events = [];
+  const empty = event => { events.push(event); assert.equal(currentAccount(), null); assert.equal(currentMeter(), null); };
+  const session = { authorize: async () => { empty('authorize'); await tick(); empty('authorize-after-await'); },
+    provider: () => { assert.fail('Empty discovery must not request a provider.'); } };
+  const api = createAutoHostWake({ enabled: () => { empty('enabled'); return true; },
+    accountCheck: () => empty('account-check'),
+    policy: { open: async () => { empty('open'); await tick(); empty('open-after-await'); return session; } },
+    backend: async () => { empty('backend'); return { readTurnMetadataPage: async () => {
+      empty('discovery'); await tick(); empty('discovery-after-await'); read.resolve(); return [];
+    } }; } });
+  try {
+    await runAsAccount(caller, () => withMeter(meter, async () => {
+      assert.deepEqual(await api.wake(identity(1)), { ok: true, status: 'accepted' });
+      assert.equal(currentAccount(), caller); assert.equal(currentMeter(), meter);
+      await read.promise; await tick();
+      assert.equal(currentAccount(), caller); assert.equal(currentMeter(), meter);
+    }));
+    assert.deepEqual(await api.close(), { drained: true });
+    assert.equal(events.filter(e => e === 'account-check').length, 3);
+    for (const event of ['open-after-await', 'authorize-after-await', 'discovery-after-await']) assert.ok(events.includes(event));
+  } finally { await api.close(); }
+});
