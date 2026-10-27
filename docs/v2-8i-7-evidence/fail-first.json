@@ -1,0 +1,8 @@
+{
+  "command": "nice -n 10 node --test --test-concurrency=1 test/v2-target-wake-8i.test.js",
+  "implementationSha": "78a0056",
+  "workingDelta": "new target tests only; runtime unchanged",
+  "exitCode": -9,
+  "status": "timeout",
+  "durationMs": 30003
+}

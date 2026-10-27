@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: target HTTP binds project and private bearer without accepting supplied authority
+ok 1 - target HTTP binds project and private bearer without accepting supplied authority
+  ---
+  duration_ms: 102.248233
+  type: 'test'
+  ...
+# Subtest: target strict 2048-byte parser precedes conversation and generic budgets
+ok 2 - target strict 2048-byte parser precedes conversation and generic budgets
+  ---
+  duration_ms: 25.864676
+  type: 'test'
+  ...
+# Subtest: target HTTP reports missing foreign stale and busy safely through actual coordinator
+ok 3 - target HTTP reports missing foreign stale and busy safely through actual coordinator
+  ---
+  duration_ms: 22.003452
+  type: 'test'
+  ...
+# Subtest: target HTTP returns busy retry for a different active target while admission is pending
+ok 4 - target HTTP returns busy retry for a different active target while admission is pending
+  ---
+  duration_ms: 42.858695
+  type: 'test'
+  ...
+# Subtest: production target defaults off and preserves submission parser registration
+ok 5 - production target defaults off and preserves submission parser registration
+  ---
+  duration_ms: 827.668945
+  type: 'test'
+  ...
+# Subtest: production target prepare and restarted approved execution persist without owner wake
+ok 6 - production target prepare and restarted approved execution persist without owner wake
+  ---
+  duration_ms: 1654.969697
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3166.975215
+# forge-test-file "test/v2-target-wake-http-8i.test.js"

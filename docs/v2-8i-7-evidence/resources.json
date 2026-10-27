@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-27",
+  "load": "9.43 6.62 5.94 7/2669 848837",
+  "memory": [
+    "MemTotal:       65245268 kB",
+    "MemFree:         3115896 kB",
+    "MemAvailable:    6618740 kB",
+    "Buffers:              28 kB",
+    "Cached:          5957764 kB"
+  ],
+  "pressure": {
+    "cpu": "some avg10=4.79 avg60=3.24 avg300=1.50 total=402891790\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.20 avg60=0.83 avg300=0.59 total=15026592\nfull avg10=0.08 avg60=0.78 avg300=0.57 total=14493176\n",
+    "io": "some avg10=29.80 avg60=29.62 avg300=34.02 total=9558940729\nfull avg10=24.43 avg60=26.24 avg300=31.67 total=8821508648\n"
+  },
+  "policy": "Small serial offline headless tests only; nice10/idle I/O, 55s process-group watchdog; no GPU/model/build/render."
+}

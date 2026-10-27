@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: SQLite target: exact work skips owner discovery, waits for approval and commits once without provider lookup
+ok 1 - SQLite target: exact work skips owner discovery, waits for approval and commits once without provider lookup
+  ---
+  duration_ms: 131.171385
+  type: 'test'
+  ...
+# Subtest: SQLite target: missing foreign stale and deleted targets refuse before any configuration or dispatch
+ok 2 - SQLite target: missing foreign stale and deleted targets refuse before any configuration or dispatch
+  ---
+  duration_ms: 12.4103
+  type: 'test'
+  ...
+# Subtest: SQLite target: account recreation during opening cannot remap the targeted account
+ok 3 - SQLite target: account recreation during opening cannot remap the targeted account
+  ---
+  duration_ms: 6.711926
+  type: 'test'
+  ...
+# Subtest: SQLite target: clear after admission preflight prevents provider resolution on actual work
+ok 4 - SQLite target: clear after admission preflight prevents provider resolution on actual work
+  ---
+  duration_ms: 9.449069
+  type: 'test'
+  ...
+# Subtest: SQLite target: human save after approval survives target execution as a stale run refusal
+ok 5 - SQLite target: human save after approval survives target execution as a stale run refusal
+  ---
+  duration_ms: 48.482392
+  type: 'test'
+  ...
+# Subtest: SQLite target: cancel during targeted preparation prevents a late proposal or retry
+ok 6 - SQLite target: cancel during targeted preparation prevents a late proposal or retry
+  ---
+  duration_ms: 26.365544
+  type: 'test'
+  ...
+# Subtest: SQLite target: work-auto CLI prepares and executes through pinned Auto with truthful metadata and no replay
+ok 7 - SQLite target: work-auto CLI prepares and executes through pinned Auto with truthful metadata and no replay
+  ---
+  duration_ms: 996.771176
+  type: 'test'
+  ...
+# Subtest: SQLite target: work-auto CLI defaults off and rejects invalid authority or raw UTF-8 privately
+ok 8 - SQLite target: work-auto CLI defaults off and rejects invalid authority or raw UTF-8 privately
+  ---
+  duration_ms: 1785.66152
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3310.669962
+# forge-test-file "test/v2-target-wake-sqlite-8i.test.js"

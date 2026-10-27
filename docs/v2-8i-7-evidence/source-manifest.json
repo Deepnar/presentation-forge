@@ -1,0 +1,164 @@
+{
+  "implementationSha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "method": "Retained invocation hashes compared to frozen Git/source bytes; no SHA-only test repeats. Unrelated later fixture or governance changes are excluded per applicability.",
+  "gates": {
+    "target-wake": {
+      "invocation": "docs/v2-8i-7-evidence/target-wake-attempt-1.json",
+      "sourceChecks": {
+        "app/server/index.js": {
+          "tested": "42872864af95265531350392a5396104eda2f4a09366227439fc388c36166e2b",
+          "frozen": "42872864af95265531350392a5396104eda2f4a09366227439fc388c36166e2b"
+        },
+        "app/server/v2-agent-routes.js": {
+          "tested": "ade682d06848160e124c82d00dfcb3172f34cdf8462ab4eb80102e2122c2fd1f",
+          "frozen": "ade682d06848160e124c82d00dfcb3172f34cdf8462ab4eb80102e2122c2fd1f"
+        },
+        "packages/agent/host-wake.ts": {
+          "tested": "e042d12bf76b1575d05bb62f923c5ef9fd8c956864ed0c2047926edbaccf36fd",
+          "frozen": "e042d12bf76b1575d05bb62f923c5ef9fd8c956864ed0c2047926edbaccf36fd"
+        },
+        "packages/agent/turn-target.ts": {
+          "tested": "e3f2ad22a355d7641b7e0cc2444720a2d45a846bd7e41d381cb5e13886f46f43",
+          "frozen": "e3f2ad22a355d7641b7e0cc2444720a2d45a846bd7e41d381cb5e13886f46f43"
+        },
+        "src/agent/host-wake.js": {
+          "tested": "39823146b6864ca0e51fc99c95211b4f54acc3ec163616de57951fc22572b178",
+          "frozen": "39823146b6864ca0e51fc99c95211b4f54acc3ec163616de57951fc22572b178"
+        },
+        "src/agent/target-work.js": {
+          "tested": "c96d85959b606ecc25ffae82e305f014cdb9ce41a136c1c317274ca0a6a30018",
+          "frozen": "c96d85959b606ecc25ffae82e305f014cdb9ce41a136c1c317274ca0a6a30018"
+        },
+        "src/agent/turn-cli.js": {
+          "tested": "b280f54b80a4ec322055da410e4082e4d43ded53a39dbca7bb8f6a9ff20c8f5f",
+          "frozen": "b280f54b80a4ec322055da410e4082e4d43ded53a39dbca7bb8f6a9ff20c8f5f"
+        },
+        "test/v2-host-wake-8i.test.js": {
+          "tested": "d52e055e46dd5b1f0ecc61c61d0b343a3459a3e3b7c57fb8628fb37445ce9e4f",
+          "frozen": "d52e055e46dd5b1f0ecc61c61d0b343a3459a3e3b7c57fb8628fb37445ce9e4f"
+        },
+        "test/v2-target-wake-8i.test.js": {
+          "tested": "bb8ea1516d2fa0c90fcf9ddb30f7d739edfa40b270d451c44d3c5b6fae70d40a",
+          "frozen": "bb8ea1516d2fa0c90fcf9ddb30f7d739edfa40b270d451c44d3c5b6fae70d40a"
+        }
+      },
+      "allMatch": true
+    },
+    "target-wake-sqlite": {
+      "invocation": "docs/v2-8i-7-evidence/target-wake-sqlite-attempt-2.json",
+      "sourceChecks": {
+        "app/server/index.js": {
+          "tested": "42872864af95265531350392a5396104eda2f4a09366227439fc388c36166e2b",
+          "frozen": "42872864af95265531350392a5396104eda2f4a09366227439fc388c36166e2b"
+        },
+        "app/server/v2-agent-routes.js": {
+          "tested": "ade682d06848160e124c82d00dfcb3172f34cdf8462ab4eb80102e2122c2fd1f",
+          "frozen": "ade682d06848160e124c82d00dfcb3172f34cdf8462ab4eb80102e2122c2fd1f"
+        },
+        "packages/agent/host-wake.ts": {
+          "tested": "e042d12bf76b1575d05bb62f923c5ef9fd8c956864ed0c2047926edbaccf36fd",
+          "frozen": "e042d12bf76b1575d05bb62f923c5ef9fd8c956864ed0c2047926edbaccf36fd"
+        },
+        "packages/agent/turn-target.ts": {
+          "tested": "e3f2ad22a355d7641b7e0cc2444720a2d45a846bd7e41d381cb5e13886f46f43",
+          "frozen": "e3f2ad22a355d7641b7e0cc2444720a2d45a846bd7e41d381cb5e13886f46f43"
+        },
+        "src/agent/host-wake.js": {
+          "tested": "39823146b6864ca0e51fc99c95211b4f54acc3ec163616de57951fc22572b178",
+          "frozen": "39823146b6864ca0e51fc99c95211b4f54acc3ec163616de57951fc22572b178"
+        },
+        "src/agent/target-work.js": {
+          "tested": "c96d85959b606ecc25ffae82e305f014cdb9ce41a136c1c317274ca0a6a30018",
+          "frozen": "c96d85959b606ecc25ffae82e305f014cdb9ce41a136c1c317274ca0a6a30018"
+        },
+        "src/agent/turn-cli.js": {
+          "tested": "b280f54b80a4ec322055da410e4082e4d43ded53a39dbca7bb8f6a9ff20c8f5f",
+          "frozen": "b280f54b80a4ec322055da410e4082e4d43ded53a39dbca7bb8f6a9ff20c8f5f"
+        },
+        "test/v2-target-wake-fixture.js": {
+          "tested": "756f08982251972d278a93b8f0e7e4c8a3dd9f84b8b03c6cedb6d73e9bf65775",
+          "frozen": "756f08982251972d278a93b8f0e7e4c8a3dd9f84b8b03c6cedb6d73e9bf65775"
+        },
+        "test/v2-target-wake-sqlite-8i.test.js": {
+          "tested": "63d4cd106eadc21cba050e3d790949ee5198a0ee4ccde0c4c7e20b07d52e3543",
+          "frozen": "63d4cd106eadc21cba050e3d790949ee5198a0ee4ccde0c4c7e20b07d52e3543"
+        }
+      },
+      "allMatch": true
+    },
+    "target-wake-http": {
+      "invocation": "docs/v2-8i-7-evidence/target-wake-http-attempt-1.json",
+      "sourceChecks": {
+        "app/server/index.js": {
+          "tested": "42872864af95265531350392a5396104eda2f4a09366227439fc388c36166e2b",
+          "frozen": "42872864af95265531350392a5396104eda2f4a09366227439fc388c36166e2b"
+        },
+        "app/server/v2-agent-routes.js": {
+          "tested": "ade682d06848160e124c82d00dfcb3172f34cdf8462ab4eb80102e2122c2fd1f",
+          "frozen": "ade682d06848160e124c82d00dfcb3172f34cdf8462ab4eb80102e2122c2fd1f"
+        },
+        "packages/agent/host-wake.ts": {
+          "tested": "e042d12bf76b1575d05bb62f923c5ef9fd8c956864ed0c2047926edbaccf36fd",
+          "frozen": "e042d12bf76b1575d05bb62f923c5ef9fd8c956864ed0c2047926edbaccf36fd"
+        },
+        "packages/agent/turn-target.ts": {
+          "tested": "e3f2ad22a355d7641b7e0cc2444720a2d45a846bd7e41d381cb5e13886f46f43",
+          "frozen": "e3f2ad22a355d7641b7e0cc2444720a2d45a846bd7e41d381cb5e13886f46f43"
+        },
+        "src/agent/host-wake.js": {
+          "tested": "39823146b6864ca0e51fc99c95211b4f54acc3ec163616de57951fc22572b178",
+          "frozen": "39823146b6864ca0e51fc99c95211b4f54acc3ec163616de57951fc22572b178"
+        },
+        "src/agent/target-work.js": {
+          "tested": "c96d85959b606ecc25ffae82e305f014cdb9ce41a136c1c317274ca0a6a30018",
+          "frozen": "c96d85959b606ecc25ffae82e305f014cdb9ce41a136c1c317274ca0a6a30018"
+        },
+        "src/agent/turn-cli.js": {
+          "tested": "b280f54b80a4ec322055da410e4082e4d43ded53a39dbca7bb8f6a9ff20c8f5f",
+          "frozen": "b280f54b80a4ec322055da410e4082e4d43ded53a39dbca7bb8f6a9ff20c8f5f"
+        },
+        "test/v2-target-wake-fixture.js": {
+          "tested": "756f08982251972d278a93b8f0e7e4c8a3dd9f84b8b03c6cedb6d73e9bf65775",
+          "frozen": "756f08982251972d278a93b8f0e7e4c8a3dd9f84b8b03c6cedb6d73e9bf65775"
+        },
+        "test/v2-target-wake-http-8i.test.js": {
+          "tested": "12dde4b9fea02e2fea8755a047c3f83a81195ea7e224647d19a0562a500c416f",
+          "frozen": "12dde4b9fea02e2fea8755a047c3f83a81195ea7e224647d19a0562a500c416f"
+        }
+      },
+      "allMatch": true
+    },
+    "typecheck": {
+      "invocation": "docs/v2-8i-7-evidence/typecheck-attempt-1.json",
+      "sourceChecks": {
+        "packages/agent/host-wake.ts": {
+          "tested": "e042d12bf76b1575d05bb62f923c5ef9fd8c956864ed0c2047926edbaccf36fd",
+          "frozen": "e042d12bf76b1575d05bb62f923c5ef9fd8c956864ed0c2047926edbaccf36fd"
+        },
+        "packages/agent/turn-target.ts": {
+          "tested": "e3f2ad22a355d7641b7e0cc2444720a2d45a846bd7e41d381cb5e13886f46f43",
+          "frozen": "e3f2ad22a355d7641b7e0cc2444720a2d45a846bd7e41d381cb5e13886f46f43"
+        }
+      },
+      "allMatch": true
+    },
+    "governance": {
+      "invocation": "docs/v2-8i-7-evidence/governance-attempt-1.json",
+      "sourceChecks": {
+        "docs/development-state.schema.json": {
+          "tested": "38d240b7aff4c8480fdd35583b022a9e0a65e864c6d7c15ecbcd572f9718fb90",
+          "frozen": "38d240b7aff4c8480fdd35583b022a9e0a65e864c6d7c15ecbcd572f9718fb90"
+        },
+        "test/dev-protocol.test.js": {
+          "tested": "4e301554fcdd12b0e01874ab485effc7b1ade6bcdeb642948511044f7ca40ab7",
+          "frozen": "4e301554fcdd12b0e01874ab485effc7b1ade6bcdeb642948511044f7ca40ab7"
+        },
+        "tools/dev-protocol-check.mjs": {
+          "tested": "c2919e83044ba9e7bf7d725da9668455b227c128386afc6a2413a83ea05a05ab",
+          "frozen": "c2919e83044ba9e7bf7d725da9668455b227c128386afc6a2413a83ea05a05ab"
+        }
+      },
+      "allMatch": true
+    }
+  }
+}

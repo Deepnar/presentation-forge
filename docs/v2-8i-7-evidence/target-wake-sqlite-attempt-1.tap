@@ -1,0 +1,68 @@
+TAP version 13
+# Subtest: SQLite target: exact work skips owner discovery, waits for approval and commits once without provider lookup
+ok 1 - SQLite target: exact work skips owner discovery, waits for approval and commits once without provider lookup
+  ---
+  duration_ms: 183.618026
+  type: 'test'
+  ...
+# Subtest: SQLite target: missing foreign stale and deleted targets refuse before any configuration or dispatch
+ok 2 - SQLite target: missing foreign stale and deleted targets refuse before any configuration or dispatch
+  ---
+  duration_ms: 13.07315
+  type: 'test'
+  ...
+# Subtest: SQLite target: account recreation during opening cannot remap the targeted account
+ok 3 - SQLite target: account recreation during opening cannot remap the targeted account
+  ---
+  duration_ms: 7.440166
+  type: 'test'
+  ...
+# Subtest: SQLite target: clear after admission preflight prevents provider resolution on actual work
+ok 4 - SQLite target: clear after admission preflight prevents provider resolution on actual work
+  ---
+  duration_ms: 10.017984
+  type: 'test'
+  ...
+# Subtest: SQLite target: human save after approval survives target execution as a stale run refusal
+not ok 5 - SQLite target: human save after approval survives target execution as a stale run refusal
+  ---
+  duration_ms: 5015.478557
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-target-wake-sqlite-8i.test.js:12:31'
+  failureType: 'testCodeFailure'
+  error: 'Fixture state did not complete.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    until (file:///home/deepnar/Programs/presentations/test/v2-host-wake-fixture.js:17:9)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-target-wake-sqlite-8i.test.js:59:3)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: SQLite target: cancel during targeted preparation prevents a late proposal or retry
+ok 6 - SQLite target: cancel during targeted preparation prevents a late proposal or retry
+  ---
+  duration_ms: 24.046616
+  type: 'test'
+  ...
+# Subtest: SQLite target: work-auto CLI prepares and executes through pinned Auto with truthful metadata and no replay
+ok 7 - SQLite target: work-auto CLI prepares and executes through pinned Auto with truthful metadata and no replay
+  ---
+  duration_ms: 1095.606527
+  type: 'test'
+  ...
+# Subtest: SQLite target: work-auto CLI defaults off and rejects invalid authority or raw UTF-8 privately
+ok 8 - SQLite target: work-auto CLI defaults off and rejects invalid authority or raw UTF-8 privately
+  ---
+  duration_ms: 2068.615801
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8767.782506
+# forge-test-file "test/v2-target-wake-sqlite-8i.test.js"

@@ -1,0 +1,11 @@
+{
+  "command": "nice -n 10 node --test --test-concurrency=1 test/v2-target-wake-8i.test.js",
+  "implementationSha": "78a0056",
+  "result": "watchdog timeout after 30s; runner raised before preserving captured TAP",
+  "exitCode": null,
+  "pass": null,
+  "fail": null,
+  "skip": null,
+  "cancelled": null,
+  "limitation": "First harness did not retain raw TAP. No pass credit. Test deferred cleanup corrected before new attempt."
+}

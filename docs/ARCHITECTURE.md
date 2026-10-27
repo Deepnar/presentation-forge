@@ -2876,3 +2876,32 @@ before later work; wake does not guarantee owner-wide progress.
 [Evaluation](V2-8I-6-EVAL.md) and [independent acceptance](reviews/V2-8I-6-dce5628.json)
 record exact source, focused tests and limitations. No production activation or
 live model qualification occurred.
+
+### V2-8I-7 exact-turn wake (source3da0801; review pending)
+
+The project-scoped POST /api/v2/projects/:id/conversation/wake accepts exact
+{generation,turnId} under the same private Bearer account snapshot, eligibility
+and default-off host/wake flags. Its2048-byte strict UTF-8/identity parser precedes
+I1 and generic parsing; its handler precedes the conversation fallback. The shared
+I6 singleton snapshots an optional immutable target. Owner-wide/targeted work
+shares all slots, cooldowns, deadline and close behavior. Only identical mode and
+project/generation/turn coalesces; a different active target returns busy without
+replacing work or setting dirty. There is no waiting target list.
+
+First admission reserves capacity/deadline before policy opening and H inspection.
+Pending identical callers share that outcome. An already-admitted coalesced202
+acknowledges an earlier bounded hint, not current validity or dispatch. The pinned
+Auto target adapter reinspects/re-authorizes every invocation and calls I2 directly,
+without I4 discovery. Submitted state alone selects I5 provider lookup; approved
+and terminal states need none. A bounded completion envelope has no discovery
+cursor and permits at most one dirty follow-up after definitive completed work.
+Refused, interrupted, erroneous or unfinished results stop. H/I2 still owns every
+durable effect, approval, revision/lease and cancellation fence.
+
+Operator agent-chat work-auto --owner OWNER --project ID --input FILE uses the
+same adapter, exact2048-byte generation/turnId JSON, trusted numeric account lookup,
+110second cancellation, cleanup and workExitCode. Provider/run/worker/budget
+overrides are refused. Independent CLI processes rely on canonical leases and
+shared account admission, not HTTP-local caps. No schema/query, UI or renderer
+change; owner-wide wake remains finite. [Evaluation](V2-8I-7-EVAL.md) records focused
+execution, earlier harness/timing uncertainty and pending separate source review.

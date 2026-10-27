@@ -1,0 +1,14 @@
+{
+  "id": "typecheck",
+  "implementationSha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "testedDelta": "Executed on working bytes before source freeze; applicable hashes match frozen source in source-manifest.json. No SHA-only rerun.",
+  "kind": "command",
+  "command": "nice -n 10 ionice -c 3 npm run typecheck",
+  "atUtc": "2026-10-27T12:46:15.404642+00:00",
+  "durationMs": 2118,
+  "exitCode": 0,
+  "timedOut": false,
+  "log": "docs/v2-8i-7-evidence/typecheck-attempt-1.log",
+  "backend": "temporary SQLite/account stores; injected/loopback only",
+  "executedAtHead": "78a0056bb4d2363027221733c9912016f0f25633"
+}

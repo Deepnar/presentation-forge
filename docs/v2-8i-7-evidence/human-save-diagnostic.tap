@@ -1,0 +1,17 @@
+TAP version 13
+# Subtest: SQLite target: human save after approval survives target execution as a stale run refusal
+ok 1 - SQLite target: human save after approval survives target execution as a stale run refusal
+  ---
+  duration_ms: 209.310858
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 617.387162
+# forge-test-file "test/v2-target-wake-sqlite-8i.test.js"

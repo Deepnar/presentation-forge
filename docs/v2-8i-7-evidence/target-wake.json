@@ -1,0 +1,21 @@
+{
+  "id": "target-wake",
+  "implementationSha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "testedDelta": "Executed on working bytes before source freeze; applicable hashes match frozen source in source-manifest.json. No SHA-only rerun.",
+  "kind": "tests",
+  "command": "nice -n 10 ionice -c 3 node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-target-wake-8i.test.js test/v2-host-wake-8i.test.js",
+  "atUtc": "2026-10-27T12:46:02.636273+00:00",
+  "durationMs": 668,
+  "exitCode": 0,
+  "timedOut": false,
+  "log": "docs/v2-8i-7-evidence/target-wake-attempt-1.tap",
+  "backend": "temporary SQLite/account stores; injected/loopback only",
+  "tests": {
+    "total": 19,
+    "pass": 19,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "executedAtHead": "78a0056bb4d2363027221733c9912016f0f25633"
+}

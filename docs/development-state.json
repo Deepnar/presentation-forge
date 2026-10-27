@@ -6,44 +6,44 @@
     "source": "docs/reviews/V2-8I-6-dce5628.json"
   },
   "implementationHead": {
-    "sha": "dce562834f2d4641280d8df6f61dd4872d566b87",
-    "note": "Independently accepted explicit finite wake source. Required26/26, affected governance37/37 and independent supplemental3/3 pass, typecheck0; tested working bytes match frozen source. Later commits are docs/evidence only. Default-off, no live/PG/UI/activation qualification."
+    "sha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+    "note": "Exact-target source; final focused33/33, typecheck0, four affected governance cases. Working bytes bound by source-manifest; first SQLite timeout and fail-first harness limits retained. Independent review pending; no UI/activation/live/PG qualification."
   },
   "activeMilestone": {
-    "id": "V2-8I-6",
-    "roadmapRef": "docs/ROADMAP.md#assistant-authenticated-wake",
-    "evalDoc": "docs/V2-8I-6-EVAL.md",
+    "id": "V2-8I-7",
+    "roadmapRef": "docs/ROADMAP.md#assistant-targeted-wake",
+    "evalDoc": "docs/V2-8I-7-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8I-6-dce5628.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "host-wake",
+      "id": "target-wake",
       "status": "passed",
-      "evidence": "docs/v2-8i-6-evidence/host-wake.json",
-      "reason": "Selected new-behavior scope, actual raw result and exact tested source bytes retained."
+      "evidence": "docs/v2-8i-7-evidence/target-wake.json",
+      "reason": "Selected new/affected scope executed; applicable tested working bytes match frozen source. Earlier attempts retained separately."
     },
     {
-      "id": "host-wake-sqlite",
+      "id": "target-wake-sqlite",
       "status": "passed",
-      "evidence": "docs/v2-8i-6-evidence/host-wake-sqlite.json",
-      "reason": "Selected new-behavior scope, actual raw result and exact tested source bytes retained."
+      "evidence": "docs/v2-8i-7-evidence/target-wake-sqlite.json",
+      "reason": "Selected new/affected scope executed; applicable tested working bytes match frozen source. Earlier attempts retained separately."
     },
     {
-      "id": "host-wake-http",
+      "id": "target-wake-http",
       "status": "passed",
-      "evidence": "docs/v2-8i-6-evidence/host-wake-http.json",
-      "reason": "Selected new-behavior scope, actual raw result and exact tested source bytes retained."
+      "evidence": "docs/v2-8i-7-evidence/target-wake-http.json",
+      "reason": "Selected new/affected scope executed; applicable tested working bytes match frozen source. Earlier attempts retained separately."
     },
     {
       "id": "typecheck",
       "status": "passed",
-      "evidence": "docs/v2-8i-6-evidence/typecheck.json",
-      "reason": "Selected new-behavior scope, actual raw result and exact tested source bytes retained."
+      "evidence": "docs/v2-8i-7-evidence/typecheck.json",
+      "reason": "Selected new/affected scope executed; applicable tested working bytes match frozen source. Earlier attempts retained separately."
     }
   ],
   "knownBlockers": [],
@@ -54,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-7 exact-turn wake",
-    "authorized": true,
-    "roadmapRef": "docs/ROADMAP.md#assistant-targeted-wake"
+    "id": "Existing-deck browser Assistant; concrete surface contract required",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

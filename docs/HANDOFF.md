@@ -1,24 +1,30 @@
 # Presentation Forge handoff — 2026-10-27
 
-Branch v2, origin/v2 only. I6 source dce562834f2d4641280d8df6f61dd4872d566b87
-remains independently accepted; its closeout is complete. Entry33e45b7, I7 proposal
-b026dd8. Human selected **Exact project and turn (Recommended)**. The approved
-[contract](V2-8I-7-PLAN.md) pins the separate plan review's first-admission,
-pending-coalesced and already-admitted receipt distinction before code.
+Branch v2, origin/v2 only. I7 source3da0801f64e88f7911f655cee288bb9b750c7c3d
+is validated, independent review pending. Accepted baseline remains I6
+ dce562834f2d4641280d8df6f61dd4872d566b87. Read AGENTS, state,
+[contract](V2-8I-7-PLAN.md), [evaluation](V2-8I-7-EVAL.md), manifest and
+[roadmap](ROADMAP.md#assistant-targeted-wake). Human chose exact project and turn;
+clarified admission/coalescing was pinned in78a0056 before code.
 
-I7 implementation is authorized: exact project/generation/turn wake through shared
-I6 caps and pinned I5 policy, direct canonical H/I2 work without owner scanning,
-and operator work-auto parity. Focused new/affected coordinator, SQLite/CLI,
-HTTP/process, typecheck and affected governance checks only. No old matrix, model
-calls, GPU/render/browser, UI, production activation, schema migration or deployment.
-No runtime I7 changes yet at this handoff. Stop after separate exact-source review.
+Exact-target private wake shares I6 admission/lifecycle and pinned I5 policy,
+uses H/I2 directly with no discovery, and supplies work-auto operator parity.
+Default-off, no UI/activation/model calls/GPU/renderer/query/schema changes.
+Required33/33 (new19 plus affected14), typecheck0, four affected governance cases
+pass;34 unchanged governance bodies unexecuted. Earlier two watchdog attempts,
+exploratory overlap and SQLite7/1 then isolated1/1 then final8/8 remain explicit.
+The first SQLite wait's cause was not captured; independent review must assess
+that timing uncertainty. Test assertions were preserved. No SHA-only reruns;
+applicable working hashes match frozen source.
 
-I6 evidence: required26/26, affected governance37/37, typecheck0 and independent
-3/3 new challenges; prior overlapping/failed harness attempts retained in its eval.
-Its finite owner-wide limitations remain accepted; I7 does not reopen that source.
-Standing BYOK locale and inherited visual/native/live-provider limits remain.
+No browser/build/PG/benchmark/native/render/old matrix/live-model sweep occurred.
+PostgreSQL is unexecuted. Selected fixture/typecheck9378ms, governance717ms are
+not production metrics. Synthetic101 historical index hints do not qualify new
+canonical history; actual target preparation/approval/execution uses real H/I2.
 
-No owned service/test slot is active. Preserve original .agents/ and two prompt
-files. Do not recreate I4's removed service or replay completed helpers; missing
-pre-removal catalog/removal cause remains unavailable, never inferred zero.
-All future scope and decisions live solely in [the roadmap](ROADMAP.md#assistant-targeted-wake).
+Root slots are free; fixtures/children/listeners/stores closed, no persistent
+service acquired. Original .agents/ and two prompt files untouched. Never replay
+I4 helpers or recreate its removed service. Unknown pre-removal count/cause stays
+unknown. Standing BYOK locale and inherited native/visual/live-provider limits
+remain. Request separate exact-source ACCEPT/HOLD; root cannot self-accept.
+Stop after I7 review and docs/commit/push. All later scope stays in the roadmap.

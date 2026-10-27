@@ -37,8 +37,9 @@ because old eval wording predates review.
 Human approved exact project/generation/turn targeting on2026-10-27. Read
 [the pinned contract](V2-8I-7-PLAN.md) and its independent plan review. I6 remains
 the accepted baseline. Shared admission, first-inspection versus coalesced-receipt
-semantics and direct H/I2 work are bounded there. Implement only I7, using focused
-offline checks and a separate source decision; no UI, activation or model calls.
+semantics and direct H/I2 work are bounded there. Source3da0801 is implemented with33/33 focused product leaves, four affected
+governance cases and typecheck0; read its evaluation and preserve earlier failed
+attempts/timing uncertainty. Independent exact-source review is pending; no UI, activation or model calls.
 Current state is in HANDOFF; later work remains solely in the roadmap.
 
 ## Latest accepted slice — I6 explicit finite wake complete

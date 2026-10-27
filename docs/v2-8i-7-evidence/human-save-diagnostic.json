@@ -1,0 +1,15 @@
+{
+  "command": "nice -n 10 ionice -c 3 node --test --test-concurrency=1 --test-name-pattern='human save after approval' --test-reporter=./tools/validated-tap.mjs test/v2-target-wake-sqlite-8i.test.js",
+  "exitCode": 0,
+  "log": "docs/v2-8i-7-evidence/human-save-diagnostic.tap",
+  "implementationSha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "testedDelta": "Working source before freeze; case includes new admission assertion; later first test only received seeded index oracle",
+  "tests": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "purpose": "Narrow investigation of initial SQLite await timeout; overlapping final case, not extra acceptance count"
+}

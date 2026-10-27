@@ -9305,7 +9305,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-targeted-wake"></a>
 
-  - [ ] **V2-8I-7 exact-turn wake — approved implementation.**
+  - [ ] **V2-8I-7 exact-turn wake — validated, independent review pending.**
     The continuation from accepted I6 `dce5628`, entry HEAD `33e45b7`, prepares
     [the concrete contract](V2-8I-7-PLAN.md). Recommend exact project/generation/turn
     wake for the future Assistant's Send/Approve path, sharing I6 admission/caps and
@@ -9318,14 +9318,19 @@ local inference. Only that separate transport correction is authorized; this aud
     clarification are pinned in the contract before code. Approved
     focused target/affected-coordinator, SQLite/CLI, HTTP-process and typecheck gates
     reuse accepted unchanged evidence and avoid the historical matrix. No UI or
-    activation follows automatically. Stop after exact-source independent I7 review.
+    activation follows automatically. Source3da0801 implements the contract;
+    [evaluation](V2-8I-7-EVAL.md) retains33/33 selected product leaves, typecheck0
+    and4/4 affected governance cases. Earlier watchdog/harness attempts and the
+    initial SQLite7/1 timing uncertainty remain explicit. Source hashes bind
+    working execution to frozen bytes. Stop after exact-source independent review.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
-  Existing-deck editing is the approved first capability. With I6 finite wake
-  accepted, agree the Assistant's editor draft/save/proposal/cancel interaction
-  and bounded progress/targeting contract before surface implementation. Keep the
+  Existing-deck editing is the approved first capability. I7 implements exact
+  targeting and is awaiting independent review; agree the Assistant's editor draft/save/proposal/cancel interaction
+  contract before surface implementation, reusing the I7 target boundary after
+  acceptance. Keep the
   current placeholder until that interface contract works. Existing read/decide/
   cancel/clear routes and the headless worker reuse accepted H/B authority; the accepted
   submit route also delegates to H. AcceptedI4 supplies owner-scoped potential-work
@@ -9342,8 +9347,9 @@ local inference. Only that separate transport correction is authorized; this aud
   recovery, truthful queued/running/completed status and cancellation. Do not let
   browser/SSE lifetime own workers. Recovery, owner revocation and multiple tabs/
   hosts must reuse canonical revisions, existing history and explicit turn policy.
-  Before the visible Assistant relies on owner-wide wake for general accounts,
-  agree bounded progress for long terminal-turn histories. I6 restarts from null
+  Use I7 exact project/generation/turn wake for known Send/Approve targets after
+  its separate acceptance. General owner-wide fairness remains a different future
+  contract before any surface promises automatic progress across all projects. I6 restarts from null
   and spends at most two cycles; accepted I4 also returns approved terminal hints,
   so a long prefix can consume those cycles before later submitted work. Qualify
   a progress/targeting contract rather than treating202 as guaranteed processing.

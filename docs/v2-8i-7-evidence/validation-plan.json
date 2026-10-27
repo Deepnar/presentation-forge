@@ -21,6 +21,7 @@
     ],
     "typecheck": []
   },
-  "additionalAffectedCheck": "test/dev-protocol.test.js",
-  "excluded": "Old bulk/browser/PG/build/benchmark/native/render/live-model/GPU; accepted evidence reused, never relabeled executed"
+  "additionalAffectedCheck": "Four selected new/adjacent inventory cases in test/dev-protocol.test.js; remaining34 unchanged bodies reuse accepted evidence",
+  "excluded": "Old bulk/browser/PG/build/benchmark/native/render/live-model/GPU; accepted evidence reused, never relabeled executed",
+  "implementationSha": "3da0801f64e88f7911f655cee288bb9b750c7c3d"
 }
