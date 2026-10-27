@@ -9,7 +9,7 @@ import type { ConversationRequest } from './conversation-request.generated.ts';
 import type { SearchProvider, SearchCode } from './search.ts';
 
 export type ResearchGrant = {
-  binding: Binding; requestId: string; projectRevision: number; queryDisclosure: true;
+  binding: Binding; request: ConversationRequest; queryDisclosure: true;
   maxSearchCalls?: number; maxResults?: number;
 };
 export type ResearchCapability = {
@@ -45,17 +45,37 @@ function binding(input: unknown): Binding {
     b.owner !== null && (typeof b.owner !== 'string' || !b.owner.trim() || b.owner.length > 128)) throw new Error();
   return freeze(b);
 }
-function capability(input: ResearchCapability | undefined) {
+function requestIdentity(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(requestIdentity).join(',')}]`;
+  if (value && typeof value === 'object') return `{${Object.keys(value).sort().map(k => `${JSON.stringify(k)}:${requestIdentity((value as Record<string, unknown>)[k])}`).join(',')}}`;
+  return JSON.stringify(value);
+}
+type CapturedCapability = {
+  grant: ResearchGrant; requestIdentity: string; used: boolean;
+  authorize: ResearchCapability['authorize']; searchId: string; search: SearchProvider['search'];
+};
+// Consumption belongs to the trusted capability, including across runner factories.
+const capabilities = new WeakMap<object, CapturedCapability>();
+function capability(input: ResearchCapability | undefined): CapturedCapability | null {
   if (!input || ![Object.prototype, null].includes(Object.getPrototypeOf(input))) return null;
+  const captured = capabilities.get(input);
+  if (captured) return captured;
   const fields = Object.getOwnPropertyDescriptors(input);
   if (Reflect.ownKeys(fields).length !== 3 || !['grant', 'authorize', 'searchProvider'].every(k => fields[k]?.enumerable && 'value' in fields[k])) return null;
-  const g = cloneJson(fields.grant.value, 2048) as ResearchGrant;
-  if (!g || Object.keys(g).some(k => !['binding','requestId','projectRevision','queryDisclosure','maxSearchCalls','maxResults'].includes(k)) ||
-    !validId(g.requestId) || !integer(g.projectRevision, 0, Number.MAX_SAFE_INTEGER) || g.queryDisclosure !== true ||
+  const g = cloneJson(fields.grant.value, 65536) as unknown as ResearchGrant;
+  if (!g || Object.keys(g).some(k => !['binding','request','queryDisclosure','maxSearchCalls','maxResults'].includes(k)) ||
+    g.queryDisclosure !== true ||
     !integer(g.maxSearchCalls ?? 3, 1, 3) || !integer(g.maxResults ?? 24, 1, 24)) return null;
+  const request = parseConversationRequest(g.request);
+  if (!request) return null;
   const b = binding(g.binding), search = fields.searchProvider.value as SearchProvider, authorize = fields.authorize.value as ResearchCapability['authorize'];
-  if (typeof authorize !== 'function' || !search || !/^[A-Za-z0-9_-]{1,64}$/.test(search.id) || typeof search.search !== 'function') return null;
-  return { grant: freeze({ ...g, binding: b }), authorize, searchId: search.id, search: search.search.bind(search) };
+  if (typeof authorize !== 'function' || !search) return null;
+  const searchId = search.id, dispatch = search.search;
+  if (typeof searchId !== 'string' || !/^[A-Za-z0-9_-]{1,64}$/.test(searchId) || typeof dispatch !== 'function') return null;
+  const value = { grant: freeze({ ...g, binding: b, request }), requestIdentity: requestIdentity(request), used: false,
+    authorize, searchId, search: dispatch.bind(search) };
+  capabilities.set(input, value);
+  return value;
 }
 function optionSignal(input: unknown): AbortSignal | undefined {
   if (!input || ![Object.prototype, null].includes(Object.getPrototypeOf(input))) throw new Error();
@@ -67,7 +87,7 @@ function optionSignal(input: unknown): AbortSignal | undefined {
 // Only this factory can compose network reads. Existing workers never receive it.
 export function createResearchRunner(backend: RuntimeBackend, provider: ModelProvider, trusted?: ResearchCapability, clock: Clock = defaults) {
   const profile = providerProfile(provider.profile), exchange = provider.exchange.bind(provider);
-  let cap: ReturnType<typeof capability> = null, used = false;
+  let cap: CapturedCapability | null = null;
   try { cap = capability(trusted); } catch { /* malformed grants confer no permission */ }
   return Object.freeze({
     async research(identity: Binding, input: unknown, options: { signal?: AbortSignal } = {}): Promise<ResearchResult> {
@@ -77,12 +97,12 @@ export function createResearchRunner(backend: RuntimeBackend, provider: ModelPro
         message: 'Research could not complete within its explicit permission, revision and resource bounds.', trace: structuredClone(trace), ...(searchCode ? { searchCode } : {}) });
       let request: ConversationRequest, owner: Binding, caller: AbortSignal | undefined;
       if (!cap) return failure('search-denied');
-      if (used) return failure('grant-used');
+      if (cap.used) return failure('grant-used');
       const permit = cap;
       try {
         caller = optionSignal(options); owner = binding(identity);
         const parsed = parseConversationRequest(input);
-        if (!parsed || parsed.requestId !== permit.grant.requestId || parsed.projectRevision !== permit.grant.projectRevision ||
+        if (!parsed || requestIdentity(parsed) !== permit.requestIdentity ||
           owner.id !== permit.grant.binding.id || owner.owner !== permit.grant.binding.owner ||
           parsed.scope.mode !== 'inspect' || parsed.scope.editableTargets.length ||
           parsed.contextChars > 48000 || parsed.maxOutputTokens > profile.capabilities.maxOutputTokens ||
@@ -90,7 +110,7 @@ export function createResearchRunner(backend: RuntimeBackend, provider: ModelPro
           parsed.deadlineAt > clock.now() + 30000) return failure('invalid-request');
         request = parsed;
       } catch { return failure('invalid-request'); }
-      used = true;
+      permit.used = true;
       if (caller?.aborted) return failure('cancelled');
       const controller = new AbortController(), signal = controller.signal;
       let closed = false, reason: Code | null = null;
