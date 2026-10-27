@@ -9,19 +9,21 @@ in [the I5 decision](reviews/V2-8I-5-5cf5b5c.json). Branch/push: v2/origin/v2.
 Runtime/test/governance bytes match that accepted source. The three unrelated
 untracked paths remain untouched. There is no pending I5 validation or review.
 
-This is a proposed contract, not implementation approval. The roadmap explicitly
-requires agreement on authenticated wake/scheduling before code. I5's Auto-only
-approval remains binding; provider selection is not being reopened. Its acceptance
-excluded HTTP, scheduling, activation and real model use. The new decision is
-whether host work is triggered explicitly or automatically by existing mutations.
-No runtime, configuration, service, database or model change belongs to planning.
+The human explicitly chose “Explicit wake endpoint (Recommended)” on 2026-10-27,
+authorizing this bounded contract. I5's Auto-only policy remains binding; no
+activation, real model use or Assistant UI is authorized. Independent plan review
+[814b89c](reviews/V2-8I-6-plan-814b89c.json) found two clarifications, pinned here
+before runtime code: exact private bearer session/account identity and rejection
+of pending admission after close/abort/deadline. It is not source acceptance.
 
 ## Recommended direction
 
 Add an **explicit authenticated wake endpoint** and an instance-local finite
 coordinator over accepted I5 pickup. A future Assistant can submit/approve using
-existing routes, then request host work. Submission and decisions remain durable
-operations with their existing behavior; neither silently starts a provider.
+existing routes, then request host work. Explicit describes the API boundary,
+not an extra human Start button: the future Assistant can issue the wake from the
+same Send/Approve interaction. No UI is implemented in this slice. Submission and
+decisions remain durable operations with their existing behavior; neither silently starts a provider.
 Use the same Auto-only account policy and H/I2 authority. No new runtime framework,
 provider SDK, service, queue table, durable job receipt or editing engine is needed.
 
@@ -40,7 +42,10 @@ trigger without changing canonical turns or the document.
   and a separate FORGE_AGENT_WAKE_ENABLED=1 flag. Both host paths remain default-off.
   Cookie-only/local-ownerless/API-key/admin-override authority is refused. Admins
   may wake only their own owner scope. Resolve the exact owner email and current
-  numeric account ID from trusted auth/account state, never a body/header override.
+  numeric account ID from one private sessions.user_id→current users row snapshot,
+  never a body/header override or publicUser-email→later-getUserId remap. Existing
+  public user DTOs and other authentication behavior stay unchanged; no JSON-owner
+  fallback. Retain the captured numeric ID through account deletion/recreation.
 - Exact body {}, no query fields; application/json with UTF-8 only, identity
   Content-Encoding, fatal UTF-8 validation and a 1024-byte raw limit. Install the
   private prefix parser before the shared 8mb parser; unknown methods/suffixes and
@@ -82,7 +87,10 @@ trigger without changing canonical turns or the document.
 - Before acknowledging admission, pin an I5 policy session to the exact current
   account and verify its numeric ID matches trusted authenticated identity before
   and after asynchronous policy opening. Reuse that pinned session for the job;
-  its canonical eligibility checks run again before dispatch. Do not retain a
+  its canonical eligibility checks run again before dispatch. Opening admission is
+  inside the job deadline: reject it after close/abort/expiry, even if a pending
+  open resolves later, before returning202 or launching pickup. Late opening must
+  not reacquire a released slot or perform work. Do not retain a
   session token or use ambient currentAccount()/meter as worker authority. If
   account identity changes before admission or later dispatch, refuse/stop.
 - One job has a monotonic total elapsed budget of 110000ms, at most two sequential
@@ -151,7 +159,7 @@ promise. Multi-instance limits, search tools, semantic creation and real-model
 qualification retain their separate roadmap contracts. No accepted layer needs a
 second queue, document, serialized approval capability or model layout vocabulary.
 
-## Focused implementation gates if direction is approved
+## Approved focused implementation gates
 
 Four proposed required gates:
 
@@ -192,4 +200,5 @@ After implementation and focused validation, require separate exact-source
 ACCEPT/HOLD, update architecture/state/evaluation/roadmap/continuity, commit focused
 changes to origin/v2 and stop after I6. No Assistant UI, automatic submit/approval
 trigger, always-on scheduler, production activation, real model spend, migration or
-paid infrastructure follows. Current planning performs no implementation tests.
+paid infrastructure follows. Plan review performed zero tests. Runtime validation follows only this approved
+new-behavior inventory, not a historical sweep.

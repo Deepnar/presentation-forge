@@ -32,6 +32,16 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
+## Current continuation — approved I6 explicit wake
+
+The post-I5 continuation prepared [the I6 contract](V2-8I-6-PLAN.md), indexed only
+in [the roadmap](ROADMAP.md#assistant-authenticated-wake). The human chose
+explicit authenticated finite wake on2026-10-27; scope is approved for implementation. The future
+Assistant can issue that API action from Send/Approve without another user button.
+Accepted source, active I5 acceptance and validation evidence are unchanged; no
+runtime source is accepted for I6 yet. No activation or model call is authorized.
+Read HANDOFF and the pinned plan-review clarifications before code.
+
 ## Latest accepted slice — I5 Auto host pickup complete
 
 The human-approved Auto-only/default-disabled bridge is independently accepted
@@ -42,7 +52,7 @@ Required unit19/SQLite8/CLI5 all pass, typecheck passes, affected governance36/3
 passes and independent new challenges3/3 pass; all0fail/skip/cancelled. Only
 new/affected behavior ran. No old matrix/model/GPU/service/artifact execution or
 production activation occurred. Source is frozen; later commits are docs/evidence.
-Stop after I5 closeout. Acceptance permits planning, with later authority and scope
+I5 closeout is complete. Acceptance permits planning, with later authority and scope
 solely in [the roadmap](ROADMAP.md#assistant-surface-integration).
 
 ## Accepted predecessor — I4 complete

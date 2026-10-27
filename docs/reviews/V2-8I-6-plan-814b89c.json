@@ -1,0 +1,42 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "planSha": "814b89ccdaf5aa80e66e9609ff185cd8386f8d0b",
+  "acceptedBaseline": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "reviewDate": "2026-10-27",
+  "implementationAcceptance": false,
+  "humanDirectionSubsequentlyReported": "Explicit wake endpoint (Recommended) approved; no activation, model use or UI work. Root will pin auth clarification before runtime code.",
+  "assessment": "Explicit owner-wide authenticated wake over unchanged I5 is a coherent bounded dependency. Admission/owner/record/cooldown/coalescing/two-cycle/elapsed limits, default-off flags, bounded acknowledgement, explicit context exit and honest close/restart limitations avoid a new durable queue or approval authority. Four focused gates plus affected governance are proportionate; no old matrix is needed.",
+  "conditionsBeforeCode": [
+    {
+      "id": "private-bearer-account-snapshot",
+      "condition": "Derive exact internal ID/email from the validated bearer sessions.user_id and its current user row, preserving session TTL/verification policy and the existing public DTO. userForToken/resolveUser returns publicUser without ID; do not remap its email through getUserId after an await. That can bind an old token resolution to a newly recreated account. Reject changed identity before/after I5 session opening and test the deletion/recreation seam.",
+      "sources": [
+        "src/auth.js:69",
+        "src/auth.js:461",
+        "app/server/index.js:66"
+      ]
+    },
+    {
+      "id": "late-admission-lifecycle",
+      "condition": "Treat admitting slots as part of job lifetime: after asynchronous policy opening, recheck closed/aborted/elapsed state before acknowledging or starting pickup. A pending admission resolved after close/deadline must not produce a late202 or launch work. Cover this in the new coordinator unit lifecycle cases; this implements the stated close/deadline contract."
+    }
+  ],
+  "scopeNotes": [
+    "Wake authorizes a bounded owner-wide scan, not just one current project; acknowledgement promises neither completion nor full drain.",
+    "Existing submit/decide routes retain their effects; a future UI may call durable action then explicit wake in one interaction only under its separately agreed UI scope.",
+    "Logout does not cancel admitted work; cancellation/account eligibility and canonical fences remain authoritative. No atomic in-flight revocation or immediate server.close-initiation abort claim.",
+    "Create job resources/open/pickup/follow-up/finalization under deliberately empty account and meter contexts; runAsAccount(null) does not clear inherited context.",
+    "No automatic trigger, daemon, HTTP status capability, provider fallback, activation, real model use or dependent UI implementation authorized by this review."
+  ],
+  "execution": {
+    "tests": 0,
+    "services": 0,
+    "modelCalls": 0,
+    "generators": 0,
+    "note": "Read-only plan and relevant source-seam inspection; only this permitted review file written, no Git/state/runtime changes."
+  },
+  "stopPoint": "Pin the clarification and approved explicit-trigger contract before code. Separate exact-source implementation review remains required; root retains all slots."
+}

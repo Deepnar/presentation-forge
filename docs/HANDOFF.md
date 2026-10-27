@@ -35,6 +35,19 @@ Known BYOK locale, inherited visual/native limits, single account-DB deployment,
 unknown-usage retention, and unqualified live-provider behavior remain explicit.
 No hard SQL deadline or atomic in-flight account revocation is claimed.
 
-Stop after I5 documentation/commit/push closeout. Acceptance permits planning only;
-future implementation/activation/budget authority is not implied. Later scope lives
-only in [the roadmap](ROADMAP.md#assistant-surface-integration).
+The later 2026-10-27 continuation prepared I6 in
+[the roadmap entry](ROADMAP.md#assistant-authenticated-wake) and
+[the bounded contract](V2-8I-6-PLAN.md). Entry HEAD be0e1af; plan814b89c is pushed.
+The human then chose “Explicit wake endpoint (Recommended)”, authorizing scoped
+implementation/offline validation, not activation, models or Assistant UI.
+[Independent plan readiness](reviews/V2-8I-6-plan-814b89c.json) executed0tests and
+requires a private sessions.user_id/account snapshot and rejection of late policy
+opening after close/abort/deadline. Both are pinned before runtime code. No public
+DTO→email→new account remapping. Explicit wake is an API action, not another human
+button in the future Assistant. Accepted I5 source/state/gates remain unchanged
+until I6 has implementation evidence and separate exact-source acceptance.
+
+Root owns Git/test slots. Reuse the existing high-effort turn_contract_review for
+later independent review; no new agents. Only docs/protocol checks ran during
+planning. Follow the four focused new-behavior gates, retain actual failures and
+counts, and stop after I6 acceptance/handoff. No dependent feature or deployment.

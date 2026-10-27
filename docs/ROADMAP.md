@@ -9267,7 +9267,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-authenticated-wake"></a>
 
-  - [ ] **V2-8I-6 authenticated finite wake — direction pending.**
+  - [ ] **V2-8I-6 authenticated finite wake — approved implementation.**
     The 2026-10-27 continuation prepares the immediate dependency after accepted I5
     `5cf5b5c`, from entry HEAD `be0e1af`. [The proposed contract](V2-8I-6-PLAN.md)
     recommends an explicit authenticated wake endpoint over finite I5 pickup,
@@ -9276,12 +9276,13 @@ local inference. Only that separate transport correction is authorized; this aud
     hints and detach lifetime from HTTP; canonical H/I2 remains the only turn/run
     authority. No new durable queue or browser-owned worker. Owner-wide wake is a
     bounded hint, not a guaranteed drain, automatic retry or approval.
-    The concrete trigger direction requires agreement before code; the alternative
-    automatic submit/approval trigger changes existing execution/spend effects and
-    needs a revised contract if chosen. No runtime, configuration, service, model
-    call or evaluation is authorized by this planning entry. Focused new unit,
-    SQLite, HTTP/process and typecheck gates are proposed; unchanged old suites
-    remain reused evidence. Stop at direction until the bounded contract is agreed.
+    The human chose “Explicit wake endpoint (Recommended)” on 2026-10-27.
+    [Plan readiness review](reviews/V2-8I-6-plan-814b89c.json) performed0tests and
+    supplied private sessions.user_id snapshot and pending-admission lifecycle
+    clarifications, pinned before code. This approves scoped implementation and
+    offline validation, not activation, real-model spend or UI. Four focused new
+    unit/SQLite/HTTP-process/typecheck gates apply; unchanged old suites remain
+    accepted evidence. Stop after separate exact-source acceptance and handoff.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise

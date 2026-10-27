@@ -54,8 +54,8 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-6 authenticated finite wake; explicit-trigger direction pending",
-    "authorized": false,
+    "id": "V2-8I-6 authenticated finite wake; explicit-trigger contract approved",
+    "authorized": true,
     "roadmapRef": "docs/ROADMAP.md#assistant-authenticated-wake"
   },
   "docs": {
