@@ -1,3 +1,7 @@
+import AssistantPanel from "./AssistantPanel.jsx";
+import { ConfirmModal } from "./ui.jsx";
+import { assistantFailure, assistantScope } from "../lib/v2assistant.js";
+import { projectSessionKey } from "../lib/v2project.js";
 import ProjectExportButton from "./ProjectExportButton.jsx";
 // SceneViewer — read-only V2 scene viewer. Thin React shell over
 // packages/editor/scene-dom.js (the single viewer implementation;
@@ -5,7 +9,7 @@ import ProjectExportButton from "./ProjectExportButton.jsx";
 // viewer logic: it mounts one viewer per deck, mirrors snapshots,
 // and forwards UI events to the viewer api. Scenes are never
 // mutated here — selection is an id, geometry comes from the DOM.
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createViewer } from "../../../../packages/editor/scene-dom.js";
 import { flattenLayers, elementLabel, applyCollapse } from "../../../../packages/editor/scene-text.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
@@ -293,7 +297,7 @@ function TextFormatRow({ index, paragraph, onCommit }) {
 // element+revision (see key at the call site), so undo/redo and
 // reselection refresh the grid. Switching selection discards an
 // unapplied draft — stated policy: only Apply writes.
-function ChartDataPanel({ element, onCommit, diagnostics = true }) {
+function ChartDataPanel({ element, onCommit, diagnostics = true, onDraftChange }) {
   const chart = element.chart ?? {};
   const seed = () => ({
     kind: chart.chartKind ?? "bar",
@@ -302,6 +306,8 @@ function ChartDataPanel({ element, onCommit, diagnostics = true }) {
   });
   const [draft, setDraft] = useState(seed);
   const [error, setError] = useState(null);
+  const dirty = JSON.stringify(draft) !== JSON.stringify(seed());
+  useLayoutEffect(() => { onDraftChange?.(element.id, dirty); return () => onDraftChange?.(element.id, false); }, [element.id, dirty, onDraftChange]);
   function setCell(si, ci, value) {
     setDraft((d) => {
       const series = d.series.map((s, i) => (i === si ? { ...s, values: s.values.map((v, j) => (j === ci ? value : v)) } : s));
@@ -419,11 +425,13 @@ function ChartDataPanel({ element, onCommit, diagnostics = true }) {
 // element+revision (see key at the call site), so undo/redo and
 // reselection refresh the grid. Switching selection discards an
 // unapplied draft — stated policy: only Apply writes.
-function TableDataPanel({ element, onCommit, diagnostics = true }) {
+function TableDataPanel({ element, onCommit, diagnostics = true, onDraftChange }) {
   const table = element.table ?? {};
   const seed = () => (table.rows ?? []).map((r) => [...r]);
   const [draft, setDraft] = useState(seed);
   const [error, setError] = useState(null);
+  const dirty = JSON.stringify(draft) !== JSON.stringify(seed());
+  useLayoutEffect(() => { onDraftChange?.(element.id, dirty); return () => onDraftChange?.(element.id, false); }, [element.id, dirty, onDraftChange]);
   const cols = draft.reduce((n, r) => Math.max(n, r.length), 0);
   const header = table.header === true;
   function setCell(ri, ci, value) {
@@ -1032,6 +1040,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [pendingLeave, setPendingLeave] = useState(null); // { label, run } or null
   const [titleDraft, setTitleDraft] = useState(null); // null = not renaming
   const [titleError, setTitleError] = useState(null);
+  const titleDraftRef = useRef(titleDraft); titleDraftRef.current = titleDraft;
   // V2-6B durable version history: the project being inspected, its
   // revision list (audit metadata only), the selected revision's
   // preview document, and the guarded restore flow.
@@ -1048,6 +1057,16 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [restoreBusy, setRestoreBusy] = useState(false);
   const [restoreError, setRestoreError] = useState(null);
   const [restoreDone, setRestoreDone] = useState(null);
+  const assistantRef = useRef(null), assistantBridgeRef = useRef(null), rightRailRef = useRef(null);
+  const gridDraftsRef = useRef(new Set()), titleRequestRef = useRef(false);
+  const [gridPending, setGridPending] = useState(false);
+  const [assistantReload, setAssistantReload] = useState(null), [assistantReloadBusy, setAssistantReloadBusy] = useState(false);
+  const registerAssistant = useCallback(controller => { assistantRef.current = controller; return () => { if (assistantRef.current === controller) assistantRef.current = null; }; }, []);
+  const reportGridDraft = useCallback((id, dirty) => {
+    if (dirty) gridDraftsRef.current.add(id); else gridDraftsRef.current.delete(id);
+    setGridPending(gridDraftsRef.current.size > 0);
+  }, []);
+  const assistantBridge = useMemo(() => ({ settle: options => assistantBridgeRef.current.settle(options), syncSaved: options => assistantBridgeRef.current.syncSaved(options) }), []);
   const projectRef = useRef(null);
   const savedEngineRevRef = useRef(0);
   const pendingSaveRef = useRef(null);
@@ -1152,7 +1171,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       return { actor: "human", saveOrigin, envelopeIds: [], engineRevision: null, historyLength: null };
     }
   }
-  async function saveNow(saveOrigin = "manual") {
+  async function saveNow(saveOrigin = "manual", guard = null) {
+    if (guard && !guard.current()) return { ok: false, code: "op-rejected", message: "session changed" };
     const adapter = adapterRef.current;
     const doc = docRef.current;
     let proj = projectRef.current;
@@ -1167,8 +1187,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       const result = await pendingSaveRef.current;
       if (!result.ok) return result;
       if (docRef.current !== doc || projectRef.current?.id !== proj.id || abandonedDocumentsRef.current.has(doc)) return { ok: false, code: "op-rejected", message: "project changed or discarded during save" };
-      return saveNow(saveOrigin);
+      return saveNow(saveOrigin, guard);
     }
+    if (guard && !guard.current()) return { ok: false, code: "op-rejected", message: "session changed" };
     proj = projectRef.current;
     if (docRef.current !== doc || !proj) return { ok: false, code: "op-rejected", message: "project changed during save" };
     const snapNow = doc.snapshot();
@@ -1187,7 +1208,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           title: proj.title,
           scenes,
           provenance: collectProvenance(saveOrigin),
-        });
+        }, guard ? capturedAssistantFetch(guard) : undefined);
+        if (guard && !guard.current()) return { ok: false, code: "op-rejected", message: "session changed" };
         if (docRef.current !== doc || projectRef.current?.id !== proj.id) return { ok: false, code: "op-rejected", message: "project changed during save" };
         savedEngineRevRef.current = atEngineRev;
         projectRef.current = { ...proj, revision: updated.revision, updatedAt: updated.updatedAt };
@@ -1203,6 +1225,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         }
         return { ok: true, revision: updated.revision };
       } catch (err) {
+        if (guard && !guard.current()) return { ok: false, code: "op-rejected", message: "session changed" };
         if (err?.code === "stale-revision") {
           setSaveState("stale");
           setSaveError(err.message);
@@ -1219,7 +1242,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     pendingSaveRef.current = task;
     let result;
     try { result = await task; } finally { if (pendingSaveRef.current === task) pendingSaveRef.current = null; }
-    if (result.ok && docRef.current === doc && !abandonedDocumentsRef.current.has(doc) && doc.snapshot().revision !== savedEngineRevRef.current) return saveNow(saveOrigin);
+    if (result.ok && docRef.current === doc && !abandonedDocumentsRef.current.has(doc) && doc.snapshot().revision !== savedEngineRevRef.current) return saveNow(saveOrigin, guard);
     return result;
   }
   saveNowRef.current = saveNow;
@@ -1283,12 +1306,12 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   // Swap the engine document to a loaded project document and
   // bind it: fresh session revision, empty undo/redo, saved state.
   // Shared by open and post-restore reload.
-  async function attachLoadedProject(loaded) {
+  async function attachLoadedProject(loaded, options = {}) {
     const targetViewer = viewerRef.current;
     const { createDocument } = await import("../../../../packages/model/engine.ts");
     const { attachEditor } = await import("../../../../packages/editor/scene-edit.js");
     const fresh = await createDocument(structuredClone(loaded.scenes));
-    if (!targetViewer || viewerRef.current !== targetViewer) return;
+    if (!targetViewer || viewerRef.current !== targetViewer || options.current && !options.current()) return false;
     try {
       adapterRef.current?.detach();
     } catch { /* teardown only */ }
@@ -1335,9 +1358,20 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
       } catch { /* hint only */ }
     }
-    const first = loaded.scenes[0]?.id ?? null;
+    const preferred = options.viewport?.slideId;
+    const first = loaded.scenes.some(s => s.id === preferred) ? preferred : loaded.scenes[0]?.id ?? null;
     if (first) followSlideId(first);
     setSlideSel(first ? [first] : []);
+    if (options.viewport) {
+      targetViewer.api.setZoom(options.viewport.zoom);
+      const scene = loaded.scenes.find(s => s.id === first);
+      const ids = new Set(flattenLayers(scene?.elements ?? []).map(e => e.id));
+      const selection = options.viewport.selectedIds.filter(id => ids.has(id));
+      if (selection.length) targetViewer.api.selectMany?.(selection);
+      const scroll = scrollRef.current;
+      if (scroll) { scroll.scrollTop = options.viewport.scrollTop; scroll.scrollLeft = options.viewport.scrollLeft; }
+    }
+    return true;
   }
 
   // Open a stored project: commits pending text first (block on
@@ -1380,6 +1414,67 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       setSaveError(err.message);
     }
   }
+
+  function capturedAssistantFetch(context) {
+    return (url, options) => {
+      if (!context.current() || projectSessionKey() !== context.token) throw assistantFailure("session-changed");
+      return fetch(url, { ...options, headers: { ...options?.headers, Authorization: `Bearer ${context.token}` } });
+    };
+  }
+  function assistantIntent() {
+    const value = viewerRef.current?.api.snapshot();
+    return { slideId: value?.slideId, selectedIds: [...(value?.selectedIds ?? [])] };
+  }
+  function assistantPreview(mode) {
+    try { const value = assistantIntent(); return assistantScope(docRef.current?.snapshot().scenes ?? [], value.slideId, value.selectedIds, mode); }
+    catch (error) { return { error: error.code ?? "invalid-scope" }; }
+  }
+  async function settleAssistant(options) {
+    const doc = docRef.current, projectId = projectRef.current?.id;
+    const current = () => options.current() && projectSessionKey() === options.token && docRef.current === doc && projectRef.current?.id === projectId;
+    if (!current()) throw assistantFailure("session-changed");
+    if (!editOn || !doc || !projectId || projectRef.current.recoverable) throw assistantFailure("read-only");
+    if (gridDraftsRef.current.size) throw assistantFailure("pending-data");
+    if (titleDraftRef.current !== null || titleRequestRef.current) throw assistantFailure("pending-title");
+    const saved = await saveNow("manual", { token: options.token, current });
+    if (!current()) throw assistantFailure("session-changed");
+    if (gridDraftsRef.current.size) throw assistantFailure("pending-data");
+    if (titleDraftRef.current !== null || titleRequestRef.current) throw assistantFailure("pending-title");
+    if (!saved.ok || doc.snapshot().revision !== savedEngineRevRef.current || pendingSaveRef.current || adapterRef.current?.hasPendingEdit?.()) throw assistantFailure("save-blocked");
+    if (options.proposalRevision !== undefined && options.proposalRevision !== projectRef.current.revision) throw assistantFailure("stale-project");
+    const value = { revision: projectRef.current.revision };
+    if (options.slideId) return { ...value, slideId: options.slideId, scopeMode: options.scopeMode,
+      scope: assistantScope(doc.snapshot().scenes, options.slideId, options.selectedIds, options.scopeMode) };
+    return value;
+  }
+  async function syncAssistantSaved(options, discard = false) {
+    const doc = docRef.current, proj = projectRef.current;
+    const current = () => options.current() && projectSessionKey() === options.token && docRef.current === doc && projectRef.current?.id === proj?.id;
+    if (!doc || !proj || !current()) return { deferred: true };
+    if (options.turn?.run?.projectRevision <= proj.revision) return { loaded: false };
+    if (gridDraftsRef.current.size) throw assistantFailure("pending-data");
+    if (titleDraftRef.current !== null || titleRequestRef.current) throw assistantFailure("pending-title");
+    if (adapterRef.current?.hasPendingEdit?.() || pendingSaveRef.current) return { deferred: true };
+    const revision = doc.snapshot().revision;
+    if (revision !== savedEngineRevRef.current && !discard) {
+      if (options.requested) setAssistantReload({ options, revision, doc });
+      else { setSaveState("stale"); setSaveError("Assistant changes are saved. Your edits are intact — load the saved version or save as a new project."); }
+      return { deferred: true };
+    }
+    const clean = () => current() && projectRef.current.revision === proj.revision && doc.snapshot().revision === revision &&
+      (discard || revision === savedEngineRevRef.current) && !adapterRef.current?.hasPendingEdit?.() &&
+      !pendingSaveRef.current && !gridDraftsRef.current.size && !titleRequestRef.current && titleDraftRef.current === null;
+    const viewport = { ...viewerRef.current.api.snapshot(), scrollTop: scrollRef.current?.scrollTop ?? 0, scrollLeft: scrollRef.current?.scrollLeft ?? 0 };
+    const focused = document.activeElement;
+    const loaded = await apiLoad(proj.id, capturedAssistantFetch({ token: options.token, current }));
+    if (!clean()) return { deferred: true };
+    if (loaded.id !== proj.id || !Number.isSafeInteger(loaded.revision) || loaded.revision < 0) throw assistantFailure("invalid-response");
+    if (loaded.revision <= proj.revision) return { loaded: false };
+    const attached = await attachLoadedProject(loaded, { current: clean, viewport });
+    if (attached && focused?.isConnected) focused.focus({ preventScroll: true });
+    return { loaded: attached === true, deferred: !attached };
+  }
+  assistantBridgeRef.current = { settle: settleAssistant, syncSaved: syncAssistantSaved };
 
   function historyKindLabel(m) {
     if (!m) return "";
@@ -1548,6 +1643,32 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [projectsOpen, historyFor, galleryOpen]);
+  useEffect(() => {
+    if (!narrow || !rightOpen) return undefined;
+    setLeftCollapsed(true);
+    const root = rightRailRef.current, previous = document.activeElement;
+    if (!root) return undefined;
+    const otherModal = () => [...document.querySelectorAll('[role="dialog"]')].some(n => n !== root && n.getClientRects().length);
+    const focusable = () => [...root.querySelectorAll('button:not(:disabled),textarea:not(:disabled),select:not(:disabled),[tabindex="0"]')].filter(n => n.getClientRects().length);
+    if (!root.contains(document.activeElement)) (focusable()[0] ?? root).focus();
+    const focus = event => { if (!otherModal() && !root.contains(event.target)) (focusable()[0] ?? root).focus(); };
+    const key = event => {
+      if (otherModal()) return;
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setRightOpen(false); return; }
+      if (event.key !== 'Tab') return;
+      const nodes = focusable(), first = nodes[0], last = nodes.at(-1);
+      if (!first) { event.preventDefault(); root.focus(); }
+      else if (event.shiftKey && (document.activeElement === first || document.activeElement === root)) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('focusin', focus); document.addEventListener('keydown', key, true);
+    return () => { document.removeEventListener('focusin', focus); document.removeEventListener('keydown', key, true); if (previous?.isConnected) previous.focus(); };
+  }, [narrow, rightOpen]);
+  function chooseRightTab(tab) { setRightTab(tab); setRightOpen(true); if (narrow) setLeftCollapsed(true); }
+  function rightTabKey(event) {
+    const tab = event.key === 'Home' ? 'inspector' : event.key === 'End' ? 'assistant' : ['ArrowLeft', 'ArrowRight'].includes(event.key) ? rightTab === 'assistant' ? 'inspector' : 'assistant' : null;
+    if (tab) { event.preventDefault(); chooseRightTab(tab); rightRailRef.current?.querySelector(`#right-tab-${tab}`)?.focus(); }
+  }
   const shellBtn = "rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg disabled:cursor-default disabled:opacity-40";
   const shellTab = (active) => `rounded-md px-2.5 py-1 text-[12px] font-medium transition ${active ? "bg-raised text-fg" : "text-fg-faint hover:bg-hover hover:text-fg-muted"}`;
 
@@ -1562,6 +1683,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       return;
     }
     setTitleError(null);
+    titleRequestRef.current = true;
     try {
       const u = await apiRename(proj.id, { title, baseRevision: proj.revision });
       projectRef.current = { ...proj, title: u.title, revision: u.revision, updatedAt: u.updatedAt };
@@ -1573,13 +1695,14 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       } else {
         setTitleError(err.message);
       }
-    }
+    } finally { titleRequestRef.current = false; }
   }
 
   // Workspace leave guard: back-navigation honors the same policy
   // as project switching. Save & leave is offered only when a
   // project is bound; otherwise Discard & leave / Cancel.
-  function leaveGuardNeeded() {
+  function leaveGuardNeeded(includeAssistant = true) {
+    if (includeAssistant && assistantRef.current?.hasDraft()) return true;
     if (docRef.current && abandonedDocumentsRef.current.has(docRef.current)) return false;
     if (adapterRef.current?.hasPendingEdit?.() || pendingSaveRef.current) return true;
     const doc = docRef.current;
@@ -1614,10 +1737,11 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     if (!target) return;
     if (how === "save") {
       const result = await saveNow();
-      if (pendingLeaveRef.current !== target || !result.ok || leaveGuardNeeded()) return;
+      if (pendingLeaveRef.current !== target || !result.ok || leaveGuardNeeded(false)) return;
     } else {
       discardDocument();
     }
+    assistantRef.current?.discardDraft();
     pendingLeaveRef.current = null;
     setPendingLeave(null);
     target.run();
@@ -1899,7 +2023,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           <ProjectExportButton data-topbar-export projectId={project.id} title={project.title} className="rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg">Export</ProjectExportButton>
         )}
         <button type="button" aria-label="Present" title="Present from the current slide" onClick={openPresent} className={shellBtn}>Present</button>
-        <button type="button" aria-label="Assistant" title="AI assistant (not available yet)" aria-pressed={rightTab === "assistant" && rightOpen} onClick={() => { setRightTab("assistant"); setRightOpen(true); }} className={shellBtn}>Assistant</button>
+        <button type="button" aria-label="Assistant" title={embedded ? "Open Assistant" : "AI assistant (not available in standalone viewer)"} aria-pressed={rightTab === "assistant" && rightOpen} onClick={() => chooseRightTab("assistant")} className={shellBtn}>Assistant</button>
         <button type="button" aria-label={rightOpen ? "Hide inspector rail" : "Show inspector rail"} title={rightOpen ? "Hide inspector rail" : "Show inspector rail"} aria-pressed={rightOpen} onClick={() => setRightOpen((v) => !v)} className={shellBtn}>Inspector</button>
       </div>
       <div className="relative flex min-h-0 flex-1">
@@ -2277,15 +2401,19 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           slide properties when nothing is selected. The Assistant
           tab is a reserved, honest placeholder. */}
       <aside
-        aria-label="Inspector"
+        ref={rightRailRef} aria-label={narrow && rightOpen ? "Editor side panel" : "Inspector"} role={narrow && rightOpen ? "dialog" : undefined} aria-modal={narrow && rightOpen ? true : undefined} tabIndex={-1}
         className={`min-h-0 flex-none flex-col overflow-hidden border-line bg-panel ${rightOpen ? "flex" : "hidden"} ${narrow ? "absolute inset-y-0 right-0 z-40 w-72 border-l shadow-[var(--shadow-float)]" : "relative w-72 border-l"}`}
       >
         <div role="tablist" aria-label="Right rail" className="flex flex-none gap-1 border-b border-line p-2">
-          <button type="button" role="tab" aria-selected={rightTab === "inspector" ? "true" : "false"} onClick={() => setRightTab("inspector")} className={shellTab(rightTab === "inspector") + " flex-1"}>Inspector</button>
-          <button type="button" role="tab" aria-selected={rightTab === "assistant" ? "true" : "false"} onClick={() => setRightTab("assistant")} className={shellTab(rightTab === "assistant") + " flex-1"}>Assistant</button>
+          <button type="button" id="right-tab-inspector" aria-controls="right-panel-inspector" tabIndex={rightTab === "inspector" ? 0 : -1} onKeyDown={rightTabKey} role="tab" aria-selected={rightTab === "inspector" ? "true" : "false"} onClick={() => chooseRightTab("inspector")} className={shellTab(rightTab === "inspector") + " flex-1"}>Inspector</button>
+          <button type="button" id="right-tab-assistant" aria-controls="right-panel-assistant" tabIndex={rightTab === "assistant" ? 0 : -1} onKeyDown={rightTabKey} role="tab" aria-selected={rightTab === "assistant" ? "true" : "false"} onClick={() => chooseRightTab("assistant")} className={shellTab(rightTab === "assistant") + " flex-1"}>Assistant</button>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto p-3">
-          {rightTab === "assistant" ? (
+        <div id="right-panel-assistant" role="tabpanel" aria-labelledby="right-tab-assistant" hidden={rightTab !== "assistant"} style={{ display: rightTab === "assistant" ? "flex" : "none" }} className="min-h-0 flex-1 flex-col overflow-hidden p-3">
+          {embedded && project && !project.recoverable ? (
+            <AssistantPanel projectId={project.id} active={rightOpen && rightTab === "assistant"} writable={editOn} blockReason={gridPending ? "pending-data" : titleDraft !== null || titleRequestRef.current ? "pending-title" : null}
+              intent={assistantIntent} preview={assistantPreview} bridge={assistantBridge} register={registerAssistant}
+              onInspector={() => chooseRightTab("inspector")} onHistory={() => openHistory(projectRef.current)} />
+          ) : (
             <div data-assistant-panel className="flex flex-col gap-2 text-[13px]">
               <strong className="text-[14px]">Assistant</strong>
               <p className="text-fg-muted">AI slide editing is not available in this workspace yet.</p>
@@ -2295,7 +2423,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                 optimistic conflicts, and an audit trail. Nothing here edits slides today.
               </p>
             </div>
-          ) : (
+          )}
+        </div>
+        <div id="right-panel-inspector" role="tabpanel" aria-labelledby="right-tab-inspector" hidden={rightTab !== "inspector"} style={{ display: rightTab === "inspector" ? "block" : "none" }} className="min-h-0 flex-1 overflow-y-auto p-3">
             <div className="flex flex-col gap-3">
               <div data-inspector-wrap>
                 {inspected.length > 0 ? (
@@ -2331,6 +2461,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                   key={`${snap.slideId}:${chartTarget.id}:${editStatus.rev}`}
                   element={chartTarget}
                   diagnostics={!embedded}
+                  onDraftChange={reportGridDraft}
                   onCommit={(payload) => adapterRef.current?.setChartData(chartTarget.id, payload)}
                 />
               )}
@@ -2339,6 +2470,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                   key={`${snap.slideId}:${tableTarget.id}:${editStatus.rev}`}
                   element={tableTarget}
                   diagnostics={!embedded}
+                  onDraftChange={reportGridDraft}
                   onCommit={(rows) => adapterRef.current?.setTableData(tableTarget.id, rows)}
                 />
               )}
@@ -2351,7 +2483,6 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                 </div>
               )}
             </div>
-          )}
         </div>
       </aside>
       </div>
@@ -2380,11 +2511,18 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           </div>
         </div>
       )}
+      {assistantReload && <ConfirmModal title="Load saved Assistant changes?" body="Discard the current unsaved presentation edits and load the saved version? Session undo will be cleared. You can cancel and use Save as a new project to keep a copy first." confirmLabel="Discard edits & load" busy={assistantReloadBusy}
+        onCancel={() => setAssistantReload(null)} onConfirm={async () => {
+          const request = assistantReload;
+          if (docRef.current !== request.doc || request.doc.snapshot().revision !== request.revision) { setAssistantReload(null); return; }
+          setAssistantReloadBusy(true); autosaveRef.current?.cancel();
+          try { await syncAssistantSaved(request.options, true); } finally { setAssistantReloadBusy(false); setAssistantReload(null); }
+        }} />}
       {pendingLeave && (
         <div role="alert" data-leave-guard className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px]">
-          You have unsaved changes. Leaving for {pendingLeave.label} without saving loses them.{" "}
-          {projectRef.current && <button type="button" data-leave-save onClick={() => leaveWithChoice("save")} className={shellBtn}>Save & leave</button>}{" "}
-          <button type="button" data-leave-discard onClick={() => leaveWithChoice("discard")} className={shellBtn}>Discard & leave</button>{" "}
+          You have unsaved changes. Leaving for {pendingLeave.label} without saving loses them. {assistantRef.current?.hasDraft() ? "Your unsent Assistant message will also be discarded if you leave." : ""}{" "}
+          {projectRef.current && <button type="button" data-leave-save onClick={() => leaveWithChoice("save")} className={shellBtn}>{assistantRef.current?.hasDraft() ? "Save presentation, discard message & leave" : "Save & leave"}</button>}{" "}
+          <button type="button" data-leave-discard onClick={() => leaveWithChoice("discard")} className={shellBtn}>{assistantRef.current?.hasDraft() ? "Discard edits and message & leave" : "Discard & leave"}</button>{" "}
           <button type="button" onClick={cancelLeave} className={shellBtn}>Cancel</button>
         </div>
       )}
