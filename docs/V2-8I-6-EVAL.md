@@ -4,8 +4,9 @@ Entry HEAD be0e1afe0ce4b28daced56e3f465027234cea86c; accepted baseline
 5cf5b5cff53c781291ba094163c68eb189bfbc66 ([independent I5 decision](reviews/V2-8I-5-5cf5b5c.json)).
 The human chose “Explicit wake endpoint (Recommended)” on 2026-10-27, approving
 [the bounded contract](V2-8I-6-PLAN.md). Source dce562834f2d4641280d8df6f61dd4872d566b87
-is implemented and validated, pending separate exact-source acceptance. Branch/push
-v2/origin/v2. This evaluation does not self-accept implementation.
+is independently accepted in [the exact-source decision](reviews/V2-8I-6-dce5628.json),
+reviewer/context /root/turn_contract_review, from pushed packet fd2eed8. Branch/push
+v2/origin/v2. The decision covers this bounded default-disabled contract only.
 
 ## Implemented behavior
 
@@ -61,9 +62,10 @@ ran on the identical working bytes committed in the frozen source, bound by
 [the manifest](v2-8i-6-evidence/source-manifest.json). Only gate/schema mapping
 followed the product runs; governance/typecheck followed all source changes.
 
-An earlier13-case coordinator run passed before the new post-open enablement
+An earlier13-case coordinator TAP reported13passes before the new post-open enablement
 recheck and its14th assertion. Those13 overlap and transfer no additional pass
-credit. No failing I6 execution is hidden; all executed cases passed. The independent
+credit; that first shell did not separately retain the Node exit code. All final
+implementation cases passed; the reviewer harness failure is retained below. The independent
 plan review caught numeric-ID remapping risk before implementation and pinned the
 late-admission guard. Its clarifications were committed before runtime code.
 
@@ -73,9 +75,29 @@ save/clear, private parser/media/authority refusals and default-off behavior. Th
 production fixture proves response completion does not abort work, submit/decide
 alone do not dispatch, and killing/restarting a dispatched attempt does not retry.
 
+## Independent review
+
+The separate reviewer inspected all14 changed source/test/governance hashes,
+26 required and37 affected leaves, four gate records and typecheck exit0. It ran
+three new supplemental challenges,3/3pass and0fail/skip/cancelled: timer expiry
+while opening remains unresolved with honest drained:false and retained slots,
+already-admitted coalesced acknowledgement around close, and detached empty
+account/meter contexts across awaits. Controlled actual timer callbacks establish
+behavior, not real110second/5second timing qualification. No old suite was repeated.
+
+Its first harness failed at import before any challenge body: exit1, one failed
+file wrapper, original source/raw retained. Only reviewer import paths changed;
+the corrected final attempt passed3/3. A separate static audit assertion initially
+included docs in runtime scope; the scoped audit was corrected without product
+execution. Neither event is a product regression or final pass credit. No source
+fix or required-gate waiver was needed. [Review evidence](v2-8i-6-evidence/independent/packet-audit.json)
+and [report](reviews/V2-8I-6-dce5628.md) distinguish execution from inspection.
+The reviewer explicitly released its test slot; no persistent service/DB acquired.
+
 ## Applicability, uncertainty and stop
 
-No browser interface, renderer, schema/store/query contract or native output changed.
+No browser interface, renderer, project schema/store/query contract or native output
+changed. The new private auth query uses the existing account/session schema.
 Old bulk/browser/build/PG/benchmark/native/raster/model/GPU sweeps are unexecuted,
 not passing I6 results. PostgreSQL relies on accepted unchanged backend evidence;
 no removed I4 service was recreated. Standing BYOK locale, inherited visual/native
@@ -86,10 +108,15 @@ Limits: one shared account database, instance-local concurrency/cooldown, conser
 unknown reservations, no hard SQL deadline/atomic in-flight revocation, no immediate
 abort at server.close initiation and no graceful process-wide drain claim. Logout
 alone does not cancel admitted work. The wake acknowledges only a finite hint, with
-no durable job status/complete owner drain promise. Explicit owner-wide scope was
+no durable job status/complete owner drain promise. I4 includes approved terminal
+hints; repeatedly starting from null can spend both cycles on a long old prefix
+before reaching later submitted work. Fairness/progress is unqualified, with the
+future interface dependency recorded in the roadmap. Explicit owner-wide scope was
 agreed; a future UI must report persisted status and bounded refusals truthfully.
+A coalesced acknowledgement can arrive after close for a hint already admitted
+before close; it promises neither continued work nor response-delivery atomicity.
 
-Separate independent exact-source review remains required. After ACCEPT/HOLD,
-update accepted state/roadmap/continuity, push scoped origin/v2 changes and stop
-after I6. No real model spend, production activation, always-on scheduler, automatic
+All four selected gates and separate exact-source acceptance are complete.
+State/roadmap/continuity now identify accepted dce5628; later commits contain
+evidence/documentation only. Push scoped origin/v2 closeout and stop after I6. No real model spend, production activation, always-on scheduler, automatic
 submit/approval trigger, Assistant UI, migration or deployment is authorized.

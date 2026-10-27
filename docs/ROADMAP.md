@@ -9267,7 +9267,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-authenticated-wake"></a>
 
-  - [ ] **V2-8I-6 authenticated finite wake — approved implementation.**
+  - [ ] **V2-8I-6 authenticated finite wake — independently accepted.**
     The 2026-10-27 continuation prepares the immediate dependency after accepted I5
     `5cf5b5c`, from entry HEAD `be0e1af`. [The proposed contract](V2-8I-6-PLAN.md)
     recommends an explicit authenticated wake endpoint over finite I5 pickup,
@@ -9285,21 +9285,39 @@ local inference. Only that separate transport correction is authorized; this aud
     accepted evidence. Source dce5628 implements the contract;26/26 new tests,
     typecheck and37/37 affected governance pass. [Evaluation](V2-8I-6-EVAL.md)
     retains exact working-byte/source provenance and exclusions. Separate exact-source
-    implementation review is pending; I5 remains accepted. Stop after I6 handoff.
+    [independent ACCEPT](reviews/V2-8I-6-dce5628.json) names exact dce5628 and
+    packet fd2eed8, with3/3 new timer/close/context challenges passing. The reviewer
+    retained its own import-load failure before challenge execution; no product
+    correction or broad rerun was needed. Stop after I6 handoff.
+
+    **Look-ahead.** The future Assistant must agree draft/save/proposal/cancel UX
+    and progress/targeting for long terminal histories; the concrete seam is below.
+    Its Send/Approve handler can use the explicit wake API without another button.
+    Existing canonical approval, scene/history and Auto authority remain reusable.
+
+    > **Learned.** Public user DTOs lose numeric identity; an email lookup after an
+    > await can silently bind a recreated account. Pin the private session/user row.
+    > Account and meter contexts must both be exited before job resources exist.
+    > Admission expiry must refuse a late opening while retaining its bounded slot
+    > until settlement. A202 hint and an already-admitted coalesced receipt are not
+    > dispatch/completion guarantees. Narrow independent timer tests established
+    > these lifecycle boundaries without waiting real110seconds or retesting old work.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
-  Existing-deck editing is the approved first capability. Agree the concrete
-  authenticated wake/scheduling contract over acceptedI5 and then the Assistant's
-  editor draft/save/proposal/cancel interaction before implementing each slice. Keep the
+  Existing-deck editing is the approved first capability. With I6 finite wake
+  accepted, agree the Assistant's editor draft/save/proposal/cancel interaction
+  and bounded progress/targeting contract before surface implementation. Keep the
   current placeholder until that interface contract works. Existing read/decide/
   cancel/clear routes and the headless worker reuse accepted H/B authority; the accepted
   submit route also delegates to H. AcceptedI4 supplies owner-scoped potential-work
   pages; acceptedI5 adds default-disabled Auto/account policy and finite explicit
-  pickup, rechecking each hint through I2 before preparation/execution.
-  `agent-chat` supplies CLI parity. Derive authority from the session and retain explicit generation,
-  revision and decision bindings. Saved chat is not automatically provider context;
+  pickup, rechecking each hint through I2 before preparation/execution. AcceptedI6
+  adds a separate default-off Bearer/account-pinned finite wake, with coalescing
+  detached from HTTP and no automatic submit/approval trigger.
+  `agent-chat` supplies headless work parity. Derive authority from the session
+  and retain explicit generation, revision and decision bindings. Saved chat is not automatically provider context;
   agree that context policy separately if the surface promises continuity. Settle or explicitly
   handle pending editor drafts/saves before capturing a saved revision; preserve
   conflict/navigation/project-switch/focus guards and never overwrite an unsaved
@@ -9307,6 +9325,11 @@ local inference. Only that separate transport correction is authorized; this aud
   recovery, truthful queued/running/completed status and cancellation. Do not let
   browser/SSE lifetime own workers. Recovery, owner revocation and multiple tabs/
   hosts must reuse canonical revisions, existing history and explicit turn policy.
+  Before the visible Assistant relies on owner-wide wake for general accounts,
+  agree bounded progress for long terminal-turn histories. I6 restarts from null
+  and spends at most two cycles; accepted I4 also returns approved terminal hints,
+  so a long prefix can consume those cycles before later submitted work. Qualify
+  a progress/targeting contract rather than treating202 as guaranteed processing.
 
 <a id="assistant-trace-budget"></a>
 
@@ -9319,7 +9342,11 @@ local inference. Only that separate transport correction is authorized; this aud
   protection; define audit access and redaction. P0 requires bounded useful error/
   progress diagnostics. P1 requires per-account concurrency/admission over existing
   per-project reservation/settlement, unknown post-dispatch billing and price-version provenance;
-  per-invocation output limits do not bound concurrent total spend. Do not introduce
+  per-invocation output limits do not bound concurrent total spend. Audit legacy
+  public-user/email→later-numeric-ID handoffs when extending account admission:
+  I6's private bearer session/user-row snapshot is the reusable primitive, while
+  existing public DTO and legacy routing semantics remain unchanged in I6.
+  Do not introduce
   payload capture, raw-content hashes as public telemetry, an exporter, external
   service or dependency without a separate policy/need. Exact live replay is not
   promised by metadata; preserve only policy-approved fixture/redacted captures.
@@ -9396,9 +9423,10 @@ independently accepts the provider-neutral web-search boundary and SearXNG trans
 normalization. I1/I2/I3/I4 independently accept authenticated lifecycle/submission,
 explicit-turn work and owner-scoped metadata discovery. These primitives provide
 no scheduling or execution from submission/discovery. AcceptedI5 adds explicit
-Auto-only/account-bound operator pickup, disabled by default; it is separate from
-authenticated wake or browser orchestration. The remaining parent milestone
-integrates authenticated hosted orchestration, the visible Assistant, canonical search/source and semantic creation
+Auto-only/account-bound operator pickup, disabled by default. I6 independently
+accepts separately disabled explicit Bearer/account-pinned finite wake, not an
+always-on scheduler or guaranteed owner-wide drain. The remaining parent milestone
+integrates reliable progress and browser orchestration, the visible Assistant, canonical search/source and semantic creation
 tools, and qualifies live providers. Its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing
 resolved layout as model input.

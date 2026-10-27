@@ -2057,3 +2057,15 @@ against the real database: both must roll back to the reservation. Unknown or
 aborted usage retains the estimate; normalized cached input is already part of
 input usage. Known usage above estimate must be charged in full and close further
 dispatch rather than be clipped. [I5 evidence](V2-8I-5-EVAL.md) covers these seams.
+
+
+## Pin bearer identity before crossing an await
+
+A public user DTO can omit its numeric account ID. Resolving that DTO, awaiting,
+then looking up its email can bind the old authenticated request to a newly
+recreated account. A private joined session.user_id/current-user snapshot preserves
+identity without widening public user data. Carry that ID through policy opening
+and recheck it before work. Account and meter AsyncLocalStorage contexts must both
+be exited before background resources are created; runAsAccount(null) only calls
+the function and retains inherited context. [I6 evidence](V2-8I-6-EVAL.md) covers
+actual account recreation and empty contexts across asynchronous boundaries.

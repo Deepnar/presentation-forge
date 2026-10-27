@@ -16,7 +16,7 @@ activation, real model use or Assistant UI is authorized. Independent plan revie
 before runtime code: exact private bearer session/account identity and rejection
 of pending admission after close/abort/deadline. It is not source acceptance.
 
-## Recommended direction
+## Agreed direction and rationale
 
 Add an **explicit authenticated wake endpoint** and an instance-local finite
 coordinator over accepted I5 pickup. A future Assistant can submit/approve using
@@ -33,7 +33,7 @@ recommended contract. It needs a revised contract if chosen. The explicit option
 keeps that behavior visible and can later support a separately agreed automatic
 trigger without changing canonical turns or the document.
 
-## Concrete proposed contract
+## Approved bounded contract
 
 ### Authenticated transport
 
@@ -163,7 +163,7 @@ second queue, document, serialized approval capability or model layout vocabular
 
 ## Approved focused implementation gates
 
-Four proposed required gates:
+Four required gates:
 
 | Gate | Smallest relevant execution |
 |---|---|
@@ -177,7 +177,7 @@ provider/configuration endpoints and secrets to inert fixtures; inspect startup
 calls before executing the production API fixture. No live API, local inference,
 GPU, deployment/config activation, existing database or removed I4 service. Tiny
 headless runs use fresh resource observations, serial nice/ionice and watchdogs.
-No new store/query/schema contract is proposed: PostgreSQL is unexecuted and relies
+No new project-store/query/schema contract is proposed: PostgreSQL is unexecuted and relies
 on accepted unchanged backend evidence, never relabeled green.
 
 New gate mapping/schema changes also need their directly affected lightweight

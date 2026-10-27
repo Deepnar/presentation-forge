@@ -39,6 +39,18 @@
     "production activation",
     "Assistant UI"
   ],
-  "acceptance": "pending independent exact-source decision",
+  "acceptance": {
+    "decision": "ACCEPT",
+    "record": "docs/reviews/V2-8I-6-dce5628.json",
+    "independentSupplementalTests": {
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "reviewerFirstAttempt": "One failed file wrapper before any challenge body because of import depth; original source/exit1/raw retained, own imports corrected. No product failure or final pass credit.",
+    "productionActivationAuthorized": false
+  },
   "environment": "Node24.16.0, serial nice10/ionice2:7/60second watchdog; temporary SQLite and loopback providers; all owned API children/listeners closed, no persistent services."
 }

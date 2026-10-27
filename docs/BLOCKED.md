@@ -327,3 +327,10 @@ challenges passing. No ongoing I5 validation/review blocker or persistent servic
 exists. The Auto-only bridge remains disabled; live-provider use and activation
 are unexecuted. [Evaluation](V2-8I-5-EVAL.md) records bounded acceptance;
 [the roadmap](ROADMAP.md#assistant-surface-integration) owns later gated scope.
+
+
+I6 is independently accepted at dce5628: required26/26, affected governance37/37,
+typecheck0 and independent3/3 new challenges. No ongoing I6 validation/review or
+service blocker remains. [Evaluation](V2-8I-6-EVAL.md) retains the finite-hint,
+progress, close and offline limits. Later interface/progress direction is in
+[the roadmap](ROADMAP.md#assistant-surface-integration), not approval for activation.

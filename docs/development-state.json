@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+    "sha": "dce562834f2d4641280d8df6f61dd4872d566b87",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8I-5-5cf5b5c.json"
+    "source": "docs/reviews/V2-8I-6-dce5628.json"
   },
   "implementationHead": {
     "sha": "dce562834f2d4641280d8df6f61dd4872d566b87",
-    "note": "Approved explicit wake source frozen: coordinator14/SQLite6/HTTP6 pass, typecheck0, affected governance37/37. Executed identical working bytes before source-freeze commits, source hashes recorded; separate acceptance pending."
+    "note": "Independently accepted explicit finite wake source. Required26/26, affected governance37/37 and independent supplemental3/3 pass, typecheck0; tested working bytes match frozen source. Later commits are docs/evidence only. Default-off, no live/PG/UI/activation qualification."
   },
   "activeMilestone": {
     "id": "V2-8I-6",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8I-6-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8I-6-dce5628.json",
+    "accepted": true
   },
   "validation": [
     {

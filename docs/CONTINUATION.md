@@ -32,18 +32,26 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current continuation — I6 source awaiting independent review
+## Latest accepted slice — I6 explicit finite wake complete
 
-The human-approved explicit wake contract is implemented at source dce5628:
-[plan](V2-8I-6-PLAN.md), [evaluation](V2-8I-6-EVAL.md),
-[roadmap](ROADMAP.md#assistant-authenticated-wake). Four selected gates pass:
-26new runtime tests and typecheck; affected governance37/37 also passes, all0fail/
-skip/cancelled. Tested working bytes match the frozen source; no historical passes
-were transferred or whole product run repeated just for a SHA. I5 remains the
-accepted baseline until separate exact-source review. No activation/model/UI work.
-Read HANDOFF for reviewer/test-slot ownership, lifecycle limits and stop point.
+Human-approved explicit wake is independently accepted at source
+`dce562834f2d4641280d8df6f61dd4872d566b87` in
+[the decision](reviews/V2-8I-6-dce5628.json): [evaluation](V2-8I-6-EVAL.md),
+[contract](V2-8I-6-PLAN.md), [roadmap](ROADMAP.md#assistant-authenticated-wake).
+Required26/26 and affected governance37/37 pass, typecheck0; independent3/3 new
+challenges pass, all final0fail/skip/cancelled. Earlier13 overlaps without separate
+Node exit; reviewer import-load failure precedes its final3/3, both retained.
+Tested working bytes match frozen source; later commits are docs/evidence only.
+No old matrix, PG, browser/build/native, live model or activation was executed.
 
-## Latest accepted slice — I5 Auto host pickup complete
+Wake remains default-off and acknowledges a finite owner-wide hint, not dispatch,
+full drain or fair progress through long terminal histories. Explicit session/account
+identity and empty job contexts preserve existing authority. Pending opening cannot
+admit after close/expiry; an admitted coalesced receipt may be delivered after close.
+No test/worker/service remains. Stop after I6 closeout; the roadmap alone owns later
+UI/progress contracts and implementation authority. Read HANDOFF for current state.
+
+## Accepted predecessor — I5 Auto host pickup complete
 
 The human-approved Auto-only/default-disabled bridge is independently accepted
 at source5cf5b5cff53c781291ba094163c68eb189bfbc66 in

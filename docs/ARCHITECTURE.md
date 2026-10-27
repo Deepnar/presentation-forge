@@ -2850,7 +2850,7 @@ change. [The evaluation](V2-8I-5-EVAL.md) records focused execution and the sepa
 [exact-source acceptance](reviews/V2-8I-5-5cf5b5c.json). The bridge stays disabled.
 
 
-### V2-8I-6 authenticated finite wake (review pending)
+### V2-8I-6 authenticated finite wake (accepted at dce5628)
 
 POST /api/v2/agent/wake is an explicit private Bearer-only owner-wide wake hint,
 separately disabled by default. A private sessions.user_id/user-row snapshot supplies
@@ -2871,5 +2871,8 @@ after close/expiry while an unabortable opening retains its bounded slot until s
 Owned close aborts preparation and reports drained:false after a bounded observation
 if necessary. HTTP close notification uses that helper; existing global signals and
 other jobs remain unchanged. Restart requires another explicit wake, with canonical
-ambiguity/replay fences. [Evaluation](V2-8I-6-EVAL.md) records focused tests and pending
-independent review. No production activation or live model qualification occurred.
+ambiguity/replay fences. Approved terminal history can consume the finite prefix
+before later work; wake does not guarantee owner-wide progress.
+[Evaluation](V2-8I-6-EVAL.md) and [independent acceptance](reviews/V2-8I-6-dce5628.json)
+record exact source, focused tests and limitations. No production activation or
+live model qualification occurred.
