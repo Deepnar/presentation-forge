@@ -17,6 +17,7 @@ const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
   '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'native-pptx': 'tests', 'turn-approval': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  'research': 'tests', 'research-integration': 'tests', 'schema-boundaries': 'tests',
   'assistant-client': 'tests', 'assistant-integration': 'tests', 'assistant-browser': 'tests',
   'target-wake': 'tests', 'target-wake-sqlite': 'tests', 'target-wake-http': 'tests',
   'host-wake': 'tests', 'host-wake-sqlite': 'tests', 'host-wake-http': 'tests',
@@ -29,6 +30,13 @@ const KINDS = {
 const DEFAULT_REQUIRED_CHECKS = ['non-browser-bulk', 'serial-browser', 'postgres-contract',
   'cross-process-faults', 'production-build', 'typecheck', 'benchmark-50', 'frontend-visual'];
 const MILESTONES = {
+  'V2-8J-1': {
+    plan: 'docs/v2-8j-1-evidence/validation-plan.json',
+    focused: 'research', files: ['test/v2-research-8j.test.js'],
+    groups: { 'research-integration': ['test/v2-research-sqlite-8j.test.js'],
+      'schema-boundaries': ['test/v2-core-boundary.test.js', 'test/v2-types-drift.test.js'] },
+    required: ['research', 'research-integration', 'schema-boundaries', 'typecheck'],
+  },
   'V2-8I-8': {
     plan: 'docs/v2-8i-8-evidence/validation-plan.json',
     focused: 'assistant-client', files: ['test/v2-assistant-client-8i.test.js'],

@@ -156,7 +156,10 @@
               "target-wake-http",
               "assistant-client",
               "assistant-integration",
-              "assistant-browser"
+              "assistant-browser",
+              "research",
+              "research-integration",
+              "schema-boundaries"
             ]
           },
           "status": {
@@ -344,7 +347,8 @@
                   "V2-8I-5",
                   "V2-8I-6",
                   "V2-8I-7",
-                  "V2-8I-8"
+                  "V2-8I-8",
+                  "V2-8J-1"
                 ]
               }
             },

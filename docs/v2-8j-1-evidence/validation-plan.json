@@ -1,0 +1,33 @@
+{
+  "acceptedBaseline": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+  "approvedContract": "docs/V2-8J-1-PLAN.md",
+  "humanDirection": "2026-10-27 Approve scoped implementation (Recommended), pinned a9edeba before runtime changes",
+  "scope": "Trusted-grant headless inspect-only canonical web research, ephemeral sources and finite budgets. No H/host activation, persistence, UI or live calls.",
+  "requiredFiles": [
+    "test/v2-research-8j.test.js",
+    "test/v2-research-sqlite-8j.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/v2-types-drift.test.js"
+  ],
+  "gates": {
+    "research": [
+      "test/v2-research-8j.test.js"
+    ],
+    "research-integration": [
+      "test/v2-research-sqlite-8j.test.js"
+    ],
+    "schema-boundaries": [
+      "test/v2-core-boundary.test.js",
+      "test/v2-types-drift.test.js"
+    ],
+    "typecheck": []
+  },
+  "additionalAffected": [
+    "test/v2-provider-8c.test.js",
+    "test/v2-context-8a.test.js",
+    "test/v2-tools-8a.test.js",
+    "test/v2-search-8f.test.js"
+  ],
+  "additionalSelected": "Two exact legacy schema-subset assertions plus new/adjacent governance inventories; unselected old test bodies remain unexecuted.",
+  "excluded": "Old bulk/browser/build/native/benchmark/PG/fault/live-model/search/GPU/activation. No persistence query, UI or renderer changed; use accepted evidence."
+}
