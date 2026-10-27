@@ -9341,12 +9341,32 @@ local inference. Only that separate transport correction is authorized; this aud
     > pressure, while forbidden discovery and real canonical edits establish the
     > direct path. A later pass does not explain an uncaptured earlier timeout.
 
+  <a id="assistant-visible-editor"></a>
+
+  - [ ] **V2-8I-8 existing-deck browser Assistant — surface direction pending.**
+    Continuation from accepted I7 source3da0801, entry HEAD3b35c39, prepares
+    [the concrete surface contract](V2-8I-8-PLAN.md). Recommend the existing
+    right-rail Assistant tab: freeform current-slide/selection requests, saved
+    visible chat, explicit stored proposal Approve/Reject and exact I7 wake.
+    Draft/save gates and guarded authoritative refresh preserve human work;
+    applying a saved AI revision uses Version history for restoration and resets
+    session undo on reload. Inspector grid drafts need explicit preservation
+    across tab changes, since saveNow only commits pending inline text. Add a
+    minimal owner-bound availability read with headless parity to keep Send off
+    when execution flags are off, without any provider/key lookup. No activation,
+    new provider/context/storage policy, layout authority or creation/research
+    feature is authorized. The alternative dedicated chat page needs a revised
+    navigation/context contract. Agree this surface before code; planning only.
+    Focused new client/integration/Chrome/typecheck gates replace a routine old
+    matrix; browser/build waits for a quiet window. Stop after I8 exact-source
+    review if approved; no feature follows automatically.
+
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
   Existing-deck editing is the approved first capability. I7 exact targeting is
   independently accepted; agree the Assistant's editor draft/save/proposal/cancel
-  interaction contract before surface implementation, reusing I7. Keep the
+  interaction contract in the I8 proposal above before implementation, reusing I7. Keep the
   current placeholder until that interface contract works. Existing read/decide/
   cancel/clear routes and the headless worker reuse accepted H/B authority; the accepted
   submit route also delegates to H. AcceptedI4 supplies owner-scoped potential-work

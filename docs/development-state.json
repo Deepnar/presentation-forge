@@ -54,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Existing-deck browser Assistant; concrete surface contract required",
+    "id": "V2-8I-8 existing-deck browser Assistant; surface direction pending",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
+    "roadmapRef": "docs/ROADMAP.md#assistant-visible-editor"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
