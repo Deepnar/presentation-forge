@@ -1,0 +1,81 @@
+{
+  "decision": "ACCEPT",
+  "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+  "acceptedBaseline": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "packetSha": "b0fa687b594160515b319f34beeb9ae618ed8add",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "kind": "independent-review",
+  "reviewDate": "2026-10-27",
+  "evidence": "docs/reviews/V2-8I-5-5cf5b5c.md",
+  "scope": "Approved Auto-only/default-disabled exact-owner finite operator pickup, account admission and atomic settlement; no activation, real model use, UI/HTTP or scheduling.",
+  "materialFindings": [],
+  "sourceInspection": {
+    "runtimeTestGovernanceFiles": 12,
+    "allHashesMatch": true,
+    "changedPathManifestExact": true,
+    "frozenSourceDeltaEmpty": true
+  },
+  "independentlyExecuted": {
+    "tests": {
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "newSupplementalChallenges": 3,
+    "primaryRepeats": 0,
+    "cases": [
+      "Concurrent host sessions against one remaining actual account reservation",
+      "In-flight canonical preparation cancellation retains estimate and persists cancellation",
+      "Actual CLI SIGTERM exits1 privately and preserves cancellation/reservation"
+    ],
+    "evidence": "docs/v2-8i-5-evidence/independent/packet-audit.json",
+    "temporarySQLiteLoopbackOnly": true
+  },
+  "inspectedExecution": {
+    "requiredTests": {
+      "total": 32,
+      "pass": 32,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "composition": {
+      "unit": 19,
+      "actualSQLite": 8,
+      "CLI": 5
+    },
+    "distinctAffectedGovernance": {
+      "total": 36,
+      "pass": 36,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "typecheckExitCode": 0,
+    "requiredGateCount": 4,
+    "overlap": "Retained32 and affected36 are distinct68leaves; independent3newchallenge cases remain separate. No whole-suite repeats."
+  },
+  "excludedUnexecuted": [
+    "PostgreSQL and historical bulk/browser/build/benchmark/native/visual reruns",
+    "Old historical7659-file hash scan or I4 cleanup replay",
+    "Real API/local inference/GPU work",
+    "Production activation/configuration, daemon, scheduling, HTTP/UI"
+  ],
+  "correctionChronology": "Retained16/19 cursor-shape unit failure; grouped combined32TAPtests/31leaves with3failures from fixture handle/expected H status; corrected31/31 then added CLI failure exit for final32. Governance35/36 schema gate failure corrected36/36. No failed attempt counted as final pass.",
+  "residualLimits": [
+    "Single-account-database deployment; no distributed admission over independent host account databases.",
+    "Unknown/aborted usage may retain conservative estimates; estimate is not a hard dollar/provider billing guarantee.",
+    "No hard SQL deadline or atomic in-flight account-revocation fence claimed.",
+    "Live provider/capability/content/latency and activation remain unexecuted.",
+    "Standing BYOK locale and inherited visual/native/I4 service-absence provenance remain acknowledged, not I5 execution.",
+    "Shared I/O pressure; resource observation and fixture durations are limited local measurements."
+  ],
+  "testSlotReleased": true,
+  "persistentServiceOrDatabaseSlotAcquired": false,
+  "productionActivationAuthorized": false,
+  "stopPoint": "I5 documentation/commit/push closeout only; acceptance permits planning, not dependent implementation, deployment, migration, activation or real provider spend."
+}

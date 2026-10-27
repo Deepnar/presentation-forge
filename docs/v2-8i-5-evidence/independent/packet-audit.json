@@ -1,0 +1,108 @@
+{
+  "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+  "packetSha": "b0fa687b594160515b319f34beeb9ae618ed8add",
+  "runtimeTestGovernanceFiles": 12,
+  "allHashesMatch": true,
+  "sourceDeltaEmpty": true,
+  "changedPathManifestExact": true,
+  "retainedRequiredTests": {
+    "total": 32,
+    "pass": 32,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "affectedGovernance": {
+    "total": 36,
+    "pass": 36,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "typecheck": {
+    "id": "typecheck",
+    "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+    "command": "npm run typecheck",
+    "watchdog": "3m TERM / 10s KILL",
+    "startedUtc": "2026-10-27T07:34:03Z",
+    "durationMs": 1466,
+    "exitCode": 0,
+    "kind": "command",
+    "log": "docs/v2-8i-5-evidence/raw/typecheck-final.log",
+    "backend": "none",
+    "provider": "injected/loopback fixtures only; no real model"
+  },
+  "inspectedRawLogs": [
+    {
+      "file": "docs/v2-8i-5-evidence/raw/host-pickup-final.log",
+      "sha256": "f0f29c2ba35a2f16d221c676263add6bb9dee066b7cf592f26201ac3f5646933",
+      "tests": {
+        "total": 19,
+        "pass": 19,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "files": [
+        "test/v2-host-pickup-8i.test.js"
+      ]
+    },
+    {
+      "file": "docs/v2-8i-5-evidence/raw/host-pickup-sqlite-final.log",
+      "sha256": "b3fd4cc90d14545d39977e742e871f46f2eaca11ac4d96e8ce4761a030673b28",
+      "tests": {
+        "total": 8,
+        "pass": 8,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "files": [
+        "test/v2-host-pickup-sqlite-8i.test.js"
+      ]
+    },
+    {
+      "file": "docs/v2-8i-5-evidence/raw/host-pickup-cli-final.log",
+      "sha256": "67c62b0ca28e52985789fa7294e3d9e5b09063c0ff3a3b0dcccbd74a567de2d3",
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "files": [
+        "test/v2-host-pickup-cli-8i.test.js"
+      ]
+    },
+    {
+      "file": "docs/v2-8i-5-evidence/raw/governance-attempt-2.tap",
+      "sha256": "d48fe374fd0248716402372fa70d0c9fb546ce5f62783d4010591fb3ebf07748",
+      "tests": {
+        "total": 36,
+        "pass": 36,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "files": [
+        "test/dev-protocol.test.js"
+      ]
+    }
+  ],
+  "independentNewChallenges": {
+    "total": 3,
+    "pass": 3,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "overlap": "Three supplemental challenge cases, not counted in retained32 or affected36. No full-suite repeats.",
+  "excludedUnexecuted": [
+    "PostgreSQL",
+    "legacy/bulk/browser/build/benchmark/native/visual reruns",
+    "live models and local inference",
+    "production activation/configuration",
+    "I4 cleanup replay or historical7659-file hash sweep"
+  ]
+}

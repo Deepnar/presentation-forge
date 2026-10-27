@@ -1,0 +1,46 @@
+{
+  "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+  "packetSha": "b0fa687b594160515b319f34beeb9ae618ed8add",
+  "files": [
+    {
+      "path": "docs/v2-8i-5-evidence/independent/challenges.mjs",
+      "sha256": "2437117d1fa3d548f4bd9aace65f60f3fe1c55285a85856e29776c5b211f2b69",
+      "bytes": 2987
+    },
+    {
+      "path": "docs/v2-8i-5-evidence/independent/challenges.tap",
+      "sha256": "3c1a0d07ab3759819227b5093732e6f3ac713d3d9adc92ed6456ec7fdca5ab5e",
+      "bytes": 622
+    },
+    {
+      "path": "docs/v2-8i-5-evidence/independent/checks.json",
+      "sha256": "cb79fc857a183c9156a3b1e84510efd5cf057ee12244040b485e27ba6827488d",
+      "bytes": 847
+    },
+    {
+      "path": "docs/v2-8i-5-evidence/independent/cli-signal-challenge.mjs",
+      "sha256": "45d3a22e444b236763b0af9253cd589b71c2bd959de7ae900fb30c77ddd7e4b9",
+      "bytes": 2560
+    },
+    {
+      "path": "docs/v2-8i-5-evidence/independent/cli-signal-check.json",
+      "sha256": "40709ff9a2a5aa09cd2a87e46f6df3c03684f8efca1dd7c7a80fa74308523ce8",
+      "bytes": 796
+    },
+    {
+      "path": "docs/v2-8i-5-evidence/independent/cli-signal.tap",
+      "sha256": "8f35c55b3f3a88257cdc0bf18e230c1c6748949f6c133a7f41244f3b12fadca2",
+      "bytes": 361
+    },
+    {
+      "path": "docs/v2-8i-5-evidence/independent/packet-audit.json",
+      "sha256": "4b04303851c45bc628eb7e812b6d94622f01203c701a1a0bd1146d5e9ec100c7",
+      "bytes": 2882
+    },
+    {
+      "path": "docs/v2-8i-5-evidence/independent/resource-preflight.json",
+      "sha256": "317ca3c6510fb8a9ad75098d1d4ea26f69dd45804cf7f89c76be290f7f933e54",
+      "bytes": 884
+    }
+  ]
+}

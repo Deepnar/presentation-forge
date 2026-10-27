@@ -1,0 +1,16 @@
+{
+  "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+  "packetSha": "b0fa687b594160515b319f34beeb9ae618ed8add",
+  "atUtc": "2026-10-27T07:40:22.864419+00:00",
+  "sampleSeconds": 3.0002319269997315,
+  "cpuBusyPercent": 14.081774081774082,
+  "cpuIoWaitPercent": 8.288288288288289,
+  "availableKiB": 25737516,
+  "pressure": {
+    "cpu": "some avg10=3.02 avg60=1.61 avg300=0.99 total=95460255\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=7168004\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=6856897\n",
+    "io": "some avg10=22.45 avg60=33.17 avg300=38.46 total=2192210079\nfull avg10=17.91 avg60=29.66 avg300=35.31 total=2004750624\n"
+  },
+  "selection": "Two bounded new challenge cases with temporary SQLite and loopback only; no broad sweep or service.",
+  "admittedForLightweightChallenges": true
+}
