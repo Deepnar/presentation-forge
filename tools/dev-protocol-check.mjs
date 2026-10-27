@@ -17,6 +17,7 @@ const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
   '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'native-pptx': 'tests', 'turn-approval': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  'host-wake': 'tests', 'host-wake-sqlite': 'tests', 'host-wake-http': 'tests',
   'host-pickup': 'tests', 'host-pickup-sqlite': 'tests', 'host-pickup-cli': 'tests',
   'conversation-http': 'tests', 'turn-worker': 'tests', 'turn-discovery': 'tests', 'postgres-contract': 'tests', 'cross-process-faults': 'tests',
   'production-build': 'command', typecheck: 'command',
@@ -26,6 +27,13 @@ const KINDS = {
 const DEFAULT_REQUIRED_CHECKS = ['non-browser-bulk', 'serial-browser', 'postgres-contract',
   'cross-process-faults', 'production-build', 'typecheck', 'benchmark-50', 'frontend-visual'];
 const MILESTONES = {
+  'V2-8I-6': {
+    plan: 'docs/v2-8i-6-evidence/validation-plan.json',
+    focused: 'host-wake', files: ['test/v2-host-wake-8i.test.js'],
+    groups: { 'host-wake-sqlite': ['test/v2-host-wake-sqlite-8i.test.js'],
+      'host-wake-http': ['test/v2-host-wake-http-8i.test.js'] },
+    required: ['host-wake', 'host-wake-sqlite', 'host-wake-http', 'typecheck'],
+  },
   'V2-8I-5': {
     plan: 'docs/v2-8i-5-evidence/validation-plan.json',
     focused: 'host-pickup', files: ['test/v2-host-pickup-8i.test.js'],

@@ -1,0 +1,24 @@
+{
+  "acceptedBaseline": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+  "entryHead": "be0e1afe0ce4b28daced56e3f465027234cea86c",
+  "scope": "Approved explicit Bearer/account-pinned finite host wake, default-disabled, offline fixtures only.",
+  "requiredFiles": [
+    "test/v2-host-wake-8i.test.js",
+    "test/v2-host-wake-sqlite-8i.test.js",
+    "test/v2-host-wake-http-8i.test.js"
+  ],
+  "gates": {
+    "host-wake": [
+      "test/v2-host-wake-8i.test.js"
+    ],
+    "host-wake-sqlite": [
+      "test/v2-host-wake-sqlite-8i.test.js"
+    ],
+    "host-wake-http": [
+      "test/v2-host-wake-http-8i.test.js"
+    ],
+    "typecheck": []
+  },
+  "additionalAffectedCheck": "test/dev-protocol.test.js for new gate/schema mapping",
+  "excluded": "Unchanged bulk/browser/PG/build/benchmark/native/render/live-model/GPU sweeps; accepted unchanged evidence reused, not relabeled executed."
+}

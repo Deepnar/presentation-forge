@@ -147,7 +147,10 @@
               "turn-discovery",
               "host-pickup",
               "host-pickup-sqlite",
-              "host-pickup-cli"
+              "host-pickup-cli",
+              "host-wake",
+              "host-wake-sqlite",
+              "host-wake-http"
             ]
           },
           "status": {
@@ -332,7 +335,8 @@
               "id": {
                 "enum": [
                   "V2-PPTX-ID",
-                  "V2-8I-5"
+                  "V2-8I-5",
+                  "V2-8I-6"
                 ]
               }
             },
