@@ -58,6 +58,9 @@ accepted at `58662ec`; they reuse stored approval and canonical run authority.
 Owner-authenticated durable turn submission is independently accepted at
 `2ba82cb`; it delegates to the same stored turn authority, with no provider dispatch,
 queue/scene/history write or automatic approval on submission.
+Owner-scoped bounded work discovery and its operator CLI are independently
+accepted at `8378a20`; metadata hints grant no claim, approval or execution
+authority and must re-enter the canonical worker for current checks.
 Saved chat does not automatically become provider context. Hosted provider
 selection/scheduling, search-tool integration, live-provider qualification
 and the visible Assistant remain in the

@@ -430,12 +430,13 @@ request/revision/generation and private-parser contracts. It performs no provide
 dispatch or execution. [Its architecture](ARCHITECTURE.md#v2-8i-3-authenticated-turn-submission)
 and [evaluation](V2-8I-3-EVAL.md) distinguish acceptance from later host policy.
 
-## V2-8I-4 owner-scoped discovery (validation pending)
+## V2-8I-4 owner-scoped discovery
 
 The implemented metadata discovery service and trusted operator command read
 bounded binary-ordered pages from the same canonical rows. SQL byte guards and
 domain identity checks exclude private chat/project/run bodies; filtered rows
 still advance the cursor. A hint grants no claim, reconciliation, provider or edit
 authority and must re-enter I2. No schema/index, HTTP/UI, scheduler or provider
-selection is added. [The main architecture](ARCHITECTURE.md#v2-8i-4-owner-scoped-work-discovery-validation-pending)
-and [I4 evaluation](V2-8I-4-EVAL.md) record exact scope and pending acceptance.
+selection is added. [The main architecture](ARCHITECTURE.md#v2-8i-4-owner-scoped-work-discovery)
+and [I4 evaluation](V2-8I-4-EVAL.md) record exact scope and limits; source8378a20
+is [independently accepted](reviews/V2-8I-4-8378a20.json).

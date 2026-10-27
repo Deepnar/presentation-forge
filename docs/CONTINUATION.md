@@ -32,17 +32,30 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current active slice — I4 corrected validation
+## Latest accepted slice — I4 complete
 
-[The I4 contract](V2-8I-4-EVAL.md) is authorized within the current continuation.
-Source175 partial validation was retired after a demonstrated SQLite raw UTF-8
-replacement/identity defect. Corrected source8378a20 preserves bytes/BOM correctly;
-development24/24, governance35/35 and helper12/12 pass. All238/nine gates must run
-fresh in [the corrected lineage](v2-8i-4-corrected-evidence/RUNBOOK.md), after separate
-source/helper readiness and fresh qualification/snapshots. No partial pass transfers.
-The exact exclusive service is explicitly adopted, not recreated; read HANDOFF and
-actual identity/catalog before action. Original artifacts were preserved/restored.
-Never execute retired I4/I3 helpers. No real model/API, UI/provider/scheduler feature.
+Owner-scoped work discovery is independently accepted at exact source
+`8378a20a819de569ef7b10b747d7ba6c481f529e` in
+[the decision](reviews/V2-8I-4-8378a20.json). Read [evaluation](V2-8I-4-EVAL.md),
+HANDOFF and state:238primary files3097/3097 plus4distinct native cases, focused48
+and independent30overlapping repeats, all9gates/119images/15original archives.
+Separate locale9/1 remains. Source175 partial execution is retired; all originals
+were preserved/restored. The finisher ranONCE. Never resume completed or retired
+I4/I3 generators/coordinators/finishers against restored bytes.
+
+The formerly ownedI4 backend is absent and5544refuses connections, independently
+verified. No pre-removal catalog/count or removal cause is available; the decision
+accepts that operational provenance limit for source correctness and does not
+certify the planned cleanup procedure. Current independent PG replay is unexecuted;
+retained actual PG/process execution remains evidence. Never infer0 or recreate
+that removed service. No test/browser/coordinator/owned service remains.
+
+[Focused validation](DEVELOPMENT-PROTOCOL.md#focused-validation-policy) is now the
+human-directed default: test new/changed behaviour and affected boundaries, reuse
+accepted old evidence, and broaden only for concrete risk/release reasons. Do not
+repeat the full historical matrix by habit. I4's broad run completed before that
+instruction arrived; review used only30focused repeats. Stop after I4; acceptance
+permits planning only, with later scope in [roadmap](ROADMAP.md#v2-8-remaining).
 
 ## Accepted predecessor — I3 complete
 

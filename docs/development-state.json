@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "2ba82cb5c321c21d5648f577469f69e82cdcfb24",
+    "sha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8I-3-2ba82cb.json"
+    "source": "docs/reviews/V2-8I-4-8378a20.json"
   },
   "implementationHead": {
     "sha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
-    "note": "Corrected8378a20 complete:238primary files3097/3097 plus4distinct end-to-end flows; focused48 overlap. All9gates pass. Locale9/1 separate.119images/15native archives inspected; historical/canonical originals restored. Narrow independent acceptance and exact-owned cleanup pending; broad matrix will not repeat under2026-10-27 focused-testing policy. Former ownedID now absent/5544refused; pre-removal count/cause unavailable, independent currentPG replay unexecuted. Reviewer must assess this provenance limit; no recreation."
+    "note": "I4 independently accepted:238primary files3097/3097 plus4distinct native flows; focus48 and independent30 overlap. All9source gates pass;119images/15archives inspected, originals restored. Locale9/1 separate. Former ownedID absent/5544refused, pre-removal count/cause unavailable; source acceptance explicitly retains operational provenance limit and does not certify cleanup. Focused validation is default; stop afterI4."
   },
   "activeMilestone": {
     "id": "V2-8I-4",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8I-4-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8I-4-8378a20.json",
+    "accepted": true
   },
   "validation": [
     {

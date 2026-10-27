@@ -312,10 +312,11 @@ independent exact-source decision and exact-owned cleanup are active requirement
 not absent product direction. See [the evaluation](V2-8I-4-EVAL.md) and
 [roadmap](ROADMAP.md#assistant-work-discovery).
 
-I4's completed primary validation remains retained. On2026-10-27 its formerly
-owned backend was already absent and5544refused; no pre-removal catalog/count was
-saved and removal cause is unavailable. This cannot be reconstructed. Current
-independent PG replay is unavailable; review must assess the provenance limitation.
-No service recreation or another broad run is needed under the
-[focused policy](DEVELOPMENT-PROTOCOL.md#focused-validation-policy). See
-[evaluation](V2-8I-4-EVAL.md) and [roadmap](ROADMAP.md#assistant-work-discovery).
+I4 is independently accepted at8378a20 after completed source validation and
+30/30focused independent repeats. The formerly owned backend is absent/5544refused,
+independently verified; pre-removal count/cause remain unavailable. The decision
+explicitly accepts that operational provenance limit for source correctness and
+does not certify cleanup. Current independent PG replay remains unexecuted; no
+service recreation or additional broad run is required. No ongoing I4 product/
+validation/review blocker remains. [Evaluation](V2-8I-4-EVAL.md) preserves the gap;
+[roadmap](ROADMAP.md#assistant-surface-integration) owns future gated scope.

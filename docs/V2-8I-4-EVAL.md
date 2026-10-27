@@ -191,12 +191,14 @@ follows automatically.
 
 ## Current execution status — corrected source
 
-Accepted baseline remainsI3 `2ba82cb5c321c21d5648f577469f69e82cdcfb24`.
+Entry baseline wasI3 `2ba82cb5c321c21d5648f577469f69e82cdcfb24`; corrected source
+8378a20 is now independently accepted in [the decision](reviews/V2-8I-4-8378a20.json).
 Corrected implementation is `8378a20a819de569ef7b10b747d7ba6c481f529e`.
 All50 ordered jobs completed. [The full matrix](v2-8i-4-corrected-evidence/full-matrix.json)
 contains238 disjoint primary files,3097pass/0fail/0skip/0cancelled/0unexecuted.
-Separate exact-source acceptance remains pending. The later service absence and
-unavailable pre-removal count are explicitly reported below.
+Separate exact-source ACCEPT includes30/30focused independent repeats and full
+evidence inspection. Later service absence and unavailable pre-removal count
+remain an explicit nonblocking operational provenance limit, not certified cleanup.
 
 | Execution | Files | Pass | Fail / skip / cancelled |
 |---|---:|---:|---|
@@ -232,7 +234,8 @@ All7659historical evidence files/253original PPTXs and5canonical outputs were
 restored/hash-verified. The finisher ranONCE; never rerun against restored originals.
 Fifteen fresh originals remain separately retained. Source/helper READY is
 [separate validation-only readiness](reviews/V2-8I-4-8378a20-source-harness.json),
-not acceptance. Independent review is still required.
+not acceptance. [The separate final decision](reviews/V2-8I-4-8378a20.json) supplies
+acceptance with the stated operational provenance limitation.
 
 ### Resource cancellation and successful recovery
 
@@ -337,7 +340,29 @@ refusing connections. [The saved read-only observation](v2-8i-4-corrected-eviden
 retains actual Docker errors and identity. No pre-removal catalog observation was
 saved; its count and the removal cause are unavailable. No stop/recreation was
 issued to fill that gap, and no zero count is inferred from test teardown. This
-does not erase actual PG primary319/319 execution, but current independent PG replay
+does not erase the319/319 PostgreSQL/process primary group (including both-store
+process cases), but current independent PG replay
 is unexecuted. The planned save0→single-stop sequence cannot be retroactively
-performed. Independent review must explicitly assess this residual provenance
-limitation. Do not execute removed-service helpers or recreate the instance.
+performed. Independent review explicitly accepts this as a nonblocking operational
+provenance limitation for exact-source correctness and does not certify cleanup.
+Do not execute removed-service helpers or recreate the instance.
+
+### Independent acceptance and stop
+
+[The exact-source ACCEPT](reviews/V2-8I-4-8378a20.json), supported by
+[the separate review](reviews/V2-8I-4-8378a20.md), names source8378a20 and pushed
+packet78ab07e. Independent10pure+14actualSQLite+6SQLiteCLI/process repeats passed
+30/30,0fail/skip/cancelled. These overlap primary; they are not30new cases. No old
+bulk/browser/build/type/benchmark/native generators were rerun. Current independent
+PG replay remains unexecuted because the owned backend is absent. All50job logs,
+238-file union/3097passes,119images,15native originals and historical/canonical
+restoration were independently inspected/verified. The reviewer released its slot.
+
+All9required source gates are passed; there is no locale waiver or unexecuted gate
+turned green. Missing pre-removal count/removal cause remain permanently unavailable;
+current exact-ID absence and5544refusal are independently verified. Source acceptance
+explicitly does not certify the planned saved0→stop procedure. No ongoing owned
+service, coordinator, browser or test process remains. No extra stop/recreation.
+The implementer recommends acceptance consistent with that separate decision.
+Stop after this I4 closeout; later hosted/provider/Assistant scope remains only in
+[the roadmap](ROADMAP.md#assistant-surface-integration).

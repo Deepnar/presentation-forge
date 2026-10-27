@@ -9117,9 +9117,10 @@ local inference. Only that separate transport correction is authorized; this aud
     is authorized by this acceptance.
     There is no public
     submission endpoint, provider registry/default, daemon, deployment or UI in
-    this slice. Later authenticated submission/scheduling supplies trusted bindings
-    and bounded durable discovery over these same rows; it must not add another
-    queue or tie workers to a browser connection. This look-ahead is satisfied by
+    this slice. AcceptedI3 now supplies authenticated submission and acceptedI4
+    supplies bounded durable discovery over these same rows. Later hosted scheduling
+    supplies its trusted owner/provider policy and must not add another queue or
+    tie workers to a browser connection. This look-ahead is satisfied by
     the stateless backend-injected worker, stored turn/run identities and metadata
     result; no future host needs a second document or queue. Scope/non-goals/common
     gates and stop point are frozen in the linked contract. I1's accepted source
@@ -9187,7 +9188,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-work-discovery"></a>
 
-  - [ ] **V2-8I-4 owner-scoped durable work discovery — implementation/validation pending.**
+  - [x] **V2-8I-4 owner-scoped durable work discovery — independently accepted.**
     The2026-10-26 continuation starts the next host/orchestration prerequisite
     after acceptedI3. [The reviewed bounded contract](V2-8I-4-EVAL.md) adds only
     trusted owner-scoped metadata pagination and an operator discover command.
@@ -9208,11 +9209,21 @@ local inference. Only that separate transport correction is authorized; this aud
     15native archives are complete. Failed source175 and criticalCPU-cancelled5K
     attempts remain retained; unchanged full5Kretry passed9/9 after fresh quiet
     qualification. Historical7659files/253PPTXs+5canonical originals restored.
-    Exact-source independent acceptance remains pending. Later read-only observation
-    finds the ownedID absent/5544refused; pre-removal count/cause are unavailable,
-    not inferred0. Reviewer must assess that provenance gap; no service recreation.
+    [Independent ACCEPT](reviews/V2-8I-4-8378a20.json) accepts exact8378a20 with
+    30/30focused overlapping repeats and inspected full evidence. The ownedID is
+    absent/5544refused; pre-removal count/cause remain unavailable, not inferred0.
+    Review accepts this operational provenance limit for source correctness and
+    does not certify the planned cleanup procedure. No service was recreated.
     The2026-10-27 focused-testing direction avoids another broad review sweep.
     Later host owner selection/provider policy and pickup remain separate contracts.
+
+    > **Learned.** Driver text decoding can alter identity before domain validation;
+    > byte caps need capped-BLOB/fatal decoding and valid U+FFFD/BOM controls.
+    > Discovery advances through scanned terminal rows and grants no work authority.
+    > Current absence cannot establish a past catalog count. Look-ahead: the future
+    > host consumes these existing canonical hints and re-enters I2; no second queue
+    > or document is needed. Owner/provider policy and bounded scheduling remain
+    > distinct contracts, with focused gates under the updated validation policy.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
@@ -9222,7 +9233,8 @@ local inference. Only that separate transport correction is authorized; this aud
   draft/save/proposal/cancel interaction before implementing each slice. Keep the
   current placeholder until that interface contract works. Existing read/decide/
   cancel/clear routes and the headless worker reuse accepted H/B authority; the accepted
-  submit route also delegates to H. `agent-chat` already supplies CLI
+  submit route also delegates to H. AcceptedI4 supplies owner-scoped potential-work
+  pages; the host must recheck each hint through I2 before preparation/execution. `agent-chat` already supplies CLI
   parity. Derive authority from the session and retain explicit generation,
   revision and decision bindings. Saved chat is not automatically provider context;
   agree that context policy separately if the surface promises continuity. Settle or explicitly
@@ -9318,7 +9330,10 @@ proposal enqueue. These low-level provider histories remain ephemeral; V2-8H now
 independently accepts durable visible turns/proposals and atomic cross-host approval
 over the same run queue. Visible chat is not automatic provider context. V2-8F
 independently accepts the provider-neutral web-search boundary and SearXNG transport/
-normalization. The remaining parent milestone integrates authenticated hosted
+normalization. I1/I2/I3/I4 independently accept authenticated lifecycle/submission,
+explicit-turn work and owner-scoped metadata discovery. These primitives provide
+no automatic provider policy, scheduling or execution from submission/discovery.
+The remaining parent milestone integrates authenticated hosted
 orchestration, the visible Assistant, canonical search/source and semantic creation
 tools, and qualifies live providers. Its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing

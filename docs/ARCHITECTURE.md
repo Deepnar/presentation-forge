@@ -2799,7 +2799,7 @@ Source `2ba82cb` is implemented, behaviorally validated and independently
 Assistant and host execution policy at their roadmap boundaries.
 
 
-### V2-8I-4 owner-scoped work discovery (validation pending)
+### V2-8I-4 owner-scoped work discovery
 
 `createTurnDiscovery` snapshots an exact trusted owner and bounded keyset input,
 then consumes a purpose-built metadata statement in either project store. SQL
@@ -2820,5 +2820,7 @@ resolution, dispatch, approval or execution. Existing runtime-table initializati
 is retained without new DDL/indexes. Existing indexes may require physical scans
 and sorting; row/output bounds are not a hard database work/time guarantee.
 Returned hints must re-enter I2 for current ownership/generation/lease/approval
-checks. Source exists; full validation and separate acceptance remain pending in
-[the evaluation](V2-8I-4-EVAL.md). Hosted/UI policy remains in the roadmap.
+checks. Exact source8378a20 is [independently accepted](reviews/V2-8I-4-8378a20.json);
+[the evaluation](V2-8I-4-EVAL.md) records actual validation, focused independent
+review and the unavailable pre-removal service-count provenance. Hosted/UI policy
+remains in the roadmap.

@@ -1,38 +1,41 @@
 # Presentation Forge handoff —2026-10-27
 
-Branch v2; push only origin/v2. AcceptedI3baseline2ba82cb unchanged pending separate
-I4 review. Corrected implementation8378a20a819de569ef7b10b747d7ba6c481f529e has
-complete238primary files3097/3097 plus4distinct end-to-end native cases; focus48
-and designated/process subsets overlap. All9gates/build/type/50cells pass. Separate
-locale9pass/1standing failure.119fresh images/15native archives inspected; no new
-frontend regression. Read AGENTS, state and [I4 evaluation](V2-8I-4-EVAL.md).
+Branch v2; push only origin/v2. I4 is complete and independently ACCEPTED at source
+8378a20a819de569ef7b10b747d7ba6c481f529e, from acceptedI3baseline2ba82cb. Read
+[decision](reviews/V2-8I-4-8378a20.json), [evaluation](V2-8I-4-EVAL.md), AGENTS and
+state. The new owner-scoped metadata page/operator discover command grants no
+claim, provider or edit authority; canonical I2 rechecks all current fences.
 
-The broad50-job runner completed while the chat was paused, before the new human
-instruction arrived. [Focused validation](DEVELOPMENT-PROTOCOL.md#focused-validation-policy)
-is now default: test new/changed behaviour and affected boundaries, reuse accepted
-old evidence, and avoid repetitive broad CPU/GPU work. No full rerun for review.
-Reuse existing `/root/turn_contract_review` at high effort for a narrow independent
-exact-source decision. No new agent. Root currently owns allslots; explicitly
-transfer review DB slot only after packet push. No source acceptance yet.
+Results:238primary files3097/3097 plus4distinct native end-to-end cases. Focus48
+and independent30are overlapping repeats;0fail/skip/cancelled in completed source
+gates. All9gates/build/type/50cells pass; separate locale9pass/1standing failure.
+119fresh images/15original archives inspected;7659historical files/253PPTXs and
+5canonical originals restored/hash-verified.120slides opened1543ms; canvas delta
+<=0.102166px. Inherited narrow/SVG/chart-consumer/local-performance limits remain.
 
-All7659historical files/253PPTXs+5canonical originals were restored/hash-verified;
-15fresh originals retained. Finisher ranONCE; NEVER rerun it or any retiredI4/I3
-coordinator against restored originals. Retired source175 partial results remain
-historical only. RawSQLite corruption and validBOM fail-first corrections, initial
-5KcriticalCPU cancellation and unchanged9/9quiet retry are retained in evaluation.
+The human2026-10-27 direction makes focused validation default. Test new/changed
+behaviour and affected boundaries; reuse accepted old evidence. Broad old suites,
+benchmarks, rendering/model/GPU sweeps require a concrete risk/release reason. No
+repeat after a relevant pass without new changes/concerns. The already-completed
+broad run is retained; independent review used only30focused repeats. No relay or
+model-provider allowlist. Few agents; reuse existing reviewer at high effort only.
 
-The exact formerly ownedI4 PostgreSQL15.18 instance is NOW ABSENT:
-e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce.
-Read-only Docker inspection finds noexactID and5544refuses connections. No
-pre-removal catalog was saved; actual count/cause are UNAVAILABLE and must not be
-reconstructed. No extra stop/removal/recreation was issued. Same-ID adoption and
-actual primaryPG319/319 remain retained execution; independent current PG replay
-is unavailable. [Late-absence record](v2-8i-4-corrected-evidence/owned-postgres-late-absence.json).
-Never execute cleanup/prepare/coordinators or recreate this removed backend.
-Independent review must explicitly assess this provenance limitation; it is not a
-fabricated0catalog or a missing primary test pass. Root owns no active service.
+The formerly ownedI4 PostgreSQL15.18 exactID
+e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce
+is absent;5544refuses, independently verified. Pre-removal catalog/count and removal
+cause are UNAVAILABLE. The planned saved0→single-stop procedure was not completed/
+proven; acceptance explicitly retains that operational provenance limitation and
+does not mark cleanup passed. No extra stop/recreation. Current independent PG
+replay is unexecuted; retained actual PG/process group319/319 includes both-store
+process cases. No owned service, coordinator, browser or test remains. Slots released.
 
-Preserve original untracked .agents/ and both master/architecture prompt files.
-No real model API/local inference, hosted provider/scheduler/Assistant feature,
-deployment, migration/index or paid infrastructure. Stop after I4 acceptance/
-cleanup and pushed handoff. Future work only in [roadmap](ROADMAP.md#v2-8-remaining).
+Never rerun the ONCE-only finisher, completed/retired I4 or I3 helpers against
+restored originals, or recreate removed services. Retired source175 and fail-first
+UTF8/BOM/helper failures remain preserved; criticalCPU-cancelled5K attempt is not
+a pass, and its unchanged full9/9quiet retry is retained. No assertions weakened.
+
+Original untracked .agents/ and both master/architecture prompt files remain
+untouched. No real model API/local inference, hosted scheduler/Assistant feature,
+deployment, migration/index or paid infrastructure. STOP after I4. Acceptance
+permits planning only; future scope is solely in
+[roadmap](ROADMAP.md#assistant-surface-integration).
