@@ -84,8 +84,8 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-5 explicit Auto host policy and bounded pickup; direction pending",
-    "authorized": false,
+    "id": "V2-8I-5 approved Auto-only host policy and bounded pickup",
+    "authorized": true,
     "roadmapRef": "docs/ROADMAP.md#assistant-auto-host-pickup"
   },
   "docs": {

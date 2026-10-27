@@ -37,9 +37,12 @@ a pass, and its unchanged full9/9quiet retry is retained. No assertions weakened
 Original untracked .agents/ and both master/architecture prompt files remain
 untouched. No real model API/local inference, hosted scheduler/Assistant feature,
 deployment, migration/index or paid infrastructure. The2026-10-27 continuation now prepares I5 planning only.
-[The concrete Auto-only host proposal](V2-8I-5-PLAN.md) and
-[roadmap entry](ROADMAP.md#assistant-auto-host-pickup) await human provider/billing/
-dispatch direction before implementation. Accepted baseline/activeI4 state remain
-unchanged; candidate authorization is false. No runtime/config/service/model change.
+[The concrete Auto-only host contract](V2-8I-5-PLAN.md) and
+[roadmap entry](ROADMAP.md#assistant-auto-host-pickup) are explicitly approved by
+the human answer “Approve Auto-only (Recommended)”. Independent plan review at
+f67bab6 supplied canonical recovery, unfinished-cursor and atomic/estimated
+settlement clarifications, pinned before code. Accepted baseline/activeI4 state
+remain unchanged until I5 activation; candidate authorization is true. No runtime/
+config/service/model change preceded approval. No real model/activation is allowed.
 Use focused checks only; plan documentation needs protocol/link consistency, no
 product regression runs. Preserve this distinction from completedI4 acceptance.

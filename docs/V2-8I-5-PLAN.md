@@ -6,10 +6,12 @@ The2026-10-27 continuation authorizes preparing the immediate dependency after
 acceptedI4. EntryHEAD360c44554a57ab1961374dc2b13bea6ac0df5c08; accepted source
 8378a20a819de569ef7b10b747d7ba6c481f529e, separately accepted in
 [the decision](reviews/V2-8I-4-8378a20.json). Branch/push v2/origin/v2.
-This is a proposed contract, not implementation authority. The roadmap explicitly
-requires agreement on host/provider scheduling; contributor rules also require
-human direction for provider-spend/security/data-handling changes. No runtime,
-credential/configuration, database, model or production change has been made.
+The human explicitly approved “Approve Auto-only (Recommended)” on2026-10-27
+for this contract: default-disabled owner-bound account budgets, no fallback,
+explicit edit approval and offline fixtures only. Independent plan review at
+f67bab6 supplied three bounded clarifications, pinned below before code.
+That approval authorizes scoped implementation, not activation or real model calls.
+No runtime/credential/configuration/database/model/production change preceded it.
 
 ## Recommended direction and rationale
 
@@ -47,9 +49,22 @@ Existing H limits are per-project/turn; they are not account-wide spend admissio
    and conservative reservation/settlement semantics in a provider decorator.
    Bound each exchange by canonical context/history/output limits, reserve an
    explicit positive estimate atomically before network, and refuse if admission
-   cannot be established. Do not treat client limits or H counters as spending
-   authority. Settle known validated usage once; unknown/dispatched/cancelled usage
-   retains its reservation. A crash may conservatively retain an estimate, never
+   cannot be established. Estimate = UTF-8 bytes of the complete prepared wire
+   JSON (including tools/history) + requested output-token cap, at least1. Each
+   exchange counts one existing Auto request event; no extra event for approved
+   scene execution. This is conservative token estimation, not a dollar/hard
+   provider-billing guarantee. Do not treat client limits or H counters as spending
+   authority. For validated known usage, charge inputTokens+outputTokens; normalized
+   input already includes cache reads/writes, so do not add them again. Wrap the
+   existing settleAuto statements in one account-DB transaction, verify exact
+   reservation owner/provider/original estimate, and use a private once-per-event
+   closure. Event IDs never enter public input or a resumed settlement path.
+   Crash before commit retains the estimate; after commit both counters reflect
+   actual usage. Unknown/malformed/aborted usage and failed settlement retain the
+   estimate; a settlement failure closes further dispatch for that invocation.
+   Actual usage above estimate is recorded in full (never clipped/refunded) and
+   closes further provider exchanges in that invocation; later admission sees
+   actual spend. No automatic retry/refund claim. A crash may retain an estimate, never
    create permission for a free retry. No new billing ledger, price guarantee,
    automatic rebilling or distributed account-quota claim. Initial adapter supports
    the existing single account-database deployment; shared-host account admission
@@ -62,12 +77,20 @@ Existing H limits are per-project/turn; they are not account-wide spend admissio
    so a stopped invocation never advances past unhandled hints. Filtered rows
    count toward scanned bounds and still advance. Return the last completed
    position, completion/stop reason and bounded private metadata only, with the
-   existing131072-byte envelope cap. No private bodies, provider keys or capability
+   existing131072-byte envelope cap. Busy/lease-lost/aborted/provider-required/
+   step-limit or otherwise unfinished results retain the prior cursor and stop,
+   unless canonical final state proves completion. A return from work() alone is
+   not completion. Definitively stale/deleted positions may advance. No private
+   bodies, provider keys or capability
    tokens. Fixed sanitized errors include truthful partial progress when an
    earlier canonical operation already completed; the cycle is not atomic.
 5. **Canonical effects only.** Submitted turns enter I2 preparation under approved
-   provider/account policy. Preparing/expired/approved-terminal hints are observed
-   or fenced by I2; they do not cause a new dispatch. Approved active runs enter
+   provider/account policy. Raw hints are not authoritative: inspect through H/I2
+   first. An expired preparing lease with everDispatched=false may canonically
+   return to submitted and prepare under fresh admission. Ever-dispatched
+   ambiguous continuation remains needs-user-action and cannot retry. Live
+   preparing/expired/approved-terminal states are observed/fenced canonically.
+   Approved active runs enter
    I2 execution without provider lookup or account spending. Awaiting human
    decisions remain untouched. No approval, enqueue bypass, second queue, scene
    mutation or reconciliation path is added. Cancellation stops new work and
@@ -79,8 +102,8 @@ Existing H limits are per-project/turn; they are not account-wide spend admissio
    Existing explicit work/discover actions remain compatible. Later authenticated
    wake/scheduling calls this same headless boundary after its separate contract.
 
-The exact provider-decorator/error mapping and conservative estimate are finalized
-against existing H/Auto semantics before implementation. If those semantics cannot
+The decorator uses canonical prepared wire/normalized usage and fixed failure
+codes; it never assumes settleAuto alone is atomic. If existing semantics cannot
 preserve account admission and unknown-usage fencing without a broader ledger or
 policy change, stop with that concrete conflict instead of silently bypassing it.
 

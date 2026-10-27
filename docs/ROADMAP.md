@@ -9227,7 +9227,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-auto-host-pickup"></a>
 
-  - [ ] **V2-8I-5 explicit Auto host policy and bounded pickup — direction pending.**
+  - [ ] **V2-8I-5 explicit Auto host policy and bounded pickup — approved implementation.**
     The2026-10-27 continuation starts planning the immediate dependency after
     acceptedI4. [The concrete proposal](V2-8I-5-PLAN.md) recommends an Auto-only,
     default-disabled, operator-invoked finite pickup bridge. Bind exact project
@@ -9241,7 +9241,10 @@ local inference. Only that separate transport correction is authorized; this aud
     accepted unchanged old regressions are reused, not rerun. The existing
     single-account-database deployment is the initial operational boundary; broader
     distributed account admission remains in its named entry below.
-    Human agreement on provider/billing/dispatch policy is required before code.
+    Human “Approve Auto-only (Recommended)” explicitly approves this contract.
+    [Plan review](reviews/V2-8I-5-plan-f67bab6.json) is ready with pinned canonical
+    recovery, unfinished-cursor and atomic/account-estimation clarifications before
+    code. No real-model use or production activation is approved.
     The Auto-only recommendation keeps hosted quality and billing ownership explicit;
     BYOK/local integration remains separately scoped, without removing legacy support.
 

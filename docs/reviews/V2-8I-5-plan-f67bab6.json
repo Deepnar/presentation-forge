@@ -1,0 +1,37 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "planSha": "f67bab65c5cf56629764d15134f6d6b7649dc2d0",
+  "acceptedBaseline": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "reviewDate": "2026-10-27",
+  "implementationAuthorized": false,
+  "humanHostProviderBillingDirectionRequired": true,
+  "recommendation": "Auto-only, default-disabled, explicit-owner/operator-invoked finite pickup is a coherent bounded next dependency. Four focused gates are proportionate; no old broad sweep is required.",
+  "requiredPlanClarificationsBeforeImplementation": [
+    {
+      "id": "canonical-pre-dispatch-recovery",
+      "finding": "A raw preparing hint can reconcile in accepted H to submitted when its lease expired and everDispatched is false; I2 may then prepare. Replace the blanket no-dispatch statement with canonical post-reconciliation authority. Ever-dispatched ambiguous continuation remains needs-user-action/no retry.",
+      "source": "packages/agent/turn-store.ts:165; packages/agent/turn-worker.ts:67"
+    },
+    {
+      "id": "unfinished-position",
+      "finding": "Explicitly classify busy, lease-lost, aborted, provider-required and step-limit outcomes as unhandled unless final canonical state proves completion; retain that position rather than advancing merely because work returned. Distinguish end-of-cycle from interrupted continuation."
+    },
+    {
+      "id": "account-settlement-semantics",
+      "finding": "reserveAuto is transactional, but settleAuto separately updates the event and lifetime counter. Before promising crash/once settlement, pin a narrow atomic transaction and per-reservation settlement strategy using existing rows, conservative estimate including wire/history/output bounds, per-exchange request/token/cache units and actual-usage-over-estimate behavior. Unknown/malformed/aborted usage retains reservation. Stop if this needs a broader ledger/policy change.",
+      "source": "src/limits.js:67; src/limits.js:176"
+    }
+  ],
+  "scopeAssessment": "No additional queue, UI/HTTP, daemon, provider fallback, production activation or real model run is authorized. Exact owner/account eligibility and account admission must precede dispatch; approved execution must not require provider/secret lookup.",
+  "execution": {
+    "tests": 0,
+    "services": 0,
+    "modelCalls": 0,
+    "generators": 0,
+    "note": "Source/document plan inspection only; no runtime/test/state/Git changes."
+  },
+  "stopPoint": "Obtain the explicit human direction and freeze the clarified implementation contract before code; this review is not implementation approval or acceptance."
+}
