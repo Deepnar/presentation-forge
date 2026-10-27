@@ -24,3 +24,10 @@ export async function turnDiscovery() {
   const { createTurnDiscovery } = await import('../../packages/agent/turn-discovery.ts');
   return createTurnDiscovery(await projectStore());
 }
+
+export async function turnPickup() {
+  const { autoHostEnabled } = await import('./auto-host-policy.js');
+  if (!autoHostEnabled()) throw Object.assign(new Error('Host pickup is disabled.'), { code: 'host-disabled' });
+  const { createAutoHostPickup } = await import('./host-pickup.js');
+  return createAutoHostPickup(await projectStore());
+}
