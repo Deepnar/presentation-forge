@@ -1,0 +1,13 @@
+{
+  "command": "npm run typecheck",
+  "durationMs": 1534,
+  "atUtc": "2026-10-27T12:06:39Z",
+  "exitCode": 0,
+  "id": "typecheck",
+  "implementationSha": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "kind": "command",
+  "log": "docs/v2-8i-6-evidence/raw/typecheck-attempt-1.log",
+  "testedDelta": "Executed before the freeze commit on identical runtime/test bytes; later changes only gate/schema mapping. Source manifest binds those committed bytes. No historical pass transferred.",
+  "backend": "none",
+  "provider": "loopback/injected only; no real API or local inference"
+}

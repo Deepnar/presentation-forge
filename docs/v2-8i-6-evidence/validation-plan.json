@@ -20,5 +20,6 @@
     "typecheck": []
   },
   "additionalAffectedCheck": "test/dev-protocol.test.js for new gate/schema mapping",
-  "excluded": "Unchanged bulk/browser/PG/build/benchmark/native/render/live-model/GPU sweeps; accepted unchanged evidence reused, not relabeled executed."
+  "excluded": "Unchanged bulk/browser/PG/build/benchmark/native/render/live-model/GPU sweeps; accepted unchanged evidence reused, not relabeled executed.",
+  "implementationSha": "dce562834f2d4641280d8df6f61dd4872d566b87"
 }

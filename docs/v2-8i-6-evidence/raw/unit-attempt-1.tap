@@ -1,0 +1,89 @@
+TAP version 13
+# Subtest: wake validates exact immutable identity without invoking accessors or services
+ok 1 - wake validates exact immutable identity without invoking accessors or services
+  ---
+  duration_ms: 1.862136
+  type: 'test'
+  ...
+# Subtest: disabled wake refuses before admission work
+ok 2 - disabled wake refuses before admission work
+  ---
+  duration_ms: 0.84667
+  type: 'test'
+  ...
+# Subtest: admitting owners occupy slots and coalesce only after successful pinned opening
+ok 3 - admitting owners occupy slots and coalesce only after successful pinned opening
+  ---
+  duration_ms: 0.807237
+  type: 'test'
+  ...
+# Subtest: wake cooldown and bounded record admission recover only after expiration
+ok 4 - wake cooldown and bounded record admission recover only after expiration
+  ---
+  duration_ms: 9.238377
+  type: 'test'
+  ...
+# Subtest: a job has at most two serial cycles and resumes only completed cursors
+ok 5 - a job has at most two serial cycles and resumes only completed cursors
+  ---
+  duration_ms: 1.110719
+  type: 'test'
+  ...
+# Subtest: a coalesced new hint restarts the one remaining cycle without deadline extension
+ok 6 - a coalesced new hint restarts the one remaining cycle without deadline extension
+  ---
+  duration_ms: 0.635463
+  type: 'test'
+  ...
+# Subtest: unfinished or failed outcomes stop without self retry despite a dirty hint
+ok 7 - unfinished or failed outcomes stop without self retry despite a dirty hint
+  ---
+  duration_ms: 1.275695
+  type: 'test'
+  ...
+# Subtest: remaining time below I5 minimum starts no extra cycle
+ok 8 - remaining time below I5 minimum starts no extra cycle
+  ---
+  duration_ms: 0.496773
+  type: 'test'
+  ...
+# Subtest: expired pending opening refuses admission before late resolution and never launches work
+ok 9 - expired pending opening refuses admission before late resolution and never launches work
+  ---
+  duration_ms: 0.412852
+  type: 'test'
+  ...
+# Subtest: close rejects pending admission and keeps its slot until underlying opening settles
+ok 10 - close rejects pending admission and keeps its slot until underlying opening settles
+  ---
+  duration_ms: 0.418993
+  type: 'test'
+  ...
+# Subtest: close aborts active preparation and drains without leaving a dirty follow-up
+ok 11 - close aborts active preparation and drains without leaving a dirty follow-up
+  ---
+  duration_ms: 0.377929
+  type: 'test'
+  ...
+# Subtest: opening errors are sanitized and release capacity without unhandled task rejection
+ok 12 - opening errors are sanitized and release capacity without unhandled task rejection
+  ---
+  duration_ms: 0.311726
+  type: 'test'
+  ...
+# Subtest: default adapter clears ambient account and meter while preserving the calling request
+ok 13 - default adapter clears ambient account and meter while preserving the calling request
+  ---
+  duration_ms: 1.289673
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 364.87691
+# forge-test-file "test/v2-host-wake-8i.test.js"

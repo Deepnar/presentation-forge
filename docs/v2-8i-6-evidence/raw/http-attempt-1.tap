@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: wake HTTP binds private bearer identity and rejects cookie or supplied authority
+ok 1 - wake HTTP binds private bearer identity and rejects cookie or supplied authority
+  ---
+  duration_ms: 99.924573
+  type: 'test'
+  ...
+# Subtest: wake private parser caps raw bytes and sanitizes malformed media and unknown routes
+ok 2 - wake private parser caps raw bytes and sanitizes malformed media and unknown routes
+  ---
+  duration_ms: 23.943171
+  type: 'test'
+  ...
+# Subtest: wake refusals expose only fixed status and bounded retry hints
+ok 3 - wake refusals expose only fixed status and bounded retry hints
+  ---
+  duration_ms: 15.579312
+  type: 'test'
+  ...
+# Subtest: production API defaults wake off with no provider dispatch
+ok 4 - production API defaults wake off with no provider dispatch
+  ---
+  duration_ms: 649.335375
+  type: 'test'
+  ...
+# Subtest: production wake survives client completion and reuses explicit submit/approval authority
+ok 5 - production wake survives client completion and reuses explicit submit/approval authority
+  ---
+  duration_ms: 1207.7534
+  type: 'test'
+  ...
+# Subtest: production process interruption preserves dispatched ambiguity and prevents automatic replay
+ok 6 - production process interruption preserves dispatched ambiguity and prevents automatic replay
+  ---
+  duration_ms: 1069.273576
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3534.298128
+# forge-test-file "test/v2-host-wake-http-8i.test.js"

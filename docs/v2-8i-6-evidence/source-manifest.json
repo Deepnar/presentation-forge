@@ -1,0 +1,64 @@
+{
+  "implementationSha": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "acceptedBaseline": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+  "files": [
+    {
+      "path": "app/server/index.js",
+      "sha256": "0ad9e7770ed9d32f81000dbb5e09f2d67656353d2260ceda06ac836bef1e9384"
+    },
+    {
+      "path": "app/server/v2-agent-routes.js",
+      "sha256": "8ce603ffbdb0a6946cb284170a0979ff25d26aeb65dc635448b7366139aa1e8f"
+    },
+    {
+      "path": "docs/development-state.schema.json",
+      "sha256": "b9270ab6578248f6be9ac94d9f3cf192fc90b793624fa27dc77636f904072c08"
+    },
+    {
+      "path": "packages/agent/host-wake.ts",
+      "sha256": "e705040556aa748e23027e681179033bd3c9f6dc60ac9925583ef6bb588f6c01"
+    },
+    {
+      "path": "src/account.js",
+      "sha256": "112d41adc9911a3d1f7bd84c2ab82d1e1353065979f69c5e2ac219cbf6f8f2b9"
+    },
+    {
+      "path": "src/agent/host-wake.js",
+      "sha256": "dfb71740a4ed70cf583f615b63b825ae8c459ba67e399287d3ede419daf85ecd"
+    },
+    {
+      "path": "src/auth.js",
+      "sha256": "4ef5c90b3fa3fa2a724da563efcbb227814ff92f001983d28f7bea5d3011951a"
+    },
+    {
+      "path": "src/usage.js",
+      "sha256": "d8c0d800b1131b45a2b297cb9f17b5e9aef267e8487441e05259322727f96095"
+    },
+    {
+      "path": "test/dev-protocol.test.js",
+      "sha256": "2df2f1947017f500f4f61d32b38338407ce9b1df6d1f6582c58126acc2358781"
+    },
+    {
+      "path": "test/v2-host-wake-8i.test.js",
+      "sha256": "d52e055e46dd5b1f0ecc61c61d0b343a3459a3e3b7c57fb8628fb37445ce9e4f"
+    },
+    {
+      "path": "test/v2-host-wake-fixture.js",
+      "sha256": "cffa6b24688e8f79c4e878e08a13d814c09445b01e76a5db1f38e1e26dff0a36"
+    },
+    {
+      "path": "test/v2-host-wake-http-8i.test.js",
+      "sha256": "29d795f4ee64d671443fbf70accadacf38124794555736d8fa5662cb917381f3"
+    },
+    {
+      "path": "test/v2-host-wake-sqlite-8i.test.js",
+      "sha256": "948c750666c1179c19b53bc6d5729046eb03c688699da8b200f7c8f28a9c3246"
+    },
+    {
+      "path": "tools/dev-protocol-check.mjs",
+      "sha256": "1c6be8f14782e14e77990a6b1b346281fef0a0e5ab6bbd00d4a184b99b7c5677"
+    }
+  ],
+  "runtimeTestGovernanceDelta": "empty; tests ran on identical working bytes before the source-freeze commits",
+  "chronology": "unit13 development pass predates a post-opening enablement recheck and the added14th case; only unit14/SQLite6/HTTP6 supply final gates. Governance37/typecheck ran after all code changes."
+}

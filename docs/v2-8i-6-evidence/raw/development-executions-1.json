@@ -1,0 +1,50 @@
+[
+  {
+    "id": "unit",
+    "command": "node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-host-wake-8i.test.js",
+    "atUtc": "2026-10-27T12:04:13Z",
+    "durationMs": 371,
+    "exitCode": 0,
+    "log": "out/v2-8i-6-validation/unit-attempt-2.tap",
+    "counts": {
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "source": "530640e plus current uncommitted implementation/test delta"
+  },
+  {
+    "id": "sqlite",
+    "command": "node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-host-wake-sqlite-8i.test.js",
+    "atUtc": "2026-10-27T12:04:13Z",
+    "durationMs": 636,
+    "exitCode": 0,
+    "log": "out/v2-8i-6-validation/sqlite-attempt-1.tap",
+    "counts": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "source": "530640e plus current uncommitted implementation/test delta"
+  },
+  {
+    "id": "http",
+    "command": "node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-host-wake-http-8i.test.js",
+    "atUtc": "2026-10-27T12:04:14Z",
+    "durationMs": 3567,
+    "exitCode": 0,
+    "log": "out/v2-8i-6-validation/http-attempt-1.tap",
+    "counts": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "source": "530640e plus current uncommitted implementation/test delta"
+  }
+]

@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: SQLite wake: private bearer snapshot pins numeric session owner without changing public DTO
+ok 1 - SQLite wake: private bearer snapshot pins numeric session owner without changing public DTO
+  ---
+  duration_ms: 61.933683
+  type: 'test'
+  ...
+# Subtest: SQLite wake: submit waits for wake, preparation waits for approval and execution persists exactly once
+ok 2 - SQLite wake: submit waits for wake, preparation waits for approval and execution persists exactly once
+  ---
+  duration_ms: 105.439918
+  type: 'test'
+  ...
+# Subtest: SQLite wake: another owner pending turn and account budget remain untouched
+ok 3 - SQLite wake: another owner pending turn and account budget remain untouched
+  ---
+  duration_ms: 39.784343
+  type: 'test'
+  ...
+# Subtest: SQLite wake: deleted and recreated email cannot remap the authenticated snapshot during policy opening
+ok 4 - SQLite wake: deleted and recreated email cannot remap the authenticated snapshot during policy opening
+  ---
+  duration_ms: 6.96576
+  type: 'test'
+  ...
+# Subtest: SQLite wake: close cancels in-flight preparation, retains estimate and prevents restart replay
+ok 5 - SQLite wake: close cancels in-flight preparation, retains estimate and prevents restart replay
+  ---
+  duration_ms: 25.946827
+  type: 'test'
+  ...
+# Subtest: SQLite wake: human save and clear during provider work survive detached completion
+ok 6 - SQLite wake: human save and clear during provider work survive detached completion
+  ---
+  duration_ms: 29.217139
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 598.892739
+# forge-test-file "test/v2-host-wake-sqlite-8i.test.js"

@@ -1,0 +1,44 @@
+{
+  "implementationSha": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "tests": {
+    "total": 26,
+    "pass": 26,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "composition": {
+    "coordinator": 14,
+    "SQLite": 6,
+    "HTTPProcess": 6
+  },
+  "affectedGovernance": {
+    "total": 37,
+    "pass": 37,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "log": "docs/v2-8i-6-evidence/raw/governance-attempt-1.log"
+  },
+  "fourGatesPassed": true,
+  "typecheckExitCode": 0,
+  "initialDevelopmentOverlap": {
+    "total": 13,
+    "pass": 13,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0,
+    "countsTransferredToFinal": false
+  },
+  "requiredFixtureAndTypecheckDurationMs": 6108,
+  "governanceDurationMs": 19189,
+  "all63LeavesDistinctBetweenFinalAndGovernance": true,
+  "excludedUnexecuted": [
+    "old bulk/browser/build/PG/benchmark/native/render matrix",
+    "live API/local inference/GPU",
+    "production activation",
+    "Assistant UI"
+  ],
+  "acceptance": "pending independent exact-source decision",
+  "environment": "Node24.16.0, serial nice10/ionice2:7/60second watchdog; temporary SQLite and loopback providers; all owned API children/listeners closed, no persistent services."
+}

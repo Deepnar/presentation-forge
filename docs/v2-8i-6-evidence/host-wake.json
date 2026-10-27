@@ -1,0 +1,20 @@
+{
+  "command": "node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-host-wake-8i.test.js",
+  "atUtc": "2026-10-27T12:04:13Z",
+  "durationMs": 371,
+  "exitCode": 0,
+  "id": "host-wake",
+  "implementationSha": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "kind": "tests",
+  "log": "docs/v2-8i-6-evidence/raw/unit-attempt-2.tap",
+  "testedDelta": "Executed before the freeze commit on identical runtime/test bytes; later changes only gate/schema mapping. Source manifest binds those committed bytes. No historical pass transferred.",
+  "backend": "temporary SQLite/account stores",
+  "provider": "loopback/injected only; no real API or local inference",
+  "tests": {
+    "total": 14,
+    "pass": 14,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  }
+}
