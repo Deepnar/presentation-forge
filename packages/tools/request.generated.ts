@@ -136,4 +136,17 @@ export type ToolRequest =
           )[]
         ];
       };
+    }
+  | {
+      tool: "web_search";
+      /**
+       * Bounded semantic web search. Project identity and backend configuration are trusted host inputs, never query arguments.
+       */
+      args: {
+        query: string;
+        limit?: number;
+        perHost?: number;
+        language?: string;
+        timeRange?: "day" | "month" | "year";
+      };
     };

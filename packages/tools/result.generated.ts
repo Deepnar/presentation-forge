@@ -79,6 +79,25 @@ export type ToolResult =
         }[];
       };
       tool: "edit_content";
+    }
+  | {
+      ok: true;
+      revision: number;
+      changed: false;
+      preserved: ("geometry" | "styling" | "untargeted-content" | "tombstones")[];
+      warnings: string[];
+      data: {
+        providerId: string;
+        /**
+         * @maxItems 8
+         */
+        sources: WebSource[];
+        /**
+         * @maxItems 3
+         */
+        warnings: ("invalid-results" | "partial-results" | "results-truncated")[];
+      };
+      tool: "web_search";
     };
 export type ElementProjection =
   | {
@@ -147,3 +166,15 @@ export type ElementProjection =
       editable: boolean;
       kind: "group";
     };
+
+export interface WebSource {
+  id: string;
+  projectId: string;
+  kind: "web";
+  title: string;
+  url: string;
+  excerpt: string;
+  searchProvider: string;
+  publishedAt?: string;
+  retrievedAt: string;
+}

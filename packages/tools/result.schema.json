@@ -380,6 +380,86 @@
         "tool"
       ],
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed": {
+          "const": false
+        },
+        "preserved": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "geometry",
+              "styling",
+              "untargeted-content",
+              "tombstones"
+            ]
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "providerId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,64}$"
+            },
+            "sources": {
+              "type": "array",
+              "maxItems": 8,
+              "items": {
+                "$ref": "#/definitions/WebSource"
+              }
+            },
+            "warnings": {
+              "type": "array",
+              "maxItems": 3,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "invalid-results",
+                  "partial-results",
+                  "results-truncated"
+                ]
+              }
+            }
+          },
+          "required": [
+            "providerId",
+            "sources",
+            "warnings"
+          ],
+          "additionalProperties": false
+        },
+        "tool": {
+          "const": "web_search"
+        }
+      },
+      "required": [
+        "ok",
+        "revision",
+        "changed",
+        "preserved",
+        "warnings",
+        "data",
+        "tool"
+      ],
+      "additionalProperties": false
     }
   ],
   "definitions": {
@@ -707,6 +787,61 @@
           "additionalProperties": false
         }
       ]
+    },
+    "WebSource": {
+      "type": "object",
+      "required": [
+        "id",
+        "projectId",
+        "kind",
+        "title",
+        "url",
+        "excerpt",
+        "searchProvider",
+        "retrievedAt"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^src_[0-9a-f]{64}$",
+          "maxLength": 68
+        },
+        "projectId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "kind": {
+          "const": "web"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "excerpt": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "searchProvider": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "publishedAt": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "retrievedAt": {
+          "type": "string",
+          "maxLength": 64
+        }
+      }
     }
   }
 }

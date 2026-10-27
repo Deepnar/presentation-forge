@@ -124,10 +124,11 @@ export function prepareExchange(profile: ProviderProfile, input: unknown, option
         !context.messages[0].content.startsWith(CORE_POLICY) ||
         !Array.isArray(context.tools) || context.tools.length < 1 || context.tools.length > 4 ||
         new Set(context.tools.map(t => t.name)).size !== context.tools.length ||
-        context.tools.some(t => !['get_project', 'get_slide', 'get_selected_elements', 'edit_content'].includes(t.name) || !t.inputSchema || typeof t.inputSchema !== 'object')) return providerFailure('invalid-request');
+        context.tools.some(t => !['get_project', 'get_slide', 'get_selected_elements', 'edit_content', 'web_search'].includes(t.name) || !t.inputSchema || typeof t.inputSchema !== 'object')) return providerFailure('invalid-request');
     if ([...(opts.requires ?? []), 'toolCalling' as const].some(f => !profile.capabilities[f])) return providerFailure('unsupported-capability');
     const outputTokens = opts.maxOutputTokens ?? profile.capabilities.maxOutputTokens;
     if (!integer(outputTokens, 1, profile.capabilities.maxOutputTokens)) return providerFailure('invalid-request');
+    if (context.tools.some(t => t.name === 'web_search') && context.tools.some(t => t.name === 'edit_content')) return providerFailure('invalid-request');
     if (!canonicalCatalog(context.tools)) return providerFailure('invalid-request');
     const contextChars = opts.contextChars ?? profile.capabilities.contextChars;
     if (!integer(contextChars, 2048, profile.capabilities.contextChars)) return providerFailure('invalid-request');

@@ -24,6 +24,8 @@ export function validatedToolResult(input: unknown, maxChars = 65536): ToolResul
   } catch { return null; }
 }
 
+export const CONTENT_TOOLS = ['get_project', 'get_slide', 'get_selected_elements', 'edit_content'] as const;
+export const SCENE_READS = ['get_project', 'get_slide', 'get_selected_elements'] as const;
 export function semanticToolCatalog(): { name: string; inputSchema: Json }[] {
   return schema.oneOf.map((branch: { properties: { tool: { const: string }; args: unknown } }) => ({ name: branch.properties.tool.const, inputSchema: cloneJson(branch.properties.args) }));
 }
@@ -122,13 +124,14 @@ export function createToolSession(binding: ToolBinding): ToolSession {
     revision: () => authorized ? document.status().revision : null,
     catalog() {
       if (!authorized) return [];
-      return semanticToolCatalog().filter(t => t.name !== 'edit_content' || (mode === 'edit' && editable.size > 0));
+      return semanticToolCatalog().filter(t => (CONTENT_TOOLS as readonly string[]).includes(t.name) && (t.name !== 'edit_content' || (mode === 'edit' && editable.size > 0)));
     },
     async execute(input: unknown, callId?: string): Promise<ToolResult> {
       if (!authorized) return failure('forbidden');
       if (++calls > maxCalls) return failure('budget-exceeded');
       const request = validatedToolRequest(input, inputChars);
       if (!request) return failure('invalid-input');
+      if (request.tool === 'web_search') return failure('forbidden');
       try {
         const { scenes, revision } = document.snapshot();
         let result: ToolSuccess;

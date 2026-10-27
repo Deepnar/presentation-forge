@@ -31,7 +31,7 @@ test('provider-run scope and read schemas remain canonical', async () => {
   const plan = await json('../packages/agent/run-plan.schema.json');
   const tool = await json('../packages/tools/request.schema.json');
   assert.deepEqual(request.properties.scope, plan.properties.scope);
-  assert.deepEqual(request.properties.reads.items.oneOf, tool.oneOf.filter(b => b.properties.tool.const !== 'edit_content'));
+  assert.deepEqual(request.properties.reads.items.oneOf, tool.oneOf.filter(b => ['get_project','get_slide','get_selected_elements'].includes(b.properties.tool.const)));
 });
 for (const [name, change] of [
   ['unrecognized authority fields', r => { r.admin = true; }],
