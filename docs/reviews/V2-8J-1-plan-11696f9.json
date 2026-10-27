@@ -1,0 +1,80 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-27",
+  "initialPlanSha": "11696f9beca1db2609c3a1d5afa2c5d22d8811b5",
+  "reviewedPlanSha": "2a640cd58c703e0ba319ed0a46efe5bd2e3e7b6f",
+  "acceptedBaseline": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+  "planningEntrySha": "2e6bf40a4549d987384bda113fc056a3a34cb00f",
+  "plan": "docs/V2-8J-1-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-web-research-preparation",
+  "assessment": "A trusted-grant, headless inspect-only web_search preparation session is a coherent next dependency after the accepted existing-deck Assistant. It reuses the accepted SearchProvider, scoped semantic reads and both provider wire families while leaving durable content execution and later source ownership/creation contracts closed. All six source-backed clarifications below are now pinned in the final reviewed plan at 2a640cd. The plan is ready for the human query-disclosure direction, with no outstanding technical planning correction. This readiness supplies neither policy approval nor implementation acceptance.",
+  "clarificationStatus": "All six clarifications verified in the initial-to-final plan diff; these are implementation requirements, not outstanding plan defects.",
+  "pinnedClarifications": [
+    {
+      "id": "preserve-standalone-search-contract",
+      "condition": "The accepted SearchRequest schema permits limit 1..20 and perHost 1..5, with adapter defaults 8 and 2. Describe J1's 8/2 ceilings as narrower capability/tool limits, not the unchanged standalone schema. Compose canonical validation with explicit J1 constraints without reducing accepted F callers or maintaining a permissive divergent copy; both wire families must advertise the exact resulting canonical tool schema."
+    },
+    {
+      "id": "explicit-content-only-subsets",
+      "condition": "Keep explicit four-content-tool and three-scene-read subsets for base session catalog/execution, durable RunPlan and embedded RunRecord plan, ProviderRunRequest and ConversationRequest reads. Current plan schemas embed snapshots of the old tool union; existing drift assertions equate them to the global ToolRequest or filter only edit_content. Replace those assumptions with assertions about the preserved content subset. Do not copy the expanded union into durable plans or let the base executor's current final edit branch become a search fallback. Missing-grant catalog/execute and queued search refusal need direct new checks."
+    },
+    {
+      "id": "explicit-ephemeral-result-envelope",
+      "condition": "Define the headless research success DTO before code: bound project/saved revision, terminal text/refusal, accumulated normalized SourceRef set and bounded warnings/trace, all ephemeral and inside the total serialized cap. Current converse returns an empty final results array after its read-history loop; J1 must not lose its successful search sources when final text arrives. Keep at most 24 admitted normalized results, preserve stable source content/identity and refuse overflow rather than silently dropping references. Validate web kind, project binding, structural limits and accepted normalization identity; generic SourceRef schema acceptance alone does not verify content or a citation. Model text and cited identifiers remain unverified and are never registered as facts, locators or durable citations."
+    },
+    {
+      "id": "search-failure-and-history-policy",
+      "condition": "Pin fail-stop behavior for this slice: a search refusal, timeout, malformed/oversized result or failed authorization ends the bounded invocation, consumes its attempted-call allowance and starts no recovery search or model continuation. Current provider history accepts only successful unchanged ToolResults and the existing preparation loop stops on tool refusal. Preserve that behavior; supporting correlated search-error continuation later would require its own explicit contract. Cancellation/revocation/expiry publish no stale private text or source data."
+    },
+    {
+      "id": "research-entry-and-accounting-boundary",
+      "condition": "Name a distinct trusted research entry/session or equivalent private capability composition. Existing H prepare/worker/converse callers gain no search grant or dispatch path by schema growth. Do not silently attach J1 to ProviderRunHost reserve/dispatch/receipt/proposal hooks, which persist H state. Model accounting remains existing injected budgeted-provider behavior plus the bounded ephemeral trace/reservations; unknown usage stays conservative without a new durable search billing/replay guarantee or H attempt/proposal writes."
+    },
+    {
+      "id": "truthful-query-disclosure-policy",
+      "condition": "Before asking for direction, state that the grant permits bounded queries derived from the current request and granted semantic reads, which can contain private content, to reach the configured external search backend. No new Forge query/transcript/source persistence is added, but J1 does not control that backend's own logging or retention. No grant, model JSON, stored chat or public owner claim can supply search authority; snapshot the trusted binding/caps and recheck current authorization around every asynchronous publication/dispatch boundary."
+    }
+  ],
+  "criticalImplementationConditions": [
+    "Search dispatch occurs outside backend transactions and requires an actual trusted capability; canonical catalog validation or model-provided arguments alone never grant network authority.",
+    "Research is inspect-only, with no editable targets/edit_content, model layout fields, page fetch, provider/configuration override or expanded project read scope.",
+    "At most three search attempts, one sequential search at a time, at most ten seconds per search and thirty seconds per invocation under the tighter caller/profile deadline; existing exchange/output/tool/context limits include search calls. Duplicate call IDs cannot dispatch twice and late promises cannot revive an expired invocation.",
+    "SearXNG/HTML/hash normalization remains in the existing host adapter; package domain logic accepts injected contracts without adding network, SQL or filesystem authority.",
+    "Search results and snippets are untrusted data. Stable snippet IDs prove bounded normalized identity, never a full-page fact, locator, freshness, assertion support or prompt-injection immunity.",
+    "Later immutable source registry/retention/resolution precedes research-backed semantic creation. J1 creates no durable sources, public API/CLI, Assistant activation, new queue/document or implied future implementation authorization.",
+    "Use focused new schema/capability/authority/budget/late-result challenges, both loopback wire continuations, an owned SQLite revision seam, directly affected content-subset contracts, typecheck and generated drift. Reuse accepted unchanged evidence; no old broad/browser/build/PG/native/model/GPU replay."
+  ],
+  "inspectedSeams": [
+    "packages/tools/request.schema.json and generated ToolRequest",
+    "packages/tools/result.schema.json and generated ToolResult",
+    "packages/tools/session.ts and executor.ts",
+    "packages/agent/search.ts and search-request.schema.json",
+    "src/agent/search-provider.js and search-sources.js",
+    "packages/model/source.schema.json",
+    "packages/agent/provider.ts, provider-run.ts and context.ts",
+    "packages/skill/sections.ts",
+    "packages/agent/run-plan.schema.json, run.schema.json, receipt.schema.json, run-state.ts and runtime.ts",
+    "packages/agent/turns.ts ProviderRunHost integration",
+    "src/agent/index.js, model-provider.js and auto-host-policy.js",
+    "test/v2-runtime-8b.test.js, v2-provider-run-8d.test.js and v2-search-8f.test.js source only",
+    "tools/v2-types.mjs",
+    "accepted F architecture/review and current search/source/semantic-creation roadmap dependencies"
+  ],
+  "executed": {
+    "tests": 0,
+    "services": 0,
+    "browserCalls": 0,
+    "builds": 0,
+    "modelCalls": 0,
+    "searchCalls": 0,
+    "generators": 0
+  },
+  "humanDirection": "PENDING: scoped private-content query disclosure to the configured search backend. No prior I8 approval or this plan review supplies that authorization.",
+  "implementationAccepted": false,
+  "writes": "Only this independent plan-readiness record; no runtime, test, state, roadmap or Git mutation by this reviewer.",
+  "stopPoint": "Obtain the human disclosure-policy direction and retain accepted I8 state until an authorized implementation has separate scoped validation and exact-source ACCEPT/HOLD. No code, activation, live request or dependent feature follows this readiness review alone."
+}

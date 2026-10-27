@@ -9045,7 +9045,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-web-research-preparation"></a>
 
-  - [ ] **V2-8J-1 bounded canonical web research preparation — contract proposed.**
+  - [ ] **V2-8J-1 bounded canonical web research preparation — ready for human direction.**
     The2026-10-27 continuation starts the next dependency after accepted I8,
     source b9c2d20 and planning HEAD2e6bf40. [Concrete contract](V2-8J-1-PLAN.md)
     proposes an explicitly granted headless inspect-only web_search capability:
@@ -9057,6 +9057,9 @@ local inference. Only that separate transport correction is authorized; this aud
     preserved tool subsets, a source-bearing ephemeral final DTO, fail-stop search
     behavior and separate research entry without H persistence hooks. Backend query
     logs are governed by the configured backend policy. Offline tests only.
+    Separate [READY_FOR_DIRECTION](reviews/V2-8J-1-plan-11696f9.json) verifies
+    clarified plan2a640cd; no technical planning blocker remains. The human must
+    still approve scoped query disclosure before implementation.
     Grant absence must preserve existing default-off editing behavior. Source
     registry/locator/retention and later research-backed creation remain separate.
     Look-ahead reuses this capability/catalog seam without another document/queue.
