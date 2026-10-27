@@ -153,7 +153,10 @@
               "host-wake-http",
               "target-wake",
               "target-wake-sqlite",
-              "target-wake-http"
+              "target-wake-http",
+              "assistant-client",
+              "assistant-integration",
+              "assistant-browser"
             ]
           },
           "status": {
@@ -340,7 +343,8 @@
                   "V2-PPTX-ID",
                   "V2-8I-5",
                   "V2-8I-6",
-                  "V2-8I-7"
+                  "V2-8I-7",
+                  "V2-8I-8"
                 ]
               }
             },

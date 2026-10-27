@@ -1,0 +1,24 @@
+{
+  "acceptedBaseline": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "entryHead": "3b35c39ea1ec951f5e42624171d106b2c9681fdd",
+  "scope": "Human-approved existing Assistant tab; default-off owner-bound availability, semantic chat/proposal/approval and guarded saved-scene refresh. Offline only.",
+  "requiredFiles": [
+    "test/v2-assistant-client-8i.test.js",
+    "test/v2-assistant-integration-8i.test.js",
+    "test/v2-assistant-chrome-8i.test.js"
+  ],
+  "gates": {
+    "assistant-client": [
+      "test/v2-assistant-client-8i.test.js"
+    ],
+    "assistant-integration": [
+      "test/v2-assistant-integration-8i.test.js"
+    ],
+    "assistant-browser": [
+      "test/v2-assistant-chrome-8i.test.js"
+    ],
+    "typecheck": []
+  },
+  "additionalAffectedCheck": "New I8 and adjacent I7/I6 inventory cases plus historical missing-gate refusal in test/dev-protocol.test.js.",
+  "excluded": "Old bulk/browser/PG/fault/benchmark/native/live-model/GPU matrix; prior accepted evidence reused, not new execution. Production build is prerequisite of the single bounded Chrome file."
+}
