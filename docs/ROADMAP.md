@@ -9265,6 +9265,24 @@ local inference. Only that separate transport correction is authorized; this aud
     > and canonical post-reconciliation state determines safe preparation. Three new
     > independent boundary challenges added evidence without duplicating the suite.
 
+  <a id="assistant-authenticated-wake"></a>
+
+  - [ ] **V2-8I-6 authenticated finite wake — direction pending.**
+    The 2026-10-27 continuation prepares the immediate dependency after accepted I5
+    `5cf5b5c`, from entry HEAD `be0e1af`. [The proposed contract](V2-8I-6-PLAN.md)
+    recommends an explicit authenticated wake endpoint over finite I5 pickup,
+    separately default-disabled. Existing submit/decision endpoints retain their
+    current effects. Pin exact owner/account identity, coalesce bounded instance
+    hints and detach lifetime from HTTP; canonical H/I2 remains the only turn/run
+    authority. No new durable queue or browser-owned worker. Owner-wide wake is a
+    bounded hint, not a guaranteed drain, automatic retry or approval.
+    The concrete trigger direction requires agreement before code; the alternative
+    automatic submit/approval trigger changes existing execution/spend effects and
+    needs a revised contract if chosen. No runtime, configuration, service, model
+    call or evaluation is authorized by this planning entry. Focused new unit,
+    SQLite, HTTP/process and typecheck gates are proposed; unchanged old suites
+    remain reused evidence. Stop at direction until the bounded contract is agreed.
+
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.

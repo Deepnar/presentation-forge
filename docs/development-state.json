@@ -54,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Authenticated host wake/scheduling and Assistant surface contracts; not implementation authority",
+    "id": "V2-8I-6 authenticated finite wake; explicit-trigger direction pending",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
+    "roadmapRef": "docs/ROADMAP.md#assistant-authenticated-wake"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
