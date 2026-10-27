@@ -11,6 +11,10 @@ export function withMeter(meter, fn) {
   return store.run(meter, fn);
 }
 
+export function withoutMeter(fn) {
+  return store.exit(fn);
+}
+
 export function currentMeter() {
   return store.getStore() ?? null;
 }

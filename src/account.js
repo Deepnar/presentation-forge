@@ -14,3 +14,7 @@ export function currentAccount() {
 export function currentUserId() {
   return store.getStore()?.userId ?? null;
 }
+
+export function withoutAccount(fn) {
+  return store.exit(fn);
+}

@@ -458,6 +458,22 @@ export function getUserEmailById(id) {
   return row?.email ?? null;
 }
 
+// Host admission needs the session's immutable numeric owner, not an email lookup.
+export function accountForBearerToken(token) {
+  if (useJsonOnly || typeof token !== "string" || !/^[a-f0-9]{64}$/.test(token)) return null;
+  const d = getDb();
+  const row = d.prepare(`SELECT u.id,u.email,u.verified_at,s.created_at,s.last_used
+    FROM sessions s JOIN users u ON u.id=s.user_id
+    WHERE s.token=? AND s.email=u.email COLLATE BINARY`).get(token);
+  if (!row) return null;
+  const last = Date.parse(row.last_used ?? row.created_at);
+  if (!Number.isFinite(last) || Date.now() - last > SESSION_TTL_MS) return null;
+  const updated = d.prepare("UPDATE sessions SET last_used=? WHERE token=? AND user_id=?")
+    .run(new Date().toISOString(), token, row.id);
+  if (!updated.changes) return null;
+  return Object.freeze({ owner: row.email, userId: row.id, verified: Boolean(row.verified_at) });
+}
+
 export async function userForToken(token) {
   if (!token) return null;
   const d = db();
