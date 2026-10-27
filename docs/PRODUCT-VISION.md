@@ -52,7 +52,9 @@ must not become a rigid limit on AI generation. See [V2-5K](V2-5K-EVAL.md).
 V2-7A implements Workspace → Project → Editor, saved project cards, blank/layout
 creation, a shared editor shell, contextual inspector and history. Its validation
 and acceptance status are in [development-state.json](development-state.json).
-The Assistant tab is a labeled placeholder. “Create with AI” enters legacy chat;
+The existing Assistant tab now implements default-off, scoped editing of saved
+projects, with freeform requests and explicit proposal approval. Its source and
+review status are indexed in [V2-8I-8-EVAL.md](V2-8I-8-EVAL.md). “Create with AI” enters legacy chat;
 completed presentations and the legacy deck page offer an explicit **Open in
 editor** action through the shared HTTP/headless conversion boundary. It creates
 or reopens a saved Layer-C project, preserves human edits on retry and retains
@@ -87,7 +89,11 @@ authenticated hosted orchestration and visible Assistant integration.
 V2-8I-1 independently accepts owner-authenticated conversation read/export/decide/
 cancel/clear HTTP transport over H. It adds no public preparation/execution or
 worker loop; [its decision](reviews/V2-8I-1-5170adc.json) does not complete hosted
-orchestration. The Assistant remains a placeholder.
+orchestration by itself. Later I2–I7 add canonical work/submit/discovery, Auto-only
+policy and explicit finite exact-turn wake. I8 connects those boundaries to the
+existing editor tab while preserving drafts, save barriers and Version history.
+Its validation uses offline fixtures; it does not activate a provider or establish
+live-model quality.
 The sole work registry is [ROADMAP.md](ROADMAP.md); AI editing integration,
 native assets/imports, frontend polish and deployment operations retain their
 roadmap dependencies.

@@ -2084,3 +2084,14 @@ awaiting close, and give the test itself a bound. An outer process-group watchdo
 must preserve partial output and actual timeout/exit even when no TAP summary
 exists. A wrapper exception before saving captured output loses provenance; do
 not turn that absence into zero tests or a pass.
+
+
+## Saved-change observation must preserve a recovery action
+
+A succeeded AI run can be observed while an Apply-only grid/title draft prevents
+loading. Marking the run observed before loading and reporting only the blocking
+error hides the only retry action: later polls intentionally do not reload an
+already observed run. Keep explicit saved-change loading pending through draft or
+fetch failures, while auth/foreign expiry still clears all private recovery state.
+I8's independent challenge caught both sides of this boundary. A completed run
+and a safely attached editor revision are different states.

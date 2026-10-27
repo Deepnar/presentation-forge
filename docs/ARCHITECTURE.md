@@ -2906,3 +2906,47 @@ shared account admission, not HTTP-local caps. No schema/query, UI or renderer
 change; owner-wide wake remains finite. [Evaluation](V2-8I-7-EVAL.md) records focused
 execution, earlier harness/timing uncertainty and the separate
 [independent acceptance](reviews/V2-8I-7-3da0801.json).
+
+
+### V2-8I-8 existing-deck browser Assistant (source under review)
+
+The embedded project editor's existing right-rail tab contains AssistantPanel.
+Framework-free v2assistant/assistantController modules own captured private HTTP
+requests, bounded current-slide/selection semantic scope, one mutation lane,
+finite status observation and explicit retry. Saved chat is reference material;
+only the current request and canonical semantic reads enter the bounded turn.
+Proposals display text and chart/table data with explicit Approve/Reject. Send
+submits through H, then asks I7 to wake the exact generation/turn. Approval uses
+its clicked stored revisions and the same target wake. Neither opening nor
+polling dispatches work. Cancel supersedes a pending UI wake lane and calls H;
+browser lifetime never owns durable work. Existing host flags remain default-off.
+
+SceneViewer supplies the editor bridge. Send/Approve pin credential/document/
+project at intent, commit accepted pending inline text, wait/save current engine
+state, then capture durable revision and recheck drafts/identity. Grid editors stay
+mounted across tabs, so their Apply-only drafts block rather than vanish. Title
+drafts and pending title writes also block. Old proposals cannot be rebound after
+a human save. Composer navigation guards disclose unsent-message loss explicitly.
+
+A succeeded run is loaded from the authoritative project, with the same captured
+credential. Async document preparation ends in a final synchronous current/clean
+revision guard before detach/attach. Selection, current slide, zoom, scroll and
+connected focus are preserved where valid. Local edits/drafts/save activity defer
+replacement; explicit Load saved changes remains available after blocked or failed
+loading, including grid/title drafts. Dirty documents use existing save-copy and
+explicit discard/load choices. Loading clears session undo; the panel discloses
+Version history restoration rather than replaying server changes locally.
+Account/foreign/auth expiry latches private state closed against late callbacks.
+Availability/export/page reads have owned aborts on expiry/disposal; these abort
+UI requests and do not cancel durable work.
+
+The availability helper exposes only {ok,version,enabled}, owner-checked before
+and after asynchronous store access and matched to numeric account identity.
+GET /api/v2/projects/:id/conversation/availability and agent-chat availability
+share it; neither resolves a provider/secret nor claims work. HTTP remains thin,
+private/no-store, Bearer-only, strict about authority inputs, with no admin bypass.
+The narrow rail is a modal overlay with topmost-dialog Escape, focus return and
+mutually exclusive left/right rails. Inactive panels are hidden and cannot focus.
+No model, compiler, renderer, store schema/query or canonical H/I2/I5/I7 authority
+changed. Contract/evidence and independent review status are indexed in
+[V2-8I-8-EVAL.md](V2-8I-8-EVAL.md) and development-state.json.

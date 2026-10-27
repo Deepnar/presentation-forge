@@ -70,10 +70,15 @@ owner-wide progress or completion. Exact project/generation/turn wake and the Au
 independently accepted at `3da0801`; they reuse the same finite host capacity and
 canonical H/I2 authority without owner-history scanning. Different active targets
 are busy; coalesced receipts confer no fresh-validity or completion guarantee.
-No always-on scheduler or Assistant is enabled.
+The existing editor Assistant is implemented in V2-8I-8 under independent source
+review: freeform current-slide/selection chat, explicit proposals and exact-target
+wake reuse the accepted authority. Grid/title/inline/save guards and authoritative
+reload preserve human work; loading AI changes clears session undo and uses Version
+history for restoration. Availability is owner-bound metadata with CLI parity.
+Host execution remains default-off; no always-on scheduler is enabled.
 Saved chat does not automatically become provider context. Further host progress/
 scheduling, additional provider routing, search-tool integration,
-live-provider qualification and the visible Assistant remain in the
+live-provider qualification and creation/research capability remain in the
 [roadmap](docs/ROADMAP.md#v2-8-remaining). Resolve exact accepted
 scope through development-state.json and its independent review record.
 
