@@ -8,7 +8,11 @@ Work directly with available repository tools; no external orchestration is requ
 Establish fail-first tests for behavioural defects, then implement only approved
 scope using canonical engine/schema/storage primitives. Preserve human edits and
 native export. New future work goes to ROADMAP.md, not into the current diff.
-Run required validation with shared-machine and serial build/browser isolation.
+Run focused new/changed-behaviour and directly affected boundary checks with
+shared-machine and serial build/browser isolation. Reuse accepted evidence for
+unchanged areas; do not routinely rerun the full old matrix. Broaden only for a
+specific failure, shared-core impact, unresolved risk or release requirement.
+After a relevant pass, stop retesting unless a new change or concern warrants it.
 Classify every failure; fix narrow regressions and rerun affected checks. Keep
 logs, exact tested SHA/delta and reproducible evidence. Inspect final screenshots
 and rasterized exports when applicable. Never weaken assertions or claim skips

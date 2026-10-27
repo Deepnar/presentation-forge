@@ -6453,6 +6453,24 @@ to continue development. The repository-native procedure is
 `docs/DEVELOPMENT-PROTOCOL.md`, entered through `AGENTS.md` and
 `docs/CONTINUATION.md`. The roadmap remains the sole work registry.
 
+<a id="focused-development-validation"></a>
+
+- [x] **Focused development validation policy —2026-10-27.** Human direction
+  reduces CPU/GPU pressure and repetitive testing of accepted old functionality.
+  Test new/changed behaviour and directly affected boundaries; reuse accepted
+  evidence elsewhere. Broaden only for concrete failures, shared-core impact,
+  unresolved risk or explicit release requirements. Independent review uses
+  retained evidence plus narrow challenge checks. Update contributor/protocol/
+  acceptance and role instructions together; preserve assertions, integrity and
+  independent acceptance. I4's existing broad run completed before this direction
+  arrived and is retained, not repeated. No feature scope changes.
+
+  > **Learned.** Repeating every historical suite per small slice made validation
+  > dominate delivery. A change-specific gate inventory preserves meaningful
+  > checks while allowing scoped work to finish; exact exclusions keep its limits
+  > visible. [The protocol](DEVELOPMENT-PROTOCOL.md#focused-validation-policy)
+  > governs later plans and current review.
+
 Rules that govern this section: `docs/ARCHITECTURE.md` describes only what
 is actually built; platform assumptions (MCP/OAuth/SIWC, Vercel
 limits/Workflow/Blob/Cron, SearXNG deployment, editor licences) are

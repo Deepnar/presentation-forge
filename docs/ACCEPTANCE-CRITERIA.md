@@ -16,7 +16,7 @@ or explicit human approval supplies acceptance of an exact commit.
 | Browser interaction | Dashboard/create/reopen, editing, history, save/conflict, project-switch/navigation guards, pending drafts and cleanup |
 | Accessibility | Labeled regions/controls, keyboard editing and focus, Escape/topmost dialogs, focus return, contrast and reduced motion |
 | Responsive behaviour | Narrow controls/inspector usable, dialogs unclipped, no overlapping controls; selection does not unexpectedly shift the canvas |
-| Regression testing | Complete required inventory, bounded serial browser/build isolation, PostgreSQL availability stated, exact totals and standing failures separated |
+| Regression testing | Focused new/changed-behaviour and affected-boundary checks; broad sweeps only with a concrete risk/release reason; bounded serial browser/build isolation, actual backend, exact totals/exclusions and separate standing failures |
 | Documentation/evidence | Reproducible commands + tested SHA/delta, logs/totals, inspected final screenshots, updated architecture/roadmap/handoff/state |
 | Backward compatibility | Existing projects/fixtures/legacy flows remain usable; schemas/readers refuse unsupported versions without lossy migration |
 | Deployment safety | Config/backups/rollback and shared-volume limits evaluated when in scope; no deployment or irreversible migration without authorization |
@@ -27,6 +27,13 @@ inspection, skips, cancellations and unexecuted cases. Inspect rasterized native
 exports when claiming render quality. Missing services or a busy shared machine
 are limitations, never successful validation. A standing BYOK locale failure
 stays separate and does not excuse new failures.
+
+Use accepted evidence for unchanged areas. Do not routinely rerun old full suites
+or duplicate the implementer's matrix in independent review. Choose the smallest
+meaningful checks for the changed behaviour and broaden only when a specific risk,
+failure or release requirement justifies it. Stop repeating successful checks
+without a new change or unresolved concern. See the
+[focused validation policy](DEVELOPMENT-PROTOCOL.md#focused-validation-policy).
 
 A review decision records exact commit, reviewer/context, checks independently
 executed, evidence inspected, exclusions, residual risks and ACCEPT or HOLD.

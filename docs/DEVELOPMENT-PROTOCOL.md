@@ -78,6 +78,32 @@ The final report gives baseline and final HEAD, changed files, executed totals
 (pass/fail/skip/cancelled), unexecuted cases, corrections, performance, standing
 failures, risks, acceptance recommendation and next authorized action.
 
+## Focused validation policy
+
+The2026-10-27 human direction replaces routine full-regression repetition with
+focused validation. Plan tests for new/changed behaviour and directly affected
+integration boundaries. Reuse accepted evidence for unchanged areas; broad old
+suite, browser, database and benchmark sweeps are not the default for each slice.
+Select the smallest meaningful set that demonstrates a usable, correct result.
+Broaden only for a concrete failure, shared-core impact, unresolved risk or an
+explicit release requirement, and state that reason. Once relevant checks pass,
+repeat them only after a change, failure or remaining concern justifies it.
+
+Independent review inspects the retained implementation evidence and chooses
+narrow new-behaviour/challenge checks; it does not automatically repeat the full
+matrix. Prose-only changes use lightweight consistency checks. Avoid model/GPU
+work and new renders when existing artifacts can establish the relevant claim.
+Keep quiet-window admission and serial browser/build isolation for expensive work.
+Do not weaken assertions, skip ownership/data-integrity checks relevant to a change,
+hide failures, or mark unrun coverage passed. Record selected/excluded checks and
+residual uncertainty. Acceptance and product-direction gates remain unchanged.
+
+For later slices, derive the required gate inventory from that bounded selection
+instead of copying historical all-suite contracts. An explicit human scope change
+can revise an active test plan; preserve old results and explain the change rather
+than deleting inconvenient failures. I4's broad ordered run had already completed
+before this direction was received; retain it without repeating it during review.
+
 ## State and evidence updates
 
 `development-state.schema.json` validates `development-state.json` (AJV, draft 7).

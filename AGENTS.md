@@ -264,6 +264,20 @@ npm run dev                                # API :5174 + UI :5173
 
 `src/preview.js` exists so output can be *seen*. Use it.
 
+**Focused validation is the default.** Test new or changed behaviour and the
+boundaries it directly affects. Use accepted evidence for unchanged subsystems;
+do not routinely repeat the full legacy/browser/database/benchmark matrix for
+each slice. Choose the smallest meaningful checks that establish a usable,
+correct result, then finish the scoped work. Expand coverage only for a concrete
+regression, shared-core impact, unresolved risk or explicit release requirement.
+After a relevant pass, rerun only when a subsequent change or failure warrants it.
+Independent review should inspect existing evidence and run narrow new-behaviour
+or challenge checks, rather than duplicate the entire implementation run.
+Documentation-only changes need lightweight consistency checks, not product tests.
+Record selected checks, exclusions and remaining uncertainty honestly; preserve
+assertions, ownership/data-integrity safeguards and the independent acceptance gate.
+Avoid GPU/model work and expensive rendering unless the changed behaviour needs it.
+
 Run browser files in bounded serial isolation: each may rebuild the same Vite
 `dist`, so never run the bulk browser set concurrently or overlap it with a build.
 Use a process watchdog; a timed-out or cancelled file is not a pass. Count leaf
