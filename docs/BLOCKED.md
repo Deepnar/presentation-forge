@@ -344,8 +344,8 @@ scope limits; [the roadmap](ROADMAP.md#assistant-surface-integration) alone owns
 later interface/fairness/activation decisions. No production activation follows.
 
 
-I8 frozen source b9c2d20 has focused validation complete; exact-source independent
-review is pending. No missing backend/model execution blocks this offline/default-
+I8 source b9c2d20 is independently accepted: selected product26/26, governance4/4,
+typecheck0 and independent3/3. No ongoing I8 validation/review blocker remains. No missing backend/model execution blocks this offline/default-
 off slice. [Evaluation](V2-8I-8-EVAL.md) exposes selected-case browser evidence and
 provenance limits. Scope/remaining authority is solely in
 [the roadmap](ROADMAP.md#assistant-visible-editor).

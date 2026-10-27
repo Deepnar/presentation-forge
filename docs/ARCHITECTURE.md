@@ -2908,7 +2908,7 @@ execution, earlier harness/timing uncertainty and the separate
 [independent acceptance](reviews/V2-8I-7-3da0801.json).
 
 
-### V2-8I-8 existing-deck browser Assistant (source under review)
+### V2-8I-8 existing-deck browser Assistant (accepted at b9c2d20)
 
 The embedded project editor's existing right-rail tab contains AssistantPanel.
 Framework-free v2assistant/assistantController modules own captured private HTTP

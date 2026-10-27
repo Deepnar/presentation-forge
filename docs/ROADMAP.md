@@ -8920,7 +8920,7 @@ local inference. Only that separate transport correction is authorized; this aud
 | P0 — complete headless boundary | [Turn and approval ownership](#assistant-turn-approval-contract) | V2-8H independently accepted at22e7c97; durable bounded visible turns and atomic approval reuse the existing run queue. Hosted routes/UI remain in their own entry. |
 | P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | Connect accepted SearchProvider through canonical authority and preserve verifiable project-scoped citations; do not merely add a catalog name. |
 | P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
-| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 transport and I2 headless worker independently accepted; authenticated submission is independently accepted at2ba82cb; host policy and exact wake are accepted; the visible Assistant now has its approved I8 contract and scoped validation under review. |
+| P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 transport and I2 headless worker independently accepted; authenticated submission is independently accepted at2ba82cb; host policy and exact wake are accepted; the existing-deck Assistant is independently accepted in I8; remaining capability/context/live qualification retains separate contracts. |
 | P0 basic / P1 distributed | [Trace and spend admission](#assistant-trace-budget) | Make context/tool/instruction provenance observable, preserve unknown usage, and prevent parallel requests/retries bypassing account allowances. |
 | P0 pilot / P1 release | [Assistant qualification](#assistant-live-qualification) | Separate deterministic correctness from real-model usefulness, injection resistance, grounded claims and human slide quality. |
 | P2 vision; P0 honest quality gates | [Visual feedback](#assistant-visual-feedback) | Reuse deterministic checks and native renderers; qualify optional vision behind read-only revision-bound artifacts and bounded semantic proposals. |
@@ -9343,33 +9343,26 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-visible-editor"></a>
 
-  - [ ] **V2-8I-8 existing-deck browser Assistant — validated, independent review pending.**
-    Continuation from accepted I7 source3da0801, entry HEAD3b35c39, prepares
-    [the concrete surface contract](V2-8I-8-PLAN.md). Recommend the existing
-    right-rail Assistant tab: freeform current-slide/selection requests, saved
-    visible chat, explicit stored proposal Approve/Reject and exact I7 wake.
-    Draft/save gates and guarded authoritative refresh preserve human work;
-    applying a saved AI revision uses Version history for restoration and resets
-    session undo on reload. Inspector grid drafts need explicit preservation
-    across tab changes, since saveNow only commits pending inline text. Add a
-    minimal owner-bound availability read with headless parity to keep Send off
-    when execution flags are off, without any provider/key lookup. No activation,
-    new provider/context/storage policy, layout authority or creation/research
-    feature is authorized. The alternative dedicated chat page needs a revised
-    navigation/context contract. Human selected Existing Assistant tab on2026-10-27.
-    The separate plan review pins two-stage credential/revision capture, truthful
-    selected-edit/current-slide-read scope and canonical Cancel during pending
-    wake admission before code. Implementation/offline tests are authorized.
-    Focused new client/integration/Chrome/typecheck gates replace a routine old
-    matrix; browser/build waits for a quiet window. Stop after I8 exact-source
-    review if approved; no feature follows automatically.
-    Frozen source b9c2d20; [evaluation](V2-8I-8-EVAL.md) records26/26 selected
-    product leaves, governance4/4, typecheck0, four serial production builds0 and
-    independent final3/3. Chrome7/7 is an explicit selected-case composite, with
-    all earlier failures and reviewed source deltas retained. Narrow fixes address
-    availability doc:null refusal and explicit saved-load recovery; no canonical
-    engine/schema/renderer change. Default-off, offline fixtures only. Exact-source
-    independent ACCEPT/HOLD remains required before marking this item complete.
+  - [x] **V2-8I-8 existing-deck browser Assistant — independently accepted.**
+    Human approved the existing right-rail tab on2026-10-27; the concrete
+    [surface contract](V2-8I-8-PLAN.md) and separate plan review preceded code.
+    Exact source b9c2d2075da21608a92a458c1395ede0bbe67297 is
+    [independently accepted](reviews/V2-8I-8-b9c2d20.json) from I7 baseline3da0801.
+    Freeform current-slide/selection chat, saved visible turns and labeled semantic
+    proposals reuse H approval/history and I7 exact wake. Mounted grid drafts,
+    title/inline/save/session barriers and guarded authoritative attachment preserve
+    human work. Loading AI changes resets session undo, with History restoration
+    disclosed. Owner-bound advisory availability has headless CLI parity and no
+    provider lookup. Execution remains default-off; no creation/research or activation.
+    [Evaluation](V2-8I-8-EVAL.md) records selected product26/26, governance4/4,
+    typecheck0, four serial builds0 and independent final3/3. Chrome7/7 is explicitly
+    selected-case coverage, with all failures and reviewed source deltas retained.
+    Narrow corrections address doc:null ownership refusal, blocked saved-load
+    recovery/error clearing and owned UI-read aborts. No canonical engine, persistence
+    query/schema, compiler or renderer change. Old/PG/native/benchmark/live checks
+    are unexecuted this slice; known failures and provenance limits remain explicit.
+    Independent audit found no remaining blocker and no waiver. Stop after this
+    review/documentation/push closeout; acceptance does not authorize another feature.
 
     > **Learned.** A completed durable edit and safely attached editor revision
     > are separate states: retain explicit loading recovery when drafts block it.
@@ -9382,8 +9375,7 @@ local inference. Only that separate transport correction is authorized; this aud
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.
   Existing-deck editing is the approved first capability. I7 exact targeting is
-  independently accepted; the human-approved I8 contract above is implemented and
-  validated under independent review. Its existing tab reuses I7 and preserves
+  independently accepted; the human-approved I8 contract above is independently accepted. Its existing tab reuses I7 and preserves
   editor draft/save/proposal/cancel boundaries; acceptance is recorded separately. Existing read/decide/
   cancel/clear routes and the headless worker reuse accepted H/B authority; the accepted
   submit route also delegates to H. AcceptedI4 supplies owner-scoped potential-work
@@ -9501,9 +9493,10 @@ explicit-turn work and owner-scoped metadata discovery. These primitives provide
 no scheduling or execution from submission/discovery. AcceptedI5 adds explicit
 Auto-only/account-bound operator pickup, disabled by default. I6 independently
 accepts separately disabled explicit Bearer/account-pinned finite wake, not an
-always-on scheduler or guaranteed owner-wide drain. The remaining parent milestone
-integrates reliable progress and browser orchestration, the visible Assistant, canonical search/source and semantic creation
-tools, and qualifies live providers. Its full done-when gate is still pending. Any later
+always-on scheduler or guaranteed owner-wide drain. I7 exact-turn wake and I8
+existing-deck browser Assistant are independently accepted. The remaining parent
+milestone covers broader progress/scheduling, canonical search/source and semantic
+creation tools, richer context and live-provider qualification. Its full done-when gate is still pending. Any later
 scene inspection must retain the scoped semantic projection rather than exposing
 resolved layout as model input.
 

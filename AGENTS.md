@@ -70,8 +70,7 @@ owner-wide progress or completion. Exact project/generation/turn wake and the Au
 independently accepted at `3da0801`; they reuse the same finite host capacity and
 canonical H/I2 authority without owner-history scanning. Different active targets
 are busy; coalesced receipts confer no fresh-validity or completion guarantee.
-The existing editor Assistant is implemented in V2-8I-8 under independent source
-review: freeform current-slide/selection chat, explicit proposals and exact-target
+The existing editor Assistant is independently accepted in V2-8I-8 at b9c2d20: freeform current-slide/selection chat, explicit proposals and exact-target
 wake reuse the accepted authority. Grid/title/inline/save guards and authoritative
 reload preserve human work; loading AI changes clears session undo and uses Version
 history for restoration. Availability is owner-bound metadata with CLI parity.

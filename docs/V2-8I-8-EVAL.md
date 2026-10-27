@@ -4,8 +4,9 @@ Frozen source **b9c2d2075da21608a92a458c1395ede0bbe67297**, branch v2; accepted
 baseline **3da0801f64e88f7911f655cee288bb9b750c7c3d**, entry3b35c39. Human selected
 **Existing Assistant tab (Recommended)** on2026-10-27. The [approved contract](V2-8I-8-PLAN.md)
 and [separate plan review](reviews/V2-8I-8-plan-d5f789a.json) were pinned at4ef8491
-before runtime code. This report recommends independent exact-source acceptance;
-the implementer has not accepted the work. State records the actual review status.
+before runtime code. Separate [independent ACCEPT](reviews/V2-8I-8-b9c2d20.json) reviewed exact source
+and packet841176d. The reviewer found no remaining blocker; the implementer records
+that decision, with no self-acceptance. Later commits are documentation/evidence only.
 
 ## Result and boundaries
 
@@ -106,8 +107,8 @@ availability/export reads to owned AbortControllers for dispose/auth expiry,
 without changing successful browser flows. Auth/foreign expiry still clears
 private recovery state. Independent final3/3 (254ms) passes with exact frozen
 hashes; the intermediate2/2 (85ms), loading-error2/2 (103ms), and original failing source/log remain distinct
-in [independent evidence](v2-8i-8-evidence/independent/review.md). Final acceptance
-requires that separate reviewer's decision, not this recommendation.
+in [independent evidence](v2-8i-8-evidence/independent/review.md). The separate reviewer accepted the exact source with these retained limits; its
+decision supplies acceptance rather than the implementer's recommendation.
 
 No accepted H/I2/I5/I7 engine, persistence, compiler or renderer was weakened.
 Proposal formatting was refined from raw JSON/opaque identities to labeled text
@@ -159,10 +160,16 @@ unavailable pre-removal count/cause remain unresolved. No old helper/service was
 recreated. Source permits default-off existing-deck chat editing; enabling hosted
 execution remains a separate operational decision in the roadmap.
 
-Recommend independent acceptance of the bounded I8 source with these limits.
-Then update acceptance metadata only from the review record, commit/push scoped
-docs/evidence to origin/v2, verify cleanup/remote and **stop after I8**. No dependent
-feature is authorized. Runtime changed files: availability helper/CLI and thin
-server registration/routes; client/controller/AssistantPanel and SceneViewer;
-focused tests, old placeholder expectation, CDP key helper, governance mapping/
-schema. Documentation/evidence describes scope and acceptance separately.
+Independent acceptance is complete in the linked exact-source decision, with no
+waivers or blocking findings. All3 new independent challenges pass; the audit
+verified11 gate hash claims,16 changed source/test/governance paths,7 selected
+pass lines/unchanged first5 bodies and7 image hashes. Old/PG/live exclusions,
+all failures and unavailable-original limits are explicitly accepted as bounded
+scope, not converted into current passes. Cleanup evidence records the preserved
+pre-existing API and no persistent validation service acquired. Stop after the
+scoped origin/v2 documentation/evidence closeout; no dependent feature is authorized.
+
+Runtime changed files: availability helper/CLI and thin server registration/routes;
+client/controller/AssistantPanel and SceneViewer; focused tests, old placeholder
+expectation, CDP key helper and governance mapping/schema. Documentation/evidence
+records independent acceptance separately. Original three untracked paths remain.

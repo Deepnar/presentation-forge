@@ -32,18 +32,17 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current authorized slice — I8 browser Assistant
+## Latest accepted slice — I8 browser Assistant complete
 
 Human approved the existing Assistant tab; frozen source
-b9c2d2075da21608a92a458c1395ede0bbe67297 is implemented and validated under separate
-exact-source review. Read [contract](V2-8I-8-PLAN.md), [evaluation](V2-8I-8-EVAL.md),
+b9c2d2075da21608a92a458c1395ede0bbe67297 is independently [accepted](reviews/V2-8I-8-b9c2d20.json). Read [contract](V2-8I-8-PLAN.md), [evaluation](V2-8I-8-EVAL.md),
 state and HANDOFF; [roadmap](ROADMAP.md#assistant-visible-editor) alone owns scope.
 Selected product26/26, governance4/4, typecheck0 and independent final3/3 pass.
 Chrome7/7 is selected-case coverage, not a green whole-file process. Preserve
 all failed attempts and applicability/provenance notes. No real/local model,
-activation or dependent feature authorized. Stop after I8 review/docs/push closeout.
+activation or dependent feature authorized. I8 closeout is complete; later scope/authorization remains solely in the roadmap.
 
-## Latest accepted slice — I7 exact-turn wake complete
+## Accepted predecessor — I7 exact-turn wake complete
 
 Human approved exact project/generation/turn targeting on2026-10-27. Exact source
 3da0801f64e88f7911f655cee288bb9b750c7c3d is [independently accepted](reviews/V2-8I-7-3da0801.json)

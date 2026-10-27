@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+    "sha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8I-7-3da0801.json"
+    "source": "docs/reviews/V2-8I-8-b9c2d20.json"
   },
   "implementationHead": {
     "sha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
-    "note": "Frozen I8 runtime/tests/governance source under independent review. Selected product26/26, governance4/4, typecheck0, builds0; Chrome selected-case composite preserves all failures and source applicability, no all-green full-file claim. Offline/default-off; no production activation."
+    "note": "Independently accepted I8 exact source; selected product26/26, governance4/4, typecheck0 and independent3/3. Browser selected-case coverage preserves all attempts and reviewed deltas; no all-green whole-file claim. Later commits are docs/evidence only. Default-off/offline; no activation."
   },
   "activeMilestone": {
     "id": "V2-8I-8",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8I-8-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8I-8-b9c2d20.json",
+    "accepted": true
   },
   "validation": [
     {
