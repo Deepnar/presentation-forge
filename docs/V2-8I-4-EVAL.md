@@ -193,32 +193,71 @@ follows automatically.
 
 Accepted baseline remainsI3 `2ba82cb5c321c21d5648f577469f69e82cdcfb24`.
 Corrected implementation is `8378a20a819de569ef7b10b747d7ba6c481f529e`.
-The current complete238-file inventory/helper/source manifests and fresh runbook
-are in [the corrected evidence lineage](v2-8i-4-corrected-evidence/RUNBOOK.md).
-Fresh corrected focused48/48 and198bulkfiles2570/2570 pass,0fail/skip/cancelled;
-complete26serialfiles208/208 also pass,0fail/skip/cancelled. Remaining6gates
-are pending. Separate SOURCE/HELPER
-READY for8378a20/packetaa33b22 checked17helper/20source/147retired artifact hashes,
-including7original PPTXs and the unchanged ownership/adoption chain.
-[The delivered-message record](reviews/V2-8I-4-8378a20-source-harness.json) is
-source-only and supplies no independent runtime pass or implementation acceptance.
-Fresh qualification/preparation passed180.561seconds(meanCPU1.312%,iowait9.015%,
-diskbusy0.844%,weightedqueue0.0383), followed by fresh30second admission. New7659
-historical files/253PPTXs+5canonical originals are verified in complete snapshots.
-The ordered coordinator was stopped at the resource guard during5K.
-Nine complete serial files passed73/73; the interrupted5K attempt records7passes,
-1CDPtimeout and1unfinished leaf, with no finalTAPsummary. Three actualCPU busy
-samples98.946%,99.953%,99.338% triggered unchanged critical85% protection. The
-[complete attempt](v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/assessment.json)
-is preserved; no other workload was stopped. Fresh180.701second requalification (12samples,meanCPU9.018%,iowait8.802%)
-and fresh30second admission then allowed the unchanged full5Kfile to pass9/9,
-0fail/skip/cancelled. [The recovery record](v2-8i-4-corrected-evidence/resource-recovery-after-5k/retry-result.json)
-retains both qualifications and the full retry. The original timeout is classified
-as an environmental timing failure; it remains failed/incomplete historical evidence.
-The full26-file serial gate now passes208/208,0fail/skip/cancelled. Remaining
-PostgreSQL/command/native ordered execution is active;
-full gates, separate exact-source acceptance and cleanup remain required.
-No partial pass from the original source is a corrected-source pass.
+All50 ordered jobs completed. [The full matrix](v2-8i-4-corrected-evidence/full-matrix.json)
+contains238 disjoint primary files,3097pass/0fail/0skip/0cancelled/0unexecuted.
+Separate exact-source acceptance and owned-service cleanup remain pending.
+
+| Execution | Files | Pass | Fail / skip / cancelled |
+|---|---:|---:|---|
+| Non-browser bulk |198|2570|0 /0 /0|
+| Serial browser/build suites |26|208|0 /0 /0|
+| PostgreSQL/process primary set |14|319|0 /0 /0|
+| **Distinct primary total** |**238**|**3097**|**0 /0 /0**|
+| Additional discovery→I2→approve→execute→reopen/history/native flows |—|4|0 /0 /0|
+| Focused discovery contracts (overlap primary) |4|48|0 /0 /0|
+| Designated PostgreSQL contracts (overlap primary) |2|23|0 /0 /0|
+| Designated concurrency/faults (overlap primary) |2|19|0 /0 /0|
+| Process/worker/discovery subset (overlap primary) |4|59|0 /0 /0|
+| Separate en_IN BYOK locale diagnostic |1|9|1 /0 /0|
+
+Build/typecheck and canonical50cells pass. Actual stores are temporary SQLite and
+exclusively owned PostgreSQL15.18. Provider exchanges use only injected/loopback
+OpenAI-compatible and Anthropic fixtures: no real API/model/local inference.
+Exact commands/raw logs are in corrected evidence; primary totals exclude repeated
+focus/development/review executions. No source175 pass transfers.
+
+[Visual inspection](v2-8i-4-corrected-evidence/VISUAL-REVIEW.md) covers119 fresh
+images. [The native identity audit](v2-8i-4-corrected-evidence/native-identity-audit.json)
+checks15actual originals/107parts/365nonvisual properties, no duplicate within-part
+IDs. [Performance](v2-8i-4-corrected-evidence/performance.json):120slides/thumbs,
+1543msopen; maximum canvas delta0.1021652222px;50-cell compiler/ZIP558ms. The benchmark
+recorded running GitHEAD33d091e, a documentation descendant of unchanged source8378.
+[Actual128-row/3-page discovery samples](v2-8i-4-corrected-evidence/discovery-query-samples.json)
+were7.045msSQLite and11.867msPostgreSQL. Existing-index SQLite temporary sorting
+and PG sequential scans/hash joins/sorting remain explicit; no hard physical-work,
+database timeout, live-provider quality or production-percentile claim is made.
+
+All7659historical evidence files/253original PPTXs and5canonical outputs were
+restored/hash-verified. The finisher ranONCE; never rerun against restored originals.
+Fifteen fresh originals remain separately retained. Source/helper READY is
+[separate validation-only readiness](reviews/V2-8I-4-8378a20-source-harness.json),
+not acceptance. Independent review is still required.
+
+### Resource cancellation and successful recovery
+
+Initial qualification passed180.561s; the full snapshots preceded all generators.
+Nine serial files passed73/73 before unchanged5K suffered7pass/1CDPtimeout/
+1unfinished, no finalTAPsummary, under actualCPUbusy98.946%,99.953%,99.338%.
+The unchanged85% critical threshold stopped owned validation after3samples.
+[The failed/incomplete attempt](v2-8i-4-corrected-evidence/resource-interrupted-5k-attempt-1/assessment.json)
+remains retained; leaf cancellation total was unavailable. No unrelated process
+was stopped. Fresh180.701s/12sample quiet requalification (meanCPU9.018%,
+iowait8.802%) and30sadmission allowed the full unchanged5Kretry9/9,
+0fail/skip/cancelled. [Recovery evidence](v2-8i-4-corrected-evidence/resource-recovery-after-5k/retry-result.json)
+supports environmental timing classification; assertions/timeouts were unchanged.
+All50 completed jobs have verified fresh30sadmission;202 resource samples retain
+unresolved global I/O PSI/iowait provenance. No retrospective classifier invented.
+
+### Focused-testing direction —2026-10-27
+
+The broad ordered run completed while the chat was paused, before the instruction
+to substantially reduce repeated old testing arrived. Its actual results are
+retained. [The updated policy](DEVELOPMENT-PROTOCOL.md#focused-validation-policy)
+now uses focused new/changed-behaviour and affected-boundary checks, with broader
+runs only for concrete risk/release reasons. No second broad matrix, new render
+sweep or GPU/model work is required for this closeout; independent review should
+inspect this packet and choose narrow discovery/challenge checks. Product scope,
+assertions, integrity and independent acceptance remain unchanged.
 
 ### Plan and original-source execution
 
@@ -272,7 +311,8 @@ is explicitly adopted for corrected source in
 Original ownership bytes/hash, exact identity/resources/final TCP listener and
 actual PostgreSQL15.18 empty catalog were verified. Preparation/coordinator recheck
 that chain; corrected preparation has no container creation path. Fresh qualification
-and snapshots are still required before new generators. Root owns all slots.
+and complete snapshots were obtained before corrected generators. No test process
+remains. The exact owned backend awaits the independent review slot and cleanup.
 
 ### Limits and stop point
 
@@ -281,8 +321,8 @@ retired samples, not corrected performance. PostgreSQL plans showed sequential
 scans/hash joins/sorting; SQLite used existing indexes and a temporary sort.
 No fixed physical-work/timeout or production-percentile guarantee is made.
 Original-source120-slide opening was1539ms, chart/table canvas delta<0.031px and
-initial full-size screenshots showed no new overlap; corrected final frontend/
-native evidence must execute again. Inherited narrow partial canvas/overflow,
+initial full-size screenshots showed no new overlap. Those retired measurements
+are not corrected-source results; fresh results are recorded above. Inherited narrow partial canvas/overflow,
 SVG mixed-run/chart-consumer differences, standing BYOK locale failure, unexplained
 I/O PSI/iowait, live-provider qualification and interactive PowerPoint limits remain.
 No real model API or local inference has run. Stop after I4 independent acceptance

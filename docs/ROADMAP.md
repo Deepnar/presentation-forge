@@ -9203,15 +9203,13 @@ local inference. Only that separate transport correction is authorized; this aud
     review caught malformed UTF-8 replacement, reproduced and corrected narrowly.
     A later actual SQLite malformed-byte oracle retired source175 partial execution;
     bounded BLOB/fatal decoding and valid BOM identity are narrowly corrected at
-    source8378a20. All238files/nine gates must run fresh in corrected evidence; no
-    old partial pass transfers. Corrected freshfocus48/bulk2570 and9serial73 pass;
-    the5Kfile was resource-cancelled after7pass/1CDPtimeout/1unfinished at>98%CPU.
-    Its exact log is retained. Fresh180.701s quiet requalification and30s
-    admission allowed the unchanged full-file retry to pass9/9; this supports an
-    environmental timing classification. All26serialfiles208/208 now pass; remaining
-    PostgreSQL/command/native ordered validation is active.
-    Exact-source acceptance remains pending;
-    no PostgreSQL/full-validation result is inferred from development probes.
+    source8378a20. Fresh238primary files pass3097/3097 plus4distinct native
+    flows; focus48 overlaps primary. All9gates/build/type/50cells/119images and
+    15native archives are complete. Failed source175 and criticalCPU-cancelled5K
+    attempts remain retained; unchanged full5Kretry passed9/9 after fresh quiet
+    qualification. Historical7659files/253PPTXs+5canonical originals restored.
+    Exact-source independent acceptance and owned-service cleanup remain pending.
+    The2026-10-27 focused-testing direction avoids another broad review sweep.
     Later host owner selection/provider policy and pickup remain separate contracts.
 
   Subsequent slices still need
