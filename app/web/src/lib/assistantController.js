@@ -10,7 +10,7 @@ export function createAssistantController({ api, bridge, onChange, now = () => p
   timer = setTimeout, untimer = clearTimeout, uuid = () => crypto.randomUUID() }) {
   let state = { status: 'loading', available: false, page: null, older: [], offset: 0,
     busy: null, draft: '', error: null, notice: null, pendingSaved: false };
-  let disposed = false, fenced = false, visible = true, action = 0, readEpoch = 0, readAbort, mutationAbort, wakeAbort;
+  let disposed = false, fenced = false, visible = true, action = 0, readEpoch = 0, readAbort, mutationAbort, wakeAbort, availabilityAbort, exportAbort;
   let pollTimer, retryTimer, retryResolve, pollStart = null, readFailures = 0, reading = null;
   let pendingSubmit = null, pendingDecision = null;
   const observed = new Set();
@@ -18,7 +18,7 @@ export function createAssistantController({ api, bridge, onChange, now = () => p
   function publish(patch) { if (disposed) return; state = { ...state, ...patch }; onChange(state); }
   function stopTimers() { untimer(pollTimer); untimer(retryTimer); pollTimer = retryTimer = null; retryResolve?.(); retryResolve = null; }
   function expire() {
-    fenced = true; stopTimers(); readAbort?.abort(); mutationAbort?.abort(); wakeAbort?.abort(); action++; readEpoch++;
+    fenced = true; stopTimers(); readAbort?.abort(); mutationAbort?.abort(); wakeAbort?.abort(); availabilityAbort?.abort(); exportAbort?.abort(); action++; readEpoch++;
     pendingSubmit = pendingDecision = null; observed.clear();
     publish({ status: 'expired', page: null, older: [], available: false, draft: '', busy: null, error: 'session-changed', pendingSaved: false });
   }
@@ -109,7 +109,7 @@ export function createAssistantController({ api, bridge, onChange, now = () => p
     discardDraft: () => { pendingSubmit = null; if (current()) publish({ draft: '' }); },
     async start() {
       if (!current()) return;
-      try { const result = await api.availability(); if (!current()) return; publish({ available: result.enabled === true }); await refresh({ reset: true }); }
+      try { availabilityAbort = new AbortController(); const result = await api.availability(availabilityAbort.signal); if (!current()) return; publish({ available: result.enabled === true }); await refresh({ reset: true }); }
       catch (error) { problem(error); if (current()) publish({ status: 'error' }); }
     },
     refresh: () => refresh({ reset: true }),
@@ -199,8 +199,8 @@ export function createAssistantController({ api, bridge, onChange, now = () => p
       finally { await finish(ctx); }
     },
     reloadSaved: () => syncSaved(null, true),
-    async export() { if (!current()) return null; try { const value = await api.export(); return current() ? value : null; } catch (error) { problem(error); return null; } },
-    dispose() { disposed = true; action++; readEpoch++; stopTimers(); readAbort?.abort(); mutationAbort?.abort(); wakeAbort?.abort(); pendingSubmit = pendingDecision = null; observed.clear(); },
+    async export() { if (!current()) return null; try { exportAbort?.abort(); exportAbort = new AbortController(); const value = await api.export(exportAbort.signal); return current() ? value : null; } catch (error) { if (error?.name !== 'AbortError') problem(error); return null; } },
+    dispose() { disposed = true; action++; readEpoch++; stopTimers(); readAbort?.abort(); mutationAbort?.abort(); wakeAbort?.abort(); availabilityAbort?.abort(); exportAbort?.abort(); pendingSubmit = pendingDecision = null; observed.clear(); },
   };
   onChange(state); return Object.freeze(controller);
 }
