@@ -47,6 +47,8 @@ const rect = page => page.evaluate("(()=>{const r=document.querySelector('[data-
 async function capture(page, name) {
   await wait(page, "[...document.getAnimations()].every(a=>a.playState!=='running'||a.effect?.getTiming().iterations===Infinity)");
   await page.screenshot(path.join(OUT, name + '.png'));
+  const visual = await page.evaluate("({theme:document.documentElement.dataset.theme??'light',viewport:[innerWidth,innerHeight],panelBackground:getComputedStyle(document.querySelector('#editor-right-rail')).backgroundColor})");
+  await writeFile(path.join(OUT, name + '.json'), JSON.stringify(visual, null, 2));
 }
 before(async () => {
   await mkdir(OUT, { recursive: true });
@@ -137,7 +139,7 @@ check('composer navigation warns, default-off/read-only state cannot send and ac
 });
 check('narrow dark rail traps focus, Escape dismisses topmost confirmation and typing does not move canvas', async t => {
   const { e, page } = await setup(t); await page.viewport(375, 812);
-  await page.evaluate("localStorage.setItem('forge.theme','dark');document.documentElement.classList.add('dark')"); await assistant(page);
+  await page.evaluate("localStorage.setItem('forge.theme','dark');document.documentElement.dataset.theme='dark'"); await assistant(page);
   await wait(page, "document.querySelector('#editor-right-rail').getAttribute('role')==='dialog'");
   const before = await rect(page); await fill(page, '[data-assistant-panel] textarea', 'Line one'); await page.key(13, 'Enter', { text: '\r' }); await page.insertText('Line two');
   assert.match(await page.evaluate("document.querySelector('[data-assistant-panel] textarea').value"), /Line one\nLine two/);
@@ -145,7 +147,9 @@ check('narrow dark rail traps focus, Escape dismisses topmost confirmation and t
   const after = await rect(page); assert.ok(before.every((v, i) => Math.abs(v - after[i]) < .5));
   await button(page, 'Clear chat'); await wait(page, "document.querySelector('[role=dialog] [role=dialog]')"); await page.key(27, 'Escape');
   assert.equal(await page.evaluate("document.querySelector('#editor-right-rail').getAttribute('role')"), 'dialog');
+  assert.equal(await page.evaluate("document.documentElement.dataset.theme"), 'dark');
   await capture(page, 'narrow-assistant-dark');
+  await writeFile(path.join(OUT, 'narrow-canvas-stability.json'), JSON.stringify({ before, after, maxDelta: Math.max(...before.map((v,i)=>Math.abs(v-after[i]))) }, null, 2));
   const bounds = await page.evaluate("(()=>{const n=document.querySelector('#editor-right-rail'),r=n.getBoundingClientRect(),a=document.activeElement;return {rect:[r.x,r.y,r.right,r.bottom],viewport:[innerWidth,innerHeight],focusInside:n.contains(a)}})()");
   assert.ok(bounds.rect[0] >= 0 && bounds.rect[2] <= bounds.viewport[0] + 1); assert.equal(bounds.focusInside, true);
   await page.key(27, 'Escape'); await wait(page, "document.querySelector('#editor-right-rail').style.display==='none'||!document.querySelector('#editor-right-rail').getClientRects().length");
@@ -176,5 +180,5 @@ check('Send settles pending inline text and waits for its save; a later human sa
   assert.equal((await e.store.getProject(e.binding)).doc.revision, 3); assert.equal(e.events().length, settledEvents);
   assert.equal((await e.service.read(e.binding)).turns[0].state, 'awaiting-decision');
   assert.equal(await page.evaluate('window.assistantSubmissions'), 1);
-  await page.evaluate("document.documentElement.classList.add('dark')"); await capture(page, 'stale-proposal-human-save-dark');
+  await page.evaluate("document.documentElement.dataset.theme='dark'"); await capture(page, 'stale-proposal-human-save-dark');
 });
