@@ -9208,7 +9208,9 @@ local inference. Only that separate transport correction is authorized; this aud
     15native archives are complete. Failed source175 and criticalCPU-cancelled5K
     attempts remain retained; unchanged full5Kretry passed9/9 after fresh quiet
     qualification. Historical7659files/253PPTXs+5canonical originals restored.
-    Exact-source independent acceptance and owned-service cleanup remain pending.
+    Exact-source independent acceptance remains pending. Later read-only observation
+    finds the ownedID absent/5544refused; pre-removal count/cause are unavailable,
+    not inferred0. Reviewer must assess that provenance gap; no service recreation.
     The2026-10-27 focused-testing direction avoids another broad review sweep.
     Later host owner selection/provider policy and pickup remain separate contracts.
 

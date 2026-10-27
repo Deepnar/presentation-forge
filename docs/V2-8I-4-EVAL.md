@@ -195,7 +195,8 @@ Accepted baseline remainsI3 `2ba82cb5c321c21d5648f577469f69e82cdcfb24`.
 Corrected implementation is `8378a20a819de569ef7b10b747d7ba6c481f529e`.
 All50 ordered jobs completed. [The full matrix](v2-8i-4-corrected-evidence/full-matrix.json)
 contains238 disjoint primary files,3097pass/0fail/0skip/0cancelled/0unexecuted.
-Separate exact-source acceptance and owned-service cleanup remain pending.
+Separate exact-source acceptance remains pending. The later service absence and
+unavailable pre-removal count are explicitly reported below.
 
 | Execution | Files | Pass | Fail / skip / cancelled |
 |---|---:|---:|---|
@@ -312,7 +313,7 @@ Original ownership bytes/hash, exact identity/resources/final TCP listener and
 actual PostgreSQL15.18 empty catalog were verified. Preparation/coordinator recheck
 that chain; corrected preparation has no container creation path. Fresh qualification
 and complete snapshots were obtained before corrected generators. No test process
-remains. The exact owned backend awaits the independent review slot and cleanup.
+remains. The formerly owned backend is now absent; read the late-absence limitation below.
 
 ### Limits and stop point
 
@@ -327,3 +328,16 @@ SVG mixed-run/chart-consumer differences, standing BYOK locale failure, unexplai
 I/O PSI/iowait, live-provider qualification and interactive PowerPoint limits remain.
 No real model API or local inference has run. Stop after I4 independent acceptance
 and exact-owned cleanup; no hosted provider/scheduler/Assistant implementation.
+
+### Late owned-service absence —2026-10-27
+
+After all50ordered jobs completed, the resumed session found exact ownedID
+`e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce` absent and5544
+refusing connections. [The saved read-only observation](v2-8i-4-corrected-evidence/owned-postgres-late-absence.json)
+retains actual Docker errors and identity. No pre-removal catalog observation was
+saved; its count and the removal cause are unavailable. No stop/recreation was
+issued to fill that gap, and no zero count is inferred from test teardown. This
+does not erase actual PG primary319/319 execution, but current independent PG replay
+is unexecuted. The planned save0→single-stop sequence cannot be retroactively
+performed. Independent review must explicitly assess this residual provenance
+limitation. Do not execute removed-service helpers or recreate the instance.

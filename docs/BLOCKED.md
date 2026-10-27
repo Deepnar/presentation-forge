@@ -311,3 +311,11 @@ requalification and unchanged full5Kretry9/9,0fail/skip/cancelled. The original
 independent exact-source decision and exact-owned cleanup are active requirements,
 not absent product direction. See [the evaluation](V2-8I-4-EVAL.md) and
 [roadmap](ROADMAP.md#assistant-work-discovery).
+
+I4's completed primary validation remains retained. On2026-10-27 its formerly
+owned backend was already absent and5544refused; no pre-removal catalog/count was
+saved and removal cause is unavailable. This cannot be reconstructed. Current
+independent PG replay is unavailable; review must assess the provenance limitation.
+No service recreation or another broad run is needed under the
+[focused policy](DEVELOPMENT-PROTOCOL.md#focused-validation-policy). See
+[evaluation](V2-8I-4-EVAL.md) and [roadmap](ROADMAP.md#assistant-work-discovery).

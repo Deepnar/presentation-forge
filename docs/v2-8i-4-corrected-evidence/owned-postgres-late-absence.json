@@ -1,0 +1,24 @@
+{
+  "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "atUtc": "2026-10-27T06:42:17.337640+00:00",
+  "id": "e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce",
+  "port": 5544,
+  "inspectExitCode": 1,
+  "inspectStderr": "error: no such object: e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce\n",
+  "matchingContainerIds": [],
+  "exactIdAbsent": true,
+  "portConnectionRefused": true,
+  "coordinatorCompleted": {
+    "implementationSha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+    "runs": 50,
+    "orderedExecutionComplete": true
+  },
+  "ownedEntryChecksSha256": "5a0bccb2045bcde878f3f6552c129d2e705da51558db754514bdbf3ea2ca7610",
+  "preRemovalDatabaseCount": null,
+  "preRemovalObservationSaved": false,
+  "removalCause": "Unavailable; do not infer a host reboot or an exact deletion event from late absence.",
+  "additionalStopOrRemovalIssued": false,
+  "serviceRecreated": false,
+  "unrelatedServicesModified": false,
+  "classification": "Read-only late absence after completed ordered execution. No saved pre-removal catalog; exact0cannot be reconstructed. Existing actual PG test results remain historical execution, independent current PG checks are unavailable."
+}

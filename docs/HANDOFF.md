@@ -21,14 +21,16 @@ coordinator against restored originals. Retired source175 partial results remain
 historical only. RawSQLite corruption and validBOM fail-first corrections, initial
 5KcriticalCPU cancellation and unchanged9/9quiet retry are retained in evaluation.
 
-Exact exclusively ownedI4 PostgreSQL15.18 remains live:
-e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce,
-loopback5544. Same-ID source-correction adoption is saved/fsynced; no replacement.
-No coordinator/browser/test remains. After separate review and explicit DB release,
-use corrected cleanup-owned.py with --after-review-database-checks and
-FORGE_VALIDATION_OUT=out/v2-8i-4-corrected-validation: save/fsync ACTUAL0catalog,
-then one exact-ID stop, bounded and fresh independent absence/5544refusal checks.
-Never use retired source175 cleanup or recreate a removed instance.
+The exact formerly ownedI4 PostgreSQL15.18 instance is NOW ABSENT:
+e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce.
+Read-only Docker inspection finds noexactID and5544refuses connections. No
+pre-removal catalog was saved; actual count/cause are UNAVAILABLE and must not be
+reconstructed. No extra stop/removal/recreation was issued. Same-ID adoption and
+actual primaryPG319/319 remain retained execution; independent current PG replay
+is unavailable. [Late-absence record](v2-8i-4-corrected-evidence/owned-postgres-late-absence.json).
+Never execute cleanup/prepare/coordinators or recreate this removed backend.
+Independent review must explicitly assess this provenance limitation; it is not a
+fabricated0catalog or a missing primary test pass. Root owns no active service.
 
 Preserve original untracked .agents/ and both master/architecture prompt files.
 No real model API/local inference, hosted provider/scheduler/Assistant feature,
