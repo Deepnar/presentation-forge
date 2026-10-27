@@ -37,9 +37,10 @@ fetching, provider selection, scene edits or broader project reads.
 Recommendation: permit that grant mechanism for this headless slice. All
 implementation tests remain offline/injected/loopback. No hosted/Assistant
 activation, real model/search request or production configuration change is
-included. No new Forge query/transcript/source-registry persistence is added; results live
-only in the bounded invocation. The configured search backend may retain its own
-query logs under its policy; Forge cannot promise deletion or non-retention there. Persistent sources/retention need the separate
+included. No new Forge query/transcript/source-registry persistence is added;
+results live only in the bounded invocation. The configured search backend may retain its own
+query logs under its policy; Forge cannot promise deletion or non-retention there.
+Persistent sources/retention need the separate
 [registry contract in the parent entry](ROADMAP.md#assistant-search-source-integrity).
 
 ## Concrete implementation contract
@@ -50,8 +51,8 @@ query logs under its policy; Forge cannot promise deletion or non-retention ther
    SearchRequest continues to allow limit20/perHost5; preserve that schema/adapter
    behavior. Reuse validation vocabulary/helpers with explicit stricter tool caps;
    tests prove the tool is a subset and each provider uses its exact canonical
-   schema, rather than maintaining independent provider-local variants. Reject owner/project/provider/baseURL/credential/page-
-   fetch arguments and executable/non-plain input without invoking it. Validate
+   schema, rather than maintaining independent provider-local variants. Reject
+   owner/project/provider/baseURL/credential/page-fetch arguments and executable/non-plain input without invoking it. Validate
    both wire families against the exact canonical schema, not a permissive copy.
 2. Trusted host composes owner/project/saved-revision identity, authorization
    recheck, SearchProvider instance and finite grant. Snapshot identity/grant before
@@ -76,11 +77,13 @@ query logs under its policy; Forge cannot promise deletion or non-retention ther
    reads, RunPlan and embedded run definitions. Update drift or inventory tests
    which currently equate all tools with content tools or exclude only edit_content
    to assert those preserved exact sets. Keep scene mutation authority closed:
-   RunPlan and durable RunReceipt accept
-   only the four existing content tools. A schema reference to the extended
+   RunPlan and durable RunReceipt accept only the four existing content tools. A schema reference to the extended
    ToolRequest, including an inline/embedded copy, must not accidentally permit
-   queued web_search or external effects in runtime.advance. No H/I2 turn schema, durable proposal, queue, store query or
-   history semantics changes. Source-only research does not mint an edit proposal.
+   queued web_search or external effects in runtime.advance. No H/I2 turn schema,
+   durable proposal, queue, store query or history semantics changes. Source-only research does not mint an edit proposal.
+   Existing H preparation, turn workers and converse entry points cannot acquire
+   search; only a distinct explicitly trusted J1 research factory/entry creates
+   the research session.
 6. Grant ceilings: at most3 search calls, at most24 normalized source results in
    aggregate; one sequential search at a time, no automatic search retries. Every
    attempted call consumes allowance, including failure/timeout; duplicate call
@@ -99,8 +102,15 @@ query logs under its policy; Forge cannot promise deletion or non-retention ther
    and explicit warnings within accepted output/context limits. Bound the entire
    invocation result to65536 serialized characters, refuse overflow without
    silently dropping citations. No claim that snippet identity verifies a full
-   page, a locator or an assertion. Any response text remains unverified model
-   output; fabricated source identifiers never become registered citations.
+   page, a locator or an assertion. Final success is a bounded research DTO with
+   projectRevision, model summary/text, ephemeral bounded conversation trace and
+   accumulated validated SourceRefs (at most24), rather than discarding earlier
+   sources when the final model response has no calls. Every returned row consumes
+   the aggregate result allowance; deduplicate by immutable identity and retain
+   first-seen retrieval provenance. Conflicting same-ID content refuses. No raw
+   tool transcript/query list in the final DTO. Text remains unverified model
+   output; invented source IDs in it never become registered citations. The source
+   set does not establish claim support or durable source/citation attachment.
 8. On cancellation, owner/project/revision change, expiry or failed grant recheck,
    refuse publication and stop further exchanges. Reuse only injected budgeted
    model-provider behavior and ephemeral trace/output reservations. Unknown usage
