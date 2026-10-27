@@ -10,15 +10,15 @@ export function createAssistantController({ api, bridge, onChange, now = () => p
   timer = setTimeout, untimer = clearTimeout, uuid = () => crypto.randomUUID() }) {
   let state = { status: 'loading', available: false, page: null, older: [], offset: 0,
     busy: null, draft: '', error: null, notice: null, pendingSaved: false };
-  let disposed = false, visible = true, action = 0, readEpoch = 0, readAbort, mutationAbort, wakeAbort;
+  let disposed = false, fenced = false, visible = true, action = 0, readEpoch = 0, readAbort, mutationAbort, wakeAbort;
   let pollTimer, retryTimer, retryResolve, pollStart = null, readFailures = 0, reading = null;
   let pendingSubmit = null, pendingDecision = null;
   const observed = new Set();
-  const current = () => { if (disposed) return false; try { api.check(); return true; } catch { expire(); return false; } };
+  const current = () => { if (disposed || fenced) return false; try { api.check(); return true; } catch { expire(); return false; } };
   function publish(patch) { if (disposed) return; state = { ...state, ...patch }; onChange(state); }
   function stopTimers() { untimer(pollTimer); untimer(retryTimer); pollTimer = retryTimer = null; retryResolve?.(); retryResolve = null; }
   function expire() {
-    stopTimers(); readAbort?.abort(); mutationAbort?.abort(); wakeAbort?.abort(); action++; readEpoch++;
+    fenced = true; stopTimers(); readAbort?.abort(); mutationAbort?.abort(); wakeAbort?.abort(); action++; readEpoch++;
     pendingSubmit = pendingDecision = null; observed.clear();
     publish({ status: 'expired', page: null, older: [], available: false, draft: '', busy: null, error: 'session-changed', pendingSaved: false });
   }

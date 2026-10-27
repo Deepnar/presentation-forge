@@ -1030,7 +1030,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [pendingSwitchId, setPendingSwitchId] = useState(null);
   const pendingSwitchRef = useRef(null);
   // V2-7A unified shell: collapsible rails, right-rail tabs
-  // (inspector vs assistant placeholder), present overlay, and an
+  // (inspector vs Assistant), present overlay, and an
   // explicit leave guard for workspace navigation. All editing
   // behavior underneath is unchanged.
   const [leftCollapsed, setLeftCollapsed] = useState(false);
@@ -1066,7 +1066,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     if (dirty) gridDraftsRef.current.add(id); else gridDraftsRef.current.delete(id);
     setGridPending(gridDraftsRef.current.size > 0);
   }, []);
-  const assistantBridge = useMemo(() => ({ settle: options => assistantBridgeRef.current.settle(options), syncSaved: options => assistantBridgeRef.current.syncSaved(options) }), []);
+  const assistantBridge = useMemo(() => ({ settle: options => assistantBridgeRef.current.settle(options), syncSaved: options => assistantBridgeRef.current.syncSaved(options), describe: edit => assistantBridgeRef.current.describe(edit) }), []);
   const projectRef = useRef(null);
   const savedEngineRevRef = useRef(0);
   const pendingSaveRef = useRef(null);
@@ -1474,7 +1474,13 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     if (attached && focused?.isConnected) focused.focus({ preventScroll: true });
     return { loaded: attached === true, deferred: !attached };
   }
-  assistantBridgeRef.current = { settle: settleAssistant, syncSaved: syncAssistantSaved };
+  function describeAssistantTarget(edit) {
+    const scenes = docRef.current?.snapshot().scenes ?? [];
+    const index = scenes.findIndex(scene => scene.id === edit.slideId);
+    const row = index >= 0 ? flattenLayers(scenes[index].elements).find(item => item.id === edit.elementId) : null;
+    return row ? `Slide ${index + 1} · ${row.label}` : `Saved ${edit.kind} change`;
+  }
+  assistantBridgeRef.current = { settle: settleAssistant, syncSaved: syncAssistantSaved, describe: describeAssistantTarget };
 
   function historyKindLabel(m) {
     if (!m) return "";
@@ -1986,7 +1992,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         {embedded && onBack && (
           <button type="button" aria-label="Back to workspace" title="Back to presentations" onClick={onBack} className={shellBtn}>← Workspace</button>
         )}
-        <button type="button" aria-label={leftCollapsed ? "Show slides rail" : "Hide slides rail"} title={leftCollapsed ? "Show slides rail" : "Hide slides rail"} aria-pressed={!leftCollapsed} onClick={() => setLeftCollapsed((v) => !v)} className={shellBtn}>Slides</button>
+        <button type="button" aria-label={leftCollapsed ? "Show slides rail" : "Hide slides rail"} title={leftCollapsed ? "Show slides rail" : "Hide slides rail"} aria-pressed={!leftCollapsed} onClick={() => { if (narrow) setRightOpen(false); setLeftCollapsed((v) => !v); }} className={shellBtn}>Slides</button>
         {project ? (
           <input
             aria-label="Project title"
@@ -2024,9 +2030,10 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         )}
         <button type="button" aria-label="Present" title="Present from the current slide" onClick={openPresent} className={shellBtn}>Present</button>
         <button type="button" aria-label="Assistant" title={embedded ? "Open Assistant" : "AI assistant (not available in standalone viewer)"} aria-pressed={rightTab === "assistant" && rightOpen} onClick={() => chooseRightTab("assistant")} className={shellBtn}>Assistant</button>
-        <button type="button" aria-label={rightOpen ? "Hide inspector rail" : "Show inspector rail"} title={rightOpen ? "Hide inspector rail" : "Show inspector rail"} aria-pressed={rightOpen} onClick={() => setRightOpen((v) => !v)} className={shellBtn}>Inspector</button>
+        <button type="button" aria-label={rightOpen && rightTab === "inspector" ? "Hide inspector rail" : "Show inspector rail"} title={rightOpen && rightTab === "inspector" ? "Hide inspector rail" : "Show inspector rail"} aria-pressed={rightOpen && rightTab === "inspector"} onClick={() => rightTab !== "inspector" ? chooseRightTab("inspector") : setRightOpen((v) => !v)} className={shellBtn}>Inspector</button>
       </div>
       <div className="relative flex min-h-0 flex-1">
+      {narrow && rightOpen && <div aria-hidden data-assistant-backdrop className="absolute inset-0 z-30 bg-[var(--color-overlay)]" onClick={() => setRightOpen(false)} />}
       {narrow && !leftCollapsed && (
         <div aria-hidden data-rail-backdrop className="absolute inset-0 z-30 bg-[var(--color-overlay)]" onClick={() => setLeftCollapsed(true)} />
       )}
@@ -2399,14 +2406,15 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           selection readout, the contextual format panel (same
           components and commit paths as the old bottom dock), and
           slide properties when nothing is selected. The Assistant
-          tab is a reserved, honest placeholder. */}
+          shares the rail without unmounting Apply-only inspector drafts. */}
       <aside
-        ref={rightRailRef} aria-label={narrow && rightOpen ? "Editor side panel" : "Inspector"} role={narrow && rightOpen ? "dialog" : undefined} aria-modal={narrow && rightOpen ? true : undefined} tabIndex={-1}
+        id="editor-right-rail" ref={rightRailRef} aria-label="Inspector" aria-labelledby={`right-tab-${rightTab}`} role={narrow && rightOpen ? "dialog" : undefined} aria-modal={narrow && rightOpen ? true : undefined} tabIndex={-1}
         className={`min-h-0 flex-none flex-col overflow-hidden border-line bg-panel ${rightOpen ? "flex" : "hidden"} ${narrow ? "absolute inset-y-0 right-0 z-40 w-72 border-l shadow-[var(--shadow-float)]" : "relative w-72 border-l"}`}
       >
         <div role="tablist" aria-label="Right rail" className="flex flex-none gap-1 border-b border-line p-2">
           <button type="button" id="right-tab-inspector" aria-controls="right-panel-inspector" tabIndex={rightTab === "inspector" ? 0 : -1} onKeyDown={rightTabKey} role="tab" aria-selected={rightTab === "inspector" ? "true" : "false"} onClick={() => chooseRightTab("inspector")} className={shellTab(rightTab === "inspector") + " flex-1"}>Inspector</button>
           <button type="button" id="right-tab-assistant" aria-controls="right-panel-assistant" tabIndex={rightTab === "assistant" ? 0 : -1} onKeyDown={rightTabKey} role="tab" aria-selected={rightTab === "assistant" ? "true" : "false"} onClick={() => chooseRightTab("assistant")} className={shellTab(rightTab === "assistant") + " flex-1"}>Assistant</button>
+          <button type="button" aria-label="Close side panel" className={shellBtn} onClick={() => setRightOpen(false)}>×</button>
         </div>
         <div id="right-panel-assistant" role="tabpanel" aria-labelledby="right-tab-assistant" hidden={rightTab !== "assistant"} style={{ display: rightTab === "assistant" ? "flex" : "none" }} className="min-h-0 flex-1 flex-col overflow-hidden p-3">
           {embedded && project && !project.recoverable ? (

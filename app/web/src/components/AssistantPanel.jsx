@@ -10,7 +10,7 @@ const messages = {
   'pending-data': 'Apply or cancel the chart/table draft in Inspector first.',
   'pending-title': 'Finish or cancel the project title edit first.',
   'save-blocked': 'The presentation could not be saved. Your message and edits are kept.',
-  'stale-project': 'The saved presentation changed. Review it and send a fresh request; this proposal cannot be rebound.',
+  'stale-project': 'The saved presentation changed. Reject this outdated proposal and send a fresh request; it cannot be rebound.',
   'stale-conversation': 'The conversation changed. Review its saved status before trying again.',
   'stale-generation': 'The chat was cleared or replaced. Refresh saved status.',
   'read-only': 'Open the presentation in edit mode to send or approve changes.',
@@ -23,11 +23,14 @@ const messages = {
   'wake-capacity': 'Host capacity is full. Retry this saved request later.',
 };
 function status(turn) { return turn.state === 'approved' ? `Approved · ${turn.run?.status ?? 'pending'}${turn.run?.code ? ` · ${turn.run.code}` : ''}` : turn.state.replaceAll('-', ' '); }
-function proposalText(edit) {
-  if (edit.kind === 'text') return edit.text ?? (edit.paragraphs ?? []).map(p => p.runs?.map(r => r.text).join('') ?? '').join('\n');
-  if (edit.kind === 'chart') return JSON.stringify({ categories: edit.categories, series: edit.series });
-  if (edit.kind === 'table') return JSON.stringify(edit.rows);
-  return 'Semantic content change';
+function ProposedContent({ edit }) {
+  if (edit.kind === 'text') return <p className="whitespace-pre-wrap">{edit.text}</p>;
+  const rows = edit.kind === 'chart' ? (edit.categories ?? []).map((category, index) =>
+    [category, ...(edit.series ?? []).map(series => series.values[index])]) : edit.rows ?? [];
+  return <div className="max-h-44 max-w-full overflow-auto"><table className="border-collapse text-left text-[11.5px]">
+    {edit.kind === 'chart' && <thead><tr>{['Category', ...(edit.series ?? []).map(series => series.name)].map((label, i) => <th key={i} className="border border-line px-1.5 py-1">{label}</th>)}</tr></thead>}
+    <tbody>{rows.map((row, i) => <tr key={i}>{row.map((value, j) => <td key={j} className="border border-line px-1.5 py-1">{String(value)}</td>)}</tr>)}</tbody>
+  </table></div>;
 }
 export default function AssistantPanel({ projectId, active: shown, writable, blockReason, intent, preview, bridge, register, onInspector, onHistory }) {
   const [state, setState] = useState(null), [scope, setScope] = useState('slide'), [confirmClear, setConfirmClear] = useState(false);
@@ -110,8 +113,8 @@ export default function AssistantPanel({ projectId, active: shown, writable, blo
           {turn.proposal && <details open={turn.state === 'awaiting-decision'} className="mt-2">
             <summary>Proposed changes</summary>
             <ul className="mt-1 space-y-2">{(turn.proposal.edits ?? []).map((edit, index) => <li key={index}>
-              <span className="font-semibold">{edit.kind} · {edit.elementId}</span>
-              <pre className="max-h-44 overflow-auto whitespace-pre-wrap break-words font-sans">{proposalText(edit)}</pre>
+              <span className="font-semibold">{bridge.describe(edit)}</span>
+              <ProposedContent edit={edit} />
             </li>)}</ul>
             {turn.state === 'awaiting-decision' && <div className="mt-2">
               <p className="mb-1 text-[11.5px] text-fg-muted">Loading saved AI changes clears session undo. Restore earlier content through Version history.</p>
