@@ -1,6 +1,8 @@
 # V2-8J-1 — bounded canonical web research preparation
 
-Status: proposed contract; human direction and plan readiness review pending.
+Status: proposed contract; human query-disclosure direction pending. Separate
+plan review found the boundary ready for direction with the clarifications below.
+Readiness is not implementation authorization or source acceptance.
 Accepted baseline b9c2d2075da21608a92a458c1395ede0bbe67297; planning entry
 2e6bf40a4549d987384bda113fc056a3a34cb00f, branch v2, origin/v2 only.
 Parent and sole work registry: [canonical search/source integrity](ROADMAP.md#assistant-search-source-integrity).
@@ -35,15 +37,20 @@ fetching, provider selection, scene edits or broader project reads.
 Recommendation: permit that grant mechanism for this headless slice. All
 implementation tests remain offline/injected/loopback. No hosted/Assistant
 activation, real model/search request or production configuration change is
-included. Results live only in the bounded invocation, with no query/transcript/
-source registry persistence added. Persistent sources/retention need the separate
+included. No new Forge query/transcript/source-registry persistence is added; results live
+only in the bounded invocation. The configured search backend may retain its own
+query logs under its policy; Forge cannot promise deletion or non-retention there. Persistent sources/retention need the separate
 [registry contract in the parent entry](ROADMAP.md#assistant-search-source-integrity).
 
 ## Concrete implementation contract
 
-1. Canonical web_search request reuses the accepted SearchRequest vocabulary:
-   query1..500 characters, limit1..8 (default8), perHost1..2 (default2), accepted
-   language/timeRange only. Reject owner/project/provider/baseURL/credential/page-
+1. Canonical web_search uses the accepted SearchRequest field vocabulary with
+   narrower J1 tool/grant ceilings: query1..500 characters, limit1..8 (default8),
+   perHost1..2 (default2), accepted language/timeRange only. Standalone V2-8F
+   SearchRequest continues to allow limit20/perHost5; preserve that schema/adapter
+   behavior. Reuse validation vocabulary/helpers with explicit stricter tool caps;
+   tests prove the tool is a subset and each provider uses its exact canonical
+   schema, rather than maintaining independent provider-local variants. Reject owner/project/provider/baseURL/credential/page-
    fetch arguments and executable/non-plain input without invoking it. Validate
    both wire families against the exact canonical schema, not a permissive copy.
 2. Trusted host composes owner/project/saved-revision identity, authorization
@@ -64,15 +71,23 @@ source registry persistence added. Persistent sources/retention need the separat
    false, bound to the same project and snapshot revision. Unsupported/forged
    result bodies refuse. Never place raw backend payloads, layout/styles, secrets
    or hidden reasoning in context. Search snippets are untrusted data, never policy.
-5. Keep scene mutation authority closed: RunPlan and durable RunReceipt accept
+5. Pin explicit existing content/read subsets at every accepted boundary, including
+   base ToolSession catalog/execute, ProviderRunRequest/ConversationRequest initial
+   reads, RunPlan and embedded run definitions. Update drift or inventory tests
+   which currently equate all tools with content tools or exclude only edit_content
+   to assert those preserved exact sets. Keep scene mutation authority closed:
+   RunPlan and durable RunReceipt accept
    only the four existing content tools. A schema reference to the extended
-   ToolRequest must not accidentally permit queued web_search or external effects
-   in runtime.advance. No H/I2 turn schema, durable proposal, queue, store query or
+   ToolRequest, including an inline/embedded copy, must not accidentally permit
+   queued web_search or external effects in runtime.advance. No H/I2 turn schema, durable proposal, queue, store query or
    history semantics changes. Source-only research does not mint an edit proposal.
 6. Grant ceilings: at most3 search calls, at most24 normalized source results in
    aggregate; one sequential search at a time, no automatic search retries. Every
    attempted call consumes allowance, including failure/timeout; duplicate call
-   IDs never dispatch twice. Search receives remaining parent deadline/abort and
+   IDs never dispatch twice. Any search failure/refusal stops the whole research
+   invocation with its bounded failure/trace; no partial successful answer or
+   new error-continuation protocol. Existing history admits successful unchanged
+   results only. Search receives remaining parent deadline/abort and
    at most10 seconds per call. Invocation wall time at most30 seconds, within
    existing provider/host budgets; take the tighter caller/profile bound. Existing
    model exchange/output/tool-call/wire limits apply too, including search calls.
@@ -87,8 +102,12 @@ source registry persistence added. Persistent sources/retention need the separat
    page, a locator or an assertion. Any response text remains unverified model
    output; fabricated source identifiers never become registered citations.
 8. On cancellation, owner/project/revision change, expiry or failed grant recheck,
-   refuse publication and stop further exchanges. Unknown model usage remains
-   conservatively accounted through existing receipts; no replay/rebilling claim.
+   refuse publication and stop further exchanges. Reuse only injected budgeted
+   model-provider behavior and ephemeral trace/output reservations. Unknown usage
+   remains conservative. Existing ProviderRunHost callbacks can persist H state:
+   do not silently invoke those reserve/dispatch/receipt/proposal hooks from J1
+   or claim new durable/account/search-billing/replay guarantees. Hosted/account
+   integration retains its separate contract.
    Late search/provider promises cannot revive an expired invocation. No workers,
    polling/scheduler, cross-turn memory, model fallback or public research endpoint.
 9. Shared callable headless domain seam is the implementation entry point. No HTTP

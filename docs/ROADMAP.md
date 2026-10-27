@@ -9053,7 +9053,10 @@ local inference. Only that separate transport correction is authorized; this aud
     bounded injected search and model continuation. Base tools and queued plans/
     receipts retain current authority. No persistence/UI/activation/model run.
     Human direction is required on scoped private-content query disclosure;
-    implementation remains unauthorized until recorded. Offline tests only.
+    implementation remains unauthorized until recorded. Plan review pins explicit
+    preserved tool subsets, a source-bearing ephemeral final DTO, fail-stop search
+    behavior and separate research entry without H persistence hooks. Backend query
+    logs are governed by the configured backend policy. Offline tests only.
     Grant absence must preserve existing default-off editing behavior. Source
     registry/locator/retention and later research-backed creation remain separate.
     Look-ahead reuses this capability/catalog seam without another document/queue.

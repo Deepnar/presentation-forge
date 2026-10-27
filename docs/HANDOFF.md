@@ -9,8 +9,9 @@ ROADMAP.md#assistant-web-research-preparation. Read V2-8J-1-PLAN.md.
 Recommendation is a trusted-grant, headless inspect-only canonical web_search
 conversation over accepted SearchProvider and scoped reads. This adds no durable
 sources/UI/activation. New query disclosure requires human direction before code;
-state.nextCandidate.authorized remains false. Independent plan readiness review
-is pending. Do not implement before the decision or treat a readiness review as
+state.nextCandidate.authorized remains false. Independent plan review found the boundary ready for direction, with technical
+clarifications pinned in the plan before code. Its committed review record will
+identify exact reviewed plan revisions. Do not implement before the decision or treat a readiness review as
 policy approval. No re-approval of accepted I8 surface/retention is needed.
 
 Startup recovered clean tracked state and preserved original .agents/ plus the
