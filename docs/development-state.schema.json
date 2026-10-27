@@ -150,7 +150,10 @@
               "host-pickup-cli",
               "host-wake",
               "host-wake-sqlite",
-              "host-wake-http"
+              "host-wake-http",
+              "target-wake",
+              "target-wake-sqlite",
+              "target-wake-http"
             ]
           },
           "status": {
@@ -336,7 +339,8 @@
                 "enum": [
                   "V2-PPTX-ID",
                   "V2-8I-5",
-                  "V2-8I-6"
+                  "V2-8I-6",
+                  "V2-8I-7"
                 ]
               }
             },

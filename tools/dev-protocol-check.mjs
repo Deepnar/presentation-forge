@@ -17,6 +17,7 @@ const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
   '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'native-pptx': 'tests', 'turn-approval': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  'target-wake': 'tests', 'target-wake-sqlite': 'tests', 'target-wake-http': 'tests',
   'host-wake': 'tests', 'host-wake-sqlite': 'tests', 'host-wake-http': 'tests',
   'host-pickup': 'tests', 'host-pickup-sqlite': 'tests', 'host-pickup-cli': 'tests',
   'conversation-http': 'tests', 'turn-worker': 'tests', 'turn-discovery': 'tests', 'postgres-contract': 'tests', 'cross-process-faults': 'tests',
@@ -27,6 +28,13 @@ const KINDS = {
 const DEFAULT_REQUIRED_CHECKS = ['non-browser-bulk', 'serial-browser', 'postgres-contract',
   'cross-process-faults', 'production-build', 'typecheck', 'benchmark-50', 'frontend-visual'];
 const MILESTONES = {
+  'V2-8I-7': {
+    plan: 'docs/v2-8i-7-evidence/validation-plan.json',
+    focused: 'target-wake', files: ['test/v2-target-wake-8i.test.js', 'test/v2-host-wake-8i.test.js'],
+    groups: { 'target-wake-sqlite': ['test/v2-target-wake-sqlite-8i.test.js'],
+      'target-wake-http': ['test/v2-target-wake-http-8i.test.js'] },
+    required: ['target-wake', 'target-wake-sqlite', 'target-wake-http', 'typecheck'],
+  },
   'V2-8I-6': {
     plan: 'docs/v2-8i-6-evidence/validation-plan.json',
     focused: 'host-wake', files: ['test/v2-host-wake-8i.test.js'],

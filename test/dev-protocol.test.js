@@ -434,3 +434,22 @@ test('host wake keeps its four selected gates and each observed file mandatory',
   f.state.validation.pop(); hasError(f.check(), /schema|inventory.*contract/);
   f.state.activeMilestone.id = 'V2-7A'; hasError(f.check(), /schema|inventory.*contract/);
 });
+
+test('target wake keeps its four selected gates and each observed file mandatory', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8i-7-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8i-7-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8i-7-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8I-7';
+  f.state.validation = ['target-wake', 'target-wake-sqlite', 'target-wake-http', 'typecheck'].map(id => ({ id, status: 'unexecuted', evidence: null, reason: 'Selected exact target and affected coordinator scope' }));
+  assert.deepEqual(f.check().errors, []);
+  for (const id of ['target-wake', 'target-wake-sqlite', 'target-wake-http']) {
+    const entry = f.state.validation.find(x => x.id === id);
+    f.state.validation = [entry, ...f.state.validation.filter(x => x !== entry)];
+    f.evidence(); assert.deepEqual(f.check().errors, []);
+    writeFileSync(path.join(f.dir, 'docs/output.tap'), '# tests 28\n# pass 28\n# fail 0\n# skipped 0\n# cancelled 0\n');
+    hasError(f.check(), /complete required scope/);
+    Object.assign(entry, { status: 'unexecuted', evidence: null, reason: 'Selected exact target and affected coordinator scope' });
+  }
+  f.state.validation.pop(); hasError(f.check(), /schema|inventory.*contract/);
+  f.state.activeMilestone.id = 'V2-7A'; hasError(f.check(), /schema|inventory.*contract/);
+});

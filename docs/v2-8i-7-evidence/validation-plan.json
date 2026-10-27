@@ -1,0 +1,26 @@
+{
+  "acceptedBaseline": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "entryHead": "78a0056",
+  "scope": "Approved exact target wake plus pinned Auto operator parity; default-off/offline only",
+  "requiredFiles": [
+    "test/v2-target-wake-8i.test.js",
+    "test/v2-host-wake-8i.test.js",
+    "test/v2-target-wake-sqlite-8i.test.js",
+    "test/v2-target-wake-http-8i.test.js"
+  ],
+  "gates": {
+    "target-wake": [
+      "test/v2-target-wake-8i.test.js",
+      "test/v2-host-wake-8i.test.js"
+    ],
+    "target-wake-sqlite": [
+      "test/v2-target-wake-sqlite-8i.test.js"
+    ],
+    "target-wake-http": [
+      "test/v2-target-wake-http-8i.test.js"
+    ],
+    "typecheck": []
+  },
+  "additionalAffectedCheck": "test/dev-protocol.test.js",
+  "excluded": "Old bulk/browser/PG/build/benchmark/native/render/live-model/GPU; accepted evidence reused, never relabeled executed"
+}
