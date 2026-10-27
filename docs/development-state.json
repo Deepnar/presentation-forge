@@ -84,9 +84,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Hosted owner/provider policy and bounded pickup contract; not implementation authority",
+    "id": "V2-8I-5 explicit Auto host policy and bounded pickup; direction pending",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
+    "roadmapRef": "docs/ROADMAP.md#assistant-auto-host-pickup"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

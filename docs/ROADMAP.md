@@ -9225,6 +9225,26 @@ local inference. Only that separate transport correction is authorized; this aud
     > or document is needed. Owner/provider policy and bounded scheduling remain
     > distinct contracts, with focused gates under the updated validation policy.
 
+  <a id="assistant-auto-host-pickup"></a>
+
+  - [ ] **V2-8I-5 explicit Auto host policy and bounded pickup — direction pending.**
+    The2026-10-27 continuation starts planning the immediate dependency after
+    acceptedI4. [The concrete proposal](V2-8I-5-PLAN.md) recommends an Auto-only,
+    default-disabled, operator-invoked finite pickup bridge. Bind exact project
+    owner email to the current account ID, require account admission before any
+    provider network call, retain conservative unknown-usage reservations and
+    delegate every turn/run effect to I2. No generic key/route fallback, automatic
+    approval, daemon, HTTP/UI surface, model evaluation or production activation.
+    One-row discovery advances only through completed work; sequential scan/work/
+    elapsed/output caps preserve bounded resume and existing two-minute expiry.
+    New policy/cycle/SQLite/CLI checks and typecheck form the focused test contract;
+    accepted unchanged old regressions are reused, not rerun. The existing
+    single-account-database deployment is the initial operational boundary; broader
+    distributed account admission remains in its named entry below.
+    Human agreement on provider/billing/dispatch policy is required before code.
+    The Auto-only recommendation keeps hosted quality and billing ownership explicit;
+    BYOK/local integration remains separately scoped, without removing legacy support.
+
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
   remains dependent on the canonical semantic/search entries above.

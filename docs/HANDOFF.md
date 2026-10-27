@@ -36,6 +36,10 @@ a pass, and its unchanged full9/9quiet retry is retained. No assertions weakened
 
 Original untracked .agents/ and both master/architecture prompt files remain
 untouched. No real model API/local inference, hosted scheduler/Assistant feature,
-deployment, migration/index or paid infrastructure. STOP after I4. Acceptance
-permits planning only; future scope is solely in
-[roadmap](ROADMAP.md#assistant-surface-integration).
+deployment, migration/index or paid infrastructure. The2026-10-27 continuation now prepares I5 planning only.
+[The concrete Auto-only host proposal](V2-8I-5-PLAN.md) and
+[roadmap entry](ROADMAP.md#assistant-auto-host-pickup) await human provider/billing/
+dispatch direction before implementation. Accepted baseline/activeI4 state remain
+unchanged; candidate authorization is false. No runtime/config/service/model change.
+Use focused checks only; plan documentation needs protocol/link consistency, no
+product regression runs. Preserve this distinction from completedI4 acceptance.
