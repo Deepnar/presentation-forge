@@ -32,6 +32,15 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
+## Current authorized slice — I7 exact-turn wake
+
+Human approved exact project/generation/turn targeting on2026-10-27. Read
+[the pinned contract](V2-8I-7-PLAN.md) and its independent plan review. I6 remains
+the accepted baseline. Shared admission, first-inspection versus coalesced-receipt
+semantics and direct H/I2 work are bounded there. Implement only I7, using focused
+offline checks and a separate source decision; no UI, activation or model calls.
+Current state is in HANDOFF; later work remains solely in the roadmap.
+
 ## Latest accepted slice — I6 explicit finite wake complete
 
 Human-approved explicit wake is independently accepted at source
@@ -48,7 +57,7 @@ Wake remains default-off and acknowledges a finite owner-wide hint, not dispatch
 full drain or fair progress through long terminal histories. Explicit session/account
 identity and empty job contexts preserve existing authority. Pending opening cannot
 admit after close/expiry; an admitted coalesced receipt may be delivered after close.
-No test/worker/service remains. Stop after I6 closeout; the roadmap alone owns later
+No test/worker/service remains. I6 closeout is complete; the roadmap alone owns later
 UI/progress contracts and implementation authority. Read HANDOFF for current state.
 
 ## Accepted predecessor — I5 Auto host pickup complete

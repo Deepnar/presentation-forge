@@ -11,12 +11,12 @@ untracked paths remain untouched. I6 has no pending validation/review blocker.
 Its roadmap checkbox was stale despite the exact-source decision; this planning
 also corrects that documentation inconsistency, without rerunning product tests.
 
-This contract is proposed. The roadmap requires agreeing progress/targeting before
-the Assistant relies on owner-wide wake; no runtime implementation is authorized
-until direction is supplied. Existing Auto-only and explicit-wake decisions remain
-binding. No model, configuration, service, database, renderer or UI change occurs
-in planning. No existing accepted source is reopened merely because its scope was
-finite and explicitly excluded fair owner-wide progress.
+The human selected **Exact project and turn (Recommended)** on2026-10-27.
+Implementation and focused offline validation of this contract are authorized;
+production activation, live/local model calls and the Assistant UI are excluded.
+The separate [plan review](reviews/V2-8I-7-plan-b026dd8.json) found the existing
+seams suitable and required the admission/coalescing distinction below, pinned
+before runtime code. It is plan readiness, not implementation acceptance.
 
 ## Recommended direction and concrete result
 
@@ -61,11 +61,16 @@ contract; do not silently widen this targeted proposal into a persistent schedul
    target list or hidden accepted-then-dropped work. Existing owner-wide calls still
    coalesce with identical owner-wide calls as before.
 5. **Admission and target authority.** Pin I5's private policy session to the exact
-   authenticated numeric/email identity before/after asynchronous opening. Inspect
-   the target through H under exact owner/project/generation/turn before202, with no
+   authenticated numeric/email identity before/after asynchronous opening. Reserve shared capacity and start the deadline before opening. Inspect
+   the target through H under exact owner/project/generation/turn before first accepted202, with no
    provider/secret lookup or dispatch. Foreign/missing targets use the same404;
    stale generations use409. Canonical safe pre-dispatch reconciliation is allowed;
-   ambiguous dispatched work remains fenced. Late opening/inspection after abort,
+   ambiguous dispatched work remains fenced. Identical callers joining pending
+   admission share its eventual success/refusal. Once admitted, coalesced202
+   acknowledges the prior bounded hint, with no fresh existence/generation/state
+   validity promise at delivery. No per-coalesced H read runs outside the slot;
+   every actual work/follow-up re-inspects and reauthorizes canonical H/I2.
+   Late opening/inspection after abort,
    close/elapsed/disablement never acknowledges or launches new work; unabortable
    opening retains its bounded slot until settlement, as accepted in I6.
 6. **Direct canonical work.** After admission, re-inspect the exact target and use
@@ -119,7 +124,7 @@ context. No UI, creation/research/search tools, streaming or provider expansion 
 part of I7. General owner-wide fairness remains a separate future contract; this
 specific targeting primitive does not need to be replaced to support it.
 
-## Focused gates and acceptance if approved
+## Approved focused gates and acceptance
 
 Four proposed gates: (1) new target/coalescing unit contracts plus the directly
 affected accepted I6 coordinator file; (2) new actual SQLite/CLI process integration;

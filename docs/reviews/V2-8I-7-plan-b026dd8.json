@@ -1,0 +1,51 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/turn_contract_review",
+  "context": "/root/turn_contract_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-27",
+  "reviewedPlanSha": "b026dd80f6e39c5b709bdcae65a8e6a1e602d8a1",
+  "acceptedBaseline": "dce562834f2d4641280d8df6f61dd4872d566b87",
+  "plan": "docs/V2-8I-7-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-targeted-wake",
+  "scope": "Exact project/generation/turn wake and pinned Auto work-auto CLI over existing H/I2 authority, sharing finite I6 HTTP admission; no owner discovery on targeted path, new queue, UI, activation or model calls.",
+  "assessment": "Bounded targeting resolves the known owner-history prefix problem without changing accepted owner-wide behavior or adding fairness/scheduling policy. Existing H inspect, I2 work, I5 account session and I6 lifecycle seams support this direction. No further policy choice is identified beyond the explicit targeting choice.",
+  "requiredPreCodeClarification": {
+    "firstAdmission": "Reserve shared owner capacity and start the existing total deadline before asynchronous account opening/target H inspection. First accepted202 requires successful exact-owner/project/generation/turn inspection and the final close/abort/deadline/enablement guard.",
+    "pendingCoalescing": "Identical owner/account/mode/target callers joining pending first admission share its eventual success or refusal; none receives premature202.",
+    "alreadyAdmittedCoalescing": "A coalesced202 may acknowledge the previously admitted target after it changed, disappeared or became stale, including the accepted in-flight close/delivery race. It makes no fresh-validity or work/completion promise at delivery. Do not perform new per-coalesced H reads outside shared capacity.",
+    "work": "Every actual target invocation/follow-up re-inspects and reauthorizes through canonical H/I2. Distinct target/mode is busy before changing the active target or dirty bit."
+  },
+  "implementationConditions": [
+    "Snapshot exact bounded binding/target identifiers before awaits; derive HTTP owner/numeric ID only from the private bearer account snapshot and retain ID across recreation.",
+    "Exact target parser precedes the existing conversation parser; target route precedes its private fallback. Preserve previous parser budgets, methods, response sanitization and owner-wide compatibility.",
+    "Target preflight uses no provider/config/secret dispatch. Resolve provider only from current submitted state; approved/terminal work uses none. Reuse I5 exact-account admission/settlement and canonical approval/revision/lease fences.",
+    "Direct adapter metadata envelope must preserve truthful final state and stop classifications. Wrapper ok alone does not establish completion: refused/expired/needs-user-action/cancelled, failed runs and unfinished/busy/lease-lost/aborted/step-limit/error outcomes cannot create a follow-up. No synthetic discovery cursor or owner scan.",
+    "At most one initial invocation and one same-target dirty follow-up after definitive completed/observed work, within the original deadline; no queued replacement or deadline extension. Existing per-I2 advance cap and entered-commit semantics remain.",
+    "CLI reuses the pinned Auto-target authority, strict input, metadata projection, remaining deadline/signal cleanup and existing truthful workExitCode. It grants no HTTP receipt or distributed concurrency promise.",
+    "Focused new tests plus directly changed I6 coordinator cases, actual SQLite/CLI and HTTP process boundaries, typecheck and affected governance are appropriate. Reuse unchanged backend/render evidence; no historical matrix."
+  ],
+  "directionUpdate": "During review the coordinator reported the human selected Exact project and turn (Recommended). This record is plan readiness only; the clarification must be pinned before code, and implementation still requires its own exact-source independent decision.",
+  "independentlyExecuted": {
+    "tests": 0,
+    "services": 0,
+    "modelCalls": 0,
+    "generators": 0
+  },
+  "inspectedSourceSeams": [
+    "packages/agent/host-wake.ts",
+    "src/agent/host-wake.js",
+    "src/agent/auto-host-policy.js",
+    "packages/agent/turns.ts",
+    "packages/agent/turn-worker.ts",
+    "app/server/v2-conversation-routes.js",
+    "app/server/index.js",
+    "src/agent/turn-cli.js",
+    "src/agent/turn-work-status.js"
+  ],
+  "implementationAccepted": false,
+  "sourceStateRoadmapOrGitMutations": false,
+  "slots": "Root retained Git/test/DB slots throughout; reviewer acquired none and is finished.",
+  "stopPoint": "Plan readiness only; no activation, live provider use, UI or dependent implementation approval supplied by reviewer."
+}

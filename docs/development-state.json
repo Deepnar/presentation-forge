@@ -54,8 +54,8 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-7 exact-turn wake; targeting direction pending",
-    "authorized": false,
+    "id": "V2-8I-7 exact-turn wake",
+    "authorized": true,
     "roadmapRef": "docs/ROADMAP.md#assistant-targeted-wake"
   },
   "docs": {

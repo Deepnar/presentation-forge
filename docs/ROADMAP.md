@@ -9305,7 +9305,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-targeted-wake"></a>
 
-  - [ ] **V2-8I-7 exact-turn wake — direction pending.**
+  - [ ] **V2-8I-7 exact-turn wake — approved implementation.**
     The continuation from accepted I6 `dce5628`, entry HEAD `33e45b7`, prepares
     [the concrete contract](V2-8I-7-PLAN.md). Recommend exact project/generation/turn
     wake for the future Assistant's Send/Approve path, sharing I6 admission/caps and
@@ -9313,11 +9313,12 @@ local inference. Only that separate transport correction is authorized; this aud
     Preserve the owner-wide endpoint; refuse distinct active targets as busy rather
     than silently coalescing/dropping them. No new queue, scheduler, approval or
     renderer authority. The alternative resumable owner-wide fairness direction
-    needs a revised contract if chosen. Agree targeting before code; current work
-    is planning only, with no tests/models/services/configuration changes. Proposed
+    needs a revised contract if chosen. Human selected exact project and turn on
+    2026-10-27. The independent plan review and first-admission/coalescing
+    clarification are pinned in the contract before code. Approved
     focused target/affected-coordinator, SQLite/CLI, HTTP-process and typecheck gates
     reuse accepted unchanged evidence and avoid the historical matrix. No UI or
-    activation follows automatically. Stop at direction until the contract is agreed.
+    activation follows automatically. Stop after exact-source independent I7 review.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise
