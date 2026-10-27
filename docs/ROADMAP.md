@@ -9282,7 +9282,10 @@ local inference. Only that separate transport correction is authorized; this aud
     clarifications, pinned before code. This approves scoped implementation and
     offline validation, not activation, real-model spend or UI. Four focused new
     unit/SQLite/HTTP-process/typecheck gates apply; unchanged old suites remain
-    accepted evidence. Stop after separate exact-source acceptance and handoff.
+    accepted evidence. Source dce5628 implements the contract;26/26 new tests,
+    typecheck and37/37 affected governance pass. [Evaluation](V2-8I-6-EVAL.md)
+    retains exact working-byte/source provenance and exclusions. Separate exact-source
+    implementation review is pending; I5 remains accepted. Stop after I6 handoff.
 
   Subsequent slices still need
   concrete contracts and independent gates. The full creation/research promise

@@ -6,44 +6,44 @@
     "source": "docs/reviews/V2-8I-5-5cf5b5c.json"
   },
   "implementationHead": {
-    "sha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
-    "note": "Independently accepted Auto-only/default-disabled I5. Required32/32, affected governance36/36, independent supplemental3/3, typecheck0. No old matrix/model/GPU/service run or production activation. Source remains frozen; later commits are evidence/docs only."
+    "sha": "dce562834f2d4641280d8df6f61dd4872d566b87",
+    "note": "Approved explicit wake source frozen: coordinator14/SQLite6/HTTP6 pass, typecheck0, affected governance37/37. Executed identical working bytes before source-freeze commits, source hashes recorded; separate acceptance pending."
   },
   "activeMilestone": {
-    "id": "V2-8I-5",
-    "roadmapRef": "docs/ROADMAP.md#assistant-auto-host-pickup",
-    "evalDoc": "docs/V2-8I-5-EVAL.md",
+    "id": "V2-8I-6",
+    "roadmapRef": "docs/ROADMAP.md#assistant-authenticated-wake",
+    "evalDoc": "docs/V2-8I-6-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8I-5-5cf5b5c.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "host-pickup",
+      "id": "host-wake",
       "status": "passed",
-      "evidence": "docs/v2-8i-5-evidence/host-pickup.json",
-      "reason": "Exact frozen source; selected new-behavior gate passed with raw execution retained."
+      "evidence": "docs/v2-8i-6-evidence/host-wake.json",
+      "reason": "Selected new-behavior scope, actual raw result and exact tested source bytes retained."
     },
     {
-      "id": "host-pickup-sqlite",
+      "id": "host-wake-sqlite",
       "status": "passed",
-      "evidence": "docs/v2-8i-5-evidence/host-pickup-sqlite.json",
-      "reason": "Exact frozen source; selected new-behavior gate passed with raw execution retained."
+      "evidence": "docs/v2-8i-6-evidence/host-wake-sqlite.json",
+      "reason": "Selected new-behavior scope, actual raw result and exact tested source bytes retained."
     },
     {
-      "id": "host-pickup-cli",
+      "id": "host-wake-http",
       "status": "passed",
-      "evidence": "docs/v2-8i-5-evidence/host-pickup-cli.json",
-      "reason": "Exact frozen source; selected new-behavior gate passed with raw execution retained."
+      "evidence": "docs/v2-8i-6-evidence/host-wake-http.json",
+      "reason": "Selected new-behavior scope, actual raw result and exact tested source bytes retained."
     },
     {
       "id": "typecheck",
       "status": "passed",
-      "evidence": "docs/v2-8i-5-evidence/typecheck.json",
-      "reason": "Exact frozen source; selected new-behavior gate passed with raw execution retained."
+      "evidence": "docs/v2-8i-6-evidence/typecheck.json",
+      "reason": "Selected new-behavior scope, actual raw result and exact tested source bytes retained."
     }
   ],
   "knownBlockers": [],
@@ -54,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-6 authenticated finite wake; explicit-trigger contract approved",
-    "authorized": true,
-    "roadmapRef": "docs/ROADMAP.md#assistant-authenticated-wake"
+    "id": "Assistant editor interaction contract; direction required before implementation",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

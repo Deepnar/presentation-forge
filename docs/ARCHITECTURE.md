@@ -2848,3 +2848,28 @@ activation configuration. Operator agent-chat pickup exposes the headless bounda
 with truthful bounded continuation/failure exits. No server auto-start, HTTP/UI, queue/schema or renderer
 change. [The evaluation](V2-8I-5-EVAL.md) records focused execution and the separate
 [exact-source acceptance](reviews/V2-8I-5-5cf5b5c.json). The bridge stays disabled.
+
+
+### V2-8I-6 authenticated finite wake (review pending)
+
+POST /api/v2/agent/wake is an explicit private Bearer-only owner-wide wake hint,
+separately disabled by default. A private sessions.user_id/user-row snapshot supplies
+immutable numeric/email identity; public user data and existing submit/decision
+routes are unchanged. Prefix JSON admission is1024bytes, fatal UTF-8/identity encoded,
+exact{} with no query overrides. Responses expose only fixed202 accepted/coalesced
+or sanitized refusal; no transient job capability or private work results.
+
+The dependency-injected host coordinator limits two admitting/running owners,
+128cooldown records, one job per owner, five-second admission cooldown, one dirty
+bit and two sequential I5 pickup cycles within110seconds. Pinned Auto sessions
+reuse I5 account admission and H/I2 authority under empty account/meter contexts.
+No second durable queue, automatic startup/submit/approval trigger or browser-owned
+worker. Completed-position cursors exist only in the finite job; later wakes restart
+from null, and no complete-drain guarantee is made. Pending admission is refused
+after close/expiry while an unabortable opening retains its bounded slot until settled.
+
+Owned close aborts preparation and reports drained:false after a bounded observation
+if necessary. HTTP close notification uses that helper; existing global signals and
+other jobs remain unchanged. Restart requires another explicit wake, with canonical
+ambiguity/replay fences. [Evaluation](V2-8I-6-EVAL.md) records focused tests and pending
+independent review. No production activation or live model qualification occurred.

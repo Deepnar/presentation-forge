@@ -90,7 +90,9 @@ trigger without changing canonical turns or the document.
   its canonical eligibility checks run again before dispatch. Opening admission is
   inside the job deadline: reject it after close/abort/expiry, even if a pending
   open resolves later, before returning202 or launching pickup. Late opening must
-  not reacquire a released slot or perform work. Do not retain a
+  not reacquire a released slot or perform work. Underlying unabortable opening
+  retains its bounded slot until it settles, even after admission is refused; this
+  prevents accumulating abandoned opens. Do not retain a
   session token or use ambient currentAccount()/meter as worker authority. If
   account identity changes before admission or later dispatch, refuse/stop.
 - One job has a monotonic total elapsed budget of 110000ms, at most two sequential

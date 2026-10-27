@@ -32,15 +32,16 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current continuation — approved I6 explicit wake
+## Current continuation — I6 source awaiting independent review
 
-The post-I5 continuation prepared [the I6 contract](V2-8I-6-PLAN.md), indexed only
-in [the roadmap](ROADMAP.md#assistant-authenticated-wake). The human chose
-explicit authenticated finite wake on2026-10-27; scope is approved for implementation. The future
-Assistant can issue that API action from Send/Approve without another user button.
-Accepted source, active I5 acceptance and validation evidence are unchanged; no
-runtime source is accepted for I6 yet. No activation or model call is authorized.
-Read HANDOFF and the pinned plan-review clarifications before code.
+The human-approved explicit wake contract is implemented at source dce5628:
+[plan](V2-8I-6-PLAN.md), [evaluation](V2-8I-6-EVAL.md),
+[roadmap](ROADMAP.md#assistant-authenticated-wake). Four selected gates pass:
+26new runtime tests and typecheck; affected governance37/37 also passes, all0fail/
+skip/cancelled. Tested working bytes match the frozen source; no historical passes
+were transferred or whole product run repeated just for a SHA. I5 remains the
+accepted baseline until separate exact-source review. No activation/model/UI work.
+Read HANDOFF for reviewer/test-slot ownership, lifecycle limits and stop point.
 
 ## Latest accepted slice — I5 Auto host pickup complete
 
