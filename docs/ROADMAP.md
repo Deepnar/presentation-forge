@@ -9244,7 +9244,10 @@ local inference. Only that separate transport correction is authorized; this aud
     Human “Approve Auto-only (Recommended)” explicitly approves this contract.
     [Plan review](reviews/V2-8I-5-plan-f67bab6.json) is ready with pinned canonical
     recovery, unfinished-cursor and atomic/account-estimation clarifications before
-    code. No real-model use or production activation is approved.
+    code. Source5cf5b5c is implemented with32/32new unit/SQLite/CLI tests,
+    typecheck and36/36directly affected governance checks passing.
+    [Evaluation](V2-8I-5-EVAL.md) and retained raw results await independent
+    exact-source acceptance. No real-model use or production activation is approved.
     The Auto-only recommendation keeps hosted quality and billing ownership explicit;
     BYOK/local integration remains separately scoped, without removing legacy support.
 

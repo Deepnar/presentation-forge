@@ -1,48 +1,28 @@
 # Presentation Forge handoff —2026-10-27
 
-Branch v2; push only origin/v2. I4 is complete and independently ACCEPTED at source
-8378a20a819de569ef7b10b747d7ba6c481f529e, from acceptedI3baseline2ba82cb. Read
-[decision](reviews/V2-8I-4-8378a20.json), [evaluation](V2-8I-4-EVAL.md), AGENTS and
-state. The new owner-scoped metadata page/operator discover command grants no
-claim, provider or edit authority; canonical I2 rechecks all current fences.
+Branch v2; push origin/v2 only. I4 accepted baseline8378a20 remains. The human
+explicitly approved Auto-only/default-disabled I5 on2026-10-27. Independent plan
+reviewf67bab6 supplied canonical recovery, unfinished-cursor and atomic accounting
+clarifications pinned before code. Read AGENTS, state,
+[contract](V2-8I-5-PLAN.md) and [evaluation](V2-8I-5-EVAL.md).
 
-Results:238primary files3097/3097 plus4distinct native end-to-end cases. Focus48
-and independent30are overlapping repeats;0fail/skip/cancelled in completed source
-gates. All9gates/build/type/50cells pass; separate locale9pass/1standing failure.
-119fresh images/15original archives inspected;7659historical files/253PPTXs and
-5canonical originals restored/hash-verified.120slides opened1543ms; canvas delta
-<=0.102166px. Inherited narrow/SVG/chart-consumer/local-performance limits remain.
+Implemented source5cf5b5cff53c781291ba094163c68eb189bfbc66: bounded owner pickup,
+Auto/account admission/atomic settlement and thin CLI. Approved runs use I2 without
+provider lookup; submitted/safely recovered turns require explicit Auto/account
+policy. Default disabled; no production configuration or model/API/local inference.
+No UI/HTTP/scheduler/schema/ledger/renderer change or PostgreSQL service created.
 
-The human2026-10-27 direction makes focused validation default. Test new/changed
-behaviour and affected boundaries; reuse accepted old evidence. Broad old suites,
-benchmarks, rendering/model/GPU sweeps require a concrete risk/release reason. No
-repeat after a relevant pass without new changes/concerns. The already-completed
-broad run is retained; independent review used only30focused repeats. No relay or
-model-provider allowlist. Few agents; reuse existing reviewer at high effort only.
+Final four focused gates passed: unit19/19, actualSQLite8/8, CLI5/5 and typecheck.
+Affected governance36/36 passed. All test totals0fail/skip/cancelled; raw earlier
+failures/corrections and final-source records are retained in docs/v2-8i-5-evidence.
+No old bulk/browser/PG/build/benchmark/render rerun; temporary SQLite and loopback
+fixtures only. Historical/canonical artifacts untouched. Separate independent
+exact-source review remains required. Reuse existing turn_contract_review, high
+effort; no extra agents. No active service/database slot exists. Original three
+untracked paths (.agents/ and two master/architecture prompts) remain untouched.
 
-The formerly ownedI4 PostgreSQL15.18 exactID
-e08ed2564f60da2fd9fffca5d57229d2f111640689a242f97f06d5a04ba571ce
-is absent;5544refuses, independently verified. Pre-removal catalog/count and removal
-cause are UNAVAILABLE. The planned saved0→single-stop procedure was not completed/
-proven; acceptance explicitly retains that operational provenance limitation and
-does not mark cleanup passed. No extra stop/recreation. Current independent PG
-replay is unexecuted; retained actual PG/process group319/319 includes both-store
-process cases. No owned service, coordinator, browser or test remains. Slots released.
-
-Never rerun the ONCE-only finisher, completed/retired I4 or I3 helpers against
-restored originals, or recreate removed services. Retired source175 and fail-first
-UTF8/BOM/helper failures remain preserved; criticalCPU-cancelled5K attempt is not
-a pass, and its unchanged full9/9quiet retry is retained. No assertions weakened.
-
-Original untracked .agents/ and both master/architecture prompt files remain
-untouched. No real model API/local inference, hosted scheduler/Assistant feature,
-deployment, migration/index or paid infrastructure. The2026-10-27 continuation now prepares I5 planning only.
-[The concrete Auto-only host contract](V2-8I-5-PLAN.md) and
-[roadmap entry](ROADMAP.md#assistant-auto-host-pickup) are explicitly approved by
-the human answer “Approve Auto-only (Recommended)”. Independent plan review at
-f67bab6 supplied canonical recovery, unfinished-cursor and atomic/estimated
-settlement clarifications, pinned before code. Accepted baseline/activeI4 state
-remain unchanged until I5 activation; candidate authorization is true. No runtime/
-config/service/model change preceded approval. No real model/activation is allowed.
-Use focused checks only; plan documentation needs protocol/link consistency, no
-product regression runs. Preserve this distinction from completedI4 acceptance.
+I4's prior exact service is absent/5544refused; pre-removal count/cause unavailable,
+accepted as an operational provenance limit, not certified cleanup. Never recreate
+it or resume old finishers/coordinators against restored bytes. All I4 results are
+historical prerequisites, not I5 executions. Stop after I5 acceptance/handoff;
+future gated work remains solely in the roadmap.

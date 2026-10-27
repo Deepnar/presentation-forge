@@ -32,6 +32,16 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
+## Current authorized slice — I5 Auto host pickup
+
+The human approved Auto-only/default-disabled owner-bound pickup on2026-10-27.
+Read [the clarified contract](V2-8I-5-PLAN.md), [evaluation](V2-8I-5-EVAL.md),
+state and HANDOFF. Source5cf5b5c passed all four focused gates (32new cases and
+typecheck) plus36affected governance cases; independent review is pending. Use new
+test entries/typecheck and affected governance
+only. No old matrix, model/GPU call, PostgreSQL recreation or artifact generator.
+I4 remains the accepted baseline until a separate exact-source decision accepts I5.
+
 ## Latest accepted slice — I4 complete
 
 Owner-scoped work discovery is independently accepted at exact source

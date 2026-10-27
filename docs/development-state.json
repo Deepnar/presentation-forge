@@ -6,74 +6,44 @@
     "source": "docs/reviews/V2-8I-4-8378a20.json"
   },
   "implementationHead": {
-    "sha": "8378a20a819de569ef7b10b747d7ba6c481f529e",
-    "note": "I4 independently accepted:238primary files3097/3097 plus4distinct native flows; focus48 and independent30 overlap. All9source gates pass;119images/15archives inspected, originals restored. Locale9/1 separate. Former ownedID absent/5544refused, pre-removal count/cause unavailable; source acceptance explicitly retains operational provenance limit and does not certify cleanup. Focused validation is default; stop afterI4."
+    "sha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+    "note": "Frozen approved Auto-only/default-disabled I5: final new unit19, SQLite8 and CLI5 all pass, typecheck passes; affected governance36/36. Separate implementation acceptance pending; no old matrix/model/GPU/service run."
   },
   "activeMilestone": {
-    "id": "V2-8I-4",
-    "roadmapRef": "docs/ROADMAP.md#assistant-work-discovery",
-    "evalDoc": "docs/V2-8I-4-EVAL.md",
+    "id": "V2-8I-5",
+    "roadmapRef": "docs/ROADMAP.md#assistant-auto-host-pickup",
+    "evalDoc": "docs/V2-8I-5-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8I-4-8378a20.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "turn-discovery",
+      "id": "host-pickup",
       "status": "passed",
-      "evidence": "docs/v2-8i-4-corrected-evidence/turn-discovery.json",
-      "reason": "Complete corrected-source execution/inspection passed; exact evidence and totals retained. Historical cancellation and separate locale failure remain explicit."
+      "evidence": "docs/v2-8i-5-evidence/host-pickup.json",
+      "reason": "Exact frozen source; selected new-behavior gate passed with raw execution retained."
     },
     {
-      "id": "non-browser-bulk",
+      "id": "host-pickup-sqlite",
       "status": "passed",
-      "evidence": "docs/v2-8i-4-corrected-evidence/non-browser-bulk.json",
-      "reason": "Complete corrected-source execution/inspection passed; exact evidence and totals retained. Historical cancellation and separate locale failure remain explicit."
+      "evidence": "docs/v2-8i-5-evidence/host-pickup-sqlite.json",
+      "reason": "Exact frozen source; selected new-behavior gate passed with raw execution retained."
     },
     {
-      "id": "serial-browser",
+      "id": "host-pickup-cli",
       "status": "passed",
-      "evidence": "docs/v2-8i-4-corrected-evidence/serial-browser.json",
-      "reason": "Complete corrected-source execution/inspection passed; exact evidence and totals retained. Historical cancellation and separate locale failure remain explicit."
-    },
-    {
-      "id": "postgres-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8i-4-corrected-evidence/postgres-contract.json",
-      "reason": "Complete corrected-source execution/inspection passed; exact evidence and totals retained. Historical cancellation and separate locale failure remain explicit."
-    },
-    {
-      "id": "cross-process-faults",
-      "status": "passed",
-      "evidence": "docs/v2-8i-4-corrected-evidence/cross-process-faults.json",
-      "reason": "Complete corrected-source execution/inspection passed; exact evidence and totals retained. Historical cancellation and separate locale failure remain explicit."
-    },
-    {
-      "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8i-4-corrected-evidence/production-build.json",
-      "reason": "Complete corrected-source execution/inspection passed; exact evidence and totals retained. Historical cancellation and separate locale failure remain explicit."
+      "evidence": "docs/v2-8i-5-evidence/host-pickup-cli.json",
+      "reason": "Exact frozen source; selected new-behavior gate passed with raw execution retained."
     },
     {
       "id": "typecheck",
       "status": "passed",
-      "evidence": "docs/v2-8i-4-corrected-evidence/typecheck.json",
-      "reason": "Complete corrected-source execution/inspection passed; exact evidence and totals retained. Historical cancellation and separate locale failure remain explicit."
-    },
-    {
-      "id": "benchmark-50",
-      "status": "passed",
-      "evidence": "docs/v2-8i-4-corrected-evidence/benchmark-50.json",
-      "reason": "Complete corrected-source execution/inspection passed; exact evidence and totals retained. Historical cancellation and separate locale failure remain explicit."
-    },
-    {
-      "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8i-4-corrected-evidence/frontend-visual.json",
-      "reason": "Complete corrected-source execution/inspection passed; exact evidence and totals retained. Historical cancellation and separate locale failure remain explicit."
+      "evidence": "docs/v2-8i-5-evidence/typecheck.json",
+      "reason": "Exact frozen source; selected new-behavior gate passed with raw execution retained."
     }
   ],
   "knownBlockers": [],
@@ -84,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8I-5 approved Auto-only host policy and bounded pickup",
-    "authorized": true,
-    "roadmapRef": "docs/ROADMAP.md#assistant-auto-host-pickup"
+    "id": "Authenticated host wake/scheduling and Assistant surface contracts; not implementation authority",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#assistant-surface-integration"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

@@ -2824,3 +2824,22 @@ checks. Exact source8378a20 is [independently accepted](reviews/V2-8I-4-8378a20.
 [the evaluation](V2-8I-4-EVAL.md) records actual validation, focused independent
 review and the unavailable pre-removal service-count provenance. Hosted/UI policy
 remains in the roadmap.
+
+### V2-8I-5 explicit Auto host policy and pickup (review pending)
+
+The backend-injected pickup loop in packages/agent/turn-pickup.ts reads one I4 row
+at a time and delegates inspection/work to H/I2. A completed position advances;
+busy/aborted/unfinished positions remain resumable. Scan/work/elapsed and complete
+output caps bound one sequential invocation. Canonical post-reconciliation state,
+not a raw discovery hint, selects preparation or approved execution.
+
+The server-side Auto policy binds exact project owner email to a current account
+ID, requires explicit hosted enablement and pinned local Auto configuration, and
+resolves only the operator Auto secret. Per-exchange account admission precedes
+network; normalized known usage updates the existing event/lifetime counters in
+one transaction, while unknown/aborted or failed settlement retains its estimate.
+Actual-over-estimate usage closes further provider dispatch. Account admission is
+for the existing single-account-database deployment, not shared-host quota control.
+Operator agent-chat pickup exposes the headless boundary with truthful bounded
+continuation/failure exits. No server auto-start, HTTP/UI, queue/schema or renderer
+change. [The evaluation](V2-8I-5-EVAL.md) records focused execution and pending review.
