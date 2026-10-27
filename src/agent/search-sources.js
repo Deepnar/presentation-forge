@@ -1,6 +1,6 @@
 import { searchFailure } from '../../packages/agent/search.ts';
 import { readFile } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
+import { webSourceId } from '../../packages/model/source-identity.ts';
 import { Ajv } from 'ajv';
 import { parseHTML } from 'linkedom';
 import { cloneJson } from '../../packages/tools/json.ts';
@@ -97,8 +97,7 @@ export function normalizeWebResults(providerId, binding, input, raw, options = {
                 continue;
             }
             // Retrieval/provenance metadata cannot change the meaning of an existing citation.
-            const identity = JSON.stringify(['forge-web-source-v1', bound.projectId, url.href, title, excerpt, publishedAt]);
-            const source = { id: `src_${createHash('sha256').update(identity).digest('hex')}`,
+            const source = { id: webSourceId({ projectId: bound.projectId, url: url.href, title, excerpt, ...(publishedAt ? { publishedAt } : {}) }),
                 projectId: bound.projectId, kind: 'web', title, url: url.href, excerpt, searchProvider: providerId, retrievedAt,
                 ...(publishedAt ? { publishedAt } : {}) };
             if (!validateSource(source))

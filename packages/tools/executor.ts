@@ -2,3 +2,4 @@
 export { createDocument } from "../model/engine.ts";
 export type { SlideScene } from "../model/scene.generated.ts";
 export type { SourceRef } from '../model/source.generated.ts';
+export { webSourceId } from '../model/source-identity.ts';
