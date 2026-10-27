@@ -144,7 +144,10 @@
               "turn-approval",
               "conversation-http",
               "turn-worker",
-              "turn-discovery"
+              "turn-discovery",
+              "host-pickup",
+              "host-pickup-sqlite",
+              "host-pickup-cli"
             ]
           },
           "status": {
@@ -327,7 +330,10 @@
           "activeMilestone": {
             "properties": {
               "id": {
-                "const": "V2-PPTX-ID"
+                "enum": [
+                  "V2-PPTX-ID",
+                  "V2-8I-5"
+                ]
               }
             },
             "type": "object"

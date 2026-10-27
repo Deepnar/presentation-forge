@@ -396,3 +396,22 @@ test('turn-discovery acceptance requires input, both stores and process/CLI cove
     hasError(f.check(), /complete required scope/);
   }
 });
+
+test('host pickup uses four focused gates without relaxing historical milestone inventories', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8i-5-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8i-5-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8i-5-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8I-5';
+  f.state.validation = ['host-pickup', 'host-pickup-sqlite', 'host-pickup-cli', 'typecheck'].map(id => ({ id, status: 'unexecuted', evidence: null, reason: 'Focused fixture' }));
+  assert.deepEqual(f.check().errors, []);
+  for (const id of ['host-pickup', 'host-pickup-sqlite', 'host-pickup-cli']) {
+    const entry = f.state.validation.find(x => x.id === id);
+    f.state.validation = [entry, ...f.state.validation.filter(x => x !== entry)];
+    f.evidence(); assert.deepEqual(f.check().errors, []);
+    writeFileSync(path.join(f.dir, 'docs/output.tap'), '# tests 28\n# pass 28\n# fail 0\n# skipped 0\n# cancelled 0\n');
+    hasError(f.check(), /complete required scope/);
+    Object.assign(entry, { status: 'unexecuted', evidence: null, reason: 'Focused fixture' });
+  }
+  f.state.validation.pop(); hasError(f.check(), /schema|inventory.*contract/);
+  f.state.activeMilestone.id = 'V2-7A'; hasError(f.check(), /schema|inventory.*contract/);
+});

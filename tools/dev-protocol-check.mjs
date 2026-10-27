@@ -17,12 +17,22 @@ const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
   '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'native-pptx': 'tests', 'turn-approval': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
+  'host-pickup': 'tests', 'host-pickup-sqlite': 'tests', 'host-pickup-cli': 'tests',
   'conversation-http': 'tests', 'turn-worker': 'tests', 'turn-discovery': 'tests', 'postgres-contract': 'tests', 'cross-process-faults': 'tests',
   'production-build': 'command', typecheck: 'command',
   'benchmark-50': 'benchmark', 'frontend-visual': 'visual',
 };
 
+const DEFAULT_REQUIRED_CHECKS = ['non-browser-bulk', 'serial-browser', 'postgres-contract',
+  'cross-process-faults', 'production-build', 'typecheck', 'benchmark-50', 'frontend-visual'];
 const MILESTONES = {
+  'V2-8I-5': {
+    plan: 'docs/v2-8i-5-evidence/validation-plan.json',
+    focused: 'host-pickup', files: ['test/v2-host-pickup-8i.test.js'],
+    groups: { 'host-pickup-sqlite': ['test/v2-host-pickup-sqlite-8i.test.js'],
+      'host-pickup-cli': ['test/v2-host-pickup-cli-8i.test.js'] },
+    required: ['host-pickup', 'host-pickup-sqlite', 'host-pickup-cli', 'typecheck'],
+  },
   'V2-8I-4': {
     plan: 'docs/v2-8i-4-corrected-evidence/validation-plan.json',
     focused: 'turn-discovery',
@@ -133,6 +143,7 @@ export function requiredTestFiles(root, id, milestoneId = 'V2-7A') {
       ? ['test/v2-projects-6c-postgres.test.js']
       : ['test/v2-projects-6c-postgres.test.js', 'test/v2-import-postgres-7b.test.js'],
     'cross-process-faults': ['test/v2-projects-6c-concurrency.test.js', 'test/v2-projects-6c-faults.test.js'],
+    ...milestone.groups,
   };
   return groups[id];
 }
@@ -250,8 +261,7 @@ export function checkSemantics(root, state) {
   if (!contract) errors.push('unknown milestone validation contract');
   else {
     reference(root, contract.plan, errors, 'validation plan');
-    const focusedIds = Object.values(MILESTONES).map(value => value.focused);
-    const requiredIds = contract.required ?? Object.keys(KINDS).filter(id => !focusedIds.includes(id)).concat(contract.focused);
+    const requiredIds = contract.required ?? [...DEFAULT_REQUIRED_CHECKS, contract.focused];
     if (requiredIds.some(id => !ids.includes(id)) || ids.some(id => !requiredIds.includes(id))) {
       errors.push('validation inventory does not match the milestone contract');
     }
