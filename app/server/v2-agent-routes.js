@@ -3,6 +3,7 @@ import { MIMEType } from 'node:util';
 import { isUtf8 } from 'node:buffer';
 import { bearerToken, accountForBearerToken, verificationRequired } from '../../src/auth.js';
 import { agentHostWake, hostWakeEnabled } from '../../src/agent/host-wake.js';
+import { assistantAvailability } from '../../src/agent/assistant-availability.js';
 import { validProjectId } from '../../packages/projects/document.js';
 import { parseTurnLookup } from '../../packages/agent/turn-target.ts';
 import { projectsAllowed } from './v2-projects-routes.js';
@@ -90,5 +91,24 @@ export function registerV2TargetWakeRoute(app, { service = agentHostWake, authen
         res.set('Retry-After', String(result.retryAfter));
       return refuse(res, targetStatuses[result.code] ?? 503, targetStatuses[result.code] ? result.code : 'host-unavailable');
     } catch { return refuse(res, 503, 'host-unavailable'); }
+  });
+}
+
+export function registerV2AssistantAvailabilityRoute(app, { service = assistantAvailability, authenticate = accountForBearerToken } = {}) {
+  app.get('/api/v2/projects/:id/conversation/availability', async (req, res) => {
+    privateHeaders(req, res, () => {});
+    try {
+      const identity = authenticate(bearerToken(req.headers.authorization));
+      if (!identity) return refuse(res, 401, 'unauthorized');
+      if (verificationRequired() && !identity.verified) return refuse(res, 403, 'owner-ineligible');
+      if (!projectsAllowed()) return refuse(res, 503, 'host-disabled');
+      if (!validProjectId(req.params.id) || Object.keys(req.query).length ||
+          Number(req.get('Content-Length') ?? 0) > 0 || req.get('Transfer-Encoding')) return refuse(res, 400, 'invalid-request');
+      const result = await service({ owner: identity.owner, userId: identity.userId }, req.params.id);
+      return res.json({ ok: true, version: 1, enabled: result.enabled === true });
+    } catch (error) {
+      const code = targetStatuses[error?.code] ? error.code : 'host-unavailable';
+      return refuse(res, targetStatuses[code] ?? 503, code);
+    }
   });
 }

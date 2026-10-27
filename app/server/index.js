@@ -33,7 +33,7 @@ import { registerV2ScenesRoutes } from "./v2-scenes-routes.js";
 import { registerV2ImportRoutes } from "./v2-import-routes.js";
 import { registerV2ProjectRoutes } from "./v2-projects-routes.js";
 import { installConversationBodyParser, registerV2ConversationRoutes } from "./v2-conversation-routes.js";
-import { installAgentBodyParser, registerV2AgentRoutes, installTargetWakeBodyParser, registerV2TargetWakeRoute } from "./v2-agent-routes.js";
+import { installAgentBodyParser, registerV2AgentRoutes, installTargetWakeBodyParser, registerV2TargetWakeRoute, registerV2AssistantAvailabilityRoute } from "./v2-agent-routes.js";
 import { closeAgentHostWake } from "../../src/agent/host-wake.js";
 import { fail, ok, wrap } from "./http.js";
 import { registerAccountRoutes } from "./account-routes.js";
@@ -495,6 +495,7 @@ registerV2ScenesRoutes(app);
 
 registerV2ProjectRoutes(app);
 registerV2TargetWakeRoute(app);
+registerV2AssistantAvailabilityRoute(app);
 registerV2ConversationRoutes(app);
 registerV2AgentRoutes(app);
 registerV2ImportRoutes(app);
