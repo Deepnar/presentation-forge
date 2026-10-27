@@ -23,7 +23,7 @@ async function fixture(t, options = {}) {
   t.diagnostic(`stage=search-ready elapsedMs=${Math.round(performance.now()-started)}`);
   return { ...e, searchProvider, searchSeen };
 }
-function grant(e, input, changes = {}) { return { grant: { binding: { ...e.binding }, requestId: input.requestId, projectRevision: e.doc.revision, queryDisclosure: true }, authorize: async () => true, searchProvider: e.searchProvider, ...changes }; }
+function grant(e, input, changes = {}) { return { grant: { binding: { ...e.binding }, request: structuredClone(input), queryDisclosure: true }, authorize: async () => true, searchProvider: e.searchProvider, ...changes }; }
 for (const family of ['openai-compatible','anthropic']) check(family + ' model → actual search adapter → correlated continuation retains source without writes', async t => {
   const e = await fixture(t); let round = 0;
   const http = await endpoint(t, family, (_req, res) => {

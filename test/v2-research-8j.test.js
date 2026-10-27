@@ -33,6 +33,23 @@ check('missing forged and mutable grants never silently expand permission', asyn
   assert.equal((await e.runner.research(e.owner, e.input)).code, 'grant-used'); assert.equal(e.searches.length, 1);
   const bad = rig({ grant: { queryDisclosure: false } }); assert.equal((await bad.runner.research(bad.owner, bad.input)).code, 'search-denied');
 });
+check('the whole request is captured and mismatches cannot spend or expand its grant', async () => {
+  const e = rig();
+  for (const change of [r => { r.request = 'Search the private slide instead.'; }, r => { r.scope.readableSlides.push('s2'); },
+    r => { r.scope.selection = []; }, r => { r.reads = [{ tool: 'get_project', args: {} }]; },
+    r => { r.maxOutputTokens++; }, r => { r.deadlineAt++; }]) {
+    const changed = structuredClone(e.input); change(changed);
+    assert.equal((await e.runner.research(e.owner, changed)).code, 'invalid-request');
+    assert.equal(e.calls.length, 0); assert.equal(e.searches.length, 0);
+  }
+  e.capability.grant.request.request = 'A later mutation is not permission.';
+  const reordered = Object.fromEntries(Object.entries(e.input).reverse());
+  reordered.scope = Object.fromEntries(Object.entries(e.input.scope).reverse());
+  assert.equal((await e.runner.research(e.owner, reordered)).ok, true);
+  const sibling = createResearchRunner(e.backend, e.model, e.capability, e.clock);
+  assert.equal((await sibling.research(e.owner, e.input)).code, 'grant-used');
+  assert.equal(e.searches.length, 1);
+});
 check('research reads only granted semantics and retains sources after final text', async () => {
   const e = rig(), initial = structuredClone(e.doc), result = await e.runner.research(e.owner, e.input);
   assert.equal(result.ok, true, JSON.stringify(result)); assert.equal(result.outcome, 'research'); assert.equal(result.sources.length, 1);

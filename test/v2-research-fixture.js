@@ -26,7 +26,7 @@ export function rig(options = {}) {
       if (options.reply) return options.reply(calls.length, context, exchangeOptions);
       return response(calls.length === 1 ? [searchCall()] : [], calls.length);
     } };
-  const capability = { grant: { binding: { ...owner }, requestId: input.requestId, projectRevision: 0, queryDisclosure: true, ...options.grant },
+  const capability = { grant: { binding: { ...owner }, request: structuredClone(input), queryDisclosure: true, ...options.grant },
     authorize: async (...args) => { grants++; return options.authorize ? options.authorize(...args) : true; },
     searchProvider: { id: 'fixture-search', async search(binding, query, searchOptions) {
       searches.push({ binding, query, options: searchOptions });
