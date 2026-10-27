@@ -1,0 +1,248 @@
+TAP version 13
+# Subtest: pickup exact input rejects malformed bounds, authority fields and executable values before IO
+ok 1 - pickup exact input rejects malformed bounds, authority fields and executable values before IO
+  ---
+  duration_ms: 1.994191
+  type: 'test'
+  ...
+# Subtest: pickup snapshots owner and cursor before asynchronous policy admission
+ok 2 - pickup snapshots owner and cursor before asynchronous policy admission
+  ---
+  duration_ms: 1.044682
+  type: 'test'
+  ...
+# Subtest: filtered rows consume scan bounds and resume without dropping the next hint
+ok 3 - filtered rows consume scan bounds and resume without dropping the next hint
+  ---
+  duration_ms: 1.016465
+  type: 'test'
+  ...
+# Subtest: work limit records only completed positions and sequentially resumes
+ok 4 - work limit records only completed positions and sequentially resumes
+  ---
+  duration_ms: 0.438661
+  type: 'test'
+  ...
+# Subtest: unfinished busy, lease, cancellation and step-limit positions are retained
+ok 5 - unfinished busy, lease, cancellation and step-limit positions are retained
+  ---
+  duration_ms: 1.737136
+  type: 'test'
+  ...
+# Subtest: canonical final state can complete despite a late abort reason
+ok 6 - canonical final state can complete despite a late abort reason
+  ---
+  duration_ms: 0.298561
+  type: 'test'
+  ...
+# Subtest: post-reconciliation submitted state prepares even when the raw hint was preparing
+ok 7 - post-reconciliation submitted state prepares even when the raw hint was preparing
+  ---
+  duration_ms: 0.270986
+  type: 'test'
+  ...
+# Subtest: approved work needs neither provider configuration nor a secret lookup
+ok 8 - approved work needs neither provider configuration nor a secret lookup
+  ---
+  duration_ms: 0.260653
+  type: 'test'
+  ...
+# Subtest: elapsed budget and external cancellation stop before another hint
+ok 9 - elapsed budget and external cancellation stop before another hint
+  ---
+  duration_ms: 0.427579
+  type: 'test'
+  ...
+# Subtest: stale positions advance but infrastructure failure retains partial progress privately
+ok 10 - stale positions advance but infrastructure failure retains partial progress privately
+  ---
+  duration_ms: 0.332059
+  type: 'test'
+  ...
+# Subtest: pickup output whitelists metadata and never exposes private worker bodies
+ok 11 - pickup output whitelists metadata and never exposes private worker bodies
+  ---
+  duration_ms: 0.217186
+  type: 'test'
+  ...
+# Subtest: host policy is default-closed and missing account/config never falls back
+ok 12 - host policy is default-closed and missing account/config never falls back
+  ---
+  duration_ms: 0.82584
+  type: 'test'
+  ...
+# Subtest: explicit local Auto configuration pins model/capabilities without model discovery
+ok 13 - explicit local Auto configuration pins model/capabilities without model discovery
+  ---
+  duration_ms: 0.428801
+  type: 'test'
+  ...
+# Subtest: owner deletion/recreation and revocation stop before reserve or network
+ok 14 - owner deletion/recreation and revocation stop before reserve or network
+  ---
+  duration_ms: 27.12622
+  type: 'test'
+  ...
+# Subtest: known normalized usage settles input/output once without double-counting cache
+ok 15 - known normalized usage settles input/output once without double-counting cache
+  ---
+  duration_ms: 1.69374
+  type: 'test'
+  ...
+# Subtest: denied account admission produces zero provider calls
+ok 16 - denied account admission produces zero provider calls
+  ---
+  duration_ms: 1.569296
+  type: 'test'
+  ...
+# Subtest: unknown, malformed and cancelled outcomes retain conservative reservations
+ok 17 - unknown, malformed and cancelled outcomes retain conservative reservations
+  ---
+  duration_ms: 2.799993
+  type: 'test'
+  ...
+# Subtest: actual usage above reservation is recorded in full and closes further dispatch
+ok 18 - actual usage above reservation is recorded in full and closes further dispatch
+  ---
+  duration_ms: 2.728931
+  type: 'test'
+  ...
+# Subtest: settlement failure closes further dispatch without a retry or private error
+ok 19 - settlement failure closes further dispatch without a retry or private error
+  ---
+  duration_ms: 2.05339
+  type: 'test'
+  ...
+# Subtest: pickup CLI defaults off before any provider/configuration work
+ok 20 - pickup CLI defaults off before any provider/configuration work
+  ---
+  duration_ms: 361.989404
+  type: 'test'
+  ...
+# Subtest: pickup CLI rejects authority overrides and malformed bytes privately
+ok 21 - pickup CLI rejects authority overrides and malformed bytes privately
+  ---
+  duration_ms: 1459.556729
+  type: 'test'
+  ...
+# Subtest: pickup CLI pins local Auto configuration and fails closed without it
+ok 22 - pickup CLI pins local Auto configuration and fails closed without it
+  ---
+  duration_ms: 331.794487
+  type: 'test'
+  ...
+# Subtest: pickup CLI loopback prepare and approved execution persist without probes or redispatch
+ok 23 - pickup CLI loopback prepare and approved execution persist without probes or redispatch
+  ---
+  duration_ms: 1013.800091
+  type: 'test'
+  ...
+# Subtest: SQLite host: submit prepares, waits for explicit approval, executes and reopens one revision
+not ok 24 - SQLite host: submit prepares, waits for explicit approval, executes and reopens one revision
+  ---
+  duration_ms: 137.485831
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-host-pickup-sqlite-8i.test.js:10:31'
+  failureType: 'testCodeFailure'
+  error: 'database is not open'
+  code: 'ERR_INVALID_STATE'
+  stack: |-
+    e.events (file:///home/deepnar/Programs/presentations/test/v2-host-pickup-fixture.js:47:23)
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-host-pickup-sqlite-8i.test.js:26:87)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: SQLite host: two owners retain separate account spending and pending work
+ok 25 - SQLite host: two owners retain separate account spending and pending work
+  ---
+  duration_ms: 30.90007
+  type: 'test'
+  ...
+# Subtest: SQLite host: account token refusal reserves no event and causes no HTTP call
+not ok 26 - SQLite host: account token refusal reserves no event and causes no HTTP call
+  ---
+  duration_ms: 55.27786
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-host-pickup-sqlite-8i.test.js:10:31'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'refused'
+    - 'needs-user-action'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs-user-action'
+  actual: 'refused'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-host-pickup-sqlite-8i.test.js:45:55)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: SQLite host: unknown response usage keeps the full positive account estimate
+ok 27 - SQLite host: unknown response usage keeps the full positive account estimate
+  ---
+  duration_ms: 28.12058
+  type: 'test'
+  ...
+# Subtest: SQLite host: settlement rolls back event and lifetime counters together on an injected SQLite fault
+not ok 28 - SQLite host: settlement rolls back event and lifetime counters together on an injected SQLite fault
+  ---
+  duration_ms: 22.339816
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-host-pickup-sqlite-8i.test.js:10:31'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'refused'
+    - 'needs-user-action'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'needs-user-action'
+  actual: 'refused'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-host-pickup-sqlite-8i.test.js:60:10)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: SQLite host: safe pre-dispatch lease recovery prepares but ambiguous dispatch never retries
+    # Subtest: pre-dispatch recovery
+    ok 1 - pre-dispatch recovery
+      ---
+      duration_ms: 26.979919
+      type: 'test'
+      ...
+    # Subtest: ambiguous dispatch
+    ok 2 - ambiguous dispatch
+      ---
+      duration_ms: 10.465342
+      type: 'test'
+      ...
+    1..2
+ok 29 - SQLite host: safe pre-dispatch lease recovery prepares but ambiguous dispatch never retries
+  ---
+  duration_ms: 37.907924
+  type: 'test'
+  ...
+# Subtest: SQLite host: human saves and cleared generations remain authoritative during pickup
+ok 30 - SQLite host: human saves and cleared generations remain authoritative during pickup
+  ---
+  duration_ms: 24.453721
+  type: 'test'
+  ...
+1..30
+# tests 32
+# suites 0
+# pass 29
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4379.788418

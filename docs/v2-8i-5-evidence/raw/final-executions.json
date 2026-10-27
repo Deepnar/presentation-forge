@@ -1,0 +1,70 @@
+[
+  {
+    "id": "host-pickup",
+    "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+    "command": "node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-host-pickup-8i.test.js",
+    "watchdog": "3m TERM / 10s KILL",
+    "startedUtc": "2026-10-27T07:33:59Z",
+    "durationMs": 247,
+    "exitCode": 0,
+    "raw": "out/v2-8i-5-validation/host-pickup-final.log",
+    "counts": {
+      "tests": 19,
+      "suites": 0,
+      "pass": 19,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "id": "host-pickup-sqlite",
+    "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+    "command": "node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-host-pickup-sqlite-8i.test.js",
+    "watchdog": "3m TERM / 10s KILL",
+    "startedUtc": "2026-10-27T07:33:59Z",
+    "durationMs": 563,
+    "exitCode": 0,
+    "raw": "out/v2-8i-5-validation/host-pickup-sqlite-final.log",
+    "counts": {
+      "tests": 8,
+      "suites": 0,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "id": "host-pickup-cli",
+    "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+    "command": "node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-host-pickup-cli-8i.test.js",
+    "watchdog": "3m TERM / 10s KILL",
+    "startedUtc": "2026-10-27T07:34:00Z",
+    "durationMs": 3324,
+    "exitCode": 0,
+    "raw": "out/v2-8i-5-validation/host-pickup-cli-final.log",
+    "counts": {
+      "tests": 5,
+      "suites": 0,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  {
+    "id": "typecheck",
+    "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+    "command": "npm run typecheck",
+    "watchdog": "3m TERM / 10s KILL",
+    "startedUtc": "2026-10-27T07:34:03Z",
+    "durationMs": 1466,
+    "exitCode": 0,
+    "raw": "out/v2-8i-5-validation/typecheck-final.log",
+    "counts": {}
+  }
+]

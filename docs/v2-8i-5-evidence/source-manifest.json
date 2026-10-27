@@ -1,0 +1,55 @@
+{
+  "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66",
+  "acceptedBaseline": "8378a20a819de569ef7b10b747d7ba6c481f529e",
+  "runtimeTestGovernanceFiles": [
+    {
+      "path": "docs/development-state.schema.json",
+      "sha256": "e23fd9cbe534c72829b62997c333e654416c16a58d5c0040f3bebb8c74818cbb"
+    },
+    {
+      "path": "packages/agent/turn-pickup.ts",
+      "sha256": "5095ea8ec693865a3b15996adedcb5816b57b0f40492348fc957e7e1decff02d"
+    },
+    {
+      "path": "src/agent/auto-host-policy.js",
+      "sha256": "2049065ed5c3535703f40e5b7829c41a93370e18ce04b88dcebe6cdbb6e43d20"
+    },
+    {
+      "path": "src/agent/host-pickup.js",
+      "sha256": "62f75f4a77c6ade25c4f09269e2f7333356b56842891d5f1e037380e052d0cc0"
+    },
+    {
+      "path": "src/agent/index.js",
+      "sha256": "49628547684a9dd3c09ccf440b2475c1c22108b57a2de949253bd65bd50e1b9e"
+    },
+    {
+      "path": "src/agent/turn-cli.js",
+      "sha256": "e4b5f6b3429c87f0c659870fae99deb8e69cbae0e0875efa3195c77cff6fb0fb"
+    },
+    {
+      "path": "test/dev-protocol.test.js",
+      "sha256": "730f8737531e79a7a0f8fd4f05134e2e9f16e520342ca0d9fecbba47045bd10b"
+    },
+    {
+      "path": "test/v2-host-pickup-8i.test.js",
+      "sha256": "145a95407f96098b0871cef71bf8d1f9490551430e22097effe5bcc54d5d2e43"
+    },
+    {
+      "path": "test/v2-host-pickup-cli-8i.test.js",
+      "sha256": "54e00e4ef244eda5580d3e44dbdb744d98360036f43a3dfcefb58386f788a11b"
+    },
+    {
+      "path": "test/v2-host-pickup-fixture.js",
+      "sha256": "99f5cf854a1e5850144574220e456561088899072aeaf55c6fafbbdd2c199c5c"
+    },
+    {
+      "path": "test/v2-host-pickup-sqlite-8i.test.js",
+      "sha256": "aaa8dbc3e40bf99f2c138c18640b3702fe354475e73f378a122565d5b7f82423"
+    },
+    {
+      "path": "tools/dev-protocol-check.mjs",
+      "sha256": "b023fe02b833bdcd6c505b0681da3306c20cade529deddf5b33e86317e61198a"
+    }
+  ],
+  "workingDelta": "empty for all listed files; later changes documentation only"
+}

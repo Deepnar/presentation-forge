@@ -1,0 +1,41 @@
+TAP version 13
+# Subtest: pickup CLI defaults off before any provider/configuration work
+ok 1 - pickup CLI defaults off before any provider/configuration work
+  ---
+  duration_ms: 292.019404
+  type: 'test'
+  ...
+# Subtest: pickup CLI rejects authority overrides and malformed bytes privately
+ok 2 - pickup CLI rejects authority overrides and malformed bytes privately
+  ---
+  duration_ms: 1144.689552
+  type: 'test'
+  ...
+# Subtest: pickup CLI pins local Auto configuration and fails closed without it
+ok 3 - pickup CLI pins local Auto configuration and fails closed without it
+  ---
+  duration_ms: 270.64282
+  type: 'test'
+  ...
+# Subtest: pickup CLI loopback prepare and approved execution persist without probes or redispatch
+ok 4 - pickup CLI loopback prepare and approved execution persist without probes or redispatch
+  ---
+  duration_ms: 973.714201
+  type: 'test'
+  ...
+# Subtest: pickup CLI reports account refusal as failure even after a completed scan
+ok 5 - pickup CLI reports account refusal as failure even after a completed scan
+  ---
+  duration_ms: 336.645456
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3295.78384
+# forge-test-file "test/v2-host-pickup-cli-8i.test.js"

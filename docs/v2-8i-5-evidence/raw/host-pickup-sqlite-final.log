@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: SQLite host: submit prepares, waits for explicit approval, executes and reopens one revision
+ok 1 - SQLite host: submit prepares, waits for explicit approval, executes and reopens one revision
+  ---
+  duration_ms: 110.631718
+  type: 'test'
+  ...
+# Subtest: SQLite host: two owners retain separate account spending and pending work
+ok 2 - SQLite host: two owners retain separate account spending and pending work
+  ---
+  duration_ms: 27.501828
+  type: 'test'
+  ...
+# Subtest: SQLite host: account token refusal reserves no event and causes no HTTP call
+ok 3 - SQLite host: account token refusal reserves no event and causes no HTTP call
+  ---
+  duration_ms: 26.084155
+  type: 'test'
+  ...
+# Subtest: SQLite host: unknown response usage keeps the full positive account estimate
+ok 4 - SQLite host: unknown response usage keeps the full positive account estimate
+  ---
+  duration_ms: 27.837753
+  type: 'test'
+  ...
+# Subtest: SQLite host: settlement rolls back event and lifetime counters together on an injected SQLite fault
+ok 5 - SQLite host: settlement rolls back event and lifetime counters together on an injected SQLite fault
+  ---
+  duration_ms: 21.040049
+  type: 'test'
+  ...
+# Subtest: SQLite host: safe pre-dispatch lease recovery prepares
+ok 6 - SQLite host: safe pre-dispatch lease recovery prepares
+  ---
+  duration_ms: 21.07079
+  type: 'test'
+  ...
+# Subtest: SQLite host: ambiguous dispatch never retries
+ok 7 - SQLite host: ambiguous dispatch never retries
+  ---
+  duration_ms: 9.713169
+  type: 'test'
+  ...
+# Subtest: SQLite host: human saves and cleared generations remain authoritative during pickup
+ok 8 - SQLite host: human saves and cleared generations remain authoritative during pickup
+  ---
+  duration_ms: 24.841129
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 535.460888
+# forge-test-file "test/v2-host-pickup-sqlite-8i.test.js"

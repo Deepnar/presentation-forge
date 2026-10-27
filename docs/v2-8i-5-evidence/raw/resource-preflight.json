@@ -1,0 +1,13 @@
+{
+  "atUtc": "2026-10-27T07:15:46.975006+00:00",
+  "sampleSeconds": 5,
+  "cpuBusyPercent": 15.845736370364278,
+  "ioWaitPercent": 9.283776005262725,
+  "availableGiB": 22.104164123535156,
+  "scope": "Small new headless tests only; no GPU/model/browser/render/full regression sweep.",
+  "pressure": {
+    "cpu": "some avg10=0.82 avg60=1.69 avg300=1.82 total=74271702\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=5752039\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5479406\n",
+    "io": "some avg10=37.64 avg60=37.90 avg300=38.45 total=1610118886\nfull avg10=33.87 avg60=34.25 avg300=36.04 total=1481405984\n"
+  }
+}

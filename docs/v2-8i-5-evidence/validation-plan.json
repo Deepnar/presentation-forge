@@ -20,5 +20,6 @@
     "typecheck": []
   },
   "additionalAffectedCheck": "test/dev-protocol.test.js because milestone/schema/validator contracts change.",
-  "excluded": "Unchanged legacy bulk/browser/PG/build/benchmark/native/model runs; accepted I2/I4 evidence reused, not relabeled as execution."
+  "excluded": "Unchanged legacy bulk/browser/PG/build/benchmark/native/model runs; accepted I2/I4 evidence reused, not relabeled as execution.",
+  "implementationSha": "5cf5b5cff53c781291ba094163c68eb189bfbc66"
 }

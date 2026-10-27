@@ -1,0 +1,199 @@
+TAP version 13
+# Subtest: pickup exact input rejects malformed bounds, authority fields and executable values before IO
+ok 1 - pickup exact input rejects malformed bounds, authority fields and executable values before IO
+  ---
+  duration_ms: 1.984574
+  type: 'test'
+  ...
+# Subtest: pickup snapshots owner and cursor before asynchronous policy admission
+ok 2 - pickup snapshots owner and cursor before asynchronous policy admission
+  ---
+  duration_ms: 1.10429
+  type: 'test'
+  ...
+# Subtest: filtered rows consume scan bounds and resume without dropping the next hint
+not ok 3 - filtered rows consume scan bounds and resume without dropping the next hint
+  ---
+  duration_ms: 2.254227
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-host-pickup-8i.test.js:46:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [Object: null prototype] {
+    - {
+        projectId: 'p1',
+        turnId: 't1'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    projectId: 'p1'
+    turnId: 't1'
+  actual:
+    projectId: 'p1'
+    turnId: 't1'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-host-pickup-8i.test.js:49:90)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: work limit records only completed positions and sequentially resumes
+ok 4 - work limit records only completed positions and sequentially resumes
+  ---
+  duration_ms: 0.813716
+  type: 'test'
+  ...
+# Subtest: unfinished busy, lease, cancellation and step-limit positions are retained
+ok 5 - unfinished busy, lease, cancellation and step-limit positions are retained
+  ---
+  duration_ms: 0.991611
+  type: 'test'
+  ...
+# Subtest: canonical final state can complete despite a late abort reason
+ok 6 - canonical final state can complete despite a late abort reason
+  ---
+  duration_ms: 0.413582
+  type: 'test'
+  ...
+# Subtest: post-reconciliation submitted state prepares even when the raw hint was preparing
+ok 7 - post-reconciliation submitted state prepares even when the raw hint was preparing
+  ---
+  duration_ms: 0.317086
+  type: 'test'
+  ...
+# Subtest: approved work needs neither provider configuration nor a secret lookup
+ok 8 - approved work needs neither provider configuration nor a secret lookup
+  ---
+  duration_ms: 0.278545
+  type: 'test'
+  ...
+# Subtest: elapsed budget and external cancellation stop before another hint
+not ok 9 - elapsed budget and external cancellation stop before another hint
+  ---
+  duration_ms: 0.512475
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-host-pickup-8i.test.js:82:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [Object: null prototype] {
+    - {
+        projectId: 'p1',
+        turnId: 't1'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    projectId: 'p1'
+    turnId: 't1'
+  actual:
+    projectId: 'p1'
+    turnId: 't1'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-host-pickup-8i.test.js:86:52)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: stale positions advance but infrastructure failure retains partial progress privately
+not ok 10 - stale positions advance but infrastructure failure retains partial progress privately
+  ---
+  duration_ms: 0.5982
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-host-pickup-8i.test.js:92:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [Object: null prototype] {
+    - {
+        projectId: 'p1',
+        turnId: 't1'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    projectId: 'p1'
+    turnId: 't1'
+  actual:
+    projectId: 'p1'
+    turnId: 't1'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-host-pickup-8i.test.js:96:88)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: pickup output whitelists metadata and never exposes private worker bodies
+ok 11 - pickup output whitelists metadata and never exposes private worker bodies
+  ---
+  duration_ms: 0.361346
+  type: 'test'
+  ...
+# Subtest: host policy is default-closed and missing account/config never falls back
+ok 12 - host policy is default-closed and missing account/config never falls back
+  ---
+  duration_ms: 0.984023
+  type: 'test'
+  ...
+# Subtest: explicit local Auto configuration pins model/capabilities without model discovery
+ok 13 - explicit local Auto configuration pins model/capabilities without model discovery
+  ---
+  duration_ms: 0.464571
+  type: 'test'
+  ...
+# Subtest: owner deletion/recreation and revocation stop before reserve or network
+ok 14 - owner deletion/recreation and revocation stop before reserve or network
+  ---
+  duration_ms: 28.128117
+  type: 'test'
+  ...
+# Subtest: known normalized usage settles input/output once without double-counting cache
+ok 15 - known normalized usage settles input/output once without double-counting cache
+  ---
+  duration_ms: 1.826174
+  type: 'test'
+  ...
+# Subtest: denied account admission produces zero provider calls
+ok 16 - denied account admission produces zero provider calls
+  ---
+  duration_ms: 1.613438
+  type: 'test'
+  ...
+# Subtest: unknown, malformed and cancelled outcomes retain conservative reservations
+ok 17 - unknown, malformed and cancelled outcomes retain conservative reservations
+  ---
+  duration_ms: 3.065335
+  type: 'test'
+  ...
+# Subtest: actual usage above reservation is recorded in full and closes further dispatch
+ok 18 - actual usage above reservation is recorded in full and closes further dispatch
+  ---
+  duration_ms: 2.616679
+  type: 'test'
+  ...
+# Subtest: settlement failure closes further dispatch without a retry or private error
+ok 19 - settlement failure closes further dispatch without a retry or private error
+  ---
+  duration_ms: 2.030242
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 16
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7145.243334
