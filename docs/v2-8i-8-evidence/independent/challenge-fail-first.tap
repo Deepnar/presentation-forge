@@ -1,0 +1,29 @@
+✖ a draft-blocked succeeded revision retains explicit Load saved changes recovery (5.212874ms)
+✔ a revoked owner during saved-revision loading clears private recovery state (0.595579ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 73.974608
+
+✖ failing tests:
+
+test at docs/v2-8i-8-evidence/independent/challenges.test.mjs:20:1
+✖ a draft-blocked succeeded revision retains explicit Load saved changes recovery (5.212874ms)
+  AssertionError [ERR_ASSERTION]: pending-data retains explicit saved-change loading
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/docs/v2-8i-8-evidence/independent/challenges.test.mjs:25:12)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

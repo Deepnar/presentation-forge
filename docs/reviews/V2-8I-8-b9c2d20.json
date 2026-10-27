@@ -1,0 +1,64 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-27",
+  "implementationSha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+  "acceptedBaseline": "3da0801f64e88f7911f655cee288bb9b750c7c3d",
+  "reviewedPacketSha": "841176d50109a983a97c6c1cf30e68826489838a",
+  "evidence": "docs/v2-8i-8-evidence/independent/review.md",
+  "plan": "docs/V2-8I-8-PLAN.md",
+  "evaluation": "docs/V2-8I-8-EVAL.md",
+  "assessment": "The approved existing-deck Assistant is correctly bounded to semantic current-slide/selected-object edits through accepted H/I7 authority. Captured credentials, draft/save settlement, stored proposal revisions and final guarded authoritative attachment preserve ownership and human work. Default-off availability grants no execution authority. Narrow independent findings were corrected without changing canonical engines. The final exact source and disclosed selected-case evidence support acceptance; no blocking findings remain.",
+  "blockingFindings": [],
+  "resolvedFindings": [
+    "A succeeded run blocked by grid/title drafts now retains explicit saved-loading recovery; successful loading clears the previous blocker error while revoked authority clears private state.",
+    "Availability and export now receive controller-owned AbortSignals and abort on disposal or session expiry.",
+    "The falsely named dark capture was identified as light; current dark uses the actual data-theme mechanism and recorded computed background. The unavailable overwritten original is disclosed."
+  ],
+  "independentlyExecuted": {
+    "final": {
+      "evidence": "docs/v2-8i-8-evidence/independent/challenge-final.json",
+      "tests": { "total": 3, "pass": 3, "fail": 0, "skip": 0, "cancelled": 0 },
+      "exitCode": 0,
+      "durationMs": 254,
+      "cases": [
+        "Draft-blocked succeeded revision retains explicit loading, loads after resolution and clears its old error.",
+        "Revoked authority during saved loading clears private page and recovery state.",
+        "Real API wrapper availability/export fetches receive AbortSignals and abort on disposal and token expiry, with no late page repopulation."
+      ]
+    },
+    "historical": [
+      { "evidence": "docs/v2-8i-8-evidence/independent/challenge-fail-first.json", "tests": { "total": 2, "pass": 1, "fail": 1, "skip": 0, "cancelled": 0 } },
+      { "evidence": "docs/v2-8i-8-evidence/independent/challenge-after-recovery-fix.json", "tests": { "total": 2, "pass": 2, "fail": 0, "skip": 0, "cancelled": 0 } },
+      { "evidence": "docs/v2-8i-8-evidence/independent/challenge-after-loaded-fix.json", "tests": { "total": 2, "pass": 2, "fail": 0, "skip": 0, "cancelled": 0 } }
+    ],
+    "packetAudit": "docs/v2-8i-8-evidence/independent/packet-audit.json"
+  },
+  "implementationEvidenceInspected": {
+    "selectedProductTests": { "total": 26, "pass": 26, "fail": 0, "skip": 0, "cancelled": 0 },
+    "selectedGovernanceTests": { "total": 4, "pass": 4, "fail": 0, "skip": 0, "cancelled": 0 },
+    "typecheckExitCode": 0,
+    "browserCoverage": "Seven distinct selected cases from retained executions; no all-green whole-file process is claimed. Five unchanged cases, corrected truthful narrow-dark case and corrected save/stale case are bound through exact case bodies, source hashes and reviewed narrow deltas.",
+    "rootAllAttemptTotals": { "total": 114, "pass": 106, "fail": 8, "skip": 0, "cancelled": 0 },
+    "visualsInspected": 7,
+    "desktopCanvasMaxDeltaPx": 0.003814697265625,
+    "narrowCanvasMaxDeltaPx": 0
+  },
+  "exclusions": [
+    "No independent duplicate of implementation suites, browser/build/database execution or cleanup probes.",
+    "Old bulk/browser/native/render/benchmark and PostgreSQL/fault matrices, 34 unchanged governance bodies and old full 7A file are unexecuted this slice.",
+    "No live Auto/local model, GPU, real-provider quality/latency/budget qualification, production activation or deployment."
+  ],
+  "residualLimits": [
+    "Default-off offline fixtures establish source correctness, not live-provider usefulness or production readiness.",
+    "Asynchronous attachment/save guards are source-reviewed and focused seams are exercised; every possible browser race permutation was not replayed.",
+    "The first admission raw and overwritten initial mislabeled narrow-light PNG are unavailable; current truthful dark and subsequent admission evidence are retained. Acceptance does not reconstruct those artifacts.",
+    "Standing BYOK locale, I7 initial SQLite timing, inherited native/visual/synthetic-history limits and I4 missing pre-removal operational provenance remain separate.",
+    "Cleanup is inspected root evidence; this context acquired no service or browser and certifies no unavailable historical cleanup."
+  ],
+  "waivers": [],
+  "stopPoint": "Accept this exact I8 source, link metadata from this independent record, finish scoped origin/v2 documentation/evidence closeout and stop. Acceptance permits planning only; no activation, deployment, migrations, paid infrastructure or dependent implementation is authorized."
+}

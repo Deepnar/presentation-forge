@@ -1,0 +1,19 @@
+{
+  "implementationSha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+  "command": "node --test --test-reporter=tap docs/v2-8i-8-evidence/independent/challenges.test.mjs",
+  "exitCode": 0,
+  "durationMs": 254,
+  "log": "docs/v2-8i-8-evidence/independent/challenge-final.tap",
+  "tests": {
+    "total": 3,
+    "pass": 3,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "sourceHashes": {
+    "app/web/src/lib/assistantController.js": "e0322e0fee0d9887e26b025bee3b2cc2cd3ebb50f26300278bf55fbcb1f313d5",
+    "app/web/src/lib/v2assistant.js": "0e673f3b5b5748c874d866ecd133a7a1eba7393bad1c6a0ccf97d0d466f3b87d",
+    "docs/v2-8i-8-evidence/independent/challenges.test.mjs": "635bb30b554d3ebe9b2b1df03e0f9e91204b3669922b7e9161091cd672ce47a5"
+  }
+}

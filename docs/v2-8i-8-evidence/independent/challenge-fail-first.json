@@ -1,0 +1,7 @@
+{
+  "implementationSha": "4041e4d45bfc966c6623f1ad06744d83cccddb1b",
+  "command": "node --test docs/v2-8i-8-evidence/independent/challenges.test.mjs",
+  "exitCode": 1,
+  "durationMs": 121,
+  "log": "docs/v2-8i-8-evidence/independent/challenge-fail-first.tap"
+}

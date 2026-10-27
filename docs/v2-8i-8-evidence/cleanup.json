@@ -1,0 +1,22 @@
+{
+  "atUtc": "2026-10-27T17:27:26.606286+00:00",
+  "apiProcessesObserved": [
+    {
+      "pid": 1723,
+      "ppid": 1670,
+      "comm": "MainThread",
+      "command": "node app/server/index.js"
+    }
+  ],
+  "preexistingApiPreserved": 1723,
+  "ownedValidationRunnersObserved": [],
+  "ownedValidationServiceAcquired": false,
+  "ownedFixtureCleanup": "Fixture hooks close API/Chrome/listeners/stores/temp directories before test process completion. Fresh process inventory shows only preserved pre-existing API; no persistent service/database acquired.",
+  "probeCorrection": "First metadata-only probe incorrectly required comm=node; Node24 uses comm=MainThread. It refused before writing a record. Final observation matches exact args plus PID, without assuming thread comm. No product test or service was changed.",
+  "originalUntrackedPreserved": [
+    ".agents/",
+    "PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md",
+    "PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md"
+  ],
+  "postgres": "Unexecuted; no old I4 infrastructure touched."
+}

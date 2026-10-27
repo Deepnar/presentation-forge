@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: a draft-blocked succeeded revision retains explicit Load saved changes recovery
+ok 1 - a draft-blocked succeeded revision retains explicit Load saved changes recovery
+  ---
+  duration_ms: 10.584255
+  type: 'test'
+  ...
+# Subtest: a revoked owner during saved-revision loading clears private recovery state
+ok 2 - a revoked owner during saved-revision loading clears private recovery state
+  ---
+  duration_ms: 2.218097
+  type: 'test'
+  ...
+# Subtest: availability and export fetches receive abort signals that close on disposal and session expiry
+ok 3 - availability and export fetches receive abort signals that close on disposal and session expiry
+  ---
+  duration_ms: 39.089633
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 175.01565

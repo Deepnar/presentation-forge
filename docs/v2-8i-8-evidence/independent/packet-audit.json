@@ -1,0 +1,54 @@
+{
+  "implementationSha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+  "packetHead": "841176d50109a983a97c6c1cf30e68826489838a",
+  "matchingHashClaimsChecked": 11,
+  "frozenChangedSourcePaths": [
+    "app/server/index.js",
+    "app/server/v2-agent-routes.js",
+    "app/web/src/components/AssistantPanel.jsx",
+    "app/web/src/components/SceneViewer.jsx",
+    "app/web/src/lib/assistantController.js",
+    "app/web/src/lib/v2assistant.js",
+    "docs/development-state.schema.json",
+    "src/agent/assistant-availability.js",
+    "src/agent/turn-cli.js",
+    "test/dev-protocol.test.js",
+    "test/v2-assistant-chrome-8i.test.js",
+    "test/v2-assistant-client-8i.test.js",
+    "test/v2-assistant-integration-8i.test.js",
+    "test/v2-edit-chrome-7a.test.js",
+    "tools/chrome-shot.mjs",
+    "tools/dev-protocol-check.mjs"
+  ],
+  "firstFiveCaseBodies": [
+    {
+      "name": "normal chat proposes text/chart/table, approves once, loads canonical history and restores",
+      "exactBodyEqual": true
+    },
+    {
+      "name": "chart/table Apply-only drafts survive rail switching and block Send",
+      "exactBodyEqual": true
+    },
+    {
+      "name": "selection scope limits edits, rejection and confirmed clear preserve deck/history",
+      "exactBodyEqual": true
+    },
+    {
+      "name": "in-flight processing can be cancelled without clearing the saved message or changing the scene",
+      "exactBodyEqual": true
+    },
+    {
+      "name": "composer navigation warns, default-off/read-only state cannot send and account change clears private chat",
+      "exactBodyEqual": true
+    }
+  ],
+  "rootAllAttemptCounts": {
+    "total": 114,
+    "pass": 106,
+    "fail": 8,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "imageHashesChecked": 7,
+  "errors": []
+}
