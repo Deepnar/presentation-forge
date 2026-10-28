@@ -9077,6 +9077,23 @@ local inference. Only that separate transport correction is authorized; this aud
     > Stable snippet IDs prove identity, not factual support; metadata must survive
     > terminal text without being promoted into a verified source registry.
 
+  <a id="assistant-project-source-registry"></a>
+
+  - [ ] **V2-8J-2 immutable project web-source registry — contract preparation.**
+    The2026-10-28 continuation prepares the next dependency from accepted
+    J1f161901 and entry HEADf84c015. [Proposed contract](V2-8J-2-PLAN.md)
+    defines explicit selected-source registration, immutable owner-bound identity/
+    resolution, bounded catalog paging, atomic storage/clear/delete and unchanged
+    deck/history/H authority on SQLite and PostgreSQL. No model calls or activation.
+    Recommend private normalized web snippets retained until explicit source clear
+    or project deletion; chat clear/Version history stay separate. No queries,
+    transcripts, full pages or automatic registration. This new data-handling/
+    retention policy needs explicit human approval after technical plan review.
+    Source attachment/verified locators/claim support, paper/file adapters, public
+    integration and source-aware project-copy remapping remain outside J2; the
+    later citation/creation contract must resolve those seams before use.
+    No runtime/schema/query/migration code is authorized by planning.
+
   Dependency sequence after accepted J1: agree project source registry/retention/
   resolution and verified locator boundaries before research-backed semantic
   creation. Semantic tools retain deterministic compile/preservation/approval
