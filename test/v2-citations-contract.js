@@ -72,8 +72,9 @@ export function citationWriteContracts(check,setup) {
     const e=await setup(t),s=await register(e),before=await snapshot(e),id=e.binding.id;
     if(e.dialect==='sqlite')await e.query(`CREATE TRIGGER citation_history_failure BEFORE INSERT ON v2_project_revisions WHEN NEW.project_id='${id}' BEGIN SELECT RAISE(ABORT,'private fixture history failure'); END`);
     else {await e.query(`CREATE FUNCTION citation_history_failure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.project_id='${id}' THEN RAISE EXCEPTION 'private fixture history failure'; END IF; RETURN NEW; END $$`);await e.query('CREATE TRIGGER citation_history_failure BEFORE INSERT ON v2_project_revisions FOR EACH ROW EXECUTE FUNCTION citation_history_failure()');}
-    try {const out=await e.citations.attach(e.binding,request(s));assert.equal(out.code,'storage-unavailable');assert.equal(JSON.stringify(out).includes('private fixture'),false);assert.deepEqual(await snapshot(e),before);}
+    try {const out=await e.citations.attach(e.binding,request(s));assert.equal(out.code,'storage-unavailable');assert.equal(JSON.stringify(out).includes('private fixture'),false);}
     finally {await e.query(e.dialect==='sqlite'?'DROP TRIGGER citation_history_failure':'DROP TRIGGER citation_history_failure ON v2_project_revisions');if(e.dialect==='postgres')await e.query('DROP FUNCTION citation_history_failure()');}
+    assert.deepEqual(await snapshot(e),before);
     assert.equal((await e.citations.attach(e.binding,request(s))).ok,true);
   });
 
