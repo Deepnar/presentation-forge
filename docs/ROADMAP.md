@@ -9039,12 +9039,12 @@ local inference. Only that separate transport correction is authorized; this aud
   semantics; bounded payloads/cardinality alone do not bound parent-lock waits.
   Accepted J2 below supplies immutable owner-private web-snippet registration,
   resolution and bounded lifecycle, retaining F/J1 IDs without replacing legacy
-  paths. The next proposed J3 foundation below checks explicit saved target/source
-  references and snippet-relative locators without persisting attachment. Agree
-  its bounded direction before implementation. Then agree revisioned citation
-  attachment and source-to-block/slide/export
-  mappings, clear/missing-source and project-copy rebinding semantics, and verified
-  locator/claim-support policy before dependent implementation. Add separate
+  paths. Accepted J3 below checks explicit saved target/source references and
+  snippet-relative locators without persisting attachment. Proposed J4 below
+  defines revisioned scene-owned metadata and clear/edit/history semantics; human
+  architecture/data-handling direction is still pending. Source-aware project
+  copy, citation export/presentation and verified claim-support policy have
+  separate contracts before dependent implementation. Add separate
   paper/project adapters under their own contracts. Verify source-to-block/slide/export
   mappings; distinguish claim support from matching IDs/numbers and retain
   unsupported/uncertain outcomes. Prompt-injection fixtures and eventual labeled
@@ -9161,9 +9161,60 @@ local inference. Only that separate transport correction is authorized; this aud
     > and per-slide traversal caps do not enforce a whole-request bound. A source
     > match and an existing target still do not establish an attached citation.
 
-  Dependency sequence after accepted J3: agree revisioned citation attachment,
-  source-to-block/slide/export mappings, clear/copy semantics and verified locator/
-  claim-support boundaries before research-backed semantic creation. Semantic tools
+  <a id="assistant-citation-lifecycle"></a>
+
+  - [ ] **V2-8J-4 revisioned citation metadata and lifecycle — proposed.**
+    From independently accepted J3 `edda5ec`, planning entry `309ced2`.
+    [Proposed contract](V2-8J-4-PLAN.md) records scene-owned unverified target/source
+    IDs, source generation, optional byte ranges and versioned content hashes;
+    no new snippets/quotes/claims or stored verification/approval. Headless exact-
+    owner attach/remove/inspect would reuse canonical commands, project revisions,
+    source checks and atomic history. Preserve unresolved/stale records through
+    generic saves, undo/history, duplication and exact-ID regeneration; qualify
+    current use without a new receipt ledger or provider authority. Explicitly
+    refuse cited new-project copy/create and native export until the separate
+    contracts below; never silently strip metadata. Existing uncited flows remain.
+    **Agree this architecture/data-retention and containment direction before code.**
+    Planning/readiness is not implementation authorization or acceptance.
+
+    **Look-ahead.** Scene-owned records avoid another document; unverified metadata
+    handles session undo200 beyond durable payload20 pruning without resurrecting
+    cleared sources. Future source-aware copy must rebind project-scoped source
+    IDs and the live editor together; export needs explicit privacy/presentation
+    direction. J3 quote matches and content-hash equality never establish support.
+    Tool/H/Assistant authority and research-backed creation remain separately gated.
+
+  <a id="assistant-citation-project-copy"></a>
+
+  - [ ] **Source-aware project copy and safe live-editor adoption — contract needed.**
+    After J4, agree copying retained snippets into a new owner-private project,
+    atomic source-ID rebinding, original retrieval provenance, stale/missing-source
+    refusal or explicit alternative, and capacity/history behaviour. Generic create
+    must not silently carry foreign IDs or drop references. Cover actual Save-as-
+    new input: it copies live unsaved scenes, not merely the stored source project.
+    Source inspection at `309ced2` found the awaited create response changes
+    projectRef without a fresh session/revision/pending-editor check, and does not
+    install rewritten scenes. This is an **unreproduced race risk**, not an executed
+    failure. Exercise it narrowly and preserve edits/navigation during copy before
+    adopting a response or claiming saved. Source rebinding also requires updating
+    authoritative live scene IDs and undo identity. Admin project CRUD grants no
+    private-source copy authority. J4 gates citation-bearing copy pending this work.
+
+  <a id="assistant-citation-native-presentation"></a>
+
+  - [ ] **Citation presentation and native export — direction needed.**
+    Agree visible attribution versus speaker notes, which retained metadata may
+    enter portable files, stale/missing-source behaviour and source-to-slide/object
+    mappings before implementation. Notes would disclose private URLs/titles or
+    excerpts and cannot be added as an incidental renderer change. Reuse canonical
+    scenes/native preflight; cover direct/browser/file and stored-project export,
+    hidden targets, legacy access and admin privacy boundaries. Require appropriate
+    native/visual evidence when presentation is implemented. J4 proposes central
+    cited-scene export refusal; it does not complete citation-preserving export.
+
+  Dependency sequence after accepted J3: agree J4 attachment/lifecycle, then source-
+  aware copy/native mappings and verified locator/claim-support boundaries before
+  research-backed semantic creation. Semantic tools
   retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
   parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning
