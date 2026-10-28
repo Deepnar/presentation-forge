@@ -167,6 +167,12 @@ The projection is an ordered tuple vocabulary, never object-key-order dependent:
   included. IDs, semanticRef, recipe/layout, geometry, style, locks, visibility,
   provenance, ownership flags, tombstones and citation metadata are excluded.
 
+The scene schema permits absent kind-specific payloads. Project an absent text,
+chart, table, image or group payload as the explicit tuple [kind, null], rather
+than throwing or confusing it with a present empty payload. A slide always uses
+its schema-required elements. Image fields come from element.image, text from
+element.paragraphs; absent optional fields use the stated null/false defaults.
+
 Preserve exact wording, Unicode, BOM and line endings; JSON escaping retains
 unpaired UTF-16 surrogates losslessly before encoding. No normalization/repair.
 Finite numbers use JSON number serialization (-0 becomes0). Anchors compare
@@ -204,8 +210,14 @@ until removal; undo restores the exact target and metadata. Slide deletion remov
 its scene-owned records; undo/history restores them without recreating sources.
 
 Same-project slide duplication remints citation IDs and uniquely mapped exact
-slide/element target IDs alongside the existing full recursive ID map. Keep source
-project/generation, locator and anchor unchanged. Missing, ambiguous or already
+slide/element target IDs. Build an old-ID cardinality-aware mapping alongside the
+existing recursive element-ID reminting; that mapping does not exist today. Keep
+source project/generation, locator and anchor unchanged. Citation IDs are labels,
+not capabilities: deterministically increment the original128-bit hexadecimal
+suffix modulo2^128 until unused in the complete deck citation-ID set, reserving
+each result before the next record (at most513 candidates under the project cap).
+Do not suffix a fixed-format ID with "-copy" or add random replay differences.
+Missing, ambiguous or already
 scope-mismatched targets keep their old target tuple, so the duplicate reports
 scope-mismatch and cannot accidentally bind a new element. Never semanticRef
 retarget or silently discard records. Deck-wide citation-ID/capacity checks apply
