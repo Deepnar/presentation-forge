@@ -1,5 +1,6 @@
+import { parsedWebSource, sameWebMeaning } from '../tools/web-source.ts';
 import { cloneJson } from '../tools/json.ts';
-import { createDocument, webSourceId, type SourceRef } from '../tools/executor.ts';
+import { createDocument, type SourceRef } from '../tools/executor.ts';
 import { createToolSession, semanticToolCatalog, validatedToolResult, type ToolSession, type ToolResult } from '../tools/session.ts';
 import { composeInstructions, type ContextSuccess } from './context.ts';
 import { providerProfile, prepareExchange, normalizedExchange, type ModelProvider, type ProviderExchange, type ReadRound } from './provider.ts';
@@ -222,12 +223,9 @@ export function createResearchRunner(backend: RuntimeBackend, provider: ModelPro
             trace.sourceResults += searchResult.data.sources.length;
             if (trace.sourceResults > (permit.grant.maxResults ?? 24)) stop('budget-exhausted');
             for (const source of searchResult.data.sources) {
-              if (source.projectId !== owner.id || source.searchProvider !== permit.searchId || source.id !== webSourceId(source) || !Number.isFinite(Date.parse(source.retrievedAt))) stop('invalid-response');
-              let url: URL;
-              try { url = new URL(source.url); } catch { stop('invalid-response'); }
-              if (!['http:','https:'].includes(url!.protocol) || url!.username || url!.password || url!.hash || url!.href !== source.url) stop('invalid-response');
+              if (!parsedWebSource(source, owner.id, permit.searchId)) stop('invalid-response');
               const previous = sources.get(source.id);
-              if (previous && webSourceId(previous) !== webSourceId(source)) stop('invalid-response');
+              if (previous && !sameWebMeaning(previous, source)) stop('invalid-response');
               if (!previous) sources.set(source.id, structuredClone(source));
             }
             searchResult.data.warnings.forEach(w => warnings.add(w));
