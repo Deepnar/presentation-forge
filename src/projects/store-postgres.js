@@ -21,6 +21,7 @@
 // FORGE_PROJECTS_PG_POOL_MAX (default 10). Credentials stay
 // server-side (env only); nothing here logs URLs, payloads, or
 // slide contents.
+import { hasCitations } from "../../packages/model/citations.ts";
 import {
   buildProjectDocument,
   validateProjectDocument,
@@ -281,6 +282,8 @@ export async function createProject({ owner = null, title, scenes, theme = null,
     err.details = prov.errors;
     throw err;
   }
+  if (Array.isArray(scenes) && hasCitations(scenes))
+    throw Object.assign(new Error("Citation-bearing project creation requires source-aware copying."), { code: "invalid-document" });
   const doc = buildProjectDocument({ title, scenes, theme, origin });
   const verdict = await validateProjectDocument(doc);
   if (!verdict.ok) {
@@ -811,13 +814,14 @@ export async function withRuntimeTransaction({ owner = null, id }, job) {
   }
 }
 
-async function withProjectDomainTransaction(binding, job, fullDocument) {
+async function withProjectDomainTransaction(binding, job, fullDocument, citationWrite = false) {
   let original, failed = false;
   try {
     return await withRuntimeTransaction(binding, async tx => {
       try {
         return await job(Object.freeze({ dialect: 'postgres',
-          doc: fullDocument ? tx.doc : { id: tx.doc.id, revision: tx.doc.revision }, query: tx.query }));
+          doc: fullDocument ? tx.doc : { id: tx.doc.id, revision: tx.doc.revision }, query: tx.query,
+          ...(citationWrite ? { saveScenes: tx.saveScenes } : {}) }));
       } catch (error) {
         original = error; failed = true;
         // Throw through the canonical boundary so every mutation rolls back.
@@ -837,4 +841,9 @@ export function withSourceTransaction(binding, job) {
 // Citation checks share the parent lock but receive no scene-write capability.
 export function withCitationReadTransaction(binding, job) {
   return withProjectDomainTransaction(binding, job, true);
+}
+
+// Qualified citation writes reuse private refusal rollback without widening H.
+export function withCitationTransaction(binding, job) {
+  return withProjectDomainTransaction(binding, job, true, true);
 }

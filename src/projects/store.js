@@ -28,6 +28,7 @@
 // volume, but not volume loss, image rebuilds without the mount, or
 // multi-host deployments. Hosted mode still requires a session (see the
 // routes); the store itself enforces owner scoping but not HTTP auth.
+import { hasCitations } from "../../packages/model/citations.ts";
 import { getDb, closeDb } from "../db.js";
 import {
   buildProjectDocument,
@@ -126,6 +127,8 @@ async function createProjectInner({ owner = null, title, scenes, theme = null, o
     err.details = prov.errors;
     throw err;
   }
+  if (Array.isArray(scenes) && hasCitations(scenes))
+    throw Object.assign(new Error("Citation-bearing project creation requires source-aware copying."), { code: "invalid-document" });
   const doc = buildProjectDocument({ title, scenes, theme, origin });
   const verdict = await validateProjectDocument(doc);
   if (!verdict.ok) {
@@ -815,5 +818,12 @@ export function withSourceTransaction(binding, job) {
 export function withCitationReadTransaction(binding, job) {
   return withRuntimeTransaction(binding, tx => job(Object.freeze({
     dialect: 'sqlite', doc: tx.doc, query: tx.query,
+  })));
+}
+
+// Qualified citation writes share canonical scene/history commit authority only.
+export function withCitationTransaction(binding, job) {
+  return withRuntimeTransaction(binding, tx => job(Object.freeze({
+    dialect: 'sqlite', doc: tx.doc, query: tx.query, saveScenes: tx.saveScenes,
   })));
 }

@@ -21,12 +21,18 @@ export function validSnippetLocator(value) {
 }
 
 // A retained JSON string can contain lone surrogates; UTF-8 encoding would repair them.
-export function snippetLocatorStatus(locator, excerpt) {
+export function snippetRangeStatus(locator, excerpt) {
   if (locator === undefined) return 'not-requested';
   if (excerpt === undefined) return 'unavailable';
   if (!scalarText(excerpt)) return 'unsupported-excerpt';
   const bytes = Buffer.from(excerpt);
   const boundary = at => at === bytes.length || (bytes[at] & 0xc0) !== 0x80;
   if (locator.endByte > bytes.length || !boundary(locator.startByte) || !boundary(locator.endByte)) return 'invalid';
-  return bytes.subarray(locator.startByte,locator.endByte).equals(Buffer.from(locator.quote)) ? 'matched' : 'mismatch';
+  return 'range-valid';
+}
+
+export function snippetLocatorStatus(locator, excerpt) {
+  const range = snippetRangeStatus(locator,excerpt);
+  if (range !== 'range-valid') return range;
+  return Buffer.from(excerpt).subarray(locator.startByte,locator.endByte).equals(Buffer.from(locator.quote)) ? 'matched' : 'mismatch';
 }

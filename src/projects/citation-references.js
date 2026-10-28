@@ -1,3 +1,4 @@
+import { indexCitationTargets } from '../../packages/model/citation-targets.ts';
 import { cloneJson } from '../../packages/tools/json.ts';
 import { SOURCE_LIMITS, catalog, expected, bodies, refuse, sourceRefusalCode } from './source-read.js';
 import { validSnippetLocator, snippetLocatorStatus } from './snippet-locator.js';
@@ -44,34 +45,8 @@ function capture(identity, input) {
 }
 
 function targets(doc, references) {
-  const slides = new Map(), counts = new Map(), wanted = new Map();
-  for (const scene of doc.scenes) {
-    counts.set(scene.id,(counts.get(scene.id) ?? 0) + 1);
-    slides.set(scene.id,scene);
-  }
-  for (const { target } of references) if (target.kind === 'element') {
-    if (!wanted.has(target.slideId)) wanted.set(target.slideId,new Map());
-    wanted.get(target.slideId).set(target.elementId,0);
-  }
-  let visited = 0;
-  for (const [slideId, ids] of wanted) {
-    if (counts.get(slideId) !== 1) continue;
-    const stack = [{ elements: slides.get(slideId).elements, index: 0, depth: 0 }];
-    while (stack.length) {
-      const frame = stack.at(-1);
-      if (frame.index === frame.elements.length) { stack.pop(); continue; }
-      if (++visited > 10000 || frame.depth > 128) refuse('target-budget-exceeded');
-      const el = frame.elements[frame.index++];
-      if (ids.has(el.id)) ids.set(el.id,Math.min(2,ids.get(el.id) + 1));
-      if (el.group?.children?.length) stack.push({ elements: el.group.children, index: 0, depth: frame.depth + 1 });
-    }
-  }
-  return references.map(({ target }) => {
-    const n = counts.get(target.slideId) ?? 0;
-    if (n !== 1) return n ? 'ambiguous' : 'missing';
-    const matches = target.kind === 'slide' ? 1 : wanted.get(target.slideId).get(target.elementId);
-    return matches > 1 ? 'ambiguous' : matches === 1 ? 'present' : 'missing';
-  });
+  try { return indexCitationTargets(doc.scenes,references.map(r=>r.target)).map(o=>o.status); }
+  catch (error) { if (error?.code === 'target-budget-exceeded') refuse('target-budget-exceeded'); throw error; }
 }
 
 function validResult(value, count) {
