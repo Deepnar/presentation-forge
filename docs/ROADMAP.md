@@ -9058,12 +9058,16 @@ local inference. Only that separate transport correction is authorized; this aud
     behavior and separate research entry without H persistence hooks. Backend query
     logs are governed by the configured backend policy. Offline tests only.
     Separate [READY_FOR_DIRECTION](reviews/V2-8J-1-plan-11696f9.json) verifies
-    clarified plan2a640cd; no technical planning blocker remains. The human must
+    clarified plan2a640cd; no technical planning blocker remains. The human
     approved scoped query disclosure on2026-10-27, selecting Approve scoped
     implementation (Recommended). Offline code/tests are authorized; no activation.
     Grant absence must preserve existing default-off editing behavior. Source
     registry/locator/retention and later research-backed creation remain separate.
     Look-ahead reuses this capability/catalog seam without another document/queue.
+    Independent fail-first review found cross-factory capability reuse atcff2e73.
+    Narrow correction shares single-use state across factories and binds the full
+    canonical request before dispatch; focused verification and exact-source
+    review remain pending. No dependent scope is authorized by that correction.
 
   Dependency sequence after I8: establish the granted canonical read-only search
   seam, then agree immutable project source registry/retention/resolution and

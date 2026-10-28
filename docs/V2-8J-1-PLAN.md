@@ -60,8 +60,11 @@ Persistent sources/retention need the separate
    both wire families against the exact canonical schema, not a permissive copy.
 2. Trusted host composes owner/project/saved-revision identity, authorization
    recheck, SearchProvider instance and finite grant. Snapshot identity/grant before
-   awaits. Each capability is single-use and binds the exact request identity;
-   an explicit fresh capability is required for another invocation. Check owner/project/revision/abort/deadline before dispatch and after
+   awaits. Each capability is single-use across runner factories and binds the
+   complete canonical request (text, scope, reads, budgets and deadline as well as
+   ID/revision); property ordering is irrelevant. Mismatches cannot dispatch or
+   consume the original grant. An explicit fresh trusted capability object is
+   required for another invocation. Check owner/project/revision/abort/deadline before dispatch and after
    result normalization/publication. Never perform network I/O inside a backend
    transaction. The existing SearXNG adapter stays in src; pure packages accept
    injected interfaces without importing fetch, HTTP, filesystem or SQL.

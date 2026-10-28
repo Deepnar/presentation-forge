@@ -2704,8 +2704,8 @@ bounded form-POST transport keeps host binding/configuration out of semantic que
 arguments; no model tools, routes, source store or legacy rewiring are added.
 [The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary) and
 [evaluation](V2-8F-EVAL.md) identify exact source `0cab854` and its independent
-[acceptance](reviews/V2-8F-0cab854.json). The model search-tool catalog and Assistant
-remain outside this accepted boundary.
+[acceptance](reviews/V2-8F-0cab854.json). J1 below composes this boundary through
+a separate granted headless entry; F itself adds no model catalog or Assistant.
 
 ### V2-8H durable visible conversations and approval
 
@@ -2950,3 +2950,34 @@ mutually exclusive left/right rails. Inactive panels are hidden and cannot focus
 No model, compiler, renderer, store schema/query or canonical H/I2/I5/I7 authority
 changed. Contract/evidence and independent review status are indexed in
 [V2-8I-8-EVAL.md](V2-8I-8-EVAL.md) and development-state.json.
+
+### V2-8J-1 granted headless web research
+
+`packages/agent/research.ts` composes an inspect-only model conversation with the
+injected F SearchProvider. The trusted capability captures owner/project identity,
+the entire canonical ConversationRequest, explicit query disclosure, a live
+authorization callback and finite search/result ceilings. A private WeakMap
+captures capability state once and consumes it synchronously across all runners
+before any await. Reordering JSON keys preserves identity; changing text, scope,
+reads, budgets or deadline refuses before dispatch without consuming the grant.
+A fresh trusted object constitutes an explicit new grant, never model JSON.
+
+The research catalog contains three semantic reads and canonical `web_search`.
+Base sessions, stored plans/receipts and initial reads preserve their earlier
+content/read subsets. Canonical provider validation forbids combining search with
+editing; no existing H/worker/host/Assistant call site receives this capability.
+Network callbacks run outside backend transactions. Authorization, saved revision,
+deadline and cancellation are checked around asynchronous work; late callbacks
+cannot publish or start further work. Search failures stop the invocation.
+
+The final ephemeral DTO contains unverified model text/refusal, accumulated
+normalized project-bound web sources and bounded trace counters. Source identity
+uses the unchanged F formula in `packages/model/source-identity.ts`; the first
+retrieval metadata is retained. Provider context/history/query callbacks receive
+frozen copies. Output reservations and unknown usage are conservative. Each
+invocation permits at most three sequential searches,24 returned rows,four model
+exchanges and30seconds; each search is bounded by10seconds. The complete final
+DTO is capped at65536characters. No source registry, verified claim support,
+query/transcript persistence, H accounting hooks, public transport or activation
+is introduced. [The contract](V2-8J-1-PLAN.md), [evaluation](V2-8J-1-EVAL.md) and
+state distinguish implemented scope, evidence and independent acceptance.
