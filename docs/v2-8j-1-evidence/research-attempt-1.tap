@@ -1,0 +1,139 @@
+TAP version 13
+# Subtest: Research: canonical search is a strict subset of standalone F and base sessions refuse it
+ok 1 - Research: canonical search is a strict subset of standalone F and base sessions refuse it
+  ---
+  duration_ms: 50.430643
+  type: 'test'
+  ...
+# Subtest: Research: queued plans receipts and initial-read contracts still exclude network tools
+ok 2 - Research: queued plans receipts and initial-read contracts still exclude network tools
+  ---
+  duration_ms: 7.495697
+  type: 'test'
+  ...
+# Subtest: Research: missing forged and mutable grants never silently expand permission
+ok 3 - Research: missing forged and mutable grants never silently expand permission
+  ---
+  duration_ms: 32.509625
+  type: 'test'
+  ...
+# Subtest: Research: research reads only granted semantics and retains sources after final text
+ok 4 - Research: research reads only granted semantics and retains sources after final text
+  ---
+  duration_ms: 303.502443
+  type: 'test'
+  ...
+# Subtest: Research: provider catalog cannot combine search and edit authority
+ok 5 - Research: provider catalog cannot combine search and edit authority
+  ---
+  duration_ms: 23.603062
+  type: 'test'
+  ...
+# Subtest: Research: edit scope authority arguments and executable requests refuse before work
+ok 6 - Research: edit scope authority arguments and executable requests refuse before work
+  ---
+  duration_ms: 20.849746
+  type: 'test'
+  ...
+# Subtest: Research: duplicate tool IDs refuse without a second search and search caps are aggregate
+ok 7 - Research: duplicate tool IDs refuse without a second search and search caps are aggregate
+  ---
+  duration_ms: 227.838069
+  type: 'test'
+  ...
+# Subtest: Research: search failure stops the invocation without retries or a success DTO
+ok 8 - Research: search failure stops the invocation without retries or a success DTO
+  ---
+  duration_ms: 3.841159
+  type: 'test'
+  ...
+# Subtest: Research: foreign forged and unsupported source bodies never reach provider continuation
+not ok 9 - Research: foreign forged and unsupported source bodies never reach provider continuation
+  ---
+  duration_ms: 4.149583
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-research-8j.test.js:10:31'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'search-failed'
+    - 'invalid-response'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'invalid-response'
+  actual: 'search-failed'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-research-8j.test.js:74:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Research: repeated normalized identity keeps first retrieval provenance and counts returned rows
+not ok 10 - Research: repeated normalized identity keeps first retrieval provenance and counts returned rows
+  ---
+  duration_ms: 24.31783
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-research-8j.test.js:10:31'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-research-8j.test.js:80:68)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Research: revocation or saved revision change during search blocks publication and later exchanges
+ok 11 - Research: revocation or saved revision change during search blocks publication and later exchanges
+  ---
+  duration_ms: 4.570717
+  type: 'test'
+  ...
+# Subtest: Research: cancelled non-cooperating model retains unknown usage and cannot dispatch late tools
+ok 12 - Research: cancelled non-cooperating model retains unknown usage and cannot dispatch late tools
+  ---
+  duration_ms: 42.598306
+  type: 'test'
+  ...
+# Subtest: Research: deadline and cancellation fence non-cooperating search without another exchange
+not ok 13 - Research: deadline and cancellation fence non-cooperating search without another exchange
+  ---
+  duration_ms: 7.433935
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-research-8j.test.js:10:31'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-research-8j.test.js:101:147)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 10
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11044.560198
+# forge-test-file "test/v2-research-8j.test.js"

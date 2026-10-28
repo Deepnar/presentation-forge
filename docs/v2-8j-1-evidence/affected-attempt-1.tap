@@ -1,0 +1,734 @@
+TAP version 13
+# Subtest: edit context includes only scoped projected content and applicable instructions
+ok 1 - edit context includes only scoped projected content and applicable instructions
+  ---
+  duration_ms: 207.401173
+  type: 'test'
+  ...
+# Subtest: inspect context has no edit tool or edit skill
+ok 2 - inspect context has no edit tool or edit skill
+  ---
+  duration_ms: 1.430878
+  type: 'test'
+  ...
+# Subtest: context cannot invoke a mutation disguised as a read
+ok 3 - context cannot invoke a mutation disguised as a read
+  ---
+  duration_ms: 0.611122
+  type: 'test'
+  ...
+# Subtest: cross-owner or unreadable context is refused without identity/exception details
+ok 4 - cross-owner or unreadable context is refused without identity/exception details
+  ---
+  duration_ms: 3.353727
+  type: 'test'
+  ...
+# Subtest: core policy is isolated from hostile slide text and user prompt
+ok 5 - core policy is isolated from hostile slide text and user prompt
+  ---
+  duration_ms: 3.216232
+  type: 'test'
+  ...
+# Subtest: context refuses empty request explicitly
+ok 6 - context refuses empty request explicitly
+  ---
+  duration_ms: 0.544293
+  type: 'test'
+  ...
+# Subtest: context refuses oversized request explicitly
+ok 7 - context refuses oversized request explicitly
+  ---
+  duration_ms: 41.675811
+  type: 'test'
+  ...
+# Subtest: context refuses empty reads explicitly
+ok 8 - context refuses empty reads explicitly
+  ---
+  duration_ms: 0.563872
+  type: 'test'
+  ...
+# Subtest: context refuses too many reads explicitly
+ok 9 - context refuses too many reads explicitly
+  ---
+  duration_ms: 1.198141
+  type: 'test'
+  ...
+# Subtest: context refuses noninteger budget explicitly
+ok 10 - context refuses noninteger budget explicitly
+  ---
+  duration_ms: 0.440217
+  type: 'test'
+  ...
+# Subtest: context refuses invalid budget explicitly
+ok 11 - context refuses invalid budget explicitly
+  ---
+  duration_ms: 0.302631
+  type: 'test'
+  ...
+# Subtest: context refuses bad read explicitly
+ok 12 - context refuses bad read explicitly
+  ---
+  duration_ms: 0.555064
+  type: 'test'
+  ...
+# Subtest: context budgets include policy, schemas, user request and actual data
+ok 13 - context budgets include policy, schemas, user request and actual data
+  ---
+  duration_ms: 1.378706
+  type: 'test'
+  ...
+# Subtest: unknown fields, cycles and getters in read requests cannot enter model context
+ok 14 - unknown fields, cycles and getters in read requests cannot enter model context
+  ---
+  duration_ms: 0.935686
+  type: 'test'
+  ...
+# Subtest: context detects a human edit between its reads and returns no mixed snapshot
+ok 15 - context detects a human edit between its reads and returns no mixed snapshot
+  ---
+  duration_ms: 13.521888
+  type: 'test'
+  ...
+# Subtest: context also detects an edit immediately after its last read
+ok 16 - context also detects an edit immediately after its last read
+  ---
+  duration_ms: 2.065383
+  type: 'test'
+  ...
+# Subtest: caller credentials and theme tokens are structurally absent from context
+ok 17 - caller credentials and theme tokens are structurally absent from context
+  ---
+  duration_ms: 1.074029
+  type: 'test'
+  ...
+# Subtest: trusted target grants are visible as editability without revealing authority data
+ok 18 - trusted target grants are visible as editability without revealing authority data
+  ---
+  duration_ms: 1.399149
+  type: 'test'
+  ...
+# Subtest: an edit-mode binding with no effective grants loads only inspection instructions
+ok 19 - an edit-mode binding with no effective grants loads only inspection instructions
+  ---
+  duration_ms: 2.963682
+  type: 'test'
+  ...
+# Subtest: content overflow refuses explicitly after actual scoped acquisition
+ok 20 - content overflow refuses explicitly after actual scoped acquisition
+  ---
+  duration_ms: 3.147807
+  type: 'test'
+  ...
+# Subtest: openai-compatible: actual HTTP preserves scoped instructions and distinct wire format
+ok 21 - openai-compatible: actual HTTP preserves scoped instructions and distinct wire format
+  ---
+  duration_ms: 677.270327
+  type: 'test'
+  ...
+# Subtest: openai-compatible: capability negotiation refuses before network without downgrade
+ok 22 - openai-compatible: capability negotiation refuses before network without downgrade
+  ---
+  duration_ms: 7.426873
+  type: 'test'
+  ...
+# Subtest: openai-compatible: invalid options and executable accessors never execute
+ok 23 - openai-compatible: invalid options and executable accessors never execute
+  ---
+  duration_ms: 4.493177
+  type: 'test'
+  ...
+# Subtest: openai-compatible: context budget counts wire schemas and controls
+ok 24 - openai-compatible: context budget counts wire schemas and controls
+  ---
+  duration_ms: 9.626628
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancellation before dispatch and during headers is bounded
+ok 25 - openai-compatible: cancellation before dispatch and during headers is bounded
+  ---
+  duration_ms: 17.929913
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cancellation while reading a body aborts the request
+ok 26 - openai-compatible: cancellation while reading a body aborts the request
+  ---
+  duration_ms: 39.916668
+  type: 'test'
+  ...
+# Subtest: openai-compatible: timeout covers a stalled body without retries
+ok 27 - openai-compatible: timeout covers a stalled body without retries
+  ---
+  duration_ms: 52.07673
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status401 is sanitized and never retried
+ok 28 - openai-compatible: status401 is sanitized and never retried
+  ---
+  duration_ms: 17.753939
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status403 is sanitized and never retried
+ok 29 - openai-compatible: status403 is sanitized and never retried
+  ---
+  duration_ms: 11.635284
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status429 is sanitized and never retried
+ok 30 - openai-compatible: status429 is sanitized and never retried
+  ---
+  duration_ms: 11.702836
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status500 is sanitized and never retried
+ok 31 - openai-compatible: status500 is sanitized and never retried
+  ---
+  duration_ms: 9.002934
+  type: 'test'
+  ...
+# Subtest: openai-compatible: status302 is sanitized and never retried
+ok 32 - openai-compatible: status302 is sanitized and never retried
+  ---
+  duration_ms: 9.289968
+  type: 'test'
+  ...
+# Subtest: openai-compatible: oversized chunked response refuses
+ok 33 - openai-compatible: oversized chunked response refuses
+  ---
+  duration_ms: 11.23629
+  type: 'test'
+  ...
+# Subtest: openai-compatible: oversized declared response refuses
+ok 34 - openai-compatible: oversized declared response refuses
+  ---
+  duration_ms: 14.15422
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed JSON refuses as invalid response
+ok 35 - openai-compatible: malformed JSON refuses as invalid response
+  ---
+  duration_ms: 8.542982
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed UTF8 refuses as invalid response
+ok 36 - openai-compatible: malformed UTF8 refuses as invalid response
+  ---
+  duration_ms: 7.364909
+  type: 'test'
+  ...
+# Subtest: openai-compatible: malformed and unsafe tool proposals refuse atomically
+ok 37 - openai-compatible: malformed and unsafe tool proposals refuse atomically
+  ---
+  duration_ms: 9.075823
+  type: 'test'
+  ...
+# Subtest: openai-compatible: text, refusal and missing usage are truthful outcomes
+ok 38 - openai-compatible: text, refusal and missing usage are truthful outcomes
+  ---
+  duration_ms: 6.546261
+  type: 'test'
+  ...
+# Subtest: anthropic: actual HTTP preserves scoped instructions and distinct wire format
+ok 39 - anthropic: actual HTTP preserves scoped instructions and distinct wire format
+  ---
+  duration_ms: 12.35901
+  type: 'test'
+  ...
+# Subtest: anthropic: capability negotiation refuses before network without downgrade
+ok 40 - anthropic: capability negotiation refuses before network without downgrade
+  ---
+  duration_ms: 7.601292
+  type: 'test'
+  ...
+# Subtest: anthropic: invalid options and executable accessors never execute
+ok 41 - anthropic: invalid options and executable accessors never execute
+  ---
+  duration_ms: 6.286004
+  type: 'test'
+  ...
+# Subtest: anthropic: context budget counts wire schemas and controls
+ok 42 - anthropic: context budget counts wire schemas and controls
+  ---
+  duration_ms: 7.891989
+  type: 'test'
+  ...
+# Subtest: anthropic: cancellation before dispatch and during headers is bounded
+ok 43 - anthropic: cancellation before dispatch and during headers is bounded
+  ---
+  duration_ms: 13.108518
+  type: 'test'
+  ...
+# Subtest: anthropic: cancellation while reading a body aborts the request
+ok 44 - anthropic: cancellation while reading a body aborts the request
+  ---
+  duration_ms: 29.426894
+  type: 'test'
+  ...
+# Subtest: anthropic: timeout covers a stalled body without retries
+ok 45 - anthropic: timeout covers a stalled body without retries
+  ---
+  duration_ms: 43.262929
+  type: 'test'
+  ...
+# Subtest: anthropic: status401 is sanitized and never retried
+ok 46 - anthropic: status401 is sanitized and never retried
+  ---
+  duration_ms: 11.371579
+  type: 'test'
+  ...
+# Subtest: anthropic: status403 is sanitized and never retried
+ok 47 - anthropic: status403 is sanitized and never retried
+  ---
+  duration_ms: 124.575531
+  type: 'test'
+  ...
+# Subtest: anthropic: status429 is sanitized and never retried
+ok 48 - anthropic: status429 is sanitized and never retried
+  ---
+  duration_ms: 7.58108
+  type: 'test'
+  ...
+# Subtest: anthropic: status500 is sanitized and never retried
+ok 49 - anthropic: status500 is sanitized and never retried
+  ---
+  duration_ms: 5.701957
+  type: 'test'
+  ...
+# Subtest: anthropic: status302 is sanitized and never retried
+ok 50 - anthropic: status302 is sanitized and never retried
+  ---
+  duration_ms: 6.374481
+  type: 'test'
+  ...
+# Subtest: anthropic: oversized chunked response refuses
+ok 51 - anthropic: oversized chunked response refuses
+  ---
+  duration_ms: 4.947979
+  type: 'test'
+  ...
+# Subtest: anthropic: oversized declared response refuses
+ok 52 - anthropic: oversized declared response refuses
+  ---
+  duration_ms: 5.385173
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed JSON refuses as invalid response
+ok 53 - anthropic: malformed JSON refuses as invalid response
+  ---
+  duration_ms: 5.21812
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed UTF8 refuses as invalid response
+ok 54 - anthropic: malformed UTF8 refuses as invalid response
+  ---
+  duration_ms: 7.491305
+  type: 'test'
+  ...
+# Subtest: anthropic: malformed and unsafe tool proposals refuse atomically
+ok 55 - anthropic: malformed and unsafe tool proposals refuse atomically
+  ---
+  duration_ms: 9.451289
+  type: 'test'
+  ...
+# Subtest: anthropic: text, refusal and missing usage are truthful outcomes
+ok 56 - anthropic: text, refusal and missing usage are truthful outcomes
+  ---
+  duration_ms: 6.669939
+  type: 'test'
+  ...
+# Subtest: transport configuration is immutable, explicit and cannot embed URL credentials
+ok 57 - transport configuration is immutable, explicit and cannot embed URL credentials
+  ---
+  duration_ms: 1.294507
+  type: 'test'
+  ...
+# Subtest: OpenAI-compatible legacy token parameter is an explicit configuration choice
+ok 58 - OpenAI-compatible legacy token parameter is an explicit configuration choice
+  ---
+  duration_ms: 8.508453
+  type: 'test'
+  ...
+# Subtest: wire budget includes the output limit and refuses before HTTP at its boundary
+ok 59 - wire budget includes the output limit and refuses before HTTP at its boundary
+  ---
+  duration_ms: 9.171075
+  type: 'test'
+  ...
+# Subtest: transport failure details never escape and a non-cooperating injected fetch is bounded
+ok 60 - transport failure details never escape and a non-cooperating injected fetch is bounded
+  ---
+  duration_ms: 28.525579
+  type: 'test'
+  ...
+# Subtest: openai-compatible: altered catalogs and noncanonical complete requests refuse
+ok 61 - openai-compatible: altered catalogs and noncanonical complete requests refuse
+  ---
+  duration_ms: 2.833129
+  type: 'test'
+  ...
+# Subtest: anthropic: altered catalogs and noncanonical complete requests refuse
+ok 62 - anthropic: altered catalogs and noncanonical complete requests refuse
+  ---
+  duration_ms: 3.101006
+  type: 'test'
+  ...
+# Subtest: openai-compatible: normalized usage includes cached input exactly once
+ok 63 - openai-compatible: normalized usage includes cached input exactly once
+  ---
+  duration_ms: 4.416163
+  type: 'test'
+  ...
+# Subtest: anthropic: normalized usage includes cached input exactly once
+ok 64 - anthropic: normalized usage includes cached input exactly once
+  ---
+  duration_ms: 4.978689
+  type: 'test'
+  ...
+# Subtest: openai-compatible: cache counters reject invalid accounting and preserve unavailable breakdowns
+ok 65 - openai-compatible: cache counters reject invalid accounting and preserve unavailable breakdowns
+  ---
+  duration_ms: 4.887806
+  type: 'test'
+  ...
+# Subtest: anthropic: cache counters reject invalid accounting and preserve unavailable breakdowns
+ok 66 - anthropic: cache counters reject invalid accounting and preserve unavailable breakdowns
+  ---
+  duration_ms: 7.705487
+  type: 'test'
+  ...
+# Subtest: search requests and trusted project binding stay separate
+ok 67 - search requests and trusted project binding stay separate
+  ---
+  duration_ms: 55.690493
+  type: 'test'
+  ...
+# Subtest: executable, cyclic and non-plain boundary objects refuse without invocation
+ok 68 - executable, cyclic and non-plain boundary objects refuse without invocation
+  ---
+  duration_ms: 1.194331
+  type: 'test'
+  ...
+# Subtest: normalized sources satisfy the canonical source schema and exclude backend payloads
+ok 69 - normalized sources satisfy the canonical source schema and exclude backend payloads
+  ---
+  duration_ms: 256.034271
+  type: 'test'
+  ...
+# Subtest: source identity is stable across retrieval times, query order and provider metadata
+ok 70 - source identity is stable across retrieval times, query order and provider metadata
+  ---
+  duration_ms: 7.233468
+  type: 'test'
+  ...
+# Subtest: canonical URL identity removes fragments and normalizes host/default port
+ok 71 - canonical URL identity removes fragments and normalizes host/default port
+  ---
+  duration_ms: 2.020761
+  type: 'test'
+  ...
+# Subtest: rank, URL deduplication and host diversity are deterministic
+ok 72 - rank, URL deduplication and host diversity are deterministic
+  ---
+  duration_ms: 10.709493
+  type: 'test'
+  ...
+# Subtest: malformed rows and unsafe citation URLs are discarded with an explicit warning
+ok 73 - malformed rows and unsafe citation URLs are discarded with an explicit warning
+  ---
+  duration_ms: 1.5879
+  type: 'test'
+  ...
+# Subtest: snippets become bounded plain text without executing or retaining executable markup
+ok 74 - snippets become bounded plain text without executing or retaining executable markup
+  ---
+  duration_ms: 46.485009
+  type: 'test'
+  ...
+# Subtest: partial upstream results remain successful but distinguish backend failures from empty search
+ok 75 - partial upstream results remain successful but distinguish backend failures from empty search
+  ---
+  duration_ms: 0.949708
+  type: 'test'
+  ...
+# Subtest: malformed envelopes and oversized candidate sets refuse rather than masquerading as empty
+ok 76 - malformed envelopes and oversized candidate sets refuse rather than masquerading as empty
+  ---
+  duration_ms: 1.266205
+  type: 'test'
+  ...
+# Subtest: serialized output budget is exact and never emits an oversized partial citation set
+ok 77 - serialized output budget is exact and never emits an oversized partial citation set
+  ---
+  duration_ms: 3.047728
+  type: 'test'
+  ...
+# Subtest: returned citation content and nested result collections are immutable
+ok 78 - returned citation content and nested result collections are immutable
+  ---
+  duration_ms: 1.534904
+  type: 'test'
+  ...
+# Subtest: malformed normalization options cannot execute getters or supply backend fields
+ok 79 - malformed normalization options cannot execute getters or supply backend fields
+  ---
+  duration_ms: 0.603543
+  type: 'test'
+  ...
+# Subtest: normalization handles malformed Unicode and excessive fields within canonical bounds
+ok 80 - normalization handles malformed Unicode and excessive fields within canonical bounds
+  ---
+  duration_ms: 25.946423
+  type: 'test'
+  ...
+# Subtest: plain snippets preserve block and line-break word boundaries without splitting inline words
+ok 81 - plain snippets preserve block and line-break word boundaries without splitting inline words
+  ---
+  duration_ms: 3.00567
+  type: 'test'
+  ...
+# Subtest: unauthorized caller cannot inspect project state
+ok 82 - unauthorized caller cannot inspect project state
+  ---
+  duration_ms: 90.529432
+  type: 'test'
+  ...
+# Subtest: project index pages expose only allowed slides and no content/style
+ok 83 - project index pages expose only allowed slides and no content/style
+  ---
+  duration_ms: 25.981668
+  type: 'test'
+  ...
+# Subtest: slide and selection projections preserve exact content without renderer or authority fields
+ok 84 - slide and selection projections preserve exact content without renderer or authority fields
+  ---
+  duration_ms: 3.332028
+  type: 'test'
+  ...
+# Subtest: pagination is explicit and slide grants cannot be bypassed
+ok 85 - pagination is explicit and slide grants cannot be bypassed
+  ---
+  duration_ms: 1.925354
+  type: 'test'
+  ...
+# Subtest: empty and invalid selections never widen scope
+ok 86 - empty and invalid selections never widen scope
+  ---
+  duration_ms: 2.901458
+  type: 'test'
+  ...
+# Subtest: rejects raw command as untrusted input without mutation
+ok 87 - rejects raw command as untrusted input without mutation
+  ---
+  duration_ms: 4.95817
+  type: 'test'
+  ...
+# Subtest: rejects geometry as untrusted input without mutation
+ok 88 - rejects geometry as untrusted input without mutation
+  ---
+  duration_ms: 15.557268
+  type: 'test'
+  ...
+# Subtest: rejects owner override as untrusted input without mutation
+ok 89 - rejects owner override as untrusted input without mutation
+  ---
+  duration_ms: 0.780008
+  type: 'test'
+  ...
+# Subtest: rejects text style as untrusted input without mutation
+ok 90 - rejects text style as untrusted input without mutation
+  ---
+  duration_ms: 0.707393
+  type: 'test'
+  ...
+# Subtest: rejects nonfinite as untrusted input without mutation
+ok 91 - rejects nonfinite as untrusted input without mutation
+  ---
+  duration_ms: 0.62968
+  type: 'test'
+  ...
+# Subtest: rejects missing args as untrusted input without mutation
+ok 92 - rejects missing args as untrusted input without mutation
+  ---
+  duration_ms: 0.556785
+  type: 'test'
+  ...
+# Subtest: rejects unknown tool as untrusted input without mutation
+ok 93 - rejects unknown tool as untrusted input without mutation
+  ---
+  duration_ms: 0.461157
+  type: 'test'
+  ...
+# Subtest: rejects sparse array as untrusted input without mutation
+ok 94 - rejects sparse array as untrusted input without mutation
+  ---
+  duration_ms: 0.471938
+  type: 'test'
+  ...
+# Subtest: rejects function as untrusted input without mutation
+ok 95 - rejects function as untrusted input without mutation
+  ---
+  duration_ms: 0.41986
+  type: 'test'
+  ...
+# Subtest: rejects pollution as untrusted input without mutation
+ok 96 - rejects pollution as untrusted input without mutation
+  ---
+  duration_ms: 0.43795
+  type: 'test'
+  ...
+# Subtest: accessors and cycles are refused without invoking accessors
+ok 97 - accessors and cycles are refused without invoking accessors
+  ---
+  duration_ms: 0.435622
+  type: 'test'
+  ...
+# Subtest: text edits preserve all runs, styling and geometry with exact undo/redo
+ok 98 - text edits preserve all runs, styling and geometry with exact undo/redo
+  ---
+  duration_ms: 4.459172
+  type: 'test'
+  ...
+# Subtest: text, chart and table changes commit as one native batch
+ok 99 - text, chart and table changes commit as one native batch
+  ---
+  duration_ms: 166.442518
+  type: 'test'
+  ...
+# Subtest: invalid later chart or table edit rolls back every earlier valid edit
+ok 100 - invalid later chart or table edit rolls back every earlier valid edit
+  ---
+  duration_ms: 1.519538
+  type: 'test'
+  ...
+# Subtest: duplicate text run is refused atomically
+ok 101 - duplicate text run is refused atomically
+  ---
+  duration_ms: 0.495077
+  type: 'test'
+  ...
+# Subtest: duplicate data is refused atomically
+ok 102 - duplicate data is refused atomically
+  ---
+  duration_ms: 0.422635
+  type: 'test'
+  ...
+# Subtest: wrong kind is refused atomically
+ok 103 - wrong kind is refused atomically
+  ---
+  duration_ms: 0.354918
+  type: 'test'
+  ...
+# Subtest: invalid run is refused atomically
+ok 104 - invalid run is refused atomically
+  ---
+  duration_ms: 0.393011
+  type: 'test'
+  ...
+# Subtest: stale revisions and duplicate applied calls cannot overwrite
+ok 105 - stale revisions and duplicate applied calls cannot overwrite
+  ---
+  duration_ms: 1.099912
+  type: 'test'
+  ...
+# Subtest: parallel calls with the same revision have only one winner
+ok 106 - parallel calls with the same revision have only one winner
+  ---
+  duration_ms: 0.948428
+  type: 'test'
+  ...
+# Subtest: noop edits retain revision, history and redo state
+ok 107 - noop edits retain revision, history and redo state
+  ---
+  duration_ms: 0.609843
+  type: 'test'
+  ...
+# Subtest: read-only mode and absent grants cannot be widened by a tool request
+ok 108 - read-only mode and absent grants cannot be widened by a tool request
+  ---
+  duration_ms: 1.059348
+  type: 'test'
+  ...
+# Subtest: editing outside the grant or outside readable slides is refused
+ok 109 - editing outside the grant or outside readable slides is refused
+  ---
+  duration_ms: 0.400813
+  type: 'test'
+  ...
+# Subtest: locked targets are refused even with an explicit grant
+ok 110 - locked targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.420938
+  type: 'test'
+  ...
+# Subtest: hidden targets are refused even with an explicit grant
+ok 111 - hidden targets are refused even with an explicit grant
+  ---
+  duration_ms: 0.28009
+  type: 'test'
+  ...
+# Subtest: ancestor locks and hidden groups protect nested targets
+ok 112 - ancestor locks and hidden groups protect nested targets
+  ---
+  duration_ms: 0.73653
+  type: 'test'
+  ...
+# Subtest: detached content stays editable and existing tombstones/human additions survive
+ok 113 - detached content stays editable and existing tombstones/human additions survive
+  ---
+  duration_ms: 1.379735
+  type: 'test'
+  ...
+# Subtest: input is snapshotted and output/catalog/grants cannot mutate authoritative state
+ok 114 - input is snapshotted and output/catalog/grants cannot mutate authoritative state
+  ---
+  duration_ms: 1.288542
+  type: 'test'
+  ...
+# Subtest: calls, oversized reads, input and pre-commit acknowledgements obey budgets
+ok 115 - calls, oversized reads, input and pre-commit acknowledgements obey budgets
+  ---
+  duration_ms: 0.929461
+  type: 'test'
+  ...
+# Subtest: unexpected document failures do not echo private exception text
+ok 116 - unexpected document failures do not echo private exception text
+  ---
+  duration_ms: 0.406463
+  type: 'test'
+  ...
+# Subtest: an oversized acknowledgement refuses before the real engine can commit
+ok 117 - an oversized acknowledgement refuses before the real engine can commit
+  ---
+  duration_ms: 1.79848
+  type: 'test'
+  ...
+# Subtest: result schemas reject missing fields and renderer/credential escapes in projected data
+ok 118 - result schemas reject missing fields and renderer/credential escapes in projected data
+  ---
+  duration_ms: 1.185011
+  type: 'test'
+  ...
+# Subtest: table content tools refuse dimension changes without committing any batch part
+ok 119 - table content tools refuse dimension changes without committing any batch part
+  ---
+  duration_ms: 1.302148
+  type: 'test'
+  ...
+# Subtest: tool wording and human placement survive deterministic regeneration together
+ok 120 - tool wording and human placement survive deterministic regeneration together
+  ---
+  duration_ms: 85.594035
+  type: 'test'
+  ...
+1..120
+# tests 120
+# suites 0
+# pass 120
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5945.365831
+# forge-test-file "test/v2-context-8a.test.js"
+# forge-test-file "test/v2-provider-8c.test.js"
+# forge-test-file "test/v2-search-8f.test.js"
+# forge-test-file "test/v2-tools-8a.test.js"

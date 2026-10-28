@@ -1,0 +1,8 @@
+{
+  "atUtc": "2026-10-27T17:56:32.242362+00:00",
+  "load": "35.92 36.79 32.99 36/2786 1578119\n",
+  "cpuPressure": "some avg10=20.06 avg60=36.76 avg300=35.30 total=1412612541\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+  "memoryPressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=30682694\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=29328942\n",
+  "ioPressure": "some avg10=7.75 avg60=8.55 avg300=8.32 total=15816568681\nfull avg10=1.22 avg60=1.07 avg300=1.01 total=14449277546\n",
+  "policy": "Only short headless nice10/idle-I/O checks. No browser/build/render/model/GPU/old sweep; competing work preserved."
+}

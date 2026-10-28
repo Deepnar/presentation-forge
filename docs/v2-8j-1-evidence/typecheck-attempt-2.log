@@ -1,0 +1,4 @@
+npm notice run presentation-forge@0.1.0 typecheck
+npm notice run tsc --noEmit
+packages/agent/research.ts(65,13): error TS2352: Conversion of type 'string | number | boolean | Json[] | { [key: string]: Json; } | null' to type 'ResearchGrant' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ [key: string]: Json; }' is missing the following properties from type 'ResearchGrant': binding, request, queryDisclosure

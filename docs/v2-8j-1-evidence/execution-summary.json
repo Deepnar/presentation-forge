@@ -1,0 +1,160 @@
+{
+  "implementationSha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+  "selectedFinalLeaves": 153,
+  "selectedFinalCounts": {
+    "total": 153,
+    "pass": 153,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "requiredTestLeaves": 27,
+  "supplementalLeaves": 126,
+  "typecheckExitCode": 0,
+  "rootAttempts": [
+    {
+      "id": "affected",
+      "exitCode": 0,
+      "durationMs": 6149,
+      "log": "docs/v2-8j-1-evidence/affected-attempt-1.tap",
+      "tests": {
+        "total": 120,
+        "pass": 120,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "governance",
+      "exitCode": 0,
+      "durationMs": 868,
+      "log": "docs/v2-8j-1-evidence/governance-attempt-1.tap",
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "legacy-schema-selection",
+      "exitCode": 0,
+      "durationMs": 23040,
+      "log": "docs/v2-8j-1-evidence/legacy-schema-selection-attempt-1.tap",
+      "tests": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "research",
+      "exitCode": 1,
+      "durationMs": 12578,
+      "log": "docs/v2-8j-1-evidence/research-attempt-1.tap",
+      "tests": {
+        "total": 13,
+        "pass": 10,
+        "fail": 3,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "research",
+      "exitCode": 0,
+      "durationMs": 2580,
+      "log": "docs/v2-8j-1-evidence/research-attempt-2.tap",
+      "tests": {
+        "total": 15,
+        "pass": 15,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "research",
+      "exitCode": 0,
+      "durationMs": 667,
+      "log": "docs/v2-8j-1-evidence/research-attempt-3.tap",
+      "tests": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "research-integration",
+      "exitCode": 1,
+      "durationMs": 21550,
+      "log": "docs/v2-8j-1-evidence/research-integration-attempt-1.tap",
+      "tests": {
+        "total": 4,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 1
+      }
+    },
+    {
+      "id": "research-integration",
+      "exitCode": 0,
+      "durationMs": 667,
+      "log": "docs/v2-8j-1-evidence/research-integration-attempt-2.tap",
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "schema-boundaries",
+      "exitCode": 0,
+      "durationMs": 4389,
+      "log": "docs/v2-8j-1-evidence/schema-boundaries-attempt-1.tap",
+      "tests": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "typecheck",
+      "exitCode": 0,
+      "durationMs": 25062,
+      "log": "docs/v2-8j-1-evidence/typecheck-attempt-1.log"
+    },
+    {
+      "id": "typecheck",
+      "exitCode": 2,
+      "durationMs": 2019,
+      "log": "docs/v2-8j-1-evidence/typecheck-attempt-2.log"
+    },
+    {
+      "id": "typecheck",
+      "exitCode": 0,
+      "durationMs": 5276,
+      "log": "docs/v2-8j-1-evidence/typecheck-attempt-3.log"
+    }
+  ],
+  "rootTestExecutionsIncludingOverlappingAttempts": {
+    "total": 185,
+    "pass_": 181,
+    "fail": 3,
+    "skip": 0,
+    "cancelled": 1
+  },
+  "notIncluded": "Independent fail-first/final cases are recorded separately. Initial compiler probe has only a marked tool-output transcription. No broad old regression or live quality execution.",
+  "historicalBackendLabelCorrection": "Early raw runner labels incorrectly named SQLite for unit/command/schema gates. Canonical records describe actual fixtures; no execution or historical failure has been relabeled."
+}

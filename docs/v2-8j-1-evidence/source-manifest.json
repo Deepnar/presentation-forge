@@ -1,0 +1,115 @@
+{
+  "implementationSha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+  "basis": "Focused execution; exact byte equality except the single type-erased assertion described below. No SHA-only product reruns.",
+  "gates": {
+    "research": {
+      "raw": "research-attempt-3.json",
+      "applicability": "Only change after execution is an unknown type assertion, erased by Node/TypeScript; prior source retained and exact one-line replacement verified. Final typecheck executes frozen bytes.",
+      "changedCapturedPaths": [
+        "packages/agent/research.ts"
+      ],
+      "matchingCapturedPaths": 551,
+      "frozenHashesForChangedPaths": {
+        "packages/agent/research.ts": "7e20fcf5cce187507727ae587efae695cce3ebd0d45acf2e95ae692be7d07f43"
+      }
+    },
+    "research-integration": {
+      "raw": "research-integration-attempt-2.json",
+      "applicability": "Only change after execution is an unknown type assertion, erased by Node/TypeScript; prior source retained and exact one-line replacement verified. Final typecheck executes frozen bytes.",
+      "changedCapturedPaths": [
+        "packages/agent/research.ts"
+      ],
+      "matchingCapturedPaths": 551,
+      "frozenHashesForChangedPaths": {
+        "packages/agent/research.ts": "7e20fcf5cce187507727ae587efae695cce3ebd0d45acf2e95ae692be7d07f43"
+      }
+    },
+    "typecheck": {
+      "raw": "typecheck-attempt-3.json",
+      "applicability": "All captured relevant invocation bytes match frozen source.",
+      "changedCapturedPaths": [],
+      "matchingCapturedPaths": 552,
+      "frozenHashesForChangedPaths": {}
+    },
+    "governance": {
+      "raw": "governance-attempt-1.json",
+      "applicability": "Only change after execution is an unknown type assertion, erased by Node/TypeScript; prior source retained and exact one-line replacement verified. Final typecheck executes frozen bytes.",
+      "changedCapturedPaths": [
+        "packages/agent/research.ts"
+      ],
+      "matchingCapturedPaths": 551,
+      "frozenHashesForChangedPaths": {
+        "packages/agent/research.ts": "7e20fcf5cce187507727ae587efae695cce3ebd0d45acf2e95ae692be7d07f43"
+      }
+    },
+    "affected": {
+      "raw": "affected-attempt-1.json",
+      "applicability": "All captured bytes match except J1 runner/new fixtures/tests and governance mapping/inventory, which these old cases do not import. Existing content/provider/source/schema code is unchanged. Final selected governance executes the changed mapping separately.",
+      "changedCapturedPaths": [
+        "docs/development-state.schema.json",
+        "packages/agent/research.ts",
+        "test/dev-protocol.test.js",
+        "test/v2-research-8j.test.js",
+        "test/v2-research-fixture.js",
+        "test/v2-research-sqlite-8j.test.js",
+        "tools/dev-protocol-check.mjs"
+      ],
+      "matchingCapturedPaths": 545,
+      "frozenHashesForChangedPaths": {
+        "docs/development-state.schema.json": "8ec3be6de55005ac3651fa88d21e2118e8a3204331b837e61bfb3aedbeed99ca",
+        "packages/agent/research.ts": "7e20fcf5cce187507727ae587efae695cce3ebd0d45acf2e95ae692be7d07f43",
+        "test/dev-protocol.test.js": "3752e3ca3fec5de31566290d241c322b2b8caf85aa72b9c5003359d28fc65a54",
+        "test/v2-research-8j.test.js": "baabd307f805c091b89e826b5abfc726368dd9697b17fde31cf68a2c357068eb",
+        "test/v2-research-fixture.js": "430ddea5dc8d229533b23abde289791a2f6b76a92368f068d613783254fc8973",
+        "test/v2-research-sqlite-8j.test.js": "291830e8859e8d031dc9a7b8d991175c75e2df45aad55de85265f70debf688f8",
+        "tools/dev-protocol-check.mjs": "0a6519161a5760f0ecda1488268ee2ef3e4546b01e3f209fd046101d8cbdb35b"
+      }
+    },
+    "schema-boundaries": {
+      "raw": "schema-boundaries-attempt-1.json",
+      "applicability": "All captured bytes match except J1 runner/new fixtures/tests and governance mapping/inventory. Runner import lines are identical and introduce no require/dynamic import; generated package schemas/types and boundary test bodies are unchanged. Final selected governance executes the changed mapping separately.",
+      "changedCapturedPaths": [
+        "docs/development-state.schema.json",
+        "packages/agent/research.ts",
+        "test/dev-protocol.test.js",
+        "test/v2-research-8j.test.js",
+        "test/v2-research-fixture.js",
+        "test/v2-research-sqlite-8j.test.js",
+        "tools/dev-protocol-check.mjs"
+      ],
+      "matchingCapturedPaths": 545,
+      "frozenHashesForChangedPaths": {
+        "docs/development-state.schema.json": "8ec3be6de55005ac3651fa88d21e2118e8a3204331b837e61bfb3aedbeed99ca",
+        "packages/agent/research.ts": "7e20fcf5cce187507727ae587efae695cce3ebd0d45acf2e95ae692be7d07f43",
+        "test/dev-protocol.test.js": "3752e3ca3fec5de31566290d241c322b2b8caf85aa72b9c5003359d28fc65a54",
+        "test/v2-research-8j.test.js": "baabd307f805c091b89e826b5abfc726368dd9697b17fde31cf68a2c357068eb",
+        "test/v2-research-fixture.js": "430ddea5dc8d229533b23abde289791a2f6b76a92368f068d613783254fc8973",
+        "test/v2-research-sqlite-8j.test.js": "291830e8859e8d031dc9a7b8d991175c75e2df45aad55de85265f70debf688f8",
+        "tools/dev-protocol-check.mjs": "0a6519161a5760f0ecda1488268ee2ef3e4546b01e3f209fd046101d8cbdb35b"
+      }
+    },
+    "legacy-schema-selection": {
+      "raw": "legacy-schema-selection-attempt-1.json",
+      "applicability": "All captured bytes match except J1 runner/new fixtures/tests and governance mapping/inventory, which these old cases do not import. Existing content/provider/source/schema code is unchanged. Final selected governance executes the changed mapping separately.",
+      "changedCapturedPaths": [
+        "docs/development-state.schema.json",
+        "packages/agent/research.ts",
+        "test/dev-protocol.test.js",
+        "test/v2-research-8j.test.js",
+        "test/v2-research-fixture.js",
+        "test/v2-research-sqlite-8j.test.js",
+        "tools/dev-protocol-check.mjs"
+      ],
+      "matchingCapturedPaths": 545,
+      "frozenHashesForChangedPaths": {
+        "docs/development-state.schema.json": "8ec3be6de55005ac3651fa88d21e2118e8a3204331b837e61bfb3aedbeed99ca",
+        "packages/agent/research.ts": "7e20fcf5cce187507727ae587efae695cce3ebd0d45acf2e95ae692be7d07f43",
+        "test/dev-protocol.test.js": "3752e3ca3fec5de31566290d241c322b2b8caf85aa72b9c5003359d28fc65a54",
+        "test/v2-research-8j.test.js": "baabd307f805c091b89e826b5abfc726368dd9697b17fde31cf68a2c357068eb",
+        "test/v2-research-fixture.js": "430ddea5dc8d229533b23abde289791a2f6b76a92368f068d613783254fc8973",
+        "test/v2-research-sqlite-8j.test.js": "291830e8859e8d031dc9a7b8d991175c75e2df45aad55de85265f70debf688f8",
+        "tools/dev-protocol-check.mjs": "0a6519161a5760f0ecda1488268ee2ef3e4546b01e3f209fd046101d8cbdb35b"
+      }
+    }
+  }
+}

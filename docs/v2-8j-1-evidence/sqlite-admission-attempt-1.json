@@ -1,0 +1,325 @@
+{
+  "admitted": false,
+  "samples": [
+    {
+      "atUtc": "2026-10-27T18:05:24.758726+00:00",
+      "intervalSeconds": 15.00167410600261,
+      "cpuBusyPercent": 97.98734106934651,
+      "cpuIoWaitPercent": 0.6801399144966964,
+      "availableKiB": 9495092,
+      "pressure": {
+        "cpu": "some avg10=84.22 avg60=68.76 avg300=50.07 total=1671633730\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.00 avg60=0.05 avg300=0.01 total=30830751\nfull avg10=0.00 avg60=0.02 avg300=0.00 total=29404952\n",
+        "io": "some avg10=6.78 avg60=7.20 avg300=7.22 total=15855586493\nfull avg10=0.26 avg60=0.38 avg300=0.67 total=14455093908\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 1.973113119965469,
+          "weightedQueue": 0.2506386936172353,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 1600368,
+          "tid": 1600368,
+          "flags": 69238880,
+          "classification": "kernel-thread"
+        }
+      ],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:05:39.925928+00:00",
+      "intervalSeconds": 15.15898428500077,
+      "cpuBusyPercent": 99.8130995245032,
+      "cpuIoWaitPercent": 0.0797075557265756,
+      "availableKiB": 16970804,
+      "pressure": {
+        "cpu": "some avg10=91.40 avg60=73.97 avg300=52.12 total=1685957826\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.00 avg60=0.03 avg300=0.01 total=30830794\nfull avg10=0.00 avg60=0.01 avg300=0.00 total=29404994\n",
+        "io": "some avg10=6.74 avg60=7.09 avg300=7.19 total=15856667705\nfull avg10=0.06 avg60=0.30 avg300=0.63 total=14455105882\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 1.240188633126421,
+          "weightedQueue": 0.04393434200330831,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 1521040,
+          "tid": 1521040,
+          "flags": 69238880,
+          "classification": "kernel-thread"
+        }
+      ],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:05:55.019387+00:00",
+      "intervalSeconds": 15.165310739001143,
+      "cpuBusyPercent": 95.56348661633494,
+      "cpuIoWaitPercent": 1.3534660260809883,
+      "availableKiB": 14566252,
+      "pressure": {
+        "cpu": "some avg10=80.33 avg60=74.99 avg300=53.53 total=1697720301\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.00 avg60=0.02 avg300=0.00 total=30831042\nfull avg10=0.00 avg60=0.01 avg300=0.00 total=29405056\n",
+        "io": "some avg10=6.57 avg60=6.95 avg300=7.15 total=15857730909\nfull avg10=0.56 avg60=0.38 avg300=0.63 total=14455300935\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 2.215582692518772,
+          "weightedQueue": 0.07154485777925201,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 1521040,
+          "tid": 1521040,
+          "flags": 69238880,
+          "classification": "kernel-thread"
+        }
+      ],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:06:10.129013+00:00",
+      "intervalSeconds": 15.092061711999122,
+      "cpuBusyPercent": 98.20615427073271,
+      "cpuIoWaitPercent": 0.5905892093279977,
+      "availableKiB": 16768812,
+      "pressure": {
+        "cpu": "some avg10=83.21 avg60=76.82 avg300=54.95 total=1710491331\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=1.01 avg60=0.36 avg300=0.08 total=31093272\nfull avg10=0.58 avg60=0.21 avg300=0.04 total=29568402\n",
+        "io": "some avg10=7.03 avg60=7.00 avg300=7.15 total=15858891552\nfull avg10=0.13 avg60=0.30 avg300=0.60 total=14455386095\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 3.4587719687428637,
+          "weightedQueue": 0.278291997485058,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 1521040,
+          "tid": 1521040,
+          "flags": 69238880,
+          "classification": "kernel-thread"
+        }
+      ],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:06:25.254804+00:00",
+      "intervalSeconds": 15.111311075997946,
+      "cpuBusyPercent": 98.04310677470922,
+      "cpuIoWaitPercent": 0.8681991069952042,
+      "availableKiB": 15783348,
+      "pressure": {
+        "cpu": "some avg10=82.76 avg60=78.39 avg300=56.48 total=1723066566\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.32 avg60=0.31 avg300=0.08 total=31133295\nfull avg10=0.11 avg60=0.15 avg300=0.04 total=29591366\n",
+        "io": "some avg10=9.67 avg60=7.74 avg300=7.31 total=15860559050\nfull avg10=0.33 avg60=0.29 avg300=0.58 total=14455511730\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 2.4749672488315255,
+          "weightedQueue": 0.15829202297339598,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 1521040,
+          "tid": 1521040,
+          "flags": 69238880,
+          "classification": "kernel-thread"
+        }
+      ],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:06:40.341867+00:00",
+      "intervalSeconds": 15.123846779002633,
+      "cpuBusyPercent": 97.90180907013244,
+      "cpuIoWaitPercent": 0.7489605418949803,
+      "availableKiB": 13146912,
+      "pressure": {
+        "cpu": "some avg10=84.73 avg60=79.63 avg300=57.78 total=1735869720\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.62 avg60=0.34 avg300=0.09 total=31242708\nfull avg10=0.39 avg60=0.19 avg300=0.05 total=29667550\n",
+        "io": "some avg10=7.40 avg60=7.57 avg300=7.29 total=15861665176\nfull avg10=0.08 avg60=0.23 avg300=0.55 total=14455618993\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 3.6763133620999717,
+          "weightedQueue": 0.23492700315721582,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 1544139,
+          "tid": 1544139,
+          "flags": 69238880,
+          "classification": "kernel-thread"
+        }
+      ],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:06:55.458798+00:00",
+      "intervalSeconds": 15.087175528999069,
+      "cpuBusyPercent": 97.30065413596091,
+      "cpuIoWaitPercent": 1.004664513814137,
+      "availableKiB": 12383976,
+      "pressure": {
+        "cpu": "some avg10=85.60 avg60=80.95 avg300=59.25 total=1748898014\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.65 avg60=0.40 avg300=0.12 total=31316228\nfull avg10=0.41 avg60=0.23 avg300=0.07 total=29717165\n",
+        "io": "some avg10=6.32 avg60=7.20 avg300=7.22 total=15862646138\nfull avg10=0.21 avg60=0.25 avg300=0.54 total=14455761553\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 2.9163841777692303,
+          "weightedQueue": 0.18121350777320627,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:07:10.600473+00:00",
+      "intervalSeconds": 15.119557600999542,
+      "cpuBusyPercent": 98.23377052794004,
+      "cpuIoWaitPercent": 0.5069987876115949,
+      "availableKiB": 14640016,
+      "pressure": {
+        "cpu": "some avg10=86.36 avg60=82.08 avg300=60.66 total=1761940268\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.13 avg60=0.31 avg300=0.11 total=31318945\nfull avg10=0.08 avg60=0.17 avg300=0.06 total=29718071\n",
+        "io": "some avg10=5.14 avg60=6.68 avg300=7.10 total=15863463198\nfull avg10=0.22 avg60=0.25 avg300=0.53 total=14455833877\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 3.551691221206759,
+          "weightedQueue": 0.09358739437630473,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:07:25.847119+00:00",
+      "intervalSeconds": 15.142540016000567,
+      "cpuBusyPercent": 99.91194760882725,
+      "cpuIoWaitPercent": 0.002751637224148368,
+      "availableKiB": 12956784,
+      "pressure": {
+        "cpu": "some avg10=94.98 avg60=85.21 avg300=62.37 total=1776748822\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.03 avg60=0.24 avg300=0.11 total=31319787\nfull avg10=0.01 avg60=0.13 avg300=0.06 total=29718195\n",
+        "io": "some avg10=4.28 avg60=6.12 avg300=6.95 total=15864100403\nfull avg10=0.05 avg60=0.20 avg300=0.50 total=14455834168\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 1.0962493731209817,
+          "weightedQueue": 0.03968951043648855,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:07:40.897260+00:00",
+      "intervalSeconds": 15.242931932996726,
+      "cpuBusyPercent": 97.8600125720845,
+      "cpuIoWaitPercent": 0.29790374156167154,
+      "availableKiB": 13425564,
+      "pressure": {
+        "cpu": "some avg10=65.26 avg60=81.14 avg300=62.74 total=1786893567\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.00 avg60=0.18 avg300=0.10 total=31320835\nfull avg10=0.00 avg60=0.10 avg300=0.05 total=29718780\n",
+        "io": "some avg10=4.93 avg60=5.81 avg300=6.83 total=15864923728\nfull avg10=0.15 avg60=0.18 avg300=0.48 total=14455907772\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 1.8172356946656156,
+          "weightedQueue": 0.07544480320813927,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:07:55.946699+00:00",
+      "intervalSeconds": 15.050098154999432,
+      "cpuBusyPercent": 25.4420756899686,
+      "cpuIoWaitPercent": 7.993169173139426,
+      "availableKiB": 11001220,
+      "pressure": {
+        "cpu": "some avg10=17.10 avg60=64.58 avg300=59.86 total=1787146289\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.36 avg60=0.21 avg300=0.11 total=31399516\nfull avg10=0.36 avg60=0.14 avg300=0.07 total=29796695\n",
+        "io": "some avg10=17.93 avg60=9.03 avg300=7.51 total=15868378125\nfull avg10=15.41 avg60=4.19 avg300=1.37 total=14459077471\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 3.747483864832118,
+          "weightedQueue": 0.305712291881074,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:08:11.110815+00:00",
+      "intervalSeconds": 15.050215978000779,
+      "cpuBusyPercent": 54.98314078823724,
+      "cpuIoWaitPercent": 4.167818252169587,
+      "availableKiB": 21872800,
+      "pressure": {
+        "cpu": "some avg10=8.65 avg60=50.64 avg300=56.91 total=1787982956\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.32 avg60=0.24 avg300=0.12 total=31466924\nfull avg10=0.32 avg60=0.19 avg300=0.08 total=29861652\n",
+        "io": "some avg10=17.50 avg60=11.94 avg300=8.29 total=15871633147\nfull avg10=12.16 avg60=7.12 avg300=2.23 total=14461535899\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 2.24581494706828,
+          "weightedQueue": 0.1049818821410616,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    }
+  ],
+  "scope": "One short SQLite/loopback research case at nice10/idle I/O; no browser/build/model/GPU/old matrix. Existing CPU<25%, iowait<20%, CPU PSI<10, memory PSI<1, available>8GiB and physical storage busy<5%/queue<.5/inflight<=1 with two fresh15s ready samples. Unknown/userspace D threads block.",
+  "limitation": "Global I/O PSI has unresolved provenance and remains reported; admission uses sustained measured CPU/memory/backing-storage headroom, no attribution to a graphics worker."
+}

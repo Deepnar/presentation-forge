@@ -1,0 +1,5 @@
+Transcribed tool output from the initial uncommitted-source compile probe, not a retained raw test log.
+npm run types:generate completed successfully, then npm run typecheck exited2:
+packages/agent/research.ts(142,64): error TS2339: Property 'ok' does not exist on type 'ProviderFailure | PreparedExchange'.
+  Property 'ok' does not exist on type 'PreparedExchange'.
+No product test leaf counts apply. The source snapshot is initial-research.ts.

@@ -1,0 +1,9 @@
+{
+  "atUtc": "2026-10-28T11:08:41.202833+00:00",
+  "ownedObserversFinished": true,
+  "ownedPersistentServiceAcquired": false,
+  "temporaryBackend": "SQLite/server fixtures close via test teardown",
+  "preExistingApiPid1723Present": false,
+  "preExistingApiLifecycle": "No action taken; absence cause unknown. It was not owned by this task.",
+  "noStopOrSignalToUnrelatedWork": true
+}

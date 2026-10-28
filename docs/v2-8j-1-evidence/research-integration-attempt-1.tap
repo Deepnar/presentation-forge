@@ -1,0 +1,39 @@
+TAP version 13
+# Subtest: Research SQLite: openai-compatible model → actual search adapter → correlated continuation retains source without writes
+not ok 1 - Research SQLite: openai-compatible model → actual search adapter → correlated continuation retains source without writes
+  ---
+  duration_ms: 19842.42473
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-research-sqlite-8j.test.js:9:31'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 15000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Research SQLite: anthropic model → actual search adapter → correlated continuation retains source without writes
+ok 2 - Research SQLite: anthropic model → actual search adapter → correlated continuation retains source without writes
+  ---
+  duration_ms: 49.250787
+  type: 'test'
+  ...
+# Subtest: Research SQLite: foreign owner cannot reach a model or search even with an injected permissive callback
+ok 3 - Research SQLite: foreign owner cannot reach a model or search even with an injected permissive callback
+  ---
+  duration_ms: 47.878106
+  type: 'test'
+  ...
+# Subtest: Research SQLite: a real human save during search refuses source publication and further model work
+ok 4 - Research SQLite: a real human save during search refuses source publication and further model work
+  ---
+  duration_ms: 34.874018
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 0
+# cancelled 1
+# skipped 0
+# todo 0
+# duration_ms 21460.019517
+# forge-test-file "test/v2-research-sqlite-8j.test.js"

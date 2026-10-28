@@ -1,0 +1,107 @@
+TAP version 13
+# Subtest: Research: canonical search is a strict subset of standalone F and base sessions refuse it
+ok 1 - Research: canonical search is a strict subset of standalone F and base sessions refuse it
+  ---
+  duration_ms: 32.465374
+  type: 'test'
+  ...
+# Subtest: Research: queued plans receipts and initial-read contracts still exclude network tools
+ok 2 - Research: queued plans receipts and initial-read contracts still exclude network tools
+  ---
+  duration_ms: 6.628242
+  type: 'test'
+  ...
+# Subtest: Research: missing forged and mutable grants never silently expand permission
+ok 3 - Research: missing forged and mutable grants never silently expand permission
+  ---
+  duration_ms: 18.601893
+  type: 'test'
+  ...
+# Subtest: Research: the whole request is captured and mismatches cannot spend or expand its grant
+ok 4 - Research: the whole request is captured and mismatches cannot spend or expand its grant
+  ---
+  duration_ms: 4.072673
+  type: 'test'
+  ...
+# Subtest: Research: research reads only granted semantics and retains sources after final text
+ok 5 - Research: research reads only granted semantics and retains sources after final text
+  ---
+  duration_ms: 4.171997
+  type: 'test'
+  ...
+# Subtest: Research: provider catalog cannot combine search and edit authority
+ok 6 - Research: provider catalog cannot combine search and edit authority
+  ---
+  duration_ms: 3.183086
+  type: 'test'
+  ...
+# Subtest: Research: edit scope authority arguments and executable requests refuse before work
+ok 7 - Research: edit scope authority arguments and executable requests refuse before work
+  ---
+  duration_ms: 1.407927
+  type: 'test'
+  ...
+# Subtest: Research: duplicate tool IDs refuse without a second search and search caps are aggregate
+ok 8 - Research: duplicate tool IDs refuse without a second search and search caps are aggregate
+  ---
+  duration_ms: 10.163998
+  type: 'test'
+  ...
+# Subtest: Research: search failure stops the invocation without retries or a success DTO
+ok 9 - Research: search failure stops the invocation without retries or a success DTO
+  ---
+  duration_ms: 3.881208
+  type: 'test'
+  ...
+# Subtest: Research: foreign forged and unsupported source bodies never reach provider continuation
+ok 10 - Research: foreign forged and unsupported source bodies never reach provider continuation
+  ---
+  duration_ms: 7.953418
+  type: 'test'
+  ...
+# Subtest: Research: repeated normalized identity keeps first retrieval provenance and counts returned rows
+ok 11 - Research: repeated normalized identity keeps first retrieval provenance and counts returned rows
+  ---
+  duration_ms: 3.239865
+  type: 'test'
+  ...
+# Subtest: Research: revocation or saved revision change during search blocks publication and later exchanges
+ok 12 - Research: revocation or saved revision change during search blocks publication and later exchanges
+  ---
+  duration_ms: 3.332186
+  type: 'test'
+  ...
+# Subtest: Research: cancelled non-cooperating model retains unknown usage and cannot dispatch late tools
+ok 13 - Research: cancelled non-cooperating model retains unknown usage and cannot dispatch late tools
+  ---
+  duration_ms: 3.489418
+  type: 'test'
+  ...
+# Subtest: Research: deadline and cancellation fence non-cooperating search without another exchange
+ok 14 - Research: deadline and cancellation fence non-cooperating search without another exchange
+  ---
+  duration_ms: 4.01849
+  type: 'test'
+  ...
+# Subtest: Research: provider context and search query callbacks cannot rewrite captured evidence
+ok 15 - Research: provider context and search query callbacks cannot rewrite captured evidence
+  ---
+  duration_ms: 2.376097
+  type: 'test'
+  ...
+# Subtest: Research: controlled search and parent deadlines bound non-cooperating callbacks and clean timers
+ok 16 - Research: controlled search and parent deadlines bound non-cooperating callbacks and clean timers
+  ---
+  duration_ms: 2.688852
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 558.454108
+# forge-test-file "test/v2-research-8j.test.js"

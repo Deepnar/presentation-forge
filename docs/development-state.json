@@ -6,44 +6,44 @@
     "source": "docs/reviews/V2-8I-8-b9c2d20.json"
   },
   "implementationHead": {
-    "sha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
-    "note": "Independently accepted I8 exact source; selected product26/26, governance4/4, typecheck0 and independent3/3. Browser selected-case coverage preserves all attempts and reviewed deltas; no all-green whole-file claim. Later commits are docs/evidence only. Default-off/offline; no activation."
+    "sha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+    "note": "Frozen pushed J1 source. Selected153/153 (required27 plus supplemental126), typecheck0. Earlier cancellation/fixtures/compiler failures and cross-factory permission correction retained. Independent review pending; no public activation."
   },
   "activeMilestone": {
-    "id": "V2-8I-8",
-    "roadmapRef": "docs/ROADMAP.md#assistant-visible-editor",
-    "evalDoc": "docs/V2-8I-8-EVAL.md",
+    "id": "V2-8J-1",
+    "roadmapRef": "docs/ROADMAP.md#assistant-web-research-preparation",
+    "evalDoc": "docs/V2-8J-1-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8I-8-b9c2d20.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "assistant-client",
+      "id": "research",
       "status": "passed",
-      "evidence": "docs/v2-8i-8-evidence/assistant-client.json",
-      "reason": "Selected executed scope complete; exact hashes or explicit reviewed case applicability in source-manifest.json. All earlier failures retained."
+      "evidence": "docs/v2-8j-1-evidence/research.json",
+      "reason": "16/16 new authority/budget/source/late-result cases; type-only final delta and exact applicability retained."
     },
     {
-      "id": "assistant-integration",
+      "id": "research-integration",
       "status": "passed",
-      "evidence": "docs/v2-8i-8-evidence/assistant-integration.json",
-      "reason": "Selected executed scope complete; exact hashes or explicit reviewed case applicability in source-manifest.json. All earlier failures retained."
+      "evidence": "docs/v2-8j-1-evidence/research-integration.json",
+      "reason": "4/4 actual owned temporary SQLite and loopback adapter cases on corrected full grants; initial3pass1cancel remains historical, cause unresolved."
     },
     {
-      "id": "assistant-browser",
+      "id": "schema-boundaries",
       "status": "passed",
-      "evidence": "docs/v2-8i-8-evidence/assistant-browser.json",
-      "reason": "Selected executed scope complete; exact hashes or explicit reviewed case applicability in source-manifest.json. All earlier failures retained."
+      "evidence": "docs/v2-8j-1-evidence/schema-boundaries.json",
+      "reason": "7/7 graph/generated drift with unchanged import/schema/type applicability; see source manifest."
     },
     {
       "id": "typecheck",
       "status": "passed",
-      "evidence": "docs/v2-8i-8-evidence/typecheck.json",
-      "reason": "Selected executed scope complete; exact hashes or explicit reviewed case applicability in source-manifest.json. All earlier failures retained."
+      "evidence": "docs/v2-8j-1-evidence/typecheck.json",
+      "reason": "Final command exits0 on frozen source; prior TS2339/TS2352 failures retained separately."
     }
   ],
   "knownBlockers": [],
@@ -54,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8J-1 bounded canonical web research preparation",
-    "authorized": true,
-    "roadmapRef": "docs/ROADMAP.md#assistant-web-research-preparation"
+    "id": "Canonical project source registry contract",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#assistant-search-source-integrity"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
@@ -73,5 +73,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-27"
+  "updated": "2026-10-28"
 }

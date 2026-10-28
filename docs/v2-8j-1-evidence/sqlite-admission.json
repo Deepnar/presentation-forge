@@ -1,0 +1,97 @@
+{
+  "admitted": true,
+  "samples": [
+    {
+      "atUtc": "2026-10-27T18:13:43.379541+00:00",
+      "intervalSeconds": 15.000543572001334,
+      "cpuBusyPercent": 17.84987657000244,
+      "cpuIoWaitPercent": 10.533597374060712,
+      "availableKiB": 29096800,
+      "pressure": {
+        "cpu": "some avg10=0.00 avg60=3.72 avg300=29.55 total=1861171388\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=1.51 avg60=3.45 avg300=2.74 total=44801227\nfull avg10=1.51 avg60=3.28 avg300=2.37 total=41261878\n",
+        "io": "some avg10=30.39 avg60=30.08 avg300=17.11 total=15932086016\nfull avg10=28.08 avg60=27.43 avg300=12.19 total=14505206906\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 5.39313789608269,
+          "weightedQueue": 0.2084591124975349,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 1544139,
+          "tid": 1544139,
+          "flags": 69238880,
+          "classification": "kernel-thread"
+        }
+      ],
+      "ready": false,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:13:58.431028+00:00",
+      "intervalSeconds": 15.071195791002538,
+      "cpuBusyPercent": 11.07266435986159,
+      "cpuIoWaitPercent": 10.277897923875432,
+      "availableKiB": 29140256,
+      "pressure": {
+        "cpu": "some avg10=0.00 avg60=2.95 avg300=28.16 total=1861188905\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.37 avg60=2.73 avg300=2.61 total=44806453\nfull avg10=0.37 avg60=2.60 avg300=2.26 total=41266796\n",
+        "io": "some avg10=35.25 avg60=31.12 avg300=17.94 total=15937456131\nfull avg10=33.48 avg60=28.67 avg300=13.17 total=14510351992\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 4.419025598470429,
+          "weightedQueue": 0.16753813267474224,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 1544139,
+          "tid": 1544139,
+          "flags": 69238880,
+          "classification": "kernel-thread"
+        }
+      ],
+      "ready": true,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    },
+    {
+      "atUtc": "2026-10-27T18:14:13.481126+00:00",
+      "intervalSeconds": 15.051458677000483,
+      "cpuBusyPercent": 12.192882985042388,
+      "cpuIoWaitPercent": 10.11393703763702,
+      "availableKiB": 31671136,
+      "pressure": {
+        "cpu": "some avg10=0.00 avg60=2.26 avg300=26.66 total=1861242616\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory": "some avg10=0.07 avg60=2.09 avg300=2.47 total=44807472\nfull avg10=0.07 avg60=1.99 avg300=2.13 total=41267776\n",
+        "io": "some avg10=37.22 avg60=32.69 avg300=19.00 total=15943258608\nfull avg10=34.81 avg60=30.22 avg300=14.35 total=14515771359\n"
+      },
+      "disks": {
+        "nvme0n1": {
+          "busyPercent": 3.1425525601898765,
+          "weightedQueue": 0.17553115991589122,
+          "inflight": 0
+        }
+      },
+      "blockedThreads": [
+        {
+          "pid": 1544139,
+          "tid": 1544139,
+          "flags": 69238880,
+          "classification": "kernel-thread"
+        }
+      ],
+      "ready": true,
+      "classifierVersion": 2,
+      "observerSha256": "809474f8fd26502bd4184e29912f06b54a52bef8e99bea4c71d675b83e788a53"
+    }
+  ],
+  "scope": "One short SQLite/loopback research case at nice10/idle I/O; no browser/build/model/GPU/old matrix. Existing CPU<25%, iowait<20%, CPU PSI<10, memory PSI<1, available>8GiB and physical storage busy<5%/queue<.5/inflight<=1 with two fresh15s ready samples. Unknown/userspace D threads block.",
+  "limitation": "Global I/O PSI has unresolved provenance and remains reported; admission uses sustained measured CPU/memory/backing-storage headroom, no attribution to a graphics worker."
+}
