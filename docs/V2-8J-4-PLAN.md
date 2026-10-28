@@ -136,9 +136,16 @@ Run validated `citation.put`/`citation.remove` operations through the revisioned
 engine as one atomic batch, then persist scenes plus canonical history in the same
 transaction. Internal engine commands carry schema-valid **unverified** records;
 they cannot resolve sources or attest ownership. New citation commands are denied
-to actor:agent and excluded from H/content-tool schemas/allowlists. Browser human
-edits may preserve metadata through the existing full-scene save path without
-gaining a qualified attachment or private-source read capability.
+to actor:agent and excluded from H/content-tool schemas/allowlists. Also refuse
+actor:agent payloads newly supplying/altering citation metadata through generic
+ingress, including full citation-bearing slide.insert payloads; checking only the
+new command names is insufficient. Ordinary agent content/style edits preserve
+existing records byte-for-byte. Existing same-project slide duplication may use
+the engine-owned deterministic citation remapping below, not caller-supplied
+metadata; this adds no tool/H grant. Canonical undo/redo restores exact snapshots
+through the engine's existing private restoration path. Browser human edits may
+preserve metadata through the existing full-scene save path without gaining a
+qualified attachment or private-source read capability.
 
 A complete no-op replace changes no project/history/catalog counters. Successful
 changed attachment/removal advances project revision once with one canonical
