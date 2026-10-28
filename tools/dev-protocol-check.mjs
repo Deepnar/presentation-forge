@@ -16,6 +16,7 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
+  'registry-pure': 'tests', 'registry-sqlite': 'tests', 'registry-postgres': 'tests',
   '7a-chrome': 'tests', 'conversion-import': 'tests', 'browser-handoff': 'tests', 'project-covers': 'tests', 'project-catalog': 'tests', 'editor-toolbar': 'tests', 'agent-foundation': 'tests', 'durable-runtime': 'tests', 'model-provider': 'tests', 'provider-run': 'tests', 'tool-conversation': 'tests', 'search-provider': 'tests', 'native-pptx': 'tests', 'turn-approval': 'tests', 'non-browser-bulk': 'tests', 'serial-browser': 'tests',
   'research': 'tests', 'research-integration': 'tests', 'schema-boundaries': 'tests',
   'assistant-client': 'tests', 'assistant-integration': 'tests', 'assistant-browser': 'tests',
@@ -30,6 +31,14 @@ const KINDS = {
 const DEFAULT_REQUIRED_CHECKS = ['non-browser-bulk', 'serial-browser', 'postgres-contract',
   'cross-process-faults', 'production-build', 'typecheck', 'benchmark-50', 'frontend-visual'];
 const MILESTONES = {
+  'V2-8J-2': {
+    plan: 'docs/v2-8j-2-evidence/validation-plan.json',
+    focused: 'registry-pure', files: ['test/v2-source-registry-8j.test.js'],
+    groups: { 'registry-sqlite': ['test/v2-source-registry-sqlite-8j.test.js'],
+      'registry-postgres': ['test/v2-source-registry-postgres-8j.test.js'],
+      'schema-boundaries': ['test/v2-core-boundary.test.js', 'test/v2-types-drift.test.js'] },
+    required: ['registry-pure', 'registry-sqlite', 'registry-postgres', 'schema-boundaries', 'typecheck'],
+  },
   'V2-8J-1': {
     plan: 'docs/v2-8j-1-evidence/validation-plan.json',
     focused: 'research', files: ['test/v2-research-8j.test.js'],

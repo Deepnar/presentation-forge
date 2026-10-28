@@ -1,0 +1,34 @@
+{
+  "acceptedBaseline": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+  "approvedContract": "docs/V2-8J-2-PLAN.md",
+  "humanDirection": "2026-10-28 Approve scoped retention and implementation (Recommended), pinned6416e1b before runtime changes",
+  "gates": {
+    "registry-pure": [
+      "test/v2-source-registry-8j.test.js"
+    ],
+    "registry-sqlite": [
+      "test/v2-source-registry-sqlite-8j.test.js"
+    ],
+    "registry-postgres": [
+      "test/v2-source-registry-postgres-8j.test.js"
+    ],
+    "schema-boundaries": [
+      "test/v2-core-boundary.test.js",
+      "test/v2-types-drift.test.js"
+    ],
+    "typecheck": []
+  },
+  "additionalAffected": [
+    "test/v2-research-8j.test.js",
+    "test/v2-research-sqlite-8j.test.js"
+  ],
+  "additionalSelected": "New/adjacent governance inventories only; no full old governance replay.",
+  "excluded": "No old bulk/browser/build/native/benchmark/fault sweep, live model/API/search/GPU or activation. New PostgreSQL contracts are required; unavailable means unexecuted.",
+  "requiredFiles": [
+    "test/v2-source-registry-8j.test.js",
+    "test/v2-source-registry-sqlite-8j.test.js",
+    "test/v2-source-registry-postgres-8j.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/v2-types-drift.test.js"
+  ]
+}

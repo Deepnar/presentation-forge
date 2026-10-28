@@ -491,3 +491,22 @@ test('web research keeps its four selected gates and each observed file mandator
   f.state.validation.pop(); hasError(f.check(), /schema|inventory.*contract/);
   f.state.activeMilestone.id = 'V2-7A'; hasError(f.check(), /schema|inventory.*contract/);
 });
+
+test('source registry keeps its five selected gates and each observed file mandatory', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8j-2-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8j-2-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8j-2-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8J-2';
+  f.state.validation = ['registry-pure', 'registry-sqlite', 'registry-postgres', 'schema-boundaries', 'typecheck'].map(id => ({ id, status: 'unexecuted', evidence: null, reason: 'Selected new registry and directly affected schema scope' }));
+  assert.deepEqual(f.check().errors, []);
+  for (const id of ['registry-pure', 'registry-sqlite', 'registry-postgres', 'schema-boundaries']) {
+    const entry = f.state.validation.find(x => x.id === id);
+    f.state.validation = [entry, ...f.state.validation.filter(x => x !== entry)];
+    f.evidence(); assert.deepEqual(f.check().errors, []);
+    writeFileSync(path.join(f.dir, 'docs/output.tap'), '# tests 28\n# pass 28\n# fail 0\n# skipped 0\n# cancelled 0\n');
+    hasError(f.check(), /complete required scope/);
+    Object.assign(entry, { status: 'unexecuted', evidence: null, reason: 'Selected new registry and directly affected schema scope' });
+  }
+  f.state.validation.pop(); hasError(f.check(), /schema|inventory.*contract/);
+  f.state.activeMilestone.id = 'V2-7A'; hasError(f.check(), /schema|inventory.*contract/);
+});
