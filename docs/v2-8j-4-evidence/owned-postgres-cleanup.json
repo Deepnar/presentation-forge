@@ -1,0 +1,12 @@
+{
+  "containerId": "4b4e26def208b80a004b9caa848cf8fc405d8068a196bfdedfcc61cf6931f2aa",
+  "catalogEvidence": "docs/v2-8j-4-evidence/owned-postgres-final-catalog.json",
+  "catalogSavedAndFsyncedBeforeRemoval": true,
+  "actualUserDatabaseCount": 0,
+  "exactIdRemovalCalls": 1,
+  "removedExactId": "4b4e26def208b80a004b9caa848cf8fc405d8068a196bfdedfcc61cf6931f2aa",
+  "verifiedAbsentWithWorkingDaemon": true,
+  "privateCredentialsDeleted": true,
+  "reviewerDatabasesAndPoolsReleased": true,
+  "atUtc": "2026-10-28T18:01:34.296400+00:00"
+}

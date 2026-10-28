@@ -1,0 +1,83 @@
+TAP version 13
+# Subtest: Citation lifecycle: strict scene shape and project-wide admission preserve unverified records
+ok 1 - Citation lifecycle: strict scene shape and project-wide admission preserve unverified records
+  ---
+  duration_ms: 39.130558
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: anchors ignore styling and run boundaries but preserve exact authored content
+ok 2 - Citation lifecycle: anchors ignore styling and run boundaries but preserve exact authored content
+  ---
+  duration_ms: 3.353561
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: chart table image and slide content changes have distinct bounded anchors
+ok 3 - Citation lifecycle: chart table image and slide content changes have distinct bounded anchors
+  ---
+  duration_ms: 2.855801
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: exact targets and protected ancestor/group scopes never use first matches
+ok 4 - Citation lifecycle: exact targets and protected ancestor/group scopes never use first matches
+  ---
+  duration_ms: 6.28462
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: commands are atomic, no-op aware and exactly undoable
+ok 5 - Citation lifecycle: commands are atomic, no-op aware and exactly undoable
+  ---
+  duration_ms: 3.177089
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: raw agent citation ingress refuses while ordinary edits preserve metadata
+ok 6 - Citation lifecycle: raw agent citation ingress refuses while ordinary edits preserve metadata
+  ---
+  duration_ms: 1.338674
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: duplication remaps only unique live identities and retains unresolved tuples
+ok 7 - Citation lifecycle: duplication remaps only unique live identities and retains unresolved tuples
+  ---
+  duration_ms: 4.120631
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: deletion leaves orphans and session undo retains exact metadata for 200 changes
+ok 8 - Citation lifecycle: deletion leaves orphans and session undo retains exact metadata for 200 changes
+  ---
+  duration_ms: 38.469825
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: recompilation preserves exact orphan records and detached identity
+ok 9 - Citation lifecycle: recompilation preserves exact orphan records and detached identity
+  ---
+  duration_ms: 23.640316
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: central native preflight refuses all cited targets before producing bytes
+ok 10 - Citation lifecycle: central native preflight refuses all cited targets before producing bytes
+  ---
+  duration_ms: 1.110743
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: tool projections and scalar range observations disclose no citation payload
+ok 11 - Citation lifecycle: tool projections and scalar range observations disclose no citation payload
+  ---
+  duration_ms: 7.363015
+  type: 'test'
+  ...
+# Subtest: Citation lifecycle: strict domain capture refuses accessors and captures binding before awaits
+ok 12 - Citation lifecycle: strict domain capture refuses accessors and captures binding before awaits
+  ---
+  duration_ms: 1.163078
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 446.387131
+# forge-test-file "test/v2-citations-8j.test.js"

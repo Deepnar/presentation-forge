@@ -1,0 +1,65 @@
+TAP version 13
+# Subtest: Citation writes PostgreSQL: fresh attach replace no-op and current content observations share canonical history
+ok 1 - Citation writes PostgreSQL: fresh attach replace no-op and current content observations share canonical history
+  ---
+  duration_ms: 150.417658
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: owner stale protected ambiguous and unmatched requests refuse without partial writes
+ok 2 - Citation writes PostgreSQL: owner stale protected ambiguous and unmatched requests refuse without partial writes
+  ---
+  duration_ms: 30.463582
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: clear re-registration history restore and unresolved removal never revive evidence
+ok 3 - Citation writes PostgreSQL: clear re-registration history restore and unresolved removal never revive evidence
+  ---
+  duration_ms: 21.607607
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: generic saves accept unverified same-project metadata and reject foreign binding or cited creation
+ok 4 - Citation writes PostgreSQL: generic saves accept unverified same-project metadata and reject foreign binding or cited creation
+  ---
+  duration_ms: 19.282113
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: history failure rolls back scene writes and preserves private domain refusals
+not ok 5 - Citation writes PostgreSQL: history failure rolls back scene writes and preserves private domain refusals
+  ---
+  duration_ms: 30.551415
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-citations-postgres-8j.test.js:16:39'
+  failureType: 'testCodeFailure'
+  error: 'storage unavailable: private fixture history failure'
+  code: 'storage-unavailable'
+  stack: |-
+    storageUnavailable (file:///home/deepnar/Programs/presentations/src/projects/store-postgres.js:113:13)
+    Module.listRevisions (file:///home/deepnar/Programs/presentations/src/projects/store-postgres.js:574:11)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async snapshot (file:///home/deepnar/Programs/presentations/test/v2-citations-contract.js:17:96)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-citations-contract.js:75:197)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Citation writes PostgreSQL: parent locking serializes a source clear before attachment qualification
+ok 6 - Citation writes PostgreSQL: parent locking serializes a source clear before attachment qualification
+  ---
+  duration_ms: 22.686152
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: session undo survives source clear and pruning of its original durable metadata snapshot
+ok 7 - Citation writes PostgreSQL: session undo survives source clear and pruning of its original durable metadata snapshot
+  ---
+  duration_ms: 91.331576
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 660.153413
+# forge-test-file "test/v2-citations-postgres-8j.test.js"

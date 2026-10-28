@@ -1,0 +1,47 @@
+{
+  "id": "citation-write-postgres",
+  "kind": "tests",
+  "implementationSha": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "invocationHead": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "command": "nice -n 10 ionice -c 3 node --test --test-concurrency=1 --test-reporter=./tools/validated-tap.mjs test/v2-citations-postgres-8j.test.js",
+  "log": "docs/v2-8j-4-evidence/citation-write-postgres-attempt-2.tap",
+  "exitCode": 0,
+  "durationMs": 1066,
+  "startedAt": "2026-10-28T17:56:29Z",
+  "timedOut": false,
+  "sourceHashes": {
+    "packages/compiler/compile.js": "edfdc103855741f587c3c1cdd3423c63f153e097a2a23fc29391a29d41b6eb53",
+    "packages/model/citation-content.ts": "376f17b621332dff5537b1caac7db8318f7cda9f63a1914d1f73ca8c8f7defe1",
+    "packages/model/citation-targets.ts": "339f3a7bf223e05210602a83a593058ed6e99b259c61a4e3df3bfc27fd34617a",
+    "packages/model/citations.ts": "2fbd43c08c14429d45ecbcd379c3d261925f27491d83743123f65cc165248f13",
+    "packages/model/commands.ts": "ef4412532d96b0332d35e5fdc4aad0f5af8f9275b474200507dc952a75490376",
+    "packages/model/engine.ts": "2f34515c6acc7ebd4cdf72d463f22768d8c1f2358a0ea32cd193c74de4cc1ce8",
+    "packages/model/scene.generated.ts": "934633c65be75b09ea5181727f25ab4ab1d0953e0b09374a01a0531d9adb5c6b",
+    "packages/model/scene.schema.json": "94fc9c543636afda87469b621269c36a57af3c9164fdfa6b6f362176a964557a",
+    "packages/model/scene.ts": "ec41b7b3e3aea5a48519744f78489952bf8a810b627d3362d2da36ce6b5b075c",
+    "packages/projects/document.js": "69fcf2bb59a06ab2a7d1118985774fc096f01985815787b7e53f85055514fb69",
+    "packages/renderer-pptx/render.ts": "8754684c159ff9fbe3c416be673984e6d2af6db46e7524a477aa0d226948393f",
+    "src/projects/citation-references.js": "9939f0861f820f5a98b0ec53585cc317ecc2ba0655b056a52d05c89700ca670e",
+    "src/projects/citations.js": "013c6e2a2dad233dc6f344e3595b85bb46e9b15dbca1d8fdf7503604f9ed8754",
+    "src/projects/snippet-locator.js": "f08bed0843f13fb0f44cb88282b8614a60c6344a601c8dda18b7517bf5ea67a1",
+    "src/projects/store-postgres.js": "da911b1a57d145c48e73cf9b3375037447a67ddfffe25964c34da5ca0fe05ddd",
+    "src/projects/store.js": "174ec14086da122fb0856f0406b549ac6c9c210d6337a9a0c5ec48f676f4d5d5",
+    "test/v2-citations-8j.test.js": "ea8237115de27d0289d2886eb1ffc9f2e89628356dc5081bc9344d8703dec6fa",
+    "test/v2-citations-contract.js": "cd25abc85b4b8fd3f5a41fc1a5ddef9b3f01aa527b14c83c3bfbd7a283c2a76f",
+    "test/v2-citations-fixture.js": "240550e13d36e2a8a0be80f409bde1096d6c410fd5b0bdacdc950cc0c1ef8af2",
+    "test/v2-citations-postgres-8j.test.js": "e4dfd4abe9b608640f860e729cc8faa64d6e8853370bc1e0fe37355ca7aa5f25",
+    "test/v2-citations-sqlite-8j.test.js": "73d2e269d9e8801cb6cede879552b041bd6d2350d792bf2e81a1ebbf8a42725e"
+  },
+  "files": [
+    "test/v2-citations-postgres-8j.test.js"
+  ],
+  "tests": {
+    "total": 7,
+    "pass": 7,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "rawEvidence": "docs/v2-8j-4-evidence/citation-write-postgres-attempt-2.json",
+  "applicability": "Actual invocation at frozen candidate."
+}

@@ -1,0 +1,111 @@
+TAP version 13
+# Subtest: Citation pure: exact scalar UTF-8, BOM and supplementary boundaries
+ok 1 - Citation pure: exact scalar UTF-8, BOM and supplementary boundaries
+  ---
+  duration_ms: 1.019135
+  type: 'test'
+  ...
+# Subtest: Citation pure: locator precedence never repairs surrogates or assesses support
+ok 2 - Citation pure: locator precedence never repairs surrogates or assesses support
+  ---
+  duration_ms: 0.28577
+  type: 'test'
+  ...
+# Subtest: Citation pure: invalid complete DTOs refuse before storage or accessor execution
+ok 3 - Citation pure: invalid complete DTOs refuse before storage or accessor execution
+  ---
+  duration_ms: 1.465864
+  type: 'test'
+  ...
+# Subtest: Citation pure: exact targets include group children and observe ambiguity without inference
+ok 4 - Citation pure: exact targets include group children and observe ambiguity without inference
+  ---
+  duration_ms: 1.935362
+  type: 'test'
+  ...
+# Subtest: Citation pure: node/depth budgets refuse the whole result rather than stop at first match
+ok 5 - Citation pure: node/depth budgets refuse the whole result rather than stop at first match
+  ---
+  duration_ms: 4.299023
+  type: 'test'
+  ...
+# Subtest: Citation pure: complete requests and adapter method are captured before await
+ok 6 - Citation pure: complete requests and adapter method are captured before await
+  ---
+  duration_ms: 0.49139
+  type: 'test'
+  ...
+# Subtest: Citation pure: backend/domain refusals are static and publish no partial observations
+ok 7 - Citation pure: backend/domain refusals are static and publish no partial observations
+  ---
+  duration_ms: 0.412176
+  type: 'test'
+  ...
+# Subtest: v2 core boundary
+    # Subtest: detects static, re-export, and literal dynamic imports
+    ok 1 - detects static, re-export, and literal dynamic imports
+      ---
+      duration_ms: 5.242365
+      type: 'test'
+      ...
+    # Subtest: fails closed on require() and non-literal dynamic import
+    ok 2 - fails closed on require() and non-literal dynamic import
+      ---
+      duration_ms: 0.648959
+      type: 'test'
+      ...
+    # Subtest: enforces package directions on synthetic edges
+    ok 3 - enforces package directions on synthetic edges
+      ---
+      duration_ms: 0.343744
+      type: 'test'
+      ...
+    # Subtest: confines node builtins to the named renderer adapter
+    ok 4 - confines node builtins to the named renderer adapter
+      ---
+      duration_ms: 0.160895
+      type: 'test'
+      ...
+    # Subtest: confines jszip to renderer-docx and the generated PPTX identity normalizer
+    ok 5 - confines jszip to renderer-docx and the generated PPTX identity normalizer
+      ---
+      duration_ms: 0.231942
+      type: 'test'
+      ...
+    # Subtest: repository packages contain zero boundary violations
+    ok 6 - repository packages contain zero boundary violations
+      ---
+      duration_ms: 272.286381
+      type: 'test'
+      ...
+    1..6
+ok 8 - v2 core boundary
+  ---
+  duration_ms: 279.975421
+  type: 'suite'
+  ...
+# Subtest: v2 generated types drift
+    # Subtest: checked-in generated types match the schemas byte-for-byte
+    ok 1 - checked-in generated types match the schemas byte-for-byte
+      ---
+      duration_ms: 250.32276
+      type: 'test'
+      ...
+    1..1
+ok 9 - v2 generated types drift
+  ---
+  duration_ms: 251.349801
+  type: 'suite'
+  ...
+1..9
+# tests 14
+# suites 2
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1132.346904
+# forge-test-file "test/v2-citation-references-8j.test.js"
+# forge-test-file "test/v2-core-boundary.test.js"
+# forge-test-file "test/v2-types-drift.test.js"

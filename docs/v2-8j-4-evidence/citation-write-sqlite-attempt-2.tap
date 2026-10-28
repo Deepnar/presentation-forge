@@ -1,0 +1,53 @@
+TAP version 13
+# Subtest: Citation writes SQLite: fresh attach replace no-op and current content observations share canonical history
+ok 1 - Citation writes SQLite: fresh attach replace no-op and current content observations share canonical history
+  ---
+  duration_ms: 117.762971
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: owner stale protected ambiguous and unmatched requests refuse without partial writes
+ok 2 - Citation writes SQLite: owner stale protected ambiguous and unmatched requests refuse without partial writes
+  ---
+  duration_ms: 28.144026
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: clear re-registration history restore and unresolved removal never revive evidence
+ok 3 - Citation writes SQLite: clear re-registration history restore and unresolved removal never revive evidence
+  ---
+  duration_ms: 25.112188
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: generic saves accept unverified same-project metadata and reject foreign binding or cited creation
+ok 4 - Citation writes SQLite: generic saves accept unverified same-project metadata and reject foreign binding or cited creation
+  ---
+  duration_ms: 17.789987
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: history failure rolls back scene writes and preserves private domain refusals
+ok 5 - Citation writes SQLite: history failure rolls back scene writes and preserves private domain refusals
+  ---
+  duration_ms: 17.918901
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: parent locking serializes a source clear before attachment qualification
+ok 6 - Citation writes SQLite: parent locking serializes a source clear before attachment qualification
+  ---
+  duration_ms: 12.167506
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: session undo survives source clear and pruning of its original durable metadata snapshot
+ok 7 - Citation writes SQLite: session undo survives source clear and pruning of its original durable metadata snapshot
+  ---
+  duration_ms: 51.89575
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 605.524945
+# forge-test-file "test/v2-citations-sqlite-8j.test.js"

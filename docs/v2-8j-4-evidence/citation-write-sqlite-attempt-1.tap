@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: Citation writes SQLite: fresh attach replace no-op and current content observations share canonical history
+ok 1 - Citation writes SQLite: fresh attach replace no-op and current content observations share canonical history
+  ---
+  duration_ms: 84.635092
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: owner stale protected ambiguous and unmatched requests refuse without partial writes
+ok 2 - Citation writes SQLite: owner stale protected ambiguous and unmatched requests refuse without partial writes
+  ---
+  duration_ms: 19.474254
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: clear re-registration history restore and unresolved removal never revive evidence
+ok 3 - Citation writes SQLite: clear re-registration history restore and unresolved removal never revive evidence
+  ---
+  duration_ms: 16.490157
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: generic saves accept unverified same-project metadata and reject foreign binding or cited creation
+ok 4 - Citation writes SQLite: generic saves accept unverified same-project metadata and reject foreign binding or cited creation
+  ---
+  duration_ms: 10.657137
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: history failure rolls back scene writes and preserves private domain refusals
+not ok 5 - Citation writes SQLite: history failure rolls back scene writes and preserves private domain refusals
+  ---
+  duration_ms: 9.845142
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-citations-sqlite-8j.test.js:10:37'
+  failureType: 'testCodeFailure'
+  error: 'private fixture history failure'
+  code: 'ERR_SQLITE_ERROR'
+  stack: |-
+    ensureBaselineRow (file:///home/deepnar/Programs/presentations/src/projects/history.js:229:5)
+    Module.listRevisions (file:///home/deepnar/Programs/presentations/src/projects/store.js:502:3)
+    snapshot (file:///home/deepnar/Programs/presentations/test/v2-citations-contract.js:17:110)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-citations-contract.js:75:197)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Citation writes SQLite: parent locking serializes a source clear before attachment qualification
+ok 6 - Citation writes SQLite: parent locking serializes a source clear before attachment qualification
+  ---
+  duration_ms: 7.66041
+  type: 'test'
+  ...
+# Subtest: Citation writes SQLite: session undo survives source clear and pruning of its original durable metadata snapshot
+ok 7 - Citation writes SQLite: session undo survives source clear and pruning of its original durable metadata snapshot
+  ---
+  duration_ms: 31.864403
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 404.766252
+# forge-test-file "test/v2-citations-sqlite-8j.test.js"

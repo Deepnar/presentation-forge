@@ -1,0 +1,16 @@
+{
+  "id": "4b4e26def208b80a004b9caa848cf8fc405d8068a196bfdedfcc61cf6931f2aa",
+  "name": "forge-j4-20261028232211-7d544f",
+  "image": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "admissionFile": "docs/v2-8j-4-evidence/storage-admission-attempt-2.json",
+  "admissionAgeSeconds": 45.33750510215759,
+  "host": "127.0.0.1",
+  "port": 32770,
+  "cpus": 1,
+  "memoryBytes": 536870912,
+  "tmpfsBytes": 268435456,
+  "initialUserDatabaseCatalog": [],
+  "initialUserDatabaseCount": 0,
+  "createdAfterAdmission": true,
+  "limitation": "Actual isolated PostgreSQL on private tmpfs; no hardware or power-loss durability claim."
+}

@@ -1,0 +1,53 @@
+TAP version 13
+# Subtest: Citation writes PostgreSQL: fresh attach replace no-op and current content observations share canonical history
+ok 1 - Citation writes PostgreSQL: fresh attach replace no-op and current content observations share canonical history
+  ---
+  duration_ms: 252.664175
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: owner stale protected ambiguous and unmatched requests refuse without partial writes
+ok 2 - Citation writes PostgreSQL: owner stale protected ambiguous and unmatched requests refuse without partial writes
+  ---
+  duration_ms: 54.089352
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: clear re-registration history restore and unresolved removal never revive evidence
+ok 3 - Citation writes PostgreSQL: clear re-registration history restore and unresolved removal never revive evidence
+  ---
+  duration_ms: 40.224705
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: generic saves accept unverified same-project metadata and reject foreign binding or cited creation
+ok 4 - Citation writes PostgreSQL: generic saves accept unverified same-project metadata and reject foreign binding or cited creation
+  ---
+  duration_ms: 24.544992
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: history failure rolls back scene writes and preserves private domain refusals
+ok 5 - Citation writes PostgreSQL: history failure rolls back scene writes and preserves private domain refusals
+  ---
+  duration_ms: 36.683525
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: parent locking serializes a source clear before attachment qualification
+ok 6 - Citation writes PostgreSQL: parent locking serializes a source clear before attachment qualification
+  ---
+  duration_ms: 28.153705
+  type: 'test'
+  ...
+# Subtest: Citation writes PostgreSQL: session undo survives source clear and pruning of its original durable metadata snapshot
+ok 7 - Citation writes PostgreSQL: session undo survives source clear and pruning of its original durable metadata snapshot
+  ---
+  duration_ms: 118.643582
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1019.368171
+# forge-test-file "test/v2-citations-postgres-8j.test.js"

@@ -1,0 +1,9 @@
+{
+  "stage": "fail-first new strict-format regression",
+  "invocationHead": "2066c5c6d6a4646f679f235269d18eb394e2d3c1",
+  "command": "nice -n 10 ionice -c 3 node --test --test-name-pattern=fixed-format labels --test-reporter=./tools/validated-tap.mjs test/v2-citations-8j.test.js",
+  "exitCode": 0,
+  "durationMs": 464,
+  "log": "docs/v2-8j-4-evidence/fixed-format-red.tap",
+  "classification": "Product defect in new J4 structural/request label checks, independently source-reported before execution. Filtered red probe is not a complete passing gate."
+}

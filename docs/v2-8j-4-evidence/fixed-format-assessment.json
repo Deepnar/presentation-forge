@@ -1,0 +1,20 @@
+{
+  "assessment": "Review false positive; no product defect or correction.",
+  "runtime": "Node v24.16.0",
+  "probe": {
+    "unflaggedEndAnchorWithTrailingLF": false,
+    "multilineEndAnchorWithTrailingLF": true,
+    "actualCitationPatternWithTrailingLF": false
+  },
+  "negativeFixture": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "originalRecord": "docs/v2-8j-4-evidence/fixed-format-red.json",
+  "originalLog": "docs/v2-8j-4-evidence/fixed-format-red.tap",
+  "correction": "The original record called this a product defect before inspecting its exit0/pass1 output. That classification was incorrect. The subsequent Python expected-nonzero assertion failed in the harness after the product test passed; it is not a failed product leaf. The independent reviewer withdrew the source hypothesis. No product regex change or repeat of passed old tests is needed.",
+  "sourceApplicability": "2066c5c adds only this one passing negative fixture to pure tests; runtime and all previously passing tests are byte-identical to frozen implementation6628bb4. Retain original complete12/12 gate and this separate1/1 supplemental check."
+}

@@ -1,0 +1,17 @@
+TAP version 13
+# Subtest: Citation lifecycle: fixed-format labels refuse literal trailing line feeds
+ok 1 - Citation lifecycle: fixed-format labels refuse literal trailing line feeds
+  ---
+  duration_ms: 32.400193
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 382.826875
+# forge-test-file "test/v2-citations-8j.test.js"
