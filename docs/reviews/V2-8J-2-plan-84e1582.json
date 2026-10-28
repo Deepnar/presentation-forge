@@ -1,0 +1,108 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "plannedBy": "/root",
+  "reviewDate": "2026-10-28",
+  "initialPlanSha": "84e158254277be71462d5068650c28cadbfb93ab",
+  "reviewedPlanSha": "51652e6b110dbe078cacf318cb789b4bcf5d1fee",
+  "acceptedBaseline": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+  "planningEntrySha": "f84c0158886d4fa513c5a2d583dcaf6dea8f300c",
+  "plan": "docs/V2-8J-2-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-project-source-registry",
+  "assessment": "The headless web-only immutable registry is a coherent next dependency after accepted J1. It stores explicitly selected normalized snippets under the canonical project rather than creating a second document, and separates source identity/provenance from factual support and future citation attachment. Parent locking, exact owner checks, independent catalog generations, bounded byte validation and explicit clear/delete policy provide suitable primitives for both adapters. All identified technical ambiguities are pinned in the final reviewed plan. No outstanding technical planning correction remains; persistent retention still requires explicit human approval before any implementation.",
+  "outstandingTechnicalIssues": [],
+  "pinnedClarifications": [
+    {
+      "id": "catalog-integrity-and-virtual-state",
+      "assessment": "Virtual generation/revision0 is permitted only after a bounded probe establishes that no child rows exist. Orphans, future policy, invalid counters or unsafe arithmetic fail closed; metadata is never silently reset or adopted. Inspect/register/resolve/list verify actual byte/count aggregates from at most513 metadata rows, then validate only the selected or affected24 bodies. This establishes bounded metadata integrity without falsely attesting every unrequested body.",
+      "planLines": "docs/V2-8J-2-PLAN.md:108-121",
+      "sourceBasis": [
+        "src/projects/store.js:730-756 — canonical owner-checked serialized transaction and query seam",
+        "src/projects/store-postgres.js:735-765 — parent FOR UPDATE precedes the injected job",
+        "src/projects/turn-discovery-query.js:9-26 — existing bounded SQL projections and dialect-specific bytes/order"
+      ]
+    },
+    {
+      "id": "actual-byte-validation-before-decoding",
+      "assessment": "Stored payload_bytes and catalog counters are untrusted. Actual SQL UTF-8 size is capped before materialization, with invalid sentinels rather than truncation. SQLite uses capped BLOB projections and fatal decoding with explicit BOM preservation; selected bodies must match canonical serialized bytes, declared size, hash and project identity. The adapter supplies the dialect, avoiding an environment/injection mismatch. Literal U+FFFD and malformed stored-byte/BOM cases are required challenges.",
+      "planLines": "docs/V2-8J-2-PLAN.md:123-133",
+      "sourceBasis": [
+        "src/projects/store.js:751-755 — generic SQLite query currently returns driver-decoded values",
+        "src/projects/turn-discovery-query.js:10-11 — SQL actual-byte caps and SQLite BLOB precedent",
+        "docs/TRAPS.md:2046-2057 — driver replacement can invalidate identity checks"
+      ]
+    },
+    {
+      "id": "clear-generation-and-corruption-recovery",
+      "assessment": "An absent-empty clear persists generation1/revision1, and every later clear advances both counters under exact current preconditions. With valid owner/catalog identity and policy, corrupt bodies or aggregate drift do not block deliberate deletion; clear parses no payload. Malformed or unknown-policy catalog metadata cannot be reconstructed, with canonical project deletion retained as the final deletion path. Old-generation registrations cannot be rebound automatically.",
+      "planLines": "docs/V2-8J-2-PLAN.md:160-181",
+      "sourceBasis": [
+        "src/projects/store.js:738-745 — parent lock/validation boundary for atomic generation checks",
+        "src/projects/store-postgres.js:741-748 — shared parent-row serialization",
+        "src/agent/schema.js:21-49 — existing generation-bearing child-domain/cascade precedent"
+      ]
+    },
+    {
+      "id": "paging-and-missing-source-semantics",
+      "assessment": "The cursor is a strict bounded position containing project/generation/revision/afterSourceId, never authorization. Binary/C keyset order and matching indexes bind page reads to one locked catalog snapshot, with at most25 metadata IDs and24 bodies. Stale continuation refuses. Well-formed foreign and unknown IDs resolve identically as missing inside the authorized project, without global existence lookup or URL fetching.",
+      "planLines": "docs/V2-8J-2-PLAN.md:149-172",
+      "sourceBasis": [
+        "src/projects/turn-discovery-query.js:9-26 — binary ordering and bounded keyset query precedent",
+        "src/projects/store.js:740 — no-admin project authorization in the runtime seam",
+        "src/projects/store-postgres.js:743-747 — locked exact-owner project read"
+      ]
+    },
+    {
+      "id": "identity-first-provenance-and-current-preconditions",
+      "assessment": "Semantic equality preserves the exact F/J1 hash tuple, including absent/empty publication equivalence. publishedAt remains a bounded label; retrievedAt keeps the accepted finite Date.parse/length semantics without conversion or freshness certification. Current-precondition exact repeats preserve the first stored body/provider/retrieval provenance and consume no new capacity. A stale successful-request replay is not a new idempotency or billing receipt.",
+      "planLines": "docs/V2-8J-2-PLAN.md:72-96",
+      "sourceBasis": [
+        "packages/model/source-identity.ts:4-7 — exact accepted identity tuple",
+        "src/agent/search-sources.js:68-70 — retrieval timestamp validation",
+        "src/agent/search-sources.js:83-102 — bounded publication label, normalization and immutable SourceRef construction",
+        "packages/tools/result.schema.json:791-843 — current strict web result vocabulary"
+      ]
+    },
+    {
+      "id": "preserve-project-delete-and-lock-policy",
+      "assessment": "New source operations have no admin bypass, while canonical project deletion keeps accepted owner/admin authority and atomically cascades source children. Cold schema initialization must cover deletion even before source use in the process. The bounded claim explicitly concerns data/query cardinality and tests; existing adapter lock waits remain unchanged. No Promise.race may report a timeout while a queued write can later commit, and no incidental H timeout/interface change is authorized.",
+      "planLines": "docs/V2-8J-2-PLAN.md:50-55,135-140,183-189",
+      "sourceBasis": [
+        "src/projects/store.js:106-115 — existing canonical owner/admin predicate",
+        "src/projects/store.js:429-444 — canonical SQLite delete transaction",
+        "src/projects/store-postgres.js:523-536 — canonical PostgreSQL owner/admin delete under parent lock",
+        "src/projects/store-postgres.js:152-173 — cold DDL initialization outside document transactions",
+        "src/projects/store-postgres.js:185-207,735-765 — current transaction has no per-operation lock/statement timeout",
+        "src/db.js:17-21 — SQLite5000ms busy timeout and enabled foreign-key enforcement"
+      ]
+    }
+  ],
+  "scopeAndLookAhead": [
+    "Registry tables, counters and source rows remain children of the existing canonical project; source operations change no deck revision, scene, history or H counters.",
+    "No automatic J1 registration, public HTTP/CLI/UI, model tool, provider context, page fetch, paper/file record, query/transcript storage or activation is included.",
+    "The source registry proves retained project-bound identity and resolution only. Stable snippet IDs are not factual verification, verified locators, retention receipts or revocation tokens.",
+    "Authoritative scenes have no citation attachment today; intent sourceRefs/evidenceRefs and semantic validation do not establish project existence. Legacy claim-citation refusal must remain.",
+    "Future citation/copy/locator work remains in the roadmap. Project-scoped IDs require explicit source rebind/reference remapping before source-aware copying; J2 does not silently copy sources or change present copy/history behavior."
+  ],
+  "futureBoundarySourceBasis": [
+    "packages/model/intent.schema.json:66,103 — semantic reference vocabulary only",
+    "packages/model/semantics.ts:1-6,61-71 — project-boundary existence and stable evidence union",
+    "src/projects/legacy-conversion.js:268 — current claim-citation conversion refusal",
+    "packages/projects/project-document.schema.json and packages/model/scene.schema.json — no authoritative citation-attachment contract",
+    "docs/ROADMAP.md#assistant-search-source-integrity and #assistant-semantic-creation — registry/locator/creation dependency ownership"
+  ],
+  "requiredImplementationEvidenceAfterApproval": "Use focused pure validation, actual configured temporary SQLite lifecycle/reopen/conflict and the same new registry contract on an owned isolated PostgreSQL backend with a two-connection parent-lock/clear/delete challenge. Include real corrupt bytes, catalog drift/orphans, safe-integer fences, capacity rollback, current-precondition noops and clear recovery. Missing PG is an unexecuted required backend gate, not a pass. Narrow affected checks, generated drift/typecheck and governance as applicable; no historical browser/native/bulk/model replay.",
+  "retainedLimits": [
+    "No new wall-clock transaction completion or cancellation guarantee; a later public integration must settle that contract before promising it.",
+    "Malformed catalog metadata may require canonical project deletion for final data removal; Version history cannot restore source clear.",
+    "No physical-media or external backend-log erasure promise. Backups keep their existing policy.",
+    "Standing BYOK locale, initial J1/I7 timing and inherited native/visual/I4 provenance are not reopened or relabeled."
+  ],
+  "humanDirection": "PENDING and required: approve explicit private web-snippet retention until deliberate source clear or canonical project deletion, or keep sources ephemeral and defer durable source-backed work. No earlier J1 query-disclosure approval supplies this distinct retention authorization.",
+  "implementationAccepted": false,
+  "executed": { "tests": 0, "services": 0, "databaseCalls": 0, "browserCalls": 0, "builds": 0, "modelCalls": 0, "searchCalls": 0, "generators": 0 },
+  "writes": "Only this independent readiness record; no runtime, state, roadmap, source, test or Git mutation by the reviewer.",
+  "stopPoint": "Ask the single human data-policy direction on the concrete reviewed contract. Retain accepted J1 state and perform no J2 implementation before approval. This readiness is not policy approval, runtime acceptance, deployment or permission for dependent scope."
+}
