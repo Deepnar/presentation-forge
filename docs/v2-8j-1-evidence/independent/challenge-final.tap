@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: one trusted capability cannot authorize concurrent invocations through separate runners
+ok 1 - one trusted capability cannot authorize concurrent invocations through separate runners
+  ---
+  duration_ms: 43.483605
+  type: 'test'
+  ...
+# Subtest: a valid search result plus final text cannot overflow the complete publication DTO
+ok 2 - a valid search result plus final text cannot overflow the complete publication DTO
+  ---
+  duration_ms: 8.638707
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 536.082297

@@ -1,0 +1,20 @@
+{
+  "implementationSha": "cff2e73bb079c25e72107c83275341e7682c93a8",
+  "command": "nice -n 10 node --test --test-reporter=tap docs/v2-8j-1-evidence/independent/challenges.test.mjs",
+  "exitCode": 1,
+  "timedOut": false,
+  "durationMs": 567,
+  "tests": {
+    "total": 2,
+    "pass": 1,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "sourceHashes": {
+    "packages/agent/research.ts": "7e8c5e98e374712d40998e1e078090d7e984025a15fe79dffea8dc4246555d04",
+    "docs/v2-8j-1-evidence/independent/challenges.test.mjs": "c459635162da11ed5d5c89de0e7b892bb41627d513e51cb79d5f6f123f6c0895"
+  },
+  "log": "docs/v2-8j-1-evidence/independent/challenge-fail-first.tap",
+  "backend": "framework-free injected fixtures only; no DB/model/network"
+}

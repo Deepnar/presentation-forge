@@ -1,0 +1,64 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-28",
+  "implementationSha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+  "acceptedBaseline": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+  "reviewedPacketSha": "deb2e202cc9e75dacb9e5524a06fb91a9b52736d",
+  "evidence": "docs/v2-8j-1-evidence/independent/review.md",
+  "plan": "docs/V2-8J-1-PLAN.md",
+  "evaluation": "docs/V2-8J-1-EVAL.md",
+  "assessment": "The approved headless inspect-only research entry coherently composes canonical scoped reads, explicit single-use query-disclosure capability, bounded SearchProvider dispatch and correlated continuation on both accepted wire families. Complete canonical request binding and shared capability consumption prevent same-ID scope substitution or cross-runner reuse. Base sessions and durable execution retain content-only authority. Source identity, accumulated ephemeral sources, cancellation, failure publication and output bounds preserve the approved boundary without public activation or persistence. Final exact source and retained focused evidence support acceptance; no blocking findings remain.",
+  "blockingFindings": [],
+  "resolvedFindings": [
+    "Independent fail-first execution demonstrated that a runner-local used flag allowed two concurrent successful invocations through separate factories. Private WeakMap state now shares capability consumption, atomically before the first await.",
+    "The same authority review identified that request ID/revision alone did not bind the granted request. The capability now captures the complete canonical request, refuses changed text/scope/reads/limits/deadline without spending, and tolerates JSON property order while retaining immutable snapshots."
+  ],
+  "independentlyExecuted": {
+    "final": {
+      "evidence": "docs/v2-8j-1-evidence/independent/challenge-final.json",
+      "tests": { "total": 2, "pass": 2, "fail": 0, "skip": 0, "cancelled": 0 },
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 616,
+      "cases": [
+        "Same-ID text/scope changes cannot spend the grant, and one capability cannot authorize concurrent conversations through separate runner factories.",
+        "Individually valid search sources plus final text exceeding the complete DTO budget fail without publishing sources or summary."
+      ]
+    },
+    "failFirst": {
+      "evidence": "docs/v2-8j-1-evidence/independent/challenge-fail-first.json",
+      "implementationSha": "cff2e73bb079c25e72107c83275341e7682c93a8",
+      "tests": { "total": 2, "pass": 1, "fail": 1, "skip": 0, "cancelled": 0 },
+      "exitCode": 1,
+      "durationMs": 567,
+      "initialSource": "docs/v2-8j-1-evidence/independent/challenges-initial-source.mjs"
+    },
+    "packetAudit": "docs/v2-8j-1-evidence/independent/packet-audit.json",
+    "executionScope": "Only two new nice10/watchdog framework-free injected cases; no implementation suite duplication, DB, HTTP, model, external search, GPU, browser, build, service or cleanup execution."
+  },
+  "implementationEvidenceInspected": {
+    "selectedTests": { "total": 153, "pass": 153, "fail": 0, "skip": 0, "cancelled": 0 },
+    "groups": { "research": 16, "sqliteLoopbackIntegration": 4, "graphAndDrift": 7, "directlyAffected": 120, "legacySchemaSelections": 2, "selectedGovernance": 4 },
+    "typecheckExitCode": 0,
+    "rootAllAttemptTotals": { "total": 185, "pass": 181, "fail": 3, "skip": 0, "cancelled": 1 },
+    "sourceApplicability": "552 captured paths audited across seven gates. The sole post-execution runtime-source delta for final new cases is an exactly verified type-erased assertion. Retained affected/schema cases have explicit unchanged-dependency/import/generated-schema applicability. Final changed source files match frozen Git bytes; eight named durable schema/runtime/preparation boundaries remain byte-identical to accepted baseline. No audit errors."
+  },
+  "exclusions": [
+    "No duplicate independent execution of the implementation suites or actual SQLite/loopback integration.",
+    "Old bulk/browser/build/native/renderer/benchmark and PostgreSQL/concurrency/fault matrices are unexecuted this slice, not green by implication. No corresponding UI/rendering/storage query/schema changed.",
+    "No live Auto/API/search/local inference, real account-spend/latency/usefulness/grounding qualification, source registry, hosted/Assistant activation, deployment or migration."
+  ],
+  "residualLimits": [
+    "The initial OpenAI integration cancellation retained no stage diagnostic; its cause remains unresolved. Later complete four-case execution passes with unchanged case time bound and diagnostics, without explaining the original timeout.",
+    "The initial TS2339 compiler failure has only a marked transcription/source snapshot; retained subsequent command failures and successful final typecheck remain explicit. Earlier raw backend-label errors are corrected in canonical records without relabeling execution.",
+    "Stable SourceRef IDs identify bounded normalized snippets, not factual support, full-page integrity, verified locators or prompt-injection resistance. Query logging/retention at a configured external backend remains outside this headless slice.",
+    "Capability consumption is host-instance memory. A fresh trusted object intentionally grants a fresh invocation; no cross-process durable external-effect idempotency or billing guarantee is claimed.",
+    "Standing BYOK locale, I7 initial timing and inherited native/visual/I4 provenance remain separate. Pre-existing API PID1723 is absent with unknown external lifecycle; root reports no action and no persistent service acquisition. This reviewer inspected cleanup evidence only and certifies no unrelated lifecycle cause."
+  ],
+  "waivers": [],
+  "stopPoint": "Accept only this exact J1 source, link acceptance metadata from this independent record, finish scoped origin/v2 documentation/evidence closeout and stop. Acceptance permits planning only; it does not activate research or authorize durable source storage, public integration, dependent implementation, paid infrastructure, deployment or migrations."
+}

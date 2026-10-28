@@ -1,0 +1,163 @@
+{
+  "implementationSha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+  "packetHead": "deb2e202cc9e75dacb9e5524a06fb91a9b52736d",
+  "gates": {
+    "research": {
+      "captured": 552,
+      "matching": 551,
+      "changed": [
+        "packages/agent/research.ts"
+      ],
+      "exitCode": 0,
+      "tests": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    "research-integration": {
+      "captured": 552,
+      "matching": 551,
+      "changed": [
+        "packages/agent/research.ts"
+      ],
+      "exitCode": 0,
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    "typecheck": {
+      "captured": 552,
+      "matching": 552,
+      "changed": [],
+      "exitCode": 0,
+      "tests": null
+    },
+    "governance": {
+      "captured": 552,
+      "matching": 551,
+      "changed": [
+        "packages/agent/research.ts"
+      ],
+      "exitCode": 0,
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    "affected": {
+      "captured": 552,
+      "matching": 545,
+      "changed": [
+        "docs/development-state.schema.json",
+        "packages/agent/research.ts",
+        "test/dev-protocol.test.js",
+        "test/v2-research-8j.test.js",
+        "test/v2-research-fixture.js",
+        "test/v2-research-sqlite-8j.test.js",
+        "tools/dev-protocol-check.mjs"
+      ],
+      "exitCode": 0,
+      "tests": {
+        "total": 120,
+        "pass": 120,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    "schema-boundaries": {
+      "captured": 552,
+      "matching": 545,
+      "changed": [
+        "docs/development-state.schema.json",
+        "packages/agent/research.ts",
+        "test/dev-protocol.test.js",
+        "test/v2-research-8j.test.js",
+        "test/v2-research-fixture.js",
+        "test/v2-research-sqlite-8j.test.js",
+        "tools/dev-protocol-check.mjs"
+      ],
+      "exitCode": 0,
+      "tests": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    "legacy-schema-selection": {
+      "captured": 552,
+      "matching": 545,
+      "changed": [
+        "docs/development-state.schema.json",
+        "packages/agent/research.ts",
+        "test/dev-protocol.test.js",
+        "test/v2-research-8j.test.js",
+        "test/v2-research-fixture.js",
+        "test/v2-research-sqlite-8j.test.js",
+        "tools/dev-protocol-check.mjs"
+      ],
+      "exitCode": 0,
+      "tests": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    }
+  },
+  "uniqueCapturedPathsHashed": 552,
+  "typeOnlyReplacementVerified": true,
+  "frozenSourcePaths": [
+    "docs/development-state.schema.json",
+    "packages/agent/provider.ts",
+    "packages/agent/research.ts",
+    "packages/model/source-identity.ts",
+    "packages/tools/executor.ts",
+    "packages/tools/request.generated.ts",
+    "packages/tools/request.schema.json",
+    "packages/tools/result.generated.ts",
+    "packages/tools/result.schema.json",
+    "packages/tools/session.ts",
+    "src/agent/search-sources.js",
+    "test/dev-protocol.test.js",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-research-8j.test.js",
+    "test/v2-research-fixture.js",
+    "test/v2-research-sqlite-8j.test.js",
+    "test/v2-runtime-8b.test.js",
+    "tools/dev-protocol-check.mjs"
+  ],
+  "unchangedDurableBoundaries": [
+    "packages/agent/run-plan.schema.json",
+    "packages/agent/run.schema.json",
+    "packages/agent/receipt.schema.json",
+    "packages/agent/provider-run-request.schema.json",
+    "packages/agent/conversation-request.schema.json",
+    "packages/agent/runtime.ts",
+    "packages/agent/provider-run.ts",
+    "packages/agent/turns.ts"
+  ],
+  "unchangedResearchImportLines": true,
+  "selectedLeafCount": 153,
+  "rootAllAttemptCounts": {
+    "total": 185,
+    "pass": 181,
+    "fail": 3,
+    "skip": 0,
+    "cancelled": 1
+  },
+  "errors": []
+}
