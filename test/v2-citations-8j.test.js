@@ -19,6 +19,17 @@ const withCitation = () => {const scenes=seed();scenes[0].citations=[record()];r
 const digest = async scenes => (await citationContentDigests(indexCitationTargets(scenes,[target()],true)))[0];
 const apply = (doc,op,extra={}) => doc.apply({id:'op-'+doc.status().revision,actor:'human',slideId:'s1',baseRevision:doc.status().revision,op,...extra});
 
+test('Citation lifecycle: fixed-format labels refuse literal trailing line feeds',async()=>{
+  for (const mutate of [c=>c.id+='\n',c=>c.source.id+='\n',c=>c.anchor.digest+='\n',c=>c.source.projectId+='\n']) {
+    const scene=withCitation()[0];mutate(scene.citations[0]);assert.equal((await validateScene(scene)).ok,false);
+  }
+  let called=false;
+  const backend={withCitationTransaction(){called=true;},withCitationReadTransaction(){called=true;}};
+  const service=createProjectCitations(backend),binding={id:'project',owner:'owner'};
+  const request={projectRevision:0,sourceGeneration:0,sourceRevision:0,citationIds:[cid(1)+'\n']};
+  assert.equal((await service.inspect(binding,request)).code,'invalid-request');assert.equal(called,false);
+});
+
 test('Citation lifecycle: strict scene shape and project-wide admission preserve unverified records',async()=>{
   const scenes=withCitation();assert.equal((await validateScene(scenes[0])).ok,true);
   for(const mutation of [c=>c.quote='private',c=>c.locator={kind:'snippet-utf8-v1',startByte:2,endByte:1},c=>c.source.generation=2**53,c=>c.id='cit_bad',c=>c.anchor.digest='bad']) {
