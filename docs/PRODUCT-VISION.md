@@ -83,8 +83,11 @@ providers. [V2-8F evidence](V2-8F-EVAL.md) qualifies the bounded local protocol;
 live relevance retains its roadmap gate. J1 independently accepts a separate
 headless, inspect-only canonical search conversation with explicit single-use
 query-disclosure grants and ephemeral normalized sources. This does not give the
-existing Assistant search access or verified citations; durable source integrity,
-research orchestration and semantic creation retain their roadmap gates.
+existing Assistant search access or verified citations. J2 independently accepts
+an owner-private project registry for explicitly selected normalized web snippets,
+retained until source clear or project deletion and preserved by chat clear and
+Version history. Citation attachment, verified locators/claim support, research
+orchestration and semantic creation retain their roadmap gates.
 V2-8H independently accepts bounded project-linked visible chat and durable atomic
 approval over the existing run queue, with owner-only read/export/clear and CLI
 parity. Saved chat does not automatically become provider context. The

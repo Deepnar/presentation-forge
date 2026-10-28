@@ -9037,10 +9037,12 @@ local inference. Only that separate transport correction is authorized; this aud
   agreed authority contract, retaining H generation/revision/approval bindings.
   Any public source integration must also specify transaction-wait/cancellation
   semantics; bounded payloads/cardinality alone do not bound parent-lock waits.
-  Next agree immutable project source registry/versions, retention/clear/delete,
-  owner-bound resolution and verified locator policy before storage changes.
-  Reuse F/J1 IDs without replacing legacy paths; add separate paper/project
-  adapters. Verify source existence/ownership and source-to-block/slide/export
+  Accepted J2 below supplies immutable owner-private web-snippet registration,
+  resolution and bounded lifecycle, retaining F/J1 IDs without replacing legacy
+  paths. Next agree revisioned citation attachment and source-to-block/slide/export
+  mappings, clear/missing-source and project-copy rebinding semantics, and verified
+  locator/claim-support policy before dependent implementation. Add separate
+  paper/project adapters under their own contracts. Verify source-to-block/slide/export
   mappings; distinguish claim support from matching IDs/numbers and retain
   unsupported/uncertain outcomes. Prompt-injection fixtures and eventual labeled
   live/human qualification remain required. No page-fetch/SSRF permission, vector
@@ -9081,35 +9083,47 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-project-source-registry"></a>
 
-  - [ ] **V2-8J-2 immutable project web-source registry — implementation approved.**
-    The2026-10-28 continuation prepares the next dependency from accepted
-    J1f161901 and entry HEADf84c015. [Proposed contract](V2-8J-2-PLAN.md)
-    defines explicit selected-source registration, immutable owner-bound identity/
-    resolution, bounded catalog paging, atomic storage/clear/delete and unchanged
-    deck/history/H authority on SQLite and PostgreSQL. No model calls or activation.
-    Recommend private normalized web snippets retained until explicit source clear
-    or project deletion; chat clear/Version history stay separate. No queries,
-    transcripts, full pages or automatic registration. This new data-handling/
-    retention policy needs explicit human approval. Independent
-    [READY_FOR_DIRECTION](reviews/V2-8J-2-plan-84e1582.json) reviews exact plan
-    51652e6 and resolves catalog corruption, byte decoding, clear recovery,
-    binary cursor, identity/provenance and inherited lock-wait ambiguities.
-    Human approved scoped retention and implementation on2026-10-28. No technical
-    planning/policy blocker remains; only the reviewed J2 contract is authorized.
-    Source attachment/verified locators/claim support, paper/file adapters, public
-    integration and source-aware project-copy remapping remain outside J2; the
-    later citation/creation contract must resolve those seams before use.
-    Offline runtime/schema/query implementation is authorized by that explicit
-    direction; no production migration, activation or dependent scope is authorized.
-    Source6d51cd4 now has selected57/57, typecheck0 and two independent actual-PG
-    challenges passing; exact-source decision is pending. A source-only PG error
-    bridge preserves deliberate refusals through rollback without changing H.
-    Fixture corrections preserve strict DTO/capacity assertions; final hash capture
-    resolves the early source-path omission. See the evaluation for all attempts.
+  - [x] **V2-8J-2 immutable project web-source registry — independently accepted.**
+    Human approved scoped retention and implementation on2026-10-28, pinned6416e1b
+    before runtime, after the separate technical
+    [readiness review](reviews/V2-8J-2-plan-84e1582.json). Frozen source6d51cd4 is
+    independently [accepted](reviews/V2-8J-2-6d51cd4.json) from J1f161901 and entry
+    HEADf84c015. [Contract](V2-8J-2-PLAN.md) and [evaluation](V2-8J-2-EVAL.md)
+    record explicit selected-source registration, immutable owner-bound identity/
+    resolution, bounded snapshot paging and atomic storage/clear/delete on actual
+    SQLite/PostgreSQL. Selected normalized snippets stay private until source clear
+    or canonical project deletion; chat clear and Version history preserve them.
+    Source clear is not history-restorable. Deck/history/H authority is unchanged;
+    no queries, transcripts, full pages or automatic research registration are added.
 
-  Dependency sequence after accepted J1: agree project source registry/retention/
-  resolution and verified locator boundaries before research-backed semantic
-  creation. Semantic tools retain deterministic compile/preservation/approval
+    Selected57/57, typecheck0 and independent actual-PG challenges2/2 pass, all
+    final0fail/skip/cancel. All root attempts107=95pass/12fail retain overlap and
+    the five corrected fixture errors/seven reproduced PostgreSQL refusal failures.
+    The source-only error bridge preserves original refusals through rollback
+    without changing H. Strict DTO/capacity assertions are preserved; explicit
+    null page limits refuse. Final source capture and reviewed list-only
+    applicability resolve the early source-path omission without rewriting old runs.
+    Owned PostgreSQL was removed once after saving/fsyncing the actual0-user-DB
+    catalog; independent absence and private-credential cleanup checks pass.
+    No blocking finding, required unexecuted gate or owned persistent service remains.
+
+    **Look-ahead.** Stable F/J1 source IDs and independent catalog generations
+    support later citation mapping without a second document. Source attachments,
+    verified locators/claim support, paper/file adapters, public integration and
+    source-aware copy rebinding remain separately gated. Public integration must
+    resolve inherited transaction-wait/cancellation semantics. No live model/search
+    call, production migration, activation or dependent implementation follows.
+
+    > **Learned.** Identity-equivalent repeats must preserve first retrieval
+    > provenance without spending capacity. Byte caps must precede strict decoding;
+    > metadata integrity does not certify unrequested bodies. Deliberate domain
+    > refusals must cross rollback before their meaning is restored. Bounded
+    > cardinality is not a transaction wall-clock bound.
+
+  Dependency sequence after accepted J2: agree revisioned citation attachment,
+  source-to-block/slide/export mappings, clear/copy semantics and verified locator/
+  claim-support boundaries before research-backed semantic creation. Semantic tools
+  retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
   parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning
   only, with no dependent implementation implied.

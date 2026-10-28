@@ -32,15 +32,29 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current implementation — J2 source registry
+## Latest accepted slice — J2 project web-source registry complete
 
-The2026-10-28 continuation prepares [J2](V2-8J-2-PLAN.md) from accepted J1;
+Human approved scoped retention/implementation on2026-10-28, pinned6416e1b before
+runtime. Frozen source6d51cd409945e94266e23596b57f925553e62e31 is independently
+[accepted](reviews/V2-8J-2-6d51cd4.json) from J1. Read [contract](V2-8J-2-PLAN.md),
+[evaluation](V2-8J-2-EVAL.md), state and HANDOFF;
 [the roadmap](ROADMAP.md#assistant-project-source-registry) owns scope/direction.
-Human approved scoped retention/implementation on2026-10-28 after technical
-readiness review. Read HANDOFF and the approved contract before coding or tests.
-No production migration/model call/activation; J1 remains accepted until J2 review.
+Selected57/57, typecheck0 and independent2/2 pass, with0fail/skip/cancel in the
+final selection. All root attempts107=95pass/12fail retain overlapping runs,
+five fixture errors and seven corrected PostgreSQL refusal-propagation failures.
+Early capture omissions and final list-only source applicability stay explicit.
 
-## Latest accepted slice — J1 headless canonical web research complete
+The headless owner-private registry retains explicitly selected web snippets until
+source clear/project deletion. Chat clear/history restore preserve sources; source
+clear is not history-restorable. No automatic J1 registration, H/host/Assistant
+research authority, citation attachment, verified locator/claim or public activation
+is added. Owned PostgreSQL was removed once after a saved/fsynced actual0 user
+database catalog; exact-ID absence/private-credential removal were independently
+verified. No owned service remains. No live model/API/search/GPU call or production
+migration occurred. J2 closeout is complete; acceptance permits planning only and
+later scope/authority lives in the roadmap.
+
+## Accepted predecessor — J1 headless canonical web research complete
 
 Human approved scoped query disclosure on2026-10-27. Frozen source
 f161901cf29bd7ebd2c12ef634a86cacf5f90ea3 is independently
@@ -51,8 +65,8 @@ fail-first1pass/1fail are retained with overlap/applicability, not erased. The i
 OpenAI timeout cause remains unresolved despite the later complete4/4 pass.
 
 Research is a separate granted headless entry. Base/durable/H/host/Assistant paths
-gain no search authority; no source persistence/public activation/model run is
-authorized. Private shared capability consumption and full canonical request
+gain no search authority; J1 itself adds no source persistence, public activation
+or model run. Private shared capability consumption and full canonical request
 binding close the review finding. Owned temporary SQLite/loopback fixtures and
 observers are closed; no persistent service was acquired. Earlier API1723 was
 untouched and is now absent with external lifecycle unknown. J1 closeout is

@@ -360,9 +360,10 @@ are outside acceptance. Later scope/authority is solely in
 [the roadmap](ROADMAP.md#assistant-search-source-integrity).
 
 
-J2's concrete web-source registry contract is technically READY_FOR_DIRECTION at
-plan51652e6 in [the independent review](reviews/V2-8J-2-plan-84e1582.json).
-Human approved the new private snippet retention/clear/delete policy and scoped
-implementation on2026-10-28. No planning/policy blocker remains; no model run or
-production activation is authorized.
-[The roadmap](ROADMAP.md#assistant-project-source-registry) owns scope and options.
+J2 is independently [accepted](reviews/V2-8J-2-6d51cd4.json) at6d51cd4 after
+human-approved private snippet retention/clear/delete implementation. Selected57/57,
+typecheck0 and independent2/2 pass; no J2 validation/review or owned-service blocker
+remains. [Evaluation](V2-8J-2-EVAL.md) retains the corrected failures, capture
+applicability and inherited lock-wait/erasure/provenance limits. No model run or
+production activation follows acceptance. Later scope/authority is solely in
+[the roadmap](ROADMAP.md#assistant-search-source-integrity).

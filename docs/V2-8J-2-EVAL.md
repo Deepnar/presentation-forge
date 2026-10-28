@@ -5,7 +5,9 @@ J1 **f161901cf29bd7ebd2c12ef634a86cacf5f90ea3**. Human approved scoped retention
 and implementation on2026-10-28, pinned6416e1b before runtime code. The approved
 [contract](V2-8J-2-PLAN.md), separate [readiness](reviews/V2-8J-2-plan-84e1582.json)
 and [roadmap](ROADMAP.md#assistant-project-source-registry) bound this work.
-Independent source review is pending; implementation evidence is not acceptance.
+Independent [ACCEPT](reviews/V2-8J-2-6d51cd4.json) names this exact source after
+reviewing the completed packet at9a8d119. Acceptance covers only the approved
+headless registry, with no blocking finding or required unexecuted gate.
 
 ## Implemented result
 
@@ -119,7 +121,7 @@ retained. The runner now preserves an aggregate failing exit while still collect
 selected files. No child failure was counted green. No compiler failure occurred.
 Selected affected checks found no regression in accepted J1 behavior.
 
-## Independent challenges and pending decision
+## Independent challenges and acceptance
 
 Separate /root/i8_source_review inspected the approved contract and source. Two
 new actual-PostgreSQL challenges ran once on0549daf:2/2pass,0fail/skip/cancel,
@@ -131,7 +133,8 @@ reviewer's unique database/pools were closed/dropped; initial and final user
 catalogs were both empty. [Independent evidence](v2-8j-2-evidence/independent/)
 records actual invocation SHA; it is not rewritten to the later null-list hunk.
 That hunk is source-reviewed and outside both challenge operations. Final exact-
-source ACCEPT/HOLD remains pending the complete packet.
+source [ACCEPT](reviews/V2-8J-2-6d51cd4.json) follows the complete packet audit;
+the original challenge execution SHA and applicability remain unchanged.
 
 ## Resources, cleanup and observations
 
@@ -167,7 +170,7 @@ verified locators or prompt-injection resistance. No query logs were added.
 
 Standing BYOK locale and initial J1/I7 timing remain separate and unrerun; inherited
 native/visual/I4 operational provenance is neither reconstructed nor waived.
-Implementation recommends acceptance of only this reviewed J2 boundary, subject
-to independent exact-source decision. Citation attachment/locators, public research
-orchestration and creation remain in the roadmap. Stop after review/docs/push;
+Independent acceptance covers only this reviewed J2 boundary and its documented
+limits. Citation attachment/locators, public research orchestration and creation
+remain in the roadmap. Stop after acceptance documentation and push;
 no activation, paid infrastructure, production migration or dependent code follows.

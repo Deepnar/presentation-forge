@@ -80,10 +80,16 @@ inspect-only canonical web_search requires a trusted single-use capability bound
 to the complete request, with finite queries/results and ephemeral normalized
 sources. Base content sessions and durable execution retain their earlier tool
 subsets; H/host/Assistant paths gain no research capability. Snippet identity does
-not establish verified claim support. No source/query/transcript persistence or
-public research activation is added. Saved chat does not automatically become
-provider context. Further host progress/scheduling, provider routing, durable
-source/locator integrity, research orchestration, live-provider qualification and
+not establish verified claim support. J1 itself adds no persistence or public
+research activation. The separate J2 headless project web-source registry is
+independently accepted at `6d51cd4`: explicitly selected normalized snippets remain
+owner-private until source clear or canonical project deletion. Chat clear and
+Version history preserve sources; source clear is not restored through history.
+Registration/resolution add no Assistant/H research authority or automatic provider
+context. Retained source identity does not establish verified locators or claims.
+Saved chat does not automatically become provider context. Further host progress/
+scheduling, provider routing, citation attachment/locator integrity, research
+orchestration, live-provider qualification and
 semantic creation remain in the
 [roadmap](docs/ROADMAP.md#v2-8-remaining). Resolve exact accepted
 scope through development-state.json and its independent review record.

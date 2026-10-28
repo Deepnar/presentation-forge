@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+    "sha": "6d51cd409945e94266e23596b57f925553e62e31",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8J-1-f161901.json"
+    "source": "docs/reviews/V2-8J-2-6d51cd4.json"
   },
   "implementationHead": {
     "sha": "6d51cd409945e94266e23596b57f925553e62e31",
-    "note": "J2 source frozen: selected57/57, typecheck0; first fixture5 and PostgreSQL bridge7 failures corrected and retained. Final storage capture and list-only applicability are explicit. Independent decision pending; owned fixture removed after saved actual0 catalog."
+    "note": "J2 independently accepted at frozen source: selected57/57, typecheck0, independent2/2; corrected fixture5/PG7 failures and source-capture applicability retained. Owned fixture removed after saved actual0 catalog; private credentials absent. Later commits are documentation/evidence only."
   },
   "activeMilestone": {
     "id": "V2-8J-2",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8J-2-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8J-2-6d51cd4.json",
+    "accepted": true
   },
   "validation": [
     {

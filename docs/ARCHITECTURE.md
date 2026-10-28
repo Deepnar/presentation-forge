@@ -2986,6 +2986,9 @@ state distinguish implemented scope, evidence and independent acceptance.
 
 ### V2-8J-2 immutable project web-source registry
 
+Independently [accepted](reviews/V2-8J-2-6d51cd4.json) at frozen source
+`6d51cd409945e94266e23596b57f925553e62e31`.
+
 `src/projects/sources.js` exposes headless inspect/register/resolve/list/clear over
 the canonical owner-checked project transaction. Explicitly selected normalized
 web snippets live in `v2_project_sources`; `v2_project_source_catalog` holds private
