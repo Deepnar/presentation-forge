@@ -5,7 +5,9 @@ J2 **6d51cd409945e94266e23596b57f925553e62e31**. Human approved the reviewed
 read-only foundation on2026-10-28, pinned8a01b6c before runtime changes. The
 [contract](V2-8J-3-PLAN.md), separate [readiness](reviews/V2-8J-3-plan-7321c5f.json)
 and [roadmap](ROADMAP.md#assistant-citation-reference-checks) bound this work.
-Independent exact-source implementation acceptance is pending.
+Independent [ACCEPT](reviews/V2-8J-3-edda5ec.json) names this exact source after
+auditing pushed packetfd720ba. No blocking finding or required unexecuted gate
+remains for this bounded slice.
 
 ## Implemented result and changed paths
 
@@ -141,8 +143,9 @@ actual initial/final user catalogs were empty. The
 [independent evidence](v2-8j-3-evidence/independent/) retains actual invocation
 bd14e39392c2c2b3b1be979a3af20d5aeec21669, a docs-only descendant of frozenedda5ec.
 Runtime/test bytes match; no result is relabeled as a different execution SHA.
-Final independent ACCEPT/HOLD awaits the complete pushed packet/cleanup audit.
-Root cannot self-accept. Only this read-only slice can be accepted;
+Final independent [ACCEPT](reviews/V2-8J-3-edda5ec.json) follows the complete
+pushed packet/cleanup audit; the actual challenge invocation remains unchanged.
+Acceptance covers only this read-only slice;
 target/source observations are not saved
 citations, claim verification, page/file/DOI integrity or injection qualification.
 They may become stale immediately after lock release. Existing SQLite/PG lock waits
@@ -154,7 +157,7 @@ change means no new screenshot/native fidelity claim. Standing BYOK locale, earl
 J1/I7 timing and inherited I4/native/visual operational provenance remain separate
 and unrerun. No live API/model/search/local inference/GPU call or activation ran.
 
-Implementation recommends acceptance of the approved J3 boundary after the final
-independent packet decision; owned cleanup and all required execution are complete. All further attachment/copy/export/creation
+The independent decision accepts the approved J3 boundary with these limits;
+owned cleanup and all required execution are complete. All further attachment/copy/export/creation
 scope lives in the roadmap. Stop after review, documentation and scoped origin/v2
 push; no dependent implementation, deployment or paid infrastructure follows.

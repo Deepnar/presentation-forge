@@ -86,7 +86,10 @@ query-disclosure grants and ephemeral normalized sources. This does not give the
 existing Assistant search access or verified citations. J2 independently accepts
 an owner-private project registry for explicitly selected normalized web snippets,
 retained until source clear or project deletion and preserved by chat clear and
-Version history. Citation attachment, verified locators/claim support, research
+Version history. J3 independently accepts headless checks of exact saved targets,
+retained sources and optional exact snippet-relative quote ranges in one snapshot;
+claim support remains not-assessed and no citation is attached. Citation attachment,
+non-snippet verified locators/claim support, research
 orchestration and semantic creation retain their roadmap gates.
 V2-8H independently accepts bounded project-linked visible chat and durable atomic
 approval over the existing run queue, with owner-only read/export/clear and CLI

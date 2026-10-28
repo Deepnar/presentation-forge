@@ -8918,7 +8918,7 @@ local inference. Only that separate transport correction is authorized; this aud
 |---|---|---|
 | P0 — complete | [Model transport resource bounds](#model-provider-stream-resource-bounds) | V2-8G independently accepted at f3e784a; qualified the read-loop/cleanup correction while preserving wire/error/usage/tool contracts. |
 | P0 — complete headless boundary | [Turn and approval ownership](#assistant-turn-approval-contract) | V2-8H independently accepted at22e7c97; durable bounded visible turns and atomic approval reuse the existing run queue. Hosted routes/UI remain in their own entry. |
-| P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | J1 canonical research and J2 private source registry are accepted. J3 read-only reference/locator checks are validated pending review before durable citation mapping and research-backed creation; no claim-verification or public activation is implied. |
+| P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | J1 canonical research and J2 private source registry are accepted. J3 read-only reference/locator checks are independently accepted before durable citation mapping and research-backed creation; no claim-verification or public activation is implied. |
 | P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
 | P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 transport and I2 headless worker independently accepted; authenticated submission is independently accepted at2ba82cb; host policy and exact wake are accepted; the existing-deck Assistant is independently accepted in I8; remaining capability/context/live qualification retains separate contracts. |
 | P0 basic / P1 distributed | [Trace and spend admission](#assistant-trace-budget) | Make context/tool/instruction provenance observable, preserve unknown usage, and prevent parallel requests/retries bypassing account allowances. |
@@ -9125,44 +9125,43 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-citation-reference-checks"></a>
 
-  - [ ] **V2-8J-3 headless citation-reference and snippet locator checks — implementation approved.**
-    The2026-10-28 continuation prepares this bounded prerequisite from accepted
-    J2 `6d51cd4` and entry HEAD `14aabf6`. [Proposed contract](V2-8J-3-PLAN.md)
-    recommends read-only exact saved slide/element and retained source checks in
-    one owner-checked document/catalog snapshot. Optional snippet-relative exact
-    quote ranges use explicit UTF-8 byte offsets; source retention/target existence/
-    locator match are separate facts and claim support stays not-assessed.
-    Reuse J2's transaction-local validators without nesting registry transactions
-    or widening H/J2 interfaces. The plan pins bounded group traversal, ambiguous
-    identity refusal, Unicode/surrogate behavior, strict DTOs and no partial output.
-    No new retained content, scene/schema/command/history/copy/export change,
-    HTTP/CLI/UI, provider context, model/search call or activation is proposed.
-    Selected pure/actual SQLite/PostgreSQL and affected J2 checks follow only after
-    direction, with measured admission and no old regression sweep.
-    Independent [READY_FOR_DIRECTION](reviews/V2-8J-3-plan-7321c5f.json) reviews
-    exact final plan `31ac753` from initial `7321c5f`, with no technical blocker.
-    It pins locator-result precedence and separate observations without product
-    execution. Human approved the read-only foundation first on2026-10-28;
-    pin that direction before runtime changes. Only this reviewed contract is
-    authorized. Frozen source `edda5ec` now has new pure7/SQLite5/PostgreSQL5,
-    affected J2 registry27 and boundary6 passing, plusselected governance2 and
-    typecheck0. All52 selected test executions pass once; no assertion/product
-    correction was required. State enum, aged admission and launcher preparation
-    issues are retained separately; no unexecuted child was labeled passing.
-    Independent new actual-PG challenges2/2 pass: competing save snapshot and
-    combined traversal ceiling. Owned cleanup saved/fsynced actual0-user-DB catalog,
-    removed the exact ID once and verified absence/private-credential deletion.
-    Final exact-source independent packet decision remains pending;
-    [evaluation](V2-8J-3-EVAL.md) records source applicability and limits.
-    Durable attachment, clear/copy remapping, native
-    presentation and verified claim support remain unresolved in this parent.
+  - [x] **V2-8J-3 headless citation-reference and snippet locator checks — independently accepted.**
+    Human approved the read-only foundation first on2026-10-28, pinned8a01b6c before
+    runtime, after separate [readiness](reviews/V2-8J-3-plan-7321c5f.json) of exact
+    plan31ac753. Frozen source `edda5ec` is independently
+    [accepted](reviews/V2-8J-3-edda5ec.json) from J2 `6d51cd4` and planning entry
+    HEAD `14aabf6`. [Contract](V2-8J-3-PLAN.md) and [evaluation](V2-8J-3-EVAL.md)
+    record exact saved slide/element, retained source and optional snippet-relative
+    UTF-8 quote checks in one owner/document/catalog snapshot. Target/source/locator
+    observations stay independent; claim support is always not-assessed. Existing
+    J2 read validators and canonical parent locking are reused without nested
+    transactions or wider source/H interfaces. No new retained content, attachment,
+    schema/command/history/copy/export/public/provider-context authority is added.
 
-    **Look-ahead.** The result is a snapshot observation, not stored source-to-block
-    mapping or attachment authority. Later citation writes must re-enter canonical
-    revision/catalog/approval authority; no quote/snippet is copied into history.
+    Required50/50 (new pure7/SQLite5/PostgreSQL5, affected J2 registry27, boundary6),
+    supplemental governance2/2 and typecheck0 pass. Root52selected product executions
+    ran once, all0fail/skip/cancel; no product/assertion correction was required.
+    State enum, aged admission and pre-child launcher errors remain separately
+    documented; no unexecuted test was labeled green. Independent new actual-PG
+    challenges2/2 pass on a docs-only descendant with identical runtime bytes:
+    competing SAVE snapshot coherence and the combined10000/10001 traversal bound.
+    Root cleanup saved/fsynced the actual0-user-DB catalog before one exact-ID
+    removal; independent absence/private-credential verification passed.
+    No blocking issue, required unexecuted gate or owned persistent service remains.
 
-  Dependency sequence after accepted J2: agree the bounded J3 reference/locator
-  foundation, then revisioned citation attachment,
+    **Look-ahead.** These are staleable snapshot observations, not saved
+    source-to-block mapping or attachment authority. Later writes must re-enter
+    canonical revision/catalog/approval authority. No quote/snippet enters history;
+    persistent citation attachment, clear/copy remapping, native presentation and
+    verified claim support remain separate contracts in this parent.
+
+    > **Learned.** Valid UTF-8 JSON may still contain escaped lone surrogates;
+    > encoding them can silently repair the evidence. Scalar validity must precede
+    > locator slicing. Unique scene shape is not unique live element identity,
+    > and per-slide traversal caps do not enforce a whole-request bound. A source
+    > match and an existing target still do not establish an attached citation.
+
+  Dependency sequence after accepted J3: agree revisioned citation attachment,
   source-to-block/slide/export mappings, clear/copy semantics and verified locator/
   claim-support boundaries before research-backed semantic creation. Semantic tools
   retain deterministic compile/preservation/approval

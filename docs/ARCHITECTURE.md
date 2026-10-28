@@ -3029,6 +3029,9 @@ project deletion, with existing backup/media limits. [Contract](V2-8J-2-PLAN.md)
 
 ### V2-8J-3 headless citation-reference observations
 
+Independently [accepted](reviews/V2-8J-3-edda5ec.json) at frozen source
+`edda5ec7c2105bebff4a429a04b3fbe5b09048b4`.
+
 `src/projects/citation-references.js` exposes `createCitationReferenceChecker(backend)`
 with one `check(binding, request)` method. The approved headless domain checks the
 current exact owner's saved slide/element targets and J2 retained sources in one

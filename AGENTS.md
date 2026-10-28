@@ -87,6 +87,12 @@ owner-private until source clear or canonical project deletion. Chat clear and
 Version history preserve sources; source clear is not restored through history.
 Registration/resolution add no Assistant/H research authority or automatic provider
 context. Retained source identity does not establish verified locators or claims.
+The J3 headless citation-reference checker is independently accepted at `edda5ec`:
+exact saved target/source and optional excerpt-relative UTF-8 quote checks share
+one owner/document/catalog snapshot. Target existence, retained source and locator
+match are separate observations; claim support stays not-assessed. Results attach
+nothing and grant no reusable approval. No source text enters scenes/history,
+provider context or a public surface through these checks.
 Saved chat does not automatically become provider context. Further host progress/
 scheduling, provider routing, citation attachment/locator integrity, research
 orchestration, live-provider qualification and

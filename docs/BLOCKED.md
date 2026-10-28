@@ -369,11 +369,11 @@ production activation follows acceptance. Later scope/authority is solely in
 [the roadmap](ROADMAP.md#assistant-search-source-integrity).
 
 
-J3's reviewed read-only foundation was explicitly approved on2026-10-28 and is
-implemented at frozenedda5ec. Required50/50 plusselected governance2/2 and typecheck0
-pass; no missing backend or product-validation blocker remains. Independent
-implementation packet decision is pending; new independent2/2 pass and owned
-cleanup saved actual0 before exact-ID removal/private credential deletion. The preparation
-metadata/admission/launcher errors are resolved and retained in
-[the evaluation](V2-8J-3-EVAL.md). All later authority remains in
-[the roadmap](ROADMAP.md#assistant-citation-reference-checks).
+J3 is independently [accepted](reviews/V2-8J-3-edda5ec.json) atedda5ec after
+human-approved read-only foundation implementation. Required50/50 plusselected
+governance2/2, independent2/2 and typecheck0 pass. No J3 validation/review or owned-
+service blocker remains; actual0 catalog was saved before exact-ID removal and
+private-credential deletion, with independent absence verification.
+[Evaluation](V2-8J-3-EVAL.md) retains preparation errors, source applicability,
+lock-wait/locator limits and exclusions. All later scope/authority is solely in
+[the roadmap](ROADMAP.md#assistant-search-source-integrity).

@@ -32,26 +32,28 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current implementation — J3 citation-reference checks
+## Latest accepted slice — J3 citation-reference checks complete
 
 Human approved the reviewed read-only foundation first on2026-10-28, pinned8a01b6c
-before runtime. Frozen sourceedda5ec7c2105bebff4a429a04b3fbe5b09048b4 has
-50required/50 plus2selected governance passing, typecheck0; exact-source independent
-implementation acceptance is pending. Read [contract](V2-8J-3-PLAN.md),
-[evaluation](V2-8J-3-EVAL.md), source manifest, state and HANDOFF. J2 remains accepted
-until a separate decision. Metadata/admission/launcher errors were corrected and
-retained; no product test failed or successful product check was repeated.
+before runtime. Frozen sourceedda5ec7c2105bebff4a429a04b3fbe5b09048b4 is independently
+[accepted](reviews/V2-8J-3-edda5ec.json) from J2. Read [contract](V2-8J-3-PLAN.md),
+[evaluation](V2-8J-3-EVAL.md), manifest, state and HANDOFF. Required50/50 plusselected
+governance2/2, typecheck0 and independent2/2 pass, all0fail/skip/cancel. Root product
+checks ran once. Metadata/admission/launcher preparation errors remain separate;
+no unavailable child or backend was counted passed. Invocation/source applicability
+and otherwise uncaptured unchanged package comparisons remain explicit.
 
 The headless checker observes exact saved targets, retained snippets and optional
 UTF-8 quote locators in one owner-bound snapshot. It attaches nothing and always
-reports claim support not-assessed. No retained content, source/scene/history/H
-write, public surface, model/search call, activation or render change. Independent actual-PG challenges2/2 pass on a docs-only descendant with the same
-runtime bytes. Owned PostgreSQL was removed once after a saved/fsynced actual0-user-
-DB catalog; exact-ID absence and temporary credential deletion passed. Final
-independent packet decision is pending; no owned service remains. Later scope/authority lives
-only in [the roadmap](ROADMAP.md#assistant-citation-reference-checks).
+reports claim support not-assessed. No new retention, scene/source/history/H write,
+public surface, provider context, model/search call, activation or render change.
+Owned PostgreSQL was removed once after a saved/fsynced actual0-user-DB catalog;
+exact-ID absence and temporary credential deletion were independently verified.
+No owned service or validation process remains. J3 closeout is complete; later
+scope/authority lives only in [the roadmap](ROADMAP.md#assistant-search-source-integrity).
+Acceptance permits planning only, not dependent implementation.
 
-## Latest accepted slice — J2 project web-source registry complete
+## Accepted predecessor — J2 project web-source registry complete
 
 Human approved scoped retention/implementation on2026-10-28, pinned6416e1b before
 runtime. Frozen source6d51cd409945e94266e23596b57f925553e62e31 is independently

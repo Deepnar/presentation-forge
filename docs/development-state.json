@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "6d51cd409945e94266e23596b57f925553e62e31",
+    "sha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8J-2-6d51cd4.json"
+    "source": "docs/reviews/V2-8J-3-edda5ec.json"
   },
   "implementationHead": {
     "sha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
-    "note": "J3 frozen:50required plus2selected governance pass once/typecheck0, independent2/2 new actual-PG challenges pass. No product failure; metadata/admission/launcher preparation failures retained. Actual0 catalog saved before exact-ID removal/private credential deletion. Final independent packet decision pending."
+    "note": "J3 independently accepted at frozen source:50required/50 and52selected/52 pass once, typecheck0, independent2/2 new actual-PG challenges pass. Preparation failures retained separately. Actual0 catalog saved before exact-ID removal/private credential deletion; no owned service remains. Later commits are documentation/evidence only."
   },
   "activeMilestone": {
     "id": "V2-8J-3",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8J-3-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8J-3-edda5ec.json",
+    "accepted": true
   },
   "validation": [
     {
