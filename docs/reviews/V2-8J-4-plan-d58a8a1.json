@@ -1,0 +1,85 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "plannedBy": "/root",
+  "reviewDate": "2026-10-28",
+  "initialPlanSha": "d58a8a1ee6a0bae2a2aae4df62acd29cdb049197",
+  "reviewedPlanSha": "bbfbf8ccc7694067c202ea8bc70f8f10dbc967fd",
+  "acceptedBaseline": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+  "planningEntrySha": "309ced20e1f72510a352e4bc769d2f69797acf94",
+  "plan": "docs/V2-8J-4-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-citation-lifecycle",
+  "assessment": "The revised contract is technically coherent and sufficiently bounded for explicit human architecture/data-handling direction. It proposes unverified scene-owned citation metadata and qualified headless operations, with complete lifecycle preservation and explicit containment of cited new-project creation/copy and native export. It does not claim metadata proves a prior attachment, source support or authority. All material review ambiguities are resolved; no technical planning blocker remains. Representation, retention and containment are still proposals, not approved implementation.",
+  "scopeAssessment": "This is a robust immediate lifecycle dependency after J3, while source-aware project copy, safe live-editor adoption and native citation presentation remain separate roadmap contracts. Gating cited copy/export avoids silently dropping or rebinding metadata and avoids new private-source disclosure. Existing uncited workflows remain in scope for compatibility; the unreproduced existing Save-as-new await risk is recorded separately rather than claimed fixed.",
+  "resolvedFindings": [
+    {
+      "issue": "Unscoped duplicate-tuple refusal conflicted with preserving an orphan's old target tuple during slide duplication.",
+      "resolution": "Tuple uniqueness is per containing scene; citation IDs remain project-wide unique. An orphan tuple may be preserved in another scene and remains scope-mismatched rather than retargeted or discarded.",
+      "resolvedAt": "e3eedbc76830c1e70cbda37ccbeaba71f91722c5"
+    },
+    {
+      "issue": "Current duplicateScene recursively remints element IDs but exposes no old-to-new map; the scene schema also permits absent kind-specific payloads.",
+      "resolution": "The final contract explicitly requires a cardinality-aware mapping alongside recursive ID reminting, deterministic fixed-format citation-ID allocation with deck-wide reservations, and explicit [kind,null] projections for absent kind payloads.",
+      "resolvedAt": "0c315e3f4cdb1a3bf2435d10ccdfa132ebd032c0"
+    },
+    {
+      "issue": "Denying only named citation commands would leave an actor:agent raw slide.insert metadata-supply path after schema extension.",
+      "resolution": "The final pin denies newly supplied/altered citation metadata in agent generic payload ingress, while ordinary edits preserve records, deterministic duplication uses engine-owned remapping and private canonical undo/redo restores exact snapshots. Existing H/tool authority stays closed.",
+      "resolvedAt": "bbfbf8ccc7694067c202ea8bc70f8f10dbc967fd"
+    }
+  ],
+  "technicalBasis": [
+    {
+      "topic": "Authoritative representation and every write boundary",
+      "assessment": "Optional bounded scene-owned records preserve one authoritative document. Shape/project validation covers engine initialization, inserted scenes and generic create/save/runtime-save/history restore in both adapters; source.projectId must equal the canonical document. Element-local fields remain invalid. Generic new-project creation rejects nonempty records before writes. No command-only admission assumption or source side document is introduced.",
+      "sourceBasis": ["packages/model/scene.schema.json", "packages/projects/document.js", "src/projects/store.js", "src/projects/store-postgres.js", "src/projects/runtime-document.js"]
+    },
+    {
+      "topic": "Unverified metadata, undo and private authority",
+      "assessment": "Generic same-project metadata may remain unresolved/stale/forged and never proves source existence, qualified attachment or support. This deliberately supports engine undo200 beyond durable recoverable payload20 pruning without a receipt ledger or restored source body. New qualification operations re-enter current exact-owner/project/catalog authority with no admin override; accepted admin project CRUD never acquires private-source resolution. Removal remains possible for missing/hidden/locked targets without source lookup.",
+      "sourceBasis": ["packages/model/engine.ts:MAX_HISTORY and restoreImages", "src/projects/history.js:MAX_RECOVERABLE_REVISIONS", "src/projects/sources.js", "src/projects/citation-references.js"]
+    },
+    {
+      "topic": "Atomic qualified headless operations",
+      "assessment": "Attach/replace/remove/inspect use fully captured strict requests and one canonical owner lock. Fresh attach requires exact current target, retained current-generation source and any transient exact scalar quote. Validated engine batches and canonical save/history share one commit; no-op replacement changes no counters, and history failure rolls back. Protected target/ancestor rules, complete output bounds, static errors and private refusal rollback are pinned without widening H or provider authority.",
+      "sourceBasis": ["src/projects/citation-references.js", "src/projects/source-read.js", "src/projects/store.js:withRuntimeTransaction", "src/projects/store-postgres.js:withProjectDomainTransaction", "packages/model/engine.ts"]
+    },
+    {
+      "topic": "Portable content anchors and honest observations",
+      "assessment": "A browser-safe versioned ordered content projection and WebCrypto digest avoid node:crypto imports into model/browser code. Exact JSON escaping preserves lone surrogates before UTF-8 encoding; payload absence/defaults, finite-number serialization and aggregate node/depth/byte budgets are explicit. Geometry/style/citation metadata does not get hashed as authored wording. Equality is merely current content versus stored hash, including for forged hashes; no trust flag or factual support follows. Saved ranges have no quote and can only be range-valid, never quote-matched.",
+      "sourceBasis": ["packages/model/source-identity.ts", "packages/model/scene.schema.json", "packages/model/engine.ts", "src/projects/snippet-locator.js"]
+    },
+    {
+      "topic": "Edit, duplication, recompile and restoration lifecycle",
+      "assessment": "Ordinary edits retain old records/anchors; element deletion leaves removable orphans, and slide deletion/undo/history preserve exact scene ownership semantics. Duplicate mappings are cardinality-aware; ambiguous/orphan/scope-mismatched targets never acquire accidental new matches. Recompile carries the scene array verbatim rather than following semanticRef fallback; detached scenes remain authoritative. Source clear never rewrites/restores scenes or sources and old generations cannot revive after identical re-registration.",
+      "sourceBasis": ["packages/model/commands.ts:duplicateScene", "packages/model/engine.ts:runPlaced and restoreImages", "packages/compiler/compile.js:recompileSlide", "src/projects/store.js:restoreRevisionInner", "src/projects/store-postgres.js:restoreRevision"]
+    },
+    {
+      "topic": "Copy/export containment and deferred surface direction",
+      "assessment": "Cited generic create/copy/import refuses atomically instead of dropping or inventing source IDs. Current SceneViewer copies unsaved scenes and only changes projectRef after await; source-aware rebinding and the unreproduced adoption race remain explicit future work. Renderer-level preflight refuses any nonempty citation array before visibility filtering/native byte generation for all callers, including hidden/orphan/stale metadata and admin stored export. No speaker notes or private URLs/snippets are disclosed. Uncited export keeps accepted behavior.",
+      "sourceBasis": ["app/web/src/components/SceneViewer.jsx:saveAsNewProject", "app/server/v2-projects-routes.js:stored native export", "packages/renderer-pptx/render.ts:preflightScenes and renderPptx", "packages/renderer-pptx/node.ts"]
+    }
+  ],
+  "focusedValidationAssessment": "After separate implementation direction, the plan calls for new pure schema/command/hash/lifecycle cases, shared actual SQLite/PostgreSQL ownership/atomic-history/clear/restore contracts, one bounded interleaving per backend, narrow affected tool/command/schema checks, central export refusal, typecheck and governance. It does not repeat old provider/browser/native/benchmark matrices or infer rendering quality from a refusal. Missing PostgreSQL remains unexecuted. Inventory must be pinned before execution; scope/evidence must be amended if new browser-visible behavior is needed.",
+  "outstandingTechnicalIssues": [],
+  "humanDirection": {
+    "status": "PENDING",
+    "requiredDecision": "Approve or revise the concrete scene-owned unverified metadata/history policy, fresh owner qualification and explicit cited-deck creation/copy/native-export containment before code.",
+    "notImplied": "Technical readiness approves no chosen representation, new retention/data handling, implementation, source-aware copying, notes/visible citation surface or later roadmap work. Accepted J3 remains the runtime baseline."
+  },
+  "implementationAccepted": false,
+  "executed": {
+    "productTests": 0,
+    "databaseCalls": 0,
+    "services": 0,
+    "browserCalls": 0,
+    "builds": 0,
+    "modelCalls": 0,
+    "searchCalls": 0,
+    "networkCalls": 0
+  },
+  "writes": "Only this independent planning review record. No runtime, source, tests, plan, roadmap, state or Git mutation.",
+  "stopPoint": "Commit the unchanged readiness record and request explicit human direction on this concrete J4 proposal. Stop before implementation; readiness is not acceptance or authorization of later copy/export/creation contracts."
+}
