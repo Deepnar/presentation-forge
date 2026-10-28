@@ -1942,6 +1942,16 @@ reusing it for project B can make an A-authorized clear delete B's rows. Test
 ordinary same-owner project switching across every public operation, including
 linked-run reads and approval. See the [V2-8H correction](V2-8H-EVAL.md).
 
+## Single-use permission must belong to the capability
+
+A consumed flag inside one runner protects only that runner. Two factories can
+otherwise use the same trusted grant concurrently. Capture private state keyed by
+the capability, consume synchronously before awaiting, and bind the full approved
+request rather than an ID callers can reuse with wider scope. Validate mismatches
+before consumption so refusal cannot spend the original permission. Cross-factory
+concurrency and same-ID changed text/scope are distinct checks. See the
+[V2-8J-1 correction](V2-8J-1-EVAL.md).
+
 ## Keep clock-boundary assertions independent of scheduler delay
 
 A150ms deadline can expire before test admission, and cold child bootstrap can
