@@ -66,8 +66,11 @@ nonempty half-open input ceiling8192; no saved quote. No unknown/null fields.
 Maximum128 records per scene,512 per project,2KiB UTF-8 JSON per record and1MiB
 aggregate citation JSON per project, within the existing project payload limit.
 Citation IDs are project-wide unique; exact duplicate target/source/generation/
-locator tuples refuse rather than silently merge. Empty arrays are accepted and
-preserved; removal of the last record uses absence canonically.
+locator tuples **within one containing scene** refuse rather than silently merge.
+The same tuple may occur in different scenes, including a preserved orphan after
+slide duplication; it never authorizes following a target out of its container.
+Empty arrays are accepted and preserved; removal of the last record uses absence
+canonically.
 
 Scene shape validation checks structural limits. Project validation additionally
 requires every `source.projectId` to equal the canonical document ID; there is no
