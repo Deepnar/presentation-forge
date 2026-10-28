@@ -810,3 +810,10 @@ export function withSourceTransaction(binding, job) {
     dialect: 'sqlite', doc: { id: tx.doc.id, revision: tx.doc.revision }, query: tx.query,
   })));
 }
+
+// Citation checks share the parent lock but receive no scene-write capability.
+export function withCitationReadTransaction(binding, job) {
+  return withRuntimeTransaction(binding, tx => job(Object.freeze({
+    dialect: 'sqlite', doc: tx.doc, query: tx.query,
+  })));
+}

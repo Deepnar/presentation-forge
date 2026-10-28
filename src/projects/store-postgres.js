@@ -811,13 +811,13 @@ export async function withRuntimeTransaction({ owner = null, id }, job) {
   }
 }
 
-export async function withSourceTransaction(binding, job) {
+async function withProjectDomainTransaction(binding, job, fullDocument) {
   let original, failed = false;
   try {
     return await withRuntimeTransaction(binding, async tx => {
       try {
         return await job(Object.freeze({ dialect: 'postgres',
-          doc: { id: tx.doc.id, revision: tx.doc.revision }, query: tx.query }));
+          doc: fullDocument ? tx.doc : { id: tx.doc.id, revision: tx.doc.revision }, query: tx.query }));
       } catch (error) {
         original = error; failed = true;
         // Throw through the canonical boundary so every mutation rolls back.
@@ -828,4 +828,13 @@ export async function withSourceTransaction(binding, job) {
     if (failed && error?.code === 'runtime-fenced') throw original;
     throw error;
   }
+}
+
+export function withSourceTransaction(binding, job) {
+  return withProjectDomainTransaction(binding, job, false);
+}
+
+// Citation checks share the parent lock but receive no scene-write capability.
+export function withCitationReadTransaction(binding, job) {
+  return withProjectDomainTransaction(binding, job, true);
 }
