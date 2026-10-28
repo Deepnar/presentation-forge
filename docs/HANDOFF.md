@@ -1,48 +1,60 @@
 # Presentation Forge handoff — 2026-10-28
 
-Branch `v2`, push `origin/v2` only. J3 is independently accepted at frozen source
-`edda5ec7c2105bebff4a429a04b3fbe5b09048b4`, from J2
-`6d51cd409945e94266e23596b57f925553e62e31`. Human approved the read-only foundation
-first, pinned8a01b6c before runtime. Separate reviewer /root/i8_source_review issued
-[ACCEPT](reviews/V2-8J-3-edda5ec.json) after auditing pushed packetfd720ba; root
-committed that unchanged decision/evidence at35af7b1. Read
-[contract](V2-8J-3-PLAN.md), [evaluation](V2-8J-3-EVAL.md), source manifest, state,
-CONTINUATION and [roadmap](ROADMAP.md#assistant-search-source-integrity).
-Later descendants contain only documentation/evidence.
+Branch `v2`, push `origin/v2` only. Runtime remains independently accepted J3
+`edda5ec7c2105bebff4a429a04b3fbe5b09048b4`, decision
+[ACCEPT](reviews/V2-8J-3-edda5ec.json), from J2
+`6d51cd409945e94266e23596b57f925553e62e31`. No J3 gate is pending.
+Read state, [J3 evaluation](V2-8J-3-EVAL.md), CONTINUATION, protocol and
+[active roadmap candidate](ROADMAP.md#assistant-citation-lifecycle).
 
-Required50/50: new pure7, actual SQLite5, actual PostgreSQL5, affected J2 registry27
-and boundary6. Supplemental governance2/2; typecheck exits0. Selected/all root test
-attempts52pass/0fail/0skip/0cancel ran once. Initial unsupported state enum, aged
-service-admission precondition and pre-child environment-key launcher failure are
-corrected and retained separately. Original execution logs/SHAs and final captured-
-byte/unchanged committed-package applicability remain explicit; no rerun is inferred.
+The continuation request authorized planning the next dependency. Proposed
+[J4 contract](V2-8J-4-PLAN.md) was pushed at d58a8a1 from planning entry
+`309ced20e1f72510a352e4bc769d2f69797acf94`; corrected plan e3eedbc pins tuple
+uniqueness per containing scene while citation IDs remain project-wide unique,
+so duplicate slides can preserve orphan metadata without retargeting it.
+Final plan bbfbf8c additionally pins sparse content projection, deterministic citation
+ID allocation and generic agent-ingress closure. Independent /root/i8_source_review
+issued [READY_FOR_DIRECTION](reviews/V2-8J-4-plan-d58a8a1.json) for exact full plan
+`bbfbf8ccc7694067c202ea8bc70f8f10dbc967fd`; root committed that stable record
+unchanged at `bd51ee3`. No technical planning blocker remains. No human direction
+has approved J4 metadata retention/architecture or its copy/export policy.
+State keeps accepted/active J3 unchanged and nextCandidate.authorized:false.
 
-Independent actual-PG challenges2/2 pass in868ms after fresh admission: a competing
-SAVE reached a real lock wait without splitting the read snapshot; combined
-10001-element traversal refused while10000 succeeded. Actual invocationbd14e39 is
-a docs-only descendant with identical frozen runtime/test bytes. The reviewer
-inspected six runtime hashes, twelve unchanged accepted boundaries and verbatim
-J2 read-function extraction, with no source defect or blocking finding.
+The concrete recommendation is scene-owned unverified IDs, source generation,
+optional byte ranges and content hashes, exact-owner headless attachment/removal/
+inspection, and exact command/undo/history/regeneration preservation. No new
+snippets/quotes/claims or stored support/approval. Citation-bearing new-project
+creation/copy and native export would refuse until separate approved contracts.
+Technical readiness is neither policy approval nor implementation acceptance.
+Ask human direction on the reviewed concrete policy, then stop before code while
+pending. Scope/dependencies live only in the roadmap, not this handoff.
 
-The headless checker observes exact saved targets, retained sources and optional
-exact snippet-relative UTF-8 quotes under one owner/document/catalog snapshot.
-Target existence, source retention and locator status remain separate; claim
-support is always not-assessed. Nothing is attached, retained anew, rendered,
-automatically registered, published or given provider/H/Assistant authority.
-Existing source/document/history/chat and adapter lock-wait semantics remain.
-Results can become stale after release and grant no reusable approval.
+Source inspection found Save-as-new copies live unsaved scenes and adopts an
+awaited response without fresh session/revision/pending-editor fences; future
+source-aware copy also needs rewritten live scene/undo identity. This remains an
+unreproduced race risk, recorded in the roadmap, not a product-test failure or
+permission to fix it in this planning pass. No runtime or architecture-as-built
+change is claimed. CONTRIBUTING's stale full-suite floor now follows the accepted
+focused-validation policy; roadmap parent wording now reflects accepted J3.
 
-Review databases/pools closed/dropped; SQLite fixtures removed. Root removed exact
-owned PostgreSQL2c6fd8aa48edfa0f654abb787475d98ffa5c80a7ee7e6a88d8425c21f7666674
-ONCE after a saved/fsynced actual0-user-DB catalog. Independent exact-ID absence
-and private-credential deletion are confirmed. No owned persistent service or
-validation process remains. Never recreate old I4/J2/J3 services or rerun their
-completed cleanup helpers; I4's unavailable historical catalog count stays unknown.
+This planning pass ran documentation/governance checks only. Product leaf tests:
+0 executed,0 pass/fail/skip/cancel; no runtime validation was required for prose.
+`npm run dev:protocol` reports0errors/0warnings; changed-document local links,
+Git whitespace, exact reviewed-plan bytes and unchanged runtime/test tree checked.
+No product/source/schema/test edits, database calls/services, browser/build/render,
+benchmark, model/API/search/local inference/GPU, migration or activation occurred.
+Runtime evidence remains J3 required50/50 plus supplemental governance2/2,
+independent new actual-PG2/2 and typecheck0, all0fail/skip/cancel; these are retained
+historical results, not newly executed. See its original manifest/evaluation for
+preparation errors, source applicability and exact logs. Standing BYOK locale,
+prior J1/I7 timing and native/visual/I4 provenance limits remain separate.
+
+No owned service or validation process remains. J3's exact owned PostgreSQL was
+removed once after a saved/fsynced actual0-user-DB catalog, with independent
+absence and private-credential verification. Never recreate old I4/J2/J3 services
+or repeat their cleanup helpers; I4's unavailable historical count stays unknown.
 
 Original `.agents/`, `PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md` and
 `PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md` remain untouched/untracked.
-No old J1/provider/browser/build/render/native/benchmark/bulk/broad-fault sweep,
-real API/model/search/local inference/GPU, production migration or activation ran.
-Standing BYOK locale, J1/I7 timing and native/visual/I4 provenance limits remain
-explicit. J3 is complete; stop after acceptance documentation and scoped push.
-Acceptance permits planning only; all later scope/authority lives in the roadmap.
+Root owns Git, validation admission and cleanup. Reuse the existing independent
+reviewer sparingly; no extra agents, services or runtime work for planning.

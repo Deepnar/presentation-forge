@@ -66,9 +66,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Revisioned citation attachment and source mapping contract",
+    "id": "V2-8J-4 revisioned citation metadata and lifecycle",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-search-source-integrity"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-lifecycle"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

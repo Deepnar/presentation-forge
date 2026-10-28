@@ -9178,6 +9178,10 @@ local inference. Only that separate transport correction is authorized; this aud
     contracts below; never silently strip metadata. Existing uncited flows remain.
     **Agree this architecture/data-retention and containment direction before code.**
     Planning/readiness is not implementation authorization or acceptance.
+    Independent [readiness](reviews/V2-8J-4-plan-d58a8a1.json) names exact final plan
+    `bbfbf8c` READY_FOR_DIRECTION after resolving tuple scope, target remapping,
+    sparse payload projection and generic agent-ingress closure. No technical
+    blocker remains; human direction is pending. No runtime tests or services ran.
 
     **Look-ahead.** Scene-owned records avoid another document; unverified metadata
     handles session undo200 beyond durable payload20 pruning without resurrecting

@@ -32,6 +32,23 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
+## Current planning — J4 citation metadata, direction pending
+
+J3 is complete and independently accepted. The next candidate is
+[J4](ROADMAP.md#assistant-citation-lifecycle); read its
+[proposed contract](V2-8J-4-PLAN.md) before any implementation. It proposes
+scene-owned unverified metadata with fresh owner/source qualification and exact
+edit/undo/history preservation. Cited new-project copying and native export would
+refuse until their separate roadmap contracts. This changes architecture and
+retained metadata beyond the approved J3 read-only scope: obtain explicit human
+direction on the concrete policy. Planning/readiness is not implementation
+authorization. State keeps J3 accepted and nextCandidate.authorized:false.
+No product checks, services, model/search calls or source changes run for planning.
+Independent [plan review](reviews/V2-8J-4-plan-d58a8a1.json), committed unchanged
+at `bd51ee3`, is READY_FOR_DIRECTION for exact plan `bbfbf8c`, with no technical
+blocker. Ask the human to approve/revise the concrete policy before code; review
+readiness cannot approve retention, representation, copy or export direction.
+
 ## Latest accepted slice — J3 citation-reference checks complete
 
 Human approved the reviewed read-only foundation first on2026-10-28, pinned8a01b6c
