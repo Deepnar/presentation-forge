@@ -1,0 +1,10 @@
+{
+  "id": "citation-postgres",
+  "kind": "runner-preflight",
+  "executionStarted": false,
+  "exitCode": null,
+  "tests": null,
+  "log": "docs/v2-8j-3-evidence/citation-postgres-attempt-1.tap",
+  "observedAtUtc": "2026-10-28T16:47:52.644614+00:00",
+  "issue": "Python environment adaptation created a tuple key; Popen refused before child creation. No PostgreSQL suite ran. Corrected to two explicit string keys. Empty original log retained; later attempt is separate."
+}

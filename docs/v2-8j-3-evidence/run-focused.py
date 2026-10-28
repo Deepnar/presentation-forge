@@ -23,7 +23,7 @@ for gate in sys.argv[1:]:
   for key in ['TEST_PG_URL','FORGE_PROJECTS_DATABASE_URL','FORGE_DB_PATH','FORGE_J2_TEST_PG_URL','FORGE_J3_TEST_PG_URL']:env.pop(key,None)
   if gate in ['citation-postgres','source-registry-regression']:
    private=json.loads(pathlib.Path(os.environ['FORGE_J3_PG_PRIVATE']).read_text())
-   env['FORGE_J2_TEST_PG_URL','FORGE_J3_TEST_PG_URL']=private['url']
+   env['FORGE_J2_TEST_PG_URL']=private['url'];env['FORGE_J3_TEST_PG_URL']=private['url']
   process=subprocess.Popen(command,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True,env=env)
   try: process.wait(timeout=55)
   except subprocess.TimeoutExpired: timed=True;os.killpg(process.pid,signal.SIGKILL);process.wait()
