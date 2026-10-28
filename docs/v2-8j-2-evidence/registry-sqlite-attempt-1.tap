@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: Registry SQLite: immutable lifecycle, provenance, ordered resolution and snapshot paging
+ok 1 - Registry SQLite: immutable lifecycle, provenance, ordered resolution and snapshot paging
+  ---
+  duration_ms: 66.876064
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: exact owner and local-owner isolation with no admin override
+ok 2 - Registry SQLite: exact owner and local-owner isolation with no admin override
+  ---
+  duration_ms: 10.962168
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: clear fences absent and populated generations without changing deck history or chat
+not ok 3 - Registry SQLite: clear fences absent and populated generations without changing deck history or chat
+  ---
+  duration_ms: 12.895794
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-sqlite-8j.test.js:12:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"invalid-request","message":"Provide a bounded source request with current project and catalog identity."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    snapshot (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:6:39)
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:41:19)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Registry SQLite: saved project revisions reject stale registration and history restore preserves sources
+ok 4 - Registry SQLite: saved project revisions reject stale registration and history restore preserves sources
+  ---
+  duration_ms: 10.134709
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: orphan and corrupted metadata fail closed while valid-catalog clear recovers body drift
+not ok 5 - Registry SQLite: orphan and corrupted metadata fail closed while valid-catalog clear recovers body drift
+  ---
+  duration_ms: 7.255378
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-sqlite-8j.test.js:12:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"invalid-request","message":"Provide a bounded source request with current project and catalog identity."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    snapshot (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:6:39)
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:58:19)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Registry SQLite: unknown policy and counter overflow refuse without resetting authority
+ok 6 - Registry SQLite: unknown policy and counter overflow refuse without resetting authority
+  ---
+  duration_ms: 8.294084
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: failed second insert rolls back the entire batch and catalog
+ok 7 - Registry SQLite: failed second insert rolls back the entire batch and catalog
+  ---
+  duration_ms: 7.250298
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: count and actual byte ceilings refuse whole batches with unchanged counters
+not ok 8 - Registry SQLite: count and actual byte ceilings refuse whole batches with unchanged counters
+  ---
+  duration_ms: 70.44251
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-sqlite-8j.test.js:12:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'capacity-exceeded'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'capacity-exceeded'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:95:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Registry SQLite: parent locking serializes clear against a stale in-flight registration
+ok 9 - Registry SQLite: parent locking serializes clear against a stale in-flight registration
+  ---
+  duration_ms: 8.26069
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: canonical project delete cascades sources even from a cold adapter process
+ok 10 - Registry SQLite: canonical project delete cascades sources even from a cold adapter process
+  ---
+  duration_ms: 122.804479
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: process reopen retains immutable source content
+ok 11 - Registry SQLite: process reopen retains immutable source content
+  ---
+  duration_ms: 173.381791
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: actual invalid UTF-8 cannot masquerade as a literal replacement character
+not ok 12 - Registry SQLite: actual invalid UTF-8 cannot masquerade as a literal replacement character
+  ---
+  duration_ms: 9.445811
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-sqlite-8j.test.js:12:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-sqlite-8j.test.js:35:10)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Registry SQLite: oversized stored TEXT and a leading BOM refuse without repairing bytes
+not ok 13 - Registry SQLite: oversized stored TEXT and a leading BOM refuse without repairing bytes
+  ---
+  duration_ms: 7.909134
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-sqlite-8j.test.js:12:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-sqlite-8j.test.js:45:12)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 8
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 863.851911
+# forge-test-file "test/v2-source-registry-sqlite-8j.test.js"

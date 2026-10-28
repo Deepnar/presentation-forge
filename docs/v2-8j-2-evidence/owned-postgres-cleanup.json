@@ -1,0 +1,8 @@
+{
+  "id": "0adefa5d41ae6e2add8534436bae8d8e42b1c217af6fd7aedc7da0eb059d4f7b",
+  "databasesBeforeStop": [],
+  "count": 0,
+  "atUtc": "2026-10-28T12:00:01.151898+00:00",
+  "procedure": "Saved and fsynced actual catalog before exact-ID removal. No inferred prior count.",
+  "exactIdAbsent": true
+}

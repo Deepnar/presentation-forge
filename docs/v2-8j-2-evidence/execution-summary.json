@@ -1,0 +1,174 @@
+{
+  "implementationSha": "6d51cd409945e94266e23596b57f925553e62e31",
+  "selectedFinalCounts": {
+    "total": 57,
+    "pass": 57,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "requiredTestLeaves": 34,
+  "additionalAffectedLeaves": 20,
+  "selectedGovernanceLeaves": 3,
+  "typecheckExitCode": 0,
+  "allRootAttempts": [
+    {
+      "id": "affected",
+      "exitCode": 0,
+      "durationMs": 1019,
+      "log": "docs/v2-8j-2-evidence/affected-attempt-1.tap",
+      "tests": {
+        "total": 20,
+        "pass": 20,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "governance",
+      "exitCode": 0,
+      "durationMs": 517,
+      "log": "docs/v2-8j-2-evidence/governance-attempt-1.tap",
+      "tests": {
+        "total": 3,
+        "pass": 3,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "registry-postgres",
+      "exitCode": 1,
+      "durationMs": 817,
+      "log": "docs/v2-8j-2-evidence/registry-postgres-attempt-1.tap",
+      "tests": {
+        "total": 10,
+        "pass": 3,
+        "fail": 7,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "registry-postgres",
+      "exitCode": 0,
+      "durationMs": 1018,
+      "log": "docs/v2-8j-2-evidence/registry-postgres-attempt-2.tap",
+      "tests": {
+        "total": 10,
+        "pass": 10,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "registry-postgres",
+      "exitCode": 0,
+      "durationMs": 1068,
+      "log": "docs/v2-8j-2-evidence/registry-postgres-attempt-3.tap",
+      "tests": {
+        "total": 10,
+        "pass": 10,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "registry-pure",
+      "exitCode": 0,
+      "durationMs": 216,
+      "log": "docs/v2-8j-2-evidence/registry-pure-attempt-1.tap",
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "registry-pure",
+      "exitCode": 0,
+      "durationMs": 216,
+      "log": "docs/v2-8j-2-evidence/registry-pure-attempt-2.tap",
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "registry-sqlite",
+      "exitCode": 1,
+      "durationMs": 918,
+      "log": "docs/v2-8j-2-evidence/registry-sqlite-attempt-1.tap",
+      "tests": {
+        "total": 13,
+        "pass": 8,
+        "fail": 5,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "registry-sqlite",
+      "exitCode": 0,
+      "durationMs": 869,
+      "log": "docs/v2-8j-2-evidence/registry-sqlite-attempt-2.tap",
+      "tests": {
+        "total": 13,
+        "pass": 13,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "registry-sqlite",
+      "exitCode": 0,
+      "durationMs": 818,
+      "log": "docs/v2-8j-2-evidence/registry-sqlite-attempt-3.tap",
+      "tests": {
+        "total": 13,
+        "pass": 13,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "schema-boundaries",
+      "exitCode": 0,
+      "durationMs": 867,
+      "log": "docs/v2-8j-2-evidence/schema-boundaries-attempt-1.tap",
+      "tests": {
+        "total": 7,
+        "pass": 7,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "id": "typecheck",
+      "exitCode": 0,
+      "durationMs": 1917,
+      "log": "docs/v2-8j-2-evidence/typecheck-attempt-1.log"
+    }
+  ],
+  "rootExecutionsIncludingOverlap": {
+    "total": 107,
+    "pass": 95,
+    "fail": 12,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentExecution": "Separate independent namespace; never added to root totals.",
+  "unexecuted": "Old bulk/browser/build/native/benchmark/broadfault/oldPG matrix and real model/API/search/GPU/activation."
+}

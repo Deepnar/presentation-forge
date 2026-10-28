@@ -1,0 +1,150 @@
+TAP version 13
+# Subtest: Research: canonical search is a strict subset of standalone F and base sessions refuse it
+ok 1 - Research: canonical search is a strict subset of standalone F and base sessions refuse it
+  ---
+  duration_ms: 23.580096
+  type: 'test'
+  ...
+# Subtest: Research: queued plans receipts and initial-read contracts still exclude network tools
+ok 2 - Research: queued plans receipts and initial-read contracts still exclude network tools
+  ---
+  duration_ms: 4.613014
+  type: 'test'
+  ...
+# Subtest: Research: missing forged and mutable grants never silently expand permission
+ok 3 - Research: missing forged and mutable grants never silently expand permission
+  ---
+  duration_ms: 13.002132
+  type: 'test'
+  ...
+# Subtest: Research: the whole request is captured and mismatches cannot spend or expand its grant
+ok 4 - Research: the whole request is captured and mismatches cannot spend or expand its grant
+  ---
+  duration_ms: 2.940025
+  type: 'test'
+  ...
+# Subtest: Research: research reads only granted semantics and retains sources after final text
+ok 5 - Research: research reads only granted semantics and retains sources after final text
+  ---
+  duration_ms: 2.65758
+  type: 'test'
+  ...
+# Subtest: Research: provider catalog cannot combine search and edit authority
+ok 6 - Research: provider catalog cannot combine search and edit authority
+  ---
+  duration_ms: 2.721455
+  type: 'test'
+  ...
+# Subtest: Research: edit scope authority arguments and executable requests refuse before work
+ok 7 - Research: edit scope authority arguments and executable requests refuse before work
+  ---
+  duration_ms: 1.220632
+  type: 'test'
+  ...
+# Subtest: Research: duplicate tool IDs refuse without a second search and search caps are aggregate
+ok 8 - Research: duplicate tool IDs refuse without a second search and search caps are aggregate
+  ---
+  duration_ms: 8.681864
+  type: 'test'
+  ...
+# Subtest: Research: search failure stops the invocation without retries or a success DTO
+ok 9 - Research: search failure stops the invocation without retries or a success DTO
+  ---
+  duration_ms: 1.98064
+  type: 'test'
+  ...
+# Subtest: Research: foreign forged and unsupported source bodies never reach provider continuation
+ok 10 - Research: foreign forged and unsupported source bodies never reach provider continuation
+  ---
+  duration_ms: 5.795465
+  type: 'test'
+  ...
+# Subtest: Research: repeated normalized identity keeps first retrieval provenance and counts returned rows
+ok 11 - Research: repeated normalized identity keeps first retrieval provenance and counts returned rows
+  ---
+  duration_ms: 2.362243
+  type: 'test'
+  ...
+# Subtest: Research: revocation or saved revision change during search blocks publication and later exchanges
+ok 12 - Research: revocation or saved revision change during search blocks publication and later exchanges
+  ---
+  duration_ms: 2.322407
+  type: 'test'
+  ...
+# Subtest: Research: cancelled non-cooperating model retains unknown usage and cannot dispatch late tools
+ok 13 - Research: cancelled non-cooperating model retains unknown usage and cannot dispatch late tools
+  ---
+  duration_ms: 2.492362
+  type: 'test'
+  ...
+# Subtest: Research: deadline and cancellation fence non-cooperating search without another exchange
+ok 14 - Research: deadline and cancellation fence non-cooperating search without another exchange
+  ---
+  duration_ms: 6.412321
+  type: 'test'
+  ...
+# Subtest: Research: provider context and search query callbacks cannot rewrite captured evidence
+ok 15 - Research: provider context and search query callbacks cannot rewrite captured evidence
+  ---
+  duration_ms: 1.663039
+  type: 'test'
+  ...
+# Subtest: Research: controlled search and parent deadlines bound non-cooperating callbacks and clean timers
+ok 16 - Research: controlled search and parent deadlines bound non-cooperating callbacks and clean timers
+  ---
+  duration_ms: 3.356357
+  type: 'test'
+  ...
+# Subtest: Research SQLite: openai-compatible model → actual search adapter → correlated continuation retains source without writes
+ok 17 - Research SQLite: openai-compatible model → actual search adapter → correlated continuation retains source without writes
+  ---
+  duration_ms: 106.930397
+  type: 'test'
+  ...
+# stage=bootstrap-start
+# stage=bootstrap-ready elapsedMs=42
+# stage=search-ready elapsedMs=47
+# stage=research-start
+# stage=research-finished outcome=research modelRequests=2 searchRequests=1
+# stage=test-abort modelRequests=2 searchRequests=1
+# Subtest: Research SQLite: anthropic model → actual search adapter → correlated continuation retains source without writes
+ok 18 - Research SQLite: anthropic model → actual search adapter → correlated continuation retains source without writes
+  ---
+  duration_ms: 30.794016
+  type: 'test'
+  ...
+# stage=bootstrap-start
+# stage=bootstrap-ready elapsedMs=11
+# stage=search-ready elapsedMs=12
+# stage=research-start
+# stage=research-finished outcome=research modelRequests=2 searchRequests=1
+# stage=test-abort modelRequests=2 searchRequests=1
+# Subtest: Research SQLite: foreign owner cannot reach a model or search even with an injected permissive callback
+ok 19 - Research SQLite: foreign owner cannot reach a model or search even with an injected permissive callback
+  ---
+  duration_ms: 12.425478
+  type: 'test'
+  ...
+# stage=bootstrap-start
+# stage=bootstrap-ready elapsedMs=9
+# stage=search-ready elapsedMs=9
+# Subtest: Research SQLite: a real human save during search refuses source publication and further model work
+ok 20 - Research SQLite: a real human save during search refuses source publication and further model work
+  ---
+  duration_ms: 20.461623
+  type: 'test'
+  ...
+# stage=bootstrap-start
+# stage=bootstrap-ready elapsedMs=7
+# stage=search-ready elapsedMs=7
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 969.309244
+# forge-test-file "test/v2-research-8j.test.js"
+# forge-test-file "test/v2-research-sqlite-8j.test.js"

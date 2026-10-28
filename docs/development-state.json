@@ -6,44 +6,50 @@
     "source": "docs/reviews/V2-8J-1-f161901.json"
   },
   "implementationHead": {
-    "sha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
-    "note": "Independent ACCEPT on exact J1 source: selected153/153, finaltypecheck0 and independent2/2. Initial failures/cancellation and source applicability retained. No public activation or dependent implementation authorized."
+    "sha": "6d51cd409945e94266e23596b57f925553e62e31",
+    "note": "J2 source frozen: selected57/57, typecheck0; first fixture5 and PostgreSQL bridge7 failures corrected and retained. Final storage capture and list-only applicability are explicit. Independent decision pending; owned fixture removed after saved actual0 catalog."
   },
   "activeMilestone": {
-    "id": "V2-8J-1",
-    "roadmapRef": "docs/ROADMAP.md#assistant-web-research-preparation",
-    "evalDoc": "docs/V2-8J-1-EVAL.md",
+    "id": "V2-8J-2",
+    "roadmapRef": "docs/ROADMAP.md#assistant-project-source-registry",
+    "evalDoc": "docs/V2-8J-2-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8J-1-f161901.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "research",
+      "id": "registry-pure",
       "status": "passed",
-      "evidence": "docs/v2-8j-1-evidence/research.json",
-      "reason": "16/16 new authority/budget/source/late-result cases; type-only final delta and exact applicability retained."
+      "evidence": "docs/v2-8j-2-evidence/registry-pure.json",
+      "reason": "4/4 strict inputs/capture; final exact source and complete hash capture."
     },
     {
-      "id": "research-integration",
+      "id": "registry-sqlite",
       "status": "passed",
-      "evidence": "docs/v2-8j-1-evidence/research-integration.json",
-      "reason": "4/4 actual owned temporary SQLite and loopback adapter cases on corrected full grants; initial3pass1cancel remains historical, cause unresolved."
+      "evidence": "docs/v2-8j-2-evidence/registry-sqlite.json",
+      "reason": "13/13 actual SQLite, byte corruption/reopen/cold delete; null-list hunk explicitly covered by pure check."
+    },
+    {
+      "id": "registry-postgres",
+      "status": "passed",
+      "evidence": "docs/v2-8j-2-evidence/registry-postgres.json",
+      "reason": "10/10 actual own isolated PG; rollback-preserving refusal correction, exact final storage snapshots."
     },
     {
       "id": "schema-boundaries",
       "status": "passed",
-      "evidence": "docs/v2-8j-1-evidence/schema-boundaries.json",
-      "reason": "7/7 graph/generated drift with unchanged import/schema/type applicability; see source manifest."
+      "evidence": "docs/v2-8j-2-evidence/schema-boundaries.json",
+      "reason": "7/7; package import/schema/type bytes unchanged since retained execution."
     },
     {
       "id": "typecheck",
       "status": "passed",
-      "evidence": "docs/v2-8j-1-evidence/typecheck.json",
-      "reason": "Final command exits0 on frozen source; prior TS2339/TS2352 failures retained separately."
+      "evidence": "docs/v2-8j-2-evidence/typecheck.json",
+      "reason": "Exit0; all final package TypeScript bytes match retained command."
     }
   ],
   "knownBlockers": [],
@@ -54,9 +60,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8J-2 immutable project web-source registry contract",
+    "id": "Canonical citation attachment and locator contract",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-project-source-registry"
+    "roadmapRef": "docs/ROADMAP.md#assistant-search-source-integrity"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

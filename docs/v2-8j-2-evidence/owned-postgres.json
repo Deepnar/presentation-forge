@@ -1,0 +1,11 @@
+{
+  "id": "0adefa5d41ae6e2add8534436bae8d8e42b1c217af6fd7aedc7da0eb059d4f7b",
+  "name": "forge-j2-validation-dc944c3d15",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "host": "127.0.0.1",
+  "port": 32768,
+  "privateStatePath": "/tmp/forge-j2-private-rid0o5g_.json",
+  "scope": "New isolated J2 fixture only; never old I4 or another project database. Temporary tmpfs storage, no production durability claim.",
+  "startedAtUtc": "2026-10-28T11:49:09.867722+00:00",
+  "initialDatabaseCatalog": []
+}

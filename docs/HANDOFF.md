@@ -1,38 +1,32 @@
 # Presentation Forge handoff — 2026-10-28
 
-Branch v2, origin/v2 only. V2-8J-1 is independently accepted at exact source
-f161901cf29bd7ebd2c12ef634a86cacf5f90ea3, from I8b9c2d20. Decision:
-reviews/V2-8J-1-f161901.json; reviewed packetdeb2e20. Human implementation/query-
-disclosure approval was pinneda9edeba before code. Read state, J1 contract/eval,
-CONTINUATION and ROADMAP.md#assistant-web-research-preparation. Later commits are
-scoped documentation/evidence only; the source SHA must not become a docs SHA.
+Branchv2, origin/v2 only. Human approved J2 selected private source retention and
+implementation, pinned6416e1b before runtime. Frozen pushed source
+6d51cd409945e94266e23596b57f925553e62e31 is validated pending independent decision;
+accepted baseline remains J1f161901. Read J2 contract/eval, state, CONTINUATION and
+ROADMAP.md#assistant-project-source-registry. Root cannot self-accept or advance.
 
-Selected153/153pass (new16, actualSQLite/loopback4, graph/types7, affected120,
-selectedoldschema2, selectedgovernance4),0fail/skip/cancel; finaltypecheck0.
-Independent final2/2pass and552-path/seven-gate audit has0errors. All root attempts
-185executions=181pass/3fail/0skip/1cancel overlap; independent failfirst1pass/1fail
-is separate. The initial OpenAI15sec cancellation cause remains unresolved;
-corrected complete4/4 passes without weakening the bound. Earlier fixture/compiler
-failures, marked initial transcription and exact source applicability remain.
+Selected57/57: pure4, actualSQLite13, actualPostgreSQL10, affectedJ1 20,
+graph/types7 and selectedgov3;0fail/skip/cancel. Typecheck0. Root attempts107=
+95pass/12fail/0skip/0cancel overlap. InitialSQLite5fixture failures and PG7deliberate-
+refusal wrapping failures are corrected without assertion weakening. Source-only
+PG bridge throws through rollback, then restores the privately captured error.
+Explicit null list limit now refuses before storage. Early hash omission caused
+one23case repeat after runner correction; final capture/applicability is retained.
 
-Independent grant reuse/scope findings are fixed with shared private consumption
-across factories and full canonical request binding before awaits. Base/durable/
-H/host/Assistant paths gain no research capability. Research sources/trace are
-ephemeral and unverified; no source/query/transcript persistence or public entry.
-Host execution remains default-off. No real model/API/search/local inference/GPU,
-browser/build/native/PG or old matrix ran; accepted unchanged evidence is reused.
+Independent2/2 actualPG challenges on0549daf pass; reviewed null-list-only delta
+is outside them. Reviewer /root/i8_source_review awaits completed packet for exact
+6d51cd4 ACCEPT/HOLD. No further product execution is planned absent a finding.
+Current source registry is headless: explicit selected web snippets, owner-only
+operations, independent catalog generations, bounded atomic lifecycle. No source
+attachment, verified locator/claim, J1 automatic registration, H/host/Assistant
+research capability, public surface or activation. Deck/history/chat remain intact.
 
-Read-only resource observers finished; temporary SQLite/loopback fixtures closed.
-No owned persistent service/database was acquired. Earlier pre-existing API1723
-was untouched; current absence has unknown external lifecycle. Original .agents/
-and two untracked master-prompt files preserved. Standing BYOK/I7/I4 operational/
-native/visual limits remain separate. Never recreate the removed I4 backend or
-infer its historical count.
-
-J1 acceptance/closeout are complete. Human explicitly approved scoped J2 private
-snippet retention and implementation on2026-10-28, after independent readiness
-at plan51652e6 in reviews/V2-8J-2-plan-84e1582.json. V2-8J-2-PLAN.md and
-ROADMAP.md#assistant-project-source-registry bound the active implementation.
-Only the owner-bound headless web registry, both storage adapters and focused
-new/affected offline checks are authorized. No models/search/UI/activation or
-production migration. J1 remains the accepted source until separate J2 review.
+Resource observers finished. Owned PostgreSQL exact0adefa5d... was removed ONCE
+after saved/fsynced actual0 user databases; exact ID absent and private credentials
+removed. SQLite/child fixtures closed. Never rerun the finisher or recreate the
+removed I4 backend; its historical count remains unavailable. Unrelated services/
+work and original .agents/ plus two untracked master-prompt files are untouched.
+Standing BYOK/J1/I7/native/visual/I4 limits remain explicit. No live model/API/search/
+local inference/GPU/old matrix/deployment ran. Stop after J2 review/docs/push;
+later direction/authority lives solely in the roadmap.

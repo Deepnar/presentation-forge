@@ -1,0 +1,35 @@
+TAP version 13
+# Subtest: Registry validation: canonical web identity and optional publication preserve accepted meaning
+ok 1 - Registry validation: canonical web identity and optional publication preserve accepted meaning
+  ---
+  duration_ms: 2.058537
+  type: 'test'
+  ...
+# Subtest: Registry validation: strict schema, hash, project, URL and retrieval checks reject forged fields
+ok 2 - Registry validation: strict schema, hash, project, URL and retrieval checks reject forged fields
+  ---
+  duration_ms: 0.468717
+  type: 'test'
+  ...
+# Subtest: Registry validation: invalid DTOs never enter storage or invoke accessors
+ok 3 - Registry validation: invalid DTOs never enter storage or invoke accessors
+  ---
+  duration_ms: 1.730176
+  type: 'test'
+  ...
+# Subtest: Registry validation: storage failures are sanitized and requests captured before the first await
+ok 4 - Registry validation: storage failures are sanitized and requests captured before the first await
+  ---
+  duration_ms: 0.285388
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 157.050495
+# forge-test-file "test/v2-source-registry-8j.test.js"

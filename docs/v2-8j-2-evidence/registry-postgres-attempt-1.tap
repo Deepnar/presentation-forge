@@ -1,0 +1,208 @@
+TAP version 13
+# Subtest: Registry PostgreSQL: immutable lifecycle, provenance, ordered resolution and snapshot paging
+not ok 1 - Registry PostgreSQL: immutable lifecycle, provenance, ordered resolution and snapshot paging
+  ---
+  duration_ms: 117.786749
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-postgres-8j.test.js:17:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'stale-catalog'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'stale-catalog'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:21:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: Registry PostgreSQL: exact owner and local-owner isolation with no admin override
+ok 2 - Registry PostgreSQL: exact owner and local-owner isolation with no admin override
+  ---
+  duration_ms: 15.180951
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: clear fences absent and populated generations without changing deck history or chat
+not ok 3 - Registry PostgreSQL: clear fences absent and populated generations without changing deck history or chat
+  ---
+  duration_ms: 11.521839
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-postgres-8j.test.js:17:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'stale-catalog'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'stale-catalog'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:36:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Registry PostgreSQL: saved project revisions reject stale registration and history restore preserves sources
+not ok 4 - Registry PostgreSQL: saved project revisions reject stale registration and history restore preserves sources
+  ---
+  duration_ms: 10.953792
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-postgres-8j.test.js:17:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'stale-project'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'stale-project'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:50:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Registry PostgreSQL: orphan and corrupted metadata fail closed while valid-catalog clear recovers body drift
+not ok 5 - Registry PostgreSQL: orphan and corrupted metadata fail closed while valid-catalog clear recovers body drift
+  ---
+  duration_ms: 7.787524
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-postgres-8j.test.js:17:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'invalid-state'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'invalid-state'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:57:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Registry PostgreSQL: unknown policy and counter overflow refuse without resetting authority
+not ok 6 - Registry PostgreSQL: unknown policy and counter overflow refuse without resetting authority
+  ---
+  duration_ms: 5.622806
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-postgres-8j.test.js:17:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'invalid-state'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'invalid-state'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:67:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Registry PostgreSQL: failed second insert rolls back the entire batch and catalog
+ok 7 - Registry PostgreSQL: failed second insert rolls back the entire batch and catalog
+  ---
+  duration_ms: 5.885576
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: count and actual byte ceilings refuse whole batches with unchanged counters
+not ok 8 - Registry PostgreSQL: count and actual byte ceilings refuse whole batches with unchanged counters
+  ---
+  duration_ms: 93.416863
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-postgres-8j.test.js:17:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'capacity-exceeded'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'capacity-exceeded'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:91:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Registry PostgreSQL: parent locking serializes clear against a stale in-flight registration
+not ok 9 - Registry PostgreSQL: parent locking serializes clear against a stale in-flight registration
+  ---
+  duration_ms: 14.824905
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-source-registry-postgres-8j.test.js:17:28'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'storage-unavailable'
+    - 'stale-catalog'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'stale-catalog'
+  actual: 'storage-unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-source-registry-contract.js:103:60)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Registry PostgreSQL: canonical project delete cascades sources even from a cold adapter process
+ok 10 - Registry PostgreSQL: canonical project delete cascades sources even from a cold adapter process
+  ---
+  duration_ms: 156.63716
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 3
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 776.447051
+# forge-test-file "test/v2-source-registry-postgres-8j.test.js"

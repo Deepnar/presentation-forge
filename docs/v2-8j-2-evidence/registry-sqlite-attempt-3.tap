@@ -1,0 +1,89 @@
+TAP version 13
+# Subtest: Registry SQLite: immutable lifecycle, provenance, ordered resolution and snapshot paging
+ok 1 - Registry SQLite: immutable lifecycle, provenance, ordered resolution and snapshot paging
+  ---
+  duration_ms: 46.129596
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: exact owner and local-owner isolation with no admin override
+ok 2 - Registry SQLite: exact owner and local-owner isolation with no admin override
+  ---
+  duration_ms: 9.199109
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: clear fences absent and populated generations without changing deck history or chat
+ok 3 - Registry SQLite: clear fences absent and populated generations without changing deck history or chat
+  ---
+  duration_ms: 11.062948
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: saved project revisions reject stale registration and history restore preserves sources
+ok 4 - Registry SQLite: saved project revisions reject stale registration and history restore preserves sources
+  ---
+  duration_ms: 9.422745
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: orphan and corrupted metadata fail closed while valid-catalog clear recovers body drift
+ok 5 - Registry SQLite: orphan and corrupted metadata fail closed while valid-catalog clear recovers body drift
+  ---
+  duration_ms: 9.075453
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: unknown policy and counter overflow refuse without resetting authority
+ok 6 - Registry SQLite: unknown policy and counter overflow refuse without resetting authority
+  ---
+  duration_ms: 8.768147
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: failed second insert rolls back the entire batch and catalog
+ok 7 - Registry SQLite: failed second insert rolls back the entire batch and catalog
+  ---
+  duration_ms: 6.759298
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: count and actual byte ceilings refuse whole batches with unchanged counters
+ok 8 - Registry SQLite: count and actual byte ceilings refuse whole batches with unchanged counters
+  ---
+  duration_ms: 60.577734
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: parent locking serializes clear against a stale in-flight registration
+ok 9 - Registry SQLite: parent locking serializes clear against a stale in-flight registration
+  ---
+  duration_ms: 7.792071
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: canonical project delete cascades sources even from a cold adapter process
+ok 10 - Registry SQLite: canonical project delete cascades sources even from a cold adapter process
+  ---
+  duration_ms: 130.981268
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: process reopen retains immutable source content
+ok 11 - Registry SQLite: process reopen retains immutable source content
+  ---
+  duration_ms: 161.123203
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: actual invalid UTF-8 cannot masquerade as a literal replacement character
+ok 12 - Registry SQLite: actual invalid UTF-8 cannot masquerade as a literal replacement character
+  ---
+  duration_ms: 8.249405
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: oversized stored TEXT and a leading BOM refuse without repairing bytes
+ok 13 - Registry SQLite: oversized stored TEXT and a leading BOM refuse without repairing bytes
+  ---
+  duration_ms: 9.417238
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 780.97999
+# forge-test-file "test/v2-source-registry-sqlite-8j.test.js"
