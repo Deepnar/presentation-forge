@@ -1,0 +1,10 @@
+✔ private callback refusal after a real insert preserves object identity and rolls back (144.427066ms)
+✔ registration captures owner, project, complete source and catalog request before awaiting storage (16.571836ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2833.145078

@@ -1,0 +1,93 @@
+{
+  "implementationSha": "6d51cd409945e94266e23596b57f925553e62e31",
+  "packetHead": "9a8d1195bfe4ced5a6e0e3f8488ab53994d70700",
+  "atUtc": "2026-10-28T12:04:42.214537+00:00",
+  "method": "Read-only scoped metadata/hash/Git/cleanup audit; no product execution",
+  "selected": {
+    "registry-pure": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "registry-sqlite": {
+      "total": 13,
+      "pass": 13,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "registry-postgres": {
+      "total": 10,
+      "pass": 10,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "schema-boundaries": {
+      "total": 7,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "affected": {
+      "total": 20,
+      "pass": 20,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "governance": {
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "rootTotalsIncludingOverlap": {
+    "total": 107,
+    "fail": 12,
+    "skip": 0,
+    "cancelled": 0,
+    "pass": 95
+  },
+  "frozenRuntimePaths": [
+    "packages/agent/research.ts",
+    "packages/tools/web-source.ts",
+    "src/projects/sources.js",
+    "src/projects/source-schema.js",
+    "src/projects/store.js",
+    "src/projects/store-postgres.js"
+  ],
+  "unchangedAcceptedBoundaries": [
+    "packages/model/source-identity.ts",
+    "packages/model/source.schema.json",
+    "packages/model/scene.schema.json",
+    "packages/tools/request.schema.json",
+    "packages/tools/result.schema.json",
+    "packages/agent/run-plan.schema.json",
+    "packages/agent/receipt.schema.json",
+    "packages/agent/turns.ts",
+    "src/agent/schema.js"
+  ],
+  "packetDeltaDocsOnly": true,
+  "independentChallenges": {
+    "total": 2,
+    "pass": 2,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "challengeInvocationSha": "0549daf6c61b6995698d01784ea4d75c73aedba6",
+  "sourceApplicability": "Only final runtime delta after independent challenges is absent-only list-limit default. Neither challenge uses list; original execution metadata retained.",
+  "cleanup": {
+    "rootRecordedActualUserDatabaseCount": 0,
+    "independentContainerAbsent": true,
+    "privateCredentialsAbsent": true
+  },
+  "errors": [],
+  "auditNote": "Comparison normalizes the local accumulator pass_ key to the finalized collector pass key; no execution or evidence count changed."
+}

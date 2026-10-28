@@ -1,0 +1,71 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "6d51cd409945e94266e23596b57f925553e62e31",
+  "acceptedBaseline": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+  "packetHead": "9a8d1195bfe4ced5a6e0e3f8488ab53994d70700",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-28",
+  "evidence": "docs/v2-8j-2-evidence/independent/review.md",
+  "contract": "docs/V2-8J-2-PLAN.md",
+  "humanDirection": "Scoped retention and implementation approved before runtime at 6416e1b49cf98f398aed1a6c68340ee60c28bb77; technical readiness alone did not authorize retention.",
+  "scope": "Explicit headless immutable owner-bound web-snippet registration, inspect/resolve/paging/clear and canonical-delete cascade in the configured SQLite/PostgreSQL project store, with strict shared F/J1 validation and unchanged deck/history/H authority.",
+  "assessment": "No blocking source or evidence issue remains. Exact-owner parent transactions, complete request capture, byte-capped fatal decoding, bounded catalog and selected-body checks, immutable first provenance, capacity/overflow refusal, snapshot paging and clear-generation fences satisfy the approved contract. The source-only PostgreSQL refusal bridge preserves canonical rollback and original deliberate domain errors without changing H error policy.",
+  "findings": [
+    {
+      "initialSource": "58de25451c1014df4ec45dc502915277deffca85",
+      "issue": "PostgreSQL wrapped private source refusals into generic storage errors.",
+      "status": "corrected",
+      "evidence": "docs/v2-8j-2-evidence/registry-postgres-attempt-1.tap",
+      "validation": "Root first PostgreSQL execution reproduced 3pass/7fail; corrected final10/10 and the independent real-write rollback/private-object-identity challenge pass."
+    }
+  ],
+  "retainedValidation": {
+    "selected": { "total": 57, "pass": 57, "fail": 0, "skip": 0, "cancelled": 0 },
+    "requiredTestLeaves": 34,
+    "components": { "pure": 4, "sqlite": 13, "postgres": 10, "affectedJ1": 20, "graphAndTypes": 7, "selectedGovernance": 3 },
+    "typecheckExitCode": 0,
+    "allRootAttemptsIncludingOverlap": { "total": 107, "pass": 95, "fail": 12, "skip": 0, "cancelled": 0 },
+    "evidence": "docs/v2-8j-2-evidence/execution-summary.json",
+    "provenance": "Early omitted src/projects/src/db hash capture is disclosed; final23 actual-storage cases and final pure4 capture all new paths. Earlier failed attempts remain unchanged. Final list-null correction is explicitly source-reviewed and covered by final pure validation; retained positive storage results are applicable rather than claimed reruns on final SHA."
+  },
+  "independentlyExecuted": {
+    "implementationSha": "0549daf6c61b6995698d01784ea4d75c73aedba6",
+    "backend": "Exact verified owned isolated PostgreSQL, unique temporary review database",
+    "tests": { "total": 2, "pass": 2, "fail": 0, "skip": 0, "cancelled": 0 },
+    "durationMs": 3070,
+    "challenges": [
+      "Real INSERT followed by opaque private callback refusal preserves exact error identity after rollback and leaves no source/catalog content.",
+      "Owner/project, source body/batch and document/catalog request mutations across an await cannot alter captured registration or foreign-owner refusal."
+    ],
+    "finalSourceApplicability": "Only later runtime delta defaults list.limit when absent instead of accepting null. Neither challenge calls list; original execution SHA/results are retained unchanged.",
+    "evidence": "docs/v2-8j-2-evidence/independent/challenge-final.json"
+  },
+  "independentlyInspected": [
+    "Approved contract, initial/final pushed source deltas, callback refusal and sanitization paths, adapter-bound SQL/DDL, owner locking, catalog/byte/identity/clear invariants, shared validation and public-surface closure.",
+    "Fresh EVAL/state/manifest/architecture/roadmap/handoff, selected raw execution evidence and failure corrections, final source applicability and scoped metadata/hash/count audit.",
+    "Six frozen runtime paths and nine unchanged accepted source/schema/H boundaries; documentation-only packet descendant.",
+    "Root actual-empty catalog cleanup record, independently observed exact owned-container absence and temporary private-credential removal."
+  ],
+  "cleanup": {
+    "reviewDatabaseDropped": true,
+    "reviewPoolsClosed": true,
+    "ownedContainerAbsent": true,
+    "temporaryPrivateCredentialsAbsent": true,
+    "rootRecordedActualUserDatabaseCount": 0,
+    "evidence": "docs/v2-8j-2-evidence/independent/packet-audit.json"
+  },
+  "residualLimits": [
+    "Data/query cardinality bounds introduce no new wall-clock deadline or cancellation guarantee; accepted adapter lock waits remain.",
+    "Metadata inspect does not certify unrequested payload content; malformed catalog authority can require canonical project deletion for recovery.",
+    "Source clear is not restored through Version history and provides no physical-media/backup/external-log erasure guarantee.",
+    "Stored snippet identity/ownership is not factual support, full-page integrity, verified locator or prompt-injection qualification.",
+    "Old bulk/browser/build/native/benchmark/broad-fault and historical PostgreSQL suites were excluded; unchanged evidence is reused. No real model/API/search/GPU call, public activation or production migration occurred.",
+    "Standing BYOK locale, prior J1/I7 initial timing and inherited I4/native/visual provenance limits remain separate and unrerun."
+  ],
+  "outstandingBlockingIssues": [],
+  "requiredUnexecutedGates": [],
+  "stopPoint": "Record this exact-source acceptance and close out J2 documentation/push. Acceptance permits planning only; public integration, source attachments/locators/copy remapping, paper/file adapters, live qualification and semantic creation require their own approved contracts."
+}
