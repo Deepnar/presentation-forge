@@ -40,6 +40,7 @@ import {
 import { canAccessProject } from "./store.js";
 
 import { validateImportRequest, replayImportedProject } from "../../packages/projects/import-request.js";
+import { sourceSchema } from "./source-schema.js";
 import { turnDiscoveryQuery } from './turn-discovery-query.js';
 
 export { canAccessProject };
@@ -150,7 +151,7 @@ const PROJECT_DDL = `
 `;
 
 async function ensureSchema(clientOrPool) {
-  await clientOrPool.query(PROJECT_DDL);
+  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres"));
 }
 
 // Schema is idempotent DDL and must never run inside a write
@@ -808,4 +809,10 @@ export async function withRuntimeTransaction({ owner = null, id }, job) {
   } catch (error) {
     throw storageUnavailable(error);
   }
+}
+
+export function withSourceTransaction(binding, job) {
+  return withRuntimeTransaction(binding, tx => job(Object.freeze({
+    dialect: 'postgres', doc: { id: tx.doc.id, revision: tx.doc.revision }, query: tx.query,
+  })));
 }

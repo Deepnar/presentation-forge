@@ -47,6 +47,7 @@ import {
 } from "./history.js";
 
 import { validateImportRequest, replayImportedProject } from "../../packages/projects/import-request.js";
+import { sourceSchema } from "./source-schema.js";
 import { turnDiscoveryQuery } from './turn-discovery-query.js';
 
 function storageFailure(error) {
@@ -75,6 +76,7 @@ function ensureSchema() {
       project_id TEXT NOT NULL
     );
   `);
+  db.exec(sourceSchema("sqlite"));
   ensureHistorySchema(db);
   return db;
 }
@@ -800,4 +802,11 @@ export async function withRuntimeTransaction({ owner = null, id }, job) {
       throw storageFailure(error);
     }
   });
+}
+
+// Source SQL uses the actual adapter, never an environment-selected decoder.
+export function withSourceTransaction(binding, job) {
+  return withRuntimeTransaction(binding, tx => job(Object.freeze({
+    dialect: 'sqlite', doc: { id: tx.doc.id, revision: tx.doc.revision }, query: tx.query,
+  })));
 }
