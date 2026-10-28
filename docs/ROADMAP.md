@@ -9139,7 +9139,10 @@ local inference. Only that separate transport correction is authorized; this aud
     HTTP/CLI/UI, provider context, model/search call or activation is proposed.
     Selected pure/actual SQLite/PostgreSQL and affected J2 checks follow only after
     direction, with measured admission and no old regression sweep.
-    This is planning only; technical review and human direction are pending.
+    Independent [READY_FOR_DIRECTION](reviews/V2-8J-3-plan-7321c5f.json) reviews
+    exact final plan `31ac753` from initial `7321c5f`, with no technical blocker.
+    It pins locator-result precedence and separate observations without product
+    execution. This is planning only; human bounded direction remains pending.
     Agree this foundation versus the larger authoritative attachment contract
     before writing runtime code. Durable attachment, clear/copy remapping, native
     presentation and verified claim support remain unresolved in this parent.

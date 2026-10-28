@@ -60,9 +60,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Canonical citation attachment and locator contract",
+    "id": "V2-8J-3 citation-reference and snippet locator checks",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-search-source-integrity"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-reference-checks"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

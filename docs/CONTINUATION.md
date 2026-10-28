@@ -32,6 +32,18 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
+## Current planning — J3 citation-reference checks
+
+The2026-10-28 continuation prepares [J3's bounded contract](V2-8J-3-PLAN.md) from
+accepted J2 and entry HEAD14aabf6. Final plan31ac753 is independently
+[READY_FOR_DIRECTION](reviews/V2-8J-3-plan-7321c5f.json), with no technical blocker;
+human scope direction is pending. It recommends one-
+snapshot read-only saved-target/source and snippet-relative quote checks before
+persistent attachment. No runtime/schema/surface change, product tests, new service,
+model/search call or activation has begun. The accepted baseline/active milestone
+stay J2; nextCandidate remains unauthorized. Scope and later dependencies live
+only in [the roadmap](ROADMAP.md#assistant-citation-reference-checks).
+
 ## Latest accepted slice — J2 project web-source registry complete
 
 Human approved scoped retention/implementation on2026-10-28, pinned6416e1b before
