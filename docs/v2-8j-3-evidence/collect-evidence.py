@@ -43,4 +43,12 @@ for gate,attempt in attempts.items():
  manifest['executions'][gate]={'invocationHead':invocation,'raw':f'docs/v2-8j-3-evidence/{gate}-attempt-{attempt}.json','runtimeAndTestHashesMatch':True,'uncapturedCommittedPackagePathsCompared':len(uncaptured)}
 write('source-manifest.json',manifest)
 write('execution-summary.json',{'implementationSha':FINAL,'acceptedBaseline':BASE,'requiredTests':50,'selectedIncludingGovernance':totals,'allRootTestAttempts':totals,'typecheckExitCode':0,'preflightAttemptsNotTestExecutions':['docs/v2-8j-3-evidence/initial-observations.json','docs/v2-8j-3-evidence/citation-postgres-attempt-1.json'],'exclusions':plan['excluded'],'countNote':'No product test failure, skip, cancellation or repeated successful product execution. Initial metadata/admission/launcher failures are retained separately, not counted as passed tests.'})
+independent=OUT/'independent/challenge-final.json'
+if independent.exists():
+ review=json.loads(independent.read_text());assert review['exitCode']==0 and not review['timedOut']
+ assert review['tests']=={'total':2,'pass':2,'fail':0,'skip':0,'cancelled':0}
+ for p in runtime:assert review['sourceHashes'][p]==manifest['runtimeHashes'][p]
+ summary=read('execution-summary.json')
+ summary['independentChallenges']={'tests':review['tests'],'invocationHead':review['implementationSha'],'durationMs':review['durationMs'],'evidence':'docs/v2-8j-3-evidence/independent/challenge-final.json','applicability':'Actual invocation is a documentation-only descendant; six captured runtime hashes match frozen source. These two checks are separate from root52, not repeats of the root suite.'}
+ write('execution-summary.json',summary)
 print(json.dumps({'implementationSha':FINAL,'selected':totals,'requiredTests':50,'typecheckExitCode':0}))

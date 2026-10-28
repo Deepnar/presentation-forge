@@ -22,5 +22,18 @@
     "docs/v2-8j-3-evidence/citation-postgres-attempt-1.json"
   ],
   "exclusions": "No old J1/provider/browser/build/native/benchmark/bulk/fault matrix or live API/model/search/GPU/activation. Missing PostgreSQL is unexecuted.",
-  "countNote": "No product test failure, skip, cancellation or repeated successful product execution. Initial metadata/admission/launcher failures are retained separately, not counted as passed tests."
+  "countNote": "No product test failure, skip, cancellation or repeated successful product execution. Initial metadata/admission/launcher failures are retained separately, not counted as passed tests.",
+  "independentChallenges": {
+    "tests": {
+      "total": 2,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "invocationHead": "bd14e39392c2c2b3b1be979a3af20d5aeec21669",
+    "durationMs": 868,
+    "evidence": "docs/v2-8j-3-evidence/independent/challenge-final.json",
+    "applicability": "Actual invocation is a documentation-only descendant; six captured runtime hashes match frozen source. These two checks are separate from root52, not repeats of the root suite."
+  }
 }
