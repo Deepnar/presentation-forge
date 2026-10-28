@@ -1,0 +1,53 @@
+TAP version 13
+# Subtest: Citation pure: exact scalar UTF-8, BOM and supplementary boundaries
+ok 1 - Citation pure: exact scalar UTF-8, BOM and supplementary boundaries
+  ---
+  duration_ms: 0.824331
+  type: 'test'
+  ...
+# Subtest: Citation pure: locator precedence never repairs surrogates or assesses support
+ok 2 - Citation pure: locator precedence never repairs surrogates or assesses support
+  ---
+  duration_ms: 0.237473
+  type: 'test'
+  ...
+# Subtest: Citation pure: invalid complete DTOs refuse before storage or accessor execution
+ok 3 - Citation pure: invalid complete DTOs refuse before storage or accessor execution
+  ---
+  duration_ms: 1.216669
+  type: 'test'
+  ...
+# Subtest: Citation pure: exact targets include group children and observe ambiguity without inference
+ok 4 - Citation pure: exact targets include group children and observe ambiguity without inference
+  ---
+  duration_ms: 1.437287
+  type: 'test'
+  ...
+# Subtest: Citation pure: node/depth budgets refuse the whole result rather than stop at first match
+ok 5 - Citation pure: node/depth budgets refuse the whole result rather than stop at first match
+  ---
+  duration_ms: 2.547805
+  type: 'test'
+  ...
+# Subtest: Citation pure: complete requests and adapter method are captured before await
+ok 6 - Citation pure: complete requests and adapter method are captured before await
+  ---
+  duration_ms: 0.381986
+  type: 'test'
+  ...
+# Subtest: Citation pure: backend/domain refusals are static and publish no partial observations
+ok 7 - Citation pure: backend/domain refusals are static and publish no partial observations
+  ---
+  duration_ms: 0.342748
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 194.240915
+# forge-test-file "test/v2-citation-references-8j.test.js"

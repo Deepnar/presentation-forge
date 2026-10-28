@@ -1,0 +1,175 @@
+TAP version 13
+# Subtest: Registry validation: canonical web identity and optional publication preserve accepted meaning
+ok 1 - Registry validation: canonical web identity and optional publication preserve accepted meaning
+  ---
+  duration_ms: 2.026737
+  type: 'test'
+  ...
+# Subtest: Registry validation: strict schema, hash, project, URL and retrieval checks reject forged fields
+ok 2 - Registry validation: strict schema, hash, project, URL and retrieval checks reject forged fields
+  ---
+  duration_ms: 0.468059
+  type: 'test'
+  ...
+# Subtest: Registry validation: invalid DTOs never enter storage or invoke accessors
+ok 3 - Registry validation: invalid DTOs never enter storage or invoke accessors
+  ---
+  duration_ms: 1.73547
+  type: 'test'
+  ...
+# Subtest: Registry validation: storage failures are sanitized and requests captured before the first await
+ok 4 - Registry validation: storage failures are sanitized and requests captured before the first await
+  ---
+  duration_ms: 0.279121
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: immutable lifecycle, provenance, ordered resolution and snapshot paging
+ok 5 - Registry PostgreSQL: immutable lifecycle, provenance, ordered resolution and snapshot paging
+  ---
+  duration_ms: 108.805236
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: exact owner and local-owner isolation with no admin override
+ok 6 - Registry PostgreSQL: exact owner and local-owner isolation with no admin override
+  ---
+  duration_ms: 9.705648
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: clear fences absent and populated generations without changing deck history or chat
+ok 7 - Registry PostgreSQL: clear fences absent and populated generations without changing deck history or chat
+  ---
+  duration_ms: 23.908512
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: saved project revisions reject stale registration and history restore preserves sources
+ok 8 - Registry PostgreSQL: saved project revisions reject stale registration and history restore preserves sources
+  ---
+  duration_ms: 11.986952
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: orphan and corrupted metadata fail closed while valid-catalog clear recovers body drift
+ok 9 - Registry PostgreSQL: orphan and corrupted metadata fail closed while valid-catalog clear recovers body drift
+  ---
+  duration_ms: 16.47461
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: unknown policy and counter overflow refuse without resetting authority
+ok 10 - Registry PostgreSQL: unknown policy and counter overflow refuse without resetting authority
+  ---
+  duration_ms: 9.982246
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: failed second insert rolls back the entire batch and catalog
+ok 11 - Registry PostgreSQL: failed second insert rolls back the entire batch and catalog
+  ---
+  duration_ms: 5.068747
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: count and actual byte ceilings refuse whole batches with unchanged counters
+ok 12 - Registry PostgreSQL: count and actual byte ceilings refuse whole batches with unchanged counters
+  ---
+  duration_ms: 179.760663
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: parent locking serializes clear against a stale in-flight registration
+ok 13 - Registry PostgreSQL: parent locking serializes clear against a stale in-flight registration
+  ---
+  duration_ms: 16.314428
+  type: 'test'
+  ...
+# Subtest: Registry PostgreSQL: canonical project delete cascades sources even from a cold adapter process
+ok 14 - Registry PostgreSQL: canonical project delete cascades sources even from a cold adapter process
+  ---
+  duration_ms: 151.685911
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: immutable lifecycle, provenance, ordered resolution and snapshot paging
+ok 15 - Registry SQLite: immutable lifecycle, provenance, ordered resolution and snapshot paging
+  ---
+  duration_ms: 51.873423
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: exact owner and local-owner isolation with no admin override
+ok 16 - Registry SQLite: exact owner and local-owner isolation with no admin override
+  ---
+  duration_ms: 11.529566
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: clear fences absent and populated generations without changing deck history or chat
+ok 17 - Registry SQLite: clear fences absent and populated generations without changing deck history or chat
+  ---
+  duration_ms: 15.520806
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: saved project revisions reject stale registration and history restore preserves sources
+ok 18 - Registry SQLite: saved project revisions reject stale registration and history restore preserves sources
+  ---
+  duration_ms: 11.495804
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: orphan and corrupted metadata fail closed while valid-catalog clear recovers body drift
+ok 19 - Registry SQLite: orphan and corrupted metadata fail closed while valid-catalog clear recovers body drift
+  ---
+  duration_ms: 11.537225
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: unknown policy and counter overflow refuse without resetting authority
+ok 20 - Registry SQLite: unknown policy and counter overflow refuse without resetting authority
+  ---
+  duration_ms: 10.611223
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: failed second insert rolls back the entire batch and catalog
+ok 21 - Registry SQLite: failed second insert rolls back the entire batch and catalog
+  ---
+  duration_ms: 8.844422
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: count and actual byte ceilings refuse whole batches with unchanged counters
+ok 22 - Registry SQLite: count and actual byte ceilings refuse whole batches with unchanged counters
+  ---
+  duration_ms: 91.1026
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: parent locking serializes clear against a stale in-flight registration
+ok 23 - Registry SQLite: parent locking serializes clear against a stale in-flight registration
+  ---
+  duration_ms: 11.831943
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: canonical project delete cascades sources even from a cold adapter process
+ok 24 - Registry SQLite: canonical project delete cascades sources even from a cold adapter process
+  ---
+  duration_ms: 146.463431
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: process reopen retains immutable source content
+ok 25 - Registry SQLite: process reopen retains immutable source content
+  ---
+  duration_ms: 167.362992
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: actual invalid UTF-8 cannot masquerade as a literal replacement character
+ok 26 - Registry SQLite: actual invalid UTF-8 cannot masquerade as a literal replacement character
+  ---
+  duration_ms: 8.032846
+  type: 'test'
+  ...
+# Subtest: Registry SQLite: oversized stored TEXT and a leading BOM refuse without repairing bytes
+ok 27 - Registry SQLite: oversized stored TEXT and a leading BOM refuse without repairing bytes
+  ---
+  duration_ms: 9.044929
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1866.071853
+# forge-test-file "test/v2-source-registry-8j.test.js"
+# forge-test-file "test/v2-source-registry-postgres-8j.test.js"
+# forge-test-file "test/v2-source-registry-sqlite-8j.test.js"

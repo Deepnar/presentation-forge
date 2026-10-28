@@ -1,0 +1,11 @@
+{
+  "id": "2c6fd8aa48edfa0f654abb787475d98ffa5c80a7ee7e6a88d8425c21f7666674",
+  "name": "forge-j3-validation-a9d5f60dd7",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "host": "127.0.0.1",
+  "port": 32769,
+  "privateStatePath": "/tmp/forge-j3-private-1ibrfiha.json",
+  "scope": "New isolated J3 fixture only; never old I4 or another project database. Temporary tmpfs storage, no production durability claim.",
+  "startedAtUtc": "2026-10-28T16:47:11.087529+00:00",
+  "initialDatabaseCatalog": []
+}

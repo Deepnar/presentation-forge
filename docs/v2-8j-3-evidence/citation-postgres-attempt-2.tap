@@ -1,0 +1,41 @@
+TAP version 13
+# Subtest: Citation PostgreSQL: complete target/source/locator facts remain read-only and never claim support
+ok 1 - Citation PostgreSQL: complete target/source/locator facts remain read-only and never claim support
+  ---
+  duration_ms: 127.279022
+  type: 'test'
+  ...
+# Subtest: Citation PostgreSQL: owner isolation, stale tokens, reopen and history restoration keep exact authority
+ok 2 - Citation PostgreSQL: owner isolation, stale tokens, reopen and history restoration keep exact authority
+  ---
+  duration_ms: 45.621094
+  type: 'test'
+  ...
+# Subtest: Citation PostgreSQL: mutable caller identity, source, quote and target cannot change an admitted read
+ok 3 - Citation PostgreSQL: mutable caller identity, source, quote and target cannot change an admitted read
+  ---
+  duration_ms: 7.364456
+  type: 'test'
+  ...
+# Subtest: Citation PostgreSQL: selected-body corruption and read faults publish nothing and release the parent lock
+ok 4 - Citation PostgreSQL: selected-body corruption and read faults publish nothing and release the parent lock
+  ---
+  duration_ms: 29.214502
+  type: 'test'
+  ...
+# Subtest: Citation PostgreSQL: one parent lock excludes clear between document and source observations
+ok 5 - Citation PostgreSQL: one parent lock excludes clear between document and source observations
+  ---
+  duration_ms: 22.572711
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 522.357407
+# forge-test-file "test/v2-citation-references-postgres-8j.test.js"

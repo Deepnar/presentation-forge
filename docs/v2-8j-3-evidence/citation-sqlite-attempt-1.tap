@@ -1,0 +1,41 @@
+TAP version 13
+# Subtest: Citation SQLite: complete target/source/locator facts remain read-only and never claim support
+ok 1 - Citation SQLite: complete target/source/locator facts remain read-only and never claim support
+  ---
+  duration_ms: 71.154035
+  type: 'test'
+  ...
+# Subtest: Citation SQLite: owner isolation, stale tokens, reopen and history restoration keep exact authority
+ok 2 - Citation SQLite: owner isolation, stale tokens, reopen and history restoration keep exact authority
+  ---
+  duration_ms: 19.84566
+  type: 'test'
+  ...
+# Subtest: Citation SQLite: mutable caller identity, source, quote and target cannot change an admitted read
+ok 3 - Citation SQLite: mutable caller identity, source, quote and target cannot change an admitted read
+  ---
+  duration_ms: 9.921283
+  type: 'test'
+  ...
+# Subtest: Citation SQLite: selected-body corruption and read faults publish nothing and release the parent lock
+ok 4 - Citation SQLite: selected-body corruption and read faults publish nothing and release the parent lock
+  ---
+  duration_ms: 18.065637
+  type: 'test'
+  ...
+# Subtest: Citation SQLite: one parent lock excludes clear between document and source observations
+ok 5 - Citation SQLite: one parent lock excludes clear between document and source observations
+  ---
+  duration_ms: 11.116589
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 550.964506
+# forge-test-file "test/v2-citation-references-sqlite-8j.test.js"

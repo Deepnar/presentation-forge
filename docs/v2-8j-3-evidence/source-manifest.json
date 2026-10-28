@@ -1,0 +1,70 @@
+{
+  "implementationSha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+  "acceptedBaseline": "6d51cd409945e94266e23596b57f925553e62e31",
+  "runtimeHashes": {
+    "src/projects/citation-references.js": "a63fd5e6908243a77284f3e7f0609c38096801ef9225eb4055f84786ffad761d",
+    "src/projects/snippet-locator.js": "0d61dd9851101f6a8d535409050d165626c458ea94b2027c54c03d576e1417a0",
+    "src/projects/source-read.js": "1c79e587033fff4b318b24ce963270aade800adeeb3524b98fa0fc4a8dbe7318",
+    "src/projects/sources.js": "12c8ebc0db7223585210155be48a52431856620500fb9ce0fa047b6407093c47",
+    "src/projects/store.js": "007e8b292c3926973d2bf5cac863c931f66ab8a3d89e975b0a728cb77a1df3d8",
+    "src/projects/store-postgres.js": "5d1a925e23f28f6fca50fac63a51e61c788a63d5ab7a17bc0972b65141a205b4"
+  },
+  "unchangedAcceptedBoundaries": [
+    "packages/model/source-identity.ts",
+    "packages/model/source.schema.json",
+    "packages/model/scene.schema.json",
+    "packages/model/intent.schema.json",
+    "packages/projects/project-document.schema.json",
+    "packages/projects/document.js",
+    "packages/tools/web-source.ts",
+    "packages/tools/result.schema.json",
+    "packages/agent/turns.ts",
+    "src/projects/history.js",
+    "src/projects/runtime-document.js",
+    "src/projects/source-schema.js"
+  ],
+  "executions": {
+    "citation-pure": {
+      "invocationHead": "904cd67265afeddfc7caaaf15758fb7edcb97064",
+      "raw": "docs/v2-8j-3-evidence/citation-pure-attempt-1.json",
+      "runtimeAndTestHashesMatch": true,
+      "uncapturedCommittedPackagePathsCompared": 0
+    },
+    "citation-sqlite": {
+      "invocationHead": "4d592c8c8065cd9b702c08a5b901043ba3208584",
+      "raw": "docs/v2-8j-3-evidence/citation-sqlite-attempt-1.json",
+      "runtimeAndTestHashesMatch": true,
+      "uncapturedCommittedPackagePathsCompared": 0
+    },
+    "citation-postgres": {
+      "invocationHead": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+      "raw": "docs/v2-8j-3-evidence/citation-postgres-attempt-2.json",
+      "runtimeAndTestHashesMatch": true,
+      "uncapturedCommittedPackagePathsCompared": 0
+    },
+    "source-registry-regression": {
+      "invocationHead": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+      "raw": "docs/v2-8j-3-evidence/source-registry-regression-attempt-1.json",
+      "runtimeAndTestHashesMatch": true,
+      "uncapturedCommittedPackagePathsCompared": 0
+    },
+    "citation-boundaries": {
+      "invocationHead": "4d592c8c8065cd9b702c08a5b901043ba3208584",
+      "raw": "docs/v2-8j-3-evidence/citation-boundaries-attempt-1.json",
+      "runtimeAndTestHashesMatch": true,
+      "uncapturedCommittedPackagePathsCompared": 43
+    },
+    "typecheck": {
+      "invocationHead": "904cd67265afeddfc7caaaf15758fb7edcb97064",
+      "raw": "docs/v2-8j-3-evidence/typecheck-attempt-1.json",
+      "runtimeAndTestHashesMatch": true,
+      "uncapturedCommittedPackagePathsCompared": 43
+    },
+    "governance": {
+      "invocationHead": "904cd67265afeddfc7caaaf15758fb7edcb97064",
+      "raw": "docs/v2-8j-3-evidence/governance-attempt-1.json",
+      "runtimeAndTestHashesMatch": true,
+      "uncapturedCommittedPackagePathsCompared": 0
+    }
+  }
+}

@@ -1,0 +1,23 @@
+TAP version 13
+# Subtest: known pending validation cannot disappear or be duplicated
+ok 1 - known pending validation cannot disappear or be duplicated
+  ---
+  duration_ms: 49.857721
+  type: 'test'
+  ...
+# Subtest: citation reference checks keep their six selected gates and each observed file mandatory
+ok 2 - citation reference checks keep their six selected gates and each observed file mandatory
+  ---
+  duration_ms: 201.701336
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 317.161271
+# forge-test-file "test/dev-protocol.test.js"

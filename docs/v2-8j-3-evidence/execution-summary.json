@@ -1,0 +1,26 @@
+{
+  "implementationSha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+  "acceptedBaseline": "6d51cd409945e94266e23596b57f925553e62e31",
+  "requiredTests": 50,
+  "selectedIncludingGovernance": {
+    "total": 52,
+    "pass": 52,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "allRootTestAttempts": {
+    "total": 52,
+    "pass": 52,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "typecheckExitCode": 0,
+  "preflightAttemptsNotTestExecutions": [
+    "docs/v2-8j-3-evidence/initial-observations.json",
+    "docs/v2-8j-3-evidence/citation-postgres-attempt-1.json"
+  ],
+  "exclusions": "No old J1/provider/browser/build/native/benchmark/bulk/fault matrix or live API/model/search/GPU/activation. Missing PostgreSQL is unexecuted.",
+  "countNote": "No product test failure, skip, cancellation or repeated successful product execution. Initial metadata/admission/launcher failures are retained separately, not counted as passed tests."
+}
