@@ -1,0 +1,95 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "plannedBy": "/root",
+  "reviewDate": "2026-10-28",
+  "initialPlanSha": "7321c5fec8c492a39aedef979149b92b274f3f29",
+  "reviewedPlanSha": "31ac753692b424c6bac5d9f5ab9f899e13907f28",
+  "acceptedBaseline": "6d51cd409945e94266e23596b57f925553e62e31",
+  "planningEntrySha": "14aabf642933ffa4c870149ae1a5512f8d35900a",
+  "plan": "docs/V2-8J-3-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-citation-reference-checks",
+  "assessment": "The proposed read-only target/source/snippet-locator checker is a coherent immediate foundation for later citation attachment. It qualifies exact owner, saved target and retained-source identity in one snapshot without inventing saved citations, source-to-block mapping, factual support or new persistence. All concrete source-backed technical ambiguities raised in this review are pinned in the final draft. No unresolved technical planning blocker remains; explicit human scope direction is pending.",
+  "dependencyAssessment": {
+    "choice": "Read-only citation-reference and excerpt-locator checking before durable scene attachments",
+    "rationale": "J2 already supplies retained snippet identity, while authoritative scenes carry no citation attachment. A deterministic one-snapshot existence/range checker is reusable by a later revisioned attachment command and avoids prematurely choosing visual citation, history, export or copy semantics.",
+    "notCompletedByThisSplit": "Durable source-to-block/slide/export mapping, attachment history/undo, content invalidation, source clear/copy rebinding, native presentation and verified claim support remain unresolved in the roadmap. Successful requested pairs are not attached citations."
+  },
+  "pinnedTechnicalDecisions": [
+    {
+      "topic": "Single locked snapshot and narrow extraction",
+      "assessment": "Exactly one canonical owner-checked parent transaction binds current saved revision and source generation/revision. A new internal read-only adapter seam supplies the saved target projection and adapter-bound transaction-local source validation; existing J2/H public shapes remain unchanged. No getProject-then-resolve composition, nested registry transaction, release/reacquire window, duplicated SQL rules, scene-write callback or provider work is allowed.",
+      "planLines": "92-122",
+      "sourceBasis": [
+        "src/projects/store.js:withRuntimeTransaction and withSourceTransaction",
+        "src/projects/store-postgres.js:withRuntimeTransaction and withSourceTransaction",
+        "src/projects/sources.js:catalog, bodies and createSourceRegistry"
+      ]
+    },
+    {
+      "topic": "Exact target identity without inferred mapping",
+      "assessment": "Scene shape validation does not guarantee unique element IDs, so the checker requires exactly one live slide/element match and reports ambiguity rather than accepting first-match lookup. Iterative group traversal visits each requested slide once, with10000 total element/depth128 budgets and whole-request refusal on overflow. Hidden/locked/chrome/group targets may be observed without edit privilege. No semanticRef, tombstone, substring or cross-slide fallback establishes mapping.",
+      "planLines": "124-143",
+      "sourceBasis": [
+        "packages/model/scene.ts:validateScene and findElement",
+        "packages/model/scene.schema.json:sceneElement, semanticRef and suppressed",
+        "packages/projects/document.js:validateProjectDocument",
+        "packages/compiler/compile.js:semanticRef emission and preserving reconciliation"
+      ]
+    },
+    {
+      "topic": "Exact retained excerpt bytes and Unicode policy",
+      "assessment": "Optional nonempty start-inclusive/end-exclusive UTF-8 byte ranges use safe integers, input ceiling8192, actual excerpt bounds and Unicode scalar boundaries. Quotes are bounded valid scalar text and compared byte-exactly without trimming, normalization, BOM removal or fuzzy matching. J2-retained lone-surrogate excerpts remain retained but produce unsupported-excerpt before encoding; invalid scalar quote input refuses before storage. No page/title/URL/JSON-byte locator or network lookup is inferred.",
+      "planLines": "145-179",
+      "sourceBasis": [
+        "packages/tools/web-source.ts:parsedWebSource and canonicalWebSource",
+        "packages/tools/result.schema.json:WebSource",
+        "packages/model/source-identity.ts:webSourceId",
+        "src/projects/sources.js:selected canonical body validation"
+      ]
+    },
+    {
+      "topic": "Complete independent observations and refusal precedence",
+      "assessment": "Final31ac753 pins absent locator to not-requested even for a missing source; requested locator plus missing source is unavailable; retained unpaired-surrogate excerpt is unsupported before encoding; otherwise actual range/boundary invalidity precedes mismatch/matched. Missing/ambiguous target never short-circuits independent source/locator observations. Corrupt selected state, invalid request, stale snapshot, traversal budget, backend or complete-output failure publishes no partial outcomes. Strict result/failure shapes and static sanitized code/message vocabulary are explicit; claimSupport is always not-assessed.",
+      "planLines": "172-216",
+      "sourceBasis": [
+        "src/projects/sources.js:missing-source versus invalid-state behavior",
+        "packages/model/semantics.ts:storage-boundary evidence existence",
+        "packages/projects/project-document.schema.json:no citation attachment"
+      ]
+    },
+    {
+      "topic": "Snapshot observations and scope closure",
+      "assessment": "Bounded immutable results expose no source content, quote, geometry or unrelated scene data. They confer no reusable approval, attachment or execution authority and may become stale immediately after lock release. Later writes must re-enter current owner/document/catalog authority. No new retained data, schema/DDL/version, command/history/export/UI/public/model/provider integration is proposed; existing adapter lock waits remain explicitly inherited without a new deadline/cancellation claim.",
+      "planLines": "181-240",
+      "sourceBasis": [
+        "src/projects/sources.js:clear generations and immutable source identities",
+        "src/projects/store.js:canonical project transaction",
+        "src/projects/store-postgres.js:canonical project transaction",
+        "src/projects/legacy-conversion.js:claim citation refusal"
+      ]
+    }
+  ],
+  "focusedValidationAssessment": "After human implementation direction, the plan selects new pure locator/result checks, shared actual SQLite/PostgreSQL owner/snapshot/target/source contracts and one bounded lock interleaving per backend. Affected J2 extraction behavior receives narrow regression checks. Missing PostgreSQL remains unexecuted; existing unrelated J1/provider/browser/native/bulk evidence is reused. Planning review itself executes no product tests or services.",
+  "outstandingTechnicalIssues": [],
+  "humanDirection": {
+    "status": "PENDING",
+    "questionScope": "Approve this bounded read-only foundation before durable citation attachments, or agree the larger authoritative attachment/history/copy/export contract first.",
+    "approvalMeaning": "Technical readiness is neither human scope direction nor implementation acceptance. Accepted J2 remains the runtime baseline until a separately authorized implementation is independently reviewed."
+  },
+  "implementationAccepted": false,
+  "executed": {
+    "productTests": 0,
+    "databaseCalls": 0,
+    "services": 0,
+    "browserCalls": 0,
+    "builds": 0,
+    "modelCalls": 0,
+    "searchCalls": 0,
+    "networkCalls": 0
+  },
+  "writes": "Only this independent planning review record; no product, plan, roadmap, state, source, test or Git mutation.",
+  "stopPoint": "Record READY_FOR_DIRECTION and ask for explicit human direction on the concrete J3 scope. No implementation, service execution or dependent work follows from readiness alone."
+}
