@@ -9101,6 +9101,11 @@ local inference. Only that separate transport correction is authorized; this aud
     later citation/creation contract must resolve those seams before use.
     Offline runtime/schema/query implementation is authorized by that explicit
     direction; no production migration, activation or dependent scope is authorized.
+    Source6d51cd4 now has selected57/57, typecheck0 and two independent actual-PG
+    challenges passing; exact-source decision is pending. A source-only PG error
+    bridge preserves deliberate refusals through rollback without changing H.
+    Fixture corrections preserve strict DTO/capacity assertions; final hash capture
+    resolves the early source-path omission. See the evaluation for all attempts.
 
   Dependency sequence after accepted J1: agree project source registry/retention/
   resolution and verified locator boundaries before research-backed semantic

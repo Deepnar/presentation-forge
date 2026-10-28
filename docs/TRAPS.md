@@ -1952,6 +1952,16 @@ before consumption so refusal cannot spend the original permission. Cross-factor
 concurrency and same-ID changed text/scope are distinct checks. See the
 [V2-8J-1 correction](V2-8J-1-EVAL.md).
 
+## Error translation must preserve rollback and domain meaning
+
+A private domain refusal can become a generic storage error when an adapter only
+preserves its existing coded exceptions. Do not widen a shared error allowlist or
+return a refusal value from inside the transaction: returning can commit earlier
+writes. A domain-specific bridge can retain the original privately, throw an
+existing fencing sentinel through canonical rollback, then restore the original
+outside. Test deliberate refusal after an actual write as well as stale/capacity
+paths. See the [J2 PostgreSQL correction](V2-8J-2-EVAL.md).
+
 ## Keep clock-boundary assertions independent of scheduler delay
 
 A150ms deadline can expire before test admission, and cold child bootstrap can

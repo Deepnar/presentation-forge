@@ -2983,3 +2983,43 @@ DTO is capped at65536characters. No source registry, verified claim support,
 query/transcript persistence, H accounting hooks, public transport or activation
 is introduced. [The contract](V2-8J-1-PLAN.md), [evaluation](V2-8J-1-EVAL.md) and
 state distinguish implemented scope, evidence and independent acceptance.
+
+### V2-8J-2 immutable project web-source registry
+
+`src/projects/sources.js` exposes headless inspect/register/resolve/list/clear over
+the canonical owner-checked project transaction. Explicitly selected normalized
+web snippets live in `v2_project_sources`; `v2_project_source_catalog` holds private
+generation/revision/capacity/policy counters. Both adapters initialize these
+project-child tables under their established schema setup. Canonical project
+deletion cascades them, retaining its existing owner/admin policy. New source
+operations accept exact owner bindings with no admin override.
+
+`packages/tools/web-source.ts` uses the existing canonical result's strict WebSource
+definition and shares F/J1 hash/project/URL/retrieval validation. First retained
+provider/retrieval metadata survives exact semantic repeats; absent/empty
+publication labels preserve existing identity. Data remains untrusted and private.
+Registration requires current saved-project and catalog snapshots. Independent
+catalog revisions change on insertion; clear advances generation/revision even
+when empty, fencing old registration. It changes no scene, deck revision/history
+or H counters. Chat clear/history restore preserve sources; source clear is not
+restored by Version history. Unknown source IDs resolve as missing within the
+authorized project, with no global lookup or network fetch.
+
+Adapter-bound SQL caps actual UTF-8 sizes before returning strings. SQLite uses
+capped BLOB projections and fatal decoding preserving BOM bytes. A bounded513-row
+metadata check enforces catalog integrity without materializing all retained
+content; at most24 selected bodies are canonicalized/hash-validated. Binary/C
+keyset cursors bind catalog snapshots. Clear deliberately skips body/aggregate
+validation with valid catalog authority so corrupt private bodies can be removed.
+Malformed catalog authority refuses, leaving canonical project deletion as final
+recovery. Capacity is512sources/4MiB,16KiB per source and384KiB complete DTO.
+
+The source-only PostgreSQL wrapper retains deliberate domain errors privately,
+throws an existing fencing sentinel through canonical rollback and restores the
+original outside the transaction. H's generic error policy/interface is unchanged.
+No new operation deadline or cancellation semantics are claimed; existing lock
+waits remain. No source-aware scene attachments, verified locators/claims, public
+surface, automatic J1/H/Assistant registration, model/search call or activation is
+added. The approved policy keeps selected snippets until source clear or canonical
+project deletion, with existing backup/media limits. [Contract](V2-8J-2-PLAN.md),
+[evaluation](V2-8J-2-EVAL.md) and state distinguish source, evidence and acceptance.
