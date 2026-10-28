@@ -1,0 +1,36 @@
+{
+  "implementationSha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+  "scopeEntryHead": "2e6bf40a4549d987384bda113fc056a3a34cb00f",
+  "acceptedSourceBaseline": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+  "basis": "Entry HEAD includes prior I8 acceptance/evidence closeout; list isolates J1 from that historical documentation. Later commits only add J1 documentation/evidence.",
+  "sourceAndTestPaths": [
+    "packages/agent/provider.ts",
+    "packages/agent/research.ts",
+    "packages/model/source-identity.ts",
+    "packages/tools/executor.ts",
+    "packages/tools/request.generated.ts",
+    "packages/tools/request.schema.json",
+    "packages/tools/result.generated.ts",
+    "packages/tools/result.schema.json",
+    "packages/tools/session.ts",
+    "src/agent/search-sources.js",
+    "test/dev-protocol.test.js",
+    "test/v2-provider-run-8d.test.js",
+    "test/v2-research-8j.test.js",
+    "test/v2-research-fixture.js",
+    "test/v2-research-sqlite-8j.test.js",
+    "test/v2-runtime-8b.test.js",
+    "tools/dev-protocol-check.mjs"
+  ],
+  "planningAndGovernancePaths": [
+    "docs/BLOCKED.md",
+    "docs/CONTINUATION.md",
+    "docs/HANDOFF.md",
+    "docs/ROADMAP.md",
+    "docs/V2-8J-1-PLAN.md",
+    "docs/development-state.json",
+    "docs/development-state.schema.json",
+    "docs/reviews/V2-8J-1-plan-11696f9.json",
+    "docs/v2-8j-1-evidence/validation-plan.json"
+  ]
+}

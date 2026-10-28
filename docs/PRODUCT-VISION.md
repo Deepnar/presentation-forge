@@ -80,7 +80,11 @@ evidence from live content qualification and hosted cross-request approval.
 The shared web-search provider boundary is also independently accepted: SearXNG
 results normalize to project-scoped citation sources, separately from model
 providers. [V2-8F evidence](V2-8F-EVAL.md) qualifies the bounded local protocol;
-model search-tool integration and live relevance retain their roadmap gates.
+live relevance retains its roadmap gate. J1 independently accepts a separate
+headless, inspect-only canonical search conversation with explicit single-use
+query-disclosure grants and ephemeral normalized sources. This does not give the
+existing Assistant search access or verified citations; durable source integrity,
+research orchestration and semantic creation retain their roadmap gates.
 V2-8H independently accepts bounded project-linked visible chat and durable atomic
 approval over the existing run queue, with owner-only read/export/clear and CLI
 parity. Saved chat does not automatically become provider context. The

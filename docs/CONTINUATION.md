@@ -32,14 +32,26 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current planning — J1 canonical web research
+## Latest accepted slice — J1 headless canonical web research complete
 
-The next continuation prepares [V2-8J-1](V2-8J-1-PLAN.md), registered in
-[the roadmap](ROADMAP.md#assistant-web-research-preparation). Human approved scoped
-trusted query disclosure on2026-10-27; offline implementation is authorized. Read HANDOFF
-for plan-readiness/direction state. Accepted I8 and its evidence remain unchanged.
+Human approved scoped query disclosure on2026-10-27. Frozen source
+f161901cf29bd7ebd2c12ef634a86cacf5f90ea3 is independently
+[accepted](reviews/V2-8J-1-f161901.json). Read [contract](V2-8J-1-PLAN.md),
+[evaluation](V2-8J-1-EVAL.md), state and HANDOFF. Selected153/153, finaltypecheck0
+and independent2/2 pass; earlier root181pass/3fail/1cancel and independent
+fail-first1pass/1fail are retained with overlap/applicability, not erased. The initial
+OpenAI timeout cause remains unresolved despite the later complete4/4 pass.
 
-## Latest accepted slice — I8 browser Assistant complete
+Research is a separate granted headless entry. Base/durable/H/host/Assistant paths
+gain no search authority; no source persistence/public activation/model run is
+authorized. Private shared capability consumption and full canonical request
+binding close the review finding. Owned temporary SQLite/loopback fixtures and
+observers are closed; no persistent service was acquired. Earlier API1723 was
+untouched and is now absent with external lifecycle unknown. J1 closeout is
+complete; later direction and authority live only in
+[the roadmap](ROADMAP.md#assistant-search-source-integrity).
+
+## Accepted predecessor — I8 browser Assistant complete
 
 Human approved the existing Assistant tab; frozen source
 b9c2d2075da21608a92a458c1395ede0bbe67297 is independently [accepted](reviews/V2-8I-8-b9c2d20.json). Read [contract](V2-8I-8-PLAN.md), [evaluation](V2-8I-8-EVAL.md),

@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "b9c2d2075da21608a92a458c1395ede0bbe67297",
+    "sha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8I-8-b9c2d20.json"
+    "source": "docs/reviews/V2-8J-1-f161901.json"
   },
   "implementationHead": {
     "sha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
-    "note": "Frozen pushed J1 source. Selected153/153 (required27 plus supplemental126), typecheck0. Earlier cancellation/fixtures/compiler failures and cross-factory permission correction retained. Independent review pending; no public activation."
+    "note": "Independent ACCEPT on exact J1 source: selected153/153, finaltypecheck0 and independent2/2. Initial failures/cancellation and source applicability retained. No public activation or dependent implementation authorized."
   },
   "activeMilestone": {
     "id": "V2-8J-1",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8J-1-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8J-1-f161901.json",
+    "accepted": true
   },
   "validation": [
     {

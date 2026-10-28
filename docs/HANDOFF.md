@@ -1,34 +1,34 @@
 # Presentation Forge handoff — 2026-10-28
 
-Branch v2, origin/v2 only. J1 implementation/query disclosure was approved
-on2026-10-27, pinneda9edeba before code. Frozen pushed source
-f161901cf29bd7ebd2c12ef634a86cacf5f90ea3 is validated and under independent review;
-accepted baseline remains I8b9c2d20. Read V2-8J-1-PLAN.md, V2-8J-1-EVAL.md, state
-and ROADMAP.md#assistant-web-research-preparation. Root cannot self-accept.
+Branch v2, origin/v2 only. V2-8J-1 is independently accepted at exact source
+f161901cf29bd7ebd2c12ef634a86cacf5f90ea3, from I8b9c2d20. Decision:
+reviews/V2-8J-1-f161901.json; reviewed packetdeb2e20. Human implementation/query-
+disclosure approval was pinneda9edeba before code. Read state, J1 contract/eval,
+CONTINUATION and ROADMAP.md#assistant-web-research-preparation. Later commits are
+scoped documentation/evidence only; the source SHA must not become a docs SHA.
 
 Selected153/153pass (new16, actualSQLite/loopback4, graph/types7, affected120,
 selectedoldschema2, selectedgovernance4),0fail/skip/cancel; finaltypecheck0.
-All root attempts185executions=181pass/3fail/0skip/1cancel overlap. First integration
-OpenAI15sec cancellation has unresolved cause and remains retained; all4reran
-once after the grant correction in a quiet window and passed. Independent
-fail-first2=1pass/1fail exposed cross-factory grant reuse. Private shared consumption
-and full canonical request binding now close it. No assertion/bound was weakened.
+Independent final2/2pass and552-path/seven-gate audit has0errors. All root attempts
+185executions=181pass/3fail/0skip/1cancel overlap; independent failfirst1pass/1fail
+is separate. The initial OpenAI15sec cancellation cause remains unresolved;
+corrected complete4/4 passes without weakening the bound. Earlier fixture/compiler
+failures, marked initial transcription and exact source applicability remain.
 
-Source hashes/applicability, prior source snapshots, raw attempts, corrected backend
-labels and admission observations are retained. New tests differ only by the
-final type-erased unknown assertion; finaltypecheck uses exact bytes. Other
-selected checks reuse unchanged imports/schema/content paths. No old matrix,
-real model/API/search/local inference/GPU/browser/build/native/PG run. Existing
-Assistant/host remains default-off for execution and gains no search capability.
+Independent grant reuse/scope findings are fixed with shared private consumption
+across factories and full canonical request binding before awaits. Base/durable/
+H/host/Assistant paths gain no research capability. Research sources/trace are
+ephemeral and unverified; no source/query/transcript persistence or public entry.
+Host execution remains default-off. No real model/API/search/local inference/GPU,
+browser/build/native/PG or old matrix ran; accepted unchanged evidence is reused.
 
-Independent /root/i8_source_review is reviewing f161901 and may run only two new
-framework-free challenges. Root owns Git/execution slots, no parallel heavy work.
-Await its exact ACCEPT/HOLD record and propagate the result; stop after J1 closeout.
-Later scope and authority are solely in the roadmap, never implied by acceptance.
+Read-only resource observers finished; temporary SQLite/loopback fixtures closed.
+No owned persistent service/database was acquired. Earlier pre-existing API1723
+was untouched; current absence has unknown external lifecycle. Original .agents/
+and two untracked master-prompt files preserved. Standing BYOK/I7/I4 operational/
+native/visual limits remain separate. Never recreate the removed I4 backend or
+infer its historical count.
 
-Both resource observer attempts finished. Corrected fixtures closed temporary
-SQLite/loopback servers; no owned persistent service/database was acquired.
-Pre-existing API1723 was untouched; latest read-only observation finds it absent
-with its external lifecycle/cause unknown. Unrelated machine work stays untouched. Original .agents/
-and two untracked master-prompt files preserved. Standing BYOK/I7/I4 provenance
-limits remain separate; never recreate the removed I4 backend or infer its count.
+J1 acceptance and scoped closeout are complete. Stop here. Remaining scope and
+next direction/approval gates live solely in ROADMAP.md#assistant-search-source-integrity;
+no dependent implementation, activation, infrastructure or deployment is authorized.

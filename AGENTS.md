@@ -75,9 +75,16 @@ wake reuse the accepted authority. Grid/title/inline/save guards and authoritati
 reload preserve human work; loading AI changes clears session undo and uses Version
 history for restoration. Availability is owner-bound metadata with CLI parity.
 Host execution remains default-off; no always-on scheduler is enabled.
-Saved chat does not automatically become provider context. Further host progress/
-scheduling, additional provider routing, search-tool integration,
-live-provider qualification and creation/research capability remain in the
+The separate J1 headless research entry is independently accepted at f161901:
+inspect-only canonical web_search requires a trusted single-use capability bound
+to the complete request, with finite queries/results and ephemeral normalized
+sources. Base content sessions and durable execution retain their earlier tool
+subsets; H/host/Assistant paths gain no research capability. Snippet identity does
+not establish verified claim support. No source/query/transcript persistence or
+public research activation is added. Saved chat does not automatically become
+provider context. Further host progress/scheduling, provider routing, durable
+source/locator integrity, research orchestration, live-provider qualification and
+semantic creation remain in the
 [roadmap](docs/ROADMAP.md#v2-8-remaining). Resolve exact accepted
 scope through development-state.json and its independent review record.
 

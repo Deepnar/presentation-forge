@@ -351,8 +351,10 @@ provenance limits. Scope/remaining authority is solely in
 [the roadmap](ROADMAP.md#assistant-visible-editor).
 
 
-J1 planning is READY_FOR_DIRECTION at plan2a640cd with its separate
-[review](reviews/V2-8J-1-plan-11696f9.json). Human query-disclosure direction was approved on2026-10-27; scoped offline
-implementation is authorized and no policy blocker remains. No product validation or external
-service is needed to resolve this policy gate. Scope/continuation is solely in
-[the roadmap](ROADMAP.md#assistant-web-research-preparation); accepted I8 is unchanged.
+J1 is independently accepted atf161901 with selected153/153, typecheck0 and
+independent2/2 passing. No J1 source/validation/review or owned-service blocker
+remains. [Evaluation](V2-8J-1-EVAL.md) preserves the first unresolved integration
+timeout, compiler-transcription and external API-lifecycle limits. Research remains
+headless with ephemeral sources; public activation and durable source/data policy
+are outside acceptance. Later scope/authority is solely in
+[the roadmap](ROADMAP.md#assistant-search-source-integrity).

@@ -5,7 +5,9 @@ baseline **b9c2d2075da21608a92a458c1395ede0bbe67297** (I8). Human approved scope
 implementation/query disclosure on2026-10-27, pinned a9edeba before runtime code.
 The [approved contract](V2-8J-1-PLAN.md), [plan-readiness record](reviews/V2-8J-1-plan-11696f9.json)
 and [roadmap](ROADMAP.md#assistant-web-research-preparation) bound this task.
-Independent exact-source review is pending. Implementation evidence is not acceptance.
+Independent exact-source [ACCEPT](reviews/V2-8J-1-f161901.json) was issued on2026-10-28
+by /root/i8_source_review, separate from implementer /root. The reviewed packet
+is deb2e20; later changes are documentation/evidence closeout only.
 
 ## Result and implemented boundary
 
@@ -32,6 +34,12 @@ text/refusal and bounded trace. F source identity is extracted unchanged into th
 shared model helper; first retrieval provenance is retained. Sources establish
 retrieval identity, not verified claim support. No page fetching, H accounting
 hooks, saved query/transcript/source storage or automatic saved-chat context.
+
+The [changed-file inventory](v2-8j-1-evidence/changed-files.json) isolates J1 from
+the prior I8 documentation closeout: ten runtime/schema/generated paths, six test/
+fixture paths, the protocol validator and its state schema, plus J1 documentation
+and evidence. The main implementation is research.ts; the shared source helper,
+tools/session contracts and provider normalization supply its canonical boundaries.
 
 ## Selected execution and source applicability
 
@@ -97,6 +105,20 @@ reported separately, not added to root totals. Early raw runner backend labels
 incorrectly said SQLite for unit/command/schema gates; canonical records and runner
 now identify the actual fixtures. No raw execution/failure has been relabeled.
 
+## Independent acceptance
+
+Separate review compared the accepted baseline, approved contract and exact pushed
+source, inspected all selected evidence and audited552captured paths across seven
+gates, including eight unchanged durable authority/preparation boundaries. The
+[review report](v2-8j-1-evidence/independent/review.md) and
+[packet audit](v2-8j-1-evidence/independent/packet-audit.json) report0audit errors.
+Only two new injected nice10/watchdog challenges ran independently:2/2pass,
+0fail/skip/cancel,616ms. They check same-ID text/scope refusal, concurrent
+cross-factory reuse and complete DTO overflow without source/text publication.
+The earlier independent1pass/1fail is preserved separately and no implementation
+suite was duplicated. No blocking findings or waivers remain. The reviewer accepts
+only this exact headless boundary; broader source/creation/activation is excluded.
+
 ## Resource and performance observations
 
 Resource attempt1 found CPU95–100% and admitted no integration retry. Documentation
@@ -126,6 +148,7 @@ backend was recreated or historical count reconstructed. Source registry/locator
 retention, source-to-claim validation, research-enabled orchestration and semantic
 creation remain in the [roadmap](ROADMAP.md#assistant-search-source-integrity).
 
-Implementation recommends acceptance of only the approved J1 headless boundary,
-subject to separate exact-source review. Stop after review/documentation/push;
-acceptance does not activate research or authorize dependent implementation.
+Independent acceptance supports only the approved J1 headless boundary. The
+source-integrity parent remains incomplete. Scoped documentation/evidence closeout
+and origin/v2 push complete this task; stop here. Acceptance does not activate
+research or authorize dependent implementation.

@@ -9030,51 +9030,59 @@ local inference. Only that separate transport correction is authorized; this aud
 <a id="assistant-search-source-integrity"></a>
 
 - [ ] **Canonical search tools and project-scoped source integrity.**
-  Reuse V2-8F SearchProvider and SourceRef IDs. Extend canonical request/result/catalog,
-  provider normalization, context, budgets and receipt/plan contracts coherently;
-  general search needs an explicitly scoped network-tool boundary rather than
-  network imports in pure packages. Bind search permission/query disclosure and
-  source resolution to the trusted caller, retaining V2-8H turn generation, authority
-  and approval bindings. Add separate paper/project adapters,
-  immutable source versions and locator resolution without replacing legacy paths.
-  Verify source existence/project ownership and source-to-block/slide/export mappings;
-  distinguish claim support from matching IDs/numbers and retain unsupported/uncertain
-  claim outcomes. Require prompt-injection fixtures and eventual labeled live/human
-  qualification. Source persistence/query disclosure needs an agreed data policy.
-  No page-fetch/SSRF permission, vector store or unbounded search loop is implied.
+  The accepted J1 headless seam below supplies canonical web_search, correlated
+  provider continuation, trusted query disclosure and ephemeral SourceRefs. Base
+  sessions, queued plans/receipts and initial reads preserve their earlier tool
+  subsets. Extend durable turn/research orchestration only through a separately
+  agreed authority contract, retaining H generation/revision/approval bindings.
+  Next agree immutable project source registry/versions, retention/clear/delete,
+  owner-bound resolution and verified locator policy before storage changes.
+  Reuse F/J1 IDs without replacing legacy paths; add separate paper/project
+  adapters. Verify source existence/ownership and source-to-block/slide/export
+  mappings; distinguish claim support from matching IDs/numbers and retain
+  unsupported/uncertain outcomes. Prompt-injection fixtures and eventual labeled
+  live/human qualification remain required. No page-fetch/SSRF permission, vector
+  store or unbounded search loop is implied.
 
   <a id="assistant-web-research-preparation"></a>
 
-  - [ ] **V2-8J-1 bounded canonical web research preparation — implementation approved.**
-    The2026-10-27 continuation starts the next dependency after accepted I8,
-    source b9c2d20 and planning HEAD2e6bf40. [Concrete contract](V2-8J-1-PLAN.md)
-    proposes an explicitly granted headless inspect-only web_search capability:
-    canonical request/result, provider normalization/history, scoped session,
-    bounded injected search and model continuation. Base tools and queued plans/
-    receipts retain current authority. No persistence/UI/activation/model run.
-    Human direction is required on scoped private-content query disclosure;
-    implementation is approved by the2026-10-27 human direction. Plan review pins explicit
-    preserved tool subsets, a source-bearing ephemeral final DTO, fail-stop search
-    behavior and separate research entry without H persistence hooks. Backend query
-    logs are governed by the configured backend policy. Offline tests only.
-    Separate [READY_FOR_DIRECTION](reviews/V2-8J-1-plan-11696f9.json) verifies
-    clarified plan2a640cd; no technical planning blocker remains. The human
-    approved scoped query disclosure on2026-10-27, selecting Approve scoped
-    implementation (Recommended). Offline code/tests are authorized; no activation.
-    Grant absence must preserve existing default-off editing behavior. Source
-    registry/locator/retention and later research-backed creation remain separate.
-    Look-ahead reuses this capability/catalog seam without another document/queue.
-    Independent fail-first review found cross-factory capability reuse atcff2e73.
-    Narrow correction shares single-use state across factories and binds the full
-    canonical request before dispatch; focused verification and exact-source
-    review remain pending. No dependent scope is authorized by that correction.
+  - [x] **V2-8J-1 bounded canonical web research preparation — independently accepted.**
+    Human approved scoped implementation/query disclosure on2026-10-27, pinned
+    a9edeba before code. Frozen sourcef161901 is separately
+    [accepted](reviews/V2-8J-1-f161901.json), from accepted I8b9c2d20 and entry
+    HEAD2e6bf40. [Contract](V2-8J-1-PLAN.md) and [evaluation](V2-8J-1-EVAL.md)
+    record the distinct granted inspect-only entry, canonical schemas/history,
+    bounded injected search/model continuation and accumulated ephemeral sources.
+    Base/durable/H/host/Assistant authority stays closed to search; no persistent
+    source/query/transcript, public transport, activation or model run is added.
+    Backend query logs remain governed by the configured backend policy.
+    Selected153/153, finaltypecheck0 and independent2/2 pass. All root attempts
+    185=181pass/3fail/0skip/1cancel overlap; the first integration timeout cause
+    remains unresolved, while corrected complete integration4/4 passes. Earlier
+    fixture/compiler errors and type-only source applicability remain retained.
+    Independent fail-first review reproduced cross-factory reuse atcff2e73;
+    corrected private shared consumption and full canonical request binding are
+    independently verified. No blocking finding or owned persistent service remains.
 
-  Dependency sequence after I8: establish the granted canonical read-only search
-  seam, then agree immutable project source registry/retention/resolution and
-  verified locator boundaries before research-backed semantic creation. The
-  semantic-creation entry retains deterministic compile/preservation/approval
+    **Look-ahead.** Durable registry/locator/retention and research-backed semantic
+    creation can reuse these immutable IDs, grant/catalog and normalized result
+    seams. They retain separate direction/policy and authority contracts; no
+    second document/queue or automatic public research activation follows.
+
+    > **Learned.** A runner-local consumed flag cannot enforce a shared capability:
+    > ownership of single-use state must follow the trusted object across factories.
+    > Request IDs alone do not bind disclosed text or readable slide scope. Capture
+    > the full canonical request before awaits, refuse mismatches before consumption
+    > and keep resource counters/output bounds over the entire invocation and DTO.
+    > Stable snippet IDs prove identity, not factual support; metadata must survive
+    > terminal text without being promoted into a verified source registry.
+
+  Dependency sequence after accepted J1: agree project source registry/retention/
+  resolution and verified locator boundaries before research-backed semantic
+  creation. Semantic tools retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
-  none is automatically authorized by this planning entry.
+  parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning
+  only, with no dependent implementation implied.
 
 <a id="assistant-semantic-creation"></a>
 

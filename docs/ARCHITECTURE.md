@@ -2951,7 +2951,7 @@ No model, compiler, renderer, store schema/query or canonical H/I2/I5/I7 authori
 changed. Contract/evidence and independent review status are indexed in
 [V2-8I-8-EVAL.md](V2-8I-8-EVAL.md) and development-state.json.
 
-### V2-8J-1 granted headless web research
+### V2-8J-1 granted headless web research (accepted at f161901)
 
 `packages/agent/research.ts` composes an inspect-only model conversation with the
 injected F SearchProvider. The trusted capability captures owner/project identity,
@@ -2961,6 +2961,8 @@ captures capability state once and consumes it synchronously across all runners
 before any await. Reordering JSON keys preserves identity; changing text, scope,
 reads, budgets or deadline refuses before dispatch without consuming the grant.
 A fresh trusted object constitutes an explicit new grant, never model JSON.
+Consumption is host-instance memory, with no durable cross-process idempotency
+or account-billing guarantee.
 
 The research catalog contains three semantic reads and canonical `web_search`.
 Base sessions, stored plans/receipts and initial reads preserve their earlier

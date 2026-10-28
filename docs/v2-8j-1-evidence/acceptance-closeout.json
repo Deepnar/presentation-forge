@@ -1,0 +1,29 @@
+{
+  "implementationSha": "f161901cf29bd7ebd2c12ef634a86cacf5f90ea3",
+  "decision": "docs/reviews/V2-8J-1-f161901.json",
+  "decisionSha256": "7cb7a4f171cd7f7fb1e222b89ba0b06bf6595a9be1f4787bb07c3b5516b111ee",
+  "reviewedPacketSha": "deb2e202cc9e75dacb9e5524a06fb91a9b52736d",
+  "closedAtUtc": "2026-10-28T11:15:02.177835+00:00",
+  "sourceUnchangedAfterFreeze": true,
+  "selectedCounts": {
+    "total": 153,
+    "pass": 153,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentCounts": {
+    "total": 2,
+    "pass": 2,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "typecheckExitCode": 0,
+  "protocolErrors": 0,
+  "protocolWarnings": 0,
+  "noOwnedPersistentServiceAcquired": true,
+  "resourceCloseout": "docs/v2-8j-1-evidence/resource-closeout.json",
+  "standingAndProvenanceLimits": "All retained in evaluation and independent decision; no waived or reconstructed evidence.",
+  "stop": "J1 only; dependent implementation and activation unauthorized."
+}
