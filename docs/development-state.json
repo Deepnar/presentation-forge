@@ -54,9 +54,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Canonical project source registry contract",
+    "id": "V2-8J-2 immutable project web-source registry contract",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-search-source-integrity"
+    "roadmapRef": "docs/ROADMAP.md#assistant-project-source-registry"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

@@ -29,6 +29,11 @@ and two untracked master-prompt files preserved. Standing BYOK/I7/I4 operational
 native/visual limits remain separate. Never recreate the removed I4 backend or
 infer its historical count.
 
-J1 acceptance and scoped closeout are complete. Stop here. Remaining scope and
-next direction/approval gates live solely in ROADMAP.md#assistant-search-source-integrity;
-no dependent implementation, activation, infrastructure or deployment is authorized.
+J1 acceptance/closeout are complete. The2026-10-28 continuation now authorizes
+J2 contract preparation only; see V2-8J-2-PLAN.md and
+ROADMAP.md#assistant-project-source-registry. Proposed owner-only retained web
+snippets require explicit policy approval. No runtime/query/schema/migration,
+model/provider call, public transport, activation or infrastructure change is
+authorized yet. Technical plan review is pending. No product tests ran for this
+documentation-only step; protocol/diff consistency passes. Do not mark J2 accepted
+or replace the accepted J1 source with a planning/docs commit.
