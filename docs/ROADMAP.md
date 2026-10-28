@@ -6464,6 +6464,8 @@ to continue development. The repository-native procedure is
   acceptance and role instructions together; preserve assertions, integrity and
   independent acceptance. I4's existing broad run completed before this direction
   arrived and is retained, not repeated. No feature scope changes.
+  On2026-10-28, remove CONTRIBUTING.md's stale full-suite default and link this
+  policy, including browser/build isolation and honest unavailable-backend totals.
 
   > **Learned.** Repeating every historical suite per small slice made validation
   > dominate delivery. A change-specific gate inventory preserves meaningful
