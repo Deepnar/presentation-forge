@@ -8918,7 +8918,7 @@ local inference. Only that separate transport correction is authorized; this aud
 |---|---|---|
 | P0 — complete | [Model transport resource bounds](#model-provider-stream-resource-bounds) | V2-8G independently accepted at f3e784a; qualified the read-loop/cleanup correction while preserving wire/error/usage/tool contracts. |
 | P0 — complete headless boundary | [Turn and approval ownership](#assistant-turn-approval-contract) | V2-8H independently accepted at22e7c97; durable bounded visible turns and atomic approval reuse the existing run queue. Hosted routes/UI remain in their own entry. |
-| P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | Connect accepted SearchProvider through canonical authority and preserve verifiable project-scoped citations; do not merely add a catalog name. |
+| P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | J1 canonical research and J2 private source registry are accepted. Prepare J3 read-only reference/locator checks before durable citation mapping and research-backed creation; no claim-verification or public activation is implied. |
 | P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
 | P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 transport and I2 headless worker independently accepted; authenticated submission is independently accepted at2ba82cb; host policy and exact wake are accepted; the existing-deck Assistant is independently accepted in I8; remaining capability/context/live qualification retains separate contracts. |
 | P0 basic / P1 distributed | [Trace and spend admission](#assistant-trace-budget) | Make context/tool/instruction provenance observable, preserve unknown usage, and prevent parallel requests/retries bypassing account allowances. |
@@ -9039,7 +9039,10 @@ local inference. Only that separate transport correction is authorized; this aud
   semantics; bounded payloads/cardinality alone do not bound parent-lock waits.
   Accepted J2 below supplies immutable owner-private web-snippet registration,
   resolution and bounded lifecycle, retaining F/J1 IDs without replacing legacy
-  paths. Next agree revisioned citation attachment and source-to-block/slide/export
+  paths. The next proposed J3 foundation below checks explicit saved target/source
+  references and snippet-relative locators without persisting attachment. Agree
+  its bounded direction before implementation. Then agree revisioned citation
+  attachment and source-to-block/slide/export
   mappings, clear/missing-source and project-copy rebinding semantics, and verified
   locator/claim-support policy before dependent implementation. Add separate
   paper/project adapters under their own contracts. Verify source-to-block/slide/export
@@ -9120,7 +9123,33 @@ local inference. Only that separate transport correction is authorized; this aud
     > refusals must cross rollback before their meaning is restored. Bounded
     > cardinality is not a transaction wall-clock bound.
 
-  Dependency sequence after accepted J2: agree revisioned citation attachment,
+  <a id="assistant-citation-reference-checks"></a>
+
+  - [ ] **V2-8J-3 headless citation-reference and snippet locator checks — proposed.**
+    The2026-10-28 continuation prepares this bounded prerequisite from accepted
+    J2 `6d51cd4` and entry HEAD `14aabf6`. [Proposed contract](V2-8J-3-PLAN.md)
+    recommends read-only exact saved slide/element and retained source checks in
+    one owner-checked document/catalog snapshot. Optional snippet-relative exact
+    quote ranges use explicit UTF-8 byte offsets; source retention/target existence/
+    locator match are separate facts and claim support stays not-assessed.
+    Reuse J2's transaction-local validators without nesting registry transactions
+    or widening H/J2 interfaces. The plan pins bounded group traversal, ambiguous
+    identity refusal, Unicode/surrogate behavior, strict DTOs and no partial output.
+    No new retained content, scene/schema/command/history/copy/export change,
+    HTTP/CLI/UI, provider context, model/search call or activation is proposed.
+    Selected pure/actual SQLite/PostgreSQL and affected J2 checks follow only after
+    direction, with measured admission and no old regression sweep.
+    This is planning only; technical review and human direction are pending.
+    Agree this foundation versus the larger authoritative attachment contract
+    before writing runtime code. Durable attachment, clear/copy remapping, native
+    presentation and verified claim support remain unresolved in this parent.
+
+    **Look-ahead.** The result is a snapshot observation, not stored source-to-block
+    mapping or attachment authority. Later citation writes must re-enter canonical
+    revision/catalog/approval authority; no quote/snippet is copied into history.
+
+  Dependency sequence after accepted J2: agree the bounded J3 reference/locator
+  foundation, then revisioned citation attachment,
   source-to-block/slide/export mappings, clear/copy semantics and verified locator/
   claim-support boundaries before research-backed semantic creation. Semantic tools
   retain deterministic compile/preservation/approval
