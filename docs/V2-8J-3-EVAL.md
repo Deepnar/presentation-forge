@@ -121,16 +121,29 @@ The exact owned localhost-only postgres:15-alpine fixture has1CPU/512MiB and256M
 private tmpfs limits. [Identity](v2-8j-3-evidence/owned-postgres.json) records the
 actual container/image/port and initial empty user-database catalog. This supplies
 real backend behavior, not a hardware/power-loss durability qualification. Root
-storage databases and pools closed/dropped; SQLite files were removed. The service
-is temporarily retained solely for coordinated independent challenges; root owns
-its eventual saved-catalog exact-ID cleanup. No production migration or persistent
-infrastructure is authorized.
+storage databases and pools closed/dropped; SQLite files were removed. After the reviewer released its slot, root saved/fsynced the actual empty user-
+database catalog, removed the one exact owned ID once, verified absence and deleted
+the temporary private credentials. [Cleanup](v2-8j-3-evidence/owned-postgres-cleanup.json)
+records actual0, separately from historical I4's unavailable count. A scoped scan
+found no fixture credential in retained evidence. No owned service remains and no
+production migration or persistent infrastructure is authorized.
 
 ## Independent review and limits
 
-Separate /root/i8_source_review is inspecting exact source and retained evidence;
-its new challenge and final ACCEPT/HOLD record are pending. Root cannot self-accept.
-Only this read-only slice can be accepted; target/source observations are not saved
+Separate /root/i8_source_review inspected source and ran two new actual PostgreSQL
+challenges:2pass/0fail/0skip/0cancel in868ms process, after its own fresh two-sample
+admission and exact service verification. A concurrent SAVE actually reached a
+PostgreSQL Lock wait: the original read kept its old target/source snapshot, old
+requests then refused stale-project and current requests saw the deleted target.
+A real two-slide10001-element traversal refused the complete result; exact10000
+succeeded, with unchanged catalog. Its unique database/pools were dropped/closed;
+actual initial/final user catalogs were empty. The
+[independent evidence](v2-8j-3-evidence/independent/) retains actual invocation
+bd14e39392c2c2b3b1be979a3af20d5aeec21669, a docs-only descendant of frozenedda5ec.
+Runtime/test bytes match; no result is relabeled as a different execution SHA.
+Final independent ACCEPT/HOLD awaits the complete pushed packet/cleanup audit.
+Root cannot self-accept. Only this read-only slice can be accepted;
+target/source observations are not saved
 citations, claim verification, page/file/DOI integrity or injection qualification.
 They may become stale immediately after lock release. Existing SQLite/PG lock waits
 remain, with no new wall-clock deadline/cancellation guarantee.
@@ -141,7 +154,7 @@ change means no new screenshot/native fidelity claim. Standing BYOK locale, earl
 J1/I7 timing and inherited I4/native/visual operational provenance remain separate
 and unrerun. No live API/model/search/local inference/GPU call or activation ran.
 
-Implementation recommends acceptance of the approved J3 boundary once independent
-review and owned cleanup are complete. All further attachment/copy/export/creation
+Implementation recommends acceptance of the approved J3 boundary after the final
+independent packet decision; owned cleanup and all required execution are complete. All further attachment/copy/export/creation
 scope lives in the roadmap. Stop after review, documentation and scoped origin/v2
 push; no dependent implementation, deployment or paid infrastructure follows.

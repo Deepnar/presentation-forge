@@ -9149,8 +9149,11 @@ local inference. Only that separate transport correction is authorized; this aud
     typecheck0. All52 selected test executions pass once; no assertion/product
     correction was required. State enum, aged admission and launcher preparation
     issues are retained separately; no unexecuted child was labeled passing.
-    Independent exact-source implementation review and owned cleanup remain
-    pending; [evaluation](V2-8J-3-EVAL.md) records source applicability and limits.
+    Independent new actual-PG challenges2/2 pass: competing save snapshot and
+    combined traversal ceiling. Owned cleanup saved/fsynced actual0-user-DB catalog,
+    removed the exact ID once and verified absence/private-credential deletion.
+    Final exact-source independent packet decision remains pending;
+    [evaluation](V2-8J-3-EVAL.md) records source applicability and limits.
     Durable attachment, clear/copy remapping, native
     presentation and verified claim support remain unresolved in this parent.
 

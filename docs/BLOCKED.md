@@ -372,7 +372,8 @@ production activation follows acceptance. Later scope/authority is solely in
 J3's reviewed read-only foundation was explicitly approved on2026-10-28 and is
 implemented at frozenedda5ec. Required50/50 plusselected governance2/2 and typecheck0
 pass; no missing backend or product-validation blocker remains. Independent
-implementation acceptance and owned-service cleanup are pending. The preparation
+implementation packet decision is pending; new independent2/2 pass and owned
+cleanup saved actual0 before exact-ID removal/private credential deletion. The preparation
 metadata/admission/launcher errors are resolved and retained in
 [the evaluation](V2-8J-3-EVAL.md). All later authority remains in
 [the roadmap](ROADMAP.md#assistant-citation-reference-checks).

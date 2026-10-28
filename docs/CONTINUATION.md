@@ -45,9 +45,10 @@ retained; no product test failed or successful product check was repeated.
 The headless checker observes exact saved targets, retained snippets and optional
 UTF-8 quote locators in one owner-bound snapshot. It attaches nothing and always
 reports claim support not-assessed. No retained content, source/scene/history/H
-write, public surface, model/search call, activation or render change. The owned
-isolated PostgreSQL fixture is retained only for coordinated independent review;
-root owns its final saved-catalog exact-ID cleanup. Later scope/authority lives
+write, public surface, model/search call, activation or render change. Independent actual-PG challenges2/2 pass on a docs-only descendant with the same
+runtime bytes. Owned PostgreSQL was removed once after a saved/fsynced actual0-user-
+DB catalog; exact-ID absence and temporary credential deletion passed. Final
+independent packet decision is pending; no owned service remains. Later scope/authority lives
 only in [the roadmap](ROADMAP.md#assistant-citation-reference-checks).
 
 ## Latest accepted slice — J2 project web-source registry complete

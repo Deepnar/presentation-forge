@@ -24,15 +24,20 @@ H/Assistant capability or model/search call is added. The source registry's read
 validators are extracted unchanged; PG preserves original private refusals after
 rollback. Existing adapter lock waits remain, without new deadline/cancellation.
 
-Separate /root/i8_source_review has the frozen source/evidence and the exclusive
-new-challenge execution slot. Root product execution is complete. Exact owned
-PostgreSQL2c6fd8aa48edfa0f654abb787475d98ffa5c80a7ee7e6a88d8425c21f7666674,
-nameforge-j3-validation-a9d5f60dd7, localhost32769 is temporarily retained solely
-for that review. Public identity/private-state path is in
-v2-8j-3-evidence/owned-postgres.json; never print credentials. Root alone removes
-it after reviewer DB/pools close, with an actual saved/fsynced zero-user-DB catalog
-and exact-ID absence/private-file cleanup verification. Never stop unrelated work
-or recreate old I4/J2 services; I4's unavailable historical count stays unavailable.
+Separate /root/i8_source_review inspected source and executed2/2 new actual-PG
+challenges in868ms after its own fresh admission. A competing SAVE reached an
+actual PG Lock wait without splitting the read snapshot; combined10001-element
+traversal refused while10000 succeeded. Actual invocationbd14e39 is docs-only
+above frozenedda5ec, with identical runtime/test bytes. Review database/pools
+closed/dropped and actual initial/final user catalogs were empty. Final exact-source
+ACCEPT/HOLD awaits complete pushed packet/cleanup audit; no further product run
+is needed absent a new finding.
+
+Root removed exact owned PostgreSQL2c6fd8aa48edfa0f654abb787475d98ffa5c80a7ee7e6a88d8425c21f7666674
+ONCE after saved/fsynced actual0-user-DB catalog. Exact-ID absence and private-
+credential removal passed. No owned persistent service or validation process
+remains. Do not recreate old I4/J2 services or infer I4's unavailable historical
+count. Never rerun the completed cleanup helper against an absent service.
 
 Original `.agents/` and the two untracked master/architecture prompt files are
 untouched. No browser/build/render/native/benchmark/old bulk sweep, real API/model/
