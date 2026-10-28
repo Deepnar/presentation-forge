@@ -41,7 +41,7 @@ function parse(operation, input, binding) {
   if (operation === 'resolve' && (!Array.isArray(r.ids) || !r.ids.length || r.ids.length > SOURCE_LIMITS.batch ||
     r.ids.some(id => typeof id !== 'string' || !sourceId.test(id)) || new Set(r.ids).size !== r.ids.length)) refuse('invalid-request');
   if (operation === 'list') {
-    r.limit ??= SOURCE_LIMITS.batch;
+    if (!Object.hasOwn(r, 'limit')) r.limit = SOURCE_LIMITS.batch;
     if (!integer(r.limit, SOURCE_LIMITS.batch) || r.limit === 0) refuse('invalid-request');
     if (r.cursor !== undefined && r.cursor !== null) {
       const c = r.cursor;

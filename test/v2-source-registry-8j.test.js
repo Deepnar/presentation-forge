@@ -28,6 +28,7 @@ test('Registry validation: invalid DTOs never enter storage or invoke accessors'
   assert.equal((await registry.inspect({ ...b, admin: true })).code,'invalid-request');
   assert.equal((await registry.inspect({ ...b, id: {} })).code,'invalid-request');
   assert.equal((await registry.list(b,{generation:0,revision:0,cursor:{projectId:'foreign',generation:0,revision:0,afterSourceId:source().id}})).code,'invalid-request');
+  assert.equal((await registry.list(b,{generation:0,revision:0,limit:null})).code,'invalid-request');
   assert.equal(transactions,0); assert.equal(getters,0);
 });
 test('Registry validation: storage failures are sanitized and requests captured before the first await', async () => {
