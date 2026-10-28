@@ -1,0 +1,66 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+  "acceptedBaseline": "6d51cd409945e94266e23596b57f925553e62e31",
+  "packetHead": "fd720ba5c04f492e071de664f07e21046d719122",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-28",
+  "evidence": "docs/v2-8j-3-evidence/independent/review.md",
+  "contract": "docs/V2-8J-3-PLAN.md",
+  "humanDirection": "Explicit J3 read-only foundation scope approved and pinned at8a01b6c before runtime, following separate readiness review of plan31ac753.",
+  "scope": "Headless read-only checks of exact saved slide/element targets, retained J2 web-source identity and optional excerpt-relative scalar UTF-8 quote ranges within one canonical owner/document/catalog snapshot. No persistent citation attachment, verified claim support or new public/provider authority.",
+  "assessment": "No concrete source defect or blocking evidence issue was found. Complete request capture, exact-owner parent locking, snapshot fences, shared unchanged J2 byte/catalog/body validators, bounded iterative ambiguity-aware target traversal, exact Unicode/locator precedence, separate target/source/locator observations, static sanitized failures and complete frozen results satisfy the approved contract. Existing source/H transaction shapes and scene/history/registry semantics remain unchanged.",
+  "findings": [],
+  "retainedValidation": {
+    "requiredTests": { "total": 50, "pass": 50, "fail": 0, "skip": 0, "cancelled": 0 },
+    "selectedIncludingGovernance": { "total": 52, "pass": 52, "fail": 0, "skip": 0, "cancelled": 0 },
+    "components": { "citationPure": 7, "citationSQLite": 5, "citationPostgreSQL": 5, "affectedJ2Pure": 4, "affectedJ2SQLite": 13, "affectedJ2PostgreSQL": 10, "packageBoundaries": 6, "selectedGovernance": 2 },
+    "typecheckExitCode": 0,
+    "allRootProductTestAttempts": { "total": 52, "pass": 52, "fail": 0, "skip": 0, "cancelled": 0 },
+    "evidence": "docs/v2-8j-3-evidence/execution-summary.json",
+    "provenance": "No failed product test, assertion correction or repeated successful product-test execution. Initial invalid state enum, expired service admission and pre-child PostgreSQL launcher environment-key failure remain preparation observations, not passing or executed product tests. Captured new runtime/test bytes match frozen source;43 otherwise uncaptured unchanged package paths for type/boundary commands are explicitly compared by committed invocation/current/final equality without a rerun."
+  },
+  "independentlyExecuted": {
+    "invocationHead": "bd14e39392c2c2b3b1be979a3af20d5aeec21669",
+    "frozenSourceSha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+    "backend": "Exact verified owned isolated PostgreSQL; fresh unique reviewer database",
+    "tests": { "total": 2, "pass": 2, "fail": 0, "skip": 0, "cancelled": 0 },
+    "durationMs": 868,
+    "resourceAdmission": "Fresh independent two-sample sustained admission with unchanged CPU/memory/physical-storage limits and positive kernel-thread classification of the sole D task.",
+    "challenges": [
+      "Concurrent SAVE removing the target reached an actual PostgreSQL Lock wait while the checker held the parent snapshot; the old read stayed coherent, old-token reads then refused stale-project, and current reads saw target-missing/source-retained without catalog mutation.",
+      "Aggregate traversal across two requested slides refused10001 total nodes with no partial output; exactly10000 succeeded with retained sources, frozen results and claimSupport not-assessed."
+    ],
+    "applicability": "Actual invocation was a documentation-only descendant of frozen source; all six captured runtime hashes match. Original invocation metadata is preserved and results are not relabeled as another execution.",
+    "evidence": "docs/v2-8j-3-evidence/independent/challenge-final.json"
+  },
+  "independentlyInspected": [
+    "Approved plan/direction, accepted J2 baseline and pushed implementation diff; request capture, target ambiguity/budgets, scalar byte ranges and result/error closure.",
+    "Canonical owner transaction/read wrappers and PostgreSQL private-error rollback bridge; verbatim J2 SQL/catalog/body extraction after export-only adjustment.",
+    "Fresh final EVAL/state/manifest/architecture/roadmap/handoff, retained raw file markers/counts and source applicability; scoped read-only packet audit0errors.",
+    "Six frozen runtime paths and twelve unchanged accepted project/schema/source/H/history boundaries; documentation-only packet and challenge invocation descendants.",
+    "Actual saved-empty catalog cleanup record, independently observed exact owned-container absence and temporary private credential removal."
+  ],
+  "cleanup": {
+    "reviewDatabaseDropped": true,
+    "reviewPoolsClosed": true,
+    "rootRecordedActualUserDatabaseCount": 0,
+    "independentlyObservedExactOwnedContainerAbsent": true,
+    "temporaryPrivateCredentialsAbsent": true,
+    "evidence": "docs/v2-8j-3-evidence/independent/packet-audit.json"
+  },
+  "residualLimits": [
+    "Results are immediately staleable snapshot observations, not durable citation/source-to-block mapping, reusable approval or attachment authority.",
+    "Snippet identity and byte-exact quote matches establish neither factual support, full-page/DOI/file integrity nor prompt-injection qualification; claimSupport remains not-assessed.",
+    "Existing SQLite/PostgreSQL lock-wait semantics retain no new wall-clock deadline or cancellation guarantee. Target node/depth and DTO bounds do not change accepted scene schemas.",
+    "Owned temporary tmpfs storage demonstrates actual backend contracts, not hardware/power-loss durability. No production migration or activation occurred.",
+    "Old J1/provider/browser/build/render/native/benchmark/bulk/broad-fault suites were excluded; unchanged accepted evidence is reused. No real API/model/search/local inference/GPU call ran.",
+    "Standing BYOK locale, earlier J1/I7 timing and inherited I4/native/visual provenance remain separate and unrerun."
+  ],
+  "outstandingBlockingIssues": [],
+  "requiredUnexecutedGates": [],
+  "stopPoint": "Propagate this exact-source acceptance and close out J3 documentation/push. Acceptance permits planning only; persistent attachment/history/copy/export semantics, public integration, verified support, live qualification and semantic creation need separate approved contracts."
+}

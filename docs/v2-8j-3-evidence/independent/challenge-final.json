@@ -1,0 +1,40 @@
+{
+  "implementationSha": "bd14e39392c2c2b3b1be979a3af20d5aeec21669",
+  "atUtc": "2026-10-28T16:54:02.582843+00:00",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "3",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "docs/v2-8j-3-evidence/independent/challenges.test.mjs"
+  ],
+  "backend": "Verified owned isolated PostgreSQL; unique review database",
+  "durationMs": 868,
+  "exitCode": 0,
+  "timedOut": false,
+  "tests": {
+    "total": 2,
+    "pass": 2,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "sourceHashes": {
+    "src/projects/citation-references.js": "a63fd5e6908243a77284f3e7f0609c38096801ef9225eb4055f84786ffad761d",
+    "src/projects/snippet-locator.js": "0d61dd9851101f6a8d535409050d165626c458ea94b2027c54c03d576e1417a0",
+    "src/projects/source-read.js": "1c79e587033fff4b318b24ce963270aade800adeeb3524b98fa0fc4a8dbe7318",
+    "src/projects/sources.js": "12c8ebc0db7223585210155be48a52431856620500fb9ce0fa047b6407093c47",
+    "src/projects/store.js": "007e8b292c3926973d2bf5cac863c931f66ab8a3d89e975b0a728cb77a1df3d8",
+    "src/projects/store-postgres.js": "5d1a925e23f28f6fca50fac63a51e61c788a63d5ab7a17bc0972b65141a205b4",
+    "test/v2-source-registry-fixture.js": "b437f230bb1b00e2161429b43fd066853ba831b72653e407ae1e0f299412be48",
+    "test/v2-tool-fixture.js": "a3fd7ce4386c7524eb8c327bd3453d30d56103066d9ac6d07975da019dedf61c",
+    "docs/v2-8j-3-evidence/independent/challenges.test.mjs": "8aac85e75153cd7b97c5e833dd9005930b852d1093088e1f3aca2ccf73542d80"
+  },
+  "log": "docs/v2-8j-3-evidence/independent/challenge-final.tap"
+}

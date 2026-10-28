@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: one parent snapshot excludes a concurrent save that removes the requested target
+ok 1 - one parent snapshot excludes a concurrent save that removes the requested target
+  ---
+  duration_ms: 134.532157
+  type: 'test'
+  ...
+# Subtest: traversal budget is shared across requested slides and the exact10000 boundary succeeds
+ok 2 - traversal budget is shared across requested slides and the exact10000 boundary succeeds
+  ---
+  duration_ms: 356.36528
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 773.941222

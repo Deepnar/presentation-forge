@@ -1,0 +1,98 @@
+{
+  "implementationSha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+  "acceptedBaseline": "6d51cd409945e94266e23596b57f925553e62e31",
+  "packetHead": "fd720ba5c04f492e071de664f07e21046d719122",
+  "atUtc": "2026-10-28T16:56:36.654380+00:00",
+  "method": "Read-only scoped source/hash/count/Git/cleanup audit; no product execution",
+  "selectedGates": {
+    "citation-pure": {
+      "total": 7,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "citation-sqlite": {
+      "total": 5,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "citation-postgres": {
+      "total": 5,
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "source-registry-regression": {
+      "total": 27,
+      "pass": 27,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "citation-boundaries": {
+      "total": 6,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "governance": {
+      "total": 2,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "rootTests": {
+    "total": 52,
+    "pass": 52,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "requiredTestLeaves": 50,
+  "typecheckExitCode": 0,
+  "frozenRuntimeHashes": {
+    "src/projects/citation-references.js": "a63fd5e6908243a77284f3e7f0609c38096801ef9225eb4055f84786ffad761d",
+    "src/projects/snippet-locator.js": "0d61dd9851101f6a8d535409050d165626c458ea94b2027c54c03d576e1417a0",
+    "src/projects/source-read.js": "1c79e587033fff4b318b24ce963270aade800adeeb3524b98fa0fc4a8dbe7318",
+    "src/projects/sources.js": "12c8ebc0db7223585210155be48a52431856620500fb9ce0fa047b6407093c47",
+    "src/projects/store.js": "007e8b292c3926973d2bf5cac863c931f66ab8a3d89e975b0a728cb77a1df3d8",
+    "src/projects/store-postgres.js": "5d1a925e23f28f6fca50fac63a51e61c788a63d5ab7a17bc0972b65141a205b4"
+  },
+  "unchangedAcceptedBoundaries": [
+    "packages/model/source-identity.ts",
+    "packages/model/source.schema.json",
+    "packages/model/scene.schema.json",
+    "packages/model/intent.schema.json",
+    "packages/projects/project-document.schema.json",
+    "packages/projects/document.js",
+    "packages/tools/web-source.ts",
+    "packages/tools/result.schema.json",
+    "packages/agent/turns.ts",
+    "src/projects/history.js",
+    "src/projects/runtime-document.js",
+    "src/projects/source-schema.js"
+  ],
+  "extractedJ2ValidatorTextUnchanged": true,
+  "independentChallengeInvocationHead": "bd14e39392c2c2b3b1be979a3af20d5aeec21669",
+  "independentChallenges": {
+    "total": 2,
+    "pass": 2,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "invocationApplicability": "Captured runtime hashes match frozen source; invocation is a documentation-only descendant, not a relabeled rerun.",
+  "cleanup": {
+    "rootRecordedActualUserDatabaseCount": 0,
+    "independentExactContainerAbsent": true,
+    "temporaryPrivateCredentialsAbsent": true
+  },
+  "errors": []
+}

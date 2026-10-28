@@ -1,0 +1,14 @@
+{
+  "implementationSha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+  "containerId": "2c6fd8aa48edfa0f654abb787475d98ffa5c80a7ee7e6a88d8425c21f7666674",
+  "name": "forge-j3-validation-a9d5f60dd7",
+  "imageId": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "host": "127.0.0.1",
+  "port": 32769,
+  "identityVerified": true,
+  "database": "forge_citation_j3_review_1512360_mvsctdzj",
+  "created": true,
+  "dropped": true,
+  "initialDatabaseCatalog": [],
+  "finalDatabaseCatalog": []
+}
