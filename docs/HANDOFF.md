@@ -6,7 +6,8 @@ with no dependent implementation. [Proposed contract](V2-8J-3-PLAN.md) and
 read-only exact saved-target/source and snippet-relative quote checks before
 persistent citation attachment. Planning entry HEAD14aabf6, final plan31ac753.
 Independent [READY_FOR_DIRECTION](reviews/V2-8J-3-plan-7321c5f.json) finds no
-technical blocker; human bounded direction is pending. There is no source
+technical blocker; human approved the read-only foundation first on2026-10-28.
+This direction is pinned before runtime work. There is no source
 implementation, new service, product/model test or activation. Final planning
 checks are dev:protocol and diff/link consistency, not product validation.
 The accepted baseline and active milestone remain J2; nextCandidate is unauthorized.
@@ -48,8 +49,8 @@ historical catalog count. Unrelated services/work and original `.agents/`,
 
 Standing BYOK/J1/I7/native/visual/I4 limits remain explicit. No live model/API/search,
 local inference/GPU, old regression matrix, deployment or production migration ran.
-J2 is complete. J3 is at the planning/readiness gate; stop before runtime/schema
-implementation until concrete human direction is recorded.
+J2 is complete. Only J3's reviewed read-only contract is now authorized; finish
+focused validation and separate exact-source review, then stop at closeout.
 All later scope, dependency order and authority live solely in
 [the roadmap](ROADMAP.md#assistant-search-source-integrity); the parent and V2-8
 remain incomplete.

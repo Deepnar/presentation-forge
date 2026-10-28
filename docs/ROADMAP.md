@@ -9125,7 +9125,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-citation-reference-checks"></a>
 
-  - [ ] **V2-8J-3 headless citation-reference and snippet locator checks — proposed.**
+  - [ ] **V2-8J-3 headless citation-reference and snippet locator checks — implementation approved.**
     The2026-10-28 continuation prepares this bounded prerequisite from accepted
     J2 `6d51cd4` and entry HEAD `14aabf6`. [Proposed contract](V2-8J-3-PLAN.md)
     recommends read-only exact saved slide/element and retained source checks in
@@ -9142,9 +9142,9 @@ local inference. Only that separate transport correction is authorized; this aud
     Independent [READY_FOR_DIRECTION](reviews/V2-8J-3-plan-7321c5f.json) reviews
     exact final plan `31ac753` from initial `7321c5f`, with no technical blocker.
     It pins locator-result precedence and separate observations without product
-    execution. This is planning only; human bounded direction remains pending.
-    Agree this foundation versus the larger authoritative attachment contract
-    before writing runtime code. Durable attachment, clear/copy remapping, native
+    execution. Human approved the read-only foundation first on2026-10-28;
+    pin that direction before runtime changes. Only this reviewed contract is
+    authorized. Durable attachment, clear/copy remapping, native
     presentation and verified claim support remain unresolved in this parent.
 
     **Look-ahead.** The result is a snapshot observation, not stored source-to-block

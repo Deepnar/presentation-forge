@@ -1,7 +1,8 @@
 # V2-8J-3 — headless citation reference and snippet locator checks
 
-Status: proposed contract, planning only. The 2026-10-28 continuation authorizes
-preparation of the next dependency; implementation direction is not yet recorded.
+Status: scoped read-only foundation implementation approved by explicit human
+direction on2026-10-28, after independent readiness review of plan31ac753. Only
+this contract is authorized; no persistent attachment or public activation follows.
 Accepted baseline: `6d51cd409945e94266e23596b57f925553e62e31` (J2).
 Planning entry HEAD: `14aabf642933ffa4c870149ae1a5512f8d35900a`.
 Branch/push target: `v2` / `origin/v2`.
