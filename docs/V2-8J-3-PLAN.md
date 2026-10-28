@@ -169,8 +169,12 @@ An optional snippet-utf8-v1 locator means only the decoded retained **excerpt**:
   source but has an unsupported-excerpt locator outcome. It is not rewritten,
   silently dropped, or newly refused by J2. Invalid scalar quote input refuses
   before storage. Valid literal U+FFFD and supplementary characters remain valid.
-- Source absence means locator-unavailable, not locator-matched; no locator means
-  not-requested. A successful exact quote check is locator-matched only.
+- Locator precedence is exact: absent locator always means not-requested, even
+  when the source is missing. A requested locator with a missing source is
+  unavailable; with a retained unpaired-surrogate excerpt it is unsupported-excerpt
+  before any byte encoding/slicing. Otherwise source-dependent bounds/code-point
+  boundary failure is invalid, then exact quote comparison gives mismatch/matched.
+  A successful exact quote check is locator-matched only.
   It is never verified claim support, freshness, full-page/DOI/file integrity,
   anti-injection qualification or permission to fetch anything.
 
@@ -180,10 +184,28 @@ Return the checked project id/revision and source generation/revision plus exact
 one ordered outcome per input index. For each index, keep separate fields for
 target (present/missing/ambiguous), source (retained/missing) and locator
 (not-requested/matched/mismatch/invalid/unavailable/unsupported-excerpt), and always
-claimSupport:not-assessed. Canonical spelling is fixed in the implementation's
-strict result validator before any caller is added. Do not collapse these facts
+claimSupport:not-assessed. The strict complete result shape is:
+
+```text
+{ ok: true,
+  snapshot: { projectId, projectRevision, sourceGeneration, sourceRevision },
+  references: [{ index, target, source, locator, claimSupport: "not-assessed" }] }
+```
+
+Each observation enum uses exactly the spellings above, index is its zero-based
+input position, and no unknown result fields are accepted. Failure is exactly
+`{ ok: false, code, message }`, with a static sanitized message and one of
+invalid-request, not-found, stale-project, stale-catalog, invalid-state,
+target-budget-exceeded, result-too-large or storage-unavailable. No diagnostic
+input/path/content or partial references array accompanies a failure.
+Do not collapse these facts
 into a success/verified-citation badge. No URL/title/excerpt/quote or unrelated
 source metadata is echoed, stored or logged in this response.
+
+A missing/ambiguous target does not short-circuit independent source/locator
+observations; every requested reference receives all three observations. Target
+presence never changes locator precedence or assesses the truth of the target's
+content. Corrupt selected state and budget failure still refuse the whole request.
 
 Malformed input, stale snapshots, backend failure, corrupt selected state or an
 oversized complete response publishes no reference outcomes. Well-formed missing
