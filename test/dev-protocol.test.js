@@ -510,3 +510,22 @@ test('source registry keeps its five selected gates and each observed file manda
   f.state.validation.pop(); hasError(f.check(), /schema|inventory.*contract/);
   f.state.activeMilestone.id = 'V2-7A'; hasError(f.check(), /schema|inventory.*contract/);
 });
+
+test('citation reference checks keep their six selected gates and each observed file mandatory', t => {
+  const f = fixture(t);
+  mkdirSync(path.join(f.dir, 'docs/v2-8j-3-evidence'), { recursive: true });
+  cpSync(path.join(ROOT, 'docs/v2-8j-3-evidence/validation-plan.json'), path.join(f.dir, 'docs/v2-8j-3-evidence/validation-plan.json'));
+  f.state.activeMilestone.id = 'V2-8J-3';
+  f.state.validation = ['citation-pure', 'citation-sqlite', 'citation-postgres', 'source-registry-regression', 'citation-boundaries', 'typecheck'].map(id => ({ id, status: 'unexecuted', evidence: null, reason: 'Selected citation and affected registry scope' }));
+  assert.deepEqual(f.check().errors, []);
+  for (const id of ['citation-pure', 'citation-sqlite', 'citation-postgres', 'source-registry-regression', 'citation-boundaries']) {
+    const entry = f.state.validation.find(x => x.id === id);
+    f.state.validation = [entry, ...f.state.validation.filter(x => x !== entry)];
+    f.evidence(); assert.deepEqual(f.check().errors, []);
+    writeFileSync(path.join(f.dir, 'docs/output.tap'), '# tests 28\n# pass 28\n# fail 0\n# skipped 0\n# cancelled 0\n');
+    hasError(f.check(), /complete required scope/);
+    Object.assign(entry, { status: 'unexecuted', evidence: null, reason: 'Selected citation and affected registry scope' });
+  }
+  f.state.validation.pop(); hasError(f.check(), /schema|inventory.*contract/);
+  f.state.activeMilestone.id = 'V2-7A'; hasError(f.check(), /schema|inventory.*contract/);
+});

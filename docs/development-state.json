@@ -6,50 +6,56 @@
     "source": "docs/reviews/V2-8J-2-6d51cd4.json"
   },
   "implementationHead": {
-    "sha": "6d51cd409945e94266e23596b57f925553e62e31",
-    "note": "J2 independently accepted at frozen source: selected57/57, typecheck0, independent2/2; corrected fixture5/PG7 failures and source-capture applicability retained. Owned fixture removed after saved actual0 catalog; private credentials absent. Later commits are documentation/evidence only."
+    "sha": "f42219a8d079e034f823d7b23c4bf8b5327ee8d7",
+    "note": "Approved J3 implementation and tests under focused validation; no result or independent acceptance inferred."
   },
   "activeMilestone": {
-    "id": "V2-8J-2",
-    "roadmapRef": "docs/ROADMAP.md#assistant-project-source-registry",
-    "evalDoc": "docs/V2-8J-2-EVAL.md",
+    "id": "V2-8J-3",
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-reference-checks",
+    "evalDoc": "docs/V2-8J-3-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "implemented",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8J-2-6d51cd4.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "registry-pure",
-      "status": "passed",
-      "evidence": "docs/v2-8j-2-evidence/registry-pure.json",
-      "reason": "4/4 strict inputs/capture; final exact source and complete hash capture."
+      "id": "citation-pure",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Selected approved new/affected scope; execution pending."
     },
     {
-      "id": "registry-sqlite",
-      "status": "passed",
-      "evidence": "docs/v2-8j-2-evidence/registry-sqlite.json",
-      "reason": "13/13 actual SQLite, byte corruption/reopen/cold delete; null-list hunk explicitly covered by pure check."
+      "id": "citation-sqlite",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Selected approved new/affected scope; execution pending."
     },
     {
-      "id": "registry-postgres",
-      "status": "passed",
-      "evidence": "docs/v2-8j-2-evidence/registry-postgres.json",
-      "reason": "10/10 actual own isolated PG; rollback-preserving refusal correction, exact final storage snapshots."
+      "id": "citation-postgres",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Selected approved new/affected scope; execution pending."
     },
     {
-      "id": "schema-boundaries",
-      "status": "passed",
-      "evidence": "docs/v2-8j-2-evidence/schema-boundaries.json",
-      "reason": "7/7; package import/schema/type bytes unchanged since retained execution."
+      "id": "source-registry-regression",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Selected approved new/affected scope; execution pending."
+    },
+    {
+      "id": "citation-boundaries",
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Selected approved new/affected scope; execution pending."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8j-2-evidence/typecheck.json",
-      "reason": "Exit0; all final package TypeScript bytes match retained command."
+      "status": "unexecuted",
+      "evidence": null,
+      "reason": "Selected approved new/affected scope; execution pending."
     }
   ],
   "knownBlockers": [],
@@ -60,9 +66,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8J-3 citation-reference and snippet locator checks",
+    "id": "Revisioned citation attachment and source mapping contract",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-reference-checks"
+    "roadmapRef": "docs/ROADMAP.md#assistant-search-source-integrity"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

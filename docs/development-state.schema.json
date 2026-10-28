@@ -162,7 +162,12 @@
               "registry-pure",
               "registry-sqlite",
               "registry-postgres",
-              "schema-boundaries"
+              "schema-boundaries",
+              "citation-pure",
+              "citation-sqlite",
+              "citation-postgres",
+              "source-registry-regression",
+              "citation-boundaries"
             ]
           },
           "status": {
@@ -352,7 +357,8 @@
                   "V2-8I-7",
                   "V2-8I-8",
                   "V2-8J-1",
-                  "V2-8J-2"
+                  "V2-8J-2",
+                  "V2-8J-3"
                 ]
               }
             },

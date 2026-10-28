@@ -1,0 +1,37 @@
+{
+  "acceptedBaseline": "6d51cd409945e94266e23596b57f925553e62e31",
+  "approvedContract": "docs/V2-8J-3-PLAN.md",
+  "humanDirection": "2026-10-28 Approve read-only foundation first (Recommended), pinned8a01b6c before runtime",
+  "gates": {
+    "citation-pure": [
+      "test/v2-citation-references-8j.test.js"
+    ],
+    "citation-sqlite": [
+      "test/v2-citation-references-sqlite-8j.test.js"
+    ],
+    "citation-postgres": [
+      "test/v2-citation-references-postgres-8j.test.js"
+    ],
+    "source-registry-regression": [
+      "test/v2-source-registry-8j.test.js",
+      "test/v2-source-registry-sqlite-8j.test.js",
+      "test/v2-source-registry-postgres-8j.test.js"
+    ],
+    "citation-boundaries": [
+      "test/v2-core-boundary.test.js"
+    ],
+    "typecheck": []
+  },
+  "requiredFiles": [
+    "test/v2-citation-references-8j.test.js",
+    "test/v2-citation-references-sqlite-8j.test.js",
+    "test/v2-citation-references-postgres-8j.test.js",
+    "test/v2-source-registry-8j.test.js",
+    "test/v2-source-registry-sqlite-8j.test.js",
+    "test/v2-source-registry-postgres-8j.test.js",
+    "test/v2-core-boundary.test.js"
+  ],
+  "additionalSelected": "New citation gate-inventory governance case and existing pending-check preservation case only.",
+  "rationale": "New pure7/SQLite5/PostgreSQL5, affected J2 pure4/SQLite13/PostgreSQL10 because transaction-local source validation was extracted, package boundary6 and one typecheck. No generated schema changes.",
+  "excluded": "No old J1/provider/browser/build/native/benchmark/bulk/fault matrix or live API/model/search/GPU/activation. Missing PostgreSQL is unexecuted."
+}
