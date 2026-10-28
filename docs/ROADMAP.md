@@ -9165,7 +9165,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-citation-lifecycle"></a>
 
-  - [ ] **V2-8J-4 revisioned citation metadata and lifecycle — proposed.**
+  - [ ] **V2-8J-4 revisioned citation metadata and lifecycle — approved, in progress.**
     From independently accepted J3 `edda5ec`, planning entry `309ced2`.
     [Proposed contract](V2-8J-4-PLAN.md) records scene-owned unverified target/source
     IDs, source generation, optional byte ranges and versioned content hashes;
@@ -9181,7 +9181,9 @@ local inference. Only that separate transport correction is authorized; this aud
     Independent [readiness](reviews/V2-8J-4-plan-d58a8a1.json) names exact final plan
     `bbfbf8c` READY_FOR_DIRECTION after resolving tuple scope, target remapping,
     sparse payload projection and generic agent-ingress closure. No technical
-    blocker remains; human direction is pending. No runtime tests or services ran.
+    blocker remains. Human approved “Approve bounded J4 (Recommended)” on2026-10-28
+    before runtime changes. [Evaluation](V2-8J-4-EVAL.md) and fixed inventory now
+    track implementation; no later copy/export/presentation authority is added.
 
     **Look-ahead.** Scene-owned records avoid another document; unverified metadata
     handles session undo200 beyond durable payload20 pruning without resurrecting

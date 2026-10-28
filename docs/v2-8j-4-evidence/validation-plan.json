@@ -1,0 +1,32 @@
+{
+  "acceptedBaseline": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+  "approvedContract": "docs/V2-8J-4-PLAN.md",
+  "humanDirection": "2026-10-28 Approve bounded J4 (Recommended), explicit scoped metadata/history/unresolved-source/copy-export policy; pinned before runtime changes",
+  "gates": {
+    "citation-lifecycle": [
+      "test/v2-citations-8j.test.js"
+    ],
+    "citation-write-sqlite": [
+      "test/v2-citations-sqlite-8j.test.js"
+    ],
+    "citation-write-postgres": [
+      "test/v2-citations-postgres-8j.test.js"
+    ],
+    "citation-boundaries": [
+      "test/v2-core-boundary.test.js",
+      "test/v2-types-drift.test.js",
+      "test/v2-citation-references-8j.test.js"
+    ],
+    "typecheck": []
+  },
+  "requiredFiles": [
+    "test/v2-citations-8j.test.js",
+    "test/v2-citations-sqlite-8j.test.js",
+    "test/v2-citations-postgres-8j.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/v2-types-drift.test.js",
+    "test/v2-citation-references-8j.test.js"
+  ],
+  "rationale": "New citation schema/commands/hash/lifecycle/preflight and shared actual storage contracts; narrow changed schema/package and accepted J3 checker regression. No broad old matrix. One lock interleaving per actual backend.",
+  "excluded": "No browser/build/render/benchmark/legacy/provider/model/search/GPU work, live API, deployment or production activation. Missing PostgreSQL remains unexecuted."
+}

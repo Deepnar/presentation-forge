@@ -124,17 +124,13 @@ point at it without creating a broken or misleading payment link.
 
 ## 3. Decisions — nobody should make these alone
 
-### Current V2 direction: citation metadata lifecycle
+### Current V2 direction: J4 approved, implementation pending
 
-J3 is independently accepted with no pending validation/review or owned service.
-The next [J4 contract](ROADMAP.md#assistant-citation-lifecycle) is proposed, not
-authorized. Human architecture/data-handling direction is needed for persisted
-scene metadata, unresolved-reference history policy and explicit cited-copy/export
-containment; J3 approved read-only checks. The [plan](V2-8J-4-PLAN.md) is the concrete
-decision packet. Independent technical readiness cannot approve that policy.
-The [independent review](reviews/V2-8J-4-plan-d58a8a1.json) of exact plan `bbfbf8c`
-is READY_FOR_DIRECTION with no technical planning blocker.
-Only human direction unblocks implementation; no dependent scope starts meanwhile.
+Human approved bounded J4 metadata/history/unresolved-source and cited-copy/export
+containment on2026-10-28 after independent readiness. The direction blocker is
+resolved for [this slice](ROADMAP.md#assistant-citation-lifecycle) only.
+[Evaluation](V2-8J-4-EVAL.md) and state track pending implementation/validation/
+review. No later source-aware copy or citation-presentation direction is implied.
 
 ### 3.1 Browser regression coverage
 

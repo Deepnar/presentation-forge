@@ -167,7 +167,10 @@
               "citation-sqlite",
               "citation-postgres",
               "source-registry-regression",
-              "citation-boundaries"
+              "citation-boundaries",
+              "citation-lifecycle",
+              "citation-write-sqlite",
+              "citation-write-postgres"
             ]
           },
           "status": {
@@ -358,7 +361,8 @@
                   "V2-8I-8",
                   "V2-8J-1",
                   "V2-8J-2",
-                  "V2-8J-3"
+                  "V2-8J-3",
+                  "V2-8J-4"
                 ]
               }
             },

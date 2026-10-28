@@ -1,7 +1,9 @@
 # V2-8J-4 — revisioned citation metadata and lifecycle
 
-Status: **proposed; human architecture/data-handling direction pending**.
-This document proposes implementation scope; it is not authorization or acceptance.
+Status: **bounded implementation approved on2026-10-28; acceptance pending**.
+Human direction: “Approve bounded J4 (Recommended)” to the explicit metadata,
+history, unresolved-source and cited-copy/export containment question. This
+approves the reviewed contract bbfbf8c, not later copy/export presentation work.
 The [roadmap](ROADMAP.md#assistant-citation-lifecycle) owns the work and dependencies.
 
 Accepted baseline: `edda5ec7c2105bebff4a429a04b3fbe5b09048b4` (J3), independently
@@ -307,7 +309,7 @@ Keep J3 accepted baseline until that decision; no self-acceptance. Update as-bui
 ARCHITECTURE only when implementation exists. Report final HEAD/changed files,
 commands/totals/unexecuted cases, corrections, durations, limits and recommendation.
 
-Now: independently review this **plan**, record READY_FOR_DIRECTION or blockers,
-publish focused documentation and ask the human to approve this bounded metadata/
-unverified-state/copy-export policy. **Stop before implementation.** Readiness is
-not acceptance, new data-handling authorization or approval of later roadmap work.
+Human direction now permits this bounded implementation and focused offline
+validation. Independent readiness remains distinct from implementation acceptance.
+Stop after scoped implementation, evidence, independent ACCEPT/HOLD and handoff;
+no later copy/export/creation work or activation follows automatically.

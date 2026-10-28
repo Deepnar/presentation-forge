@@ -6,56 +6,50 @@
     "source": "docs/reviews/V2-8J-3-edda5ec.json"
   },
   "implementationHead": {
-    "sha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
-    "note": "J3 independently accepted at frozen source:50required/50 and52selected/52 pass once, typecheck0, independent2/2 new actual-PG challenges pass. Preparation failures retained separately. Actual0 catalog saved before exact-ID removal/private credential deletion; no owned service remains. Later commits are documentation/evidence only."
+    "sha": "d267b37284b8a7a3e809e650f3afb8030386fe6e",
+    "note": "Human approved bounded J4; task entry before runtime changes. Implementation and all selected gates pending; J3 remains accepted baseline."
   },
   "activeMilestone": {
-    "id": "V2-8J-3",
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-reference-checks",
-    "evalDoc": "docs/V2-8J-3-EVAL.md",
+    "id": "V2-8J-4",
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-lifecycle",
+    "evalDoc": "docs/V2-8J-4-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8J-3-edda5ec.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "citation-pure",
-      "status": "passed",
-      "evidence": "docs/v2-8j-3-evidence/citation-pure.json",
-      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
+      "id": "citation-lifecycle",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J4 inventory; not yet executed."
     },
     {
-      "id": "citation-sqlite",
-      "status": "passed",
-      "evidence": "docs/v2-8j-3-evidence/citation-sqlite.json",
-      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
+      "id": "citation-write-sqlite",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J4 inventory; not yet executed."
     },
     {
-      "id": "citation-postgres",
-      "status": "passed",
-      "evidence": "docs/v2-8j-3-evidence/citation-postgres.json",
-      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
-    },
-    {
-      "id": "source-registry-regression",
-      "status": "passed",
-      "evidence": "docs/v2-8j-3-evidence/source-registry-regression.json",
-      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
+      "id": "citation-write-postgres",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J4 inventory; not yet executed."
     },
     {
       "id": "citation-boundaries",
-      "status": "passed",
-      "evidence": "docs/v2-8j-3-evidence/citation-boundaries.json",
-      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J4 inventory; not yet executed."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8j-3-evidence/typecheck.json",
-      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J4 inventory; not yet executed."
     }
   ],
   "knownBlockers": [],
@@ -66,9 +60,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8J-4 revisioned citation metadata and lifecycle",
+    "id": "Source-aware copy and native citation presentation contracts",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-lifecycle"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-project-copy"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
