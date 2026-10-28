@@ -14,7 +14,7 @@
     "roadmapRef": "docs/ROADMAP.md#assistant-citation-reference-checks",
     "evalDoc": "docs/V2-8J-3-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "implemented",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,

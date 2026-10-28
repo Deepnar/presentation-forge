@@ -1,0 +1,16 @@
+{
+  "atUtc": "2026-10-28T16:46:05.485932+00:00",
+  "observations": [
+    {
+      "command": "npm run dev:protocol",
+      "exitCode": 1,
+      "issue": "implementationStatus used implemented instead of the existing implemented-pending-validation enum. Corrected state metadata; no runtime change or product failure."
+    },
+    {
+      "command": "python docs/v2-8j-3-evidence/owned-pg.py start",
+      "exitCode": 1,
+      "issue": "Fresh-admission age exceeded60sec before startup; precondition refused before Docker or credential mutation. No service started; collect a new admission."
+    }
+  ],
+  "kind": "metadata and fixture-admission observations, not test executions"
+}
