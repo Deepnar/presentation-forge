@@ -1,0 +1,8 @@
+{
+  "id": "4b4e26def208b80a004b9caa848cf8fc405d8068a196bfdedfcc61cf6931f2aa",
+  "name": "/forge-j4-20261028232211-7d544f",
+  "image": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "running": true,
+  "loopbackBindingVerified": true,
+  "credentialPreflightNote": "An earlier read printed only connection-file key names before this exact Docker identity verification. No URL, credential, connection, database or service mutation occurred in that metadata-only read. Private connection use is gated on verification and fresh admission."
+}

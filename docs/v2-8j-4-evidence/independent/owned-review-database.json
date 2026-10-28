@@ -1,0 +1,14 @@
+{
+  "frozenSourceSha": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "containerId": "4b4e26def208b80a004b9caa848cf8fc405d8068a196bfdedfcc61cf6931f2aa",
+  "name": "forge-j4-20261028232211-7d544f",
+  "image": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "host": "127.0.0.1",
+  "port": 32770,
+  "identityVerifiedBeforeConnectionUse": true,
+  "database": "forge_citations_j4_review_1778954_mvsf6p3z",
+  "created": true,
+  "dropped": true,
+  "initialUserDatabaseCatalog": [],
+  "finalUserDatabaseCatalog": []
+}

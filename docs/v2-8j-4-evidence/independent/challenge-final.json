@@ -1,0 +1,52 @@
+{
+  "invocationHead": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "frozenSourceSha": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "atUtc": "2026-10-28T18:00:22.499014+00:00",
+  "command": [
+    "nice",
+    "-n",
+    "10",
+    "ionice",
+    "-c",
+    "3",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "docs/v2-8j-4-evidence/independent/challenges.test.mjs"
+  ],
+  "backend": "Verified owned isolated PostgreSQL; unique review database",
+  "durationMs": 5272,
+  "exitCode": 0,
+  "timedOut": false,
+  "tests": {
+    "total": 2,
+    "pass": 2,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "sourceHashes": {
+    "src/projects/citations.js": "013c6e2a2dad233dc6f344e3595b85bb46e9b15dbca1d8fdf7503604f9ed8754",
+    "src/projects/citation-references.js": "9939f0861f820f5a98b0ec53585cc317ecc2ba0655b056a52d05c89700ca670e",
+    "src/projects/snippet-locator.js": "f08bed0843f13fb0f44cb88282b8614a60c6344a601c8dda18b7517bf5ea67a1",
+    "src/projects/store.js": "174ec14086da122fb0856f0406b549ac6c9c210d6337a9a0c5ec48f676f4d5d5",
+    "src/projects/store-postgres.js": "da911b1a57d145c48e73cf9b3375037447a67ddfffe25964c34da5ca0fe05ddd",
+    "packages/model/citations.ts": "2fbd43c08c14429d45ecbcd379c3d261925f27491d83743123f65cc165248f13",
+    "packages/model/citation-targets.ts": "339f3a7bf223e05210602a83a593058ed6e99b259c61a4e3df3bfc27fd34617a",
+    "packages/model/citation-content.ts": "376f17b621332dff5537b1caac7db8318f7cda9f63a1914d1f73ca8c8f7defe1",
+    "packages/model/commands.ts": "ef4412532d96b0332d35e5fdc4aad0f5af8f9275b474200507dc952a75490376",
+    "packages/model/engine.ts": "2f34515c6acc7ebd4cdf72d463f22768d8c1f2358a0ea32cd193c74de4cc1ce8",
+    "packages/model/scene.ts": "ec41b7b3e3aea5a48519744f78489952bf8a810b627d3362d2da36ce6b5b075c",
+    "packages/model/scene.schema.json": "94fc9c543636afda87469b621269c36a57af3c9164fdfa6b6f362176a964557a",
+    "packages/model/scene.generated.ts": "934633c65be75b09ea5181727f25ab4ab1d0953e0b09374a01a0531d9adb5c6b",
+    "packages/projects/document.js": "69fcf2bb59a06ab2a7d1118985774fc096f01985815787b7e53f85055514fb69",
+    "packages/compiler/compile.js": "edfdc103855741f587c3c1cdd3423c63f153e097a2a23fc29391a29d41b6eb53",
+    "packages/renderer-pptx/render.ts": "8754684c159ff9fbe3c416be673984e6d2af6db46e7524a477aa0d226948393f",
+    "test/v2-source-registry-fixture.js": "b437f230bb1b00e2161429b43fd066853ba831b72653e407ae1e0f299412be48",
+    "test/v2-tool-fixture.js": "a3fd7ce4386c7524eb8c327bd3453d30d56103066d9ac6d07975da019dedf61c",
+    "test/v2-citations-fixture.js": "240550e13d36e2a8a0be80f409bde1096d6c410fd5b0bdacdc950cc0c1ef8af2",
+    "docs/v2-8j-4-evidence/independent/challenges.test.mjs": "94d1738de62582b2a706cb07b7c497ee1ad3f3f1cf1f43ec3cb032f1854210cb"
+  },
+  "log": "docs/v2-8j-4-evidence/independent/challenge-final.tap"
+}

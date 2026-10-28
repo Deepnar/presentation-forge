@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: orphan and protected metadata can be removed without reading or repairing an invalid source catalog
+ok 1 - orphan and protected metadata can be removed without reading or repairing an invalid source catalog
+  ---
+  duration_ms: 186.005433
+  type: 'test'
+  ...
+# Subtest: stale-generation observations skip an unselected corrupt re-registered body while current selection refuses wholly
+ok 2 - stale-generation observations skip an unselected corrupt re-registered body while current selection refuses wholly
+  ---
+  duration_ms: 37.543305
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5031.768306
