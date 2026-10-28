@@ -29,13 +29,10 @@ and two untracked master-prompt files preserved. Standing BYOK/I7/I4 operational
 native/visual limits remain separate. Never recreate the removed I4 backend or
 infer its historical count.
 
-J1 acceptance/closeout are complete. The2026-10-28 continuation now authorizes
-J2 contract preparation only; see V2-8J-2-PLAN.md and
-ROADMAP.md#assistant-project-source-registry. Proposed owner-only retained web
-snippets require explicit policy approval. No runtime/query/schema/migration,
-model/provider call, public transport, activation or infrastructure change is
-authorized yet. Independent READY_FOR_DIRECTION is recorded in
-reviews/V2-8J-2-plan-84e1582.json for exact plan51652e6; human retention approval
-is pending. No technical planning blocker remains. No product tests ran for this
-documentation-only step; protocol/diff consistency passes. Do not mark J2 accepted
-or replace the accepted J1 source with a planning/docs commit.
+J1 acceptance/closeout are complete. Human explicitly approved scoped J2 private
+snippet retention and implementation on2026-10-28, after independent readiness
+at plan51652e6 in reviews/V2-8J-2-plan-84e1582.json. V2-8J-2-PLAN.md and
+ROADMAP.md#assistant-project-source-registry bound the active implementation.
+Only the owner-bound headless web registry, both storage adapters and focused
+new/affected offline checks are authorized. No models/search/UI/activation or
+production migration. J1 remains the accepted source until separate J2 review.

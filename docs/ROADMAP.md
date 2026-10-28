@@ -9081,7 +9081,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-project-source-registry"></a>
 
-  - [ ] **V2-8J-2 immutable project web-source registry — reviewed; direction pending.**
+  - [ ] **V2-8J-2 immutable project web-source registry — implementation approved.**
     The2026-10-28 continuation prepares the next dependency from accepted
     J1f161901 and entry HEADf84c015. [Proposed contract](V2-8J-2-PLAN.md)
     defines explicit selected-source registration, immutable owner-bound identity/
@@ -9094,11 +9094,13 @@ local inference. Only that separate transport correction is authorized; this aud
     [READY_FOR_DIRECTION](reviews/V2-8J-2-plan-84e1582.json) reviews exact plan
     51652e6 and resolves catalog corruption, byte decoding, clear recovery,
     binary cursor, identity/provenance and inherited lock-wait ambiguities.
-    No technical planning blocker remains; human retention direction is pending.
+    Human approved scoped retention and implementation on2026-10-28. No technical
+    planning/policy blocker remains; only the reviewed J2 contract is authorized.
     Source attachment/verified locators/claim support, paper/file adapters, public
     integration and source-aware project-copy remapping remain outside J2; the
     later citation/creation contract must resolve those seams before use.
-    No runtime/schema/query/migration code is authorized by planning.
+    Offline runtime/schema/query implementation is authorized by that explicit
+    direction; no production migration, activation or dependent scope is authorized.
 
   Dependency sequence after accepted J1: agree project source registry/retention/
   resolution and verified locator boundaries before research-backed semantic

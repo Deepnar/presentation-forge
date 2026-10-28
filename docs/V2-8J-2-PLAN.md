@@ -1,7 +1,8 @@
 # V2-8J-2 — immutable project web-source registry contract
 
-Status: proposed; planning only. No runtime/storage code or migration is authorized
-by this document. Accepted baseline f161901cf29bd7ebd2c12ef634a86cacf5f90ea3 (J1),
+Status: scoped implementation and retention approved by explicit human direction
+on2026-10-28, after independent readiness review of plan51652e6. No production
+migration, public activation or dependent implementation is authorized. Accepted baseline f161901cf29bd7ebd2c12ef634a86cacf5f90ea3 (J1),
 entry HEADf84c0158886d4fa513c5a2d583dcaf6dea8f300c, branchv2/origin/v2.
 The2026-10-28 continuation authorizes preparing the next contract. The roadmap is
 [the sole work registry](ROADMAP.md#assistant-project-source-registry).
@@ -35,7 +36,7 @@ before adding citation attachments, verified locators or research orchestration.
 
 ## Human data-policy decision
 
-Recommended policy, subject to explicit approval:
+Approved policy (2026-10-28 human direction):
 
 1. An explicit trusted owner-scoped registration saves selected normalized web
    SourceRefs. Research completion alone never registers them. Store only source

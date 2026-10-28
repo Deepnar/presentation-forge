@@ -362,7 +362,7 @@ are outside acceptance. Later scope/authority is solely in
 
 J2's concrete web-source registry contract is technically READY_FOR_DIRECTION at
 plan51652e6 in [the independent review](reviews/V2-8J-2-plan-84e1582.json).
-Implementation is blocked only on explicit human direction for the new private
-snippet retention/clear/delete policy; J1 query-disclosure approval did not grant
-storage retention. No external service or model run is required for this decision.
+Human approved the new private snippet retention/clear/delete policy and scoped
+implementation on2026-10-28. No planning/policy blocker remains; no model run or
+production activation is authorized.
 [The roadmap](ROADMAP.md#assistant-project-source-registry) owns scope and options.

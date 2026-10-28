@@ -32,13 +32,13 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current contract preparation — J2 source registry
+## Current implementation — J2 source registry
 
 The2026-10-28 continuation prepares [J2](V2-8J-2-PLAN.md) from accepted J1;
 [the roadmap](ROADMAP.md#assistant-project-source-registry) owns scope/direction.
-No runtime, query/schema or migration code is authorized until the private snippet
-retention/clear/delete policy receives explicit human direction. Read HANDOFF for
-technical plan-readiness status. J1 acceptance and source remain unchanged.
+Human approved scoped retention/implementation on2026-10-28 after technical
+readiness review. Read HANDOFF and the approved contract before coding or tests.
+No production migration/model call/activation; J1 remains accepted until J2 review.
 
 ## Latest accepted slice — J1 headless canonical web research complete
 
