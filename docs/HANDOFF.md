@@ -34,6 +34,8 @@ J2 contract preparation only; see V2-8J-2-PLAN.md and
 ROADMAP.md#assistant-project-source-registry. Proposed owner-only retained web
 snippets require explicit policy approval. No runtime/query/schema/migration,
 model/provider call, public transport, activation or infrastructure change is
-authorized yet. Technical plan review is pending. No product tests ran for this
+authorized yet. Independent READY_FOR_DIRECTION is recorded in
+reviews/V2-8J-2-plan-84e1582.json for exact plan51652e6; human retention approval
+is pending. No technical planning blocker remains. No product tests ran for this
 documentation-only step; protocol/diff consistency passes. Do not mark J2 accepted
 or replace the accepted J1 source with a planning/docs commit.

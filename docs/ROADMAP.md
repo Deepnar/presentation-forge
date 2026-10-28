@@ -9035,6 +9035,8 @@ local inference. Only that separate transport correction is authorized; this aud
   sessions, queued plans/receipts and initial reads preserve their earlier tool
   subsets. Extend durable turn/research orchestration only through a separately
   agreed authority contract, retaining H generation/revision/approval bindings.
+  Any public source integration must also specify transaction-wait/cancellation
+  semantics; bounded payloads/cardinality alone do not bound parent-lock waits.
   Next agree immutable project source registry/versions, retention/clear/delete,
   owner-bound resolution and verified locator policy before storage changes.
   Reuse F/J1 IDs without replacing legacy paths; add separate paper/project
@@ -9079,7 +9081,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-project-source-registry"></a>
 
-  - [ ] **V2-8J-2 immutable project web-source registry — contract preparation.**
+  - [ ] **V2-8J-2 immutable project web-source registry — reviewed; direction pending.**
     The2026-10-28 continuation prepares the next dependency from accepted
     J1f161901 and entry HEADf84c015. [Proposed contract](V2-8J-2-PLAN.md)
     defines explicit selected-source registration, immutable owner-bound identity/
@@ -9088,7 +9090,11 @@ local inference. Only that separate transport correction is authorized; this aud
     Recommend private normalized web snippets retained until explicit source clear
     or project deletion; chat clear/Version history stay separate. No queries,
     transcripts, full pages or automatic registration. This new data-handling/
-    retention policy needs explicit human approval after technical plan review.
+    retention policy needs explicit human approval. Independent
+    [READY_FOR_DIRECTION](reviews/V2-8J-2-plan-84e1582.json) reviews exact plan
+    51652e6 and resolves catalog corruption, byte decoding, clear recovery,
+    binary cursor, identity/provenance and inherited lock-wait ambiguities.
+    No technical planning blocker remains; human retention direction is pending.
     Source attachment/verified locators/claim support, paper/file adapters, public
     integration and source-aware project-copy remapping remain outside J2; the
     later citation/creation contract must resolve those seams before use.
