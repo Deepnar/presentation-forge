@@ -8918,7 +8918,7 @@ local inference. Only that separate transport correction is authorized; this aud
 |---|---|---|
 | P0 — complete | [Model transport resource bounds](#model-provider-stream-resource-bounds) | V2-8G independently accepted at f3e784a; qualified the read-loop/cleanup correction while preserving wire/error/usage/tool contracts. |
 | P0 — complete headless boundary | [Turn and approval ownership](#assistant-turn-approval-contract) | V2-8H independently accepted at22e7c97; durable bounded visible turns and atomic approval reuse the existing run queue. Hosted routes/UI remain in their own entry. |
-| P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | J1 canonical research and J2 private source registry are accepted. Prepare J3 read-only reference/locator checks before durable citation mapping and research-backed creation; no claim-verification or public activation is implied. |
+| P0 for research claims | [Canonical search and source integrity](#assistant-search-source-integrity) | J1 canonical research and J2 private source registry are accepted. J3 read-only reference/locator checks are validated pending review before durable citation mapping and research-backed creation; no claim-verification or public activation is implied. |
 | P0 for full parent creation | [Semantic creation](#assistant-semantic-creation) | Bridge model-authored intent into existing compilation/preserving application; existing content tools cannot create decks. |
 | P0 | [Assistant surface and orchestration](#assistant-surface-integration) | Existing-deck dependency order is approved: I1 transport and I2 headless worker independently accepted; authenticated submission is independently accepted at2ba82cb; host policy and exact wake are accepted; the existing-deck Assistant is independently accepted in I8; remaining capability/context/live qualification retains separate contracts. |
 | P0 basic / P1 distributed | [Trace and spend admission](#assistant-trace-budget) | Make context/tool/instruction provenance observable, preserve unknown usage, and prevent parallel requests/retries bypassing account allowances. |
@@ -9144,7 +9144,14 @@ local inference. Only that separate transport correction is authorized; this aud
     It pins locator-result precedence and separate observations without product
     execution. Human approved the read-only foundation first on2026-10-28;
     pin that direction before runtime changes. Only this reviewed contract is
-    authorized. Durable attachment, clear/copy remapping, native
+    authorized. Frozen source `edda5ec` now has new pure7/SQLite5/PostgreSQL5,
+    affected J2 registry27 and boundary6 passing, plusselected governance2 and
+    typecheck0. All52 selected test executions pass once; no assertion/product
+    correction was required. State enum, aged admission and launcher preparation
+    issues are retained separately; no unexecuted child was labeled passing.
+    Independent exact-source implementation review and owned cleanup remain
+    pending; [evaluation](V2-8J-3-EVAL.md) records source applicability and limits.
+    Durable attachment, clear/copy remapping, native
     presentation and verified claim support remain unresolved in this parent.
 
     **Look-ahead.** The result is a snapshot observation, not stored source-to-block

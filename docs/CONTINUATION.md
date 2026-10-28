@@ -32,16 +32,22 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current planning — J3 citation-reference checks
+## Current implementation — J3 citation-reference checks
 
-The2026-10-28 continuation prepares [J3's bounded contract](V2-8J-3-PLAN.md) from
-accepted J2 and entry HEAD14aabf6. Final plan31ac753 is independently
-[READY_FOR_DIRECTION](reviews/V2-8J-3-plan-7321c5f.json), with no technical blocker;
-human scope direction is pending. It recommends one-
-snapshot read-only saved-target/source and snippet-relative quote checks before
-persistent attachment. No runtime/schema/surface change, product tests, new service,
-model/search call or activation has begun. The accepted baseline/active milestone
-stay J2; nextCandidate remains unauthorized. Scope and later dependencies live
+Human approved the reviewed read-only foundation first on2026-10-28, pinned8a01b6c
+before runtime. Frozen sourceedda5ec7c2105bebff4a429a04b3fbe5b09048b4 has
+50required/50 plus2selected governance passing, typecheck0; exact-source independent
+implementation acceptance is pending. Read [contract](V2-8J-3-PLAN.md),
+[evaluation](V2-8J-3-EVAL.md), source manifest, state and HANDOFF. J2 remains accepted
+until a separate decision. Metadata/admission/launcher errors were corrected and
+retained; no product test failed or successful product check was repeated.
+
+The headless checker observes exact saved targets, retained snippets and optional
+UTF-8 quote locators in one owner-bound snapshot. It attaches nothing and always
+reports claim support not-assessed. No retained content, source/scene/history/H
+write, public surface, model/search call, activation or render change. The owned
+isolated PostgreSQL fixture is retained only for coordinated independent review;
+root owns its final saved-catalog exact-ID cleanup. Later scope/authority lives
 only in [the roadmap](ROADMAP.md#assistant-citation-reference-checks).
 
 ## Latest accepted slice — J2 project web-source registry complete

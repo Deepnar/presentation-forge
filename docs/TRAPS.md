@@ -1962,6 +1962,17 @@ existing fencing sentinel through canonical rollback, then restore the original
 outside. Test deliberate refusal after an actual write as well as stale/capacity
 paths. See the [J2 PostgreSQL correction](V2-8J-2-EVAL.md).
 
+## Valid JSON does not guarantee scalar text for byte locators
+
+A retained canonical JSON string can contain an escaped lone UTF-16 surrogate
+while its JSON payload is valid UTF-8. Buffer/TextEncoder repair that value to
+U+FFFD, so a byte-range comparison can appear to match text that was never retained.
+Check scalar validity before encoding locator evidence. Preserve the source's
+accepted identity and report an unsupported excerpt instead of repairing it or
+silently tightening the existing source validator. A valid literal U+FFFD is a
+separate positive control; supplementary pairs and a literal leading BOM also
+need exact offset tests. See the [J3 checks](V2-8J-3-EVAL.md).
+
 ## Keep clock-boundary assertions independent of scheduler delay
 
 A150ms deadline can expire before test admission, and cold child bootstrap can

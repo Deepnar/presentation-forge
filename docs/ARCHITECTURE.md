@@ -3026,3 +3026,42 @@ surface, automatic J1/H/Assistant registration, model/search call or activation 
 added. The approved policy keeps selected snippets until source clear or canonical
 project deletion, with existing backup/media limits. [Contract](V2-8J-2-PLAN.md),
 [evaluation](V2-8J-2-EVAL.md) and state distinguish source, evidence and acceptance.
+
+### V2-8J-3 headless citation-reference observations
+
+`src/projects/citation-references.js` exposes `createCitationReferenceChecker(backend)`
+with one `check(binding, request)` method. The approved headless domain checks the
+current exact owner's saved slide/element targets and J2 retained sources in one
+canonical parent-locked transaction. A narrow `withCitationReadTransaction` adapter
+projection carries the full saved document, actual dialect and internal query
+capability, without scene-save or H approval hooks. Existing source/runtime shapes
+stay unchanged. PostgreSQL shares the rollback-preserving private-domain refusal
+bridge with J2; `source-read.js` supplies the same catalog/body validators to both
+domains, without nested transactions or a second SQL implementation.
+
+The complete binding/request is strict-cloned before awaits. Expected saved project
+revision and source generation/revision fence the complete read. At most24 requested
+references/sources reuse J2's capped SQL and selected-body validation; outputs are
+bounded384KiB, deeply frozen and contain only snapshot counters and per-input
+observations. Targets use exact live slide and recursive element IDs, never
+semanticRef/tombstone fallback. An iterative walk visits each requested element-
+target slide once, with10000 total elements and128 child levels; overflow refuses
+the complete request. Duplicate element IDs are ambiguous rather than first-match.
+Hidden/locked/group/chrome existence grants no edit authority.
+
+`snippet-locator.js` validates optional excerpt-relative half-open UTF-8 ranges and
+exact scalar quotes. No trimming/normalization/BOM removal or page/URL interpretation
+occurs. Absent locator always reports not-requested; a requested locator with a
+missing source reports unavailable. Retained lone-surrogate excerpts report
+unsupported-excerpt before encoding; actual byte/code-point bounds precede exact
+mismatch/match. Valid literal replacement and supplementary characters are supported.
+Target presence, retained source and locator status are independent; claimSupport
+is always not-assessed. No URL/title/excerpt/quote or unrelated scene is returned.
+
+No retained content, catalog/document/history/chat write, scene schema/command,
+provider context, public route/CLI/UI, renderer change or activation is added. These
+are current-snapshot observations, not attached citations or reusable approval;
+later writes must re-enter canonical authority after save/restore/clear/delete.
+Existing adapter lock waits remain; cardinality/traversal limits do not establish
+a new deadline or cancellation guarantee. [Contract](V2-8J-3-PLAN.md),
+[evaluation](V2-8J-3-EVAL.md) and state distinguish implementation from acceptance.

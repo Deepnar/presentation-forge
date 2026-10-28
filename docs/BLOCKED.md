@@ -369,11 +369,10 @@ production activation follows acceptance. Later scope/authority is solely in
 [the roadmap](ROADMAP.md#assistant-search-source-integrity).
 
 
-J3 final plan31ac753 is independently
-[READY_FOR_DIRECTION](reviews/V2-8J-3-plan-7321c5f.json), with no technical blocker.
-Implementation awaits human agreement on the bounded direction: the read-only
-reference/locator foundation or the larger authoritative attachment contract.
-AGENTS and the active roadmap require agreeing that direction before code.
-[The roadmap](ROADMAP.md#assistant-citation-reference-checks) owns the scope and
-[the proposed contract](V2-8J-3-PLAN.md) supplies the concrete reviewable result.
-No product tests/services/model calls ran for planning; J2 remains accepted.
+J3's reviewed read-only foundation was explicitly approved on2026-10-28 and is
+implemented at frozenedda5ec. Required50/50 plusselected governance2/2 and typecheck0
+pass; no missing backend or product-validation blocker remains. Independent
+implementation acceptance and owned-service cleanup are pending. The preparation
+metadata/admission/launcher errors are resolved and retained in
+[the evaluation](V2-8J-3-EVAL.md). All later authority remains in
+[the roadmap](ROADMAP.md#assistant-citation-reference-checks).

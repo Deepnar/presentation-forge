@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8J-2-6d51cd4.json"
   },
   "implementationHead": {
-    "sha": "f42219a8d079e034f823d7b23c4bf8b5327ee8d7",
-    "note": "Approved J3 implementation and tests under focused validation; no result or independent acceptance inferred."
+    "sha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+    "note": "J3 frozen:50required plus2selected governance pass once, typecheck0. No product failure. Metadata/admission/launcher preparation failures retained separately. Independent review and final owned cleanup pending."
   },
   "activeMilestone": {
     "id": "V2-8J-3",
     "roadmapRef": "docs/ROADMAP.md#assistant-citation-reference-checks",
     "evalDoc": "docs/V2-8J-3-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,39 +23,39 @@
   "validation": [
     {
       "id": "citation-pure",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Selected approved new/affected scope; execution pending."
+      "status": "passed",
+      "evidence": "docs/v2-8j-3-evidence/citation-pure.json",
+      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
     },
     {
       "id": "citation-sqlite",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Selected approved new/affected scope; execution pending."
+      "status": "passed",
+      "evidence": "docs/v2-8j-3-evidence/citation-sqlite.json",
+      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
     },
     {
       "id": "citation-postgres",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Selected approved new/affected scope; execution pending."
+      "status": "passed",
+      "evidence": "docs/v2-8j-3-evidence/citation-postgres.json",
+      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
     },
     {
       "id": "source-registry-regression",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Selected approved new/affected scope; execution pending."
+      "status": "passed",
+      "evidence": "docs/v2-8j-3-evidence/source-registry-regression.json",
+      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
     },
     {
       "id": "citation-boundaries",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Selected approved new/affected scope; execution pending."
+      "status": "passed",
+      "evidence": "docs/v2-8j-3-evidence/citation-boundaries.json",
+      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
     },
     {
       "id": "typecheck",
-      "status": "unexecuted",
-      "evidence": null,
-      "reason": "Selected approved new/affected scope; execution pending."
+      "status": "passed",
+      "evidence": "docs/v2-8j-3-evidence/typecheck.json",
+      "reason": "Selected complete scope passed; exact source/captured-byte applicability in source-manifest.json."
     }
   ],
   "knownBlockers": [],
