@@ -811,8 +811,21 @@ export async function withRuntimeTransaction({ owner = null, id }, job) {
   }
 }
 
-export function withSourceTransaction(binding, job) {
-  return withRuntimeTransaction(binding, tx => job(Object.freeze({
-    dialect: 'postgres', doc: { id: tx.doc.id, revision: tx.doc.revision }, query: tx.query,
-  })));
+export async function withSourceTransaction(binding, job) {
+  let original, failed = false;
+  try {
+    return await withRuntimeTransaction(binding, async tx => {
+      try {
+        return await job(Object.freeze({ dialect: 'postgres',
+          doc: { id: tx.doc.id, revision: tx.doc.revision }, query: tx.query }));
+      } catch (error) {
+        original = error; failed = true;
+        // Throw through the canonical boundary so every mutation rolls back.
+        throw Object.assign(new Error('Source transaction refused.'), { code: 'runtime-fenced' });
+      }
+    });
+  } catch (error) {
+    if (failed && error?.code === 'runtime-fenced') throw original;
+    throw error;
+  }
 }
