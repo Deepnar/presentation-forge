@@ -50,7 +50,9 @@ Recommended policy, subject to explicit approval:
    deletes that project. Clearing chat and restoring a deck revision preserve the
    registry; clearing sources does not modify the deck/chat/history or pretend
    their source references remain resolvable. Project deletion removes all child
-   source content atomically. No auto-expiry or hidden oldest-row eviction.
+   source content atomically. Canonical project deletion retains its accepted
+   owner/admin policy; this introduces no admin bypass for source operations.
+   No auto-expiry or hidden oldest-row eviction.
 4. No search query, raw backend/tool/provider transcript, model summary/claim,
    hidden reasoning, full page, file, DOI locator, credentials or embeddings are
    retained. No new external disclosure, page fetch or real provider call.
@@ -72,17 +74,26 @@ reuse/extract the strict validator vocabulary so the registry and canonical
 web_search result cannot drift. Leave the permissive general SourceRef schema and
 standalone F20/perHost5 ceilings intact. Reject foreign IDs/projects, unknown fields,
 malformed/noncanonical credential-bearing URLs, unsupported kinds/locators,
-invalid timestamps and executable/accessor/nonplain objects before effects.
+invalid retrieval timestamps and executable/accessor/nonplain objects before effects.
 Recompute the exact accepted webSourceId over validated content. Normalization is
 not an excuse to repair a supplied ID or change existing citation meaning.
 
 Each (projectId,sourceId) denotes one immutable semantic body. Changed URL/title/
 excerpt/publication gets a new ID. Same-ID identical semantic content is an
-idempotent no-op; preserve the first stored provider/retrieval metadata, even when
+idempotent no-op under current catalog preconditions; preserve the first stored
+provider/retrieval metadata, even when
 a later registration supplies different provenance. A same-ID semantic conflict or
 corrupt persisted row refuses the whole operation; never overwrite or silently
 repair it. Validation applies on reads as well as writes. No source existence or
 identity result is labeled verified factual support.
+
+Semantic equality is the exact accepted webSourceId tuple, including its absent
+versus empty publication-label equivalence. publishedAt is a bounded label, not
+a required parseable date. retrievedAt follows F/J1's finite Date.parse validation
+and length bound; preserve its supplied representation without silently converting
+it or certifying freshness. Replaying a successful write with old catalog tokens
+is stale, not a new idempotency/billing receipt. Refreshed current preconditions
+permit an unchanged-source no-op.
 
 ### Registry and operations
 
@@ -93,6 +104,33 @@ and v2_project_sources (project_id,source_id,payload,payload_bytes). Primary/uni
 keys bind project plus source; both children cascade on canonical project deletion.
 Counters reflect retained canonical UTF-8 payload bytes, not approximate tokens.
 No content appears in counters, errors, receipts or logs.
+
+Catalog generation/revision are nonnegative safe integers, policy_version is the
+single supported version, count/bytes obey the retained ceilings. Check arithmetic
+before increment; overflow refuses without mutation or wraparound. An absent
+catalog means virtual0/0 only after a bounded child-row probe establishes absence.
+Orphan rows, malformed/future-policy catalog data and mismatched aggregates fail
+closed; never reset metadata to0 or adopt old rows as new authority.
+
+For inspect/register/resolve/list, verify count and byte aggregates from at most
+513 child metadata rows, including actual SQL UTF-8 length and declared length;
+the extra row detects overflow. No full-payload materialization or parse of every
+source is required. Actual byte lengths, counts, bounds and aggregate equality
+must match the validated catalog. Parse/hash-validate only the selected/affected
+source bodies (at most24); success makes no claim about unrequested body content.
+An invalid selected body fails the entire read/batch, with no partial publication.
+
+Persisted lengths are untrusted. Cap actual SQL byte lengths before returning any
+text/identifier/payload to JavaScript; oversize/type failures return a bounded
+invalid sentinel, not a truncated value. SQLite source identity and payload reads
+must use capped BLOB projections and fatal UTF-8 decoding with explicit BOM
+preservation before JSON/identity validation; the driver must never replace bytes
+first. PostgreSQL uses octet_length and its UTF-8 text boundary. Helpers receive
+an adapter-bound dialect, never an environment/model override that could mismatch
+the injected transaction. Keep H's generic transaction/query contract unchanged.
+Compare actual UTF-8 lengths, canonical serialization and payload_bytes for bodies
+validated by the operation. Include malformed stored bytes, literal U+FFFD and BOM
+controls; do not silently repair corruption or use payload_bytes for allocation.
 
 The shared callable domain (e.g. src/projects/sources.js) reuses the canonical
 owner-checked project transaction and existing backend selection. Add additive,
@@ -112,12 +150,26 @@ Operations are headless, with strict named request DTOs and sanitized errors:
   generation. Return explicit per-ID found/missing outcomes in request order plus
   snapshot generation/revision. Never search another project or fetch missing URLs.
 - list: bounded stable source-ID order, limit1..24, with a strict continuation
-  bound to project/generation/registry revision. A changed snapshot refuses stale
-  continuation; no unbounded scan or offset accepted from model input.
+  bound to project/generation/registry revision. Cursor is a <=512-byte strict
+  plain object containing exactly projectId,generation,revision,afterSourceId;
+  IDs use their canonical bounded forms. It is a position, never authorization.
+  Use keyset ordering with SQLite BINARY/PostgreSQL C collation and matching
+  indexes, not locale order or offsets. The parent lock binds catalog check and
+  page read in one snapshot. At most25 bounded IDs/metadata establish has-more;
+  fetch at most24 payloads. A changed snapshot refuses stale continuation.
 - clear: require expected source generation/revision; delete all retained source
   rows, advance generation and registry revision atomically, reset counters. A
   stale/noop replay cannot delete a later generation. Increment generation even
   when empty so it remains an explicit fence for in-flight registration.
+
+An absent-empty clear must persist generation1/revision1. Clear is a recovery
+deletion operation: with valid owner and syntactically valid current catalog
+identity/policy/counters, corrupt source bodies or aggregate mismatch do not block
+deleting every child row and resetting counters. It reads no source payload.
+Malformed/unknown-policy catalog metadata cannot be silently reconstructed;
+canonical project deletion remains the final deletion path for that case.
+Resolve treats well-formed unknown and foreign source IDs identically as missing
+within the authorized project; no global existence query is permitted.
 
 Every registration requires both document and catalog snapshot checks. Ordinary
 source changes do not increment deck revision, save/history state or H conversation
@@ -127,6 +179,14 @@ still requires current owner and exact catalog state. Resolve/list/inspect are
 owner-authorized reads; no source IDs, existence or counters leak across owners.
 Registering against an absent catalog uses its documented virtual generation0/
 revision0 state, created atomically within the locked parent transaction.
+
+Bounded here describes data size, query cardinality and test watchdogs. Retain the
+existing adapter lock-wait semantics: SQLite currently has a5000ms busy timeout;
+PostgreSQL's parent lock precedes the job without a per-operation lock/statement
+timeout. This slice promises no new wall-clock completion/deadline/cancellation
+guarantee. Do not use Promise.race to return a timeout while a write can commit
+later, or change H/default adapter timeouts incidentally. Any later public
+integration must settle its transaction-wait/cancellation contract explicitly.
 
 Ceilings:24 sources per registration/resolve/page,16KiB canonical UTF-8 per source,
 512 retained sources and4MiB retained source-payload bytes per project. Whole input
@@ -180,13 +240,15 @@ or model tests. Implementation should add a small shared contract inventory rath
 than copying historical matrices:
 
 - Pure validation/identity/immutability/bounds: strict JSON and fields, unchanged F
-  IDs, Unicode UTF-8 accounting, corrupt/hash/foreign-row rejection, exact repeat/
+  IDs/publication-label equivalence, Unicode UTF-8 accounting, corrupt/hash/foreign-row rejection, exact repeat/
   first-provenance semantics, DTO limits and sanitized failure/no partial output.
 - Actual temporary SQLite registry calls through the configured store: complete
   register/inspect/list/resolve/clear lifecycle, reopen persistence, exact owner/
   ownerless isolation, stale deck/catalog, all-or-nothing failed batches/capacity,
   pagination snapshot fencing, clear versus stale registration, canonical delete
-  cascade and unchanged scenes/history/chat. Include independent process reopen
+  cascade and unchanged scenes/history/chat. Challenge orphan headers/counter
+  drift, unknown policy/overflow, actual corrupt/oversized stored bytes, literal
+  U+FFFD/BOM, empty clear fences and corrupt-body clear recovery. Include process reopen
   and one bounded conflict/rollback case, not the full old crash suite.
 - The same new registry contracts on an owned isolated PostgreSQL backend, with
   a bounded two-connection parent-lock conflict/clear/delete challenge. Never use
