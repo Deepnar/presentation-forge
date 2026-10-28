@@ -32,7 +32,7 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current implementation — approved J4 citation metadata
+## Current review — validated J4 citation metadata
 
 Human approved **Approve bounded J4 (Recommended)** on2026-10-28 after
 [independent readiness](reviews/V2-8J-4-plan-d58a8a1.json) for exact plan bbfbf8c.
@@ -40,7 +40,10 @@ Read [contract](V2-8J-4-PLAN.md), [evaluation](V2-8J-4-EVAL.md), state and
 [roadmap](ROADMAP.md#assistant-citation-lifecycle). Bounded metadata, undo/history,
 fresh owner qualification and cited-copy/export containment are authorized.
 Implement/validate/review this scope only, with focused offline checks and no model
-calls/activation. J3 remains accepted baseline until independent J4 ACCEPT/HOLD.
+calls/activation. Candidate665cd04 has41/41 selected and typecheck0; initial2
+fault-fixture failures and withdrawn regex/harness hypothesis remain in the eval.
+Independent challenges2/2 and exact owned-fixture cleanup are complete; final
+pushed-packet decision remains pending. J3 remains accepted baseline until independent J4 ACCEPT/HOLD.
 No later copy/export presentation work is authorized. Root owns resource admission,
 validation and cleanup; no old service or cleanup helper may be recreated/repeated.
 

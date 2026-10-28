@@ -3068,3 +3068,55 @@ later writes must re-enter canonical authority after save/restore/clear/delete.
 Existing adapter lock waits remain; cardinality/traversal limits do not establish
 a new deadline or cancellation guarantee. [Contract](V2-8J-3-PLAN.md),
 [evaluation](V2-8J-3-EVAL.md) and state distinguish implementation from acceptance.
+
+### V2-8J-4 revisioned scene citation lifecycle
+
+Implemented from accepted J3 after explicit bounded metadata/history and copy/
+export containment approval; validation/review status is in
+[state](development-state.json) and [evaluation](V2-8J-4-EVAL.md).
+
+Optional scene-owned `citations` contain versioned citation/target/source IDs,
+source generation, optional excerpt-relative UTF-8 byte ranges and a versioned
+content digest. They contain no source body, quote, claim or saved trust flag.
+Shape/byte/capacity/tuple checks and project-wide ID uniqueness cover engine/raw
+scene ingress and canonical document save/restore; source.projectId must match
+the canonical document. Unresolved or fabricated same-project records remain
+unverified data, allowing exact session undo after durable payload pruning and
+source clear without another ledger or document.
+
+`src/projects/citations.js` exposes headless `createProjectCitations(backend)` with
+attach, remove and inspect. Strict captured owner bindings have no admin bypass.
+Attach/inspect fence current project/catalog snapshots and reuse J2 transaction-
+local catalog/body validators; attach verifies exact target/protection and any
+transient scalar quote. The narrow `withCitationTransaction` adapter projects
+canonical saveScenes/history with actual dialect and private rollback semantics;
+existing H/source/read-only transaction shapes remain unchanged. Attach/remove
+apply validated human citation.put/remove batches and commit one canonical revision
+and history entry. Complete replacement no-ops preserve bytes and counters. Removal
+needs no catalog/body access and can remove orphaned/protected-target metadata.
+
+Shared `packages/model/citation-targets.ts` indexes exact identities with aggregate
+10000-node/128-depth bounds and protected ancestor/group scopes. J3 uses the same
+index without changing its slide-existence semantics. Browser-safe content
+projections and WebCrypto hashes cover authored text/chart/table/image/group/slide
+content, explicit absent payloads and lossless JSON-escaped Unicode. They exclude
+geometry/style/chrome/IDs/citations; aggregate projection input is capped384KiB.
+Inspection separates target, content equality, current retained/stale-generation
+source and range validity; claimSupport is always not-assessed. A stored range has
+no quote and cannot report quote-matched. Old generations never revive after clear.
+
+Normal edits retain anchors; deletion leaves element orphans. Duplicate remapping
+uses a cardinality-aware exact ID map and deterministic citation IDs; unresolved
+targets remain scope-mismatched. Recompile carries arrays verbatim and detached
+scenes stay authoritative. Canonical undo/history restore exact metadata without
+restoring sources. Agent payloads cannot introduce citation commands or cited raw
+slide inserts; ordinary edits and engine-owned duplicate/undo effects preserve
+records. Existing tool catalogs and provider projections gain no citation data.
+
+Generic cited new-project creation/copy/import refuses before writes. Canonical
+PPTX preflight refuses any nonempty citation array before producing native bytes,
+including hidden/stale/orphan targets, without private source resolution. Uncited
+projects/exports retain existing behaviour. Source-aware copy and portable citation
+presentation remain separately gated in the [roadmap](ROADMAP.md#assistant-search-source-integrity).
+No new route/CLI/UI, model/search call, source retention, activation or deployment
+is supplied by this headless implementation.

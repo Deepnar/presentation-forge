@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8J-3-edda5ec.json"
   },
   "implementationHead": {
-    "sha": "d267b37284b8a7a3e809e650f3afb8030386fe6e",
-    "note": "Human approved bounded J4; task entry before runtime changes. Implementation and all selected gates pending; J3 remains accepted baseline."
+    "sha": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+    "note": "Approved bounded J4 implemented: selected41/41, typecheck0 and independent2/2 actual-PG challenges pass. Original2 fixture failures and false review/harness hypothesis retained. Runtime unchanged from6628bb4; exact applicability in manifest. Actual0 catalog saved/fsynced before exact-ID removal and credential deletion. Final independent packet decision pending."
   },
   "activeMilestone": {
     "id": "V2-8J-4",
     "roadmapRef": "docs/ROADMAP.md#assistant-citation-lifecycle",
     "evalDoc": "docs/V2-8J-4-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,33 +23,33 @@
   "validation": [
     {
       "id": "citation-lifecycle",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused J4 inventory; not yet executed."
+      "status": "passed",
+      "evidence": "docs/v2-8j-4-evidence/citation-lifecycle.json",
+      "reason": "Focused complete gate passed; original invocation and exact frozen-source applicability retained in source-manifest.json."
     },
     {
       "id": "citation-write-sqlite",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused J4 inventory; not yet executed."
+      "status": "passed",
+      "evidence": "docs/v2-8j-4-evidence/citation-write-sqlite.json",
+      "reason": "Focused complete gate passed; original invocation and exact frozen-source applicability retained in source-manifest.json."
     },
     {
       "id": "citation-write-postgres",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused J4 inventory; not yet executed."
+      "status": "passed",
+      "evidence": "docs/v2-8j-4-evidence/citation-write-postgres.json",
+      "reason": "Focused complete gate passed; original invocation and exact frozen-source applicability retained in source-manifest.json."
     },
     {
       "id": "citation-boundaries",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused J4 inventory; not yet executed."
+      "status": "passed",
+      "evidence": "docs/v2-8j-4-evidence/citation-boundaries.json",
+      "reason": "Focused complete gate passed; original invocation and exact frozen-source applicability retained in source-manifest.json."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused J4 inventory; not yet executed."
+      "status": "passed",
+      "evidence": "docs/v2-8j-4-evidence/typecheck.json",
+      "reason": "Focused complete gate passed; original invocation and exact frozen-source applicability retained in source-manifest.json."
     }
   ],
   "knownBlockers": [],

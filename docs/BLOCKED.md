@@ -124,13 +124,14 @@ point at it without creating a broken or misleading payment link.
 
 ## 3. Decisions — nobody should make these alone
 
-### Current V2 direction: J4 approved, implementation pending
+### Current V2 direction: J4 validated, independent review pending
 
 Human approved bounded J4 metadata/history/unresolved-source and cited-copy/export
 containment on2026-10-28 after independent readiness. The direction blocker is
 resolved for [this slice](ROADMAP.md#assistant-citation-lifecycle) only.
-[Evaluation](V2-8J-4-EVAL.md) and state track pending implementation/validation/
-review. No later source-aware copy or citation-presentation direction is implied.
+[Evaluation](V2-8J-4-EVAL.md) and state record41/41 selected and typecheck0;
+independent challenges2/2 and exact owned-fixture cleanup are complete. Final
+independent packet decision remains pending; no service/resource blocker remains. No later source-aware copy or citation-presentation direction is implied.
 
 ### 3.1 Browser regression coverage
 

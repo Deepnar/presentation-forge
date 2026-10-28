@@ -9042,9 +9042,9 @@ local inference. Only that separate transport correction is authorized; this aud
   Accepted J2 below supplies immutable owner-private web-snippet registration,
   resolution and bounded lifecycle, retaining F/J1 IDs without replacing legacy
   paths. Accepted J3 below checks explicit saved target/source references and
-  snippet-relative locators without persisting attachment. Proposed J4 below
-  defines revisioned scene-owned metadata and clear/edit/history semantics; human
-  architecture/data-handling direction is still pending. Source-aware project
+  snippet-relative locators without persisting attachment. Approved J4 below
+  implements revisioned scene-owned metadata and clear/edit/history semantics;
+  independent implementation acceptance is still pending. Source-aware project
   copy, citation export/presentation and verified claim-support policy have
   separate contracts before dependent implementation. Add separate
   paper/project adapters under their own contracts. Verify source-to-block/slide/export
@@ -9165,7 +9165,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-citation-lifecycle"></a>
 
-  - [ ] **V2-8J-4 revisioned citation metadata and lifecycle — approved, in progress.**
+  - [ ] **V2-8J-4 revisioned citation metadata and lifecycle — validated, review pending.**
     From independently accepted J3 `edda5ec`, planning entry `309ced2`.
     [Proposed contract](V2-8J-4-PLAN.md) records scene-owned unverified target/source
     IDs, source generation, optional byte ranges and versioned content hashes;
@@ -9176,14 +9176,22 @@ local inference. Only that separate transport correction is authorized; this aud
     current use without a new receipt ledger or provider authority. Explicitly
     refuse cited new-project copy/create and native export until the separate
     contracts below; never silently strip metadata. Existing uncited flows remain.
-    **Agree this architecture/data-retention and containment direction before code.**
-    Planning/readiness is not implementation authorization or acceptance.
+    Human approved this architecture/data-retention and containment direction
+    before code; implementation acceptance remains independent.
     Independent [readiness](reviews/V2-8J-4-plan-d58a8a1.json) names exact final plan
     `bbfbf8c` READY_FOR_DIRECTION after resolving tuple scope, target remapping,
     sparse payload projection and generic agent-ingress closure. No technical
     blocker remains. Human approved “Approve bounded J4 (Recommended)” on2026-10-28
     before runtime changes. [Evaluation](V2-8J-4-EVAL.md) and fixed inventory now
     track implementation; no later copy/export/presentation authority is added.
+    Frozen candidate `665cd04` implements the approved bounded contract. Selected
+    pure13/SQLite7/PostgreSQL7/boundary14=41/41 and typecheck0 pass; all root
+    attempts68=66pass/2fixture-fail/0skip/cancel retain overlap. History fault
+    verification teardown was corrected with unchanged rollback assertions. The
+    added LF negative probe disproved a review hypothesis; no product fix followed.
+    Independent actual-PG challenges2/2 pass; root exact-ID cleanup saved/fsynced
+    actual0 catalog before removal and credential deletion. Final packet review
+    remains pending; do not tick or promote the baseline before its decision.
 
     **Look-ahead.** Scene-owned records avoid another document; unverified metadata
     handles session undo200 beyond durable payload20 pruning without resurrecting
