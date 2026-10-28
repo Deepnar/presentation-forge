@@ -8,6 +8,7 @@
 // contract; React-only state (selection, drafts, zoom) never enters here.
 import { readFile } from "node:fs/promises";
 import { Ajv } from "ajv";
+import { citationMetadataError } from "../model/citations.ts";
 
 export const PROJECT_SCHEMA_VERSION = 1;
 export const PROJECT_ID_RE = /^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/;
@@ -145,7 +146,8 @@ export async function validateProjectDocument(doc) {
     slideIds.add(scene.id);
   }
   if (errors.length) return { ok: false, errors };
-  return { ok: true, errors: [] };
+  const citationError = citationMetadataError(doc.scenes, doc.id);
+  return citationError ? { ok: false, errors: [citationError] } : { ok: true, errors: [] };
 }
 
 // Validate a save payload (client → store) without trusting its revision

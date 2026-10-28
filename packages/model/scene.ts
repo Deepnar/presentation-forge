@@ -6,6 +6,7 @@
 // compiler geometry and pptxgenjs agree without conversion. Never store
 // screen pixels here.
 
+import { citationMetadataError } from "./citations.ts";
 import { sceneValidator } from "./scene-validator.ts";
 import type { SlideScene, SceneElement } from "./scene.generated.ts";
 
@@ -16,7 +17,10 @@ export { SCENE_W, SCENE_H } from "./scene-constants.ts";
 export async function validateScene(scene: unknown): Promise<{ ok: boolean; errors: string[] }> {
   const validate = sceneValidator();
   const ok = validate(scene);
-  if (ok) return { ok: true, errors: [] };
+  if (ok) {
+    const error = citationMetadataError([scene as SlideScene]);
+    return error ? { ok: false, errors: [error] } : { ok: true, errors: [] };
+  }
   return {
     ok: false,
     errors: (validate.errors ?? []).map((e) => `${e.instancePath || "(root)"} ${e.message}`),

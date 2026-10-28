@@ -90,6 +90,10 @@ export async function preflightScenes(scenes: readonly SlideScene[]): Promise<Ex
       issues.push({ slideId, elementId: null, reason: `scene contract invalid: ${verdict.errors.join("; ")}` });
       continue;
     }
+    if (scene.citations?.length) {
+      issues.push({ slideId, elementId: null, reason: "Citation-bearing native export requires source-preserving presentation support." });
+      continue;
+    }
     for (const el of walkElements(scene.elements)) {
       // Hidden elements are omitted from output, so their payloads
       // cannot fail preflight — unhiding re-arms the checks at the

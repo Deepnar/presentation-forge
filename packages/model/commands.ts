@@ -8,6 +8,7 @@
 // no schema is created purely for ceremony before then.
 
 import { findElement, humanId } from "./scene.ts";
+import { remintCitationId } from "./citations.ts";
 import { isSystemChrome } from "./scene-constants.ts";
 import type { SlideScene, SceneElement, Paragraph } from "./scene.generated.ts";
 
@@ -583,9 +584,12 @@ export function duplicateScene(scenes: SlideScene[], id: string): { scenes: Slid
     taken.add(`${base}-copy-${n}`);
     return `${base}-copy-${n}`;
   };
+  const mapped = new Map<string, string[]>();
   const remap = (els: SceneElement[]): void => {
     for (const el of els ?? []) {
-      el.id = fresh(el.id);
+      const oldId = el.id;
+      el.id = fresh(oldId);
+      mapped.set(oldId, [...(mapped.get(oldId) ?? []), el.id]);
       // The copy is human-owned work: compiler provenance would let
       // a future regeneration reconcile it as the original's
       // semantic twin. Locked chrome keeps its provenance — it is
@@ -598,6 +602,17 @@ export function duplicateScene(scenes: SlideScene[], id: string): { scenes: Slid
   const newId = planDuplicateId(scenes, id);
   taken.add(newId);
   copy.id = newId;
+  const citationIds = new Set(scenes.flatMap(s => (s.citations ?? []).map(c => c.id)));
+  for (const c of copy.citations ?? []) {
+    c.id = remintCitationId(c.id, citationIds);
+    if (c.target.slideId !== id) continue;
+    if (c.target.kind === "slide") c.target.slideId = newId;
+    else {
+      const matches = mapped.get(c.target.elementId);
+      if (matches?.length !== 1) continue;
+      c.target = { kind: "element", slideId: newId, elementId: matches[0] };
+    }
+  }
   // A duplicated slide is human-arranged by definition; a managed
   // source stays managed only when already hands-off.
   if (copy.layoutState === "managed") copy.layoutState = "customized";

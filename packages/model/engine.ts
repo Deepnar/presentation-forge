@@ -23,6 +23,8 @@ import {
   setSlideLayoutState,
   type DeckCommand,
 } from "./commands.ts";
+import { citationMetadataError, sameCitationValue, type Citation } from "./citations.ts";
+import { indexCitationTargets } from "./citation-targets.ts";
 import { validateScene, findElement } from "./scene.ts";
 import type { SlideScene, SceneElement } from "./scene.generated.ts";
 
@@ -33,7 +35,11 @@ export type SlideOp =
   | { type: "slide.reorder"; id: string; toIndex: number }
   | { type: "slide.setLayoutState"; id: string; layoutState: SlideScene["layoutState"] };
 
-export type EngineOp = DeckCommand | SlideOp;
+export type CitationOp =
+  | { type: "citation.put"; mode: "add" | "replace"; citation: Citation }
+  | { type: "citation.remove"; id: string };
+
+export type EngineOp = DeckCommand | SlideOp | CitationOp;
 
 export interface PlacedOp {
   slideId: string | null;
@@ -157,9 +163,16 @@ function checkOp(placed: unknown): string | null {
   if (!isRecord(op) || typeof op.type !== "string") return "op.type must be a string";
   if (ELEMENT_TYPES.has(op.type) && !idStr(slideId)) return `${op.type} requires a slideId`;
   if (SLIDE_TYPES.has(op.type) && slideId !== null) return `${op.type} takes no slideId`;
+  if (op.type.startsWith("citation.") && !idStr(slideId)) return "citation operation requires a slideId";
   const fn = assertNoFunctions(op, "op");
   if (fn) return fn;
   switch (op.type) {
+    case "citation.put":
+      if (!isRecord(op.citation) || !["add", "replace"].includes(op.mode as string) || Object.keys(op).some(k => !["type", "mode", "citation"].includes(k))) return "invalid citation put";
+      return null;
+    case "citation.remove":
+      if (!idStr(op.id) || Object.keys(op).some(k => !["type", "id"].includes(k))) return "invalid citation removal";
+      return null;
     case "element.move":
       if (!idStr(op.id) || !num(op.x) || !num(op.y)) return "element.move needs id, finite x/y";
       return null;
@@ -552,6 +565,30 @@ function runPlaced(scenes: SlideScene[], placed: PlacedOp): PlacedOp {
   const reject = (code: EngineCode, message: string): never => {
     throw { ok: false, code, message } as EngineFailure;
   };
+  if (op.type === "citation.put" || op.type === "citation.remove") {
+    const scene = scenes.find(s => s.id === slideId);
+    if (!scene) return reject("unknown-slide", "Citation scene is unavailable.");
+    const id = op.type === "citation.put" ? op.citation.id : op.id;
+    const at = (scene.citations ?? []).findIndex(c => c.id === id);
+    if (op.type === "citation.remove") {
+      if (at < 0) return reject("op-rejected", "Citation is unavailable.");
+      const prior = scene.citations![at];
+      scene.citations!.splice(at, 1);
+      if (!scene.citations!.length) delete scene.citations;
+      return { slideId, op: { type: "citation.put", mode: "add", citation: prior } };
+    }
+    if ((op.mode === "add") !== (at < 0)) return reject("op-rejected", "Citation mode does not match saved metadata.");
+    if (!op.citation.target || op.citation.target.slideId !== scene.id) return reject("op-rejected", "Citation target scope is unavailable.");
+    const observed = indexCitationTargets([scene], [op.citation.target], true)[0];
+    if (observed.status !== "present") return reject("op-rejected", "Citation target is unavailable or ambiguous.");
+    if (observed.blocked) return reject("locked", "Citation target is protected.");
+    const prior = at < 0 ? null : scene.citations![at];
+    if (prior && sameCitationValue(prior, op.citation)) return { slideId, op: { type: "citation.put", mode: "replace", citation: prior } };
+    scene.citations ??= [];
+    if (at < 0) scene.citations.push(structuredClone(op.citation));
+    else scene.citations[at] = structuredClone(op.citation);
+    return { slideId, op: prior ? { type: "citation.put", mode: "replace", citation: prior } : { type: "citation.remove", id } };
+  }
   if (ELEMENT_TYPES.has((op as { type: string }).type)) {
     const i = scenes.findIndex((s) => s.id === slideId);
     if (i < 0) reject("unknown-slide", `unknown slide ${slideId}`);
@@ -663,7 +700,7 @@ async function validateWorking(scenes: SlideScene[]): Promise<string | null> {
     const verdict = await validateScene(s);
     if (!verdict.ok) return `slide ${s.id}: ${verdict.errors.join("; ")}`;
   }
-  return null;
+  return citationMetadataError(scenes);
 }
 
 export interface EditorHandle {
@@ -731,6 +768,10 @@ export async function createDocument(scenes: SlideScene[]): Promise<EditorHandle
     envelopeId: string, actor: "human" | "agent", agentId: string | undefined,
     baseRevision: number, forwards: PlacedOp[],
   ): Promise<EngineResult> {
+    if (actor === "agent" && forwards.some(({ op }) => op.type.startsWith("citation.") ||
+        (op.type === "slide.insert" && (op.scene.citations?.length ?? 0) > 0))) {
+      return fail("op-rejected", "Agent payloads cannot supply citation metadata.");
+    }
     const working = structuredClone(state.scenes);
     const inverses: PlacedOp[] = [];
     const effective = forwards.filter((placed) => isEffectiveOp(working, placed));

@@ -38,6 +38,7 @@
             }
           }
         },
+    "citations": { "type": "array", "maxItems": 128, "items": { "$ref": "#/definitions/citationRecord" } },
     "recipeId": { "type": "string" },
     "elements": {
       "type": "array",
@@ -45,6 +46,137 @@
     }
   },
   "definitions": {
+    "citationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "id",
+        "target",
+        "source",
+        "anchor"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^cit_[0-9a-f]{32}$"
+        },
+        "target": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "slideId"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "slide"
+                },
+                "slideId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "slideId",
+                "elementId"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "element"
+                },
+                "slideId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "elementId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            }
+          ]
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "projectId",
+            "id",
+            "generation"
+          ],
+          "properties": {
+            "projectId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+            },
+            "id": {
+              "type": "string",
+              "pattern": "^src_[0-9a-f]{64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "anchor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "digest"
+          ],
+          "properties": {
+            "kind": {
+              "const": "content-sha256-v1"
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "locator": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "startByte",
+            "endByte"
+          ],
+          "properties": {
+            "kind": {
+              "const": "snippet-utf8-v1"
+            },
+            "startByte": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8191
+            },
+            "endByte": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8192
+            }
+          }
+        }
+      }
+    },
     "backgroundDecor": {
       "type": "object",
       "required": ["shape", "x", "y", "w", "h", "fill"],

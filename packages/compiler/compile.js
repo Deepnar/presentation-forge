@@ -284,6 +284,7 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
   const fresh = planned
     ? compilePlannedSlide(intent, planned, design, sink, slideChromePlan, backgrounds)
     : compileSlide(intent, design, undefined, sink);
+  if (Object.hasOwn(prev, "citations")) fresh.citations = structuredClone(prev.citations);
   const prevById = new Map(prev.elements.map((e) => [e.id, e]));
   const usedPrev = new Set();
   const findPrev = (el) => {

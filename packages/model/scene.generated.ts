@@ -24,6 +24,10 @@ export interface SlideScene {
     id: string;
     semanticRef?: string;
   }[];
+  /**
+   * @maxItems 128
+   */
+  citations?: CitationRecord[];
   recipeId?: string;
   elements: SceneElement[];
 }
@@ -43,6 +47,34 @@ export interface BackgroundDecor {
 export interface BackgroundImage {
   src: string;
   hash: string;
+}
+export interface CitationRecord {
+  version: 1;
+  id: string;
+  target:
+    | {
+        kind: "slide";
+        slideId: string;
+      }
+    | {
+        kind: "element";
+        slideId: string;
+        elementId: string;
+      };
+  source: {
+    projectId: string;
+    id: string;
+    generation: number;
+  };
+  anchor: {
+    kind: "content-sha256-v1";
+    digest: string;
+  };
+  locator?: {
+    kind: "snippet-utf8-v1";
+    startByte: number;
+    endByte: number;
+  };
 }
 export interface SceneElement {
   id: string;
