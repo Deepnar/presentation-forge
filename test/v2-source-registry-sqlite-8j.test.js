@@ -32,7 +32,7 @@ check('actual invalid UTF-8 cannot masquerade as a literal replacement character
   getDb().prepare('UPDATE v2_project_sources SET payload=CAST(? AS TEXT),payload_bytes=? WHERE project_id=?').run(bytes,bytes.length,e.binding.id);
   getDb().prepare('UPDATE v2_project_source_catalog SET bytes=? WHERE project_id=?').run(bytes.length,e.binding.id);
   assert.equal((await e.registry.resolve(e.binding,{generation:0,ids:[s.id]})).code,'invalid-state');
-  assert.equal((await e.registry.clear(e.binding,added.catalog)).ok,true);
+  assert.equal((await e.registry.clear(e.binding,{generation:added.catalog.generation,revision:added.catalog.revision})).ok,true);
 });
 check('oversized stored TEXT and a leading BOM refuse without repairing bytes',async t=>{
   const e=await setup(t),s=source(e.binding.id);
@@ -42,6 +42,6 @@ check('oversized stored TEXT and a leading BOM refuse without repairing bytes',a
     getDb().prepare('UPDATE v2_project_sources SET payload=CAST(? AS TEXT),payload_bytes=? WHERE project_id=?').run(bytes,bytes.length,e.binding.id);
     getDb().prepare('UPDATE v2_project_source_catalog SET bytes=? WHERE project_id=?').run(bytes.length,e.binding.id);
     assert.equal((await e.registry.resolve(e.binding,{generation:c.generation,ids:[s.id]})).code,'invalid-state');
-    assert.equal((await e.registry.clear(e.binding,added.catalog)).ok,true);
+    assert.equal((await e.registry.clear(e.binding,{generation:added.catalog.generation,revision:added.catalog.revision})).ok,true);
   }
 });

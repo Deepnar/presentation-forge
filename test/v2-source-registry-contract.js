@@ -3,6 +3,7 @@ import { createSourceRegistry } from '../src/projects/sources.js';
 import { createTurnService } from '../packages/agent/turns.ts';
 import { source } from './v2-source-registry-fixture.js';
 export function contracts(check, setup) {
+  const stamp = c => ({ generation: c.generation, revision: c.revision });
   const snapshot = result => { assert.equal(result.ok,true,JSON.stringify(result)); return result.catalog; };
   const register = (e, sources, c={generation:0,revision:0}) => e.registry.register(e.binding,{ projectRevision:0,generation:c.generation,revision:c.revision,sources });
   check('immutable lifecycle, provenance, ordered resolution and snapshot paging',async t=>{
@@ -38,8 +39,8 @@ export function contracts(check, setup) {
     const before=await e.store.getProject(e.binding), history=await e.store.listRevisions(e.binding);
     await turns.clear(e.binding,{generation:chat.generation,revision:chat.revision});
     assert.deepEqual(snapshot(await e.registry.inspect(e.binding)),stored);
-    const cleared=snapshot(await e.registry.clear(e.binding,stored)); assert.equal(cleared.count,0); assert.equal(cleared.generation,2);
-    assert.equal((await e.registry.clear(e.binding,stored)).code,'stale-catalog');
+    const cleared=snapshot(await e.registry.clear(e.binding,stamp(stored))); assert.equal(cleared.count,0); assert.equal(cleared.generation,2);
+    assert.equal((await e.registry.clear(e.binding,stamp(stored))).code,'stale-catalog');
     assert.equal((await e.registry.resolve(e.binding,{generation:1,ids:[source(e.binding.id).id]})).code,'stale-catalog');
     assert.deepEqual(await e.store.getProject(e.binding),before); assert.deepEqual(await e.store.listRevisions(e.binding),history);
   });
@@ -55,7 +56,7 @@ export function contracts(check, setup) {
     const e=await setup(t), s=source(e.binding.id); const c=snapshot(await register(e,[s]));
     await e.query('UPDATE v2_project_sources SET payload=? WHERE project_id=?',['{broken',e.binding.id]);
     assert.equal((await e.registry.inspect(e.binding)).code,'invalid-state');
-    const cleared=snapshot(await e.registry.clear(e.binding,c));
+    const cleared=snapshot(await e.registry.clear(e.binding,stamp(c)));
     snapshot(await register(e,[s],cleared));
     await e.query('DELETE FROM v2_project_source_catalog WHERE project_id=?',[e.binding.id]);
     assert.equal((await e.registry.inspect(e.binding)).code,'invalid-state');
@@ -91,7 +92,7 @@ export function contracts(check, setup) {
     assert.equal((await register(e,[source(e.binding.id,999)],count)).code,'capacity-exceeded');
     assert.deepEqual(snapshot(await e.registry.inspect(e.binding)),count);
     await seed(420,true); const bytes=snapshot(await e.registry.inspect(e.binding)); assert.ok(bytes.bytes<4194304);
-    const batch=Array.from({length:24},(_,i)=>source(e.binding.id,1000+i,{title:'界'.repeat(500),excerpt:'界'.repeat(2000),url:`https://example.org/${i}/`+'p'.repeat(1900)}));
+    const batch=Array.from({length:24},(_,i)=>source(e.binding.id,1000+i,{title:'界'.repeat(500),excerpt:'界'.repeat(2000),url:`https://example.org/${1000+i}/`+'p'.repeat(1900)}));
     assert.equal((await register(e,batch,bytes)).code,'capacity-exceeded'); assert.deepEqual(snapshot(await e.registry.inspect(e.binding)),bytes);
   });
   check('parent locking serializes clear against a stale in-flight registration',async t=>{
