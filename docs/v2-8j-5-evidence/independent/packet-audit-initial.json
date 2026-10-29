@@ -1,0 +1,54 @@
+{
+  "implementationSha": "f6487737557c20d481cbc3e84216d7144bb116e8",
+  "packetHead": "1ae71405a5e4f7bf62a945f7e8026a2f49426e5d",
+  "checksPassed": 336,
+  "errors": [
+    "retained raw attempt totals: copy-contract-1",
+    "retained raw attempt totals: copy-sqlite-1"
+  ],
+  "selected": {
+    "total": 39,
+    "pass": 39,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "allRootAttempts": {
+    "total": 114,
+    "pass": 102,
+    "fail": 12,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "capturedFinalDifferences": {
+    "copy-contract-final": [
+      "test/v2-project-copy-chrome-8j.test.js",
+      "test/v2-project-copy-fixture.js"
+    ],
+    "copy-sqlite-final": [
+      "test/v2-project-copy-chrome-8j.test.js",
+      "test/v2-project-copy-fixture.js"
+    ],
+    "copy-postgres-final": [
+      "test/v2-project-copy-chrome-8j.test.js",
+      "test/v2-project-copy-fixture.js"
+    ],
+    "copy-http-cli-final": [
+      "test/v2-project-copy-chrome-8j.test.js",
+      "test/v2-project-copy-fixture.js"
+    ],
+    "copy-router-final": [
+      "test/v2-project-copy-chrome-8j.test.js",
+      "test/v2-project-copy-fixture.js"
+    ],
+    "copy-browser-final": []
+  },
+  "sourceHashPaths": 35,
+  "canvasDeltaXYWH": [
+    0,
+    -59.375,
+    0.0,
+    0.0
+  ],
+  "method": "Read-only evidence/source/hash/count consistency; no product suites or services executed by this audit."
+}

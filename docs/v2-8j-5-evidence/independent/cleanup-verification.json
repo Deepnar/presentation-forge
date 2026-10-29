@@ -1,0 +1,17 @@
+{
+  "verifiedAt": "2026-10-29T11:47:46.410096+00:00",
+  "containerId": "27f4033a0d730f4e792ecc03f5be33832b678a5ad41ef9eaf24aa08757144c6a",
+  "daemonVersion": "29.8.2",
+  "filteredQueryExitCode": 0,
+  "matchingIds": [],
+  "exactIdAbsent": true,
+  "privateFiles": {
+    ".codex/v2-8j-5-session/connection.json": {
+      "exists": false
+    },
+    ".codex/v2-8j-5-session/pg.env": {
+      "exists": false
+    }
+  },
+  "method": "Read-only positive live-daemon version and filtered all-container query; filesystem existence checks. No removal, service recreation or private credential read."
+}

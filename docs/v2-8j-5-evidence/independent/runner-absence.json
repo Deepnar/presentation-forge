@@ -1,0 +1,6 @@
+{
+  "verifiedAt": "2026-10-29T11:52:51.671015+00:00",
+  "ownedProcessGroup": 1755732,
+  "remainingMembers": [],
+  "method": "Read-only /proc process-group membership observation after normal exit and DB/pool cleanup."
+}

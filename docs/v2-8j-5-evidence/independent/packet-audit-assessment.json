@@ -1,0 +1,7 @@
+{
+  "classification": "review-audit parser assumption",
+  "initialErrors": 2,
+  "cause": "Two retained exploratory logs use Node spec reporter Unicode summary prefix, while the initial audit recognized only TAP # prefixes. The raw logs visibly contain the expected 5/5 and 6/6 summaries.",
+  "correction": "Accept both existing summary prefixes; preserve the initial audit source/output, change no product source/assertion/evidence, and rerun only the read-only packet audit.",
+  "productExecutionsAdded": 0
+}

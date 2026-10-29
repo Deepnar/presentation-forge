@@ -1,0 +1,106 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-29",
+  "implementationSha": "f6487737557c20d481cbc3e84216d7144bb116e8",
+  "acceptedBaseline": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "approvedPlanSha": "1b37cdd674fa680ac15bb266e2e16bf4eff25f05",
+  "approvalPinnedSha": "7df22d94ac2ad8b4d983258c7c30e2346876e56d",
+  "packetSha": "1ae71405a5e4f7bf62a945f7e8026a2f49426e5d",
+  "evidence": "docs/v2-8j-5-evidence/independent/review.md",
+  "assessment": "The bounded approved J5 source-aware copy and guarded editor-adoption result is implemented and supported by complete focused evidence. Exact-owner current-catalog qualification, atomic destination/source/create-history insertion, private independent retention and live scene preservation hold across inspected code and actual backend evidence. Four independent adoption findings were corrected and checked; two new independent actual-PG challenges pass. Final source/hash/count/visual/cleanup audit has no outstanding blocker. This acceptance is restricted to J5.",
+  "independence": "The reviewer is a separate context from implementation and wrote only independent review/challenge/evidence artifacts. No runtime, root tests, state, root docs or Git changes were made by the reviewer. Parent commits the record unchanged; this is not implementer self-acceptance.",
+  "resolvedFindings": [
+    {
+      "finding": "Source release preceded a potentially failing router history write.",
+      "resolution": "History mutation now succeeds before synchronous source release; retained injected fail-first and corrected router11/11 demonstrate the ordering.",
+      "correctedBy": "8e181735ad5163330e02a69a451d31a2f34aae70"
+    },
+    {
+      "finding": "Same-project history route changes could evade document-based freshness checks.",
+      "resolution": "Captured URL and App/native navigation epochs suppress late publication/adoption; final browser checks retain the history route.",
+      "correctedBy": "8e181735ad5163330e02a69a451d31a2f34aae70"
+    },
+    {
+      "finding": "Viewport-only drift could be replaced with an older captured selection/slide/zoom/scroll.",
+      "resolution": "Clean checks compare viewport state and defer adoption; final browser selection-drift phase establishes the changed precondition before releasing the response.",
+      "correctedBy": "8e181735ad5163330e02a69a451d31a2f34aae70"
+    },
+    {
+      "finding": "A pending history restoration could later attach the original over a copied editor.",
+      "resolution": "A restore ref spans the operation from its first await, blocks copying while pending and invalidates/refuses restore start during copy; final standalone browser phase exercises held restoration.",
+      "correctedBy": "8e181735ad5163330e02a69a451d31a2f34aae70"
+    }
+  ],
+  "sourceAssessment": {
+    "ownershipAndRetention": "Trusted exact owner/null qualification with no admin private-source override and no invalid-credential anonymous downgrade. Only referenced canonical snippets and first retrieval provenance are retained in the destination; original clear/delete does not revoke it.",
+    "atomicityAndBounds": "One canonical parent lock, at most513 metadata rows, selected reads in batches24, at most512 sources/4MiB and16KiB per body. Destination document/catalog/bodies/revision0 create-history commit all-or-none. Missing/foreign/old-generation/corrupt referenced evidence refuses the whole operation. Live scene content may recover from newer saved revisions.",
+    "editorSafety": "Captured auth/document/route/revision/viewport/drafts, save dispatch/drain fence, fresh-engine authoritative-scene adoption and one-use final router handoff preserve later work and suppress stale publication. Unsent Assistant text is outside the copied snapshot and remains protected. Ambiguous commit/response has no retry/exactly-once guarantee.",
+    "authorityContainment": "Copy-only insertion is absent from H/runtime/source/citation callbacks. Generic cited create/import and central native export remain refused. No model layout, provider context, research/host activation or support certification was introduced."
+  },
+  "inspectedEvidence": {
+    "rootSelected": { "total": 39, "pass": 39, "fail": 0, "skip": 0, "cancelled": 0 },
+    "selection": { "pure": 6, "sqlite": 6, "postgres": 6, "httpCli": 5, "router": 11, "chrome": 5 },
+    "allRootAttempts": { "total": 114, "pass": 102, "fail": 12, "skip": 0, "cancelled": 0 },
+    "rootFailures": "Two expected fail-first checks, one invalid transport fixture and nine new-browser fixture failures remain in raw evidence. Exploratory pure5/5 lacks a separately captured exit and is excluded from final gates. One zero-test import setup error is separate.",
+    "typecheck": "Exit0 at actual d4556948 invocation; unchanged typed packages/config/usage establish applicability only. Legacy/app JS changed for fixes and is outside that check; original elapsed time unavailable.",
+    "build": "Exit0 in the final browser before hook,576.69ms; one build per bounded serial invocation, final stdout retained.",
+    "sourceApplicability": "All35 manifest hashes independently match frozen/current bytes. Runtime unchanged from26a1e86f; final browser captured bytes exactly match f6487737. Earlier selected runs retain precise later browser/shared-fixture differences, not false byte identity or rerun claims.",
+    "packetAudit": "docs/v2-8j-5-evidence/independent/packet-audit.json",
+    "packetAuditResult": { "checksPassed": 338, "errors": 0 },
+    "auditCorrection": "Initial read-only parser flagged two spec-format summaries because it recognized only TAP prefixes. Initial source/output and assessment retained; parser alone fixed, no product evidence changed."
+  },
+  "independentlyExecuted": {
+    "tests": { "total": 2, "pass": 2, "fail": 0, "skip": 0, "cancelled": 0 },
+    "backend": "Actual PostgreSQL15.18 in exact identity-verified new task-owned capped fixture, unique reviewer database",
+    "invocationHead": "3a72421b4caf640a82427f0ecb1fc4356dc31f62",
+    "implementationApplicability": "Captured source/runtime/helper hashes bound to f6487737557c20d481cbc3e84216d7144bb116e8; no runtime delta.",
+    "exitCode": 0,
+    "durationMs": 465,
+    "timedOut": false,
+    "evidence": "docs/v2-8j-5-evidence/independent/challenges.json",
+    "checks": [
+      "Private refusal after actual destination/catalog insertion rolls back all copy effects and preserves intentional stale-catalog code.",
+      "Canonical clear wins parent lock before queued copy; actual lock observation confirms waiting and old-generation copy refuses without destination effects."
+    ],
+    "resourcePolicy": "Observed CPU/memory/actual storage, serial nice10/idle I/O/CPU0,1,45s watchdog and owned-group monitoring. No global PSI attribution or unrelated process action.",
+    "otherExecution": "No independent browser/build/model/search/GPU/production API/old matrix execution. Read-only packet and cleanup audits are separate from product tests."
+  },
+  "visualAssessment": {
+    "screenshotsViewed": [
+      "docs/v2-8j-5-evidence/browser/copy-desktop.png",
+      "docs/v2-8j-5-evidence/browser/copy-narrow.png",
+      "docs/v2-8j-5-evidence/browser/copy-edit-deferred.png"
+    ],
+    "assessment": "All3 final hashes verified and images viewed. Bounded status and later human wording are visible without overlapping changed controls. Narrow toolbar remains horizontally scrollable; canvas gutter/panning limitations are disclosed existing policy.",
+    "canvasDeltaXYWH": [0, -59.375, 0, 0],
+    "limits": "The y displacement is consistent with removal of the wrapped conflict banner, not zero shift. Before geometry is retained metadata, not an independently viewed before image. Topbar44px, scroll[0,0], text selection and canvas x/width/height retained. No full editor responsiveness or native fidelity claim."
+  },
+  "cleanup": {
+    "complete": true,
+    "reviewerDatabaseDropped": true,
+    "reviewerPoolsClosed": true,
+    "reviewerFinalUserCatalog": [],
+    "containerId": "27f4033a0d730f4e792ecc03f5be33832b678a5ad41ef9eaf24aa08757144c6a",
+    "rootActualCatalog": { "userDatabases": [], "otherClients": 0 },
+    "exactOwnedContainerAbsent": true,
+    "privateCredentialsAbsent": true,
+    "independentVerification": "docs/v2-8j-5-evidence/independent/cleanup-verification.json",
+    "assessment": "Identity verified before private access. Reviewer closed/dropped its DB/pools and released service. Root performed one exact-ID removal after saved actual catalog; reviewer independently observed positive live-daemon absence and both private files absent. No old fixture or cleanup was repeated."
+  },
+  "unexecutedRequiredChecks": [],
+  "waivers": [],
+  "remainingIssues": [],
+  "residualLimits": [
+    "Retained source identity/content equality/ranges remain unverified and establish no factual support or reusable permission.",
+    "Destination snippets retain independently until their own clear/delete; clearing the original does not revoke copies and source clear is not history-restored.",
+    "Ambiguous commit/response has an unknown complete-copy outcome and no automatic retry/exactly-once guarantee.",
+    "Existing database lock waits gain no deadline; capped tmpfs PostgreSQL tests do not establish power-loss durability.",
+    "Three final settled screenshots are certified; overwritten earlier images, legacy editor/native and prior I4 visual provenance are not reconstructed.",
+    "Standing BYOK locale and earlier J1/I7 timing/I4/native/visual limitations remain unchanged and unrerun."
+  ],
+  "stopPoint": "J5 accepted only. Later citation presentation/native export, provider context, research, semantic creation, activation and deployment require their own direction/implementation gates."
+}

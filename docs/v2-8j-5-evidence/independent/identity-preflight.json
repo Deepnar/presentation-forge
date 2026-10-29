@@ -1,0 +1,21 @@
+{
+  "verifiedAt": "2026-10-29T11:46:29.549896+00:00",
+  "publicIdentityMatchedBeforeCredentialRead": true,
+  "containerId": "27f4033a0d730f4e792ecc03f5be33832b678a5ad41ef9eaf24aa08757144c6a",
+  "name": "/forge-j5-20261029084025",
+  "image": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "state": "running",
+  "ports": {
+    "5432/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "32768"
+      }
+    ]
+  },
+  "nanoCpus": 500000000,
+  "memoryLimitBytes": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=256m"
+  }
+}

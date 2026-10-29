@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-29T11:46:31.550904+00:00",
+  "sampleSeconds": 2.0004295769977034,
+  "cpuBusyPercent": 9.616951915240424,
+  "memoryAvailableBytes": 43202973696,
+  "diskBusyPercent": {
+    "nvme0n1": 0.9997852576253405
+  },
+  "psi": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=212445134\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+    "io": "some avg10=46.63 avg60=45.90 avg300=47.72 total=9927175692\nfull avg10=44.82 avg60=44.15 avg300=45.26 total=9458566362",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=5660227\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5385604"
+  },
+  "policy": "Observe actual CPU/memory/storage; global PSI is not attributed to this project. Serial nice10/idle I/O/two-CPU bounded check; owned group monitored.",
+  "ready": true
+}

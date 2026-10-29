@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: private refusal after actual destination/catalog insertion rolls back and keeps its intentional code
+ok 1 - private refusal after actual destination/catalog insertion rolls back and keeps its intentional code
+  ---
+  duration_ms: 119.426606
+  type: 'test'
+  ...
+# Subtest: clear winning the parent lock fences a queued old-generation copy before any destination write
+ok 2 - clear winning the parent lock fences a queued old-generation copy before any destination write
+  ---
+  duration_ms: 21.5843
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 421.539601
