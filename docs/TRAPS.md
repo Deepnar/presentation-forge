@@ -2138,3 +2138,12 @@ verification APIs, or use a genuinely read-only observation. Retain the complete
 unchanged scene/history rollback assertion and original failure evidence; do not
 relax product assertions to accommodate a fixture lifetime error. J4 reproduced
 this independently on actual SQLite and PostgreSQL.
+
+## SVG group bounds are not necessarily clickable paint
+
+A chart's center may be empty space, and a table cell with fill=none only receives
+painted hits on text or grid strokes. A fractional stroke can be under the measured
+point but missed after CDP rounds coordinates. Use a painted child for trusted
+clicks and assert the selection precondition before releasing a delayed response;
+otherwise a fixture can falsely accuse an adoption guard of ignoring user changes.
+Wait for finite transitions and stable bounds before screenshot certification.

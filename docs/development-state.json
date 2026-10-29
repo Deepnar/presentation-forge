@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8J-4-665cd04.json"
   },
   "implementationHead": {
-    "sha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
-    "note": "J5 candidate, independent source findings corrected; final focused pure6/SQLite6/HTTP+CLI+routing16 pass and typecheck0 with unchanged typed-source applicability. Browser/build and actualPG await quiet-window admission. Not accepted."
+    "sha": "f6487737557c20d481cbc3e84216d7144bb116e8",
+    "note": "J5 focused39/39, production build and typecheck0 complete; runtime unchanged from26a1e86f, later browser fixture corrections captured. Exact-source independent review and owned fixture cleanup pending. Not accepted."
   },
   "activeMilestone": {
     "id": "V2-8J-5",
     "roadmapRef": "docs/ROADMAP.md#assistant-citation-project-copy",
     "evalDoc": "docs/V2-8J-5-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "implemented-pending-validation",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -35,9 +35,9 @@
     },
     {
       "id": "copy-postgres",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Pending quiet window: unrelated work causes sustained high I/O pressure; no run or service acquisition yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-5-evidence/copy-postgres-final.json",
+      "reason": "Actual complete unfiltered focused file with canonical inventory, child exit0, source hashes and bounded resource/watchdog metadata;0fail/skip/cancel."
     },
     {
       "id": "copy-transport",
@@ -47,9 +47,9 @@
     },
     {
       "id": "copy-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Pending quiet window: unrelated work causes sustained high I/O pressure; no run or service acquisition yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-5-evidence/copy-browser-final.json",
+      "reason": "Actual complete unfiltered focused file with canonical inventory, child exit0, source hashes and bounded resource/watchdog metadata;0fail/skip/cancel."
     },
     {
       "id": "typecheck",

@@ -9212,10 +9212,14 @@ local inference. Only that separate transport correction is authorized; this aud
     independent implementation acceptance remains pending.
     Five source-inspected contract gaps were resolved: mutable-input capture,
     commit uncertainty, dirty-copy router authority, save dispatch/publication and
-    Assistant drafts. Those were planning corrections. Candidate26a1e86f now has
-    selected28/28 (pure6/SQLite6/HTTP+CLI5/router11) and typecheck0; actualPG6 and
-    Chrome5/build/visual evidence await a quiet window. Four independent source
-    findings on adoption are corrected; final acceptance remains pending. Copy only
+    Assistant drafts. Those were planning corrections. Frozen candidatef6487737 has
+    selected39/39 (pure6/SQLite6/PostgreSQL6/HTTP+CLI5/router11/Chrome5), typecheck0,
+    production build and three inspected settled screenshots. All root114leaves
+    =102pass/12fail retain two expected fail-first regressions and corrected fixture
+    errors; assertions remain. Four independent source findings on adoption are
+    corrected; final independent acceptance and owned service cleanup remain pending.
+    Human resource direction requires bounded low-priority serial checks with owned
+    process monitoring; high global PSI alone is not attributed to this project. Copy only
     referenced snippets into the same exact owner's new project, atomically
     rebinding source IDs and preserving original retrieval provenance. Each copy
     retains snippets independently of the original's clear/delete; stale/missing/
