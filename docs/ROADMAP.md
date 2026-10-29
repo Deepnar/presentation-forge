@@ -9300,16 +9300,20 @@ local inference. Only that separate transport correction is authorized; this aud
       > printed fit. Executed-leaf unions require exact source lineage; post-run
       > reconstructions are useful only after matching contemporaneous whole-file hashes.
 
-    - [ ] **Browser citation-export interaction — follows accepted J6-1.**
-      Agree the existing export action's explicit disclosure/preview/download
-      surface, captured-session/revision checks, unsaved-draft handling and private
-      response lifecycle before implementation. Cover all current workspace and
-      editor entry points without giving admin/legacy paths source access. Reuse
-      the canonical headless export authority; no client-supplied notes/forged
-      consent receipt. This is distinct from on-slide attribution/appendix design,
-      which keeps its separate surface direction. Printable notes-page fitting/
-      pagination also needs that presentation contract: byte limits alone cannot
-      establish fit in the native notes body. J6-1 alone leaves this parent open.
+    <a id="assistant-citation-browser-export"></a>
+
+    - [ ] **V2-8J-6-2 browser citation-export interaction — contract in review.**
+      The2026-10-29 continuation starts planning from accepted J6-1 ecf82d3f.
+      [Concrete contract](V2-8J-6-2-PLAN.md) recommends the existing Export action:
+      uncited direct download, cited exact-owner revision/count preview and fresh
+      source-notes confirmation. Require clean saved editor state; never auto-save
+      or commit drafts. Preserve administrator uncited CRUD export while denying
+      private source override; recheck session/route/revision through download and
+      bound private response/Blob lifetime. Reuse the accepted headless authority.
+      Independent technical readiness and explicit human surface/public-transport
+      direction are pending; no implementation, product execution or activation
+      is authorized. On-slide attribution/appendix and printable pagination retain
+      their separate presentation contract; the parent remains incomplete.
 
   Dependency sequence after accepted J6-1 headless notes:
   agree browser export/visible attribution and verified locator/claim-support

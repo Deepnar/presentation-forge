@@ -72,9 +72,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Browser citation-export interaction contract",
+    "id": "V2-8J-6-2 browser citation-export interaction",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-native-presentation"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-browser-export"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
