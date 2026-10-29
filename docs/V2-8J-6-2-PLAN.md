@@ -94,7 +94,13 @@ operation wording. Do not reuse general projectOwner's local catch-to-anonymous
 or admin CRUD rule for private source access. Canonical owner rechecks remain in
 J6-1's transaction. Missing and foreign projects are indistinguishable.
 
-Before the global8MiB parser, install this family's private headers and a2KiB
+Install this family's raw-path private-header boundary before any short-circuiting
+CORS/parser middleware, without changing the global CORS policy. Existing CORS
+OPTIONS preflight is an explicit exception to family method refusal: it returns
+only preflight metadata, performs no authentication/project/source lookup or native
+generation and contains no project data. Retain no-store/Vary headers there too.
+All actual family requests/errors then retain the private boundary below.
+Before the global8MiB parser, install a2KiB
 UTF-8 JSON identity-encoding parser with static parse/size/type errors. Reject
 unexpected query fields and body fields/unsafe values. Match the family in late
 raw-path errors too: malformed parameter decoding, unknown suffix/method, invalid
@@ -111,15 +117,22 @@ native coverage and byte-size checks complete. A64MiB complete artifact ceiling
 on this new private transport refuses oversized output; this is not a pre-generation
 asset-memory/fetch qualification. Bound browser body consumption independently of
 Content-Length, abort over the same ceiling, and release partial chunks on refusal.
+The64MiB server/browser cap applies only to this new notes POST. Ordinary uncited
+GET retains its existing size behavior; the shared controller must not silently
+impose a new client-only limit on accepted uncited downloads. No claim that the
+legacy path gains these new resource bounds is made.
 No server artifact cache, file, history record, consent preference or export job.
 
-Finite admission for POST: at most2 active generations per host process and1 per
-owner identity (including one local-null principal); extra calls return busy429
-with no queue or automatic retry. Acquire before generation and release exactly
-once on every success/refusal/error. Disconnect/abort suppresses delivery; it must
+Finite admission covers BOTH metadata GET and render POST: at most2 active
+private-family operations per host process and1 per owner identity (including
+one local-null principal); extra calls return busy429 with no queue or automatic
+retry. Acquire before inspect/qualification/generation and release exactly once
+on every success/refusal/error, after actual work settles. No slot is held across
+the user's confirmation modal. Disconnect/abort suppresses delivery; it must
 not be claimed to interrupt already-running library generation. Retain the slot
-until its actual generation settles. Process-local admission is not a distributed
-quota/deadline. Metadata does not generate and stays within J6-1's bounded read.
+until its actual inspect/generation settles. Process-local admission is not a distributed
+quota/deadline. Metadata does not generate and stays within J6-1's bounded read; admission also
+bounds its full saved-document validation/catalog lock work.
 
 J6-1 remains the only qualification/renderer authority, with the same canonical
 lock release, source bounds, complete literal title/URL notes, native mapping and
@@ -145,6 +158,13 @@ new source-disclosing endpoints have their own strict owner binding above.
 ## Client lifecycle and editor invariants
 
 Use one shared component/controller across all saved-project export entry points.
+There must be ONE active saved-export flow per mounted Workspace or SceneViewer
+scope, shared across different card triggers and both topbar/Projects triggers.
+Claim that UI-local coordinator synchronously; while active, refuse/disable other
+starts in the same scope rather than opening competing modals or downloads. A
+per-button ref alone is insufficient. Release the claim only for its owning ticket;
+cancellation may free the UI immediately while server work retains its own slot.
+No stored consent or server authority comes from this client claim.
 Capture a ticket synchronously before asynchronous work; immutable project ID,
 saved revision, token/account generation, route/navigation stamp, mount/action
 identity and authoritative editor document identity are checked before dispatch,
@@ -153,6 +173,16 @@ cancel, unmount, project/route/session/account change, including actual logout/l
 transitions back to the same project. A late response cannot open a modal, replace
 new status/drafts, create/click a link or publish under a newer session.
 Capture fetch so mutable ambient localStorage/cookies cannot substitute authority.
+Use no-store, credentials:omit and redirect:error; an unexpected redirect is a
+refusal, never a source-bearing response fetched under substituted authority.
+Read metadata and JSON refusal bodies with an8KiB actual UTF-8 response cap,
+independent of Content-Length, and require JSON MIME. Validate exact metadata keys,
+the captured project ID, safe nonnegative integer counters and citationCount0–512
+before any modal. Compare projectRevision to the displayed capture, not just the
+later POST response. A malformed/oversized/mismatched response is a static local
+failure; never res.json() unbounded or reflect raw server text. JSON errors also
+stay bounded with a static client code/message allowlist. The binary POST has
+its separate64MiB cap; actual-body consumption aborts/releases on either limit.
 Only the current ticket may clear its own busy/error state.
 
 Editor checks use live refs for pending inline/grid/title edits, dirty engine versus
@@ -189,8 +219,8 @@ and evidence rather than rerunning its SQLite/PG/native/visual matrix.
 
 | Gate | Smallest meaningful selected evidence |
 |---|---|
-| HTTP | One new isolated local API suite for actual new metadata/PPTX POST and cited old-GET refusal, owner/null/foreign/admin and bad-credential no downgrade, strict body/parser/raw-path/private headers, stale counters, output MIME/size and finite slot/error/disconnect cleanup; use accepted domain/store evidence with focused boundary fakes for resource faults |
-| Controller | Pure lifecycle cases for captured identity/revision, each async boundary, cancel/ABA navigation/session, duplicate confirm, stale/no retry, capped body consumption, MIME/counter checks and Blob/link cleanup; real guard logic is invoked, not copied into tests |
+| HTTP | One new isolated local API suite for actual new metadata/PPTX POST and cited old-GET refusal, owner/null/foreign/admin and bad-credential no downgrade, strict body/parser/raw-path/private headers/CORS exception, stale counters, output MIME/size and shared metadata/render slot/error/disconnect cleanup; use accepted domain/store evidence with focused boundary fakes for resource faults |
+| Controller | Pure lifecycle cases for captured identity/revision, each async boundary, cancel/ABA navigation/session, shared-scope competing triggers/duplicate confirm, stale/no retry,8KiB metadata/error and notes-only64MiB body limits, MIME/schema/counter checks and Blob/link cleanup; real guard logic is invoked, not copied into tests |
 | Browser | One bounded serial Chrome file with a few combined scenarios: workspace cited confirm/download+cancel and uncited direct control; editor inline/grid/title/dirty/read-only/save/restore/copy/reload blockers with held completions; route/session/unmount suppression; keyboard/nested-modal and narrow confirmation; standalone bound-project action. Preserve actual downloaded bytes for structural notes check and inspect desktop/narrow screenshots/canvas bounds |
 | Build | One production web build, reused by the serial browser fixture; no concurrent Vite build or broad old browser run |
 | Governance | Exact source/delta/log/totals, screenshots actually viewed, source/schema/links and separate review. No new typed renderer code planned; typecheck only if typed boundary actually changes |
