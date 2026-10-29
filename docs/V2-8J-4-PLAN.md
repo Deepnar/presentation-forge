@@ -1,12 +1,13 @@
 # V2-8J-4 — revisioned citation metadata and lifecycle
 
-Status: **bounded implementation approved on2026-10-28; acceptance pending**.
+Status: **independently accepted on2026-10-29 at665cd04**.
+[Decision](reviews/V2-8J-4-665cd04.json) covers this bounded implementation only.
 Human direction: “Approve bounded J4 (Recommended)” to the explicit metadata,
 history, unresolved-source and cited-copy/export containment question. This
 approves the reviewed contract bbfbf8c, not later copy/export presentation work.
 The [roadmap](ROADMAP.md#assistant-citation-lifecycle) owns the work and dependencies.
 
-Accepted baseline: `edda5ec7c2105bebff4a429a04b3fbe5b09048b4` (J3), independently
+Entry accepted baseline: `edda5ec7c2105bebff4a429a04b3fbe5b09048b4` (J3), independently
 [accepted](reviews/V2-8J-3-edda5ec.json). Planning entry:
 `309ced20e1f72510a352e4bc769d2f69797acf94`, branch `v2`, push `origin/v2` only.
 J2/J3 runtime and their evidence remain accepted; this planning pass changes no

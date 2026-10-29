@@ -32,22 +32,36 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current review — validated J4 citation metadata
+## Latest accepted slice — J4 citation metadata lifecycle complete
 
-Human approved **Approve bounded J4 (Recommended)** on2026-10-28 after
-[independent readiness](reviews/V2-8J-4-plan-d58a8a1.json) for exact plan bbfbf8c.
-Read [contract](V2-8J-4-PLAN.md), [evaluation](V2-8J-4-EVAL.md), state and
-[roadmap](ROADMAP.md#assistant-citation-lifecycle). Bounded metadata, undo/history,
-fresh owner qualification and cited-copy/export containment are authorized.
-Implement/validate/review this scope only, with focused offline checks and no model
-calls/activation. Candidate665cd04 has41/41 selected and typecheck0; initial2
-fault-fixture failures and withdrawn regex/harness hypothesis remain in the eval.
-Independent challenges2/2 and exact owned-fixture cleanup are complete; final
-pushed-packet decision remains pending. J3 remains accepted baseline until independent J4 ACCEPT/HOLD.
-No later copy/export presentation work is authorized. Root owns resource admission,
-validation and cleanup; no old service or cleanup helper may be recreated/repeated.
+Human approved bounded J4 on2026-10-28, pinned b0cb7aa before runtime after
+independent readiness of plan bbfbf8c. Exact source
+`665cd0459b0f267b32e808a59046e3d0b914e74f` is independently
+[accepted](reviews/V2-8J-4-665cd04.json) on2026-10-29 after packet ef1d11ac audit;
+root committed the stable decision unchanged at452bc61e. Read
+[contract](V2-8J-4-PLAN.md), [evaluation](V2-8J-4-EVAL.md), manifest, state and
+[roadmap](ROADMAP.md#assistant-citation-lifecycle).
 
-## Latest accepted slice — J3 citation-reference checks complete
+Selected41/41 (pure13, actual SQLite7/PostgreSQL7, boundary14), typecheck0 and
+independent2/2 pass. All root attempts68=66pass/2fixture-fail/0skip/cancel and
+original review/harness mistakes remain explicit, with exact invocation/source
+applicability. No product test was repeated during acceptance propagation.
+
+Scene-owned metadata survives edits/undo/history/regeneration without restoring
+cleared sources or acquiring provider authority. Fresh headless operations retain
+exact-owner locking and separate target/content/source/range observations; support
+is not-assessed. Cited new-project copying and native export intentionally refuse.
+No model/search call, UI, public transport or activation was added. Actual0 catalog
+was saved/fsynced before one exact-ID removal; root and reviewer independently
+verified absence/private credential deletion. No owned service remains. Never
+recreate old fixtures or repeat completed cleanup helpers.
+
+J4 is complete. Stop after its acceptance documentation/push. Only later planning
+is permitted by acceptance; [source-aware copy](ROADMAP.md#assistant-citation-project-copy)
+and [citation presentation](ROADMAP.md#assistant-citation-native-presentation)
+retain separate direction/implementation gates. nextCandidate.authorized is false.
+
+## Accepted predecessor — J3 citation-reference checks complete
 
 Human approved the reviewed read-only foundation first on2026-10-28, pinned8a01b6c
 before runtime. Frozen sourceedda5ec7c2105bebff4a429a04b3fbe5b09048b4 is independently

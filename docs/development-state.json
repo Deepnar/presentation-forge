@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+    "sha": "665cd0459b0f267b32e808a59046e3d0b914e74f",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8J-3-edda5ec.json"
+    "source": "docs/reviews/V2-8J-4-665cd04.json"
   },
   "implementationHead": {
     "sha": "665cd0459b0f267b32e808a59046e3d0b914e74f",
-    "note": "Approved bounded J4 implemented: selected41/41, typecheck0 and independent2/2 actual-PG challenges pass. Original2 fixture failures and false review/harness hypothesis retained. Runtime unchanged from6628bb4; exact applicability in manifest. Actual0 catalog saved/fsynced before exact-ID removal and credential deletion. Final independent packet decision pending."
+    "note": "J4 independently accepted at exact frozen source after packetef1d11ac audit. Selected41/41, typecheck0 and independent2/2 actual-PG challenges pass. Original2 fixture failures, review/harness corrections and unchanged-source applicability retained. Actual0 catalog saved/fsynced before exact-ID removal; private credentials absent. Later commits are documentation/evidence only."
   },
   "activeMilestone": {
     "id": "V2-8J-4",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8J-4-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8J-4-665cd04.json",
+    "accepted": true
   },
   "validation": [
     {
@@ -79,5 +79,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-28"
+  "updated": "2026-10-29"
 }

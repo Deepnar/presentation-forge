@@ -93,8 +93,14 @@ one owner/document/catalog snapshot. Target existence, retained source and locat
 match are separate observations; claim support stays not-assessed. Results attach
 nothing and grant no reusable approval. No source text enters scenes/history,
 provider context or a public surface through these checks.
+The J4 revisioned scene citation lifecycle is independently accepted at `665cd04`:
+owner-qualified headless attach/remove/inspect and unverified metadata survive
+commands, undo/history and regeneration without restoring cleared sources.
+Content hashes and retained ranges do not establish claim support. Creating or
+copying cited projects and exporting them to native PPTX refuse until separate
+preservation contracts; no provider/H/Assistant research or public surface authority is added.
 Saved chat does not automatically become provider context. Further host progress/
-scheduling, provider routing, citation attachment/locator integrity, research
+scheduling, provider routing, source-aware copying/citation presentation, research
 orchestration, live-provider qualification and
 semantic creation remain in the
 [roadmap](docs/ROADMAP.md#v2-8-remaining). Resolve exact accepted

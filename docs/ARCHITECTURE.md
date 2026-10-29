@@ -3071,8 +3071,9 @@ a new deadline or cancellation guarantee. [Contract](V2-8J-3-PLAN.md),
 
 ### V2-8J-4 revisioned scene citation lifecycle
 
-Implemented from accepted J3 after explicit bounded metadata/history and copy/
-export containment approval; validation/review status is in
+Independently [accepted](reviews/V2-8J-4-665cd04.json) at exact source
+`665cd0459b0f267b32e808a59046e3d0b914e74f`, after explicit bounded metadata/history
+and copy/export containment approval. Validation/review evidence is in
 [state](development-state.json) and [evaluation](V2-8J-4-EVAL.md).
 
 Optional scene-owned `citations` contain versioned citation/target/source IDs,

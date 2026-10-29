@@ -9042,10 +9042,9 @@ local inference. Only that separate transport correction is authorized; this aud
   Accepted J2 below supplies immutable owner-private web-snippet registration,
   resolution and bounded lifecycle, retaining F/J1 IDs without replacing legacy
   paths. Accepted J3 below checks explicit saved target/source references and
-  snippet-relative locators without persisting attachment. Approved J4 below
-  implements revisioned scene-owned metadata and clear/edit/history semantics;
-  independent implementation acceptance is still pending. Source-aware project
-  copy, citation export/presentation and verified claim-support policy have
+  snippet-relative locators without persisting attachment. Accepted J4 below
+  supplies revisioned scene-owned metadata and clear/edit/history semantics.
+  Source-aware project copy, citation export/presentation and verified claim-support policy have
   separate contracts before dependent implementation. Add separate
   paper/project adapters under their own contracts. Verify source-to-block/slide/export
   mappings; distinguish claim support from matching IDs/numbers and retain
@@ -9165,45 +9164,48 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-citation-lifecycle"></a>
 
-  - [ ] **V2-8J-4 revisioned citation metadata and lifecycle — validated, review pending.**
-    From independently accepted J3 `edda5ec`, planning entry `309ced2`.
-    [Proposed contract](V2-8J-4-PLAN.md) records scene-owned unverified target/source
-    IDs, source generation, optional byte ranges and versioned content hashes;
-    no new snippets/quotes/claims or stored verification/approval. Headless exact-
-    owner attach/remove/inspect would reuse canonical commands, project revisions,
-    source checks and atomic history. Preserve unresolved/stale records through
-    generic saves, undo/history, duplication and exact-ID regeneration; qualify
-    current use without a new receipt ledger or provider authority. Explicitly
-    refuse cited new-project copy/create and native export until the separate
-    contracts below; never silently strip metadata. Existing uncited flows remain.
-    Human approved this architecture/data-retention and containment direction
-    before code; implementation acceptance remains independent.
-    Independent [readiness](reviews/V2-8J-4-plan-d58a8a1.json) names exact final plan
-    `bbfbf8c` READY_FOR_DIRECTION after resolving tuple scope, target remapping,
-    sparse payload projection and generic agent-ingress closure. No technical
-    blocker remains. Human approved “Approve bounded J4 (Recommended)” on2026-10-28
-    before runtime changes. [Evaluation](V2-8J-4-EVAL.md) and fixed inventory now
-    track implementation; no later copy/export/presentation authority is added.
-    Frozen candidate `665cd04` implements the approved bounded contract. Selected
-    pure13/SQLite7/PostgreSQL7/boundary14=41/41 and typecheck0 pass; all root
-    attempts68=66pass/2fixture-fail/0skip/cancel retain overlap. History fault
-    verification teardown was corrected with unchanged rollback assertions. The
-    added LF negative probe disproved a review hypothesis; no product fix followed.
-    Independent actual-PG challenges2/2 pass; root exact-ID cleanup saved/fsynced
-    actual0 catalog before removal and credential deletion. Final packet review
-    remains pending; do not tick or promote the baseline before its decision.
+  - [x] **V2-8J-4 revisioned citation metadata and lifecycle — independently accepted.**
+    Human approved bounded metadata/history and cited-copy/export containment
+    on2026-10-28, pinned b0cb7aa before runtime after separate plan readiness.
+    Frozen source `665cd04` is independently
+    [accepted](reviews/V2-8J-4-665cd04.json) on2026-10-29 from J3 `edda5ec`, after
+    pushed packet ef1d11ac audit. Root committed the stable decision unchanged
+    at452bc61e. [Contract](V2-8J-4-PLAN.md) and [evaluation](V2-8J-4-EVAL.md)
+    record scene-owned unverified IDs, source generations, optional ranges and
+    content hashes; no new snippets/quotes/claims or stored support/approval.
+    Exact-owner headless attachment/removal/inspection reuse canonical commands,
+    project/catalog snapshots and atomic history. Edits, undo/history, duplication
+    and exact-ID regeneration preserve unresolved/stale metadata without restoring
+    cleared sources. Cited new-project copying and native export refuse centrally;
+    existing uncited behaviour and tool/H/Assistant authority remain unchanged.
 
-    **Look-ahead.** Scene-owned records avoid another document; unverified metadata
-    handles session undo200 beyond durable payload20 pruning without resurrecting
-    cleared sources. Future source-aware copy must rebind project-scoped source
-    IDs and the live editor together; export needs explicit privacy/presentation
-    direction. J3 quote matches and content-hash equality never establish support.
-    Tool/H/Assistant authority and research-backed creation remain separately gated.
+    Selected pure13/SQLite7/PostgreSQL7/boundary14=41/41, typecheck0 and independent
+    new actual-PG challenges2/2 pass. All root attempts68=66pass/2fixture-fail/
+    0skip/cancel retain overlap and corrected history-trigger verification order;
+    rollback assertions are unchanged. A passing LF negative probe disproved a
+    review hypothesis; its original harness/assessment mistake remains explicit.
+    Final independent packet audit reported0errors. Root saved/fsynced actual0
+    catalog before one exact-ID removal; independent absence/private-credential
+    verification passed. No blocker, required unexecuted gate or owned service
+    remains. Acceptance authorizes later planning only.
+
+    **Look-ahead.** Scene-owned unverified records avoid another document/receipt
+    ledger and preserve session undo200 beyond durable payload20 pruning. Future
+    source-aware copy must rebind project-scoped sources and the live editor
+    together; native citation presentation needs explicit privacy/surface direction.
+    Content equality and range validity never establish factual support. Research
+    orchestration, provider context and semantic creation retain separate gates.
+
+    > **Learned.** Stored metadata must remain distinct from a fresh qualified
+    > operation: otherwise history either revives cleared evidence or rejects
+    > legitimate undo after pruning. Duplicate orphan tuples need containing-scene
+    > scope rather than automatic retargeting. Fault verification can itself enter
+    > idempotent writes; the reusable trigger-lifetime trap is recorded in TRAPS.
 
   <a id="assistant-citation-project-copy"></a>
 
   - [ ] **Source-aware project copy and safe live-editor adoption — contract needed.**
-    After J4, agree copying retained snippets into a new owner-private project,
+    After accepted J4, agree copying retained snippets into a new owner-private project,
     atomic source-ID rebinding, original retrieval provenance, stale/missing-source
     refusal or explicit alternative, and capacity/history behaviour. Generic create
     must not silently carry foreign IDs or drop references. Cover actual Save-as-
@@ -9225,13 +9227,12 @@ local inference. Only that separate transport correction is authorized; this aud
     excerpts and cannot be added as an incidental renderer change. Reuse canonical
     scenes/native preflight; cover direct/browser/file and stored-project export,
     hidden targets, legacy access and admin privacy boundaries. Require appropriate
-    native/visual evidence when presentation is implemented. J4 proposes central
-    cited-scene export refusal; it does not complete citation-preserving export.
+    native/visual evidence when presentation is implemented. Accepted J4 enforces
+    central cited-scene export refusal; it does not complete citation-preserving export.
 
-  Dependency sequence after accepted J3: agree J4 attachment/lifecycle, then source-
-  aware copy/native mappings and verified locator/claim-support boundaries before
-  research-backed semantic creation. Semantic tools
-  retain deterministic compile/preservation/approval
+  Dependency sequence after accepted J4: agree source-aware copy/native mappings
+  and verified locator/claim-support boundaries before research-backed semantic
+  creation. Semantic tools retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
   parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning
   only, with no dependent implementation implied.

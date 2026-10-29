@@ -1,14 +1,16 @@
-# V2-8J-4 evaluation — validated, independent review pending
+# V2-8J-4 evaluation — independently accepted
 
-Frozen candidate `665cd0459b0f267b32e808a59046e3d0b914e74f`, branch v2, push
-origin/v2 only. Accepted baseline remains J3
+Frozen implementation `665cd0459b0f267b32e808a59046e3d0b914e74f`, branch v2, push
+origin/v2 only. Entry accepted baseline was J3
 `edda5ec7c2105bebff4a429a04b3fbe5b09048b4`; entry d267b37.
 Human approved **Approve bounded J4 (Recommended)** on2026-10-28 after
 [readiness](reviews/V2-8J-4-plan-d58a8a1.json) for plan bbfbf8c. Approval and the
 [fixed gate inventory](v2-8j-4-evidence/validation-plan.json) were pinned b0cb7aa
 before runtime changes. [Contract](V2-8J-4-PLAN.md) governs the bounded metadata/
 history, current-owner qualification and cited-copy/export containment policy.
-No implementation acceptance is claimed here.
+Independent [ACCEPT](reviews/V2-8J-4-665cd04.json) on2026-10-29 names this exact
+source after the pushed ef1d11ac packet audit; root committed the stable decision
+unchanged at452bc61e. State now promotes only that independently accepted source.
 
 ## Result and scope
 
@@ -129,6 +131,10 @@ whole result. Unique reviewer database/pools closed/dropped; source/probe and ex
 invocation665cd04 are retained separately from root totals. Its metadata-only
 private-file key-name read preceded identity verification; only [url] was printed,
 with no URL/secret/connection, and exact identity was checked before connection use.
-That sequence is retained honestly. Final pushed packet/cleanup review and explicit
-ACCEPT/HOLD remain pending. Root recommends acceptance only after that decision.
-Stop after J4 acceptance/hold documentation and scoped push; no dependent work.
+That sequence is retained honestly. The final packet/hash/count/cleanup audit
+reported0errors and issued [exact-source ACCEPT](reviews/V2-8J-4-665cd04.json).
+No blocker or required unexecuted gate remains. Acceptance is limited to J4;
+source-aware copy, citation presentation and later roadmap implementation are
+not authorized. No product check was repeated during the final continuation;
+only documentation, hashes, governance and cleanup absence were checked.
+Stop after acceptance propagation and scoped push.

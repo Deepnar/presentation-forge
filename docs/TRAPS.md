@@ -2126,3 +2126,15 @@ already observed run. Keep explicit saved-change loading pending through draft o
 fetch failures, while auth/foreign expiry still clears all private recovery state.
 I8's independent challenge caught both sides of this boundary. A completed run
 and a safely attached editor revision are different states.
+
+
+## Fault triggers can affect nominal read APIs
+
+History listing may ensure an idempotent baseline with INSERT OR IGNORE / ON
+CONFLICT DO NOTHING. A BEFORE INSERT fault trigger still fires even when the row
+already exists, so verification can fail after the intended rollback succeeded.
+Scope the injected fault to the mutation and tear it down before calling such
+verification APIs, or use a genuinely read-only observation. Retain the complete
+unchanged scene/history rollback assertion and original failure evidence; do not
+relax product assertions to accommodate a fixture lifetime error. J4 reproduced
+this independently on actual SQLite and PostgreSQL.
