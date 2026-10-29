@@ -59,6 +59,15 @@ SQL or permission flags are invalid. Reuse title, scene, dangerous-key and proje
 payload validation. Validate citations against the source ID before rebinding,
 then validate the complete new document against the destination ID.
 
+Before the first await, synchronously capture a bounded plain-JSON clone of the
+**complete binding and request**, reject unknown fields/invalid top-level shapes
+and identity, and freeze those private copies. Use the existing6MiB JSON-character
+and8MiB transport-byte ceilings rather than the smaller source-list DTO limit.
+All later asynchronous schema checks, locks, hashes, writes and output use only
+that captured request/binding; never reread caller-owned objects after capture.
+Mutation while awaiting validation or a lock must not change owner, source ID,
+scenes, title or theme. Reuse accepted J2/J4 input fencing, not just their schemas.
+
 Resolve a trusted principal at HTTP/CLI entry, and bind `{id, owner}` exactly.
 Hosted requests require the existing authenticated/verification policy; local
 anonymous use binds only owner-null projects. An invalid supplied credential
@@ -106,7 +115,11 @@ are not durable receipts, freshness grants or content-support certifications.
 6. Insert the destination document, its selected catalog/bodies and its canonical
    revision0 `create` history baseline in one transaction. No other history or
    runtime state is inherited. The original document/catalog/history is unchanged.
-   On any validation, source, insertion or commit fault, roll back every target row.
+   On validation/source/insertion faults, roll back the entire transaction. A
+   confirmed rollback leaves no target rows; durability is always all-or-none.
+   A lost COMMIT acknowledgement can leave an unknown **complete-copy** outcome,
+   not a proven rollback. Report that uncertainty and never retry automatically
+   or claim that an ambiguous commit created nothing.
 
 For an uncited snapshot the headless operation may create an empty-source copy;
 use J2's empty generation0/revision0 semantics. The browser may retain generic
@@ -175,6 +188,16 @@ or bulk-copy dashboard action is proposed.
   change `projectRef`, bypass ordinary leave guards, rewrite its query URL, or
   remount from the older source snapshot. Standalone mode keeps its existing
   project-query convention after the same guarded installation.
+- Give copy adoption an explicit prepared-copy-aware leave result. It may release
+  the exact original snapshot only because that same snapshot is confirmed saved
+  in this destination; it must not call the ordinary Discard branch, save the
+  original, mark it abandoned or interpret a user Discard as copy authorization.
+  Consume this one-use handoff for only its captured destination/session/document
+  at the final synchronous router commit, after any awaited history traversal.
+  Then the intentional source remount/unmount is part of this handoff, distinct
+  from an external discard/unmount. Cancel, another route, edit/draft drift or an
+  auth change invalidates adoption and keeps ordinary save/discard/cancel policy.
+  The destination mount must still validate the bound handoff before installation.
 - If new edits/drafts/pending saves prevent adoption, keep the source editor,
   drafts, undo and truthful dirty/conflict state. The committed copy is available
   through the existing workspace. Show a bounded copy-saved/adoption-deferred
@@ -199,11 +222,11 @@ inventory with the protocol validator/state when implementation starts.
 
 | Gate | Selected behavior and proposed invocation |
 |---|---|
-| `copy-contract` | `node --test test/v2-project-copy-8j.test.js`: exact rebind/preservation, duplicate-source deduplication, limits, orphan/content-anchor preservation, stale/missing/foreign/corrupt refusal |
+| `copy-contract` | `node --test test/v2-project-copy-8j.test.js`: pre-await mutable-input fencing, exact rebind/preservation, duplicate-source deduplication, limits, orphan/content-anchor preservation, stale/missing/foreign/corrupt refusal |
 | `copy-sqlite` | `node --test test/v2-project-copy-sqlite-8j.test.js`: real adapter atomic project/catalog/history, exact-owner/null/admin refusal, live unsaved and save-conflict recovery, independent clear/delete, >24 selected sources, fault rollback |
 | `copy-postgres` | `node --test test/v2-project-copy-postgres-8j.test.js`: same shared focused contract on actual PostgreSQL plus one parent-lock copy-versus-clear/delete race; unavailable is unexecuted, never passing |
-| `copy-transport` | `node --test test/v2-project-copy-transport-8j.test.js`: thin HTTP/CLI parity, captured credentials/no anonymous downgrade, input/privacy/size errors, no retries, generic cited-create/native refusal remains |
-| `copy-browser` | `node --test test/v2-project-copy-chrome-8j.test.js`: actual Save-as-new with unsaved edits and cited fixture; returned rebind/fresh undo, embedded and standalone identity/reopen, pending drafts, delayed-response edit/session/navigation guards and truthful failure; one new focused file only |
+| `copy-transport` | `node --test test/v2-project-copy-transport-8j.test.js`: thin HTTP/CLI parity, captured credentials/no anonymous downgrade, input/privacy/size errors, ambiguous commit/response and no retries, generic cited-create/native refusal remains |
+| `copy-browser` | `node --test test/v2-project-copy-chrome-8j.test.js`: actual dirty Save-as-new with unsaved edits and cited fixture; prepared-copy leave/fresh undo, embedded and standalone identity/reopen, pending drafts, delayed-response edit/session/navigation guards, ordinary leave choices and truthful failure; one new focused file only |
 | `typecheck` | `npm run typecheck` once after relevant source changes |
 
 Keep shared scenarios in one adapter contract rather than duplicating assertions
