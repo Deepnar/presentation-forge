@@ -79,3 +79,24 @@ test('approving explicit navigation waits for a racing Back restoration', async 
   f.dirty(false); f.win.history.back(); await until(()=>f.applied.at(-1)==='#/project/a');
   assert.equal(f.win.location.hash, '#/project/a');
 });
+
+test('prepared copy authorizes only its exact dirty snapshot without ordinary discard',async t=>{
+  const win=browser();let dirty=false,commits=0,checks=0;const handoff={id:'copy'};
+  const guard={isDirty:()=>dirty,confirm:()=>assert.fail('copy must not enter ordinary discard/save'),prepareCopy:(value,hash)=>value===handoff&&hash==='#/project/copy'};
+  const router=createGuardedHashRouter({window:win,apply:()=>{},getGuard:()=>guard});t.after(()=>router.dispose());
+  await router.navigate('#/project/source');dirty=true;
+  assert.equal(await router.navigate('#/project/copy',{transfer:{authorize:(g,hash)=>{checks++;return g.prepareCopy(handoff,hash);},commit:()=>{commits++;return true;}}}),true);
+  assert.equal(win.location.hash,'#/project/copy');assert.equal(commits,1);assert.equal(checks,2);assert.equal(dirty,true);
+});
+test('prepared copy rechecks drift after asynchronous router work before committing',async t=>{
+  const win=browser();let valid=true,commits=0;
+  const router=createGuardedHashRouter({window:win,apply:()=>{},getGuard:()=>({isDirty:()=>true})});t.after(()=>router.dispose());
+  const pending=router.navigate('#/project/copy',{transfer:{authorize:()=>valid,commit:()=>{commits++;return true;}}});
+  valid=false;assert.equal(await pending,false);assert.equal(win.location.hash,'#/projects');assert.equal(commits,0);
+});
+test('a rejected copy transfer preserves ordinary navigation choices',async t=>{
+  const f=setup(t);await f.router.navigate('#/project/source');f.dirty(true);
+  assert.equal(await f.router.navigate('#/project/copy',{transfer:{authorize:()=>false,commit:()=>assert.fail('rejected transfer')}}),false);
+  const pending=f.router.navigate('#/themes');await until(f.hasChoice);f.answer(false);assert.equal(await pending,false);
+  assert.equal(f.win.location.hash,'#/project/source');
+});
