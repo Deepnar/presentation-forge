@@ -6,62 +6,50 @@
     "source": "docs/reviews/V2-8J-6-1-ecf82d3f.json"
   },
   "implementationHead": {
-    "sha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
-    "note": "J6-1 independently accepted after empty-scope correction, final focused evidence, source-lineage audit and exact owned cleanup. Later commits contain documentation/evidence only."
+    "sha": "1700892ea5ea3d6e67cc36f1a4decc5d5dfa4208",
+    "note": "Human continuation approves reviewed J6-2 recommendation; implementation begins from accepted J6-1. Validation and independent acceptance pending."
   },
   "activeMilestone": {
-    "id": "V2-8J-6-1",
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-notes-export",
-    "evalDoc": "docs/V2-8J-6-1-EVAL.md",
+    "id": "V2-8J-6-2",
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-browser-export",
+    "evalDoc": "docs/V2-8J-6-2-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8J-6-1-ecf82d3f.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "notes-domain",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-1-evidence/notes-domain.json",
-      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
+      "id": "export-http",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused new/affected check; not executed."
     },
     {
-      "id": "notes-sqlite",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-1-evidence/notes-sqlite.json",
-      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
+      "id": "export-client",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused new/affected check; not executed."
     },
     {
-      "id": "notes-postgres",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-1-evidence/notes-postgres.json",
-      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
+      "id": "export-browser",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused new/affected check; not executed."
     },
     {
-      "id": "notes-native",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-1-evidence/notes-native.json",
-      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
+      "id": "production-build",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused new/affected check; not executed."
     },
     {
-      "id": "notes-cli",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-1-evidence/notes-cli.json",
-      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
-    },
-    {
-      "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-1-evidence/typecheck.json",
-      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
-    },
-    {
-      "id": "notes-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-1-evidence/notes-visual.json",
-      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
+      "id": "frontend-visual",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused new/affected check; not executed."
     }
   ],
   "knownBlockers": [],
@@ -72,9 +60,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8J-6-2 browser citation-export interaction",
+    "id": "Visible citation presentation and printable pagination contract",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-browser-export"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-native-presentation"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

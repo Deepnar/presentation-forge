@@ -1,0 +1,25 @@
+{
+  "acceptedBaseline": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
+  "approvedContract": "docs/V2-8J-6-2-PLAN.md",
+  "humanDirection": "docs/v2-8j-6-2-evidence/human-direction.json",
+  "gates": {
+    "export-http": [
+      "test/v2-native-export-http-8j.test.js"
+    ],
+    "export-client": [
+      "test/v2-native-export-client-8j.test.js"
+    ],
+    "export-browser": [
+      "test/v2-native-export-chrome-8j.test.js"
+    ],
+    "production-build": [],
+    "frontend-visual": []
+  },
+  "requiredFiles": [
+    "test/v2-native-export-http-8j.test.js",
+    "test/v2-native-export-client-8j.test.js",
+    "test/v2-native-export-chrome-8j.test.js"
+  ],
+  "rationale": "New HTTP/client and one serial Chrome file plus one reused build and inspected screenshots only. Accepted unchanged J6-1 adapter/native evidence is reused.",
+  "excluded": "No PG/service recreation, old full matrix, benchmark, typecheck unless typed code changes, new native raster, model/search/GPU/provider calls or activation."
+}

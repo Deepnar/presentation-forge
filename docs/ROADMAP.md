@@ -9302,7 +9302,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
     <a id="assistant-citation-browser-export"></a>
 
-    - [ ] **V2-8J-6-2 browser citation-export interaction — ready for direction.**
+    - [ ] **V2-8J-6-2 browser citation-export interaction — approved, implementation in progress.**
       The2026-10-29 continuation starts planning from accepted J6-1 ecf82d3f.
       [Concrete contract](V2-8J-6-2-PLAN.md) recommends the existing Export action:
       uncited direct download, cited exact-owner revision/count preview and fresh
@@ -9313,8 +9313,10 @@ local inference. Only that separate transport correction is authorized; this aud
       Revised contract063e46d2 is independently
       [ready for direction](reviews/V2-8J-6-2-plan-087819d3.json); stable record
       committed unchanged at518d0060 after five bounded contract corrections.
-      Explicit human surface/public-transport direction remains pending; no
-      implementation, product execution or activation is authorized. On-slide attribution/appendix and printable pagination retain
+      The human replied “ok continue” to the concrete implementation question
+      on2026-10-29; [direction](v2-8j-6-2-evidence/human-direction.json) authorizes
+      only this bounded implementation and focused offline evidence. No activation
+      or provider/model call is authorized; independent acceptance remains pending. On-slide attribution/appendix and printable pagination retain
       their separate presentation contract; the parent remains incomplete.
 
   Dependency sequence after accepted J6-1 headless notes:

@@ -181,7 +181,10 @@
               "notes-postgres",
               "notes-native",
               "notes-cli",
-              "notes-visual"
+              "notes-visual",
+              "export-http",
+              "export-client",
+              "export-browser"
             ]
           },
           "status": {
@@ -375,7 +378,8 @@
                   "V2-8J-3",
                   "V2-8J-4",
                   "V2-8J-5",
-                  "V2-8J-6-1"
+                  "V2-8J-6-1",
+                  "V2-8J-6-2"
                 ]
               }
             },

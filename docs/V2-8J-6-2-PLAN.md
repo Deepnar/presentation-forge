@@ -1,11 +1,14 @@
 # V2-8J-6-2 — browser citation notes export
 
-Status: **independently ready for human direction; implementation unauthorized**.
+Status: **human-approved; implementation in progress**.
+On2026-10-29 the human replied “ok continue” to the concrete recommended
+implementation question; [direction](v2-8j-6-2-evidence/human-direction.json) is
+pinned before runtime. Only this reviewed bounded contract is authorized.
 Reviewed contract `063e46d2e78d26b40445558ca0dc42e09aa30daa` is
 [READY_FOR_DIRECTION](reviews/V2-8J-6-2-plan-087819d3.json); the stable separate
 record was committed unchanged at518d0060. All five technical findings are resolved.
 This later header records readiness; the reviewed contract body remains pinned in
-that commit. Human surface/public-transport direction remains pending.
+that commit. The subsequent human direction authorizes its implementation.
 Accepted baseline `ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d` (J6-1), independently
 [accepted](reviews/V2-8J-6-1-ecf82d3f.json). Planning entry
 `fa5c6c7b906bccfd01e030bb3fa833a7e2e69bfe`; branch v2, push origin/v2 only.
