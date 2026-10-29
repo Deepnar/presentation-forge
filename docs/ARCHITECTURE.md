@@ -3190,7 +3190,7 @@ The separately qualified browser interaction is described below. Further present
 [roadmap](ROADMAP.md#assistant-citation-native-presentation).
 
 
-### J6-2 browser citation notes export (implemented; review pending)
+### J6-2 browser citation notes export (accepted6068a2a7)
 
 `app/server/v2-native-export-routes.js` exposes metadata GET and explicit qualified
 POST over the accepted J6-1 facade. Strict shared trusted-token verification binds

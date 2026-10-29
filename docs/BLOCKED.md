@@ -124,7 +124,7 @@ point at it without creating a broken or misleading payment link.
 
 ## 3. Decisions — nobody should make these alone
 
-### Current V2 state: J6-1 accepted; browser-export implementation approved
+### Current V2 state: J6-2 browser export accepted
 
 Human approved bounded J4 on2026-10-28; exact source665cd04 is independently
 [accepted](reviews/V2-8J-4-665cd04.json) on2026-10-29. Selected41/41, typecheck0,
@@ -150,8 +150,10 @@ failures and portable/print limits. Later scope and direction live only in the
 The [J6-2 browser export contract](ROADMAP.md#assistant-citation-browser-export)
 is independently ready at063e46d2 from accepted J6-1; all five technical review
 findings are resolved. Human continuation after the concrete question approved scoped implementation
-on2026-10-29. No direction/service blocker remains for that scope; independent
-implementation acceptance is pending.
+on2026-10-29. Corrected source6068a2a7 is independently
+[accepted](reviews/V2-8J-6-2-6068a2a7.json), with root22/22, independent3/3,
+423/0 packet audit and completed owned cleanup. No J6-2 direction, validation,
+review or service blocker remains. Later scope remains solely in the roadmap.
 
 ### 3.1 Browser regression coverage
 

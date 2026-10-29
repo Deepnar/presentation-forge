@@ -114,11 +114,8 @@ pages; support remains not-assessed. Downloaded content survives source clear/de
 The owner CLI publishes complete0600 files exclusively; stale requests never retry.
 Generic/raw/file/current GET cited exports remain refused. No browser/public export,
 provider research/context or activation authority is added.
-J4 citation metadata lifecycle is independently accepted at665cd04, J5 qualified
-source-aware copying atf6487737 and J6-1 owner-qualified headless source-notes
-export atecf82d3f. Ordinary/raw cited export still refuses. The separate approved
-J6-2 browser interaction is implemented at6068a2a7 and under independent review;
-resolve its current acceptance through state and the exact decision. It requires
+The separate J6-2 browser interaction is independently accepted at6068a2a7 in its exact-source
+review record; resolve current scope through state and that decision. It requires
 clean saved state and fresh full-title/URL notes consent through existing Export,
 with captured owner/revision/session/navigation and bounded private transport.
 It adds no model/research authority or automatic save. Keep acceptance distinct

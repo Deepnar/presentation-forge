@@ -2,8 +2,9 @@
 
 Corrected implementation `6068a2a7c5643a1958a140bcc60d0df6b891ccec`
 (initial implementation/tests65430f9b), pushed
-origin/v2. Accepted baseline remains J6-1 `ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d`.
-**Independent implementation acceptance pending final packet audit.** Human “ok continue” approved
+origin/v2. Task-entry accepted baseline was J6-1 `ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d`.
+**Independently accepted** in [the exact-source decision](reviews/V2-8J-6-2-6068a2a7.json),
+committed unchanged at9a66f6fc after packet488fba2e audit423/0. Human “ok continue” approved
 reviewed contract063e46d2 on2026-10-29, pinned before runtime at8ba322e9:
 [direction](v2-8j-6-2-evidence/human-direction.json),
 [contract](V2-8J-6-2-PLAN.md), [inventory](v2-8j-6-2-evidence/validation-plan.json).
@@ -151,6 +152,8 @@ one four-phase corrected browser probe. All independent product attempts4=3pass/
 body; raw metadata/source/error are retained. Body cases run64ms; corrected probe
 5474ms. This is additional distinct focused coverage, not a repeat of the root22.
 
-Root recommends acceptance after the separate exact-source packet audit; this
-recommendation is not acceptance. Further visible/printed citations,
+The separate reviewer accepted only this bounded slice with no outstanding
+findings after423 lightweight packet checks/0errors. All required focused gates
+and exact owned cleanup are complete. Root propagation records that decision;
+it supplies no dependent feature or activation authority. Further visible/printed citations,
 claim support and semantic creation remain solely in the roadmap.

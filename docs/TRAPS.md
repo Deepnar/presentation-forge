@@ -2147,3 +2147,21 @@ point but missed after CDP rounds coordinates. Use a painted child for trusted
 clicks and assert the selection precondition before releasing a delayed response;
 otherwise a fixture can falsely accuse an adoption guard of ignoring user changes.
 Wait for finite transitions and stable bounds before screenshot certification.
+
+
+## Modal fit needs reachable content, not just a bounded rectangle
+
+A max-height flex dialog with overflow:hidden can satisfy outer bounds while its
+paragraph collapses to0px and its final action clips at short/zoomed sizes. Preserve
+a readable disclosure minimum and a whole-dialog scroll fallback. Check complete
+text endpoints and scroll each action into view; simultaneous visibility is not
+required when the approved contract allows scrolling. Record whether zoom is
+actual browser-menu zoom or CSS reflow emulation. J6-2 exposed this independently.
+
+## Install deferred network gates before consumers capture fetch
+
+A component may capture fetch at mount. Replacing window.fetch afterward can hold
+editor reloads but miss Assistant decisions, allowing the test to exercise a different
+stage than claimed. Install a stable instrumented function before mount and change
+its bounded one-shot gates later; assert the intended gate is reached before
+releasing other responses. Preserve the failed fixture evidence. J6-2 reproduced it.

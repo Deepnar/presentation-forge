@@ -9302,7 +9302,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
     <a id="assistant-citation-browser-export"></a>
 
-    - [ ] **V2-8J-6-2 browser citation-export interaction — implemented, independent review pending.**
+    - [x] **V2-8J-6-2 browser citation-export interaction — independently accepted6068a2a7.**
       The2026-10-29 continuation starts planning from accepted J6-1 ecf82d3f.
       [Concrete contract](V2-8J-6-2-PLAN.md) recommends the existing Export action:
       uncited direct download, cited exact-owner revision/count preview and fresh
@@ -9323,7 +9323,11 @@ local inference. Only that separate transport correction is authorized; this aud
       disclosure at effective200% zoom in a short viewport. Narrow dialog scroll
       correction at6068a2a7 passed its affected independent replay1/1 across
       normal320/short/emulated200%/actual unmount phases. Independent selected3/3
-      is complete; final exact-source review decision remains pending. On-slide attribution/appendix and printable pagination
+      is complete; separate [ACCEPT](reviews/V2-8J-6-2-6068a2a7.json) names6068a2a7
+      after423/0 packet audit. Stable decision committed unchanged at9a66f6fc.
+      No required gate/service blocker remains. Look-ahead preserves J6-1 authority
+      and leaves visible/printed citation policy and semantic proposals on their
+      canonical primitives. On-slide attribution/appendix and printable pagination
       retain their separate presentation contract; the parent remains incomplete.
 
       > **Learned.** Private metadata and rendering need shared finite admission;
@@ -9333,8 +9337,8 @@ local inference. Only that separate transport correction is authorized; this aud
       > saved changes reload. Theme token names can collide with typography utilities;
       > inspect actual dialog text, not just DOM bounds.
 
-  Dependency sequence after accepted J6-1 headless notes:
-  finish browser export acceptance, agree visible attribution and verified locator/claim-support
+  Dependency sequence after accepted J6-1/J6-2 notes export:
+  agree visible attribution and verified locator/claim-support
   boundaries before research-backed semantic creation. Semantic tools retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
   parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning

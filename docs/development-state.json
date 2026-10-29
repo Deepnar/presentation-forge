@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
+    "sha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8J-6-1-ecf82d3f.json"
+    "source": "docs/reviews/V2-8J-6-2-6068a2a7.json"
   },
   "implementationHead": {
     "sha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
-    "note": "Corrected J6-2 source frozen/pushed; selected root22/22 and new independent3/3 complete. Exact-source final review decision pending."
+    "note": "Independent ACCEPT for corrected J6-2 source; root22/22, independent3/3 and423/0 packet audit. Decision committed unchanged at9a66f6fc; later commits are closeout documentation/evidence only."
   },
   "activeMilestone": {
     "id": "V2-8J-6-2",
@@ -15,41 +15,41 @@
     "evalDoc": "docs/V2-8J-6-2-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8J-6-2-6068a2a7.json",
+    "accepted": true
   },
   "validation": [
     {
       "id": "export-http",
       "status": "passed",
       "evidence": "docs/v2-8j-6-2-evidence/export-http.json",
-      "reason": "Focused retained coverage with original attempts/source applicability. Independent short/zoom and actual unmount probe passed on corrected source; final review pending."
+      "reason": "Focused retained evidence complete; exact-source independent ACCEPT covers source applicability, earlier failures and corrected short/zoom replay."
     },
     {
       "id": "export-client",
       "status": "passed",
       "evidence": "docs/v2-8j-6-2-evidence/export-client.json",
-      "reason": "Focused retained coverage with original attempts/source applicability. Independent short/zoom and actual unmount probe passed on corrected source; final review pending."
+      "reason": "Focused retained evidence complete; exact-source independent ACCEPT covers source applicability, earlier failures and corrected short/zoom replay."
     },
     {
       "id": "export-browser",
       "status": "passed",
       "evidence": "docs/v2-8j-6-2-evidence/export-browser.json",
-      "reason": "Focused retained coverage with original attempts/source applicability. Independent short/zoom and actual unmount probe passed on corrected source; final review pending."
+      "reason": "Focused retained evidence complete; exact-source independent ACCEPT covers source applicability, earlier failures and corrected short/zoom replay."
     },
     {
       "id": "production-build",
       "status": "passed",
       "evidence": "docs/v2-8j-6-2-evidence/production-build.json",
-      "reason": "Focused retained coverage with original attempts/source applicability. Independent short/zoom and actual unmount probe passed on corrected source; final review pending."
+      "reason": "Focused retained evidence complete; exact-source independent ACCEPT covers source applicability, earlier failures and corrected short/zoom replay."
     },
     {
       "id": "frontend-visual",
       "status": "passed",
       "evidence": "docs/v2-8j-6-2-evidence/frontend-visual.json",
-      "reason": "Focused retained coverage with original attempts/source applicability. Independent short/zoom and actual unmount probe passed on corrected source; final review pending."
+      "reason": "Focused retained evidence complete; exact-source independent ACCEPT covers source applicability, earlier failures and corrected short/zoom replay."
     }
   ],
   "knownBlockers": [],

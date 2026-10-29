@@ -32,19 +32,27 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current slice — J6-2 implementation under independent review
+## Latest accepted slice — J6-2 browser notes export complete
 
-Human direction was pinned8ba322e9 before runtime. Frozen source/tests
-`6068a2a7c5643a1958a140bcc60d0df6b891ccec` is pushed origin/v2. Read
-[V2-8J-6-2-EVAL.md](V2-8J-6-2-EVAL.md), state and HANDOFF: selected22/22 focused
-cases, final build and viewed desktop/narrow evidence are complete. Independent short/zoom/unmount replay and two new controller challenges pass3/3.
-Final separate packet audit/decision is pending; accepted baseline
-stays J6-1 below. Preserve all prior failed attempts/source-capture limitations.
-No old matrix, typed/native/store change, PG/service recreation, real model/search
-or production activation is authorized. Continue review/corrections/closeout only;
-stop at J6-2. Roadmap alone owns later candidates.
+Human direction was pinned8ba322e9 before runtime. Corrected source
+`6068a2a7c5643a1958a140bcc60d0df6b891ccec` is independently
+[accepted](reviews/V2-8J-6-2-6068a2a7.json); stable separate decision was committed
+unchanged at9a66f6fc after packet488fba2e audit423/0. Read
+[evaluation](V2-8J-6-2-EVAL.md), state and HANDOFF. Selected root22/22 and new
+independent3/3, final build, viewed final normal/short/zoom screenshots and owned
+cleanup are complete. Preserve all original failed attempts/source-capture limits;
+selected cases are an executed-leaf union, not a final whole-file rerun.
 
-## Latest accepted slice — J6-1 qualified citation notes export complete
+Existing Export preserves drafts, requires clean saved state and gets fresh
+owner-only full-title/URL notes consent. Late session/navigation/approval/reload
+results cannot download. Short/zoom whole-dialog scrolling preserves disclosure
+and action reachability. No store/renderer/model authority changed. No owned
+fixture/service remains; never recreate old fixtures or repeat completed cleanup.
+No old matrix, PG, native raster, real model/search/GPU or activation ran. J6-2
+closeout is complete; stop here. Later scope/authorization lives only in the
+[roadmap](ROADMAP.md#assistant-citation-native-presentation).
+
+## Accepted predecessor — J6-1 qualified citation notes export complete
 
 Human approved reviewed ae96d717 on2026-10-29, pinned91e06210 before runtime.
 Corrected source `ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d` is independently

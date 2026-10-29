@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-29T18:11:18.528466+00:00",
+  "observedAt": "2026-10-29T18:19:40.967493+00:00",
   "ownedGroups": [
     2421127,
     2421362,
@@ -14,9 +14,11 @@
     2439042,
     2441445,
     2441548,
-    2442859
+    2442859,
+    2451166
   ],
   "liveOwnedProcesses": [],
   "fixturePolicy": "Each new HTTP/Chrome fixture stops its exact child API, closes browser and removes only its mkdtemp SQLite/config/profile resources through finally/test-after hooks. No persistent PostgreSQL service acquired; no old cleanup recreated. No unrelated paths or processes removed.",
-  "limitations": "This is a fresh process-group absence check, not a reconstructed pre-deletion database catalog or a claim about unrelated tmp directories."
+  "limitations": "This is a fresh process-group absence check, not a reconstructed pre-deletion database catalog or a claim about unrelated tmp directories.",
+  "reviewerCleanup": "independent/runner-absence.json and final probe cleanup.json"
 }
