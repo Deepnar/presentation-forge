@@ -1,0 +1,12 @@
+{
+  "atUtc": "2026-10-29T17:20:58.555168+00:00",
+  "entryHead": "fa5c6c7b906bccfd01e030bb3fa833a7e2e69bfe",
+  "initialPlanSha": "087819d39df46ffa44c7159c8edd1ad84f70f1af",
+  "acceptedRuntimeUnchanged": true,
+  "acceptedStatePreserved": true,
+  "candidateAuthorized": false,
+  "localLinkChecks": 196,
+  "errors": [],
+  "execution": "Documentation/source/protocol inspection only. No product tests, builds, browser, renderer, service, model/search/GPU or external provider call. No performance/content claim.",
+  "authority": "Independent technical readiness and human surface/public-transport direction pending."
+}
