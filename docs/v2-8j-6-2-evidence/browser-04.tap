@@ -1,0 +1,12 @@
+✔ Native export Chrome: workspace cited confirmation cancel and real notes download preserve uncited direct export (3791.323478ms)
+✔ Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export (2619.676702ms)
+✔ Native export Chrome: editor consent layout remains stable and late route/session responses cannot download (3829.888926ms)
+✔ Native export Chrome: editor held restore and copy cannot export until canonical adoption finishes (2356.209396ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12985.433704

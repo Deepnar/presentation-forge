@@ -1,0 +1,42 @@
+{
+  "id": "export-browser",
+  "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "kind": "tests",
+  "command": "Assemble explicitly selected successful executed leaves from retained invocation records; no new test execution.",
+  "exitCode": 0,
+  "tests": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8j-6-2-evidence/export-browser-selected.tap",
+  "selection": {
+    "Native export Chrome: standalone nested Projects confirmation keeps parent Escape behavior and bounds competing triggers": {
+      "file": "test/v2-native-export-chrome-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/browser-01.json"
+    },
+    "Native export Chrome: workspace cited confirmation cancel and real notes download preserve uncited direct export": {
+      "file": "test/v2-native-export-chrome-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/browser-04.json"
+    },
+    "Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export": {
+      "file": "test/v2-native-export-chrome-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/browser-04.json"
+    },
+    "Native export Chrome: editor consent layout remains stable and late route/session responses cannot download": {
+      "file": "test/v2-native-export-chrome-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/browser-04.json"
+    },
+    "Native export Chrome: editor held restore and copy cannot export until canonical adoption finishes": {
+      "file": "test/v2-native-export-chrome-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/browser-04.json"
+    },
+    "Native export Chrome: Assistant authoritative reload blocks export while its actual saved response is held": {
+      "file": "test/v2-native-export-chrome-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/browser-06.json"
+    }
+  },
+  "sourceApplicability": "manifest.json, leaf-lineage.json and V2-8J-6-2-EVAL.md disclose source/harness lineage and capture limits."
+}

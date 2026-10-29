@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: native export HTTP: shared metadata/render admission survives abort and faults until actual settlement
+ok 1 - native export HTTP: shared metadata/render admission survives abort and faults until actual settlement
+  ---
+  duration_ms: 1305.171392
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1645.715677

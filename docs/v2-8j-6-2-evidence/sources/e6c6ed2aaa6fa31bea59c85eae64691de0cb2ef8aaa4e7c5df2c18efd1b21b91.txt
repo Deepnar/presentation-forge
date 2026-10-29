@@ -1,0 +1,80 @@
+import test,{before,after} from 'node:test';
+import assert from 'node:assert/strict';
+import express from 'express';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import JSZip from 'jszip';
+import { exportApiFixture } from './v2-native-export-fixture.js';
+import { installNativeExportHeaders,installNativeExportParser,registerNativeExportRoutes,NATIVE_EXPORT_BYTES } from '../app/server/v2-native-export-routes.js';
+import { setDbPathForTest,closeDb } from '../src/db.js';
+let f,project;const run=promisify(execFile),route=id=>`/api/v2/projects/${id}/native-export`;
+const q={projectRevision:1,sourceGeneration:0,sourceRevision:1,disclosure:'source-title-url-v1'};
+before(async()=>{f=await exportApiFixture();project=await f.project();setDbPathForTest(f.env.FORGE_DB_PATH);});
+after(async()=>{closeDb();await f?.stop();});
+function privateHeaders(res){assert.equal(res.headers.get('cache-control'),'private, no-store');assert.equal(res.headers.get('pragma'),'no-cache');assert.match(res.headers.get('vary'),/Authorization/i);}
+const post=(id,body=q,options={})=>f.request(route(id),{token:f.token,method:'POST',body:JSON.stringify(body),...options});
+test('native export HTTP: actual saved notes delivery uses exact snapshot and preserves project/history',async()=>{
+  const before=await f.request(`/api/v2/projects/${project.id}`,{token:f.token}).then(r=>r.json()),history=await f.request(`/api/v2/projects/${project.id}/revisions`,{token:f.token}).then(r=>r.json());
+  const observed=await f.request(route(project.id),{token:f.token});privateHeaders(observed);const metadata=await observed.json();assert.deepEqual(Object.keys(metadata),['ok','snapshot','citationCount']);assert.equal(metadata.citationCount,1);assert.equal(JSON.stringify(metadata).includes('Evidence 0'),false);
+  const response=await post(project.id);privateHeaders(response);assert.equal(response.status,200);assert.equal(response.headers.get('x-forge-project-revision'),'1');assert.equal(response.headers.get('x-forge-source-revision'),'1');
+  assert.match(response.headers.get('content-type'),/^application\/vnd\.openxmlformats/);const zip=await JSZip.loadAsync(await response.arrayBuffer());const xml=await zip.file('ppt/notesSlides/notesSlide1.xml').async('string');assert.match(xml,/Evidence 0/);assert.match(xml,/https:\/\/example.org\/0/);assert.match(xml,/claim support not assessed/);assert.equal(xml.includes('界😀 retained evidence.'),false);
+  assert.deepEqual(await f.request(`/api/v2/projects/${project.id}`,{token:f.token}).then(r=>r.json()),before);assert.deepEqual(await f.request(`/api/v2/projects/${project.id}/revisions`,{token:f.token}).then(r=>r.json()),history);
+  const raw=await f.request(`/api/v2/projects/${project.id}/export.pptx?disclosure=source-title-url-v1`,{token:f.token});assert.equal(raw.status,422);assert.equal(raw.headers.get('x-forge-export-refusal'),'citation-preservation-required');assert.equal((await raw.json()).code,'citation-preservation-required');
+});
+test('native export HTTP: exact owner/admin privacy and supplied bad credentials cannot downgrade',async()=>{
+  await f.sql('UPDATE users SET role=? WHERE email=?',['admin','import-other@example.test']);
+  for(const token of [undefined,'invalid',f.otherToken]) {
+    const response=await f.request(route(project.id),{token});privateHeaders(response);assert.equal(response.status,token===f.otherToken?404:401);assert.equal((await response.text()).includes(project.title),false);
+  }
+  const cookie=await f.request(route(project.id),{headers:{Cookie:'forge_session='+f.token}});assert.equal(cookie.status,401);
+  const uncited=await f.project(false);assert.equal((await f.request(`/api/v2/projects/${uncited.id}/export.pptx`,{token:f.otherToken})).status,200);
+  assert.equal((await f.request(route(uncited.id),{token:f.otherToken})).status,404);
+  const local=await exportApiFixture({FORGE_HOSTED:'0'});
+  try {
+    const created=await local.request('/api/v2/projects',{method:'POST',body:JSON.stringify({title:'Local',scenes:uncited.scenes})}).then(r=>r.json()),id=created.project.id;
+    assert.equal((await local.request(route(id))).status,200);
+    for(const Authorization of ['broken','Bearer '])assert.equal((await local.request(route(id),{headers:{Authorization}})).status,401);
+    assert.equal((await local.request(route(id),{headers:{Cookie:'forge_session=bad'}})).status,401);
+  } finally {await local.stop();}
+});
+test('native export HTTP: strict private parser path and method boundaries never echo requests',async()=>{
+  const cases=[['POST',route(project.id),'{"private":',{'Content-Type':'application/json'},422],
+    ['POST',route(project.id),'x'.repeat(3000),{'Content-Type':'application/json'},413],
+    ['POST',route(project.id),JSON.stringify(q),{'Content-Type':'text/plain'},415],
+    ['POST',route(project.id),Buffer.from([123,34,255,34,58,49,125]),{'Content-Type':'application/json'},422],
+    ['GET',route(project.id)+'?private=SECRET',undefined,{},422],['HEAD',route(project.id),undefined,{},405],
+    ['GET',route(project.id)+'/unknown',undefined,{},404],['GET','/api/v2/projects/%zz/native-export',undefined,{},422]];
+  for(const [method,url,body,headers,status] of cases){const response=await f.request(url,{token:f.token,method,body,headers});privateHeaders(response);assert.equal(response.status,status,url);const text=await response.text();assert.equal(text.includes('SECRET'),false);assert.equal(text.includes('SyntaxError'),false);assert.equal(text.includes('URIError'),false);}
+  const preflight=await f.request(route(project.id),{method:'OPTIONS',headers:{Origin:'https://example.test','Access-Control-Request-Method':'POST'}});assert.equal(preflight.status,204);privateHeaders(preflight);assert.equal(await preflight.text(),'');
+});
+test('native export HTTP: strict disclosure and stale counters refuse without byte/header publication',async()=>{
+  for(const [body,status] of [[{...q,disclosure:false},422],[{...q,owner:f.owner},422],[{...q,projectRevision:0},409],[{...q,sourceRevision:0},409]]) {
+    const response=await post(project.id,body);privateHeaders(response);assert.equal(response.status,status);assert.equal(response.headers.has('content-disposition'),false);assert.equal(response.headers.has('x-forge-source-revision'),false);
+  }
+});
+test('native export HTTP: verification-required account refuses before service qualification',async()=>{
+  await f.sql('UPDATE users SET verified_at=NULL WHERE email=?',[f.owner]);
+  const code=`import express from 'express';import {registerNativeExportRoutes} from './app/server/v2-native-export-routes.js';import {closeDb} from './src/db.js';
+    const app=express();registerNativeExportRoutes(app,{service:async()=>{throw Error('must not qualify')}});const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));
+    try{const res=await fetch('http://127.0.0.1:'+server.address().port+'/api/v2/projects/p/native-export',{headers:{Authorization:'Bearer '+process.env.FORGE_EXPORT_TOKEN}});console.log(JSON.stringify({status:res.status,body:await res.json()}));}finally{await new Promise(r=>server.close(r));closeDb();}`;
+  const result=await run(process.execPath,['--input-type=module','-e',code],{env:{...f.env,FORGE_EXPORT_TOKEN:f.token,FORGE_SMTP_HOST:'127.0.0.1',FORGE_SMTP_FROM:'fixture@example.test',FORGE_SMTP_USER:'fixture',FORGE_SMTP_PASS:'fixture'},timeout:10000});
+  const response=JSON.parse(result.stdout.trim());assert.equal(response.status,403);assert.equal(response.body.code,'email-unverified');
+});
+test('native export HTTP: shared metadata/render admission survives abort and faults until actual settlement',async t=>{
+  const old=process.env.FORGE_HOSTED;process.env.FORGE_HOSTED='0';t.after(()=>{if(old===undefined)delete process.env.FORGE_HOSTED;else process.env.FORGE_HOSTED=old;});
+  let release,held=true,entered=0,mode='normal';const gate=new Promise(r=>release=r);
+  const result=b=>({ok:true,snapshot:{projectId:b.id,projectRevision:0,sourceGeneration:0,sourceRevision:0},citationCount:0});
+  const app=express();installNativeExportHeaders(app);installNativeExportParser(app);registerNativeExportRoutes(app,{service:async()=>({
+    inspect:async b=>{entered++;if(held)await gate;if(mode==='fault')throw Error('PRIVATE-TOKEN');return result(b);},
+    render:async b=>{entered++;if(held)await gate;return {...result(b),bytes:new Uint8Array(mode==='oversize'?NATIVE_EXPORT_BYTES+1:10)};},
+  })});
+  const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));t.after(async()=>{release();server.closeAllConnections();await new Promise(r=>server.close(r));});const url='http://127.0.0.1:'+server.address().port+'/api/v2/projects/p/native-export';
+  const a=new AbortController(),first=fetch(url,{signal:a.signal,headers:{Authorization:'Bearer '+f.token}}).catch(e=>e);
+  while(entered<1)await new Promise(r=>setImmediate(r));assert.equal((await fetch(url,{headers:{Authorization:'Bearer '+f.token}})).status,429);
+  const second=fetch(url,{method:'POST',headers:{Authorization:'Bearer '+f.otherToken,'Content-Type':'application/json'},body:JSON.stringify({...q,projectRevision:0,sourceRevision:0})});
+  while(entered<2)await new Promise(r=>setImmediate(r));a.abort();await first;assert.equal((await fetch(url)).status,429);
+  held=false;release();assert.equal((await second).status,200);assert.equal((await fetch(url)).status,200);
+  mode='fault';const fault=await fetch(url);assert.equal(fault.status,503);assert.equal((await fault.text()).includes('PRIVATE'),false);
+  mode='oversize';const oversized=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(q)});assert.equal(oversized.status,413);assert.equal(oversized.headers.has('content-disposition'),false);
+  mode='normal';assert.equal((await fetch(url)).status,200);
+});

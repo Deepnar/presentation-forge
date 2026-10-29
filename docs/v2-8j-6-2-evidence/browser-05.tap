@@ -1,0 +1,104 @@
+✖ Native export Chrome: Assistant authoritative reload blocks export while its actual saved response is held (15513.75031ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15883.162797
+
+✖ failing tests:
+
+test at test/v2-native-export-chrome-8j.test.js:11:24
+✖ Native export Chrome: Assistant authoritative reload blocks export while its actual saved response is held (15513.75031ms)
+  Error: Browser condition window.__heldExport; F
+  ← Workspace
+  Slides
+  Save
+  Saved · rev 1
+  ↩ Undo
+  ↪ Redo
+  History
+  Export
+  Present
+  Assistant
+  Inspector
+  1 / 2
+  Slides
+  Layers
+  + Slide ▾
+  Reviewed results
+  0
+  5
+  10
+  15
+  First
+  Second
+  ■ Reviewed score
+  Cell
+  Score
+  First
+  2.5
+  Second
+  15.75
+  Slide 1 · Custom
+  ⋯
+  Unrelated private slide
+  Slide 2
+  ⋯
+  ← Prev
+  Next →
+  −
+  100%
+  +
+  Fit
+  Done
+  + Text
+  + Rect
+  + Round
+  + Ellipse
+  Slide 1 of 2 · Custom slide
+  Reviewed results
+  0
+  5
+  10
+  15
+  First
+  Second
+  ■ Reviewed score
+  Cell
+  Score
+  First
+  2.5
+  Second
+  15.75
+  Inspector
+  Assistant
+  ×
+  Assistant
+  Export chat
+  Clear chat
+  
+  Saved Assistant changes loaded. Session undo was cleared; use Version history to restore.
+  
+  You
+  
+  Review this slide wording and data.
+  
+  Approved · succeeded
+  
+  Proposed changes
+  Version history
+  Scope
+  Current slide
+  Selected objects
+  
+  Uses the current saved slide. Earlier chat is saved for reference and is not automatically sent.
+  
+  Message
+  Send
+      at wait (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:12:210)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:75:181)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)

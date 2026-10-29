@@ -1,0 +1,21 @@
+TAP version 13
+# Deduplicated retained executed-leaf union, not a test invocation.
+# forge-test-file "test/v2-native-export-http-8j.test.js"
+# retained invocation docs/v2-8j-6-2-evidence/http-01.json
+ok 1 - native export HTTP: actual saved notes delivery uses exact snapshot and preserves project/history
+# retained invocation docs/v2-8j-6-2-evidence/http-01.json
+ok 2 - native export HTTP: exact owner/admin privacy and supplied bad credentials cannot downgrade
+# retained invocation docs/v2-8j-6-2-evidence/http-01.json
+ok 3 - native export HTTP: strict private parser path and method boundaries never echo requests
+# retained invocation docs/v2-8j-6-2-evidence/http-01.json
+ok 4 - native export HTTP: strict disclosure and stale counters refuse without byte/header publication
+# retained invocation docs/v2-8j-6-2-evidence/http-01.json
+ok 5 - native export HTTP: verification-required account refuses before service qualification
+# retained invocation docs/v2-8j-6-2-evidence/http-admission-02.json
+ok 6 - native export HTTP: shared metadata/render admission survives abort and faults until actual settlement
+1..6
+# tests 6
+# pass 6
+# fail 0
+# skipped 0
+# cancelled 0

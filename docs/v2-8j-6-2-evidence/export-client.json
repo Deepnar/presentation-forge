@@ -1,0 +1,58 @@
+{
+  "id": "export-client",
+  "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "kind": "tests",
+  "command": "Assemble explicitly selected successful executed leaves from retained invocation records; no new test execution.",
+  "exitCode": 0,
+  "tests": {
+    "total": 10,
+    "pass": 10,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8j-6-2-evidence/export-client-selected.tap",
+  "selection": {
+    "export client: uncited direct download preserves revision identity and has no notes path": {
+      "file": "test/v2-native-export-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+    },
+    "export client: cited metadata is bounded preview, explicit one-shot consent alone dispatches POST": {
+      "file": "test/v2-native-export-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+    },
+    "export client: metadata schema ID counters MIME byte limits and displayed revision fail closed": {
+      "file": "test/v2-native-export-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+    },
+    "export client: generic422 and oversized errors do not authorize notes inspection or reflect body text": {
+      "file": "test/v2-native-export-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+    },
+    "export client: pending edits refuse synchronously and later dirty state suppresses confirmation/download": {
+      "file": "test/v2-native-export-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+    },
+    "export client: cancel or session/route ABA at each awaited stage makes old completion inert": {
+      "file": "test/v2-native-export-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+    },
+    "export client: old cancellation cannot release a newer shared ticket": {
+      "file": "test/v2-native-export-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+    },
+    "export client: notes headers and actual64MiB body ceiling reject before Blob/link publication": {
+      "file": "test/v2-native-export-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+    },
+    "export client: stale direct revision and wrong MIME never download, immutable inputs stay captured": {
+      "file": "test/v2-native-export-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+    },
+    "export client: actual download cleanup revokes unclicked URLs and gives clicked URLs bounded grace": {
+      "file": "test/v2-native-export-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+    }
+  },
+  "sourceApplicability": "manifest.json, leaf-lineage.json and V2-8J-6-2-EVAL.md disclose source/harness lineage and capture limits."
+}

@@ -1,0 +1,222 @@
+[
+  {
+    "name": "native export HTTP: actual saved notes delivery uses exact snapshot and preserves project/history",
+    "file": "test/v2-native-export-http-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/http-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/e6c6ed2aaa6fa31bea59c85eae64691de0cb2ef8aaa4e7c5df2c18efd1b21b91.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": false,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "native export HTTP: exact owner/admin privacy and supplied bad credentials cannot downgrade",
+    "file": "test/v2-native-export-http-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/http-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/e6c6ed2aaa6fa31bea59c85eae64691de0cb2ef8aaa4e7c5df2c18efd1b21b91.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": false,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "native export HTTP: strict private parser path and method boundaries never echo requests",
+    "file": "test/v2-native-export-http-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/http-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/e6c6ed2aaa6fa31bea59c85eae64691de0cb2ef8aaa4e7c5df2c18efd1b21b91.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": false,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "native export HTTP: strict disclosure and stale counters refuse without byte/header publication",
+    "file": "test/v2-native-export-http-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/http-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/e6c6ed2aaa6fa31bea59c85eae64691de0cb2ef8aaa4e7c5df2c18efd1b21b91.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": false,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "native export HTTP: verification-required account refuses before service qualification",
+    "file": "test/v2-native-export-http-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/http-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/e6c6ed2aaa6fa31bea59c85eae64691de0cb2ef8aaa4e7c5df2c18efd1b21b91.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": false,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "native export HTTP: shared metadata/render admission survives abort and faults until actual settlement",
+    "file": "test/v2-native-export-http-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/http-admission-02.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/89fee0d78c5303e7e70f7da69fcb51273e185b51d8a322b7508c5bfbe72868ee.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "export client: uncited direct download preserves revision identity and has no notes path",
+    "file": "test/v2-native-export-client-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/client-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "export client: cited metadata is bounded preview, explicit one-shot consent alone dispatches POST",
+    "file": "test/v2-native-export-client-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/client-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "export client: metadata schema ID counters MIME byte limits and displayed revision fail closed",
+    "file": "test/v2-native-export-client-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/client-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "export client: generic422 and oversized errors do not authorize notes inspection or reflect body text",
+    "file": "test/v2-native-export-client-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/client-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "export client: pending edits refuse synchronously and later dirty state suppresses confirmation/download",
+    "file": "test/v2-native-export-client-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/client-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "export client: cancel or session/route ABA at each awaited stage makes old completion inert",
+    "file": "test/v2-native-export-client-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/client-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "export client: old cancellation cannot release a newer shared ticket",
+    "file": "test/v2-native-export-client-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/client-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "export client: notes headers and actual64MiB body ceiling reject before Blob/link publication",
+    "file": "test/v2-native-export-client-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/client-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "export client: stale direct revision and wrong MIME never download, immutable inputs stay captured",
+    "file": "test/v2-native-export-client-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/client-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "export client: actual download cleanup revokes unclicked URLs and gives clicked URLs bounded grace",
+    "file": "test/v2-native-export-client-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/client-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "Native export Chrome: standalone nested Projects confirmation keeps parent Escape behavior and bounds competing triggers",
+    "file": "test/v2-native-export-chrome-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/browser-01.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/1eac69968a13a236d9720261d2ff0d8a05600fc28f70d69c581cca034a3ba05b.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": false,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "Native export Chrome: workspace cited confirmation cancel and real notes download preserve uncited direct export",
+    "file": "test/v2-native-export-chrome-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/browser-04.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/58e084aeb9e9c76e65be639554bfcfc9b3378618182c5cd3cf9374e96a5d85b9.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": false,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export",
+    "file": "test/v2-native-export-chrome-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/browser-04.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/58e084aeb9e9c76e65be639554bfcfc9b3378618182c5cd3cf9374e96a5d85b9.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": false,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "Native export Chrome: editor consent layout remains stable and late route/session responses cannot download",
+    "file": "test/v2-native-export-chrome-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/browser-04.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/58e084aeb9e9c76e65be639554bfcfc9b3378618182c5cd3cf9374e96a5d85b9.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": false,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "Native export Chrome: editor held restore and copy cannot export until canonical adoption finishes",
+    "file": "test/v2-native-export-chrome-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/browser-04.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/58e084aeb9e9c76e65be639554bfcfc9b3378618182c5cd3cf9374e96a5d85b9.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": false,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  },
+  {
+    "name": "Native export Chrome: Assistant authoritative reload blocks export while its actual saved response is held",
+    "file": "test/v2-native-export-chrome-8j.test.js",
+    "invocation": "docs/v2-8j-6-2-evidence/browser-06.json",
+    "originalSnapshot": "docs/v2-8j-6-2-evidence/sources/41c8cbf19932d0e371f8faa3eb25ce7702cc25800a839427b50c9dc66e518c6d.txt",
+    "snapshotHashMatches": true,
+    "wholeFileMatchesFinal": true,
+    "selectedBodyMatchesFinal": true,
+    "helperApplicability": "Client unchanged; HTTP only local-mode fixture setup and optional browser seed options changed; Chrome setup/harness changes are classified in evaluation. Original snapshots are retained; no assertion weakening or final whole-file claim."
+  }
+]

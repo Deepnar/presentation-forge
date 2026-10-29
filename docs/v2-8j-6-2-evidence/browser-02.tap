@@ -1,0 +1,173 @@
+✖ Native export Chrome: workspace cited confirmation cancel and real notes download preserve uncited direct export (13764.428296ms)
+✖ Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export (11996.643729ms)
+✔ Native export Chrome: editor consent layout remains stable and late route/session responses cannot download (3272.974945ms)
+✖ Native export Chrome: editor held restore and copy cannot export until canonical adoption finishes (11907.427907ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41189.9435
+
+✖ failing tests:
+
+test at test/v2-native-export-chrome-8j.test.js:10:24
+✖ Native export Chrome: workspace cited confirmation cancel and real notes download preserve uncited direct export (13764.428296ms)
+  Error: Expected actual complete download
+      at download (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:28:248)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:40:222)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+test at test/v2-native-export-chrome-8j.test.js:10:24
+✖ Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export (11996.643729ms)
+  Error: Browser condition document.querySelector('[data-text-edit]'); I
+  ← Workspace
+  Slides
+  Save
+  Saved · rev 0
+  ↩ Undo
+  ↪ Redo
+  History
+  Export
+  Finish editing and save this presentation before exporting.
+  Present
+  Assistant
+  Inspector
+  1 / 2
+  Slides
+  Layers
+  + Slide ▾
+  Measured results
+  0
+  5
+  10
+  A
+  B
+  ■ Score
+  Cell
+  Score
+  A
+  1.25
+  B
+  12.5
+  Slide 1 · Custom
+  ⋯
+  Unrelated private slide
+  Slide 2
+  ⋯
+  ← Prev
+  Next →
+  −
+  100%
+  +
+  Fit
+  Done
+  + Text
+  + Rect
+  + Round
+  + Ellipse
+  Slide 1 of 2 · 1 selected · Custom slide
+  Edit failed: op-rejected: rich runs are read-only in this slice (1 paragraph(s), 2 run(s)) — editing would flatten their formatting
+  Measured results
+  0
+  5
+  10
+  A
+  B
+  ■ Score
+  Cell
+  Score
+  A
+  1.25
+  B
+  12.5
+  Inspector
+  Assistant
+  ×
+  Text
+  Slide 1 of 2
+  Layout Custom slide
+  Objects 3
+      at wait (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:11:210)
+      at async editText (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:33:274)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:46:3)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+
+test at test/v2-native-export-chrome-8j.test.js:10:24
+✖ Native export Chrome: editor held restore and copy cannot export until canonical adoption finishes (11907.427907ms)
+  Error: Browser condition document.querySelector('[data-text-edit]'); I
+  ← Workspace
+  Slides
+  Save
+  Saved · rev 0
+  ↩ Undo
+  ↪ Redo
+  History
+  Export
+  Present
+  Assistant
+  Inspector
+  1 / 2
+  Slides
+  Layers
+  + Slide ▾
+  Measured results
+  0
+  5
+  10
+  A
+  B
+  ■ Score
+  Cell
+  Score
+  A
+  1.25
+  B
+  12.5
+  Slide 1 · Custom
+  ⋯
+  Unrelated private slide
+  Slide 2
+  ⋯
+  ← Prev
+  Next →
+  −
+  100%
+  +
+  Fit
+  Done
+  + Text
+  + Rect
+  + Round
+  + Ellipse
+  Slide 1 of 2 · 1 selected · Custom slide
+  Edit failed: op-rejected: rich runs are read-only in this slice (1 paragraph(s), 2 run(s)) — editing would flatten their formatting
+  Measured results
+  0
+  5
+  10
+  A
+  B
+  ■ Score
+  Cell
+  Score
+  A
+  1.25
+  B
+  12.5
+  Inspector
+  Assistant
+  ×
+  Text
+  Slide 1 of 2
+  Layout Custom slide
+  Objects 3
+      at wait (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:11:210)
+      at async editText (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:33:274)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:66:3)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7)

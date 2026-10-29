@@ -1,0 +1,251 @@
+{
+  "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "acceptedBaseline": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
+  "selected": {
+    "export-http": {
+      "id": "export-http",
+      "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+      "kind": "tests",
+      "command": "Assemble explicitly selected successful executed leaves from retained invocation records; no new test execution.",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-6-2-evidence/export-http-selected.tap",
+      "selection": {
+        "native export HTTP: actual saved notes delivery uses exact snapshot and preserves project/history": {
+          "file": "test/v2-native-export-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/http-01.json"
+        },
+        "native export HTTP: exact owner/admin privacy and supplied bad credentials cannot downgrade": {
+          "file": "test/v2-native-export-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/http-01.json"
+        },
+        "native export HTTP: strict private parser path and method boundaries never echo requests": {
+          "file": "test/v2-native-export-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/http-01.json"
+        },
+        "native export HTTP: strict disclosure and stale counters refuse without byte/header publication": {
+          "file": "test/v2-native-export-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/http-01.json"
+        },
+        "native export HTTP: verification-required account refuses before service qualification": {
+          "file": "test/v2-native-export-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/http-01.json"
+        },
+        "native export HTTP: shared metadata/render admission survives abort and faults until actual settlement": {
+          "file": "test/v2-native-export-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/http-admission-02.json"
+        }
+      },
+      "sourceApplicability": "manifest.json, leaf-lineage.json and V2-8J-6-2-EVAL.md disclose source/harness lineage and capture limits."
+    },
+    "export-client": {
+      "id": "export-client",
+      "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+      "kind": "tests",
+      "command": "Assemble explicitly selected successful executed leaves from retained invocation records; no new test execution.",
+      "exitCode": 0,
+      "tests": {
+        "total": 10,
+        "pass": 10,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-6-2-evidence/export-client-selected.tap",
+      "selection": {
+        "export client: uncited direct download preserves revision identity and has no notes path": {
+          "file": "test/v2-native-export-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+        },
+        "export client: cited metadata is bounded preview, explicit one-shot consent alone dispatches POST": {
+          "file": "test/v2-native-export-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+        },
+        "export client: metadata schema ID counters MIME byte limits and displayed revision fail closed": {
+          "file": "test/v2-native-export-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+        },
+        "export client: generic422 and oversized errors do not authorize notes inspection or reflect body text": {
+          "file": "test/v2-native-export-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+        },
+        "export client: pending edits refuse synchronously and later dirty state suppresses confirmation/download": {
+          "file": "test/v2-native-export-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+        },
+        "export client: cancel or session/route ABA at each awaited stage makes old completion inert": {
+          "file": "test/v2-native-export-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+        },
+        "export client: old cancellation cannot release a newer shared ticket": {
+          "file": "test/v2-native-export-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+        },
+        "export client: notes headers and actual64MiB body ceiling reject before Blob/link publication": {
+          "file": "test/v2-native-export-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+        },
+        "export client: stale direct revision and wrong MIME never download, immutable inputs stay captured": {
+          "file": "test/v2-native-export-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+        },
+        "export client: actual download cleanup revokes unclicked URLs and gives clicked URLs bounded grace": {
+          "file": "test/v2-native-export-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/client-01.json"
+        }
+      },
+      "sourceApplicability": "manifest.json, leaf-lineage.json and V2-8J-6-2-EVAL.md disclose source/harness lineage and capture limits."
+    },
+    "export-browser": {
+      "id": "export-browser",
+      "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+      "kind": "tests",
+      "command": "Assemble explicitly selected successful executed leaves from retained invocation records; no new test execution.",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-6-2-evidence/export-browser-selected.tap",
+      "selection": {
+        "Native export Chrome: standalone nested Projects confirmation keeps parent Escape behavior and bounds competing triggers": {
+          "file": "test/v2-native-export-chrome-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/browser-01.json"
+        },
+        "Native export Chrome: workspace cited confirmation cancel and real notes download preserve uncited direct export": {
+          "file": "test/v2-native-export-chrome-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/browser-04.json"
+        },
+        "Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export": {
+          "file": "test/v2-native-export-chrome-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/browser-04.json"
+        },
+        "Native export Chrome: editor consent layout remains stable and late route/session responses cannot download": {
+          "file": "test/v2-native-export-chrome-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/browser-04.json"
+        },
+        "Native export Chrome: editor held restore and copy cannot export until canonical adoption finishes": {
+          "file": "test/v2-native-export-chrome-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/browser-04.json"
+        },
+        "Native export Chrome: Assistant authoritative reload blocks export while its actual saved response is held": {
+          "file": "test/v2-native-export-chrome-8j.test.js",
+          "invocation": "docs/v2-8j-6-2-evidence/browser-06.json"
+        }
+      },
+      "sourceApplicability": "manifest.json, leaf-lineage.json and V2-8J-6-2-EVAL.md disclose source/harness lineage and capture limits."
+    }
+  },
+  "attempts": {
+    "client-01": {
+      "total": 10,
+      "pass": 10,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "http-01": {
+      "total": 6,
+      "pass": 5,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "http-admission-02": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-01": {
+      "total": 4,
+      "pass": 1,
+      "fail": 3,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-02": {
+      "total": 4,
+      "pass": 1,
+      "fail": 3,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-03": {
+      "total": 4,
+      "pass": 2,
+      "fail": 2,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-04": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-05": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-06": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "finalSourceHashes": {
+    "app/server/index.js": "e81fe82336be70c02b4a234df3c658fd58a8a2e78c6d78d76726366c62267023",
+    "app/server/v2-native-export-routes.js": "90b4d1be151427b585e04d6235dfeb306c06a6fe5679f77caefe554aecaabf8f",
+    "app/server/v2-projects-routes.js": "852853d9543ee32830b50f30df5dd36391213a7cd07e5b58242992c0ab0a7ede",
+    "app/web/src/App.jsx": "5a36f597abaf5fa5ae83aea16ce418cb75017cca554b9d567ea273db5e5060b7",
+    "app/web/src/api.js": "dad07dca341ea49408b9319d850b396f6888b1d7088f4a2181cb37a23585080d",
+    "app/web/src/components/ProjectExportButton.jsx": "13cacc893c1c84daca05e5cd5e6dfad122e67c298e92b12aefe9d4a517ec97da",
+    "app/web/src/components/ProjectExports.jsx": "d7e8d5097786d8517d44592acece79086197b2e2a1ca1332d1d2307ce8fd70b5",
+    "app/web/src/components/SceneViewer.jsx": "bcb21cdcb31ff6b0d4a2f36c58902dfe2f88e1f4bfc543263993d5365cc272bc",
+    "app/web/src/lib/nativeExport.js": "9f6b5df712a57ca21f319410c24132e74469bfcf7d66cfb88efc0756e2aa1443",
+    "app/web/src/lib/projectSession.js": "d8229c4bdfa0f666c4a1d00457a7444119cd0bf6c6d29333da56a41583782a38",
+    "app/web/src/views/Workspace.jsx": "2e7ded1826751e1731329cf0725ad0cda5535de8dd7d262b5693a1dd807c19f8",
+    "test/v2-native-export-chrome-8j.test.js": "41c8cbf19932d0e371f8faa3eb25ce7702cc25800a839427b50c9dc66e518c6d",
+    "test/v2-native-export-client-8j.test.js": "4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b",
+    "test/v2-native-export-fixture.js": "b19fc7f217c8666447eb135d41ee1be7fb74a0a8b894306d8edf578df21265ac",
+    "test/v2-native-export-http-8j.test.js": "89fee0d78c5303e7e70f7da69fcb51273e185b51d8a322b7508c5bfbe72868ee",
+    "tools/chrome-shot.mjs": "f7fc15e4f1a7f695e0aa55cd3a7e966ad5192ccded8dd82140f88923bd13d03d"
+  },
+  "selectedTotals": {
+    "total": 22,
+    "pass": 22,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "allAttemptTotals": {
+    "total": 35,
+    "pass": 25,
+    "fail": 10,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "sourceApplicability": [
+    "All10 controller bodies/helpers and runtime nativeExport.js/projectSession.js match their contemporaneously captured original bytes. HTTP first5 bodies match final; admission fixture corrected setHostedForTest, not assertions. HTTP new route remains byte-identical. Optional fixture title/plain seed parameters only affect later browser cases.",
+    "Early client/http/build-01 records omitted then-dirty tracked runtime files from sourceHashes despite listing trackedDelta. Original tracked bytes are not claimed captured. build-02 onward and browser-01 onward capture full dirty tracked source. Later HTTP route integration and original tracked boundaries were inspected for unchanged applicability, not replayed just for SHA.",
+    "Chrome6/6 is an explicit executed-case union: standalone01; workspace/drafts/layout/restore-copy04; Assistant approval/reload06. Body hashes and original snapshots are retained. No single complete green final-file process is claimed. Test helper changes fixed logger parsing, unique filenames/editable fixture, stable startup bounds, actual read-only/copy selectors and interception before Assistant captures fetch.",
+    "Final build-05 pins all runtime bytes. Later changes before freeze were test harness only. browser-04 final screenshots apply unchanged to final modal, canvas and guards; only later approval-start cancellation and anonymous navigation stamp differ, with strengthened Assistant06 and independent inspection. No SHA-only repeated old matrices."
+  ]
+}

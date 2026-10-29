@@ -1,0 +1,40 @@
+✔ Native export Chrome: workspace cited confirmation cancel and real notes download preserve uncited direct export (3761.303624ms)
+✖ Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export (1987.062126ms)
+✖ Native export Chrome: editor held restore and copy cannot export until canonical adoption finishes (2108.262203ms)
+✔ Native export Chrome: Assistant authoritative reload blocks export while its actual saved response is held (10237.412146ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18455.424381
+
+✖ failing tests:
+
+test at test/v2-native-export-chrome-8j.test.js:11:24
+✖ Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export (1987.062126ms)
+  Error: page JS failed: {"exceptionId":1,"text":"Uncaught","lineNumber":0,"columnNumber":43,"scriptId":"58","exception":{"type":"object","subtype":"error","className":"TypeError","description":"TypeError: Cannot read propert
+      at evaluate (file:///home/deepnar/Programs/presentations/tools/chrome-shot.mjs:37:34)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:48:180)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+
+test at test/v2-native-export-chrome-8j.test.js:11:24
+✖ Native export Chrome: editor held restore and copy cannot export until canonical adoption finishes (2108.262203ms)
+  AssertionError [ERR_ASSERTION]: Save as new project
+  
+  false !== true
+  
+      at button (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:14:292)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:69:46)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

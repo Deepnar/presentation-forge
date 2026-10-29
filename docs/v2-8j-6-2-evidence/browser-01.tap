@@ -1,0 +1,47 @@
+✖ Native export Chrome: workspace cited confirmation cancel and real notes download preserve uncited direct export (2540.34922ms)
+✖ Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export (1640.792779ms)
+✖ Native export Chrome: editor consent layout remains stable and late route/session responses cannot download (2414.747858ms)
+✔ Native export Chrome: standalone nested Projects confirmation keeps parent Escape behavior and bounds competing triggers (2155.95611ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9005.211827
+
+✖ failing tests:
+
+test at test/v2-native-export-chrome-8j.test.js:10:24
+✖ Native export Chrome: workspace cited confirmation cancel and real notes download preserve uncited direct export (2540.34922ms)
+  Error: page JS failed: {"exceptionId":2,"text":"Uncaught","lineNumber":0,"columnNumber":24,"scriptId":"25","exception":{"type":"object","subtype":"error","className":"TypeError","description":"TypeError: Cannot read propert
+      at evaluate (file:///home/deepnar/Programs/presentations/tools/chrome-shot.mjs:37:34)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:34:204)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+test at test/v2-native-export-chrome-8j.test.js:10:24
+✖ Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export (1640.792779ms)
+  Error: page JS failed: {"exceptionId":2,"text":"Uncaught","lineNumber":0,"columnNumber":24,"scriptId":"29","exception":{"type":"object","subtype":"error","className":"TypeError","description":"TypeError: Cannot read propert
+      at evaluate (file:///home/deepnar/Programs/presentations/tools/chrome-shot.mjs:37:34)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:43:115)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+
+test at test/v2-native-export-chrome-8j.test.js:10:24
+✖ Native export Chrome: editor consent layout remains stable and late route/session responses cannot download (2414.747858ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(before.every((n,i)=>Math.abs(n-after[i])<.5))
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-export-chrome-8j.test.js:51:227)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

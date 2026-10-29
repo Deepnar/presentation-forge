@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: native export HTTP: actual saved notes delivery uses exact snapshot and preserves project/history
+ok 1 - native export HTTP: actual saved notes delivery uses exact snapshot and preserves project/history
+  ---
+  duration_ms: 1088.254262
+  type: 'test'
+  ...
+# Subtest: native export HTTP: exact owner/admin privacy and supplied bad credentials cannot downgrade
+ok 2 - native export HTTP: exact owner/admin privacy and supplied bad credentials cannot downgrade
+  ---
+  duration_ms: 822.6746
+  type: 'test'
+  ...
+# Subtest: native export HTTP: strict private parser path and method boundaries never echo requests
+ok 3 - native export HTTP: strict private parser path and method boundaries never echo requests
+  ---
+  duration_ms: 20.919974
+  type: 'test'
+  ...
+# Subtest: native export HTTP: strict disclosure and stale counters refuse without byte/header publication
+ok 4 - native export HTTP: strict disclosure and stale counters refuse without byte/header publication
+  ---
+  duration_ms: 9.124871
+  type: 'test'
+  ...
+# Subtest: native export HTTP: verification-required account refuses before service qualification
+ok 5 - native export HTTP: verification-required account refuses before service qualification
+  ---
+  duration_ms: 252.60179
+  type: 'test'
+  ...
+# Subtest: native export HTTP: shared metadata/render admission survives abort and faults until actual settlement
+not ok 6 - native export HTTP: shared metadata/render admission survives abort and faults until actual settlement
+  ---
+  duration_ms: 29.523359
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-native-export-http-8j.test.js:63:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    401 !== 429
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 429
+  actual: 401
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-native-export-http-8j.test.js:75:86)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Error: Test "native export HTTP: shared metadata/render admission survives abort and faults until actual settlement" at test/v2-native-export-http-8j.test.js:63:1 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+1..6
+# tests 6
+# suites 0
+# pass 5
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2528.474484

@@ -1,0 +1,9 @@
+{
+  "id": "frontend-visual",
+  "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "kind": "visual",
+  "command": "Inspect retained final browser-04 desktop/narrow screenshots and measured dialog/canvas bounds with view_image; no new rendering.",
+  "exitCode": 0,
+  "inspected": true,
+  "log": "docs/v2-8j-6-2-evidence/visual-inspection.md"
+}

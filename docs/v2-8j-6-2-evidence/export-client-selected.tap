@@ -1,0 +1,29 @@
+TAP version 13
+# Deduplicated retained executed-leaf union, not a test invocation.
+# forge-test-file "test/v2-native-export-client-8j.test.js"
+# retained invocation docs/v2-8j-6-2-evidence/client-01.json
+ok 1 - export client: uncited direct download preserves revision identity and has no notes path
+# retained invocation docs/v2-8j-6-2-evidence/client-01.json
+ok 2 - export client: cited metadata is bounded preview, explicit one-shot consent alone dispatches POST
+# retained invocation docs/v2-8j-6-2-evidence/client-01.json
+ok 3 - export client: metadata schema ID counters MIME byte limits and displayed revision fail closed
+# retained invocation docs/v2-8j-6-2-evidence/client-01.json
+ok 4 - export client: generic422 and oversized errors do not authorize notes inspection or reflect body text
+# retained invocation docs/v2-8j-6-2-evidence/client-01.json
+ok 5 - export client: pending edits refuse synchronously and later dirty state suppresses confirmation/download
+# retained invocation docs/v2-8j-6-2-evidence/client-01.json
+ok 6 - export client: cancel or session/route ABA at each awaited stage makes old completion inert
+# retained invocation docs/v2-8j-6-2-evidence/client-01.json
+ok 7 - export client: old cancellation cannot release a newer shared ticket
+# retained invocation docs/v2-8j-6-2-evidence/client-01.json
+ok 8 - export client: notes headers and actual64MiB body ceiling reject before Blob/link publication
+# retained invocation docs/v2-8j-6-2-evidence/client-01.json
+ok 9 - export client: stale direct revision and wrong MIME never download, immutable inputs stay captured
+# retained invocation docs/v2-8j-6-2-evidence/client-01.json
+ok 10 - export client: actual download cleanup revokes unclicked URLs and gives clicked URLs bounded grace
+1..10
+# tests 10
+# pass 10
+# fail 0
+# skipped 0
+# cancelled 0

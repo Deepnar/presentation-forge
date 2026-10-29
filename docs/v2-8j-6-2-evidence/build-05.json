@@ -1,0 +1,92 @@
+{
+  "sourceSnapshotDirectory": "docs/v2-8j-6-2-evidence/sources",
+  "invocationHead": "4de688141ead48884acb567a6b4b0614be3cf42e",
+  "command": "nice -n 15 ionice -c 3 taskset -c 20,21 node node_modules/vite/bin/vite.js build --config app/web/vite.config.js",
+  "argv": [
+    "nice",
+    "-n",
+    "15",
+    "ionice",
+    "-c",
+    "3",
+    "taskset",
+    "-c",
+    "20,21",
+    "node",
+    "node_modules/vite/bin/vite.js",
+    "build",
+    "--config",
+    "app/web/vite.config.js"
+  ],
+  "startedAt": "2026-10-29T18:06:14.620144+00:00",
+  "sourceHashes": {
+    "app/server/index.js": "e81fe82336be70c02b4a234df3c658fd58a8a2e78c6d78d76726366c62267023",
+    "app/server/v2-native-export-routes.js": "90b4d1be151427b585e04d6235dfeb306c06a6fe5679f77caefe554aecaabf8f",
+    "app/server/v2-projects-routes.js": "852853d9543ee32830b50f30df5dd36391213a7cd07e5b58242992c0ab0a7ede",
+    "app/web/src/App.jsx": "5a36f597abaf5fa5ae83aea16ce418cb75017cca554b9d567ea273db5e5060b7",
+    "app/web/src/api.js": "dad07dca341ea49408b9319d850b396f6888b1d7088f4a2181cb37a23585080d",
+    "app/web/src/components/ProjectExportButton.jsx": "13cacc893c1c84daca05e5cd5e6dfad122e67c298e92b12aefe9d4a517ec97da",
+    "app/web/src/components/ProjectExports.jsx": "d7e8d5097786d8517d44592acece79086197b2e2a1ca1332d1d2307ce8fd70b5",
+    "app/web/src/components/SceneViewer.jsx": "bcb21cdcb31ff6b0d4a2f36c58902dfe2f88e1f4bfc543263993d5365cc272bc",
+    "app/web/src/lib/nativeExport.js": "9f6b5df712a57ca21f319410c24132e74469bfcf7d66cfb88efc0756e2aa1443",
+    "app/web/src/lib/projectSession.js": "d8229c4bdfa0f666c4a1d00457a7444119cd0bf6c6d29333da56a41583782a38",
+    "app/web/src/views/Workspace.jsx": "2e7ded1826751e1731329cf0725ad0cda5535de8dd7d262b5693a1dd807c19f8",
+    "packages/model/citations.ts": "2fbd43c08c14429d45ecbcd379c3d261925f27491d83743123f65cc165248f13",
+    "packages/model/engine.ts": "2f34515c6acc7ebd4cdf72d463f22768d8c1f2358a0ea32cd193c74de4cc1ce8",
+    "packages/model/scene.schema.json": "94fc9c543636afda87469b621269c36a57af3c9164fdfa6b6f362176a964557a",
+    "packages/model/source-identity.ts": "358940c1800815466ed10ec14c2c984273292063b765acee0e1836a36b307cb5",
+    "packages/projects/document.js": "69fcf2bb59a06ab2a7d1118985774fc096f01985815787b7e53f85055514fb69",
+    "packages/renderer-pptx/render.ts": "f7e3a494af18dc3f4e4ae1347a681d895ea003f353db58a80eaf1eceaed8b2b0",
+    "src/auth.js": "4ef5c90b3fa3fa2a724da563efcbb227814ff92f001983d28f7bea5d3011951a",
+    "src/cloud.js": "faec309818ae169a2be00e30897e2628d579ae435b06b490bb2498dbc4110e74",
+    "src/db.js": "6343541689692e53584f1eea9ae9325ce6ef2712dbea07fd5ca39461da780fa2",
+    "src/projects/history.js": "222a321e9b5385b3ceabe12dbc1a64e143a9513e96cc5da8cb05e914e2f0bb87",
+    "src/projects/source-read.js": "1c79e587033fff4b318b24ce963270aade800adeeb3524b98fa0fc4a8dbe7318",
+    "src/projects/source-schema.js": "4f56d1403b7636c4652dc15f4b30ac25c8af5751b0f769959a76185214f94760",
+    "src/projects/sources.js": "12c8ebc0db7223585210155be48a52431856620500fb9ce0fa047b6407093c47",
+    "test/v2-native-export-chrome-8j.test.js": "ed1b9a39f23a7a8eed04f2cce71c34480278d16b3c1af06d528c7b30924f56e1",
+    "test/v2-native-export-client-8j.test.js": "4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b",
+    "test/v2-native-export-fixture.js": "b19fc7f217c8666447eb135d41ee1be7fb74a0a8b894306d8edf578df21265ac",
+    "test/v2-native-export-http-8j.test.js": "89fee0d78c5303e7e70f7da69fcb51273e185b51d8a322b7508c5bfbe72868ee",
+    "tools/chrome-shot.mjs": "f7fc15e4f1a7f695e0aa55cd3a7e966ad5192ccded8dd82140f88923bd13d03d",
+    "tools/dev-protocol-check.mjs": "2f20c6d4782218fd204b617aee866586a2884e43f2cca2f0fc61366d8a9e2481",
+    "tsconfig.json": "6e29c654a6a38845dba3899bc6db8f252a889cb0970b851bfb260c4aad6bb956"
+  },
+  "trackedDelta": [
+    "app/web/src/App.jsx",
+    "app/web/src/api.js",
+    "app/web/src/components/ProjectExportButton.jsx",
+    "app/web/src/components/SceneViewer.jsx",
+    "app/web/src/views/Workspace.jsx",
+    "tools/chrome-shot.mjs"
+  ],
+  "timeoutSeconds": 150,
+  "ownedProcessGroup": 2441445,
+  "ownedResources": {
+    "cpuUserSeconds": 0.922,
+    "cpuSystemSeconds": 0.123,
+    "peakLiveGroupRssBytes": 38707200,
+    "samples": [
+      {
+        "elapsedSeconds": 0.01,
+        "members": [
+          {
+            "io": {
+              "read_bytes": 0,
+              "write_bytes": 0
+            },
+            "pid": 2441445,
+            "cpuSeconds": 0.0,
+            "rssBytes": 38707200
+          }
+        ],
+        "liveRssBytes": 38707200
+      }
+    ],
+    "note": "One-second process-group samples; summed RSS includes shared mappings. Waited-child CPU accounting; no attribution of global PSI."
+  },
+  "exitCode": 0,
+  "durationMs": 715,
+  "timedOut": false,
+  "log": "docs/v2-8j-6-2-evidence/build-05.tap"
+}

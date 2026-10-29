@@ -1,0 +1,42 @@
+{
+  "id": "export-http",
+  "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "kind": "tests",
+  "command": "Assemble explicitly selected successful executed leaves from retained invocation records; no new test execution.",
+  "exitCode": 0,
+  "tests": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8j-6-2-evidence/export-http-selected.tap",
+  "selection": {
+    "native export HTTP: actual saved notes delivery uses exact snapshot and preserves project/history": {
+      "file": "test/v2-native-export-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/http-01.json"
+    },
+    "native export HTTP: exact owner/admin privacy and supplied bad credentials cannot downgrade": {
+      "file": "test/v2-native-export-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/http-01.json"
+    },
+    "native export HTTP: strict private parser path and method boundaries never echo requests": {
+      "file": "test/v2-native-export-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/http-01.json"
+    },
+    "native export HTTP: strict disclosure and stale counters refuse without byte/header publication": {
+      "file": "test/v2-native-export-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/http-01.json"
+    },
+    "native export HTTP: verification-required account refuses before service qualification": {
+      "file": "test/v2-native-export-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/http-01.json"
+    },
+    "native export HTTP: shared metadata/render admission survives abort and faults until actual settlement": {
+      "file": "test/v2-native-export-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-2-evidence/http-admission-02.json"
+    }
+  },
+  "sourceApplicability": "manifest.json, leaf-lineage.json and V2-8J-6-2-EVAL.md disclose source/harness lineage and capture limits."
+}

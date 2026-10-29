@@ -1,0 +1,340 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { api } from "../api.js";
+import { catalogEntries, filterCatalog, createCatalogLoader } from "../lib/projectCatalog.js";
+import GeneratedProjectCard from "../components/GeneratedProjectCard.jsx";
+import ProjectCover from "../components/ProjectCover.jsx";
+import { createCoverLoader, createCoverPreparer } from "../lib/projectCovers.js";
+import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
+import { validateScene } from "../../../../packages/model/scene.ts";
+import { ensureDeckFonts } from "../fonts.js";
+import ProjectExportButton from "../components/ProjectExportButton.jsx";
+import { ProjectExportProvider,useProjectExports } from "../components/ProjectExports.jsx";
+import { apiList, apiCreate, apiRename, apiRemove, apiCover, projectSessionKey } from "../lib/v2project.js";
+import { buildBlankScenes, buildLayoutScenes, layoutTemplateList, defaultProjectTitle } from "../lib/v2create.js";
+import { relative } from "../lib/time.js";
+import { Button, Panel, Empty, Spinner, Field, ConfirmModal } from "../components/ui.jsx";
+
+const prepareCover = createCoverPreparer({ validate: validateScene, fonts: ensureDeckFonts, render: sceneToSvg });
+
+function metaLine(p) {
+  const bits = [];
+  bits.push(`${p.slideCount ?? 0} slide${(p.slideCount ?? 0) === 1 ? "" : "s"}`);
+  bits.push(`rev ${p.revision ?? 0}`);
+  if (p.updatedAt) {
+    try {
+      bits.push(relative(p.updatedAt));
+    } catch { /* timestamp display is best-effort */ }
+  }
+  return bits.join(" · ");
+}
+
+export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, onOpenGenerated, onGeneratedChanged, focusSearch = 0, accountKey = null, navigationStamp }) {
+  const [catalog, setCatalog] = useState({ saved: { status: 'idle', items: [] }, generated: { status: 'idle', items: [] }, search: { status: 'idle', query: '', hits: [] } });
+  const [catalogLoader, setCatalogLoader] = useState(null);
+  const [query, setQuery] = useState(''), [type, setType] = useState('all');
+  const searchInput = useRef(null);
+  const [confirmGenerated, setConfirmGenerated] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
+  const [creating, setCreating] = useState(null); // null | "chooser" | "layout"
+  const [busy, setBusy] = useState(null); // creation/rename/delete in flight
+  const [notice, setNotice] = useState(null);
+  const [renamingId, setRenamingId] = useState(null);
+  const [renameDraft, setRenameDraft] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(null);
+
+  const [sessionChanged, setSessionChanged] = useState(false);
+  const recovery = useRef(null);
+  useEffect(() => { if (sessionChanged) recovery.current?.focus(); }, [sessionChanged]);
+  const [covers, setCovers] = useState(null);
+  useEffect(() => {
+    let discovery;
+    const loader = createCoverLoader({ request: apiCover, current: projectSessionKey, prepare: prepareCover,
+      onExpired: () => { discovery?.dispose(); setSessionChanged(true); setCatalog({ saved: { status: 'idle', items: [] }, generated: { status: 'idle', items: [] }, search: { status: 'idle', query: '', hits: [] } }); } });
+    discovery = createCatalogLoader({
+      saved: options => apiList(undefined, options),
+      generated: options => api.decks(options).then(result => result.decks),
+      search: (text, options) => api.searchDecks(text, options).then(result => result.hits),
+      isCurrent: () => loader.checkSession(), onChange: setCatalog,
+    });
+    setCovers(loader); setCatalogLoader(discovery); discovery.refresh();
+    const changed = event => { if (event.key === "forge.token" || event.key === null) loader.checkSession(); };
+    const check = () => loader.checkSession();
+    const timer = setInterval(check, 1000);
+    window.addEventListener("storage", changed);
+    window.addEventListener("focus", check);
+    document.addEventListener("visibilitychange", check);
+    return () => {
+      clearInterval(timer); window.removeEventListener("storage", changed);
+      window.removeEventListener("focus", check); document.removeEventListener("visibilitychange", check); discovery.dispose(); loader.dispose();
+    };
+  }, [accountKey]);
+
+  const refresh = useCallback(source => catalogLoader?.refresh(typeof source === 'string' ? source : undefined), [catalogLoader]);
+  useEffect(() => { catalogLoader?.setQuery(query); }, [catalogLoader, query]);
+  useEffect(() => { if (focusSearch > 0) searchInput.current?.focus(); }, [focusSearch]);
+  const current = () => covers?.checkSession();
+  const entries = catalogEntries(catalog.saved.items, catalog.generated.items);
+  const hits = catalog.search.status === 'ready' && catalog.search.query === query.trim().toLowerCase() ? catalog.search.hits : [];
+  const visible = filterCatalog(entries, { query, type, hits });
+  const allReady = catalog.saved.status === 'ready' && catalog.generated.status === 'ready';
+  const signInRequired = [catalog.saved, catalog.generated].some(source => source.error?.status === 401);
+
+  async function doGeneratedDelete(project) {
+    if (!current() || busy) return;
+    setBusy(`generated-${project.slug}`);
+    setDeleteError(null);
+    try {
+      await api.deleteDeck(project.slug);
+      if (!current()) return;
+      setConfirmGenerated(null); refresh('generated'); onGeneratedChanged?.();
+    } catch (err) { if (current()) setDeleteError(`Could not delete the generated project: ${err.message}`); }
+    finally { setBusy(null); }
+  }
+
+  async function doCreate(kind, templateId = null, templateName = "") {
+    if (!current() || busy) return;
+    setBusy(kind);
+    setNotice(null);
+    try {
+      const scenes = kind === "layout" ? await buildLayoutScenes(templateId) : await buildBlankScenes();
+      if (!current()) return;
+      const created = await apiCreate({
+        title: defaultProjectTitle(kind, templateName),
+        scenes,
+        origin: { kind: kind === "layout" ? "layout-gallery" : "blank" },
+      });
+      if (current()) onOpen(created.id);
+    } catch (err) {
+      if (current()) setNotice(`Could not create the presentation: ${err.message}`);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function doRename(p) {
+    if (!current() || busy) return;
+    const title = renameDraft.trim();
+    if (!title) return;
+    setBusy(`rename-${p.id}`);
+    try {
+      await apiRename(p.id, { title, baseRevision: p.revision });
+      if (!current()) return;
+      setRenamingId(null);
+      refresh('saved');
+    } catch (err) {
+      if (!current()) return;
+      if (err?.code === "stale-revision") {
+        setNotice("That project changed elsewhere — the list was reloaded; rename again from the fresh title.");
+        await refresh();
+      } else {
+        setNotice(`Could not rename: ${err.message}`);
+      }
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function doDelete(p) {
+    if (!current() || busy) return;
+    setBusy(`delete-${p.id}`);
+    setDeleteError(null);
+    try {
+      await apiRemove(p.id);
+      if (!current()) return;
+      setConfirmDelete(null);
+      refresh('saved');
+    } catch (err) {
+      if (current()) setDeleteError(`Could not delete: ${err.message}`);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  const exportState=useRef(null);
+  exportState.current={accountKey,sessionChanged,catalog,busy,creating,renamingId,confirmDelete,confirmGenerated};
+  const exportScope=useProjectExports(input=>{
+    const account=accountKey,route=window.location.href,stamp=navigationStamp?.();
+    const current=()=>{
+      const value=exportState.current,row=value.catalog.saved.items.find(p=>p.id===input.id);
+      return value.accountKey===account&&!value.sessionChanged&&window.location.href===route&&navigationStamp?.()===stamp&&row?.revision===input.revision;
+    };
+    const clean=()=>{const v=exportState.current;return !v.busy&&!v.creating&&!v.renamingId&&!v.confirmDelete&&!v.confirmGenerated;};
+    return {...input,current,clean};
+  });
+
+  if (sessionChanged) return <div ref={recovery} role="alert" tabIndex={-1} className="m-6 rounded-card border border-line bg-panel p-4 text-sm">Your sign-in changed. Reload before viewing projects. <Button onClick={() => location.reload()}>Reload page</Button></div>;
+
+  return (
+    <ProjectExportProvider scope={exportScope}>
+    <div className="flex h-full min-h-0 flex-col overflow-y-auto" data-project-catalog onClickCapture={event => {
+      if (covers && !covers.checkSession()) { event.preventDefault(); event.stopPropagation(); }
+    }}>
+      <div className="mx-auto w-full max-w-6xl px-10 py-10">
+        <div className="mb-7 flex flex-wrap items-end gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-[1.75rem] font-semibold tracking-[-0.015em]">Projects</h1>
+            <p className="mt-1 max-w-2xl text-[15px] text-fg-muted">
+              Saved presentations, generated decks and reports. Open a project or create a new presentation.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={refresh} title="Reload the project list">Refresh</Button>
+            <Button variant="primary" size="sm" data-workspace-create onClick={() => setCreating("chooser")}>Create presentation</Button>
+          </div>
+        </div>
+
+        <div className="mb-5 flex flex-wrap items-end gap-3">
+          <label className="min-w-48 flex-1 text-xs text-fg-muted">Search projects
+            <input ref={searchInput} data-catalog-search type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Title, theme or generated content"
+              className="mt-1 w-full rounded-lg border border-line-strong bg-field px-3 py-2 text-sm text-fg outline-none focus:border-accent" />
+          </label>
+          <label className="text-xs text-fg-muted">Project type
+            <select data-catalog-type value={type} onChange={event => setType(event.target.value)} className="mt-1 block max-w-full rounded-lg border border-line-strong bg-field px-3 py-2 text-sm text-fg">
+              <option value="all">All projects</option><option value="saved">Saved presentations</option><option value="generated">Generated decks &amp; reports</option><option value="reports">Reports</option>
+            </select>
+          </label>
+        </div>
+        <p role="status" className="mb-4 text-xs text-fg-faint" data-catalog-results>{visible.length} project{visible.length === 1 ? '' : 's'}{query.trim() ? ' matching your search' : ''}{catalog.search.status === 'waiting' || catalog.search.status === 'loading' ? ' · Searching generated content…' : ''}</p>
+        {catalog.search.status === 'error' && <div role="alert" className="mb-4 rounded-card border border-amber/30 bg-amber/5 p-3 text-sm text-amber">Generated content search is unavailable. Title, theme and identifier matches are shown. <Button size="sm" onClick={() => refresh('search')}>Retry content search</Button></div>}
+
+        {notice && (
+          <div role="status" className="mb-4 rounded-card border border-amber/30 bg-amber/5 px-3 py-2 text-[13px] text-amber">
+            {notice}
+          </div>
+        )}
+
+        {creating && (
+          <Panel className="mb-6 p-5" data-create-chooser={creating}>
+            <div className="mb-3 flex items-center gap-3">
+              <strong className="text-[15px]">Start a new presentation</strong>
+              <button onClick={() => setCreating(null)} className="ml-auto px-2 py-1 text-[12px] text-fg-muted transition hover:text-fg" aria-label="Close creation chooser">✕</button>
+            </div>
+            {creating === "chooser" && (
+              <div className="grid gap-3 md:grid-cols-3">
+                <button
+                  type="button"
+                  data-create-ai
+                  onClick={onCreateAI}
+                  className="rounded-card border border-line bg-raised p-4 text-left transition hover:border-accent"
+                >
+                  <div className="text-[14px] font-semibold">Create with AI</div>
+                  <div className="mt-1 text-[13px] text-fg-muted">Describe the talk in chat; the existing generation workflow drafts the deck.</div>
+                </button>
+                <button
+                  type="button"
+                  data-create-layout
+                  onClick={() => setCreating("layout")}
+                  className="rounded-card border border-line bg-raised p-4 text-left transition hover:border-accent"
+                >
+                  <div className="text-[14px] font-semibold">Start from a layout</div>
+                  <div className="mt-1 text-[13px] text-fg-muted">One editable slide from the 15-template gallery, saved immediately.</div>
+                </button>
+                <button
+                  type="button"
+                  data-create-blank
+                  disabled={busy !== null}
+                  onClick={() => doCreate("blank")}
+                  className="rounded-card border border-line bg-raised p-4 text-left transition hover:border-accent disabled:opacity-60"
+                >
+                  <div className="text-[14px] font-semibold">{busy === "blank" ? "Creating…" : "Blank presentation"}</div>
+                  <div className="mt-1 text-[13px] text-fg-muted">One intentionally empty slide, ready to edit.</div>
+                </button>
+              </div>
+            )}
+            {creating === "layout" && (
+              <div>
+                <div className="mb-2 flex items-center gap-3">
+                  <button type="button" onClick={() => setCreating("chooser")} className="text-[13px] text-fg-muted transition hover:text-fg">← All options</button>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" data-layout-grid>
+                  {layoutTemplateList().map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      data-layout-pick={t.id}
+                      disabled={busy !== null}
+                      onClick={() => doCreate("layout", t.id, t.name)}
+                      className="rounded-card border border-line bg-raised px-3 py-2.5 text-left transition hover:border-accent disabled:opacity-60"
+                    >
+                      <div className="text-[13.5px] font-semibold">{t.name}</div>
+                      <div className="text-[12px] text-fg-faint">{t.category}</div>
+                    </button>
+                  ))}
+                </div>
+                {busy === "layout" && (
+                  <div className="mt-3 flex items-center gap-2 text-[13px] text-fg-muted"><Spinner /> Creating…</div>
+                )}
+              </div>
+            )}
+          </Panel>
+        )}
+
+        {['saved', 'generated'].map(source => {
+          const read = catalog[source], label = source === 'saved' ? 'saved presentations' : 'generated decks and reports';
+          if (read.status === 'loading' || read.status === 'idle') return <p key={source} role="status" className="mb-3 text-sm text-fg-faint">Loading {label}…</p>;
+          if (read.status !== 'error' || read.error?.status === 401) return null;
+          return <div key={source} role="alert" data-catalog-error={source} className="mb-4 rounded-card border border-amber/30 bg-amber/5 p-3 text-sm text-amber">Could not load {label}: {read.error.message} <Button size="sm" onClick={() => refresh(source)}>Retry {source === 'saved' ? 'saved presentations' : 'generated projects'}</Button></div>;
+        })}
+        {signInRequired && <Empty title="Sign in to see projects" hint="Your projects belong to an account on hosted installs." action={<Button variant="primary" onClick={onAuth}>Sign in</Button>} />}
+        {allReady && entries.length === 0 && <Empty title="No projects yet" hint="Create a presentation above — blank, from a layout, or with AI." action={<Button variant="primary" onClick={() => setCreating('chooser')}>Create presentation</Button>} />}
+        {entries.length > 0 && visible.length === 0 && <Empty title="No matching projects" hint="Try another search or project type. Results include the sources currently available." action={<Button onClick={() => { setQuery(''); setType('all'); }}>Clear search and filters</Button>} />}
+
+        {visible.length > 0 && (
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" data-project-grid>
+            {visible.map(row => {
+              const p = row.value;
+              if (row.kind === 'generated') return <GeneratedProjectCard key={row.key} project={p} onOpen={onOpenGenerated} onDelete={project => { setDeleteError(null); setConfirmGenerated(project); }} disabled={busy !== null} />;
+              return <Panel key={row.key} className="flex flex-col p-4" data-project-card={p.id}>
+                {covers && <ProjectCover key={p.revision} project={p} loader={covers} onOpen={onOpen} onRefresh={refresh} disabled={renamingId === p.id} />}
+                <div className="mb-2 text-xs font-medium text-fg-muted">Saved presentation</div>
+                {renamingId === p.id ? (
+                  <div className="flex flex-col gap-2">
+                    <Field label="Title" value={renameDraft} onChange={setRenameDraft} />
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="primary" disabled={busy !== null} onClick={() => doRename(p)}>Apply</Button>
+                      <Button size="sm" onClick={() => setRenamingId(null)}>Cancel</Button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-[15px] font-semibold" title={p.title}>{p.title}</div>
+                      <div className="mt-0.5 text-[12.5px] text-fg-faint">{metaLine(p)}</div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      <Button size="sm" variant="primary" data-project-open={p.id} onClick={() => onOpen(p.id)}>Open</Button>
+                      <Button size="sm" data-project-history={p.id} title="Version history" onClick={() => onHistory(p.id)}>History</Button>
+                      <Button size="sm" onClick={() => { setRenamingId(p.id); setRenameDraft(p.title); }}>Rename</Button>
+                      <ProjectExportButton
+                        data-project-export={p.id}
+                        projectId={p.id} title={p.title} revision={p.revision}
+                        className="rounded px-2.5 py-1.5 text-xs text-fg-muted transition hover:bg-hover hover:text-fg"
+                      >
+                        Export
+                      </ProjectExportButton>
+                      <Button size="sm" onClick={() => { setDeleteError(null); setConfirmDelete(p); }}>Delete…</Button>
+                    </div>
+                  </>
+                )}
+              </Panel>;
+            })}
+          </div>
+        )}
+
+        {confirmGenerated && <ConfirmModal title={`Delete generated project “${confirmGenerated.title}”?`} body="Deletes this generated project’s deck, report, research and exports. Saved editable copies remain separate. This cannot be undone."
+          busy={busy !== null} error={deleteError} confirmLabel={busy === `generated-${confirmGenerated.slug}` ? 'Deleting…' : 'Delete generated project'} danger onCancel={() => setConfirmGenerated(null)} onConfirm={() => doGeneratedDelete(confirmGenerated)} />}
+        {confirmDelete && (
+          <ConfirmModal
+            title={`Delete “${confirmDelete.title}”?`}
+            body="Deletes this saved presentation and its saved versions. Generated originals remain separate. This cannot be undone."
+            confirmLabel={busy === `delete-${confirmDelete.id}` ? "Deleting…" : "Delete"}
+            danger busy={busy !== null} error={deleteError}
+            onCancel={() => setConfirmDelete(null)}
+            onConfirm={() => doDelete(confirmDelete)}
+          />
+        )}
+      </div>
+    </div>
+    </ProjectExportProvider>
+  );
+}

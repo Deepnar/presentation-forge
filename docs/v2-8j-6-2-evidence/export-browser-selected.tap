@@ -1,0 +1,21 @@
+TAP version 13
+# Deduplicated retained executed-leaf union, not a test invocation.
+# forge-test-file "test/v2-native-export-chrome-8j.test.js"
+# retained invocation docs/v2-8j-6-2-evidence/browser-01.json
+ok 1 - Native export Chrome: standalone nested Projects confirmation keeps parent Escape behavior and bounds competing triggers
+# retained invocation docs/v2-8j-6-2-evidence/browser-04.json
+ok 2 - Native export Chrome: workspace cited confirmation cancel and real notes download preserve uncited direct export
+# retained invocation docs/v2-8j-6-2-evidence/browser-04.json
+ok 3 - Native export Chrome: editor pending drafts save and read-only guards keep human work before direct export
+# retained invocation docs/v2-8j-6-2-evidence/browser-04.json
+ok 4 - Native export Chrome: editor consent layout remains stable and late route/session responses cannot download
+# retained invocation docs/v2-8j-6-2-evidence/browser-04.json
+ok 5 - Native export Chrome: editor held restore and copy cannot export until canonical adoption finishes
+# retained invocation docs/v2-8j-6-2-evidence/browser-06.json
+ok 6 - Native export Chrome: Assistant authoritative reload blocks export while its actual saved response is held
+1..6
+# tests 6
+# pass 6
+# fail 0
+# skipped 0
+# cancelled 0

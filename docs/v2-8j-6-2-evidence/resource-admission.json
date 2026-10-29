@@ -1,0 +1,22 @@
+{
+  "atUtc": "2026-10-29T17:54:13.019672+00:00",
+  "head": "8ba322e9fd5f55a07ba849267dce656fec157c75",
+  "cpuCount": 24,
+  "memory": "MemTotal:       65245280 kB\nMemFree:        11319156 kB\nMemAvailable:   36681316 kB\nBuffers:              36 kB\nCached:         27974368 kB\nSwapCached:        11024 kB\nActive:         18876464 kB\nInactive:       30333484 kB\nActive(anon):   17369048 kB\nInactive(anon):  6601508 kB\nActive(file):    1507416 kB\nInactive(file): 23731976 kB\nUnevictable:     1293648 kB\nMlocked:           40172 kB\nSwapTotal:      65245180 kB\nSwapFree:       62192456 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:              4532 kB\nWriteback:           260 kB\nAnonPages:      21988132 kB\nMapped:          8502056 kB\nShmem:           2420188 kB\nKReclaimable:     850328 kB\nSlab:            1241496 kB\nSReclaimable:     850328 kB\nSUnreclaim:       391168 kB\nKernelStack:       43104 kB\nPageTables:       185376 kB\nSecPageTables:      2360 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    97867820 kB\nCommitted_AS:   59061716 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      485444 kB\nVmallocChunk:          0 kB\nPercpu:            24960 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:  12064768 kB\nShmemHugePages:  1466368 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:              0 kB\nCmaFree:               0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nGPUActive:             0 kB\nGPUReclaim:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     2283264 kB\nDirectMap2M:    62136320 kB\nDirectMap1G:     4194304 kB\n",
+  "cpuPressure": "some avg10=0.00 avg60=0.02 avg300=0.00 total=411766966\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+  "memoryPressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=6283170\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5887138\n",
+  "ioPressure": "some avg10=34.65 avg60=37.54 avg300=40.33 total=20487067364\nfull avg10=33.74 avg60=36.55 avg300=39.37 total=19550964097\n",
+  "competingProcesses": [
+    "    PID    PPID %CPU   RSS COMMAND",
+    "2372978 2171602 97.7 5869416 python3",
+    "2157220  902419 96.1 5729960 python3",
+    "2423734 2423731 66.6 13452 python3",
+    "2423731    7266 20.0  4712 zsh",
+    "   4923    4249 10.1 861828 zen-bin",
+    "   5075    5011  9.5 92880 RDD Process",
+    "   1299       1  4.9 52524 ollama",
+    "   4249    4239  4.5 191740 Hyprland",
+    "2393178    5011  4.5 331728 Isolated Web Co"
+  ],
+  "policy": "Admit one build, then serial Chrome at nice15 idle-I/O CPUs20,21 with watchdog and owned CPU/RSS/I/O observation. Available memory/headroom supports bounded own work despite unrelated competing jobs/global I/O stall. No unrelated process altered."
+}

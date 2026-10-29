@@ -1,0 +1,15 @@
+{
+  "viewport": [
+    360,
+    640
+  ],
+  "dialog": [
+    16,
+    165.578125,
+    328,
+    308.84375
+  ],
+  "focused": "Cancel",
+  "headingColor": "rgb(15, 23, 42)",
+  "errors": []
+}
