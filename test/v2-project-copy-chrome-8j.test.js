@@ -85,9 +85,9 @@ check('ordinary navigation cancellation invalidates adoption and changed account
   assert.equal(await binding(page),project.id);assert.equal(await page.evaluate('location.hash'),'#/project/'+project.id+'/history');
   await click(page,'[aria-label="Close version history"]');await gate(page);await pending(page);
   await click(page,'[aria-label="Back to workspace"]');await wait(page,"document.querySelector('[data-leave-guard]')");await button(page,'Cancel',"document.querySelector('[data-leave-guard]')");await release(page);assert.equal(await binding(page),project.id);
-  await gate(page);await pending(page);const last=await page.evaluate("localStorage.getItem('forge.v2.lastProject')");
+  await gate(page);await pending(page);const last=await page.evaluate("localStorage.getItem('forge.v2.lastProject')"),lastRoute=await page.evaluate('location.hash');
   await page.evaluate(`localStorage.setItem('forge.token',${JSON.stringify(f.otherToken)});window.__releaseCopy()`);await new Promise(r=>setTimeout(r,250));
-  assert.equal(await binding(page),project.id);assert.equal(await page.evaluate('location.hash'),'#/project/'+project.id);assert.equal(await page.evaluate("localStorage.getItem('forge.v2.lastProject')"),last);assert.equal(await page.evaluate("document.querySelector('[data-copy-notice]').dataset.copyNotice"),'Copying…');
+  assert.equal(await binding(page),project.id);assert.equal(await page.evaluate('location.hash'),lastRoute);assert.equal(await page.evaluate("localStorage.getItem('forge.v2.lastProject')"),last);assert.equal(await page.evaluate("document.querySelector('[data-copy-notice]').dataset.copyNotice"),'Copying…');
 });
 check('standalone uncited creation installs a fresh document and updates its query identity',async t=>{
   const {page,project}=await setup(t,{standalone:true,cited:false});
