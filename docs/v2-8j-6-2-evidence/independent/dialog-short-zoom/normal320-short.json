@@ -1,0 +1,48 @@
+{
+  "viewport": [
+    320,
+    320
+  ],
+  "cssZoom": "1",
+  "dialog": {
+    "x": 16,
+    "y": 16,
+    "width": 288,
+    "height": 288,
+    "right": 304,
+    "bottom": 304
+  },
+  "actions": [
+    {
+      "label": "Cancel",
+      "x": 215.078125,
+      "y": 205,
+      "width": 71.921875,
+      "height": 38,
+      "right": 287,
+      "bottom": 243
+    },
+    {
+      "label": "Download with source notes",
+      "x": 75.21875,
+      "y": 251,
+      "width": 211.78125,
+      "height": 36,
+      "right": 287,
+      "bottom": 287
+    }
+  ],
+  "disclosure": {
+    "x": 33,
+    "y": 94.59375,
+    "width": 254,
+    "height": 94.40625,
+    "right": 287,
+    "bottom": 189,
+    "clientHeight": 94,
+    "scrollHeight": 182,
+    "overflowY": "auto"
+  },
+  "errors": [],
+  "method": "CDP device viewport320x320 at CSS zoom1."
+}

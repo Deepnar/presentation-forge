@@ -1,0 +1,26 @@
+{
+  "atUtc": "2026-10-29T18:18:24.016759+00:00",
+  "ownedGroups": {
+    "body-boundaries-import-error": 2445383,
+    "body-boundaries": 2445572,
+    "dialog-short-zoom": 2448477,
+    "dialog-short-zoom-after": 2453675
+  },
+  "liveMembers": [],
+  "allAbsent": true,
+  "method": "Fresh read-only /proc stat process-group identity check; no process stopped.",
+  "fixtureCleanup": [
+    {
+      "fixtureDirectoryRemoved": true,
+      "pageClosed": true,
+      "fixtureStopped": true,
+      "externalServices": false
+    },
+    {
+      "fixtureDirectoryRemoved": true,
+      "pageClosed": true,
+      "fixtureStopped": true,
+      "externalServices": false
+    }
+  ]
+}

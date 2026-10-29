@@ -3,7 +3,7 @@
 Corrected implementation `6068a2a7c5643a1958a140bcc60d0df6b891ccec`
 (initial implementation/tests65430f9b), pushed
 origin/v2. Accepted baseline remains J6-1 `ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d`.
-**Independent implementation acceptance pending.** Human “ok continue” approved
+**Independent implementation acceptance pending final packet audit.** Human “ok continue” approved
 reviewed contract063e46d2 on2026-10-29, pinned before runtime at8ba322e9:
 [direction](v2-8j-6-2-evidence/human-direction.json),
 [contract](V2-8J-6-2-PLAN.md), [inventory](v2-8j-6-2-evidence/validation-plan.json).
@@ -74,7 +74,7 @@ API/local model. Earlier failed harness attempts also used only that fixture.
   cancellation on AI approval/retry-approved entry. The separate reviewer identified
   the navigation/approval gaps and independently reproduced a short/zoom layout
   defect after initial freeze. A whole-dialog scroll fallback and minimum readable
-  disclosure region correct it at6068a2a7; affected independent replay is pending.
+  disclosure region correct it at6068a2a7; affected independent replay passed1/1 across four assertion phases.
 - HTTP admission01 selected local mode through env while remembered host config
   overrode it. Corrected the existing memory-only test seam and deferred cleanup;
   final admission02 preserves all assertions and passed1/1. Product route unchanged.
@@ -129,8 +129,8 @@ browser/attempt-LnAVFW. No overlapping/clipped controls at those measured bounds
 confirm/cancel reachable and measured canvas delta0px. Exact bounds and visual
 scope are in [inspection](v2-8j-6-2-evidence/visual-inspection.md).
 
-Required root selected cases executed; independent short/zoom correction replay
-and reached-unmount coverage are pending. Unchanged PostgreSQL/store/native
+All required selected cases executed, including independent short/zoom correction
+and actual unmount suppression coverage. Unchanged PostgreSQL/store/native
 adapters and J6-1 qualification/raster evidence are reused; no new PG, native raster,
 canonical50cell benchmark or broad old matrix ran. No typed code changed, so no
 new typecheck. Separate standing BYOK locale failure was not rerun. Native
@@ -138,10 +138,19 @@ interactive PowerPoint fidelity, long printed notes, authored asset policy,
 process-local admission/lock wait, live-provider quality and earlier J1/I7/I4
 limits stay inherited. Independent normal320px passed before its effective200%
 short probe failed (CSS zoom emulation, not actual browser-menu zoom). The raw
-failed probe and final correction replay remain separate. Dark-mode execution
+failed probe and final correction replay remain separate. The adapted final probe
+passed320x320, effective200% short reflow, normal desktop and actual route unmount;
+scrolling each action into view is tested, not simultaneous visibility in a tiny
+viewport. Readable full disclosure endpoints remain asserted. Dark-mode execution
 is unexecuted.
 No real provider/search/GPU/model call, production activation or deployment.
 
-Root recommends acceptance of this bounded slice after separate exact-source
-review; this recommendation is not acceptance. Further visible/printed citations,
+Independent selected challenges pass3/3: two new controller body/epoch cases and
+one four-phase corrected browser probe. All independent product attempts4=3pass/
+1responsive-fail/0skip/cancel, plus one import-path harness failure before any test
+body; raw metadata/source/error are retained. Body cases run64ms; corrected probe
+5474ms. This is additional distinct focused coverage, not a repeat of the root22.
+
+Root recommends acceptance after the separate exact-source packet audit; this
+recommendation is not acceptance. Further visible/printed citations,
 claim support and semantic creation remain solely in the roadmap.

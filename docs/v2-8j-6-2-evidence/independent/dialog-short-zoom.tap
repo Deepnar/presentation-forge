@@ -1,0 +1,2 @@
+{"phase":"normal320-short","result":"pass","viewport":[320,320],"cssZoom":"1"}
+{"cases":1,"assertionPhases":1,"passed":0,"failed":1,"skipped":0,"cancelled":0,"error":"AssertionError [ERR_ASSERTION]: Action must be in viewport: Download with source notes\n    at layout (file:///home/deepnar/Programs/presentations/docs/v2-8j-6-2-evidence/independent/dialog-short-zoom.mjs:17:38)\n    at async file:///home/deepnar/Programs/presentations/docs/v2-8j-6-2-evidence/independent/dialog-short-zoom.mjs:31:111"}

@@ -2,8 +2,9 @@
   "id": "frontend-visual",
   "implementationSha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
   "kind": "visual",
-  "command": "Inspect retained final browser-04 desktop/narrow screenshots and measured dialog/canvas bounds with view_image; no new rendering.",
+  "command": "Inspect retained root normal/narrow evidence and independently executed corrected normal320/short/emulated200% screenshots with view_image; no additional rendering.",
   "exitCode": 0,
   "inspected": true,
-  "log": "docs/v2-8j-6-2-evidence/visual-inspection.md"
+  "log": "docs/v2-8j-6-2-evidence/visual-inspection.md",
+  "correctedProbe": "docs/v2-8j-6-2-evidence/independent/dialog-short-zoom-after.json"
 }

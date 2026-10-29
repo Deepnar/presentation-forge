@@ -1,0 +1,111 @@
+{
+  "viewport": [
+    1360,
+    900
+  ],
+  "cssZoom": "1",
+  "dialog": {
+    "x": 456,
+    "y": 318.328125,
+    "width": 448,
+    "height": 263.34375,
+    "right": 904,
+    "bottom": 581.671875
+  },
+  "actions": [
+    {
+      "label": "Cancel",
+      "x": 595.296875,
+      "y": 526.671875,
+      "width": 71.921875,
+      "height": 38,
+      "right": 667.21875,
+      "bottom": 564.671875
+    },
+    {
+      "label": "Download with source notes",
+      "x": 675.21875,
+      "y": 526.671875,
+      "width": 211.78125,
+      "height": 38,
+      "right": 887,
+      "bottom": 564.671875
+    }
+  ],
+  "disclosure": {
+    "x": 473,
+    "y": 396.921875,
+    "width": 414,
+    "height": 113.75,
+    "right": 887,
+    "bottom": 510.671875,
+    "clientHeight": 114,
+    "scrollHeight": 114,
+    "overflowY": "auto"
+  },
+  "errors": [],
+  "method": "CDP viewport 1360x900 at CSS zoom1; whole-dialog scrolling allowed.",
+  "reachability": {
+    "actions": [
+      {
+        "label": "Cancel",
+        "bounds": {
+          "x": 595.296875,
+          "y": 526.671875,
+          "right": 667.21875,
+          "bottom": 564.671875
+        },
+        "dialog": {
+          "x": 456,
+          "y": 318.328125,
+          "right": 904,
+          "bottom": 581.671875
+        },
+        "viewport": [
+          1360,
+          900
+        ]
+      },
+      {
+        "label": "Download with source notes",
+        "bounds": {
+          "x": 675.21875,
+          "y": 526.671875,
+          "right": 887,
+          "bottom": 564.671875
+        },
+        "dialog": {
+          "x": 456,
+          "y": 318.328125,
+          "right": 904,
+          "bottom": 581.671875
+        },
+        "viewport": [
+          1360,
+          900
+        ]
+      }
+    ],
+    "first": {
+      "x": 473,
+      "y": 398.921875,
+      "right": 482.046875,
+      "bottom": 415.921875
+    },
+    "last": {
+      "x": 738.859375,
+      "y": 489.921875,
+      "right": 742.90625,
+      "bottom": 506.921875
+    },
+    "dialog": {
+      "x": 456,
+      "y": 318.328125,
+      "right": 904,
+      "bottom": 581.671875
+    },
+    "disclosureHeight": 114,
+    "dialogClientHeight": 261,
+    "dialogScrollHeight": 261
+  }
+}

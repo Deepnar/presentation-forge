@@ -1,6 +1,6 @@
 # V2-8J-6-2 — browser citation notes export
 
-Status: **human-approved; implementation in progress**.
+Status: **implemented and focused-validated; independent implementation decision pending**.
 On2026-10-29 the human replied “ok continue” to the concrete recommended
 implementation question; [direction](v2-8j-6-2-evidence/human-direction.json) is
 pinned before runtime. Only this reviewed bounded contract is authorized.

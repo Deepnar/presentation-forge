@@ -9316,12 +9316,14 @@ local inference. Only that separate transport correction is authorized; this aud
       The human replied “ok continue” to the concrete implementation question
       on2026-10-29; [direction](v2-8j-6-2-evidence/human-direction.json) authorizes
       only this bounded implementation and focused offline evidence. No activation
-      or real provider/model call is authorized. Frozen source65430f9b is pushed;
+      or real provider/model call is authorized. Initial source65430f9b and corrected6068a2a7 are pushed;
       [evaluation](V2-8J-6-2-EVAL.md) records selected22/22, retained35attempts
       (25pass/10failed attempts), final production build and viewed desktop/narrow
       evidence. Independent short/zoom probe found clipped actions and a collapsed
       disclosure at effective200% zoom in a short viewport. Narrow dialog scroll
-      correction and its affected replay are required before acceptance. On-slide attribution/appendix and printable pagination
+      correction at6068a2a7 passed its affected independent replay1/1 across
+      normal320/short/emulated200%/actual unmount phases. Independent selected3/3
+      is complete; final exact-source review decision remains pending. On-slide attribution/appendix and printable pagination
       retain their separate presentation contract; the parent remains incomplete.
 
       > **Learned.** Private metadata and rendering need shared finite admission;

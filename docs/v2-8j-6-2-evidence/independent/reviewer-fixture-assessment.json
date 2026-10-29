@@ -1,0 +1,10 @@
+{
+  "attempt": "body-boundaries-import-error",
+  "classification": "reviewer fixture import path error",
+  "description": "Initial relative import traversed one directory too far. Module initialization failed before either case body; correcting only the import path produced the retained2/2 pass.",
+  "productCasesExecuted": 0,
+  "productFailures": 0,
+  "rawLog": "docs/v2-8j-6-2-evidence/independent/body-boundaries-import-error.tap",
+  "errorSource": "docs/v2-8j-6-2-evidence/independent/body-boundaries-import-error.mjs",
+  "subsequentResult": "docs/v2-8j-6-2-evidence/independent/body-boundaries.json"
+}

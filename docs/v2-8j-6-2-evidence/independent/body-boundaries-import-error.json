@@ -1,0 +1,40 @@
+{
+  "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "invocationHead": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "startedAt": "2026-10-29T18:09:25.728175+00:00",
+  "sourceHashes": {
+    "app/web/src/lib/nativeExport.js": "9f6b5df712a57ca21f319410c24132e74469bfcf7d66cfb88efc0756e2aa1443",
+    "app/web/src/lib/projectSession.js": "d8229c4bdfa0f666c4a1d00457a7444119cd0bf6c6d29333da56a41583782a38"
+  },
+  "challengeHash": "198a922da8cb0228570807a616d48276715e9ae25d4c873ae515562774729b21",
+  "isolation": "Injected Response/ReadableStream only; no HTTP/network/browser/DB/build/model/provider/service. Fetch deliberately ignores AbortSignal to challenge logical late-body safety.",
+  "admission": {
+    "cpuPressure": "some avg10=0.00 avg60=0.07 avg300=0.27 total=417104699\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memoryPressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=6286585\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5890280\n",
+    "ioPressure": "some avg10=37.27 avg60=37.70 avg300=38.60 total=20853723338\nfull avg10=35.06 avg60=35.74 avg300=37.01 total=19905155665\n",
+    "memAvailable": "MemAvailable:   37193052 kB",
+    "note": "Tiny two-case serial check; unrelated I/O pressure is observed without cause attribution. Own process is nice15/idle I/O/two allowed CPUs/watchdog15sec."
+  },
+  "argv": [
+    "nice",
+    "-n",
+    "15",
+    "ionice",
+    "-c",
+    "3",
+    "taskset",
+    "-c",
+    "0,1",
+    "node",
+    "docs/v2-8j-6-2-evidence/independent/body-boundaries.mjs"
+  ],
+  "ownedProcessGroup": 2445383,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationMs": 63,
+  "cpuUserSeconds": 0.012,
+  "cpuSystemSeconds": 0.014,
+  "peakChildRssBytes": 53854208,
+  "log": "docs/v2-8j-6-2-evidence/independent/body-boundaries.tap",
+  "totals": null
+}

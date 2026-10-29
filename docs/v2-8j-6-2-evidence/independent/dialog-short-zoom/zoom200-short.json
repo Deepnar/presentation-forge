@@ -1,0 +1,48 @@
+{
+  "viewport": [
+    640,
+    360
+  ],
+  "cssZoom": "2",
+  "dialog": {
+    "x": 32,
+    "y": 32,
+    "width": 576,
+    "height": 296,
+    "right": 608,
+    "bottom": 328
+  },
+  "actions": [
+    {
+      "label": "Cancel",
+      "x": 430.171875,
+      "y": 221.1875,
+      "width": 143.828125,
+      "height": 76,
+      "right": 574,
+      "bottom": 297.1875
+    },
+    {
+      "label": "Download with source notes",
+      "x": 150.453125,
+      "y": 313.1875,
+      "width": 423.546875,
+      "height": 72,
+      "right": 574,
+      "bottom": 385.1875
+    }
+  ],
+  "disclosure": {
+    "x": 66,
+    "y": 189.1875,
+    "width": 508,
+    "height": 0,
+    "right": 574,
+    "bottom": 189.1875,
+    "clientHeight": 0,
+    "scrollHeight": 182,
+    "overflowY": "auto"
+  },
+  "errors": [],
+  "method": "CSS document zoom2 plus640x360 CDP viewport: effective320x180 layout; emulates200% sizing/reflow, not actual browser menu zoom."
+}

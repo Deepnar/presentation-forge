@@ -9,9 +9,9 @@ Selected new/affected22/22 (HTTP6/client10/Chrome6), all root attempts35=25pass/
 10failed attempts/0skip/cancel, corrected build06 exit0. No whole-file green Chrome claim;
 selected leaves/source/harness applicability and early dirty-tracked hash-capture
 omission are explicit in manifest/EVAL. Final screenshots attempt-LnAVFW were
-viewed: readable/no clipping,360px, measured canvasdelta0. Independent controller
-challenges2/2 pass; reviewer is completing one narrow short/zoom/unmount evidence
-probe before exact-source packet audit/ACCEPT or HOLD. No root execution remains.
+viewed: readable/no clipping,360px, measured canvasdelta0. Independent selected3/3 pass (controller2 plus corrected short/zoom/unmount1).
+Earlier responsive failure is retained separately; final exact-source packet
+audit/ACCEPT or HOLD is pending. No root execution remains.
 
 Finish only independent review, narrow corrections if found, acceptance propagation,
 scoped evidence/docs commits/push and this handoff. No dependent implementation.

@@ -3216,7 +3216,8 @@ requested download or interrupt settled server-library work.
 
 `ProjectExports.jsx` owns the topmost portal/focus trap, initial Cancel focus,
 Escape/backdrop cancellation even while rendering, scrollable disclosure and
-return focus. Editor pointer guards preserve unapplied inline/data/title drafts;
+return focus. Whole-dialog scrolling preserves readable disclosure and reachable
+actions when short/zoomed viewports cannot fit all content. Editor pointer guards preserve unapplied inline/data/title drafts;
 engine/saved revisions and pending save/copy/restore/reload refs require clean
 saved state even in Done. No implicit commit/save/discard/reload occurs. Browser
 UI shows only revision/count and the disclosure, never a retained source preview.

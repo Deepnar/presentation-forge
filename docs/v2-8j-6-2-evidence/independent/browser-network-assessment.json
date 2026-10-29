@@ -1,0 +1,10 @@
+{
+  "classification": "browser background-network provenance limit",
+  "initialInvocation": "docs/v2-8j-6-2-evidence/independent/dialog-short-zoom.json",
+  "initialClaimCorrection": "The initial runner describes no external network. Its application paths used only the fresh loopback fixture, but Chrome background networking was not disabled or captured, so total browser network traffic is unverified. No claim of strictly loopback-only browser traffic is made.",
+  "initialOwnDownloadDirectory": "Empty; no CRX/background fragment observed in this reviewer directory. This does not prove absence of browser background requests.",
+  "finalInvocation": "docs/v2-8j-6-2-evidence/independent/dialog-short-zoom-after.json",
+  "finalMitigation": "Frozen6068a2a7 CDP helper adds disable-background-networking/component-update/extensions/sync flags. These mitigate background traffic; no packet capture or hard network deny was used, so no absolute network-isolation certification is claimed.",
+  "applicationCalls": "Only fixture auth/project/citation metadata and CDP loopback calls; no application model/provider/search/source-page fetch or external asset retrieval requested.",
+  "retention": "Original invocation metadata preserved unchanged; this assessment qualifies historical wording."
+}

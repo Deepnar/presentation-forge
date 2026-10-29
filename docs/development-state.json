@@ -7,7 +7,7 @@
   },
   "implementationHead": {
     "sha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
-    "note": "Approved J6-2 corrected source frozen/pushed after independent short/zoom finding; selected22/22 retained coverage with affected independent replay pending."
+    "note": "Corrected J6-2 source frozen/pushed; selected root22/22 and new independent3/3 complete. Exact-source final review decision pending."
   },
   "activeMilestone": {
     "id": "V2-8J-6-2",
@@ -25,31 +25,31 @@
       "id": "export-http",
       "status": "passed",
       "evidence": "docs/v2-8j-6-2-evidence/export-http.json",
-      "reason": "Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending."
+      "reason": "Focused retained coverage with original attempts/source applicability. Independent short/zoom and actual unmount probe passed on corrected source; final review pending."
     },
     {
       "id": "export-client",
       "status": "passed",
       "evidence": "docs/v2-8j-6-2-evidence/export-client.json",
-      "reason": "Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending."
+      "reason": "Focused retained coverage with original attempts/source applicability. Independent short/zoom and actual unmount probe passed on corrected source; final review pending."
     },
     {
       "id": "export-browser",
       "status": "passed",
       "evidence": "docs/v2-8j-6-2-evidence/export-browser.json",
-      "reason": "Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending."
+      "reason": "Focused retained coverage with original attempts/source applicability. Independent short/zoom and actual unmount probe passed on corrected source; final review pending."
     },
     {
       "id": "production-build",
       "status": "passed",
       "evidence": "docs/v2-8j-6-2-evidence/production-build.json",
-      "reason": "Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending."
+      "reason": "Focused retained coverage with original attempts/source applicability. Independent short/zoom and actual unmount probe passed on corrected source; final review pending."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
+      "status": "passed",
       "evidence": "docs/v2-8j-6-2-evidence/frontend-visual.json",
-      "reason": "Independent short/zoom finding corrected at6068a2a7; affected final probe pending."
+      "reason": "Focused retained coverage with original attempts/source applicability. Independent short/zoom and actual unmount probe passed on corrected source; final review pending."
     }
   ],
   "knownBlockers": [],

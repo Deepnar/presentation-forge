@@ -1,0 +1,22 @@
+{
+  "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "status": "CORRECTION_REQUIRED",
+  "kind": "independent-browser-finding",
+  "issue": "Short effective viewport at emulated200% zoom clips the explicit consent action and collapses the private disclosure scroll area.",
+  "source": "app/web/src/components/ProjectExports.jsx:38",
+  "method": "Final production dist; actual fresh loopback SQLite/API plus native CDP Chrome. CSS document zoom2 at640x360 emulates effective320x180 sizing/reflow; not actual browser menu zoom.",
+  "evidence": "docs/v2-8j-6-2-evidence/independent/dialog-short-zoom/zoom200-short.json",
+  "screenshot": "docs/v2-8j-6-2-evidence/independent/dialog-short-zoom/zoom200-short.png",
+  "normal320Short": "passed",
+  "emulated200Short": "failed",
+  "heldMetadataUnmount": "unexecuted: stopped at preceding assertion",
+  "totals": {
+    "cases": 1,
+    "pass": 0,
+    "fail": 1,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "cleanup": "Fixture/API/browser closed and owned temp fixture directory removed. No PG/external service/model/provider/build; no old fixture or cleanup repeated.",
+  "correction": "Keep complete disclosure and both actions reachable at short/zoom sizing, including a whole-dialog scroll fallback if necessary; do not hide/truncate disclosure or weaken bounds assertions."
+}

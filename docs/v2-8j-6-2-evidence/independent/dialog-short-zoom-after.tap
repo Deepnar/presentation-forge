@@ -1,0 +1,5 @@
+{"phase":"normal320-short","result":"pass","viewport":[320,320],"cssZoom":"1"}
+{"phase":"zoom200-short","result":"pass","viewport":[640,360],"cssZoom":"2"}
+{"phase":"corrected-desktop","result":"pass","viewport":[1360,900],"cssZoom":"1"}
+{"phase":"held metadata after actual workspace navigation/unmount","result":"pass"}
+{"cases":1,"assertionPhases":4,"passed":1,"failed":0,"skipped":0,"cancelled":0}

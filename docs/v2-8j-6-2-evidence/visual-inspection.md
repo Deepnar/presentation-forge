@@ -20,12 +20,27 @@ heading: `text-base` collided with the page-color token. Explicit16px and text-f
 correct it; final heading computes rgb(15,23,42). Earlier images remain retained
 and are not final visual evidence. Title/URLs/excerpts are not previewed.
 
-Browser-04 modal/viewport code is byte-identical to the final implementation.
-Later changes are approval invalidation and anonymous Workspace navigation stamp;
-no drawing or geometry change. Browser-06 covers actual approval/reload guards.
+Browser-04 normal coverage predates the final short/zoom scroll correction.
+The independent corrected probe on6068a2a7 supplies final normal/short/zoom
+evidence and actual route-unmount suppression; see the final inspection below.
+Browser-06 covers actual approval/reload guards.
 The transport's newly downloaded notes were structurally checked with JSZip;
 unchanged native slide/notes rendering reuses accepted J6-1 raster evidence.
-No new native raster, interactive PowerPoint, printed long-notes fit, dark-mode,
-320px or200% zoom execution is claimed. CSS scroll/flex constraints and keyboard
-logic were inspected for those additional bounds; measured browser coverage is
-explicitly desktop and360px narrow.
+No new native raster, interactive PowerPoint, printed long-notes fit or dark-mode
+execution is claimed. Actual browser-menu zoom remains unexecuted; the additional
+probe explicitly uses CSS zoom emulation.
+
+
+## Corrected final short/zoom probe
+
+Root also viewed all three independent/dialog-short-zoom-after PNGs: normal320x320,
+CSS zoom2 at640x360 (effective320x180 reflow, not actual browser-menu zoom), and
+final normal1360x900. Whole-dialog scrolling reveals the disclosure and each action
+in the short captures; initial and final text endpoints and each button have
+recorded reachable bounds inside dialog/viewport. The scrolled screenshots show
+readable text and complete buttons, no overlap. The original failed probe remains
+retained. Correction preserves a182px logical disclosure region at the zoomed
+width versus the original0px. The final normal dialog is [456,318.328125,448,
+263.34375]; controls fit. The same probe releases held metadata after actual
+Back-to-workspace unmount and verifies no stale modal or download. Four phases in
+one independent case passed; no new build or old test matrix was repeated.

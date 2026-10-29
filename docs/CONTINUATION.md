@@ -37,8 +37,8 @@ because old eval wording predates review.
 Human direction was pinned8ba322e9 before runtime. Frozen source/tests
 `6068a2a7c5643a1958a140bcc60d0df6b891ccec` is pushed origin/v2. Read
 [V2-8J-6-2-EVAL.md](V2-8J-6-2-EVAL.md), state and HANDOFF: selected22/22 focused
-cases, final build and viewed desktop/narrow evidence are complete. Separate
-implementation review/short-viewport zoom evidence are pending; accepted baseline
+cases, final build and viewed desktop/narrow evidence are complete. Independent short/zoom/unmount replay and two new controller challenges pass3/3.
+Final separate packet audit/decision is pending; accepted baseline
 stays J6-1 below. Preserve all prior failed attempts/source-capture limitations.
 No old matrix, typed/native/store change, PG/service recreation, real model/search
 or production activation is authorized. Continue review/corrections/closeout only;
