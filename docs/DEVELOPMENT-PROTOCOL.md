@@ -93,7 +93,12 @@ Independent review inspects the retained implementation evidence and chooses
 narrow new-behaviour/challenge checks; it does not automatically repeat the full
 matrix. Prose-only changes use lightweight consistency checks. Avoid model/GPU
 work and new renders when existing artifacts can establish the relevant claim.
-Keep quiet-window admission and serial browser/build isolation for expensive work.
+Keep resource-aware admission and serial browser/build isolation for expensive work.
+The2026-10-29 human direction requires tracking owned process/resource use rather
+than attributing global pressure to this project. Inspect actual CPU/memory/storage
+headroom, bound and lower the priority of serial checks, and reduce or stop owned
+work if it causes undue load. Leave unrelated work alone; a high global PSI value
+without attribution does not by itself require an indefinite hold.
 Do not weaken assertions, skip ownership/data-integrity checks relevant to a change,
 hide failures, or mark unrun coverage passed. Record selected/excluded checks and
 residual uncertainty. Acceptance and product-direction gates remain unchanged.
@@ -146,7 +151,8 @@ Use Node 24. Bulk non-browser tests exclude every browser/build-owning file.
 Browser files run serially, one bounded process group at a time, with logs and
 explicit timeout/exit status. Do not overlap Vite builds in their shared `dist`.
 Use the commands in [CONTINUATION.md](CONTINUATION.md) and the active evaluation.
-On a shared machine wait for a quiet window before expensive validation. While
+On a shared machine admit expensive validation only with sufficient measured
+headroom and bounded owned resource use under the focused policy above. While
 busy, documentation and lightweight governance checks may proceed. Never stop
 unrelated work or use another project's database. Absent PostgreSQL means its
 contract, concurrency, faults and browser checks remain unexecuted.

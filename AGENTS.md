@@ -327,9 +327,13 @@ tests, skips, cancellations and unexecuted cases explicitly, preserving the
 standing BYOK locale failure separately. If PostgreSQL is unavailable, its
 contract/concurrency/fault/browser checks are unexecuted, not green.
 
-Respect quiet-window constraints on shared machines. Inspect CPU, memory, I/O
-pressure and competing work before expensive validation; do documentation and
-lightweight checks while busy. Never stop unrelated processes or reuse another
+Respect shared-machine headroom. Inspect CPU, memory, actual storage activity and
+competing work before expensive validation, then monitor the owned process group.
+Use bounded serial checks and low priority/resource caps. Global pressure alone
+does not identify its cause or require an indefinite hold: leave unrelated work
+alone, and reduce or stop owned validation when it causes undue load. Do
+documentation and lightweight checks when expensive work cannot fit safely.
+Never stop unrelated processes or reuse another
 project's database. Identify the actual backend and implementation commit in
 every evidence report. Inspect screenshots for clipping/overlap and measure canvas
 stability; a written PPTX or a syntax check is insufficient.
