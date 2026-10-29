@@ -18,6 +18,8 @@ import { validateScene } from "../model/scene.ts";
 import { runBold, visibleText } from "../core/text-run.ts";
 import { maxColumns, padTableRows } from "../core/table.ts";
 import { uniquePptxShapeIds } from "./shape-ids.ts";
+import { isSystemChrome } from "../model/scene-constants.ts";
+import { SourceNotesTrace, sourceNotesSnapshot, type QualifiedSourceNotes } from "./source-notes.ts";
 
 // The library's default-export typing does not expose its constructor
 // under nodenext module resolution. This narrow structural interface
@@ -31,6 +33,7 @@ interface PptxSlide {
   addImage(...args: unknown[]): void;
   addChart(...args: unknown[]): void;
   addTable(...args: unknown[]): void;
+  addNotes(notes: string): void;
 }
 
 interface PptxPresentation {
@@ -82,6 +85,10 @@ function walkElements(els: SceneElement[], out: SceneElement[] = []): SceneEleme
 }
 
 export async function preflightScenes(scenes: readonly SlideScene[]): Promise<ExportPreflightIssue[]> {
+  return preflight(scenes, false);
+}
+
+async function preflight(scenes: readonly SlideScene[], qualified: boolean): Promise<ExportPreflightIssue[]> {
   const issues: ExportPreflightIssue[] = [];
   for (const scene of scenes ?? []) {
     const slideId = (scene as SlideScene)?.id ?? "(unknown slide)";
@@ -90,7 +97,7 @@ export async function preflightScenes(scenes: readonly SlideScene[]): Promise<Ex
       issues.push({ slideId, elementId: null, reason: `scene contract invalid: ${verdict.errors.join("; ")}` });
       continue;
     }
-    if (scene.citations?.length) {
+    if (scene.citations?.length && !qualified) {
       issues.push({ slideId, elementId: null, reason: "Citation-bearing native export requires source-preserving presentation support." });
       continue;
     }
@@ -332,20 +339,22 @@ function addLineElement(slide: PptxSlide, el: SceneElement): void {
   });
 }
 
-function drawElement(slide: PptxSlide, el: SceneElement, dx = 0, dy = 0): void {
+function drawElement(slide: PptxSlide, el: SceneElement, dx = 0, dy = 0, trace?: SourceNotesTrace, index = 0, scope: readonly SceneElement[] = [], chrome = false): void {
   // Hidden elements stay in the scene and vanish from output —
   // omitted, never rasterized, restorable by re-showing.
   if (el.hidden === true) return;
   const at = { ...el, x: el.x + dx, y: el.y + dy };
+  const blocked = chrome || isSystemChrome(el), next = blocked ? [] : [...scope, el];
+  const emitted = trace ? trace.emitter(slide, index, next) : slide;
   switch (el.kind) {
-    case "text": addTextElement(slide, at); break;
-    case "shape": addShapeElement(slide, at); break;
-    case "image": addImageElement(slide, at); break;
-    case "chart": addChartElement(slide, at); break;
-    case "table": addTableElement(slide, at); break;
-    case "line": addLineElement(slide, at); break;
+    case "text": addTextElement(emitted as PptxSlide, at); break;
+    case "shape": addShapeElement(emitted as PptxSlide, at); break;
+    case "image": addImageElement(emitted as PptxSlide, at); break;
+    case "chart": addChartElement(emitted as PptxSlide, at); break;
+    case "table": addTableElement(emitted as PptxSlide, at); break;
+    case "line": addLineElement(emitted as PptxSlide, at); break;
     case "group":
-      for (const c of el.group?.children ?? []) drawElement(slide, { ...c, x: c.x + at.x, y: c.y + at.y });
+      for (const c of el.group?.children ?? []) drawElement(slide, c, at.x, at.y, trace, index, next, blocked);
       break;
     default: break;
   }
@@ -355,8 +364,30 @@ export async function renderPptx(
   scenes: readonly SlideScene[],
   options: PptxRenderOptions = {},
 ): Promise<Uint8Array> {
+  return render(scenes, options);
+}
+
+const preparedNotes = new WeakMap<object, QualifiedSourceNotes>();
+
+// Only trusted host assembly supplies an executable canonical qualifier.
+export function createCitationNotesRenderer<T>(qualify: (request: T) => Promise<QualifiedSourceNotes>): (request: T) => Promise<Uint8Array> {
+  if (typeof qualify !== "function") throw new Error("A canonical source-notes qualifier is required.");
+  const callback = qualify;
+  return async request => {
+    const snapshot = sourceNotesSnapshot(await callback(request));
+    const handle = Object.freeze({});
+    preparedNotes.set(handle, snapshot);
+    return render(snapshot.scenes, { title: snapshot.title }, handle);
+  };
+}
+
+async function render(scenes: readonly SlideScene[], options: PptxRenderOptions, handle?: object): Promise<Uint8Array> {
+  const snapshot = handle ? preparedNotes.get(handle) : undefined;
+  if (handle) preparedNotes.delete(handle);
+  if (handle && (!snapshot || snapshot.scenes !== scenes)) throw new Error("Invalid source-notes authority.");
   if (!scenes.length) throw new Error("renderPptx requires at least one scene");
-  const unsafe = await preflightScenes(scenes);
+  const trace = snapshot ? new SourceNotesTrace(snapshot) : undefined;
+  const unsafe = await preflight(scenes, !!snapshot);
   if (unsafe.length > 0) throw new ExportUnsafeError(unsafe);
   const pres = new PptxGenJS();
   pres.defineLayout({ name: "V2", width: scenes[0].width, height: scenes[0].height });
@@ -366,7 +397,7 @@ export async function renderPptx(
   if (options.subject !== undefined) pres.subject = options.subject;
   if (options.company !== undefined) pres.company = options.company;
   if (options.revision !== undefined) pres.revision = options.revision;
-  for (const scene of scenes) {
+  for (const [index, scene] of scenes.entries()) {
     const slide = pres.addSlide();
     // The background (image when the adapter resolved one, flat fill
     // otherwise) is assigned BEFORE any element is drawn: pptxgenjs
@@ -381,13 +412,16 @@ export async function renderPptx(
     } else {
       slide.background = { color: scene.background.fill };
     }
-    for (const d of scene.background.decor ?? []) addDecorShape(slide, d);
+    for (const d of scene.background.decor ?? []) addDecorShape(trace ? trace.emitter(slide, index, []) as PptxSlide : slide, d);
     const els = [...scene.elements].sort((a, b) => a.z - b.z);
-    for (const el of els) drawElement(slide, el);
+    for (const el of els) drawElement(slide, el, 0, 0, trace, index);
+    if (trace) { const notes = trace.notes(index); if (notes) slide.addNotes(notes); }
   }
   const out = await pres.write({ outputType: "uint8array" });
   if (!(out instanceof Uint8Array)) {
     throw new Error(`renderPptx expected uint8array output, received ${typeof out}`);
   }
-  return uniquePptxShapeIds(out);
+  const bytes = await uniquePptxShapeIds(out);
+  if (trace) await trace.verify(bytes);
+  return bytes;
 }
