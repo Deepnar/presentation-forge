@@ -124,7 +124,7 @@ point at it without creating a broken or misleading payment link.
 
 ## 3. Decisions — nobody should make these alone
 
-### Current V2 state: J6-1 accepted; browser-export contract in review
+### Current V2 state: J6-1 accepted; browser-export direction pending
 
 Human approved bounded J4 on2026-10-28; exact source665cd04 is independently
 [accepted](reviews/V2-8J-4-665cd04.json) on2026-10-29. Selected41/41, typecheck0,
@@ -148,9 +148,10 @@ failures and portable/print limits. Later scope and direction live only in the
 [roadmap](ROADMAP.md#assistant-citation-native-presentation).
 
 The [J6-2 browser export contract](ROADMAP.md#assistant-citation-browser-export)
-is being prepared from accepted J6-1. Independent readiness and explicit surface/
-private-transport direction are pending. This is a decision gate, not a missing
-model/database service; no product execution or dependent implementation is started.
+is independently ready at063e46d2 from accepted J6-1; all five technical review
+findings are resolved. Explicit human surface/private-transport direction is
+pending. This is a decision gate, not a missing model/database service; no product
+execution or dependent implementation has started.
 
 ### 3.1 Browser regression coverage
 

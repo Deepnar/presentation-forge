@@ -1,24 +1,27 @@
 # Presentation Forge handoff — 2026-10-29
 
-Branch v2, push origin/v2 only. Entry HEAD fa5c6c7b; accepted implementation and
-baseline remain ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d (J6-1), independently
-accepted in reviews/V2-8J-6-1-ecf82d3f.json. Its33/33focused, independent2/2,
-305/0audit, native visuals and exact owned cleanup are complete. No old product
-checks or fixture/cleanup should be repeated. Read state, CONTINUATION and
-[active roadmap](ROADMAP.md#assistant-citation-browser-export).
+Branch v2, push origin/v2 only. Accepted runtime remains
+`ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d` (J6-1); its selected33/33,
+independent2/2,305/0audit, native visuals and exact owned cleanup are complete.
+No old product run/fixture/cleanup should be repeated. Read state, CONTINUATION
+and [active roadmap](ROADMAP.md#assistant-citation-browser-export).
 
-The current continuation starts J6-2 CONTRACT PLANNING ONLY. Concrete contract
-V2-8J-6-2-PLAN.md is committed at087819d3; separate technical readiness is in
-progress with the existing reviewer. Runtime/data/schema/renderer are unchanged.
-No implementation, product test/build/browser/database/model/search/GPU work,
-public disclosure transport or activation is authorized. NextCandidate stays
-false; J6-1's active acceptance and validation inventory remain intact.
+The current continuation completed J6-2 CONTRACT PLANNING ONLY. Revised contract
+`063e46d2e78d26b40445558ca0dc42e09aa30daa` is independently READY_FOR_DIRECTION
+in reviews/V2-8J-6-2-plan-087819d3.json. Root committed that stable separate record
+unchanged at518d0060. All five technical findings are resolved; no technical
+contract blocker remains. Read docs/V2-8J-6-2-PLAN.md and its independent report.
 
-After readiness, present the concrete surface/public-transport direction for
-human agreement as required by the roadmap. Scope and all future dependencies
-live only in that roadmap and its contract. Do not substitute another feature
-or interpret readiness as implementation approval.
+Human agreement on the new browser surface/private transport remains pending;
+nextCandidate.authorized:false. The concrete direction question is ready. Do not
+interpret readiness, this handoff or a proposed option as approval. No runtime/
+app/schema/store/renderer/test/build change or product execution occurred. J6-1's
+active accepted state/validation inventory remain intact. Scope and all future
+work live only in the linked roadmap, not a second handoff work list.
 
-No owned service/validation process has been started. Preserve unrelated .agents/
-and both PRESENTATION_FORGE_V2_* originals. Shared-machine work stays focused,
-serial and bounded with own resource attribution; leave unrelated processes alone.
+No owned service/validation process started. Preserve unrelated .agents/ and both
+PRESENTATION_FORGE_V2_* originals. No model/search/provider/GPU, HTTP/DB/browser/
+build/render/production activation was run. Only source/document/protocol/link
+checks ran; accepted unchanged evidence is reused. Shared-machine work stays
+focused, serial and bounded with own resource attribution; unrelated work is left
+alone. No feature or dependent implementation starts before human direction.

@@ -5,8 +5,14 @@
   "acceptedRuntimeUnchanged": true,
   "acceptedStatePreserved": true,
   "candidateAuthorized": false,
-  "localLinkChecks": 196,
+  "localLinkChecks": 198,
   "errors": [],
   "execution": "Documentation/source/protocol inspection only. No product tests, builds, browser, renderer, service, model/search/GPU or external provider call. No performance/content claim.",
-  "authority": "Independent technical readiness and human surface/public-transport direction pending."
+  "authority": "READY_FOR_DIRECTION only; explicit human surface/private-transport direction pending. No runtime authorization.",
+  "initialLocalLinkChecks": 196,
+  "finalAtUtc": "2026-10-29T17:28:07.185225+00:00",
+  "reviewedPlanSha": "063e46d2e78d26b40445558ca0dc42e09aa30daa",
+  "independentDecision": "docs/reviews/V2-8J-6-2-plan-087819d3.json",
+  "stableReviewCommit": "518d0060",
+  "independentDocumentationChecks": 10
 }
