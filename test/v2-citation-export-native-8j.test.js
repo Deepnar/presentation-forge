@@ -91,3 +91,13 @@ test('notes native: notes capacity and tampered slide/object/notes relationships
     const zip=await JSZip.loadAsync(bytes);zip.file(part,replace(await zip.file(part).async('string')));await assert.rejects(checked.verify(await zip.generateAsync({type:'uint8array'})),{code:'notes-unsafe'});
   }
 });
+test('notes native: slide citations require an emitted authored primitive beyond chrome and decor',async()=>{
+  for(const mode of ['empty','chrome-decor']) {
+    const f=await pureFixture();f.doc.scenes=f.doc.scenes.slice(0,1);const scene=f.doc.scenes[0];
+    scene.elements=mode==='empty' ? [] : [{id:'chrome-only',kind:'shape',x:0,y:0,w:1,h:1,z:0,provenance:'compiler',locked:true,shape:{fill:'123456'}}];
+    if(mode==='chrome-decor')scene.background.decor=[{shape:'rect',x:0,y:0,w:1,h:1,fill:'AABBCC'}];
+    const {anchor}=await import('./v2-citation-export-fixture.js');
+    scene.citations=await anchor(f.doc.scenes,[record(1,{target:{kind:'slide',slideId:'s1'},source:{projectId:'project',id:f.sources[0].id,generation:0}})]);
+    const out=await createProjectCitationExporter(f.backend).render(binding,request());assert.equal(out.code,'notes-unsafe',mode);assert.equal(Object.hasOwn(out,'bytes'),false);
+  }
+});

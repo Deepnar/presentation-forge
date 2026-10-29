@@ -117,6 +117,7 @@ export class SourceNotesTrace {
     for (const ref of references) {
       const citation = scene.citations![ref.citationIndex];
       let target = `Slide ${index + 1}`;
+      if (citation.target.kind === 'slide' && !row.targets.size) invalid();
       if (citation.target.kind === 'element') {
         const matches = elements.get(citation.target.elementId) ?? [];
         if (matches.length !== 1) invalid();
