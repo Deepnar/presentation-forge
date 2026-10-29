@@ -56,6 +56,10 @@ check('dirty cited copy adopts a fresh engine and routed identity, preserves con
 });
 check('late response preserves later human edits and the original binding',async t=>{
   const {page,project}=await setup(t);await stale(page,project);await gate(page);await pending(page);
+  await click(page,'[data-scroll-container] [data-el=chart]');await release(page);
+  assert.equal(await binding(page),project.id);
+  assert.equal(await page.evaluate("document.querySelector('[data-scroll-container] [data-el=chart]').getAttribute('data-selected')"),'true');
+  await gate(page);await pending(page);
   await editText(page,'Later human wording');
   const blank=await page.evaluate("(()=>{const r=document.querySelector('[data-scroll-container] [data-stage]').getBoundingClientRect();return [r.right-6,r.bottom-6]})()");
   await page.click(...blank);await wait(page,"!document.querySelector('[data-text-edit]')");
@@ -75,13 +79,29 @@ check('title grid and Assistant drafts block entry, and a new Assistant draft de
 });
 check('ordinary navigation cancellation invalidates adoption and changed accounts suppress late publication',async t=>{
   const {page,project}=await setup(t);await stale(page,project);await gate(page);await pending(page);
+  await page.evaluate(`location.hash=${JSON.stringify('#/project/'+project.id+'/history')}`);
+  await wait(page,"document.querySelector('[data-history-panel]')");await page.evaluate('window.__releaseCopy()');
+  await wait(page,"document.querySelector('[data-save-state]').dataset.copyBusy==='false'");
+  assert.equal(await binding(page),project.id);assert.equal(await page.evaluate('location.hash'),'#/project/'+project.id+'/history');
+  await click(page,'[aria-label="Close version history"]');await gate(page);await pending(page);
   await click(page,'[aria-label="Back to workspace"]');await wait(page,"document.querySelector('[data-leave-guard]')");await button(page,'Cancel',"document.querySelector('[data-leave-guard]')");await release(page);assert.equal(await binding(page),project.id);
   await gate(page);await pending(page);const last=await page.evaluate("localStorage.getItem('forge.v2.lastProject')");
   await page.evaluate(`localStorage.setItem('forge.token',${JSON.stringify(f.otherToken)});window.__releaseCopy()`);await new Promise(r=>setTimeout(r,250));
   assert.equal(await binding(page),project.id);assert.equal(await page.evaluate('location.hash'),'#/project/'+project.id);assert.equal(await page.evaluate("localStorage.getItem('forge.v2.lastProject')"),last);assert.equal(await page.evaluate("document.querySelector('[data-copy-notice]').dataset.copyNotice"),'Copying…');
 });
 check('standalone uncited creation installs a fresh document and updates its query identity',async t=>{
-  const {page,project}=await setup(t,{standalone:true,cited:false});await editText(page,'Standalone live copy');await button(page,'Projects');await click(page,'[data-project-save-current]');
+  const {page,project}=await setup(t,{standalone:true,cited:false});
+  await editText(page,'Saved before restore');await click(page,'[aria-label="Save project"]');
+  await wait(page,"document.querySelector('[data-save-state]').dataset.saveState==='saved' && JSON.parse(document.querySelector('[data-save-state]').dataset.projectState).revision===1");
+  await page.evaluate(`(()=>{const raw=fetch.bind(window);window.__restorePending=false;window.__copyRequests=0;window.fetch=async(url,options={})=>{
+    if(options.method==='POST'&&String(url).endsWith('/restore')){const result=await raw(url,options);window.__restorePending=true;await new Promise(r=>window.__releaseRestore=r);return result;}
+    if(options.method==='POST'&&(String(url)==='/api/v2/projects'||String(url).endsWith('/copy')))window.__copyRequests++;
+    return raw(url,options);};})()`);
+  await click(page,'[aria-label="Version history"]');await click(page,'[data-history-select="0"]');await click(page,'[data-history-restore="0"]');
+  await wait(page,'window.__restorePending');await page.key(27,'Escape');await button(page,'Projects');await click(page,'[data-project-save-current]');
+  await wait(page,"document.querySelector('[data-project-copy-notice]')?.textContent.includes('restoration')");assert.equal(await page.evaluate('window.__copyRequests'),0);
+  await page.evaluate('window.__releaseRestore()');await wait(page,"document.querySelector('[data-save-state]').dataset.saveState==='saved' && JSON.parse(document.querySelector('[data-save-state]').dataset.projectState).revision===2");
+  await editText(page,'Standalone live copy');await button(page,'Projects');await click(page,'[data-project-save-current]');
   await wait(page,`document.querySelector('[data-save-state]')?.dataset.saveState==='saved' && JSON.parse(document.querySelector('[data-save-state]').dataset.projectState).id!==${JSON.stringify(project.id)}`);
   const id=await binding(page);assert.equal(await page.evaluate("new URLSearchParams(location.search).get('project')"),id);assert.match(await text(page),/Standalone live copy/);assert.equal(await page.evaluate("Boolean(document.querySelector('[data-projects-panel]'))"),false);
   await click(page,'[aria-label=Undo]');assert.match(await text(page),/Standalone live copy/);

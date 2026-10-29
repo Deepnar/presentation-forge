@@ -100,3 +100,11 @@ test('a rejected copy transfer preserves ordinary navigation choices',async t=>{
   const pending=f.router.navigate('#/themes');await until(f.hasChoice);f.answer(false);assert.equal(await pending,false);
   assert.equal(f.win.location.hash,'#/project/source');
 });
+test('history write failure leaves the prepared source editor unreleased',async t=>{
+  const win=browser();let released=false,dirty=false;
+  const router=createGuardedHashRouter({window:win,apply:()=>{},getGuard:()=>({isDirty:()=>dirty})});t.after(()=>router.dispose());
+  await router.navigate('#/project/source');dirty=true;
+  win.history.pushState=()=>{throw Error('injected history write failure');};
+  await assert.rejects(router.navigate('#/project/copy',{transfer:{authorize:()=>true,commit:()=>{released=true;return true;}}}),/injected history write failure/);
+  assert.equal(released,false);assert.equal(win.location.hash,'#/project/source');
+});
