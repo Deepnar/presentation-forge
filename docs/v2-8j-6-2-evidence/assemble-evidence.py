@@ -1,7 +1,7 @@
 import json,re,hashlib,subprocess
 from pathlib import Path
 base=Path('docs/v2-8j-6-2-evidence')
-sha='65430f9b657e0b941e20d8e14b4eed7e6763a96e'
+sha='6068a2a7c5643a1958a140bcc60d0df6b891ccec'
 def passed(run):
  text=(base/(run+'.tap')).read_text()
  return re.findall(r'^ok \d+ - (.+)$',text,re.M)+re.findall(r'^✔ (.+) \([\d.]+ms\)$',text,re.M)
@@ -38,12 +38,12 @@ manifest['sourceApplicability']=[
  'All10 controller bodies/helpers and runtime nativeExport.js/projectSession.js match their contemporaneously captured original bytes. HTTP first5 bodies match final; admission fixture corrected setHostedForTest, not assertions. HTTP new route remains byte-identical. Optional fixture title/plain seed parameters only affect later browser cases.',
  'Early client/http/build-01 records omitted then-dirty tracked runtime files from sourceHashes despite listing trackedDelta. Original tracked bytes are not claimed captured. build-02 onward and browser-01 onward capture full dirty tracked source. Later HTTP route integration and original tracked boundaries were inspected for unchanged applicability, not replayed just for SHA.',
  'Chrome6/6 is an explicit executed-case union: standalone01; workspace/drafts/layout/restore-copy04; Assistant approval/reload06. Body hashes and original snapshots are retained. No single complete green final-file process is claimed. Test helper changes fixed logger parsing, unique filenames/editable fixture, stable startup bounds, actual read-only/copy selectors and interception before Assistant captures fetch.',
- 'Final build-05 pins all runtime bytes. Later changes before freeze were test harness only. browser-04 final screenshots apply unchanged to final modal, canvas and guards; only later approval-start cancellation and anonymous navigation stamp differ, with strengthened Assistant06 and independent inspection. No SHA-only repeated old matrices.'
+ 'Final build-06 pins corrected frontend bytes; later Chrome background-work flags are pinned by the independent probe. browser-04 normal screenshots predate the final short/zoom scroll-only correction; final independent probe provides corrected screenshots and normal/short reachability. Approval-start cancellation is covered by Assistant06; anonymous navigation stamp is independently inspected. No SHA-only repeated old matrices.'
 ]
 (base/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');(base/'leaf-lineage.json').write_text(json.dumps(lineage,indent=2)+'\n')
-meta=json.loads((base/'build-05.json').read_text());(base/'production-build.json').write_text(json.dumps({'id':'production-build','implementationSha':sha,'kind':'command','command':meta['command'],'exitCode':meta['exitCode'],'log':meta['log'],'invocation':str(base/'build-05.json')},indent=2)+'\n')
+meta=json.loads((base/'build-06.json').read_text());(base/'production-build.json').write_text(json.dumps({'id':'production-build','implementationSha':sha,'kind':'command','command':meta['command'],'exitCode':meta['exitCode'],'log':meta['log'],'invocation':str(base/'build-06.json')},indent=2)+'\n')
 (base/'frontend-visual.json').write_text(json.dumps({'id':'frontend-visual','implementationSha':sha,'kind':'visual','command':'Inspect retained final browser-04 desktop/narrow screenshots and measured dialog/canvas bounds with view_image; no new rendering.','exitCode':0,'inspected':True,'log':str(base/'visual-inspection.md')},indent=2)+'\n')
-state=json.loads(Path('docs/development-state.json').read_text());state['implementationHead']={'sha':sha,'note':'Approved J6-2 runtime/tests frozen and pushed; selected22/22 focused evidence complete, separate exact-source implementation review pending.'};state['activeMilestone']['implementationStatus']='validated'
+state=json.loads(Path('docs/development-state.json').read_text());state['implementationHead']={'sha':sha,'note':'Approved J6-2 corrected source frozen/pushed after independent short/zoom finding; selected22/22 retained coverage with affected independent replay pending.'};state['activeMilestone']['implementationStatus']='validated'
 for row in state['validation']:row.update(status='passed',evidence=str(base/(row['id']+'.json')),reason='Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending.')
 Path('docs/development-state.json').write_text(json.dumps(state,indent=2)+'\n')
 print(json.dumps({k:manifest[k] for k in ['implementationSha','selectedTotals','allAttemptTotals']}))

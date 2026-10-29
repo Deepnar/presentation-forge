@@ -1,0 +1,9 @@
+{
+  "observedAt": "2026-10-29T18:16:27.901934+00:00",
+  "implementationSha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "finalSourceFilesChecked": 16,
+  "selectedLeafLineagesChecked": 22,
+  "downloadedArtifactsChecked": 10,
+  "errors": [],
+  "execution": "Lightweight evidence/source/hash inspection only; no product test or render."
+}

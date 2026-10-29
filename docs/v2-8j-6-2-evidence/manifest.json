@@ -1,10 +1,10 @@
 {
-  "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "implementationSha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
   "acceptedBaseline": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
   "selected": {
     "export-http": {
       "id": "export-http",
-      "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+      "implementationSha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
       "kind": "tests",
       "command": "Assemble explicitly selected successful executed leaves from retained invocation records; no new test execution.",
       "exitCode": 0,
@@ -46,7 +46,7 @@
     },
     "export-client": {
       "id": "export-client",
-      "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+      "implementationSha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
       "kind": "tests",
       "command": "Assemble explicitly selected successful executed leaves from retained invocation records; no new test execution.",
       "exitCode": 0,
@@ -104,7 +104,7 @@
     },
     "export-browser": {
       "id": "export-browser",
-      "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+      "implementationSha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
       "kind": "tests",
       "command": "Assemble explicitly selected successful executed leaves from retained invocation records; no new test execution.",
       "exitCode": 0,
@@ -217,7 +217,7 @@
     "app/web/src/App.jsx": "5a36f597abaf5fa5ae83aea16ce418cb75017cca554b9d567ea273db5e5060b7",
     "app/web/src/api.js": "dad07dca341ea49408b9319d850b396f6888b1d7088f4a2181cb37a23585080d",
     "app/web/src/components/ProjectExportButton.jsx": "13cacc893c1c84daca05e5cd5e6dfad122e67c298e92b12aefe9d4a517ec97da",
-    "app/web/src/components/ProjectExports.jsx": "d7e8d5097786d8517d44592acece79086197b2e2a1ca1332d1d2307ce8fd70b5",
+    "app/web/src/components/ProjectExports.jsx": "aa261ab0ec5a4f35eff4b4c347c66a511c5db149dad2eddb1b452235d30ad649",
     "app/web/src/components/SceneViewer.jsx": "bcb21cdcb31ff6b0d4a2f36c58902dfe2f88e1f4bfc543263993d5365cc272bc",
     "app/web/src/lib/nativeExport.js": "9f6b5df712a57ca21f319410c24132e74469bfcf7d66cfb88efc0756e2aa1443",
     "app/web/src/lib/projectSession.js": "d8229c4bdfa0f666c4a1d00457a7444119cd0bf6c6d29333da56a41583782a38",
@@ -226,7 +226,7 @@
     "test/v2-native-export-client-8j.test.js": "4e81a62ae9fca057915c4c82fbf2dad6f3abe31130406c3761774d9107f6ad0b",
     "test/v2-native-export-fixture.js": "b19fc7f217c8666447eb135d41ee1be7fb74a0a8b894306d8edf578df21265ac",
     "test/v2-native-export-http-8j.test.js": "89fee0d78c5303e7e70f7da69fcb51273e185b51d8a322b7508c5bfbe72868ee",
-    "tools/chrome-shot.mjs": "f7fc15e4f1a7f695e0aa55cd3a7e966ad5192ccded8dd82140f88923bd13d03d"
+    "tools/chrome-shot.mjs": "8d0bd28ad9c8f6cb907a3063c5a6a90f111b1aa402d88dd4d5a0d06e5b92ce13"
   },
   "selectedTotals": {
     "total": 22,
@@ -246,6 +246,6 @@
     "All10 controller bodies/helpers and runtime nativeExport.js/projectSession.js match their contemporaneously captured original bytes. HTTP first5 bodies match final; admission fixture corrected setHostedForTest, not assertions. HTTP new route remains byte-identical. Optional fixture title/plain seed parameters only affect later browser cases.",
     "Early client/http/build-01 records omitted then-dirty tracked runtime files from sourceHashes despite listing trackedDelta. Original tracked bytes are not claimed captured. build-02 onward and browser-01 onward capture full dirty tracked source. Later HTTP route integration and original tracked boundaries were inspected for unchanged applicability, not replayed just for SHA.",
     "Chrome6/6 is an explicit executed-case union: standalone01; workspace/drafts/layout/restore-copy04; Assistant approval/reload06. Body hashes and original snapshots are retained. No single complete green final-file process is claimed. Test helper changes fixed logger parsing, unique filenames/editable fixture, stable startup bounds, actual read-only/copy selectors and interception before Assistant captures fetch.",
-    "Final build-05 pins all runtime bytes. Later changes before freeze were test harness only. browser-04 final screenshots apply unchanged to final modal, canvas and guards; only later approval-start cancellation and anonymous navigation stamp differ, with strengthened Assistant06 and independent inspection. No SHA-only repeated old matrices."
+    "Final build-06 pins corrected frontend bytes; later Chrome background-work flags are pinned by the independent probe. browser-04 normal screenshots predate the final short/zoom scroll-only correction; final independent probe provides corrected screenshots and normal/short reachability. Approval-start cancellation is covered by Assistant06; anonymous navigation stamp is independently inspected. No SHA-only repeated old matrices."
   ]
 }

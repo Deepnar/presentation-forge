@@ -9319,8 +9319,9 @@ local inference. Only that separate transport correction is authorized; this aud
       or real provider/model call is authorized. Frozen source65430f9b is pushed;
       [evaluation](V2-8J-6-2-EVAL.md) records selected22/22, retained35attempts
       (25pass/10failed attempts), final production build and viewed desktop/narrow
-      evidence. Separate implementation acceptance and final short/zoom review
-      evidence remain pending. On-slide attribution/appendix and printable pagination
+      evidence. Independent short/zoom probe found clipped actions and a collapsed
+      disclosure at effective200% zoom in a short viewport. Narrow dialog scroll
+      correction and its affected replay are required before acceptance. On-slide attribution/appendix and printable pagination
       retain their separate presentation contract; the parent remains incomplete.
 
       > **Learned.** Private metadata and rendering need shared finite admission;

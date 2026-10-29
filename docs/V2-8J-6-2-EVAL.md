@@ -1,6 +1,7 @@
 # V2-8J-6-2 — browser source-notes export evaluation
 
-Frozen implementation/tests `65430f9b657e0b941e20d8e14b4eed7e6763a96e`, pushed
+Corrected implementation `6068a2a7c5643a1958a140bcc60d0df6b891ccec`
+(initial implementation/tests65430f9b), pushed
 origin/v2. Accepted baseline remains J6-1 `ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d`.
 **Independent implementation acceptance pending.** Human “ok continue” approved
 reviewed contract063e46d2 on2026-10-29, pinned before runtime at8ba322e9:
@@ -49,9 +50,10 @@ All root product attempts total **35=25pass/10fail/0skip/0cancelled** with overl
 client01 10/0; HTTP01 5/1, admission02 1/0; Chrome01 1/3,02 1/3,03 2/2,04 4/0,
 05 0/1,06 1/0. Every raw failure remains. No watchdog timed out.
 
-Five production builds exited0. New runtime corrections warranted later builds;
-no concurrent build/browser or automatic test rebuild ran. Final build05 matches
-all frozen runtime bytes,715ms wrapper/528ms Vite. Browser04 four flows13043ms;
+Six production builds exited0. New runtime corrections warranted later builds;
+no concurrent build/browser or automatic test rebuild ran. Final build06 matches
+corrected frontend bytes,715ms wrapper/486ms Vite. Later Chrome fixture flags
+disable background component work; they do not affect production assets. Browser04 four flows13043ms;
 Assistant06 includes offline processing and held responses11184ms. HTTP01 2569ms,
 admission02 1717ms, client01 165ms. These are invocation/combined-flow times,
 not isolated production endpoint/download latency or live-provider qualification.
@@ -70,7 +72,9 @@ API/local model. Earlier failed harness attempts also used only that fixture.
   token collision); live pending Assistant reload guard; Workspace synchronous
   navigation epoch for authenticated/local mounts; immediate pending-export
   cancellation on AI approval/retry-approved entry. The separate reviewer identified
-  the latter navigation/approval gaps; their source/evidence assessment follows.
+  the navigation/approval gaps and independently reproduced a short/zoom layout
+  defect after initial freeze. A whole-dialog scroll fallback and minimum readable
+  disclosure region correct it at6068a2a7; affected independent replay is pending.
 - HTTP admission01 selected local mode through env while remembered host config
   overrode it. Corrected the existing memory-only test seam and deferred cleanup;
   final admission02 preserves all assertions and passed1/1. Product route unchanged.
@@ -105,24 +109,37 @@ Browser06 waited-child CPU3.857s over11.184s wall; build05 CPU1.045s over0.715s.
 Global I/O pressure coexisted with unrelated jobs and was not attributed to Forge.
 [Admission](v2-8j-6-2-evidence/resource-admission.json) and invocation samples retain
 actual observations. No unrelated process/database was stopped or reused.
+Four owned Chrome background CRX fragments were mistakenly included with browser
+artifacts, then removed from the current evidence tree after classification.
+Their hashes/magic are retained in browser-background-fragments.json; original
+prior commit retains bytes. Earlier Chrome background traffic is not claimed
+loopback-only. Future fixtures disable background networking/component updates/
+extensions/sync. Ten actual downloaded PPTX files, previously ignored by the
+global artifact rule, are now explicitly retained with hashes in
+downloaded-artifacts.json. No app provider/search/model traffic occurred.
+
 Temporary owned SQLite/API/Chrome fixtures close/remove through finally hooks;
 [cleanup observation](v2-8j-6-2-evidence/cleanup.json) records owned process absence.
 No PostgreSQL service was created and no old cleanup was repeated.
 
 ## Visuals, exclusions and limitations
 
-Root actually viewed final workspace/editor desktop and narrow screenshots in
-browser/attempt-LnAVFW. No overlapping/clipped controls; heading is readable,
+Root actually viewed initial validated workspace/editor desktop and narrow screenshots in
+browser/attempt-LnAVFW. No overlapping/clipped controls at those measured bounds; heading is readable,
 confirm/cancel reachable and measured canvas delta0px. Exact bounds and visual
 scope are in [inspection](v2-8j-6-2-evidence/visual-inspection.md).
 
-Required selected gates have no unexecuted cases. Unchanged PostgreSQL/store/native
+Required root selected cases executed; independent short/zoom correction replay
+and reached-unmount coverage are pending. Unchanged PostgreSQL/store/native
 adapters and J6-1 qualification/raster evidence are reused; no new PG, native raster,
 canonical50cell benchmark or broad old matrix ran. No typed code changed, so no
 new typecheck. Separate standing BYOK locale failure was not rerun. Native
 interactive PowerPoint fidelity, long printed notes, authored asset policy,
 process-local admission/lock wait, live-provider quality and earlier J1/I7/I4
-limits stay inherited.320px/200% zoom/dark-mode were inspected in code, not executed.
+limits stay inherited. Independent normal320px passed before its effective200%
+short probe failed (CSS zoom emulation, not actual browser-menu zoom). The raw
+failed probe and final correction replay remain separate. Dark-mode execution
+is unexecuted.
 No real provider/search/GPU/model call, production activation or deployment.
 
 Root recommends acceptance of this bounded slice after separate exact-source

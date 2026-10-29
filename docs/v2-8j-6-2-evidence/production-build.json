@@ -1,9 +1,9 @@
 {
   "id": "production-build",
-  "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "implementationSha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
   "kind": "command",
   "command": "nice -n 15 ionice -c 3 taskset -c 20,21 node node_modules/vite/bin/vite.js build --config app/web/vite.config.js",
   "exitCode": 0,
-  "log": "docs/v2-8j-6-2-evidence/build-05.tap",
-  "invocation": "docs/v2-8j-6-2-evidence/build-05.json"
+  "log": "docs/v2-8j-6-2-evidence/build-06.tap",
+  "invocation": "docs/v2-8j-6-2-evidence/build-06.json"
 }

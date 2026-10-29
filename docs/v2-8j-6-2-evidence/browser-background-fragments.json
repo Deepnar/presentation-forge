@@ -1,0 +1,34 @@
+{
+  "fragments": [
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-bcCltG/downloads-1/downloads.html (1).crdownload",
+      "bytes": 709743,
+      "sha256": "381c48292691b8803147b3b8292044de61f16e5cf1d3867c6364c38f32c0cc71",
+      "magic": "Cr24",
+      "classification": "CRX component package fragment emitted by Chrome background download; not an application PPTX or source-notes response."
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-bcCltG/downloads-1/downloads.html.crdownload",
+      "bytes": 48400,
+      "sha256": "1814e776fd9f9bd0187a39fe1db60dcb84d4f3c41fa5edd21892219073db8872",
+      "magic": "Cr24",
+      "classification": "CRX component package fragment emitted by Chrome background download; not an application PPTX or source-notes response."
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-HWYVm0/downloads-1/downloads.html.crdownload",
+      "bytes": 97541,
+      "sha256": "7215b303600fe53e03cfa9267ba07685da020f4e603ec59d16c9570218a0904a",
+      "magic": "Cr24",
+      "classification": "CRX component package fragment emitted by Chrome background download; not an application PPTX or source-notes response."
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-HWYVm0/downloads-1/downloads.html (1).crdownload",
+      "bytes": 81157,
+      "sha256": "b8b90befbb61c61493b9f72b73d89aedebbdbf48665e1a7672fe635e775a824e",
+      "magic": "Cr24",
+      "classification": "CRX component package fragment emitted by Chrome background download; not an application PPTX or source-notes response."
+    }
+  ],
+  "action": "Removed only these owned browser background fragments from current evidence tree; original evidence commit retains prior bytes. No application download removed. Background networking/component updates/extensions disabled for future owned Chrome fixtures.",
+  "networkLimit": "No app provider/model/search call occurred. Earlier Chrome background component traffic is not claimed loopback-only."
+}

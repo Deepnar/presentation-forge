@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-8J-6-1-ecf82d3f.json"
   },
   "implementationHead": {
-    "sha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
-    "note": "Approved J6-2 runtime/tests frozen and pushed; selected22/22 focused evidence complete, separate exact-source implementation review pending."
+    "sha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+    "note": "Approved J6-2 corrected source frozen/pushed after independent short/zoom finding; selected22/22 retained coverage with affected independent replay pending."
   },
   "activeMilestone": {
     "id": "V2-8J-6-2",
@@ -47,9 +47,9 @@
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
+      "status": "pending",
       "evidence": "docs/v2-8j-6-2-evidence/frontend-visual.json",
-      "reason": "Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending."
+      "reason": "Independent short/zoom finding corrected at6068a2a7; affected final probe pending."
     }
   ],
   "knownBlockers": [],

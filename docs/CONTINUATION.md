@@ -35,7 +35,7 @@ because old eval wording predates review.
 ## Current slice — J6-2 implementation under independent review
 
 Human direction was pinned8ba322e9 before runtime. Frozen source/tests
-`65430f9b657e0b941e20d8e14b4eed7e6763a96e` is pushed origin/v2. Read
+`6068a2a7c5643a1958a140bcc60d0df6b891ccec` is pushed origin/v2. Read
 [V2-8J-6-2-EVAL.md](V2-8J-6-2-EVAL.md), state and HANDOFF: selected22/22 focused
 cases, final build and viewed desktop/narrow evidence are complete. Separate
 implementation review/short-viewport zoom evidence are pending; accepted baseline

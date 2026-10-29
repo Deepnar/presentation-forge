@@ -1,0 +1,55 @@
+{
+  "artifacts": [
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-3K7W8R/downloads-1/Host pickup.pptx",
+      "bytes": 84206,
+      "sha256": "0dcf5c4c8618b2b5166297976737ca9d2a3aed15c06a41998ffbfbd1f0427a61"
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-HWYVm0/downloads-1/Saved notes browser.pptx",
+      "bytes": 84160,
+      "sha256": "4f2a13540d4b5c3d506d7dfb6f34929299dc9c45d3d6f94d08abd6a6bdc88483"
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-KRj3B0/downloads-4/Saved notes browser.pptx",
+      "bytes": 84353,
+      "sha256": "70b136e189265db038f3debe2dc3f7e9cafbfe4aa739d16dba006ea612b4f6ec"
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-LnAVFW/downloads-1/Saved notes browser.pptx",
+      "bytes": 84353,
+      "sha256": "dce17941e677c814863d2e1c01f364d39df690e3f8fe81da772192c3ccc3f855"
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-LnAVFW/downloads-1/Uncited direct control.pptx",
+      "bytes": 84163,
+      "sha256": "4684fdf1074db2f375ead5d92139efab7752d8660d343d370cbd493a2ea73d6f"
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-LnAVFW/downloads-2/Saved notes browser.pptx",
+      "bytes": 83820,
+      "sha256": "979cd19b68b20f05bc30d1a8b88d5c71bfc5fbfc4d4816389f390c926a9e2a4b"
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-LnAVFW/downloads-4/Saved notes browser.pptx",
+      "bytes": 83811,
+      "sha256": "d7db71dbd680e2c55eff42616409d62d3a2770dcef11fd8efb8fa80af2025bb2"
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-l7a1bx/downloads-1/Saved notes browser.pptx",
+      "bytes": 84353,
+      "sha256": "9d8c7f838f656798edc11f82f552564ddcccaad0247978e38d8125ae8fbd94ba"
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-l7a1bx/downloads-1/Uncited direct control.pptx",
+      "bytes": 84163,
+      "sha256": "36859f3ff744115c9645b0b9a1e75f68ff7af5c063a4fc63fd2b5e45aa769361"
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-l7a1bx/downloads-4/Host pickup.pptx",
+      "bytes": 84206,
+      "sha256": "75bf43f4b239b4553150c44f71403930365d659070dcb0864ccb4ef9baf11d67"
+    }
+  ],
+  "note": "Actual app download files preserved from each attempt, not re-generated. Old same-title fixture overwrote one notes file with its uncited control during browser-02; that first notes structural assertion executed before overwrite. Later distinct-title notes/control files are independently retained. Original CRX background fragments are separately classified, never counted as app exports."
+}

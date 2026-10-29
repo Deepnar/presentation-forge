@@ -1,12 +1,12 @@
 # Presentation Forge handoff — 2026-10-29
 
 Branch v2, push origin/v2 only. Accepted baseline remains J6-1ecf82d3f. Approved
-J6-2 implementation/tests are frozen and pushed at65430f9b657e0b941e20d8e14b4eed7e6763a96e.
+J6-2 implementation/tests are frozen and pushed at6068a2a7c5643a1958a140bcc60d0df6b891ccec.
 Read AGENTS, protocol, state, V2-8J-6-2-PLAN/EVAL and active roadmap. Human direction
 was pinned8ba322e9 before code. Runtime is complete; separate acceptance pending.
 
 Selected new/affected22/22 (HTTP6/client10/Chrome6), all root attempts35=25pass/
-10failed attempts/0skip/cancel, final build05 exit0. No whole-file green Chrome claim;
+10failed attempts/0skip/cancel, corrected build06 exit0. No whole-file green Chrome claim;
 selected leaves/source/harness applicability and early dirty-tracked hash-capture
 omission are explicit in manifest/EVAL. Final screenshots attempt-LnAVFW were
 viewed: readable/no clipping,360px, measured canvasdelta0. Independent controller
