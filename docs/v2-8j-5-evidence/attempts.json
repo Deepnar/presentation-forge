@@ -202,12 +202,108 @@
       "log": "docs/v2-8j-5-evidence/copy-router-final.tap",
       "finalGateEvidence": true,
       "sourceAttribution": "docs/v2-8j-5-evidence/copy-router-final.json"
+    },
+    {
+      "id": "copy-postgres-final",
+      "command": "nice -n 10 ionice -c 3 taskset -c 0,1 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-postgres-8j.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/copy-postgres-final.tap",
+      "sourceAttribution": "docs/v2-8j-5-evidence/copy-postgres-final.json",
+      "note": "Actual new isolated PostgreSQL15 fixture, shared6-case contract; no skipped placeholder.",
+      "finalGateEvidence": true
+    },
+    {
+      "id": "copy-browser-attempt-1",
+      "command": "nice -n 10 ionice -c 3 taskset -c 0,1 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-chrome-8j.test.js",
+      "exitCode": 1,
+      "tests": {
+        "total": 5,
+        "pass": 0,
+        "fail": 5,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/copy-browser-attempt-1.tap",
+      "sourceAttribution": "docs/v2-8j-5-evidence/copy-browser-attempt-1.json",
+      "note": "All5 fail: fixture attempted accepted read-only multi-run rich text before copy; no product change.",
+      "finalGateEvidence": false
+    },
+    {
+      "id": "copy-browser-attempt-2",
+      "command": "nice -n 10 ionice -c 3 taskset -c 0,1 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-chrome-8j.test.js",
+      "exitCode": 1,
+      "tests": {
+        "total": 5,
+        "pass": 3,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/copy-browser-attempt-2.tap",
+      "sourceAttribution": "docs/v2-8j-5-evidence/copy-browser-attempt-2.json",
+      "note": "3pass/2fail: unpainted center of SVG table did not select it; standalone fixture omitted accepted Reopen action.",
+      "finalGateEvidence": false
+    },
+    {
+      "id": "copy-browser-attempt-3",
+      "command": "nice -n 10 ionice -c 3 taskset -c 0,1 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-chrome-8j.test.js",
+      "exitCode": 1,
+      "tests": {
+        "total": 5,
+        "pass": 3,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/copy-browser-attempt-3.tap",
+      "sourceAttribution": "docs/v2-8j-5-evidence/copy-browser-attempt-3.json",
+      "note": "3pass/2fail: chart center also did not reliably hit painted content; table still unpainted. Standalone fixed and passed.",
+      "finalGateEvidence": false
+    },
+    {
+      "id": "copy-browser-attempt-4",
+      "command": "nice -n 10 ionice -c 3 taskset -c 0,1 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-chrome-8j.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/copy-browser-attempt-4.tap",
+      "sourceAttribution": "docs/v2-8j-5-evidence/copy-browser-attempt-4.json",
+      "note": "5pass; final file subsequently waits for finite animations and stable bounds for visual evidence. No runtime change.",
+      "finalGateEvidence": false
+    },
+    {
+      "id": "copy-browser-final",
+      "command": "nice -n 10 ionice -c 3 taskset -c 0,1 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-chrome-8j.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/copy-browser-final.tap",
+      "sourceAttribution": "docs/v2-8j-5-evidence/copy-browser-final.json",
+      "note": "Complete5/5 pass with settled final screenshots; painted child hits and selection precondition retain adoption assertions.",
+      "finalGateEvidence": true
     }
   ],
   "allRootLeafAttempts": {
-    "total": 83,
-    "pass": 80,
-    "fail": 3,
+    "total": 114,
+    "pass": 102,
+    "fail": 12,
     "skip": 0,
     "cancelled": 0
   },
@@ -219,5 +315,5 @@
       "classification": "Harness dependency assumption; installed Vite8 exposes transformWithOxc, which parsed both changed JSX files successfully. No package installed."
     }
   ],
-  "note": "Overlapping exploratory attempts are retained, not added to final selected gate totals. Canonical file-inventory reporter needed for final gate records."
+  "note": "All overlapping attempts retained; final selected39/39 excludes earlier fixture and expected fail-first attempts. Build ran once per browser invocation, serially, no separate duplicate build."
 }

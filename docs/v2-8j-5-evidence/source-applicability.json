@@ -1,0 +1,53 @@
+{
+  "implementationSha": "f6487737557c20d481cbc3e84216d7144bb116e8",
+  "runtimeChangedSince26a1e86f": [],
+  "runs": {
+    "copy-contract-final": {
+      "invocationHead": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+      "capturedHashDifferences": [
+        "test/v2-project-copy-chrome-8j.test.js",
+        "test/v2-project-copy-fixture.js"
+      ],
+      "runtimeAndSelectedNonBrowserTestInputsUnchanged": true
+    },
+    "copy-sqlite-final": {
+      "invocationHead": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+      "capturedHashDifferences": [
+        "test/v2-project-copy-chrome-8j.test.js",
+        "test/v2-project-copy-fixture.js"
+      ],
+      "runtimeAndSelectedNonBrowserTestInputsUnchanged": true
+    },
+    "copy-http-cli-final": {
+      "invocationHead": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+      "capturedHashDifferences": [
+        "test/v2-project-copy-chrome-8j.test.js",
+        "test/v2-project-copy-fixture.js"
+      ],
+      "runtimeAndSelectedNonBrowserTestInputsUnchanged": true
+    },
+    "copy-router-final": {
+      "invocationHead": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+      "capturedHashDifferences": [
+        "test/v2-project-copy-chrome-8j.test.js",
+        "test/v2-project-copy-fixture.js"
+      ],
+      "runtimeAndSelectedNonBrowserTestInputsUnchanged": true
+    },
+    "copy-postgres-final": {
+      "invocationHead": "87471db530252f478cd82a220edd7c5d09d64e51",
+      "capturedHashDifferences": [
+        "test/v2-project-copy-chrome-8j.test.js",
+        "test/v2-project-copy-fixture.js"
+      ],
+      "runtimeAndSelectedNonBrowserTestInputsUnchanged": true
+    },
+    "copy-browser-final": {
+      "invocationHead": "1c848a317403376c34c1c272011477b8a1b76f55",
+      "capturedHashDifferences": [],
+      "runtimeAndSelectedNonBrowserTestInputsUnchanged": true
+    }
+  },
+  "typecheck": "git diff d4556948..f6487737 -- packages tsconfig.json typed usage fixture shows unchanged typed inputs; original elapsed/capture limitation retained in typecheck.json.",
+  "sharedFixture": "Only optional scenes=seed() argument replaces direct seed(); HTTP/CLI retains identical no-argument behavior. Browser explicitly supplies editable plain text. No rerun of unchanged headless gates inferred."
+}

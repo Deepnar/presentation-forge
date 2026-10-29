@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: Project copy PostgreSQL: live copy preserves scenes and provenance, copies referenced sources only and retains independently
+ok 1 - Project copy PostgreSQL: live copy preserves scenes and provenance, copies referenced sources only and retains independently
+  ---
+  duration_ms: 96.322564
+  type: 'test'
+  ...
+# Subtest: Project copy PostgreSQL: stale missing foreign and corrupt source copies refuse without destination effects
+ok 2 - Project copy PostgreSQL: stale missing foreign and corrupt source copies refuse without destination effects
+  ---
+  duration_ms: 11.158455
+  type: 'test'
+  ...
+# Subtest: Project copy PostgreSQL: exact owner and local-null binding confer no admin override or runtime destination capability
+ok 3 - Project copy PostgreSQL: exact owner and local-null binding confer no admin override or runtime destination capability
+  ---
+  duration_ms: 7.48812
+  type: 'test'
+  ...
+# Subtest: Project copy PostgreSQL: more than one source page copies under one snapshot with bounded body reads
+ok 4 - Project copy PostgreSQL: more than one source page copies under one snapshot with bounded body reads
+  ---
+  duration_ms: 19.321477
+  type: 'test'
+  ...
+# {"backend":"postgres","sourceCount":25,"copyMs":8.675127000000032,"bodyBatches":[24,1]}
+# Subtest: Project copy PostgreSQL: destination source insertion fault rolls back project catalog and create history
+ok 5 - Project copy PostgreSQL: destination source insertion fault rolls back project catalog and create history
+  ---
+  duration_ms: 10.826942
+  type: 'test'
+  ...
+# Subtest: Project copy PostgreSQL: parent lock serializes clear after copy without revoking copied sources
+ok 6 - Project copy PostgreSQL: parent lock serializes clear after copy without revoking copied sources
+  ---
+  duration_ms: 20.074549
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 392.80901
+# forge-test-file "test/v2-project-copy-postgres-8j.test.js"

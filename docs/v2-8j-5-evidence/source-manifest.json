@@ -1,6 +1,6 @@
 {
   "acceptedBaseline": "665cd0459b0f267b32e808a59046e3d0b914e74f",
-  "implementationSha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+  "implementationSha": "f6487737557c20d481cbc3e84216d7144bb116e8",
   "sourceHashes": {
     "app/server/v2-copy-routes.js": "5ec48f827402312015cb2c27978f58c82b14a69e028516b4082c836633978b8f",
     "app/server/v2-projects-routes.js": "a3961a06e97ddc698ed104437a06958160bf529f652918af6f768485cd1f2dfe",
@@ -28,9 +28,9 @@
     "src/projects/store-postgres.js": "1e1521c5656e26837a8d1e419edc08da9da5757b27c3595c9a1fdd68555fbb38",
     "src/projects/store.js": "f26c43826e9f048c4cb5f352935ad197217725359388a714340079535c529d36",
     "test/v2-project-copy-8j.test.js": "c7216ea072366c1cd17cdfb55cdbbb0478b338f05df46ebe943ed4ca37e19f79",
-    "test/v2-project-copy-chrome-8j.test.js": "7656ed155bc1120845dacffc2cb628d220cf5b168ae6e2fa9fb5ab96901a61cd",
+    "test/v2-project-copy-chrome-8j.test.js": "8a03d0f781581e698dd6de1f738c3dd1072b5e687d2d6c26240a44a5902aa403",
     "test/v2-project-copy-contract.js": "992611a45adc1ba7e5192774d9504e8745f789657721531fd0a05d72e71f10ef",
-    "test/v2-project-copy-fixture.js": "0820cefd43b507ba7e8a6ecbcfaf531acd8e2dc8efefde56f132772d737a8bd9",
+    "test/v2-project-copy-fixture.js": "4a4b172ce81b31a8d7b23bac0b4550a8210f0a57c40c997222d3a15dc609d67e",
     "test/v2-project-copy-postgres-8j.test.js": "bba0fe2da55d437ef64ad7aa5547d3cf1047467d46b6b00b08caca5874b4b337",
     "test/v2-project-copy-sqlite-8j.test.js": "b3d0901cdb42e4cab9c2c1abf2c0742a6445ef58a2f2ede01ad66d0f50f167a7",
     "test/v2-project-copy-transport-8j.test.js": "62eb3cc22d4c7b30209a471171a6a1519cdfaceea6035288b69efc733c712af0",
@@ -39,30 +39,28 @@
     "tsconfig.json": "6e29c654a6a38845dba3899bc6db8f252a889cb0970b851bfb260c4aad6bb956"
   },
   "selectedCompleted": {
-    "total": 28,
-    "pass": 28,
+    "total": 39,
+    "pass": 39,
     "fail": 0,
     "skip": 0,
     "cancelled": 0
   },
-  "pending": {
-    "copy-postgres": 6,
-    "copy-browser": 5
-  },
+  "pending": {},
   "allRootLeafAttempts": {
-    "total": 83,
-    "pass": 80,
-    "fail": 3,
+    "total": 114,
+    "pass": 102,
+    "fail": 12,
     "skip": 0,
     "cancelled": 0
   },
-  "sourceReview": "Separate source audit reported four editor findings resolved at8e181735. Later26a1e86f only inventory and browser fixture assertion changes; final acceptance is pending all required evidence.",
-  "cleanup": "No new persistent service acquired. All exploratory HTTP/CLI SQLite fixture processes/pools/temporary dirs closed via fixture cleanup. Historical cleanup not repeated.",
+  "sourceReview": "Prior four adoption findings resolved; final exact-source independent decision pending.",
+  "cleanup": "Owned PostgreSQL fixture remains for independent challenges only; root browser/API/SQLite fixtures closed. Cleanup pending reviewer release; no old fixture recreated.",
   "noCalls": [
     "real model",
     "local inference",
     "search",
     "GPU",
     "production activation"
-  ]
+  ],
+  "sourceApplicability": "Runtime unchanged from26a1e86f; final source adds browser-only fixture corrections. See each retained run metadata for invocation, captured hashes and differences."
 }

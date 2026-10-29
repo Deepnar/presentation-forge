@@ -1,0 +1,34 @@
+{
+  "startedAt": "2026-10-29T08:34:11.703538+00:00",
+  "seconds": 15,
+  "cpuBusyPercent": 0.8,
+  "cpuIowaitPercent": 8.65,
+  "memoryKiB": {
+    "MemAvailable": 42741576,
+    "Dirty": 2500,
+    "Writeback": 224
+  },
+  "storage": {
+    "nvme0n1": {
+      "readMBps": 0.23,
+      "writeMBps": 3.609,
+      "busyPercent": 1.8
+    },
+    "nvme0n1p5": {
+      "readMBps": 0.23,
+      "writeMBps": 3.609,
+      "busyPercent": 1.8
+    }
+  },
+  "pressureStart": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.28 total=155957575\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=5607664\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5334705",
+    "io": "some avg10=86.38 avg60=84.93 avg300=75.81 total=3540313977\nfull avg10=85.81 avg60=84.14 avg300=74.22 total=3339183483"
+  },
+  "pressureEnd": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.26 total=155960501\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=5607671\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5334712",
+    "io": "some avg10=87.81 avg60=85.57 avg300=76.38 total=3553585591\nfull avg10=87.11 avg60=84.80 avg300=74.83 total=3352364718"
+  },
+  "note": "Physical workspace NVMe activity sampled separately from global PSI; exact high-PSI wait source is unknown. CPU-heavy external training process has exited. No service/browser acquired in this sample."
+}

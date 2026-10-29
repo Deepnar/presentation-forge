@@ -59,5 +59,8 @@
   "exitCode": 0,
   "durationMs": 2269,
   "timedOut": false,
-  "log": "docs/v2-8j-5-evidence/copy-http-cli-final.tap"
+  "log": "docs/v2-8j-5-evidence/copy-http-cli-final.tap",
+  "testedImplementationSha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+  "implementationSha": "f6487737557c20d481cbc3e84216d7144bb116e8",
+  "applicability": "Applicable unchanged runtime/selected test bytes from the captured run. Later source commits change only browser fixture setup/painted hit targets/settled screenshot timing; citedFixture now accepts an optional scenes input with the same seed() default used by HTTP/CLI. TypeScript packages/config/typed usage fixtures are unchanged. This is source applicability, not a new execution."
 }

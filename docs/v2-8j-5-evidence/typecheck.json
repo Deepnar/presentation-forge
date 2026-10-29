@@ -1,11 +1,12 @@
 {
   "id": "typecheck",
   "kind": "command",
-  "implementationSha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+  "implementationSha": "f6487737557c20d481cbc3e84216d7144bb116e8",
   "invocationHead": "d4556948a8febda09bb2c1ddab9912cfeb772bc3",
   "command": "npm run typecheck",
   "exitCode": 0,
   "log": "docs/v2-8j-5-evidence/typecheck.log",
   "durationMs": null,
-  "applicability": "Executed once atd4556948 with JSX/routing working changes. All packages, tsconfig and typed usage fixture bytes are unchanged to26a1e86f. tsconfig explicitly covers V2 TypeScript only; legacy/app JS is not typechecked. No rerun inferred. Exact elapsed time was not captured."
+  "applicability": "Applicable unchanged runtime/selected test bytes from the captured run. Later source commits change only browser fixture setup/painted hit targets/settled screenshot timing; citedFixture now accepts an optional scenes input with the same seed() default used by HTTP/CLI. TypeScript packages/config/typed usage fixtures are unchanged. This is source applicability, not a new execution.",
+  "testedImplementationSha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0"
 }

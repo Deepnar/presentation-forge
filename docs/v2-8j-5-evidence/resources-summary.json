@@ -1,0 +1,48 @@
+{
+  "policy": "User-directed owned-load attribution, serial nice10/ionice idle, CPU affinity0,1; isolated PostgreSQL capped0.5CPU/512MiB/tmpfs256MiB. No unrelated work stopped.",
+  "runs": {
+    "copy-postgres-final": {
+      "durationMs": 416,
+      "sampledCpuSecondsLowerBound": 0,
+      "waitedChildCpuSeconds": 0.432,
+      "peakSummedRssMiB": 33.73,
+      "processGroup": 870004
+    },
+    "copy-browser-attempt-1": {
+      "durationMs": 59087,
+      "sampledCpuSecondsLowerBound": 11.53,
+      "waitedChildCpuSeconds": 5.508,
+      "peakSummedRssMiB": 2036.27,
+      "processGroup": 870163
+    },
+    "copy-browser-attempt-2": {
+      "durationMs": 31230,
+      "sampledCpuSecondsLowerBound": 8.1,
+      "waitedChildCpuSeconds": 4.825,
+      "peakSummedRssMiB": 2047.58,
+      "processGroup": 873117
+    },
+    "copy-browser-attempt-3": {
+      "durationMs": 22207,
+      "sampledCpuSecondsLowerBound": 9.27,
+      "waitedChildCpuSeconds": 5.592,
+      "peakSummedRssMiB": 2068.25,
+      "processGroup": 875978
+    },
+    "copy-browser-attempt-4": {
+      "durationMs": 13641,
+      "sampledCpuSecondsLowerBound": 9.56,
+      "waitedChildCpuSeconds": 5.752,
+      "peakSummedRssMiB": 2019.64,
+      "processGroup": 878248
+    },
+    "copy-browser-final": {
+      "durationMs": 14436,
+      "sampledCpuSecondsLowerBound": 10.35,
+      "waitedChildCpuSeconds": 6.571,
+      "peakSummedRssMiB": 1878.04,
+      "processGroup": 880557
+    }
+  },
+  "limits": "Sampled CPU misses short-lived processes; waited-child accounting excludes reparented children; summed RSS includes shared mappings. Global PSI cause not established; no total-machine load attribution is claimed."
+}

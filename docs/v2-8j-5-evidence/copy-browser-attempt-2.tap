@@ -1,0 +1,248 @@
+TAP version 13
+# {"buildMs":435.71356099999997,"backend":"sqlite","server":"production"}
+# Subtest: Project copy Chrome: dirty cited copy adopts a fresh engine and routed identity, preserves content and reopens
+ok 1 - Project copy Chrome: dirty cited copy adopts a fresh engine and routed identity, preserves content and reopens
+  ---
+  duration_ms: 4021.472712
+  type: 'test'
+  ...
+# Subtest: Project copy Chrome: late response preserves later human edits and the original binding
+ok 2 - Project copy Chrome: late response preserves later human edits and the original binding
+  ---
+  duration_ms: 2098.156339
+  type: 'test'
+  ...
+# Subtest: Project copy Chrome: title grid and Assistant drafts block entry, and a new Assistant draft defers adoption
+not ok 3 - Project copy Chrome: title grid and Assistant drafts block entry, and a new Assistant draft defers adoption
+  ---
+  duration_ms: 11750.10666
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:18:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Browser condition: document.querySelector('[data-table-editor] input'); I
+    ← Workspace
+    Slides
+    Save
+    Apply or cancel data/title drafts and finish the Assistant message before copying.
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    1 / 2
+    Slides
+    Layers
+    + Slide ▾
+    First copied wording
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Slide 1 · Custom
+    ⋯
+    Unrelated private slide
+    Slide 2
+    ⋯
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    Slide 1 of 2 · 1 selected · Custom slide
+    Save conflict: stale project revision: based on 1, stored is 2 Your edits are intact — reload the newer version or save as a new project. Load newer version Save as new project Retry save
+    First copied wording
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Inspector
+    Assistant
+    ×
+    Text
+    Text formatting
+    ¶1 left
+    Color 
+    Size 
+    B 
+    I 
+    Apply
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:19:228)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:76:63)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Project copy Chrome: ordinary navigation cancellation invalidates adoption and changed accounts suppress late publication
+ok 4 - Project copy Chrome: ordinary navigation cancellation invalidates adoption and changed accounts suppress late publication
+  ---
+  duration_ms: 2090.923162
+  type: 'test'
+  ...
+# Subtest: Project copy Chrome: standalone uncited creation installs a fresh document and updates its query identity
+not ok 5 - Project copy Chrome: standalone uncited creation installs a fresh document and updates its query identity
+  ---
+  duration_ms: 11073.15227
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:18:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Browser condition: document.querySelector('[data-save-state]')?.dataset.saveState==='saved' && JSON.parse(document.querySelector('[data-save-state]').dataset.projectState)?.id==="p-5ae2c1064c4a32f63744e9a7" && document.querySelector('[data-scroll-container] [data-el=text]'); Slides
+    Present
+    Assistant
+    Inspector
+    1 / 12
+    Opening
+    A talk about cells
+    m-divider
+    Plain list
+    • Alpha point
+    • Beta point
+    • Gamma point
+    • Delta point
+    m-prose
+    Peers
+    One
+    First
+    Two
+    Second
+    Three
+    Third
+    m-cards
+    Sides
+    Left
+    Mature
+    Right
+    Novel
+    Novel wins
+    m-compare
+    Grid
+    a
+    b
+    c
+    d
+    m-table
+    Figure
+    12.5
+    mS/cm
+    1.2
+    oxide
+    m-metric
+    Data
+    0
+    0.5
+    1
+    1.5
+    2
+    A
+    B
+    ■ v
+    Unit: mS/cm
+    m-chart
+    Steps
+    1
+    One
+    First
+    2
+    Two
+    Second
+    3
+    Three
+    Third
+    m-seq
+    Loop
+    A
+    First
+    B
+    Second
+    C
+    Third
+    m-cycle
+    Ranks
+    Top
+    Parent
+    Left
+    Child one
+    Right
+    Child two
+    m-hier
+    Visual
+    cells
+    cells
+    • Point one
+    • Point two
+    • Point three
+    • Point four
+    m-media
+    Caution
+    Risk
+    Handle with care
+    m-frame
+    mech-warm-humanist-plain (warm-humanist, plain)
+    mech-warm-humanist-chromed (warm-humanist, chromed)
+    source-of-truth-warm-humanist-plain (warm-humanist, plain)
+    decision-warm-humanist-plain (warm-humanist, plain)
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Live
+    Projects
+    Edit
+    m-divider
+    Last project “Uncited copy source” is saved on this machine. Reopen it Dismiss
+    Opening
+    A talk about cells
+    Inspector
+    Assistant
+    ×
+    Nothing selected. Click the slide to select an object, or double-click text to edit it.
+    Slide m-divider
+    Layout Managed by AI layout
+    Objects 2
+    Read-only — press Edit in the toolbar to change this slide.
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:19:228)
+    async setup (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:29:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:94:24)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 3
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 31202.560527
+# forge-test-file "test/v2-project-copy-chrome-8j.test.js"

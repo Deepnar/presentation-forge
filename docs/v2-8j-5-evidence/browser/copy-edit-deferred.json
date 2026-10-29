@@ -1,0 +1,45 @@
+{
+  "source": "p-ad25753d60ed6d7b45007391",
+  "id": "p-ef81a6e6b1533fd51bd2696b",
+  "after": {
+    "canvas": [
+      256,
+      108.1875,
+      839.990234375,
+      472.4913330078125
+    ],
+    "scroll": [
+      0,
+      0
+    ],
+    "viewport": [
+      1360,
+      757
+    ],
+    "topbarHeight": 44,
+    "ancestors": [
+      {
+        "tag": "MAIN",
+        "scrollLeft": 0,
+        "width": 1304,
+        "scrollWidth": 1304,
+        "x": 56
+      },
+      {
+        "tag": "DIV",
+        "scrollLeft": 0,
+        "width": 1304,
+        "scrollWidth": 1304,
+        "x": 56
+      },
+      {
+        "tag": "MAIN",
+        "scrollLeft": 0,
+        "width": 840,
+        "scrollWidth": 840,
+        "x": 232
+      }
+    ]
+  },
+  "errors": []
+}

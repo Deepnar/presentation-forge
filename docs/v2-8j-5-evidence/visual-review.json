@@ -1,0 +1,49 @@
+{
+  "implementationSha": "f6487737557c20d481cbc3e84216d7144bb116e8",
+  "inspectedBy": "/root",
+  "date": "2026-10-29",
+  "inspected": true,
+  "screenshots": [
+    {
+      "path": "docs/v2-8j-5-evidence/browser/copy-desktop.png",
+      "sha256": "791003214f67358b030016ad2c6f3660c1fd5fbf10ec399fa2cfc6724a37ad8b"
+    },
+    {
+      "path": "docs/v2-8j-5-evidence/browser/copy-edit-deferred.png",
+      "sha256": "da3c07d4f973ed1068672bfc0cdd06197109f161751c8d0e3f25caf063abaaa6"
+    },
+    {
+      "path": "docs/v2-8j-5-evidence/browser/copy-narrow.png",
+      "sha256": "b13d4a9618918f64bca7948971027dd7c1d5f27a48b78eb07a74af43a8e26479"
+    }
+  ],
+  "desktopViewport": [
+    1360,
+    757
+  ],
+  "narrowViewport": [
+    420,
+    840
+  ],
+  "canvasDeltaXYWH": [
+    0,
+    -59.375,
+    0.0,
+    0.0
+  ],
+  "topbarHeightBefore": 44,
+  "topbarHeightAfter": 44,
+  "selection": [
+    "text"
+  ],
+  "scrollBefore": [
+    0,
+    0
+  ],
+  "scrollAfter": [
+    0,
+    0
+  ],
+  "assessment": "Final settled desktop, narrow copy-status and later-edit deferred screenshots inspected. No overlapping controls or newly clipped dialog. Status stays single-line bounded with full title/aria text; narrow toolbar intentionally scrolls horizontally and capture scrolls only that toolbar to the status. Canvas x/width/height/scroll and text selection preserved on adoption; y moves up59.375px consistent with removal of the existing wrapped conflict banner. This is not zero displacement. Narrow canvas retains existing24px padding and horizontal panning at100% zoom; right canvas gutter can exceed viewport. Final capture waits out finite sidebar transitions; earlier mid-transition captures were overwritten and are not final visual evidence.",
+  "errors": []
+}

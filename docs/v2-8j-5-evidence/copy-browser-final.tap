@@ -1,0 +1,42 @@
+TAP version 13
+# {"buildMs":576.686486,"backend":"sqlite","server":"production"}
+# Subtest: Project copy Chrome: dirty cited copy adopts a fresh engine and routed identity, preserves content and reopens
+ok 1 - Project copy Chrome: dirty cited copy adopts a fresh engine and routed identity, preserves content and reopens
+  ---
+  duration_ms: 4524.21146
+  type: 'test'
+  ...
+# Subtest: Project copy Chrome: late response preserves later human edits and the original binding
+ok 2 - Project copy Chrome: late response preserves later human edits and the original binding
+  ---
+  duration_ms: 2724.993258
+  type: 'test'
+  ...
+# Subtest: Project copy Chrome: title grid and Assistant drafts block entry, and a new Assistant draft defers adoption
+ok 3 - Project copy Chrome: title grid and Assistant drafts block entry, and a new Assistant draft defers adoption
+  ---
+  duration_ms: 2612.199344
+  type: 'test'
+  ...
+# Subtest: Project copy Chrome: ordinary navigation cancellation invalidates adoption and changed accounts suppress late publication
+ok 4 - Project copy Chrome: ordinary navigation cancellation invalidates adoption and changed accounts suppress late publication
+  ---
+  duration_ms: 2549.274384
+  type: 'test'
+  ...
+# Subtest: Project copy Chrome: standalone uncited creation installs a fresh document and updates its query identity
+ok 5 - Project copy Chrome: standalone uncited creation installs a fresh document and updates its query identity
+  ---
+  duration_ms: 1722.817811
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14382.909239
+# forge-test-file "test/v2-project-copy-chrome-8j.test.js"

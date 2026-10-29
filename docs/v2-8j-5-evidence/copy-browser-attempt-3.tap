@@ -1,0 +1,141 @@
+TAP version 13
+# {"buildMs":531.873157,"backend":"sqlite","server":"production"}
+# Subtest: Project copy Chrome: dirty cited copy adopts a fresh engine and routed identity, preserves content and reopens
+ok 1 - Project copy Chrome: dirty cited copy adopts a fresh engine and routed identity, preserves content and reopens
+  ---
+  duration_ms: 3745.674217
+  type: 'test'
+  ...
+# Subtest: Project copy Chrome: late response preserves later human edits and the original binding
+not ok 2 - Project copy Chrome: late response preserves later human edits and the original binding
+  ---
+  duration_ms: 2390.507213
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:18:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'p-1df386b5545d7854b528d788'
+    - 'p-010692f11859b520f0939918'
+         ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'p-010692f11859b520f0939918'
+  actual: 'p-1df386b5545d7854b528d788'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:62:10)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Project copy Chrome: title grid and Assistant drafts block entry, and a new Assistant draft defers adoption
+not ok 3 - Project copy Chrome: title grid and Assistant drafts block entry, and a new Assistant draft defers adoption
+  ---
+  duration_ms: 11935.368933
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:18:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Browser condition: document.querySelector('[data-table-editor] input'); {"selector":"[data-scroll-container] [data-el=table]","point":[854.4918212890625,372.30873107910156],"hit":"<rect x=\"912.0\" y=\"288.0\" width=\"240.0\" height=\"48.0\" fill=\"none\" stroke=\"#999999\"></rect>"}I
+    ← Workspace
+    Slides
+    Save
+    Apply or cancel data/title drafts and finish the Assistant message before copying.
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    1 / 2
+    Slides
+    Layers
+    + Slide ▾
+    First copied wording
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Slide 1 · Custom
+    ⋯
+    Unrelated private slide
+    Slide 2
+    ⋯
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    Slide 1 of 2 · 1 selected · Custom slide
+    Save conflict: stale project revision: based on 1, stored is 2 Your edits are intact — reload the newer version or save as a new project. Load newer version Save as new project Retry save
+    First copied wording
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Inspector
+    Assistant
+    ×
+    Text
+    Text formatting
+    ¶1 left
+    Color 
+    Size 
+    B 
+    I 
+    Apply
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:19:228)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:77:63)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Project copy Chrome: ordinary navigation cancellation invalidates adoption and changed accounts suppress late publication
+ok 4 - Project copy Chrome: ordinary navigation cancellation invalidates adoption and changed accounts suppress late publication
+  ---
+  duration_ms: 2246.938948
+  type: 'test'
+  ...
+# Subtest: Project copy Chrome: standalone uncited creation installs a fresh document and updates its query identity
+ok 5 - Project copy Chrome: standalone uncited creation installs a fresh document and updates its query identity
+  ---
+  duration_ms: 1612.279287
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 3
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22136.910857
+# forge-test-file "test/v2-project-copy-chrome-8j.test.js"

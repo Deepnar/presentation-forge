@@ -1,0 +1,480 @@
+TAP version 13
+# {"buildMs":552.0214960000001,"backend":"sqlite","server":"production"}
+# Subtest: Project copy Chrome: dirty cited copy adopts a fresh engine and routed identity, preserves content and reopens
+not ok 1 - Project copy Chrome: dirty cited copy adopts a fresh engine and routed identity, preserves content and reopens
+  ---
+  duration_ms: 12795.148782
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:18:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Browser condition: document.querySelector('[data-text-edit]'); I
+    ← Workspace
+    Slides
+    Save
+    Saved · rev 1
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    1 / 2
+    Slides
+    Layers
+    + Slide ▾
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Slide 1 · Custom
+    ⋯
+    Unrelated private slide
+    Slide 2
+    ⋯
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    Slide 1 of 2 · 1 selected · Custom slide
+    Edit failed: op-rejected: rich runs are read-only in this slice (1 paragraph(s), 2 run(s)) — editing would flatten their formatting
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Inspector
+    Assistant
+    ×
+    Text
+    Slide 1 of 2
+    Layout Custom slide
+    Objects 3
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:19:228)
+    async editText (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:31:304)
+    async stale (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:34:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:47:39)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: Project copy Chrome: late response preserves later human edits and the original binding
+not ok 2 - Project copy Chrome: late response preserves later human edits and the original binding
+  ---
+  duration_ms: 11625.793313
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:18:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Browser condition: document.querySelector('[data-text-edit]'); I
+    ← Workspace
+    Slides
+    Save
+    Saved · rev 1
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    1 / 2
+    Slides
+    Layers
+    + Slide ▾
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Slide 1 · Custom
+    ⋯
+    Unrelated private slide
+    Slide 2
+    ⋯
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    Slide 1 of 2 · 1 selected · Custom slide
+    Edit failed: op-rejected: rich runs are read-only in this slice (1 paragraph(s), 2 run(s)) — editing would flatten their formatting
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Inspector
+    Assistant
+    ×
+    Text
+    Slide 1 of 2
+    Layout Custom slide
+    Objects 3
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:19:228)
+    async editText (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:31:304)
+    async stale (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:34:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:58:39)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Project copy Chrome: title grid and Assistant drafts block entry, and a new Assistant draft defers adoption
+not ok 3 - Project copy Chrome: title grid and Assistant drafts block entry, and a new Assistant draft defers adoption
+  ---
+  duration_ms: 11632.185292
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:18:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Browser condition: document.querySelector('[data-text-edit]'); I
+    ← Workspace
+    Slides
+    Save
+    Saved · rev 1
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    1 / 2
+    Slides
+    Layers
+    + Slide ▾
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Slide 1 · Custom
+    ⋯
+    Unrelated private slide
+    Slide 2
+    ⋯
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    Slide 1 of 2 · 1 selected · Custom slide
+    Edit failed: op-rejected: rich runs are read-only in this slice (1 paragraph(s), 2 run(s)) — editing would flatten their formatting
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Inspector
+    Assistant
+    ×
+    Text
+    Slide 1 of 2
+    Layout Custom slide
+    Objects 3
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:19:228)
+    async editText (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:31:304)
+    async stale (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:34:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:72:39)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Project copy Chrome: ordinary navigation cancellation invalidates adoption and changed accounts suppress late publication
+not ok 4 - Project copy Chrome: ordinary navigation cancellation invalidates adoption and changed accounts suppress late publication
+  ---
+  duration_ms: 11701.028909
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:18:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Browser condition: document.querySelector('[data-text-edit]'); I
+    ← Workspace
+    Slides
+    Save
+    Saved · rev 1
+    ↩ Undo
+    ↪ Redo
+    History
+    Export
+    Present
+    Assistant
+    Inspector
+    1 / 2
+    Slides
+    Layers
+    + Slide ▾
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Slide 1 · Custom
+    ⋯
+    Unrelated private slide
+    Slide 2
+    ⋯
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Done
+    + Text
+    + Rect
+    + Round
+    + Ellipse
+    Slide 1 of 2 · 1 selected · Custom slide
+    Edit failed: op-rejected: rich runs are read-only in this slice (1 paragraph(s), 2 run(s)) — editing would flatten their formatting
+    Measured results
+    0
+    5
+    10
+    A
+    B
+    ■ Score
+    Cell
+    Score
+    A
+    1.25
+    B
+    12.5
+    Inspector
+    Assistant
+    ×
+    Text
+    Slide 1 of 2
+    Layout Custom slide
+    Objects 3
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:19:228)
+    async editText (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:31:304)
+    async stale (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:34:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:81:39)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: Project copy Chrome: standalone uncited creation installs a fresh document and updates its query identity
+not ok 5 - Project copy Chrome: standalone uncited creation installs a fresh document and updates its query identity
+  ---
+  duration_ms: 11092.240782
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:18:26'
+  failureType: 'testCodeFailure'
+  error: |-
+    Browser condition: document.querySelector('[data-save-state]')?.dataset.saveState==='saved' && JSON.parse(document.querySelector('[data-save-state]').dataset.projectState)?.id==="p-43632072b59a850d3a93fd42" && document.querySelector('[data-scroll-container] [data-el=text]'); Slides
+    Present
+    Assistant
+    Inspector
+    1 / 12
+    Opening
+    A talk about cells
+    m-divider
+    Plain list
+    • Alpha point
+    • Beta point
+    • Gamma point
+    • Delta point
+    m-prose
+    Peers
+    One
+    First
+    Two
+    Second
+    Three
+    Third
+    m-cards
+    Sides
+    Left
+    Mature
+    Right
+    Novel
+    Novel wins
+    m-compare
+    Grid
+    a
+    b
+    c
+    d
+    m-table
+    Figure
+    12.5
+    mS/cm
+    1.2
+    oxide
+    m-metric
+    Data
+    0
+    0.5
+    1
+    1.5
+    2
+    A
+    B
+    ■ v
+    Unit: mS/cm
+    m-chart
+    Steps
+    1
+    One
+    First
+    2
+    Two
+    Second
+    3
+    Three
+    Third
+    m-seq
+    Loop
+    A
+    First
+    B
+    Second
+    C
+    Third
+    m-cycle
+    Ranks
+    Top
+    Parent
+    Left
+    Child one
+    Right
+    Child two
+    m-hier
+    Visual
+    cells
+    cells
+    • Point one
+    • Point two
+    • Point three
+    • Point four
+    m-media
+    Caution
+    Risk
+    Handle with care
+    m-frame
+    mech-warm-humanist-plain (warm-humanist, plain)
+    mech-warm-humanist-chromed (warm-humanist, chromed)
+    source-of-truth-warm-humanist-plain (warm-humanist, plain)
+    decision-warm-humanist-plain (warm-humanist, plain)
+    ← Prev
+    Next →
+    −
+    100%
+    +
+    Fit
+    Live
+    Projects
+    Edit
+    m-divider
+    Last project “Uncited copy source” is saved on this machine. Reopen it Dismiss
+    Opening
+    A talk about cells
+    Inspector
+    Assistant
+    ×
+    Nothing selected. Click the slide to select an object, or double-click text to edit it.
+    Slide m-divider
+    Layout Managed by AI layout
+    Objects 2
+    Read-only — press Edit in the toolbar to change this slide.
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    wait (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:19:228)
+    async setup (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:28:3)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-copy-chrome-8j.test.js:93:24)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 59017.564861
+# forge-test-file "test/v2-project-copy-chrome-8j.test.js"

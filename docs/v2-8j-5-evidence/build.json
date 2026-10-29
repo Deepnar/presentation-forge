@@ -1,0 +1,12 @@
+{
+  "implementationSha": "f6487737557c20d481cbc3e84216d7144bb116e8",
+  "command": "node_modules/.bin/vite build --config app/web/vite.config.js",
+  "invokedBy": "test/v2-project-copy-chrome-8j.test.js before hook",
+  "log": "docs/v2-8j-5-evidence/browser/build.log",
+  "exitCode": 0,
+  "buildMs": 576.686486,
+  "browserBackend": "actual isolated SQLite, production API and built frontend",
+  "node": "v24.16.0",
+  "chrome": "Google Chrome 151.0.7922.173",
+  "note": "Final of5 serial new-file invocations; one build per invocation. Earlier TAPs retain timings, final build stdout only retained. No build overlapped another browser/build."
+}

@@ -1,7 +1,7 @@
 {
   "id": "copy-transport",
   "kind": "tests",
-  "implementationSha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+  "implementationSha": "f6487737557c20d481cbc3e84216d7144bb116e8",
   "invocationHead": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
   "command": "nice -n 10 ionice -c 3 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-transport-8j.test.js && nice -n 10 ionice -c 3 node --test --test-reporter=./tools/validated-tap.mjs test/v2-route-guard-7a.test.js",
   "exitCode": 0,
@@ -23,5 +23,6 @@
     "docs/v2-8j-5-evidence/copy-http-cli-final.json",
     "docs/v2-8j-5-evidence/copy-router-final.json"
   ],
-  "applicability": "Two complete unfiltered files, sequential invocations on the same source26a1e86f; aggregate preserves both actual file markers and summaries."
+  "applicability": "Applicable unchanged runtime/selected test bytes from the captured run. Later source commits change only browser fixture setup/painted hit targets/settled screenshot timing; citedFixture now accepts an optional scenes input with the same seed() default used by HTTP/CLI. TypeScript packages/config/typed usage fixtures are unchanged. This is source applicability, not a new execution.",
+  "testedImplementationSha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0"
 }

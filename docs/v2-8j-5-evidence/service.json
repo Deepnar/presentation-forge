@@ -1,0 +1,16 @@
+{
+  "acquiredAt": "2026-10-29T08:40:25.710408+00:00",
+  "containerId": "27f4033a0d730f4e792ecc03f5be33832b678a5ad41ef9eaf24aa08757144c6a",
+  "name": "forge-j5-20261029084025",
+  "image": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "host": "127.0.0.1",
+  "port": 32768,
+  "cpuLimit": 0.5,
+  "memoryLimitBytes": 536870912,
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw,size=256m"
+  },
+  "backend": "PostgreSQL 15, isolated new J5 fixture",
+  "ownership": "Created by this task; never reuse previous I4/J2/J3/J4 services",
+  "status": "running"
+}
