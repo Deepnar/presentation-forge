@@ -1,0 +1,96 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "plannedBy": "/root",
+  "reviewDate": "2026-10-29",
+  "initialPlanSha": "3b6bf65f914b6a49fad8f2182ff6f9e1eb2244e8",
+  "reviewedPlanSha": "ae96d71755114c9dbdbfc209d5c81763a4aa5e3b",
+  "acceptedBaseline": "f6487737557c20d481cbc3e84216d7144bb116e8",
+  "planningEntrySha": "2fb36ad0e2694abfd953722fe5605dfa9e674a62",
+  "plan": "docs/V2-8J-6-1-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-citation-notes-export",
+  "evidence": "docs/v2-8j-6-1-evidence/independent/plan-readiness.md",
+  "assessment": "The revised contract is technically coherent and bounded enough for explicit human privacy/surface direction. Exact-owner saved-snapshot qualification, title/full-URL field disclosure, deterministic native mapping, renderer-owned single-use authority and private exclusive file publication can fit the existing source and renderer architecture. All material review ambiguities are resolved. This is planning readiness, not disclosure approval, implementation authorization or implementation acceptance.",
+  "scopeAssessment": "A headless notes-only foundation is a bounded dependency after J5. It can preserve editable slide contents while keeping raw/current GET cited refusal and deferring browser/public export, visible references and printable citation presentation. Complete notes text is distinct from general printed-page fit. Source titles and complete URLs may themselves contain private queries/identifier strings; only the explicitly approved data fields are portable, with no appended Forge provenance/identity fields. Retained identity and valid anchors/ranges still do not establish factual support.",
+  "resolvedFindings": [
+    {
+      "issue": "The initial byte caps and general notes-page no-clipping language did not account for the installed library's fixed printed notes body.",
+      "sourceBasis": ["node_modules/pptxgenjs/dist/pptxgen.es.js:addNotesDefinition", "node_modules/pptxgenjs/dist/pptxgen.es.js:makeXmlNotesMaster", "node_modules/pptxgenjs/dist/pptxgen.es.js:makeXmlNotesSlide"],
+      "resolution": "The final contract promises bounded complete native notes text, explicitly not general printable-page fit. Long notes may overflow print layout; no truncation, unreadable font shrink or continuation slides are implied. A representative short notes-page raster and long-case exact text/limit disclosure are separate evidence obligations. Printable design remains a later roadmap contract."
+    },
+    {
+      "issue": "Blanket no-network wording conflicted with inherited authored image/background asset embedding through the existing renderer/PptxGenJS path seam.",
+      "sourceBasis": ["packages/renderer-pptx/render.ts:addImageElement", "packages/renderer-pptx/render.ts:renderPptx"],
+      "resolution": "Source/page/notes-URL fetching and new fetch grants are prohibited. Existing authored-scene asset policy remains unchanged and is not newly qualified as SSRF-safe; fixtures must embed assets and perform no real network/model/search calls. This does not silently expand the slice into asset hardening."
+    },
+    {
+      "issue": "Complete portable private fields require explicit filesystem privacy and atomic non-overwriting publication, not a rename-overwrite or partially written final path.",
+      "sourceBasis": ["packages/renderer-pptx/node.ts:renderPptxToFile"],
+      "resolution": "The new CLI uses an owned0700 same-filesystem temporary directory and verified0600 file, flushes/closes complete bytes, then exclusively hard-links the final name with0600 retained. Existing target races fail EEXIST; unsupported filesystems refuse without unsafe fallback. Only owned temporary resources are removed, and uncertain acknowledgement remains an unknown complete-file outcome. Generic file export compatibility remains separate."
+    },
+    {
+      "issue": "A group mapping to all emitted descendants could include system chrome outside the J4 content anchor's authored scope.",
+      "sourceBasis": ["packages/model/citation-content.ts:projectElement", "packages/model/scene-constants.ts:isSystemChrome", "packages/renderer-pptx/render.ts:drawElement"],
+      "resolution": "Both source scope and native association mapping exclude system-chrome subtrees, matching the anchor projection, while that furniture still renders. Hidden authored scope refuses and ordinary visible locked objects remain eligible. Groups map only their actually emitted visible non-chrome primitives."
+    },
+    {
+      "issue": "The opaque prepared-authority seam needed a concrete ownership/import/lifecycle rule without moving SQL/auth into the renderer or opening a raw flag bypass.",
+      "sourceBasis": ["packages/renderer-pptx/render.ts:preflightScenes and renderPptx", "src/projects/store.js:withCitationReadTransaction", "src/projects/store-postgres.js:withCitationReadTransaction"],
+      "resolution": "The renderer owns a private issuer/map and consume operation. Trusted src assembly supplies only an executable canonical qualifier callback; the facade exposes neither it nor handles/issuer. Completed qualification mints snapshot-bound authority, consumed before asynchronous native/ZIP generation even on failure. Dependency direction remains src to renderer factory with scene/projection types and callbacks, no reverse SQL/auth/src/server import or cycle. External JSON/raw options cannot mint authority."
+    },
+    {
+      "issue": "A literal prohibition on identifier substrings would contradict preservation of full URLs/titles that themselves contain those values; XML escaping alone also does not prevent visually forged labels/direction.",
+      "sourceBasis": ["packages/tools/web-source.ts:canonicalWebSource", "node_modules/pptxgenjs/dist/pptxgen.es.js:addNotesDefinition"],
+      "resolution": "The allowlist is field-based: preserve complete title/URL values, including private queries, but append no Forge identifier/provenance/hash/range/excerpt fields. Quoted reversible literal representation visibly escapes C0/C1, line separators and bidi-formatting controls before XML escaping. Malformed surrogates refuse. Privacy tests distinguish approved data values from added platform fields."
+    }
+  ],
+  "findingsResolvedAt": "ae96d71755114c9dbdbfc209d5c81763a4aa5e3b",
+  "technicalBasis": [
+    {
+      "topic": "Saved point-in-time authority and private disclosure",
+      "assessment": "Existing exact-owner citation-read transactions can qualify the canonical saved document and current catalog together. The proposed strict captured counters/disclosure request re-enters that lock on every render; inspection is metadata-only and grants no authority. Selected sources remain bounded in24-item body chunks with512/4MiB and16KiB limits. Clear/save/delete before the lock invalidate expected counters; changes after private snapshot capture cannot revoke or mix it. No source URL is fetched or body/excerpt added to notes.",
+      "sourceBasis": ["src/projects/source-read.js", "src/projects/citations.js", "src/projects/citation-references.js", "src/projects/store.js", "src/projects/store-postgres.js"]
+    },
+    {
+      "topic": "Target/content/range qualification",
+      "assessment": "Shared target indexing/content digests and snippet range observation provide the required current saved-target/anchor/range checks. J4's blocked flag combines lock, hidden and chrome, so it cannot be treated as export visibility: the contract explicitly distinguishes those policies and preserves ordinary visible locked content. Missing/ambiguous/orphan/changed/hidden or invalid-range references refuse as a whole. Range validity cannot be relabeled an exact quote match or claim support.",
+      "sourceBasis": ["packages/model/citation-targets.ts", "packages/model/citation-content.ts", "packages/model/citations.ts", "src/projects/snippet-locator.js"]
+    },
+    {
+      "topic": "Native notes and trace feasibility",
+      "assessment": "Installed PptxGenJS4.0.1 supports addNotes(string) and objectName on native primitives. The renderer's top-level z order, group child traversal and multi-primitive image placeholder paths provide concrete instrumentation points; they are not a one-scene-ID-to-one-native-object mapping. Existing uniquePptxShapeIds can renumber cNvPr IDs, so post-normalization trace verification must use deterministic portable names and actual slide/object coverage/relationships. New mapping can remain ephemeral and source-private without writing IDs/anchors/ranges into the archive.",
+      "sourceBasis": ["node_modules/pptxgenjs/types/index.d.ts", "node_modules/pptxgenjs/dist/pptxgen.es.js", "packages/renderer-pptx/render.ts", "packages/renderer-pptx/shape-ids.ts"]
+    }
+  ],
+  "focusedValidationAssessment": "After separate human approval, new pure qualification/authority/privacy cases, one shared actual SQLite/PostgreSQL contract, small native OOXML/mapping controls, CLI/public-path containment, changed renderer typecheck and one small slide/short-notes visual fixture are appropriate. The same small native fixture should exercise relevant emitted primitive multiplicity without creating a broad renderer matrix. Long text needs exact preservation/declared print-limit evidence, not a printed-fit claim. Missing actual PG or short notes-page rendering remains unexecuted. Reuse accepted unchanged J2-J5/renderer evidence; no old browser/build/model/benchmark sweep is warranted. Inventory must be pinned before implementation.",
+  "outstandingTechnicalIssues": [],
+  "humanDirection": {
+    "status": "PENDING",
+    "requiredDecision": "Approve or revise per-invocation exact-owner saved-project export of retained source titles and complete URLs, including private query/identifier values, into independent portable notes; explicitly acknowledge no general printable notes-page-fit promise. Browser/public export and visible/print citation presentation remain separate.",
+    "notImplied": "Readiness authorizes no implementation, product tests/services/renders, private disclosure, retention preference, schema/database work, provider context, source-page retrieval, activation or deployment. Accepted J5 remains the runtime baseline."
+  },
+  "implementationAccepted": false,
+  "executed": {
+    "productTests": 0,
+    "databaseCalls": 0,
+    "services": 0,
+    "browserCalls": 0,
+    "builds": 0,
+    "renders": 0,
+    "modelCalls": 0,
+    "searchCalls": 0,
+    "networkCalls": 0,
+    "gitMutations": 0,
+    "description": "Read-only source/installed-library/plan delta inspection and lightweight review artifact consistency. Final HEAD and origin/v2 match the reviewed SHA; committed packages/src/app/test remain identical to accepted J5."
+  },
+  "limitations": [
+    "This is contract feasibility/readiness, not a working implementation, tested OOXML or visual export claim.",
+    "PptxGenJS notes/objectName support and fixed notes-master geometry were inspected in installed4.0.1 source only; no file or native application was run.",
+    "Actual notes-page rendering/tool support and cross-viewer Notes-editor behavior remain to be established by scoped implementation evidence; no interactive Microsoft PowerPoint claim is made.",
+    "Long printed notes may overflow by explicit proposed policy; title/full URL disclosure is independent and cannot be revoked by original clear/delete.",
+    "The inherited authored asset embedding policy is unchanged, not newly qualified against network/SSRF risk.",
+    "Root-owned unstaged continuity/state updates and original unrelated untracked paths were preserved."
+  ]
+}
