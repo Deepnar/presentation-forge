@@ -1,4 +1,4 @@
-# V2-8J-5 evaluation — validation complete, independent review pending
+# V2-8J-5 evaluation — independently accepted
 
 Accepted baseline: `665cd0459b0f267b32e808a59046e3d0b914e74f` (J4).
 Frozen implementation: `f6487737557c20d481cbc3e84216d7144bb116e8`.
@@ -7,7 +7,9 @@ on2026-10-29 (“ok continue” directly after the concrete approval question),
 pinned7df22d94 before runtime. [Contract](V2-8J-5-PLAN.md),
 [inventory](v2-8j-5-evidence/validation-plan.json) and
 [roadmap](ROADMAP.md#assistant-citation-project-copy) define scope.
-The implementer does not accept this candidate. Final independent review is pending.
+Separate reviewer `/root/i8_source_review` issued exact-source
+[ACCEPT](reviews/V2-8J-5-f6487737.json); root committed the stable record unchanged
+at e95cafad. No required gate or source blocker remains. Acceptance covers J5 only.
 
 ## Result and implementation
 
@@ -132,9 +134,12 @@ CPU10.35s is a lower bound, not total machine usage. No unrelated work was stopp
 A new localhost-only J5 PostgreSQL fixture used the cached15-alpine image with
 0.5CPU/512MiB limits and256MiB tmpfs. [Service identity](v2-8j-5-evidence/service.json)
 and idle resource observation are retained without credentials. Root test pools,
-browser/API processes and SQLite temporary directories closed. PostgreSQL remains
-owned only for independent challenges; catalog-before-removal cleanup is pending
-reviewer release. No old I4/J2/J3/J4 service was recreated or cleanup repeated.
+browser/API processes and SQLite temporary directories closed. After reviewer
+release, root saved/fsynced an actual empty user-database catalog
+and0otherClients, removed only the exact owned ID once and deleted temporary
+credentials. [Cleanup](v2-8j-5-evidence/cleanup.json) and independent positive
+live-daemon absence/private-file/runner verification are complete. No owned service
+or validation process remains. No old I4/J2/J3/J4 service was recreated or cleanup repeated.
 
 ## Exclusions and limits
 
@@ -150,4 +155,25 @@ commit/response has no exactly-once guarantee. Existing adapter lock waits gain 
 new deadline, and tmpfs PG tests do not establish power-loss durability. Cited
 native export remains refused. Further scope and its separate direction gate live
 only in [the roadmap](ROADMAP.md#assistant-citation-native-presentation).
-Stop after exact-source independent review, owned cleanup and scoped handoff/push.
+J5 closeout is complete; no dependent feature or deployment is authorized.
+
+
+## Independent acceptance and changed-file index
+
+The [separate review](v2-8j-5-evidence/independent/review.md) inspected all selected
+root evidence and ran only two new actual-PG challenges: private refusal after real
+destination/catalog insertion rolls back fully and retains its intentional code;
+canonical clear winning the parent lock fences a queued old-generation copy before
+any destination effects. **2/2pass,0fail/skip/cancel**, actual child0,465ms wall time.
+The read-only source/evidence audit passed338 consistency checks with0errors.
+An initial audit parser misread two older Unicode spec summaries; its original
+source/output and corrected parser assessment remain retained, without a product
+rerun. Independent exact-ID/credential/process absence verification passed.
+
+[Changed files](v2-8j-5-evidence/changed-files.json) index all J5 planning, runtime,
+test, governance, documentation and evidence paths since the completed J4 closeout.
+Runtime changes are the copy domain/auth/CLI, atomic SQLite/PostgreSQL insertion
+seams, thin HTTP route and guarded editor/router adoption; tests cover these new
+boundaries. AGENTS/protocol record the human's owned-load/focused-validation policy.
+No unrelated untracked file was staged. Final recommendation is the reviewer's
+bounded ACCEPT; the implementer did not supply acceptance or activate production.

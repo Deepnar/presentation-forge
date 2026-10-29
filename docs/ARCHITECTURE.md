@@ -3115,7 +3115,7 @@ slide inserts; ordinary edits and engine-owned duplicate/undo effects preserve
 records. Existing tool catalogs and provider projections gain no citation data.
 
 Generic cited new-project creation/import refuses before writes. J5 below adds
-a separate qualified source-aware copy seam under validation. Canonical
+a separately accepted qualified source-aware copy seam. Canonical
 PPTX preflight refuses any nonempty citation array before producing native bytes,
 including hidden/stale/orphan targets, without private source resolution. Uncited
 projects/exports retain existing behaviour. Portable citation presentation remains
@@ -3124,7 +3124,7 @@ No new route/CLI/UI, model/search call, source retention, activation or deployme
 is supplied by this headless implementation.
 
 
-## Source-aware project copy — J5 candidate under validation
+## Source-aware project copy — accepted J5
 
 `src/projects/copy.js` captures the complete bounded JSON request/binding before
 awaiting, validates live scenes, and qualifies referenced immutable sources in one
@@ -3151,6 +3151,7 @@ new route/query identity. Route history writes precede source release; new edits
 Assistant/grid/title drafts, viewport/navigation/session drift defer or suppress
 adoption. The committed copy remains available independently. Generic cited create/
 import and central native export refusal remain; no provider/research authority or
-host activation is added. This is built candidate behavior, not acceptance:
-[evaluation](V2-8J-5-EVAL.md) and [roadmap](ROADMAP.md#assistant-citation-project-copy)
-record exact remaining validation/direction authority.
+host activation is added. Exact source `f6487737` is independently
+[accepted](reviews/V2-8J-5-f6487737.json); [evaluation](V2-8J-5-EVAL.md) retains
+focused execution, visual/response limits and cleanup. Later direction/authority
+remains solely in the [roadmap](ROADMAP.md#assistant-citation-native-presentation).

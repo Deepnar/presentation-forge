@@ -9204,12 +9204,12 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-citation-project-copy"></a>
 
-  - [ ] **V2-8J-5 source-aware project copy and safe live-editor adoption — approved, in progress.**
+  - [x] **V2-8J-5 source-aware project copy and safe live-editor adoption — independently accepted.**
     [Concrete contract](V2-8J-5-PLAN.md), from accepted J4 `665cd04`, is independently
     [ready for direction](reviews/V2-8J-5-plan-a20ae631.json) at `1b37cdd6`;
     Human approved the bounded retention/editor-handoff contract on2026-10-29
     (“ok continue” after the concrete approval question); implementation is authorized,
-    independent implementation acceptance remains pending.
+    exact implementationf6487737 is independently [accepted](reviews/V2-8J-5-f6487737.json).
     Five source-inspected contract gaps were resolved: mutable-input capture,
     commit uncertainty, dirty-copy router authority, save dispatch/publication and
     Assistant drafts. Those were planning corrections. Frozen candidatef6487737 has
@@ -9217,7 +9217,9 @@ local inference. Only that separate transport correction is authorized; this aud
     production build and three inspected settled screenshots. All root114leaves
     =102pass/12fail retain two expected fail-first regressions and corrected fixture
     errors; assertions remain. Four independent source findings on adoption are
-    corrected; final independent acceptance and owned service cleanup remain pending.
+    corrected. New independent actual-PG challenges2/2 and source/evidence audit338/0
+    complete; actual0catalog was saved before single exact-ID cleanup, with independent
+    service/private-file/process absence verification. No J5 blocker remains.
     Human resource direction requires bounded low-priority serial checks with owned
     process monitoring; high global PSI alone is not attributed to this project. Copy only
     referenced snippets into the same exact owner's new project, atomically
@@ -9231,20 +9233,32 @@ local inference. Only that separate transport correction is authorized; this aud
     when adoption is deferred. The inherited awaited-response regression is now
     reproduced by executing the original J4 handler with an isolated delayed
     response (baseline1fail, no DOM/browser claim); retained evidence is in
-    [J5 evaluation](V2-8J-5-EVAL.md). Candidate correction and real-browser checks
-    remain under validation.
+    [J5 evaluation](V2-8J-5-EVAL.md). Final real-browser5/5 exercises the corrected
+    current adoption and draft/navigation/restore guards; no retroactive baseline
+    DOM claim is made.
     Generic cited create and native export remain refused. Existing uncited CRUD
     permissions remain; admin CRUD supplies no private-source authority. Explicit
     creates have no automatic retry or exactly-once promise; lost responses leave
     creation unknown, requiring workspace inspection before a deliberate retry.
+
+    **Look-ahead.** Copy retains project-private sources without portable disclosure
+    or a second scene/history document. Later citation presentation can use the same
+    canonical metadata, but requires its own privacy/surface direction; provider
+    context/research/semantic creation receive no authority from copying.
+
+    > **Learned.** A successful server copy is distinct from permission to replace
+    > a live editor. Route history must succeed before source release; drafts,
+    > viewport and pending restoration need the same final freshness boundary as
+    > document revisions. Painted SVG hit targets and settled transitions are
+    > necessary for meaningful browser evidence; the reusable trap is in TRAPS.
 
   <a id="assistant-citation-native-presentation"></a>
 
   - [ ] **Citation presentation and native export — direction needed.**
     Agree visible attribution versus speaker notes, which retained metadata may
     enter portable files, stale/missing-source behaviour and source-to-slide/object
-    mappings before implementation. J5 implements private copy only under validation; its acceptance
-    would not authorize portable disclosure or remove export refusal. Notes would
+    mappings before implementation. Accepted J5 permits private copy only; it
+    does not authorize portable disclosure or remove export refusal. Notes would
     disclose private URLs/titles or excerpts and cannot be added as an incidental
     renderer change. Reuse canonical
     scenes/native preflight; cover direct/browser/file and stored-project export,
@@ -9252,8 +9266,8 @@ local inference. Only that separate transport correction is authorized; this aud
     native/visual evidence when presentation is implemented. Accepted J4 enforces
     central cited-scene export refusal; it does not complete citation-preserving export.
 
-  Dependency sequence after accepted J4: agree/implement/review J5 source-aware copy,
-  then agree native mappings and verified locator/claim-support boundaries before research-backed semantic
+  Dependency sequence after accepted J5 source-aware copy:
+  agree native mappings and verified locator/claim-support boundaries before research-backed semantic
   creation. Semantic tools retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
   parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning

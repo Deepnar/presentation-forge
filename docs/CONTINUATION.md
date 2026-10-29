@@ -32,7 +32,29 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Latest accepted slice — J4 citation metadata lifecycle complete
+## Latest accepted slice — J5 source-aware project copy complete
+
+Human approved the reviewed J5 contract1b37cdd6 on2026-10-29, pinned7df22d94 before
+runtime. Exact source `f6487737557c20d481cbc3e84216d7144bb116e8` is independently
+[accepted](reviews/V2-8J-5-f6487737.json); stable decision committed unchanged at
+e95cafad. Read [evaluation](V2-8J-5-EVAL.md), contract, state and HANDOFF.
+Selected39/39, build/typecheck0, independent new actual-PG2/2 and338/0 packet audit
+complete. All root114=102pass/12fail retain fixture errors/expected fail-firsts;
+no required gate remains unexecuted. No unchanged old matrix was repeated.
+
+Referenced private sources copy atomically to the same owner with new bindings and
+independent retention; guarded fresh-engine adoption preserves later human work.
+Generic cited create/import and native export remain refused. Exact owned cleanup
+saved/fsynced actual0catalog before one removal; independent service/private-file/
+runner absence verification is complete. No owned service remains. Never recreate
+old fixtures or repeat cleanup. Current shared-machine policy monitors bounded own
+load and leaves unrelated work alone; global PSI alone is not attribution.
+
+J5 closeout is complete. Further scope/direction is solely in the
+[roadmap](ROADMAP.md#assistant-citation-native-presentation); acceptance permits
+planning, not dependent implementation, model/search runs or activation.
+
+## Accepted predecessor — J4 citation metadata lifecycle complete
 
 Human approved bounded J4 on2026-10-28, pinned b0cb7aa before runtime after
 independent readiness of plan bbfbf8c. Exact source
@@ -50,21 +72,15 @@ applicability. No product test was repeated during acceptance propagation.
 Scene-owned metadata survives edits/undo/history/regeneration without restoring
 cleared sources or acquiring provider authority. Fresh headless operations retain
 exact-owner locking and separate target/content/source/range observations; support
-is not-assessed. Cited new-project copying and native export intentionally refuse.
+is not-assessed. J4 originally refused cited new-project copying and native export; qualified
+copy is separately accepted in J5 above, while export remains refused.
 No model/search call, UI, public transport or activation was added. Actual0 catalog
 was saved/fsynced before one exact-ID removal; root and reviewer independently
 verified absence/private credential deletion. No owned service remains. Never
 recreate old fixtures or repeat completed cleanup helpers.
 
-J4 closeout is complete. The approved bounded next contract is
-[J5 source-aware copy and safe editor adoption](V2-8J-5-PLAN.md), first pushed at
-a20ae631, independently ready at1b37cdd6. Current implementation/validation state
-is in HANDOFF and the [roadmap](ROADMAP.md#assistant-citation-project-copy).
-Human approved the reviewed J5 contract on2026-10-29 after its explicit direction
-question. Implement only that bounded slice; active state tracks pending focused
-validation/review. J4 remains the accepted baseline; later candidates stay unauthorized.
-[Citation presentation](ROADMAP.md#assistant-citation-native-presentation) retains
-its separate direction/implementation gate and native export stays refused.
+J4 closeout is complete. J5 above supersedes only the qualified copy refusal;
+all later scope and direction remain in the linked roadmap, not this history.
 
 ## Accepted predecessor — J3 citation-reference checks complete
 

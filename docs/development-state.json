@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+    "sha": "f6487737557c20d481cbc3e84216d7144bb116e8",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8J-4-665cd04.json"
+    "source": "docs/reviews/V2-8J-5-f6487737.json"
   },
   "implementationHead": {
     "sha": "f6487737557c20d481cbc3e84216d7144bb116e8",
-    "note": "J5 focused39/39, production build and typecheck0 complete; runtime unchanged from26a1e86f, later browser fixture corrections captured. Exact-source independent review and owned fixture cleanup pending. Not accepted."
+    "note": "J5 independently accepted at frozen f6487737; selected39/39, production build/typecheck0, new independent actual-PG2/2 and source/evidence/visual audit complete. Later changes are documentation/evidence only. Exact owned cleanup independently verified; no next feature authorized."
   },
   "activeMilestone": {
     "id": "V2-8J-5",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8J-5-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8J-5-f6487737.json",
+    "accepted": true
   },
   "validation": [
     {

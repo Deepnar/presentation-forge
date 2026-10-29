@@ -134,8 +134,9 @@ corrections and scope limits. Later direction/authority lives only in
 [the roadmap](ROADMAP.md#assistant-search-source-integrity).
 
 [J5 copy](V2-8J-5-PLAN.md) received scoped human direction on2026-10-29 after
-independent readiness. Implementation/validation/review are in progress, not
-accepted. Exact active scope/status lives in the
+independent readiness. Exact implementationf6487737 is independently accepted
+after complete focused validation, new review challenges and verified owned
+cleanup; no J5 blocker remains. Exact active scope/status lives in the
 [roadmap](ROADMAP.md#assistant-citation-project-copy) and state; no decision blocker
 remains for this bounded slice.
 

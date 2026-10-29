@@ -53,8 +53,8 @@
     "skip": 0,
     "cancelled": 0
   },
-  "sourceReview": "Prior four adoption findings resolved; final exact-source independent decision pending.",
-  "cleanup": "Owned PostgreSQL fixture remains for independent challenges only; root browser/API/SQLite fixtures closed. Cleanup pending reviewer release; no old fixture recreated.",
+  "sourceReview": "ACCEPT for exact f6487737 by /root/i8_source_review; docs/reviews/V2-8J-5-f6487737.json, committed unchanged at e95cafad. Independent actual-PG2/2 and packet audit338checks/0errors.",
+  "cleanup": "Root saved/fsynced actual user catalog[] and0otherClients before one exact-ID removal. Independent live-daemon absence/private-file/runner verification complete; no owned fixture or validation process remains. Historical fixtures/cleanup not repeated.",
   "noCalls": [
     "real model",
     "local inference",
@@ -62,5 +62,12 @@
     "GPU",
     "production activation"
   ],
-  "sourceApplicability": "Runtime unchanged from26a1e86f; final source adds browser-only fixture corrections. See each retained run metadata for invocation, captured hashes and differences."
+  "sourceApplicability": "Runtime unchanged from26a1e86f; final source adds browser-only fixture corrections. See each retained run metadata for invocation, captured hashes and differences.",
+  "independentTests": {
+    "total": 2,
+    "pass": 2,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  }
 }

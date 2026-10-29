@@ -96,11 +96,17 @@ provider context or a public surface through these checks.
 The J4 revisioned scene citation lifecycle is independently accepted at `665cd04`:
 owner-qualified headless attach/remove/inspect and unverified metadata survive
 commands, undo/history and regeneration without restoring cleared sources.
-Content hashes and retained ranges do not establish claim support. Creating or
-copying cited projects and exporting them to native PPTX refuse until separate
-preservation contracts; no provider/H/Assistant research or public surface authority is added.
+Content hashes and retained ranges do not establish claim support. Generic cited
+create/import and native PPTX export remain refused. The separate J5 source-aware
+copy and guarded live-editor adoption are independently accepted at `f6487737`:
+only referenced private snippets copy atomically to the same owner with rebound
+source IDs and independent retention. Fresh-engine adoption preserves the captured
+scene/viewport; later edits/drafts/navigation/session changes defer or suppress it.
+The original retains its history; the new session has empty undo. Unknown responses
+have no automatic retry/exactly-once promise. No provider/H/Assistant research or
+portable citation disclosure authority is added.
 Saved chat does not automatically become provider context. Further host progress/
-scheduling, provider routing, source-aware copying/citation presentation, research
+scheduling, provider routing, citation presentation, research
 orchestration, live-provider qualification and
 semantic creation remain in the
 [roadmap](docs/ROADMAP.md#v2-8-remaining). Resolve exact accepted
