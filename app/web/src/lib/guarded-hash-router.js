@@ -45,9 +45,10 @@ export function createGuardedHashRouter({ window: win, apply, getGuard = () => n
       await travel(current.index);
       if (!live) return false;
       // A copied snapshot only authorizes the exact state still present after traversal.
-      if (transfer && (!transfer.authorize(getGuard(hash),hash) || !transfer.commit())) return false;
+      if (transfer && !transfer.authorize(getGuard(hash),hash)) return false;
       const index = replace ? current.index : current.index + 1;
       stamp(hash, index, !replace);
+      if (transfer) transfer.commit();
       accept(hash, index);
       return true;
     } finally { busy = false; }

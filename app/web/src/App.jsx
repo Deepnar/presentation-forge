@@ -54,6 +54,8 @@ function AppContent() {
   const routerRef = useRef(null);
   const editorGuardRef = useRef(null);
   const copiedProjectRef = useRef(null);
+  const navigationEpochRef = useRef(0);
+  const navigationStamp = useCallback(() => navigationEpochRef.current, []);
   const registerNavigationGuard = useCallback((guard) => {
     editorGuardRef.current = guard;
     return () => { if (editorGuardRef.current === guard) editorGuardRef.current = null; };
@@ -224,8 +226,8 @@ function AppContent() {
       return await routerRef.current?.navigate(hash,{ transfer: {
         authorize: (guard,target) => current() && target === hash && guard?.prepareCopy?.(handoff,target) === true,
         commit: () => {
-          if (!current() || !handoff.transfer()) return false;
           handoff.committed = true;
+          handoff.transfer();
           copiedProjectRef.current = handoff;
           return true;
         },
@@ -236,6 +238,7 @@ function AppContent() {
   }
 
   function applyHash(hash = window.location.hash) {
+    navigationEpochRef.current += 1;
     setHash(hash);
     const r = parseHash(hash);
     switch (r.view) {
@@ -642,6 +645,7 @@ function AppContent() {
                   onOpenProject={(id) => navigate("project", { projectId: id })}
                   onProjectDeleted={() => navigate("projects")}
                   onAdoptProjectCopy={adoptProjectCopy}
+                  navigationStamp={navigationStamp}
                   copyHandoff={copiedProjectRef.current?.project.id === activeProjectId ? copiedProjectRef.current : null}
                   onCopyConsumed={(handoff) => { if (copiedProjectRef.current === handoff) copiedProjectRef.current = null; }}
                 />

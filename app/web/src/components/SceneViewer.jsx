@@ -733,7 +733,7 @@ function LayoutGallery({ sibling, onInsert, onClose }) {
   );
 }
 
-export default function SceneViewer({ initial = {}, projectId = null, autoOpenHistory = false, registerNavigationGuard = null, onBack = null, onOpenProject = null, onProjectDeleted = null, onAdoptProjectCopy = null, copyHandoff = null, onCopyConsumed = null }) {
+export default function SceneViewer({ initial = {}, projectId = null, autoOpenHistory = false, registerNavigationGuard = null, onBack = null, onOpenProject = null, onProjectDeleted = null, onAdoptProjectCopy = null, copyHandoff = null, onCopyConsumed = null, navigationStamp = null }) {
   // Embedded (workspace) mode binds a persisted project by id and
   // offers back-navigation; standalone (scenes.html) mode drives
   // everything from the query string and localStorage instead.
@@ -1055,6 +1055,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [selectedLoading, setSelectedLoading] = useState(false);
   const [restoreConfirm, setRestoreConfirm] = useState(false);
   const [restoreBusy, setRestoreBusy] = useState(false);
+  const restoreBusyRef = useRef(false);
   const [restoreError, setRestoreError] = useState(null);
   const [restoreDone, setRestoreDone] = useState(null);
   const assistantRef = useRef(null), assistantBridgeRef = useRef(null), rightRailRef = useRef(null);
@@ -1074,6 +1075,12 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [copyBusy, setCopyBusy] = useState(false);
   const [copyNotice, setCopyNotice] = useState(null);
   const mountedRef = useRef(true);
+  const routeEpochRef = useRef(0);
+  useEffect(() => {
+    const changed = () => { routeEpochRef.current += 1; };
+    window.addEventListener('hashchange',changed); window.addEventListener('popstate',changed);
+    return () => { window.removeEventListener('hashchange',changed); window.removeEventListener('popstate',changed); };
+  }, []);
   useEffect(() => {
     mountedRef.current = true;
     return () => { mountedRef.current = false; autosaveRef.current?.cancel(); };
@@ -1275,14 +1282,17 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   async function saveAsNewProject() {
     const doc = docRef.current, source = projectRef.current, viewer = viewerRef.current, adapter = adapterRef.current;
     if (!editOn || !doc || !adapter || copyingRef.current) return;
+    if (restoreBusyRef.current) { setCopyNotice('Wait for version restoration to finish before copying.'); return; }
     const token = projectSessionKey(), sourceId = source?.id ?? null;
-    const current = () => mountedRef.current && projectSessionKey() === token && docRef.current === doc &&
+    const route = window.location.href, routeStamp = navigationStamp?.() ?? routeEpochRef.current;
+    const sameEditor = () => mountedRef.current && projectSessionKey() === token && docRef.current === doc &&
       viewerRef.current === viewer && adapterRef.current === adapter && (projectRef.current?.id ?? null) === sourceId && !abandonedDocumentsRef.current.has(doc);
+    const current = () => sameEditor() && window.location.href === route && (navigationStamp?.() ?? routeEpochRef.current) === routeStamp;
     const drafts = () => gridDraftsRef.current.size || titleDraftRef.current !== null || titleRequestRef.current || assistantRef.current?.hasDraft();
     if (drafts()) { setCopyNotice('Apply or cancel data/title drafts and finish the Assistant message before copying.'); return; }
     const ticket = { current };
     copyingRef.current = ticket;
-    setCopyBusy(true); setCopyNotice('Copying…'); autosaveRef.current?.cancel();
+    setCopyBusy(true); setCopyNotice(null); autosaveRef.current?.cancel();
     let committed = false;
     try {
       if (adapterRef.current?.hasPendingEdit?.()) {
@@ -1295,8 +1305,14 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       const snapshot = doc.snapshot(), sourceRevision = projectRef.current?.revision;
       const scenes = structuredClone(snapshot.scenes), cited = scenes.some(scene => scene.citations?.length);
       if (cited && (!sourceId || projectRef.current?.recoverable)) { setCopyNotice('Open the source project before copying its citations.'); return; }
-      const viewport = { ...viewer.api.snapshot(), scrollTop: scrollRef.current?.scrollTop ?? 0, scrollLeft: scrollRef.current?.scrollLeft ?? 0 };
-      const clean = () => current() && copyingRef.current === ticket && !ticket.invalidated && !pendingLeaveRef.current &&
+      const readViewport = () => ({ ...viewer.api.snapshot(), scrollTop: scrollRef.current?.scrollTop ?? 0, scrollLeft: scrollRef.current?.scrollLeft ?? 0 });
+      const viewport = readViewport();
+      const sameViewport = () => {
+        const now = readViewport();
+        return viewport.slideId === now.slideId && viewport.zoom === now.zoom && viewport.scrollTop === now.scrollTop &&
+          viewport.scrollLeft === now.scrollLeft && JSON.stringify(viewport.selectedIds) === JSON.stringify(now.selectedIds);
+      };
+      const clean = () => current() && sameViewport() && !restoreBusyRef.current && copyingRef.current === ticket && !ticket.invalidated && !pendingLeaveRef.current &&
         !pendingSwitchRef.current && projectRef.current?.revision === sourceRevision &&
         doc.snapshot().revision === snapshot.revision && !drafts() && !pendingSaveRef.current && !adapterRef.current?.hasPendingEdit?.();
       const fetchCopy = capturedProjectFetch(token,current);
@@ -1313,7 +1329,6 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       if (embedded) {
         const handoff = { project: created, document: prepared, viewport, token, current: clean, committed: false, consumed: false };
         handoff.transfer = () => {
-          if (!clean()) return false;
           autosaveRef.current?.cancel();
           docRef.current = null; adapterRef.current = null;
           try { adapter.detach(); } catch { /* the saved copy already owns this released snapshot */ }
@@ -1334,7 +1349,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       if (copyingRef.current === ticket) {
         copyingRef.current = null;
         if (mountedRef.current && projectSessionKey() === token) setCopyBusy(false);
-        if (current() && doc.snapshot().revision !== savedEngineRevRef.current) autosaveRef.current?.schedule();
+        if (sameEditor() && doc.snapshot().revision !== savedEngineRevRef.current) autosaveRef.current?.schedule();
       }
     }
   }
@@ -1607,6 +1622,13 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   // preserved. Unsaved current edits require Save / Discard / Cancel.
   async function doRestore(how) {
     if (!historyFor || selectedRev === null || selectedRev === undefined) return;
+    if (copyingRef.current) {
+      copyingRef.current.invalidated = true;
+      setRestoreError('Wait for the project copy to finish, then restore again.'); return;
+    }
+    if (restoreBusyRef.current) return;
+    restoreBusyRef.current = true;
+    try {
     if (adapterRef.current?.hasPendingEdit?.()) {
       const r = await adapterRef.current.commitPendingEdit();
       if (!r.ok) {
@@ -1665,6 +1687,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     } finally {
       setRestoreBusy(false);
     }
+    } finally { restoreBusyRef.current = false; }
   }
 
   // V2-7A shell helpers: title rename, workspace leave guard,
@@ -2082,8 +2105,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         {editOn && (
           <>
             <button type="button" aria-label="Save project" title={project ? `Save ${project.title} (rev ${project.revision})` : "Save as a new project"} disabled={copyBusy || saveState === "saving"} onClick={() => (project && !project.recoverable ? saveNow() : saveAsNewProject())} className={shellBtn}>Save</button>
-            <span role="status" aria-live="polite" data-copy-notice={copyNotice ?? undefined} data-save-state={saveState} data-project-state={JSON.stringify(project ?? null)} title={copyNotice ?? saveError ?? project?.title ?? "no project"} className="max-w-[320px] truncate flex-none rounded-full border border-line px-2 py-0.5 text-[12px] text-fg-muted">
-              {copyNotice ?? (saveState === "saving" ? "Saving…" : saveState === "saved" ? `Saved${project ? ` · rev ${project.revision}` : ""}` : saveState === "dirty" ? "Unsaved changes" : saveState === "stale" ? "Conflict — newer saved version" : saveState === "error" ? "Save failed" : saveState === "unavailable" ? "Storage unavailable — edits not saved" : project?.title ?? "No project")}
+            <span role="status" aria-live="polite" data-copy-busy={copyBusy ? 'true' : 'false'} data-copy-notice={copyBusy ? 'Copying…' : copyNotice ?? undefined} data-save-state={saveState} data-project-state={JSON.stringify(project ?? null)} title={copyBusy ? 'Copying…' : copyNotice ?? saveError ?? project?.title ?? "no project"} className="max-w-[320px] truncate flex-none rounded-full border border-line px-2 py-0.5 text-[12px] text-fg-muted">
+              {(copyBusy ? 'Copying…' : copyNotice) ?? (saveState === "saving" ? "Saving…" : saveState === "saved" ? `Saved${project ? ` · rev ${project.revision}` : ""}` : saveState === "dirty" ? "Unsaved changes" : saveState === "stale" ? "Conflict — newer saved version" : saveState === "error" ? "Save failed" : saveState === "unavailable" ? "Storage unavailable — edits not saved" : project?.title ?? "No project")}
             </span>
             <button type="button" aria-label="Undo" disabled={!editOn || textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Undo"} onClick={() => adapterRef.current?.undo()} className={shellBtn}>↩ Undo</button>
             <button type="button" aria-label="Redo" disabled={!editOn || textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Redo"} onClick={() => adapterRef.current?.redo()} className={shellBtn}>↪ Redo</button>
@@ -2624,7 +2647,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
             </div>
             <div className="flex flex-wrap gap-2 border-b border-line px-3 py-2">
               <button type="button" data-project-save-current disabled={!editOn || copyBusy} title={editOn ? "Save the current deck as a new project" : "Enter edit mode first"} onClick={saveAsNewProject} className={`${shellBtn} disabled:opacity-40`}>Save current deck as project</button>
-              {copyNotice && <span role="status" data-project-copy-notice className="text-[12px] text-fg-muted">{copyNotice}</span>}
+              {(copyBusy || copyNotice) && <span role="status" data-project-copy-notice className="text-[12px] text-fg-muted">{copyBusy ? 'Copying…' : copyNotice}</span>}
               {project && !project.recoverable && (
                 <ProjectExportButton data-project-export projectId={project.id} title={project.title} className="rounded-md px-2 py-1 text-[12px] text-accent transition hover:bg-hover">Export {project.title} (.pptx)</ProjectExportButton>
               )}
