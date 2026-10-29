@@ -167,10 +167,14 @@ or bulk-copy dashboard action is proposed.
   title drafts/title requests with a useful existing-surface message. Commit an
   inline text draft under the captured document/session guard; failed commit
   retains the draft and sends no copy request. Recheck after every await.
-- Fence pending saves: pause future autosave dispatch and cancel its timer; allow
-  an already dispatched save to settle before recapturing project identity and
-  the live snapshot. Do not trigger a new save/recursive drain merely to copy.
-  Recheck grid/title/inline drafts and auth/document identity before dispatch.
+- Fence pending saves: pause future autosave and manual-save dispatch, cancel its
+  timer and fence the independent recursive `saveNow` drain continuation. Allow
+  only an already dispatched save to settle before recapturing project identity
+  and the live snapshot. A stale/failing save alone must not veto Save-as-new
+  recovery. Its success/error publication must retain captured session/document
+  guards so it cannot repaint an adopted project or a new account. Do not trigger
+  another save or drain merely to copy. Recheck grid/title/inline drafts and
+  auth/document identity before dispatch.
 - Capture the account/session token, mounted viewer, document identity, abandonment
   state, project ID/revision, engine revision, draft state and viewport. Pin request
   authorization to that captured session, including anonymous local identity;
