@@ -1,0 +1,41 @@
+TAP version 13
+# Subtest: copy HTTP and actual CLI share live-scene rebinding without source disclosure or raw-create bypass
+ok 1 - copy HTTP and actual CLI share live-scene rebinding without source disclosure or raw-create bypass
+  ---
+  duration_ms: 911.047059
+  type: 'test'
+  ...
+# Subtest: copy HTTP refuses foreign missing malformed and oversized requests with private errors
+ok 2 - copy HTTP refuses foreign missing malformed and oversized requests with private errors
+  ---
+  duration_ms: 193.70561
+  type: 'test'
+  ...
+# Subtest: copy CLI preserves byte validation and refuses invalid sessions without anonymous downgrade
+ok 3 - copy CLI preserves byte validation and refuses invalid sessions without anonymous downgrade
+  ---
+  duration_ms: 368.15767
+  type: 'test'
+  ...
+# Subtest: captured copy client makes one request and pins bearer or anonymous identity
+ok 4 - captured copy client makes one request and pins bearer or anonymous identity
+  ---
+  duration_ms: 1.017219
+  type: 'test'
+  ...
+# Subtest: local HTTP invalid credentials cannot address an owner-null project
+ok 5 - local HTTP invalid credentials cannot address an owner-null project
+  ---
+  duration_ms: 554.430227
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2216.139196
+# forge-test-file "test/v2-project-copy-transport-8j.test.js"

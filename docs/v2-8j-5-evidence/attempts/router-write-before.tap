@@ -1,0 +1,33 @@
+TAP version 13
+# Subtest: history write failure leaves the prepared source editor unreleased
+not ok 1 - history write failure leaves the prepared source editor unreleased
+  ---
+  duration_ms: 2.546434
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-route-guard-7a.test.js:103:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-route-guard-7a.test.js:109:10)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 44.056212
+# forge-test-file "test/v2-route-guard-7a.test.js"

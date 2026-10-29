@@ -1,0 +1,27 @@
+{
+  "id": "copy-transport",
+  "kind": "tests",
+  "implementationSha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+  "invocationHead": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+  "command": "nice -n 10 ionice -c 3 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-transport-8j.test.js && nice -n 10 ionice -c 3 node --test --test-reporter=./tools/validated-tap.mjs test/v2-route-guard-7a.test.js",
+  "exitCode": 0,
+  "timedOut": false,
+  "durationMs": 2383,
+  "files": [
+    "test/v2-project-copy-transport-8j.test.js",
+    "test/v2-route-guard-7a.test.js"
+  ],
+  "log": "docs/v2-8j-5-evidence/copy-transport-final.tap",
+  "tests": {
+    "total": 16,
+    "pass": 16,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "parts": [
+    "docs/v2-8j-5-evidence/copy-http-cli-final.json",
+    "docs/v2-8j-5-evidence/copy-router-final.json"
+  ],
+  "applicability": "Two complete unfiltered files, sequential invocations on the same source26a1e86f; aggregate preserves both actual file markers and summaries."
+}

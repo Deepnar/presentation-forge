@@ -1,0 +1,43 @@
+TAP version 13
+# Subtest: a late copy response must preserve later edits and the original project binding
+not ok 1 - a late copy response must preserve later edits and the original project binding
+  ---
+  duration_ms: 13.320301
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/docs/v2-8j-5-evidence/regressions/save-copy-repro.mjs:10:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    later edits must stay with the original editor instead of being marked saved in a different project
+    + actual - expected
+    
+      {
+    +   binding: 'copy',
+    +   status: 'saved'
+    -   binding: 'original',
+    -   status: 'dirty'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    binding: 'original'
+    status: 'dirty'
+  actual:
+    binding: 'copy'
+    status: 'saved'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/docs/v2-8j-5-evidence/regressions/save-copy-repro.mjs:19:10)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# {"baseline":"665cd0459b0f267b32e808a59046e3d0b914e74f","handlerSha256":"83d16d33e8da244e43d35caca5390e17036e9a006ed283c9f160ad10096d9c8e","method":"execute original handler with isolated closure dependencies; no DOM/browser claim"}
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 64.87655

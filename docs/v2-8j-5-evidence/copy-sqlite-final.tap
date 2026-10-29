@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: Project copy SQLite: live copy preserves scenes and provenance, copies referenced sources only and retains independently
+ok 1 - Project copy SQLite: live copy preserves scenes and provenance, copies referenced sources only and retains independently
+  ---
+  duration_ms: 45.699268
+  type: 'test'
+  ...
+# Subtest: Project copy SQLite: stale missing foreign and corrupt source copies refuse without destination effects
+ok 2 - Project copy SQLite: stale missing foreign and corrupt source copies refuse without destination effects
+  ---
+  duration_ms: 10.405262
+  type: 'test'
+  ...
+# Subtest: Project copy SQLite: exact owner and local-null binding confer no admin override or runtime destination capability
+ok 3 - Project copy SQLite: exact owner and local-null binding confer no admin override or runtime destination capability
+  ---
+  duration_ms: 6.960016
+  type: 'test'
+  ...
+# Subtest: Project copy SQLite: more than one source page copies under one snapshot with bounded body reads
+ok 4 - Project copy SQLite: more than one source page copies under one snapshot with bounded body reads
+  ---
+  duration_ms: 10.118991
+  type: 'test'
+  ...
+# {"backend":"sqlite","sourceCount":25,"copyMs":3.3730950000000064,"bodyBatches":[24,1]}
+# Subtest: Project copy SQLite: destination source insertion fault rolls back project catalog and create history
+ok 5 - Project copy SQLite: destination source insertion fault rolls back project catalog and create history
+  ---
+  duration_ms: 6.984898
+  type: 'test'
+  ...
+# Subtest: Project copy SQLite: parent lock serializes clear after copy without revoking copied sources
+ok 6 - Project copy SQLite: parent lock serializes clear after copy without revoking copied sources
+  ---
+  duration_ms: 8.104634
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 267.881157
+# forge-test-file "test/v2-project-copy-sqlite-8j.test.js"

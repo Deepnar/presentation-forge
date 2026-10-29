@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: copy captures the complete binding and live snapshot before its first await
+ok 1 - copy captures the complete binding and live snapshot before its first await
+  ---
+  duration_ms: 35.553522
+  type: 'test'
+  ...
+# Subtest: copy refuses executable, sparse, cyclic, unknown and privilege-bearing inputs before storage
+ok 2 - copy refuses executable, sparse, cyclic, unknown and privilege-bearing inputs before storage
+  ---
+  duration_ms: 0.863876
+  type: 'test'
+  ...
+# Subtest: copy checks project-bound citation shape and limits before storage
+ok 3 - copy checks project-bound citation shape and limits before storage
+  ---
+  duration_ms: 3.269931
+  type: 'test'
+  ...
+# Subtest: project-sized capture supports scenes larger than tool DTO traversal budgets
+ok 4 - project-sized capture supports scenes larger than tool DTO traversal budgets
+  ---
+  duration_ms: 17.320939
+  type: 'test'
+  ...
+# Subtest: copy reports unknown complete commit without driver details or automatic retry
+ok 5 - copy reports unknown complete commit without driver details or automatic retry
+  ---
+  duration_ms: 0.893579
+  type: 'test'
+  ...
+# Subtest: UTF-8 byte capacity is enforced even below the JSON character ceiling
+ok 6 - UTF-8 byte capacity is enforced even below the JSON character ceiling
+  ---
+  duration_ms: 10.850027
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 275.45725

@@ -1,0 +1,15 @@
+✔ Project copy SQLite: live copy preserves scenes and provenance, copies referenced sources only and retains independently (78.872805ms)
+✔ Project copy SQLite: stale missing foreign and corrupt source copies refuse without destination effects (12.848016ms)
+✔ Project copy SQLite: exact owner and local-null binding confer no admin override or runtime destination capability (9.315075ms)
+✔ Project copy SQLite: more than one source page copies under one snapshot with bounded body reads (14.922276ms)
+ℹ {"backend":"sqlite","sourceCount":25,"copyMs":4.43703499999998,"bodyBatches":[24,1]}
+✔ Project copy SQLite: destination source insertion fault rolls back project catalog and create history (9.421793ms)
+✔ Project copy SQLite: parent lock serializes clear after copy without revoking copied sources (9.287625ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 360.586754

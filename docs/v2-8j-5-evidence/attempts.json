@@ -1,0 +1,223 @@
+{
+  "recordedDate": "2026-10-29",
+  "attempts": [
+    {
+      "id": "copy-contract-1",
+      "command": "node --test test/v2-project-copy-8j.test.js",
+      "exitCode": null,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/attempts/copy-contract-1.tap",
+      "note": "Initial Node leaf summary complete; shell tailed the log without capturing the child exit. Exploratory only.",
+      "finalGateEvidence": false,
+      "sourceAttribution": "Exploratory working-tree run; final frozen-source canonical reporter run pending. Old handler explicitly reads acceptedJ4 via git show. No at-invocation source manifest was captured for exploratory runs."
+    },
+    {
+      "id": "copy-contract-2",
+      "command": "node --test --test-reporter=tap test/v2-project-copy-8j.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/attempts/copy-contract-2.tap",
+      "note": "After explicit output byte capacity and additional UTF-8 fixture.",
+      "finalGateEvidence": false,
+      "sourceAttribution": "Exploratory working-tree run; final frozen-source canonical reporter run pending. Old handler explicitly reads acceptedJ4 via git show. No at-invocation source manifest was captured for exploratory runs."
+    },
+    {
+      "id": "copy-sqlite-1",
+      "command": "node --test test/v2-project-copy-sqlite-8j.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/attempts/copy-sqlite-1.tap",
+      "note": "Initial actual SQLite shared contract, before final output byte cap.",
+      "finalGateEvidence": false,
+      "sourceAttribution": "Exploratory working-tree run; final frozen-source canonical reporter run pending. Old handler explicitly reads acceptedJ4 via git show. No at-invocation source manifest was captured for exploratory runs."
+    },
+    {
+      "id": "save-copy-before",
+      "command": "node --test --test-reporter=tap docs/v2-8j-5-evidence/regressions/save-copy-repro.mjs",
+      "exitCode": 1,
+      "tests": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/attempts/save-copy-before.tap",
+      "note": "Expected fail-first baseline regression: isolated original handler, no DOM/browser claim.",
+      "finalGateEvidence": false,
+      "sourceAttribution": "Exploratory working-tree run; final frozen-source canonical reporter run pending. Old handler explicitly reads acceptedJ4 via git show. No at-invocation source manifest was captured for exploratory runs."
+    },
+    {
+      "id": "copy-transport-1",
+      "command": "node --test --test-reporter=tap --test-concurrency=1 test/v2-project-copy-transport-8j.test.js test/v2-route-guard-7a.test.js",
+      "exitCode": 1,
+      "tests": {
+        "total": 14,
+        "pass": 13,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/attempts/copy-transport-1.tap",
+      "note": "13pass/1 fixture fail: absent URL retained foreign citation project binding, correctly refused422 before ownership read. Corrected binding; unchanged404 assertion. Routing10/10 passed.",
+      "finalGateEvidence": false,
+      "sourceAttribution": "Exploratory working-tree run; final frozen-source canonical reporter run pending. Old handler explicitly reads acceptedJ4 via git show. No at-invocation source manifest was captured for exploratory runs."
+    },
+    {
+      "id": "copy-transport-2",
+      "command": "node --test --test-reporter=tap test/v2-project-copy-transport-8j.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/attempts/copy-transport-2.tap",
+      "note": "Corrected missing-project fixture plus actual local-null HTTP challenge;5/5.",
+      "finalGateEvidence": false,
+      "sourceAttribution": "Exploratory working-tree run; final frozen-source canonical reporter run pending. Old handler explicitly reads acceptedJ4 via git show. No at-invocation source manifest was captured for exploratory runs."
+    },
+    {
+      "id": "copy-sqlite-2",
+      "command": "node --test --test-reporter=tap test/v2-project-copy-sqlite-8j.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/attempts/copy-sqlite-2.tap",
+      "note": "Complete actual SQLite contract after output byte capacity change.",
+      "finalGateEvidence": false,
+      "sourceAttribution": "Exploratory working-tree run; final frozen-source canonical reporter run pending. Old handler explicitly reads acceptedJ4 via git show. No at-invocation source manifest was captured for exploratory runs."
+    },
+    {
+      "id": "router-write-before",
+      "command": "node --test --test-name-pattern=history-write-failure --test-reporter=./tools/validated-tap.mjs test/v2-route-guard-7a.test.js",
+      "exitCode": 1,
+      "tests": {
+        "total": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/attempts/router-write-before.tap",
+      "note": "Expected fail-first candidate regression: router released original before failing history write; actual shell command used the quoted pattern history write failure.",
+      "finalGateEvidence": false
+    },
+    {
+      "id": "router-write-after",
+      "command": "node --test --test-reporter=./tools/validated-tap.mjs test/v2-route-guard-7a.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/attempts/router-write-after.tap",
+      "note": "Complete corrected routing file11/11, before final source-capture run.",
+      "finalGateEvidence": false
+    },
+    {
+      "id": "copy-contract-final",
+      "command": "nice -n 10 ionice -c 3 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-8j.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/copy-contract-final.tap",
+      "finalGateEvidence": true,
+      "sourceAttribution": "docs/v2-8j-5-evidence/copy-contract-final.json"
+    },
+    {
+      "id": "copy-sqlite-final",
+      "command": "nice -n 10 ionice -c 3 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-sqlite-8j.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/copy-sqlite-final.tap",
+      "finalGateEvidence": true,
+      "sourceAttribution": "docs/v2-8j-5-evidence/copy-sqlite-final.json"
+    },
+    {
+      "id": "copy-http-cli-final",
+      "command": "nice -n 10 ionice -c 3 node --test --test-reporter=./tools/validated-tap.mjs test/v2-project-copy-transport-8j.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/copy-http-cli-final.tap",
+      "finalGateEvidence": true,
+      "sourceAttribution": "docs/v2-8j-5-evidence/copy-http-cli-final.json"
+    },
+    {
+      "id": "copy-router-final",
+      "command": "nice -n 10 ionice -c 3 node --test --test-reporter=./tools/validated-tap.mjs test/v2-route-guard-7a.test.js",
+      "exitCode": 0,
+      "tests": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-5-evidence/copy-router-final.tap",
+      "finalGateEvidence": true,
+      "sourceAttribution": "docs/v2-8j-5-evidence/copy-router-final.json"
+    }
+  ],
+  "allRootLeafAttempts": {
+    "total": 83,
+    "pass": 80,
+    "fail": 3,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "commandSetupFailures": [
+    {
+      "command": "import esbuild for JSX syntax-only transform",
+      "exitCode": 1,
+      "leafTests": 0,
+      "classification": "Harness dependency assumption; installed Vite8 exposes transformWithOxc, which parsed both changed JSX files successfully. No package installed."
+    }
+  ],
+  "note": "Overlapping exploratory attempts are retained, not added to final selected gate totals. Canonical file-inventory reporter needed for final gate records."
+}

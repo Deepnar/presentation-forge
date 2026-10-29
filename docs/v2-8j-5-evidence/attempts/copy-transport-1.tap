@@ -1,0 +1,111 @@
+TAP version 13
+# Subtest: copy HTTP and actual CLI share live-scene rebinding without source disclosure or raw-create bypass
+ok 1 - copy HTTP and actual CLI share live-scene rebinding without source disclosure or raw-create bypass
+  ---
+  duration_ms: 953.494099
+  type: 'test'
+  ...
+# Subtest: copy HTTP refuses foreign missing malformed and oversized requests with private errors
+not ok 2 - copy HTTP refuses foreign missing malformed and oversized requests with private errors
+  ---
+  duration_ms: 157.117301
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-project-copy-transport-8j.test.js:28:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    422 !== 404
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 404
+  actual: 422
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-project-copy-transport-8j.test.js:35:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: copy CLI preserves byte validation and refuses invalid sessions without anonymous downgrade
+ok 3 - copy CLI preserves byte validation and refuses invalid sessions without anonymous downgrade
+  ---
+  duration_ms: 368.238721
+  type: 'test'
+  ...
+# Subtest: captured copy client makes one request and pins bearer or anonymous identity
+ok 4 - captured copy client makes one request and pins bearer or anonymous identity
+  ---
+  duration_ms: 1.207899
+  type: 'test'
+  ...
+# Subtest: clean navigation and history traversal apply once per destination
+ok 5 - clean navigation and history traversal apply once per destination
+  ---
+  duration_ms: 5.685218
+  type: 'test'
+  ...
+# Subtest: cancelled explicit navigation does not change the URL or history
+ok 6 - cancelled explicit navigation does not change the URL or history
+  ---
+  duration_ms: 0.419548
+  type: 'test'
+  ...
+# Subtest: Back restores the exact original entry while choice is pending and after cancellation
+ok 7 - Back restores the exact original entry while choice is pending and after cancellation
+  ---
+  duration_ms: 4.167162
+  type: 'test'
+  ...
+# Subtest: approved Back traverses the existing entry without creating duplicates
+ok 8 - approved Back traverses the existing entry without creating duplicates
+  ---
+  duration_ms: 5.044616
+  type: 'test'
+  ...
+# Subtest: direct native fragment changes are adopted and guarded
+ok 9 - direct native fragment changes are adopted and guarded
+  ---
+  duration_ms: 2.849106
+  type: 'test'
+  ...
+# Subtest: disposal prevents an outstanding choice from applying a route
+ok 10 - disposal prevents an outstanding choice from applying a route
+  ---
+  duration_ms: 0.244121
+  type: 'test'
+  ...
+# Subtest: approving explicit navigation waits for a racing Back restoration
+ok 11 - approving explicit navigation waits for a racing Back restoration
+  ---
+  duration_ms: 6.166
+  type: 'test'
+  ...
+# Subtest: prepared copy authorizes only its exact dirty snapshot without ordinary discard
+ok 12 - prepared copy authorizes only its exact dirty snapshot without ordinary discard
+  ---
+  duration_ms: 0.297735
+  type: 'test'
+  ...
+# Subtest: prepared copy rechecks drift after asynchronous router work before committing
+ok 13 - prepared copy rechecks drift after asynchronous router work before committing
+  ---
+  duration_ms: 0.195562
+  type: 'test'
+  ...
+# Subtest: a rejected copy transfer preserves ordinary navigation choices
+ok 14 - a rejected copy transfer preserves ordinary navigation choices
+  ---
+  duration_ms: 0.204247
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 13
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1730.107171

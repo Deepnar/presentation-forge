@@ -1,0 +1,13 @@
+✔ copy captures the complete binding and live snapshot before its first await (43.091859ms)
+✔ copy refuses executable, sparse, cyclic, unknown and privilege-bearing inputs before storage (0.94549ms)
+✔ copy checks project-bound citation shape and limits before storage (3.681898ms)
+✔ project-sized capture supports scenes larger than tool DTO traversal budgets (16.729427ms)
+✔ copy reports unknown complete commit without driver details or automatic retry (0.88977ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3967.421632

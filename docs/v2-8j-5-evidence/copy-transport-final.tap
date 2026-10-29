@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: copy HTTP and actual CLI share live-scene rebinding without source disclosure or raw-create bypass
+ok 1 - copy HTTP and actual CLI share live-scene rebinding without source disclosure or raw-create bypass
+  ---
+  duration_ms: 911.047059
+  type: 'test'
+  ...
+# Subtest: copy HTTP refuses foreign missing malformed and oversized requests with private errors
+ok 2 - copy HTTP refuses foreign missing malformed and oversized requests with private errors
+  ---
+  duration_ms: 193.70561
+  type: 'test'
+  ...
+# Subtest: copy CLI preserves byte validation and refuses invalid sessions without anonymous downgrade
+ok 3 - copy CLI preserves byte validation and refuses invalid sessions without anonymous downgrade
+  ---
+  duration_ms: 368.15767
+  type: 'test'
+  ...
+# Subtest: captured copy client makes one request and pins bearer or anonymous identity
+ok 4 - captured copy client makes one request and pins bearer or anonymous identity
+  ---
+  duration_ms: 1.017219
+  type: 'test'
+  ...
+# Subtest: local HTTP invalid credentials cannot address an owner-null project
+ok 5 - local HTTP invalid credentials cannot address an owner-null project
+  ---
+  duration_ms: 554.430227
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2216.139196
+# forge-test-file "test/v2-project-copy-transport-8j.test.js"
+TAP version 13
+# Subtest: clean navigation and history traversal apply once per destination
+ok 1 - clean navigation and history traversal apply once per destination
+  ---
+  duration_ms: 8.389256
+  type: 'test'
+  ...
+# Subtest: cancelled explicit navigation does not change the URL or history
+ok 2 - cancelled explicit navigation does not change the URL or history
+  ---
+  duration_ms: 0.377854
+  type: 'test'
+  ...
+# Subtest: Back restores the exact original entry while choice is pending and after cancellation
+ok 3 - Back restores the exact original entry while choice is pending and after cancellation
+  ---
+  duration_ms: 4.041538
+  type: 'test'
+  ...
+# Subtest: approved Back traverses the existing entry without creating duplicates
+ok 4 - approved Back traverses the existing entry without creating duplicates
+  ---
+  duration_ms: 5.053353
+  type: 'test'
+  ...
+# Subtest: direct native fragment changes are adopted and guarded
+ok 5 - direct native fragment changes are adopted and guarded
+  ---
+  duration_ms: 3.863713
+  type: 'test'
+  ...
+# Subtest: disposal prevents an outstanding choice from applying a route
+ok 6 - disposal prevents an outstanding choice from applying a route
+  ---
+  duration_ms: 0.247174
+  type: 'test'
+  ...
+# Subtest: approving explicit navigation waits for a racing Back restoration
+ok 7 - approving explicit navigation waits for a racing Back restoration
+  ---
+  duration_ms: 3.801204
+  type: 'test'
+  ...
+# Subtest: prepared copy authorizes only its exact dirty snapshot without ordinary discard
+ok 8 - prepared copy authorizes only its exact dirty snapshot without ordinary discard
+  ---
+  duration_ms: 0.282564
+  type: 'test'
+  ...
+# Subtest: prepared copy rechecks drift after asynchronous router work before committing
+ok 9 - prepared copy rechecks drift after asynchronous router work before committing
+  ---
+  duration_ms: 0.191423
+  type: 'test'
+  ...
+# Subtest: a rejected copy transfer preserves ordinary navigation choices
+ok 10 - a rejected copy transfer preserves ordinary navigation choices
+  ---
+  duration_ms: 0.191057
+  type: 'test'
+  ...
+# Subtest: history write failure leaves the prepared source editor unreleased
+ok 11 - history write failure leaves the prepared source editor unreleased
+  ---
+  duration_ms: 0.385718
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 63.602244
+# forge-test-file "test/v2-route-guard-7a.test.js"
