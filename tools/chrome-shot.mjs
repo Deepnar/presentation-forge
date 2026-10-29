@@ -231,6 +231,9 @@ export async function openViewer(url, { w = 1440, h = 900, timeoutMs = 90000 } =
         button: "left", clickCount: 1,
       });
     },
+    async allowDownloads(directory) {
+      await send(g.ws, seq++, "Browser.setDownloadBehavior", { behavior: "allow", downloadPath: path.resolve(directory) });
+    },
     async screenshot(pngPath) {
       const shot = await send(g.ws, seq++, "Page.captureScreenshot", { format: "png" });
       await writeFile(pngPath, Buffer.from(shot.data, "base64"));
@@ -264,15 +267,15 @@ export async function openViewer(url, { w = 1440, h = 900, timeoutMs = 90000 } =
     // Trusted key press against the focused element (keydown +
     // keyup). Windows key codes: Enter 13, Escape 27, Left 37,
     // Up 38, Right 39, Down 40.
-    async key(code, keyName, { text } = {}) {
+    async key(code, keyName, { text, modifiers = 0 } = {}) {
       await send(g.ws, seq++, "Input.dispatchKeyEvent", {
-        type: "rawKeyDown", windowsVirtualKeyCode: code, key: keyName,
+        type: "rawKeyDown", windowsVirtualKeyCode: code, key: keyName, modifiers,
       });
       if (text !== undefined) await send(g.ws, seq++, "Input.dispatchKeyEvent", {
         type: "char", text, unmodifiedText: text, windowsVirtualKeyCode: code, key: keyName,
       });
       await send(g.ws, seq++, "Input.dispatchKeyEvent", {
-        type: "keyUp", windowsVirtualKeyCode: code, key: keyName,
+        type: "keyUp", windowsVirtualKeyCode: code, key: keyName, modifiers,
       });
     },
     close,
