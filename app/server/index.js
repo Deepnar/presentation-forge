@@ -32,6 +32,7 @@ import { registerAuthRoutes, resolveUser } from "./auth-routes.js";
 import { registerV2ScenesRoutes } from "./v2-scenes-routes.js";
 import { registerV2ImportRoutes } from "./v2-import-routes.js";
 import { registerV2ProjectRoutes } from "./v2-projects-routes.js";
+import { installNativeExportHeaders, installNativeExportParser, registerNativeExportRoutes } from "./v2-native-export-routes.js";
 import { installConversationBodyParser, registerV2ConversationRoutes } from "./v2-conversation-routes.js";
 import { installAgentBodyParser, registerV2AgentRoutes, installTargetWakeBodyParser, registerV2TargetWakeRoute, registerV2AssistantAvailabilityRoute } from "./v2-agent-routes.js";
 import { closeAgentHostWake } from "../../src/agent/host-wake.js";
@@ -52,6 +53,7 @@ app.use((_req, res, next) => {
   res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
   next();
 });
+installNativeExportHeaders(app);
 const UI_ORIGIN = (process.env.FORGE_UI_ORIGIN ?? "").split(",").map((s) => s.trim()).filter(Boolean);
 if (UI_ORIGIN.length) {
   app.use(cors({ origin: UI_ORIGIN }));
@@ -62,6 +64,7 @@ if (process.env.FORGE_TRUST_PROXY === "1") {
   app.set("trust proxy", 1);
 }
 
+installNativeExportParser(app);
 installTargetWakeBodyParser(app);
 installConversationBodyParser(app);
 installAgentBodyParser(app);
@@ -494,6 +497,7 @@ registerAuthRoutes(app);
 registerV2ScenesRoutes(app);
 
 registerV2ProjectRoutes(app);
+registerNativeExportRoutes(app, { allowed: () => process.env.FORGE_V2_PROJECTS !== "0" });
 registerV2TargetWakeRoute(app);
 registerV2AssistantAvailabilityRoute(app);
 registerV2ConversationRoutes(app);

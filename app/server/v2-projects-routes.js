@@ -284,6 +284,7 @@ export function registerV2ProjectRoutes(app) {
   // state): proves a reopened project carries the same authored
   // content as the pre-save deck.
   app.get("/api/v2/projects/:id/export.pptx", wrap(async (req, res) => {
+    res.set("Cache-Control", "private, no-store");res.set("Pragma", "no-cache");res.vary("Authorization");
     if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
     if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
     const who = await projectOwner(req);
@@ -294,9 +295,12 @@ export function registerV2ProjectRoutes(app) {
       if (!doc) return fail(res, 404, "no such project");
       const envelope = await validateProjectDocument(doc);
       if (!envelope.ok) return res.status(422).json({ ok: false, error: envelope.errors[0], errors: envelope.errors });
+      res.set("X-Forge-Project-Revision", String(doc.revision));
       const unsafe = await preflightScenes(doc.scenes);
       if (unsafe.length) {
-        return res.status(422).json({ ok: false, error: "stored scenes fail export preflight", issues: unsafe });
+        if (doc.scenes.some(scene => scene.citations?.length)) res.set("X-Forge-Export-Refusal", "citation-preservation-required");
+        return res.status(422).json({ ok: false, error: "stored scenes fail export preflight", issues: unsafe,
+          ...(doc.scenes.some(scene => scene.citations?.length) ? { code: "citation-preservation-required" } : {}) });
       }
       const bytes = await renderPptx(doc.scenes, { title: doc.title });
       res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
