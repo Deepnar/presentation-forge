@@ -59,9 +59,9 @@ recreate old fixtures or repeat completed cleanup helpers.
 J4 closeout is complete. The next planning-only contract is
 [J5 source-aware copy and safe editor adoption](V2-8J-5-PLAN.md), first pushed at
 a20ae631. Its readiness review and human-direction state are in HANDOFF and the
-[roadmap](ROADMAP.md#assistant-citation-project-copy). No J5 runtime/test/schema/
-database work is authorized yet; nextCandidate.authorized is false. Leave J4's
-accepted source and validation inventory unchanged during planning.
+[roadmap](ROADMAP.md#assistant-citation-project-copy). Human approved the reviewed J5 contract on2026-10-29 after its explicit direction
+question. Implement only that bounded slice; active state tracks pending focused
+validation/review. J4 remains the accepted baseline; later candidates stay unauthorized.
 [Citation presentation](ROADMAP.md#assistant-citation-native-presentation) retains
 its separate direction/implementation gate and native export stays refused.
 

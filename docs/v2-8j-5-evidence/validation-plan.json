@@ -1,0 +1,33 @@
+{
+  "acceptedBaseline": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "approvedContract": "docs/V2-8J-5-PLAN.md",
+  "reviewedContractSha": "1b37cdd674fa680ac15bb266e2e16bf4eff25f05",
+  "humanDirection": "2026-10-29 ok continue, directly after explicit scoped J5 private retention/editor-handoff approval question",
+  "gates": {
+    "copy-contract": [
+      "test/v2-project-copy-8j.test.js"
+    ],
+    "copy-sqlite": [
+      "test/v2-project-copy-sqlite-8j.test.js"
+    ],
+    "copy-postgres": [
+      "test/v2-project-copy-postgres-8j.test.js"
+    ],
+    "copy-transport": [
+      "test/v2-project-copy-transport-8j.test.js"
+    ],
+    "copy-browser": [
+      "test/v2-project-copy-chrome-8j.test.js"
+    ],
+    "typecheck": []
+  },
+  "requiredFiles": [
+    "test/v2-project-copy-8j.test.js",
+    "test/v2-project-copy-sqlite-8j.test.js",
+    "test/v2-project-copy-postgres-8j.test.js",
+    "test/v2-project-copy-transport-8j.test.js",
+    "test/v2-project-copy-chrome-8j.test.js"
+  ],
+  "rationale": "Only new source-copy domain, actual adapters, thin HTTP/CLI and one serial editor/browser integration; retain accepted unchanged evidence.",
+  "excluded": "No full old matrix, model/API/search/GPU calls, native rendering, deployment or production migration; missing actual PostgreSQL remains unexecuted."
+}

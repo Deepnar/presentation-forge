@@ -170,7 +170,12 @@
               "citation-boundaries",
               "citation-lifecycle",
               "citation-write-sqlite",
-              "citation-write-postgres"
+              "citation-write-postgres",
+              "copy-contract",
+              "copy-sqlite",
+              "copy-postgres",
+              "copy-transport",
+              "copy-browser"
             ]
           },
           "status": {
@@ -362,7 +367,8 @@
                   "V2-8J-1",
                   "V2-8J-2",
                   "V2-8J-3",
-                  "V2-8J-4"
+                  "V2-8J-4",
+                  "V2-8J-5"
                 ]
               }
             },

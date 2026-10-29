@@ -1,6 +1,10 @@
 # V2-8J-5 — source-aware copy and safe editor adoption
 
-Status: **proposed; human direction required before implementation**.
+Status: **human-approved; implementation in progress**.
+Human direction on2026-10-29: “ok continue”, directly after the explicit J5
+private retention/editor-handoff approval question. This approves reviewed contract
+`1b37cdd674fa680ac15bb266e2e16bf4eff25f05`, independently ready in
+[the readiness record](reviews/V2-8J-5-plan-a20ae631.json).
 The [roadmap](ROADMAP.md#assistant-citation-project-copy) owns this work and its
 dependencies. This document is the bounded contract, not implementation evidence.
 
@@ -24,7 +28,7 @@ generation, foreign or corrupt; do not silently drop metadata or invent evidence
 Citation-bearing native export remains refused under the separate presentation
 contract. This proposal adds no new provider or research authority.
 
-Human direction is required: J4 approved metadata preservation and copy refusal,
+The separate direction gate was required: J4 approved metadata preservation and copy refusal,
 not duplication of retained private snippets or this editor handoff. AGENTS.md
 requires direction for user data-handling and major surface/architecture changes;
 technical readiness is not that approval. One direction decision covers the

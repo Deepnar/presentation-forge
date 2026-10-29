@@ -16,6 +16,7 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
+  'copy-contract': 'tests', 'copy-sqlite': 'tests', 'copy-postgres': 'tests', 'copy-transport': 'tests', 'copy-browser': 'tests',
   'citation-lifecycle': 'tests', 'citation-write-sqlite': 'tests', 'citation-write-postgres': 'tests',
   'citation-pure': 'tests', 'citation-sqlite': 'tests', 'citation-postgres': 'tests', 'source-registry-regression': 'tests', 'citation-boundaries': 'tests',
   'registry-pure': 'tests', 'registry-sqlite': 'tests', 'registry-postgres': 'tests',
@@ -33,6 +34,13 @@ const KINDS = {
 const DEFAULT_REQUIRED_CHECKS = ['non-browser-bulk', 'serial-browser', 'postgres-contract',
   'cross-process-faults', 'production-build', 'typecheck', 'benchmark-50', 'frontend-visual'];
 const MILESTONES = {
+  'V2-8J-5': {
+    plan: 'docs/v2-8j-5-evidence/validation-plan.json',
+    focused: 'copy-contract', files: ['test/v2-project-copy-8j.test.js'],
+    groups: {"copy-sqlite": ["test/v2-project-copy-sqlite-8j.test.js"], "copy-postgres": ["test/v2-project-copy-postgres-8j.test.js"], "copy-transport": ["test/v2-project-copy-transport-8j.test.js"], "copy-browser": ["test/v2-project-copy-chrome-8j.test.js"]},
+    required: ["copy-contract", "copy-sqlite", "copy-postgres", "copy-transport", "copy-browser", "typecheck"],
+  },
+
   'V2-8J-4': {
     plan: 'docs/v2-8j-4-evidence/validation-plan.json',
     focused: 'citation-lifecycle', files: ['test/v2-citations-8j.test.js'],

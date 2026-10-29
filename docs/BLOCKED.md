@@ -133,11 +133,11 @@ review or service blocker remains. [Evaluation](V2-8J-4-EVAL.md) retains failure
 corrections and scope limits. Later direction/authority lives only in
 [the roadmap](ROADMAP.md#assistant-search-source-integrity).
 
-The next [J5 copy contract](V2-8J-5-PLAN.md) is planning only. Human direction on
-retained private-source duplication and editor adoption is required before code;
-independent plan readiness does not supply it. See the current
-[roadmap gate](ROADMAP.md#assistant-citation-project-copy) and HANDOFF for review
-status. This is a direction gate, not an unavailable service or failed J4 check.
+[J5 copy](V2-8J-5-PLAN.md) received scoped human direction on2026-10-29 after
+independent readiness. Implementation/validation/review are in progress, not
+accepted. Exact active scope/status lives in the
+[roadmap](ROADMAP.md#assistant-citation-project-copy) and state; no decision blocker
+remains for this bounded slice.
 
 ### 3.1 Browser regression coverage
 

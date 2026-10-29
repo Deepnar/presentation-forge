@@ -6,50 +6,56 @@
     "source": "docs/reviews/V2-8J-4-665cd04.json"
   },
   "implementationHead": {
-    "sha": "665cd0459b0f267b32e808a59046e3d0b914e74f",
-    "note": "J4 independently accepted at exact frozen source after packetef1d11ac audit. Selected41/41, typecheck0 and independent2/2 actual-PG challenges pass. Original2 fixture failures, review/harness corrections and unchanged-source applicability retained. Actual0 catalog saved/fsynced before exact-ID removal; private credentials absent. Later commits are documentation/evidence only."
+    "sha": "fd7ee79f33b6895fa30c373df3a62b4ce946a251",
+    "note": "J5 approved after explicit private retention/editor-handoff question on2026-10-29; source work begins after this authorization record. J4 remains accepted baseline."
   },
   "activeMilestone": {
-    "id": "V2-8J-4",
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-lifecycle",
-    "evalDoc": "docs/V2-8J-4-EVAL.md",
+    "id": "V2-8J-5",
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-project-copy",
+    "evalDoc": "docs/V2-8J-5-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8J-4-665cd04.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "citation-lifecycle",
-      "status": "passed",
-      "evidence": "docs/v2-8j-4-evidence/citation-lifecycle.json",
-      "reason": "Focused complete gate passed; original invocation and exact frozen-source applicability retained in source-manifest.json."
+      "id": "copy-contract",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J5 gate; not executed yet."
     },
     {
-      "id": "citation-write-sqlite",
-      "status": "passed",
-      "evidence": "docs/v2-8j-4-evidence/citation-write-sqlite.json",
-      "reason": "Focused complete gate passed; original invocation and exact frozen-source applicability retained in source-manifest.json."
+      "id": "copy-sqlite",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J5 gate; not executed yet."
     },
     {
-      "id": "citation-write-postgres",
-      "status": "passed",
-      "evidence": "docs/v2-8j-4-evidence/citation-write-postgres.json",
-      "reason": "Focused complete gate passed; original invocation and exact frozen-source applicability retained in source-manifest.json."
+      "id": "copy-postgres",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J5 gate; not executed yet."
     },
     {
-      "id": "citation-boundaries",
-      "status": "passed",
-      "evidence": "docs/v2-8j-4-evidence/citation-boundaries.json",
-      "reason": "Focused complete gate passed; original invocation and exact frozen-source applicability retained in source-manifest.json."
+      "id": "copy-transport",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J5 gate; not executed yet."
+    },
+    {
+      "id": "copy-browser",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J5 gate; not executed yet."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8j-4-evidence/typecheck.json",
-      "reason": "Focused complete gate passed; original invocation and exact frozen-source applicability retained in source-manifest.json."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused J5 gate; not executed yet."
     }
   ],
   "knownBlockers": [],
@@ -60,9 +66,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8J-5 source-aware copy and safe editor adoption",
+    "id": "Citation presentation and native export contract",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-project-copy"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-native-presentation"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
