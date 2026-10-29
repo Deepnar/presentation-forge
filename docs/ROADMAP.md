@@ -9290,8 +9290,10 @@ local inference. Only that separate transport correction is authorized; this aud
       protocol/link/source consistency passed with no product execution.
       Focus only on new qualification/actual stores/native notes/CLI containment
       and a small native visual fixture; no old matrix/model/GPU work is planned.
-      Frozen implementation cb3a8522 has selected32/32 focused passes, typecheck0
-      and actual native visual evidence; all37attempts retain4fixture failures.
+      Corrected implementation ecf82d3f has selected33/33 focused passes, typecheck0
+      and actual native visual evidence; all39root attempts retain4fixture failures. Independent review reproduced
+      empty/chrome-only slide disclosure; the corrected trace requires an emitted
+      authored target. Final review of that narrow correction is pending.
       Read [evaluation](V2-8J-6-1-EVAL.md) for union/source applicability. Independent
       exact-source acceptance and owned cleanup remain pending; no next surface is authorized.
 

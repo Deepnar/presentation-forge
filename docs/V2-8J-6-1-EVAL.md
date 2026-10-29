@@ -1,7 +1,7 @@
 # V2-8J-6-1 evaluation — validated, independent review pending
 
 Accepted baseline `f6487737557c20d481cbc3e84216d7144bb116e8` (J5). Frozen
-implementation `cb3a8522b7b35cc76fb399d7cc1101ee1fced647`, branch v2. Human approved
+implementation `ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d`, branch v2. Human approved
 reviewed contract ae96d717 on2026-10-29; [direction](v2-8j-6-1-evidence/human-direction.json)
 was pinned91e06210 before runtime. [Contract](V2-8J-6-1-PLAN.md),
 [roadmap](ROADMAP.md#assistant-citation-notes-export) and
@@ -45,13 +45,14 @@ not claims of one green whole-file process. Original failing runs remain intact.
 | Domain |7|0|0|0|
 | Actual SQLite |5|0|0|0|
 | Actual PostgreSQL |5|0|0|0|
-| New native plus directly affected existing renderer |11|0|0|0|
+| New native plus directly affected existing renderer |12|0|0|0|
 | CLI/current HTTP/private publication |4|0|0|0|
-| **Total selected** |**32**|**0**|**0**|**0**|
+| **Total selected** |**33**|**0**|**0**|**0**|
 
-All root test attempts: **37=33pass/4fail/0skip/0cancelled**. One successful
+All root test attempts: **39=35pass/4fail/0skip/0cancelled**. One successful
 publication case is repeated only after adding sanitized shutdown handling.
-Typecheck executed once, exit0; typed bytes are unchanged through frozen source.
+Initial typecheck exit0; final typecheck exit0 after the typed review correction.
+The affected positive native case and new empty-scope regression also passed2/2.
 Actual native visual generation ran once; subsequent artifact-only inspection exit0.
 No required test/backend/native visual check remains unexecuted. General printed
 notes fit and interactive PowerPoint behavior are excluded claims, not passes.
@@ -59,8 +60,12 @@ notes fit and interactive PowerPoint behavior are excluded claims, not passes.
 Four test failures were fixture/expectation errors: one ASCII byte range incorrectly
 labeled invalid; malformed mixed-fixture image/shape fields; case-sensitive refusal
 wording; duplicate citation associations in a long-note fixture. The corrected
-leaves passed without weakening assertions. No product regression was found by root
-validation. The notes PDF extractor initially expected a continuous substring where
+leaves passed without weakening assertions. Root validation initially missed one product gap: a current slide citation
+could export without any emitted authored target. Independent fail-first2/2
+reproduces empty and chrome/decor-only slides. Correction ecf82d3f now rejects
+those scopes; new regression and affected positive path pass2/2. Reviewer
+challenge correction/recheck remains pending; its first fixture-only2fail are
+retained separately from the valid product reproduction2fail. The notes PDF extractor initially expected a continuous substring where
 the valid notice wrapped; artifact-only whitespace normalization passed without
 re-rendering. Initial governance registration missed a schema conditional (2errors,
 corrected1192f3ee). Later packet assembly used two unsupported status spellings and
@@ -87,8 +92,10 @@ Checks ran serially at nice15/idle I/O on CPUs20,21 with finite watchdogs and ow
 process-group CPU/RSS samples. [Admission](v2-8j-6-1-evidence/resource-admission.json)
 records shared-machine context. The separately owned loopback PostgreSQL15 fixture
 is capped1CPU/512MiB with256MiB tmpfs; actual contract databases were dropped and
-pools closed. It remains idle solely for the independent reviewer; exact identity
-and later one-time removal evidence must be completed before closeout. No old
+pools closed. The reviewer released it unused. Root saved/fsynced the actual empty user
+database catalog with0other clients, removed only the exact owned ID once, and
+confirmed live-daemon absence/private credential deletion. See cleanup.json and
+cleanup-catalog.json; independent absence verification remains pending. No old
 fixture/cleanup was reused, no unrelated process was stopped, and global PSI was
 not treated as attribution to this work.
 
@@ -109,3 +116,9 @@ remain separate and unrerun. Browser citation-export interaction, visible attrib
 printable pagination, research orchestration and semantic creation remain in the
 roadmap. Recommend acceptance of this bounded foundation only after independent
 review and owned cleanup. Stop after J6-1 handoff; do not implement the next surface.
+
+Initial runtime freeze cb3a8522 and packet b1e221f2 remain in history; final ecf82d3f
+adds only the reviewed empty-scope guard/regression. Existing valid-render visual
+evidence carries forward because the new branch rejects empty scopes and the
+affected positive case still proves exact native scene XML equality to control.
+No new raster or old-suite repeat was warranted.

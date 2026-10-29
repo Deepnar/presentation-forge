@@ -1,0 +1,23 @@
+TAP version 13
+# Subtest: notes native: complete editable mapping preserves visual scene XML and limits disclosure to literal titles URLs
+ok 1 - notes native: complete editable mapping preserves visual scene XML and limits disclosure to literal titles URLs
+  ---
+  duration_ms: 99.019383
+  type: 'test'
+  ...
+# {"nativeRenderMs":90.51288600000004,"slides":3,"citations":5,"bytes":92408}
+# Subtest: notes native: slide citations require an emitted authored primitive beyond chrome and decor
+ok 2 - notes native: slide citations require an emitted authored primitive beyond chrome and decor
+  ---
+  duration_ms: 4.254304
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 418.511737

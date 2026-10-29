@@ -6,8 +6,8 @@
     "source": "docs/reviews/V2-8J-5-f6487737.json"
   },
   "implementationHead": {
-    "sha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
-    "note": "Approved J6-1 runtime frozen; focused retained executed-leaf evidence complete, independent review pending. CLI close handling has a narrow subsequent passing publication case."
+    "sha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
+    "note": "Approved J6-1 runtime frozen; focused retained executed-leaf evidence complete, independent review of empty-scope correction pending. CLI close handling has a narrow subsequent passing publication case."
   },
   "activeMilestone": {
     "id": "V2-8J-6-1",

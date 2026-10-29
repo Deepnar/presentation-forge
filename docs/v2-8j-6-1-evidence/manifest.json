@@ -1,9 +1,9 @@
 {
-  "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+  "implementationSha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
   "selected": {
     "notes-domain": {
       "id": "notes-domain",
-      "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+      "implementationSha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
       "kind": "tests",
       "command": "Assemble retained successful executed leaves from the exact invocation records listed in this evidence; no new product execution.",
       "exitCode": 0,
@@ -49,7 +49,7 @@
     },
     "notes-sqlite": {
       "id": "notes-sqlite",
-      "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+      "implementationSha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
       "kind": "tests",
       "command": "Assemble retained successful executed leaves from the exact invocation records listed in this evidence; no new product execution.",
       "exitCode": 0,
@@ -87,7 +87,7 @@
     },
     "notes-postgres": {
       "id": "notes-postgres",
-      "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+      "implementationSha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
       "kind": "tests",
       "command": "Assemble retained successful executed leaves from the exact invocation records listed in this evidence; no new product execution.",
       "exitCode": 0,
@@ -125,13 +125,13 @@
     },
     "notes-native": {
       "id": "notes-native",
-      "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+      "implementationSha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
       "kind": "tests",
       "command": "Assemble retained successful executed leaves from the exact invocation records listed in this evidence; no new product execution.",
       "exitCode": 0,
       "tests": {
-        "total": 11,
-        "pass": 11,
+        "total": 12,
+        "pass": 12,
         "fail": 0,
         "skip": 0,
         "cancelled": 0
@@ -144,7 +144,7 @@
         },
         "notes native: complete editable mapping preserves visual scene XML and limits disclosure to literal titles URLs": {
           "file": "test/v2-citation-export-native-8j.test.js",
-          "invocation": "docs/v2-8j-6-1-evidence/native-02.json"
+          "invocation": "docs/v2-8j-6-1-evidence/native-empty-fix-01.json"
         },
         "notes native: raw options JSON cloned receipts and direct file paths cannot mint notes authority": {
           "file": "test/v2-citation-export-native-8j.test.js",
@@ -153,6 +153,10 @@
         "notes native: complete long text survives while unsafe scalar data and incomplete mapping refuse": {
           "file": "test/v2-citation-export-native-8j.test.js",
           "invocation": "docs/v2-8j-6-1-evidence/native-02.json"
+        },
+        "notes native: slide citations require an emitted authored primitive beyond chrome and decor": {
+          "file": "test/v2-citation-export-native-8j.test.js",
+          "invocation": "docs/v2-8j-6-1-evidence/native-empty-fix-01.json"
         },
         "returns a non-empty Uint8Array with a ZIP signature": {
           "file": "test/v2-renderer-pptx.test.js",
@@ -187,7 +191,7 @@
     },
     "notes-cli": {
       "id": "notes-cli",
-      "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+      "implementationSha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
       "kind": "tests",
       "command": "Assemble retained successful executed leaves from the exact invocation records listed in this evidence; no new product execution.",
       "exitCode": 0,
@@ -290,18 +294,28 @@
       "fail": 0,
       "skip": 0,
       "cancelled": 0
+    },
+    "native-empty-fix-01": {
+      "total": 2,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
     }
   },
   "sourceApplicability": [
     "All runtime typed renderer/domain bytes match the invocation sourceHashes. CLI has only sanitized-close handling added after cli-01; its complete publication/cleanup case passed again at cli-close-01.",
     "Original passing domain leaves are unchanged; the failed range fixture now uses multibyte text and passed alone. Two later boundary cases passed once.",
     "The passing native capacity/tamper leaf is unchanged. Three failed native fixture leaves were corrected and passed alone. No assertion was weakened.",
+    "Independent empty/chrome-only slide finding corrected after original freeze; affected positive plus new root regression passed2/2, final typecheck passed again after the typed guard changed.",
     "Selected logs are explicitly assembled unions of executed leaves, not claims of one green whole-file process. Raw failures and exact filtered argv remain in invocation records. No SHA-only repeat runs."
   ],
+  "initialImplementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+  "reviewCorrection": "Native slide citations now require at least one emitted authored non-chrome primitive. Retained independent fail-first and corrected2/2 root cases are separate from fixture failures. Existing native visuals apply to unchanged valid rendering; no repeated rasterization.",
   "finalSourceHashes": {
     "package.json": "b1f9e4055466fe784f7dcf1d09e024fecdb2af7ca2ebe7a01e93abacfbfdf669",
     "packages/renderer-pptx/render.ts": "f7e3a494af18dc3f4e4ae1347a681d895ea003f353db58a80eaf1eceaed8b2b0",
-    "packages/renderer-pptx/source-notes.ts": "bda289c69be124589e8624357bccf383a431f37e2ee29b59f3bf9cf58112564a",
+    "packages/renderer-pptx/source-notes.ts": "f3e3d436bba8f2caad1498814b7bae52bd63845f8ea5b9d244497ff5bf5cfd41",
     "src/projects/citation-export.js": "ed56af48a734a3c42bfa06a0244b39290186a52d3495c665363dffe2595f5b63",
     "src/projects/export-cli.js": "adfc51ebff34a1e6a8741a549033e8bfd09bd2111a06df9e273077bc8446662d",
     "src/projects/export-file.js": "e5e284bf7a667b31996e4b94d542bb0d6c6c1334700c41958ae7cd74bc425275",
@@ -309,20 +323,20 @@
     "test/v2-citation-export-cli-8j.test.js": "5056f5d13a9edc14bfdb555e32a2527928a0c348a223038f4e5100713a1af8d1",
     "test/v2-citation-export-contract.js": "6a5c0cfb8ed706f820eb1aa92717320b746854d7b0fbfd66f9d06abf05931114",
     "test/v2-citation-export-fixture.js": "3e518b7a456e8bc70b3a97657ce8e01f4d16658aacdcaa44265829fd3fbeaee0",
-    "test/v2-citation-export-native-8j.test.js": "026a51030fb9bd3921dd95003dd715327fe1c97d9e4c88155fefc8bd75a7b28a",
+    "test/v2-citation-export-native-8j.test.js": "c9518c1a3b7b60bf523abaded5a7b2121b073e5008eb22876e7935bd8cad1b39",
     "test/v2-citation-export-postgres-8j.test.js": "cee55334c4b912cde46f8601b496a515bf87509b38ce815d5da36568d6ee3ca7",
     "test/v2-citation-export-sqlite-8j.test.js": "2f00d6bf3f2bc7bd82f51b53b4b68dafc4e0c653b1fe9c380a20c0c6c6c9a940"
   },
   "selectedTotals": {
-    "total": 32,
-    "pass": 32,
+    "total": 33,
+    "pass": 33,
     "fail": 0,
     "skip": 0,
     "cancelled": 0
   },
   "allAttemptTotals": {
-    "total": 37,
-    "pass": 33,
+    "total": 39,
+    "pass": 35,
     "fail": 4,
     "skip": 0,
     "cancelled": 0

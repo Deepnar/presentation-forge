@@ -1,12 +1,12 @@
 {
   "id": "notes-native",
-  "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+  "implementationSha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
   "kind": "tests",
   "command": "Assemble retained successful executed leaves from the exact invocation records listed in this evidence; no new product execution.",
   "exitCode": 0,
   "tests": {
-    "total": 11,
-    "pass": 11,
+    "total": 12,
+    "pass": 12,
     "fail": 0,
     "skip": 0,
     "cancelled": 0
@@ -19,7 +19,7 @@
     },
     "notes native: complete editable mapping preserves visual scene XML and limits disclosure to literal titles URLs": {
       "file": "test/v2-citation-export-native-8j.test.js",
-      "invocation": "docs/v2-8j-6-1-evidence/native-02.json"
+      "invocation": "docs/v2-8j-6-1-evidence/native-empty-fix-01.json"
     },
     "notes native: raw options JSON cloned receipts and direct file paths cannot mint notes authority": {
       "file": "test/v2-citation-export-native-8j.test.js",
@@ -28,6 +28,10 @@
     "notes native: complete long text survives while unsafe scalar data and incomplete mapping refuse": {
       "file": "test/v2-citation-export-native-8j.test.js",
       "invocation": "docs/v2-8j-6-1-evidence/native-02.json"
+    },
+    "notes native: slide citations require an emitted authored primitive beyond chrome and decor": {
+      "file": "test/v2-citation-export-native-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/native-empty-fix-01.json"
     },
     "returns a non-empty Uint8Array with a ZIP signature": {
       "file": "test/v2-renderer-pptx.test.js",

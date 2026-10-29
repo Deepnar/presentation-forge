@@ -1,0 +1,107 @@
+{
+  "rootInvocations": [
+    {
+      "invocation": "domain-01",
+      "durationMs": 715,
+      "cpuUserSeconds": 0.709,
+      "cpuSystemSeconds": 0.109,
+      "peakLiveGroupRssBytes": 37126144
+    },
+    {
+      "invocation": "domain-02",
+      "durationMs": 414,
+      "cpuUserSeconds": 0.447,
+      "cpuSystemSeconds": 0.063,
+      "peakLiveGroupRssBytes": 37163008
+    },
+    {
+      "invocation": "native-01",
+      "durationMs": 415,
+      "cpuUserSeconds": 0.503,
+      "cpuSystemSeconds": 0.045,
+      "peakLiveGroupRssBytes": 37142528
+    },
+    {
+      "invocation": "native-02",
+      "durationMs": 465,
+      "cpuUserSeconds": 0.514,
+      "cpuSystemSeconds": 0.056,
+      "peakLiveGroupRssBytes": 36921344
+    },
+    {
+      "invocation": "sqlite-01",
+      "durationMs": 514,
+      "cpuUserSeconds": 0.573,
+      "cpuSystemSeconds": 0.071,
+      "peakLiveGroupRssBytes": 34017280
+    },
+    {
+      "invocation": "cli-01",
+      "durationMs": 3269,
+      "cpuUserSeconds": 3.809,
+      "cpuSystemSeconds": 0.431,
+      "peakLiveGroupRssBytes": 508968960
+    },
+    {
+      "invocation": "postgres-01",
+      "durationMs": 815,
+      "cpuUserSeconds": 0.759,
+      "cpuSystemSeconds": 0.07,
+      "peakLiveGroupRssBytes": 32763904
+    },
+    {
+      "invocation": "shared-renderer-01",
+      "durationMs": 414,
+      "cpuUserSeconds": 0.437,
+      "cpuSystemSeconds": 0.07,
+      "peakLiveGroupRssBytes": 33230848
+    },
+    {
+      "invocation": "typecheck-01",
+      "durationMs": 2420,
+      "cpuUserSeconds": 3.243,
+      "cpuSystemSeconds": 0.218,
+      "peakLiveGroupRssBytes": 463695872
+    },
+    {
+      "invocation": "visual-01",
+      "durationMs": 2368,
+      "cpuUserSeconds": 1.733,
+      "cpuSystemSeconds": 0.417,
+      "peakLiveGroupRssBytes": 425861120
+    },
+    {
+      "invocation": "domain-boundaries-01",
+      "durationMs": 365,
+      "cpuUserSeconds": 0.382,
+      "cpuSystemSeconds": 0.065,
+      "peakLiveGroupRssBytes": 36319232
+    },
+    {
+      "invocation": "visual-inspect-01",
+      "durationMs": 115,
+      "cpuUserSeconds": 0.103,
+      "cpuSystemSeconds": 0.016,
+      "peakLiveGroupRssBytes": 36904960
+    },
+    {
+      "invocation": "cli-close-01",
+      "durationMs": 2168,
+      "cpuUserSeconds": 2.544,
+      "cpuSystemSeconds": 0.281,
+      "peakLiveGroupRssBytes": 506519552
+    }
+  ],
+  "currentOwnedPostgresStats": {
+    "BlockIO": "5.9MB / 73.7kB",
+    "CPUPerc": "0.00%",
+    "Container": "26cfc4d5808686a82afa867b5de4924b8d4a449be188d3c274fce34eb83c10d6",
+    "ID": "26cfc4d58086",
+    "MemPerc": "14.15%",
+    "MemUsage": "72.43MiB / 512MiB",
+    "Name": "forge-j6-1-20261029180444-d0e728",
+    "NetIO": "239kB / 380kB",
+    "PIDs": "6"
+  },
+  "policy": "Only this recorded ID was queried. Prior fixtures and unrelated work untouched. CPU/RSS attribution only; aggregate host PSI is not a cause claim."
+}
