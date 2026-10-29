@@ -1,0 +1,96 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "plannedBy": "/root",
+  "reviewDate": "2026-10-29",
+  "initialPlanSha": "a20ae631090220e6a36c6eb8901fa1d796e28e34",
+  "reviewedPlanSha": "1b37cdd674fa680ac15bb266e2e16bf4eff25f05",
+  "acceptedBaseline": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "planningEntrySha": "2fa10cc5ee907052ca139bc2092854186d2df6a0",
+  "plan": "docs/V2-8J-5-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-citation-project-copy",
+  "evidence": "docs/v2-8j-5-evidence/independent/plan-readiness.md",
+  "assessment": "The revised source-aware copy and editor-adoption contract is technically coherent and bounded enough for explicit human direction. It preserves private source ownership, all-or-none destination durability, live unsaved content and unverified citation semantics while qualifying copied sources against the current locked catalog. The independent source inspection identified five material ambiguities; all are resolved in the reviewed draft. No outstanding technical planning blocker remains. This is neither implementation acceptance nor permission to implement.",
+  "scopeAssessment": "This is the immediate dependency created by J4's deliberate cited-create refusal. A separate copy-specific adapter capability can reuse canonical project/history insertion and bounded J2 reads under the source parent lock without widening H, generic create, source transactions or citation transactions. Guarded fresh-engine adoption is necessary because copied source identities change and the current editor/router otherwise retain the old document or discard state. Native presentation, provider context and research/semantic creation remain separately gated.",
+  "resolvedFindings": [
+    {
+      "issue": "Validation reuse alone did not pin capture of the complete mutable headless binding and live request before asynchronous validation or locking.",
+      "sourceBasis": ["src/projects/sources.js:18", "src/projects/sources.js:73", "src/projects/citations.js:32", "docs/TRAPS.md:1935"],
+      "resolution": "Synchronously clone bounded plain JSON, reject invalid top-level shapes/identity and unknown fields, freeze the complete private binding/request, and use only those copies across asynchronous schema checks, locks, hashes, writes and output. The copy retains project-sized ceilings rather than the smaller source-list DTO bound.",
+      "resolvedAt": "c5367911f7191dc114fe5a3a2cebb4ea8275f53b"
+    },
+    {
+      "issue": "The initial promise to roll back every target row on any commit fault incorrectly covered an unacknowledged COMMIT whose complete transaction may already be durable.",
+      "sourceBasis": ["src/projects/store-postgres.js:185", "src/projects/store.js:173"],
+      "resolution": "Confirmed rollback leaves no destination rows; atomic durability is all-or-none. Lost COMMIT acknowledgement or response can leave an unknown complete-copy outcome, which must be reported without claiming nothing was created or retrying automatically.",
+      "resolvedAt": "c5367911f7191dc114fe5a3a2cebb4ea8275f53b"
+    },
+    {
+      "issue": "Ordinary Discard marks the source document abandoned, conflicting with suppression of adoption after discard; ordinary Save can also defeat stale-save recovery. The current router awaits guard/history traversal before committing the route.",
+      "sourceBasis": ["app/web/src/components/SceneViewer.jsx:1717", "app/web/src/components/SceneViewer.jsx:1741", "app/web/src/lib/guarded-hash-router.js:40", "app/web/src/App.jsx:615"],
+      "resolution": "A prepared-copy-aware one-use leave result authorizes only the exact confirmed copied snapshot and captured destination/session/document. It does not call ordinary Discard, save the original or treat an unrelated user discard as authority. Final synchronous freshness checks follow awaited router traversal, and the destination mount validates the handoff. Ordinary navigation policy remains intact.",
+      "resolvedAt": "c5367911f7191dc114fe5a3a2cebb4ea8275f53b"
+    },
+    {
+      "issue": "Cancelling the autosave timer alone cannot fence the independent recursive saveNow drain or manual-save dispatch, and an earlier save response/error could repaint a different editor/session.",
+      "sourceBasis": ["app/web/src/components/SceneViewer.jsx:1174", "app/web/src/components/SceneViewer.jsx:1245", "app/web/src/lib/v2project.js:231"],
+      "resolution": "Pause autosave/manual dispatch and the recursive drain, allow only an already-dispatched save to settle, then recapture. Its stale/failure outcome alone does not veto Save-as-new recovery. Save publication remains captured-session/document guarded; pause release and autosave resumption are limited to the still-current original editor.",
+      "resolvedAt": "8b7f06a06aaa2a73e6adf37406b0c16c7b25e389"
+    },
+    {
+      "issue": "Unsent Assistant text is outside the copied scene snapshot, but the existing leave guard treats it as a draft and ordinary leave discards it. A saved-scene handoff cannot authorize its loss.",
+      "sourceBasis": ["app/web/src/components/SceneViewer.jsx:1710", "app/web/src/components/SceneViewer.jsx:1750"],
+      "resolution": "Refuse entry while hasDraft() is true, recheck Assistant alongside other drafts before dispatch and final route commit, and defer adoption when new text appears in flight. Never silently discard, submit or copy chat text.",
+      "resolvedAt": "1b37cdd674fa680ac15bb266e2e16bf4eff25f05"
+    }
+  ],
+  "technicalBasis": [
+    {
+      "topic": "Exact owner and retention independence",
+      "assessment": "The proposed source-aware operation binds a trusted exact owner, including owner-null local use, and adds no admin override or invalid-credential anonymous fallback. Destination project-scoped source rows retain only referenced canonical snippets and original retrieval provenance until their own clear/delete. Original clear/delete cannot revoke the separately retained copy. Generic uncited/admin CRUD permissions remain preserved.",
+      "sourceBasis": ["src/projects/source-schema.js:6", "src/projects/sources.js", "app/server/v2-projects-routes.js:31", "src/projects/import-cli.js:16"]
+    },
+    {
+      "topic": "Bounded atomic rebind and stale-source refusal",
+      "assessment": "One canonical source parent lock qualifies current ownership/document/catalog, reads at most 513 metadata rows and selected bodies in chunks of at most 24, with at most 512 sources and existing 16KiB/4MiB bounds. Destination IDs, canonical bodies, counts/bytes and revision0 create history commit together. All submitted source generations/IDs must qualify; no source is silently dropped. A newer saved document revision alone does not reject a valid live snapshot, preserving conflict recovery.",
+      "sourceBasis": ["src/projects/source-read.js:31", "src/projects/source-read.js:62", "src/projects/store.js:120", "src/projects/store-postgres.js:185", "src/projects/store-postgres.js:817"]
+    },
+    {
+      "topic": "Scene integrity and containment",
+      "assessment": "Only citation source project/ID/generation are rewritten. Scene/element/citation identity, contents, ownership, ordering, tombstones, detached state, orphan targets, anchors and ranges remain intact; revalidation binds them to the destination project. Missing or old-generation sources refuse rather than resurrecting cleared evidence. Unverified records acquire no receipt, locator-match or factual-support certification. Generic cited create/import and native export stay refused.",
+      "sourceBasis": ["packages/projects/document.js:113", "packages/model/citations.ts", "src/projects/store.js:130", "packages/renderer-pptx/render.ts"]
+    },
+    {
+      "topic": "Transport, CLI and editor lifecycle",
+      "assessment": "Thin private HTTP and bounded CLI entry points share the domain operation and canonical authentication, without new source-read or provider surfaces. Existing Save-as-new actions use captured authorization and one in-flight request, preserve unsaved scenes, and adopt returned rewritten scenes through fresh-engine and final router guards. Drift defers adoption while keeping original drafts/undo/save status; external session or route changes suppress late publication. Ambiguous outcomes require workspace inspection before a deliberate retry, with no exactly-once claim.",
+      "sourceBasis": ["app/web/src/lib/v2project.js", "app/web/src/components/SceneViewer.jsx:1260", "app/web/src/components/SceneViewer.jsx:1308", "app/web/src/lib/guarded-hash-router.js", "app/web/src/App.jsx:615"]
+    }
+  ],
+  "focusedValidationAssessment": "After human approval, the selected new pure, shared actual SQLite/PostgreSQL, thin HTTP/CLI and one serial browser gate plus typecheck cover the changed authority and editor boundaries. The amended inventory includes mutable-input capture, ambiguous commit/response and prepared-copy ordinary-leave interaction. Implementation must exercise existing and midflight Assistant drafts as part of its stated draft guards. Retain all attempts, actual backend identity and source applicability; unavailable PostgreSQL is unexecuted. The source-inspected old await hazard remains unreproduced until a focused delayed-response test establishes it. No old accepted matrix, model or native render repeat is justified for planning.",
+  "outstandingTechnicalIssues": [],
+  "humanDirection": {
+    "status": "PENDING",
+    "requiredDecision": "Approve or revise the bounded same-owner private snippet duplication, independent destination retention, whole-copy source refusal and guarded existing-editor handoff before implementation.",
+    "notImplied": "Readiness authorizes no runtime/schema/test/database implementation, retention-policy change, activation, deployment, portable citation disclosure, provider context or dependent roadmap work. J4 remains the accepted runtime baseline."
+  },
+  "implementationAccepted": false,
+  "executed": {
+    "productTests": 0,
+    "databaseCalls": 0,
+    "services": 0,
+    "browserCalls": 0,
+    "builds": 0,
+    "modelCalls": 0,
+    "searchCalls": 0,
+    "gitMutations": 0,
+    "description": "Read-only repository/source/plan inspection and lightweight review-artifact consistency only. HEAD and origin/v2 match the reviewed plan SHA; packages/src/app/test have no committed delta from accepted J4."
+  },
+  "limitations": [
+    "The proposed J5 operation and guards do not exist yet; readiness is a contract/feasibility assessment, not behavioral or implementation verification.",
+    "The inherited Save-as-new await/adoption risk was inspected in source and was not reproduced in this planning review.",
+    "Human data-handling and editor-handoff direction is pending. No browser visual, database, crash, transport or race claim is established by these reads.",
+    "Root-owned unstaged continuity/state documentation and original unrelated untracked work were observed and preserved."
+  ]
+}
