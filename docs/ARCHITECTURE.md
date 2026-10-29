@@ -3114,10 +3114,43 @@ restoring sources. Agent payloads cannot introduce citation commands or cited ra
 slide inserts; ordinary edits and engine-owned duplicate/undo effects preserve
 records. Existing tool catalogs and provider projections gain no citation data.
 
-Generic cited new-project creation/copy/import refuses before writes. Canonical
+Generic cited new-project creation/import refuses before writes. J5 below adds
+a separate qualified source-aware copy seam under validation. Canonical
 PPTX preflight refuses any nonempty citation array before producing native bytes,
 including hidden/stale/orphan targets, without private source resolution. Uncited
-projects/exports retain existing behaviour. Source-aware copy and portable citation
-presentation remain separately gated in the [roadmap](ROADMAP.md#assistant-search-source-integrity).
+projects/exports retain existing behaviour. Portable citation presentation remains
+separately gated in the [roadmap](ROADMAP.md#assistant-search-source-integrity).
 No new route/CLI/UI, model/search call, source retention, activation or deployment
 is supplied by this headless implementation.
+
+
+## Source-aware project copy — J5 candidate under validation
+
+`src/projects/copy.js` captures the complete bounded JSON request/binding before
+awaiting, validates live scenes, and qualifies referenced immutable sources in one
+exact-owner parent transaction. Copy-only adapter callbacks insert the destination
+project and canonical create-history row with its selected catalog/bodies; runtime,
+source and citation callbacks gain no destination-write capability. Reuse J2's
+bounded catalog scan and24-body chunks, source identity and canonical byte limits.
+Source IDs/project/generation are rebound; all other scene/citation data and original
+retrieval provenance survive. Missing/stale/corrupt/foreign sources refuse the whole
+copy. Each destination retains snippets independently until its own clear/delete;
+no chat, run, approval, original history or unrelated source is copied.
+
+Private HTTP `POST /api/v2/projects/:id/copy` and `npm run copy-project -- <id>
+--input <file|->` share the headless authority. CLI uses FORGE_PROJECT_TOKEN;
+supplied invalid sessions cannot downgrade to local owner-null access, and admin
+CRUD grants no source-copy override. Explicit copies have no automatic retry or
+exactly-once promise. Lost commit acknowledgement reports an unknown complete-copy
+outcome; confirmed rollback leaves no partial destination.
+
+Existing Save-as-new controls use captured auth/document/route/viewport and draft
+checks, pending-save dispatch fences and restore coordination. A successful guarded
+transfer installs returned scenes in a fresh engine with empty session undo and a
+new route/query identity. Route history writes precede source release; new edits,
+Assistant/grid/title drafts, viewport/navigation/session drift defer or suppress
+adoption. The committed copy remains available independently. Generic cited create/
+import and central native export refusal remain; no provider/research authority or
+host activation is added. This is built candidate behavior, not acceptance:
+[evaluation](V2-8J-5-EVAL.md) and [roadmap](ROADMAP.md#assistant-citation-project-copy)
+record exact remaining validation/direction authority.

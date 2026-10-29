@@ -56,10 +56,11 @@ was saved/fsynced before one exact-ID removal; root and reviewer independently
 verified absence/private credential deletion. No owned service remains. Never
 recreate old fixtures or repeat completed cleanup helpers.
 
-J4 closeout is complete. The next planning-only contract is
+J4 closeout is complete. The approved bounded next contract is
 [J5 source-aware copy and safe editor adoption](V2-8J-5-PLAN.md), first pushed at
-a20ae631. Its readiness review and human-direction state are in HANDOFF and the
-[roadmap](ROADMAP.md#assistant-citation-project-copy). Human approved the reviewed J5 contract on2026-10-29 after its explicit direction
+a20ae631, independently ready at1b37cdd6. Current implementation/validation state
+is in HANDOFF and the [roadmap](ROADMAP.md#assistant-citation-project-copy).
+Human approved the reviewed J5 contract on2026-10-29 after its explicit direction
 question. Implement only that bounded slice; active state tracks pending focused
 validation/review. J4 remains the accepted baseline; later candidates stay unauthorized.
 [Citation presentation](ROADMAP.md#assistant-citation-native-presentation) retains

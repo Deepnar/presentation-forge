@@ -9212,8 +9212,10 @@ local inference. Only that separate transport correction is authorized; this aud
     independent implementation acceptance remains pending.
     Five source-inspected contract gaps were resolved: mutable-input capture,
     commit uncertainty, dirty-copy router authority, save dispatch/publication and
-    Assistant drafts. Product execution0; these are plan corrections, not fixes
-    validated in runtime. Recommend copying only
+    Assistant drafts. Those were planning corrections. Candidate26a1e86f now has
+    selected28/28 (pure6/SQLite6/HTTP+CLI5/router11) and typecheck0; actualPG6 and
+    Chrome5/build/visual evidence await a quiet window. Four independent source
+    findings on adoption are corrected; final acceptance remains pending. Copy only
     referenced snippets into the same exact owner's new project, atomically
     rebinding source IDs and preserving original retrieval provenance. Each copy
     retains snippets independently of the original's clear/delete; stale/missing/
@@ -9222,8 +9224,11 @@ local inference. Only that separate transport correction is authorized; this aud
     Copy live unsaved scenes; a newer saved source revision alone must not block
     the existing Save-as-new conflict-recovery action. Use existing controls with
     guarded fresh-engine/router adoption, preserving later edits/drafts and undo
-    when adoption is deferred. The awaited-response hazard remains an
-    **unreproduced source-inspected race risk** until narrowly exercised.
+    when adoption is deferred. The inherited awaited-response regression is now
+    reproduced by executing the original J4 handler with an isolated delayed
+    response (baseline1fail, no DOM/browser claim); retained evidence is in
+    [J5 evaluation](V2-8J-5-EVAL.md). Candidate correction and real-browser checks
+    remain under validation.
     Generic cited create and native export remain refused. Existing uncited CRUD
     permissions remain; admin CRUD supplies no private-source authority. Explicit
     creates have no automatic retry or exactly-once promise; lost responses leave
@@ -9234,7 +9239,7 @@ local inference. Only that separate transport correction is authorized; this aud
   - [ ] **Citation presentation and native export — direction needed.**
     Agree visible attribution versus speaker notes, which retained metadata may
     enter portable files, stale/missing-source behaviour and source-to-slide/object
-    mappings before implementation. J5 proposes private copy only; its acceptance
+    mappings before implementation. J5 implements private copy only under validation; its acceptance
     would not authorize portable disclosure or remove export refusal. Notes would
     disclose private URLs/titles or excerpts and cannot be added as an incidental
     renderer change. Reuse canonical

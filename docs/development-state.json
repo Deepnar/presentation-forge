@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8J-4-665cd04.json"
   },
   "implementationHead": {
-    "sha": "fd7ee79f33b6895fa30c373df3a62b4ce946a251",
-    "note": "J5 approved after explicit private retention/editor-handoff question on2026-10-29; source work begins after this authorization record. J4 remains accepted baseline."
+    "sha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+    "note": "J5 candidate, independent source findings corrected; final focused pure6/SQLite6/HTTP+CLI+routing16 pass and typecheck0 with unchanged typed-source applicability. Browser/build and actualPG await quiet-window admission. Not accepted."
   },
   "activeMilestone": {
     "id": "V2-8J-5",
     "roadmapRef": "docs/ROADMAP.md#assistant-citation-project-copy",
     "evalDoc": "docs/V2-8J-5-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "implemented-pending-validation",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,39 +23,39 @@
   "validation": [
     {
       "id": "copy-contract",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused J5 gate; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-5-evidence/copy-contract-final.json",
+      "reason": "Complete unfiltered focused files with canonical runner inventory, source hashes and watchdog metadata; no new fail/skip/cancel."
     },
     {
       "id": "copy-sqlite",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused J5 gate; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-5-evidence/copy-sqlite-final.json",
+      "reason": "Complete unfiltered focused files with canonical runner inventory, source hashes and watchdog metadata; no new fail/skip/cancel."
     },
     {
       "id": "copy-postgres",
       "status": "pending",
       "evidence": null,
-      "reason": "Approved focused J5 gate; not executed yet."
+      "reason": "Pending quiet window: unrelated work causes sustained high I/O pressure; no run or service acquisition yet."
     },
     {
       "id": "copy-transport",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused J5 gate; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-5-evidence/copy-transport-final.json",
+      "reason": "Complete unfiltered focused files with canonical runner inventory, source hashes and watchdog metadata; no new fail/skip/cancel."
     },
     {
       "id": "copy-browser",
       "status": "pending",
       "evidence": null,
-      "reason": "Approved focused J5 gate; not executed yet."
+      "reason": "Pending quiet window: unrelated work causes sustained high I/O pressure; no run or service acquisition yet."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused J5 gate; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-5-evidence/typecheck.json",
+      "reason": "One actual pass; exact unchanged typed-source applicability retained, no rerun inferred."
     }
   ],
   "knownBlockers": [],
