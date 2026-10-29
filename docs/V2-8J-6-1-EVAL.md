@@ -10,3 +10,7 @@ implementation acceptance is claimed. No model/search/real network/GPU or public
 activation is authorized. Preserve standing BYOK locale and prior timing/native/
 visual provenance limits separately. Stop after this slice's independent review
 and scoped handoff/push; browser export remains separately gated.
+
+Initial governance registration produced2 schema errors because the new milestone
+was omitted from the focused-inventory conditional;0product tests ran. Add the
+explicit milestone case without reducing any existing gate requirement.
