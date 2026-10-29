@@ -6,56 +6,62 @@
     "source": "docs/reviews/V2-8J-5-f6487737.json"
   },
   "implementationHead": {
-    "sha": "f6487737557c20d481cbc3e84216d7144bb116e8",
-    "note": "J5 independently accepted at frozen f6487737; selected39/39, production build/typecheck0, new independent actual-PG2/2 and source/evidence/visual audit complete. Later changes are documentation/evidence only. Exact owned cleanup independently verified; no next feature authorized."
+    "sha": "4ebfbf0537ee89051e59779adf71d8b6ad0048aa",
+    "note": "Human approved reviewed J6-1 contract ae96d717. Runtime implementation starting from acceptedJ5; focused validation pending, no self-acceptance."
   },
   "activeMilestone": {
-    "id": "V2-8J-5",
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-project-copy",
-    "evalDoc": "docs/V2-8J-5-EVAL.md",
+    "id": "V2-8J-6-1",
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-notes-export",
+    "evalDoc": "docs/V2-8J-6-1-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8J-5-f6487737.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "copy-contract",
-      "status": "passed",
-      "evidence": "docs/v2-8j-5-evidence/copy-contract-final.json",
-      "reason": "Complete unfiltered focused files with canonical runner inventory, source hashes and watchdog metadata; no new fail/skip/cancel."
+      "id": "notes-domain",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved new/affected focused check; not executed yet."
     },
     {
-      "id": "copy-sqlite",
-      "status": "passed",
-      "evidence": "docs/v2-8j-5-evidence/copy-sqlite-final.json",
-      "reason": "Complete unfiltered focused files with canonical runner inventory, source hashes and watchdog metadata; no new fail/skip/cancel."
+      "id": "notes-sqlite",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved new/affected focused check; not executed yet."
     },
     {
-      "id": "copy-postgres",
-      "status": "passed",
-      "evidence": "docs/v2-8j-5-evidence/copy-postgres-final.json",
-      "reason": "Actual complete unfiltered focused file with canonical inventory, child exit0, source hashes and bounded resource/watchdog metadata;0fail/skip/cancel."
+      "id": "notes-postgres",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved new/affected focused check; not executed yet."
     },
     {
-      "id": "copy-transport",
-      "status": "passed",
-      "evidence": "docs/v2-8j-5-evidence/copy-transport-final.json",
-      "reason": "Complete unfiltered focused files with canonical runner inventory, source hashes and watchdog metadata; no new fail/skip/cancel."
+      "id": "notes-native",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved new/affected focused check; not executed yet."
     },
     {
-      "id": "copy-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8j-5-evidence/copy-browser-final.json",
-      "reason": "Actual complete unfiltered focused file with canonical inventory, child exit0, source hashes and bounded resource/watchdog metadata;0fail/skip/cancel."
+      "id": "notes-cli",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved new/affected focused check; not executed yet."
     },
     {
       "id": "typecheck",
-      "status": "passed",
-      "evidence": "docs/v2-8j-5-evidence/typecheck.json",
-      "reason": "One actual pass; exact unchanged typed-source applicability retained, no rerun inferred."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved new/affected focused check; not executed yet."
+    },
+    {
+      "id": "notes-visual",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved new/affected focused check; not executed yet."
     }
   ],
   "knownBlockers": [],
@@ -66,9 +72,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8J-6-1 owner-qualified citation notes export contract",
+    "id": "Browser citation-export interaction contract",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-notes-export"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-native-presentation"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

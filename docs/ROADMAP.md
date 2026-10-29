@@ -9268,11 +9268,12 @@ local inference. Only that separate transport correction is authorized; this aud
 
     <a id="assistant-citation-notes-export"></a>
 
-    - [ ] **V2-8J-6-1 headless owner-qualified citation notes export — ready for human direction.**
+    - [ ] **V2-8J-6-1 headless owner-qualified citation notes export — approved, implementation in progress.**
       The2026-10-29 continuation starts planning from accepted J5f6487737, not
       implementation. [Concrete contract](V2-8J-6-1-PLAN.md) is independently
       [ready for direction](reviews/V2-8J-6-1-plan-3b6bf65f.json) at ae96d717;
-      human approval remains pending. It recommends explicit
+      human approved the notes-only foundation on2026-10-29 in the explicit
+      [direction record](v2-8j-6-1-evidence/human-direction.json). Implement explicit
       per-export consent for retained title/full URL (including query values) in
       speaker notes only, with portable slide/object labels and claim support not
       assessed. Preserve complete bounded Notes-editor text; printable notes-page
@@ -9289,7 +9290,8 @@ local inference. Only that separate transport correction is authorized; this aud
       protocol/link/source consistency passed with no product execution.
       Focus only on new qualification/actual stores/native notes/CLI containment
       and a small native visual fixture; no old matrix/model/GPU work is planned.
-      No runtime or validation is authorized by this planning entry.
+      Only this bounded implementation and its pinned focused validation are
+      authorized; independent implementation acceptance remains pending.
 
     - [ ] **Browser citation-export interaction — follows accepted J6-1.**
       Agree the existing export action's explicit disclosure/preview/download

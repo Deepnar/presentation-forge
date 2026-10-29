@@ -124,7 +124,7 @@ point at it without creating a broken or misleading payment link.
 
 ## 3. Decisions — nobody should make these alone
 
-### Current V2 state: J5 accepted; next contract needs direction
+### Current V2 state: J5 accepted; notes-export implementation approved
 
 Human approved bounded J4 on2026-10-28; exact source665cd04 is independently
 [accepted](reviews/V2-8J-4-665cd04.json) on2026-10-29. Selected41/41, typecheck0,
@@ -141,8 +141,9 @@ cleanup; no J5 blocker remains. Exact active scope/status lives in the
 remains for this bounded slice.
 
 The next [J6-1 contract](ROADMAP.md#assistant-citation-notes-export) is a planning
-candidate only; its portable-disclosure direction gate is pending. Existing J5
-acceptance does not supply that authorization. See the roadmap for exact scope.
+contract received explicit human portable-disclosure direction on2026-10-29;
+implementation and focused validation are authorized, with independent acceptance
+still pending. No direction blocker remains for that bounded scope. See the roadmap for exact scope.
 
 ### 3.1 Browser regression coverage
 

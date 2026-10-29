@@ -1,9 +1,13 @@
 # V2-8J-6-1 — owner-qualified citation notes export
 
-Status: **independently ready for direction; human approval and implementation pending**.
+Status: **human-approved; implementation in progress**.
+Human approved “Approve notes-only foundation (Recommended)” on2026-10-29 after
+the explicit full-URL/private-query, independent-retention and print-limit question.
+[Direction record](v2-8j-6-1-evidence/human-direction.json) pins reviewed ae96d717.
 Exact reviewed contract `ae96d71755114c9dbdbfc209d5c81763a4aa5e3b` is
 [READY_FOR_DIRECTION](reviews/V2-8J-6-1-plan-3b6bf65f.json); the stable separate
-review was committed unchanged at78ed0744. This supplies no disclosure permission.
+review was committed unchanged at78ed0744. Readiness alone supplied no disclosure permission; the later human direction
+authorizes only the bounded contract below.
 Accepted baseline: `f6487737557c20d481cbc3e84216d7144bb116e8` (J5), independently
 [accepted](reviews/V2-8J-5-f6487737.json). Planning entry:
 `2fb36ad0e2694abfd953722fe5605dfa9e674a62`; branch v2, push origin/v2 only.

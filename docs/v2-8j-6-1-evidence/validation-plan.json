@@ -1,0 +1,34 @@
+{
+  "acceptedBaseline": "f6487737557c20d481cbc3e84216d7144bb116e8",
+  "approvedContract": "docs/V2-8J-6-1-PLAN.md",
+  "reviewedContractSha": "ae96d71755114c9dbdbfc209d5c81763a4aa5e3b",
+  "humanDirection": "docs/v2-8j-6-1-evidence/human-direction.json",
+  "gates": {
+    "notes-domain": [
+      "test/v2-citation-export-8j.test.js"
+    ],
+    "notes-sqlite": [
+      "test/v2-citation-export-sqlite-8j.test.js"
+    ],
+    "notes-postgres": [
+      "test/v2-citation-export-postgres-8j.test.js"
+    ],
+    "notes-native": [
+      "test/v2-citation-export-native-8j.test.js"
+    ],
+    "notes-cli": [
+      "test/v2-citation-export-cli-8j.test.js"
+    ],
+    "typecheck": [],
+    "notes-visual": []
+  },
+  "requiredFiles": [
+    "test/v2-citation-export-8j.test.js",
+    "test/v2-citation-export-sqlite-8j.test.js",
+    "test/v2-citation-export-postgres-8j.test.js",
+    "test/v2-citation-export-native-8j.test.js",
+    "test/v2-citation-export-cli-8j.test.js"
+  ],
+  "rationale": "New qualification, actual adapters, native mapping/notes, CLI/private publication and current GET containment only. Small serial native visual fixture, no new browser/build or old matrix.",
+  "excluded": "No model/search/real network/GPU, old full suites, production activation or migration. Missing actual PG/native notes-page rendering is unexecuted."
+}

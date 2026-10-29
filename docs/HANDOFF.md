@@ -1,33 +1,18 @@
 # Presentation Forge handoff — 2026-10-29
 
-Branch v2; push origin/v2 only. Accepted runtime remains J5
-`f6487737557c20d481cbc3e84216d7144bb116e8`, independently
-[accepted](reviews/V2-8J-5-f6487737.json). Its selected39/39, independent2/2,
-build/typecheck0 and complete exact-owned cleanup remain intact. No J5 gate is
-reopened and no old fixture/cleanup is repeated.
+Branch v2, push origin/v2 only. Accepted J5 source remains
+f6487737557c20d481cbc3e84216d7144bb116e8; its review/39passes/cleanup are complete.
+Human explicitly approved reviewed J6-1 ae96d717 on2026-10-29: “Approve notes-only
+foundation (Recommended)”. Direction/inventory are pinned before runtime in
+v2-8j-6-1-evidence/. Read state, contract, evaluation and the
+[active roadmap](ROADMAP.md#assistant-citation-notes-export).
 
-The continuation starts **planning only** for the next
-[roadmap contract](ROADMAP.md#assistant-citation-notes-export).
-[Proposed J6-1 contract](V2-8J-6-1-PLAN.md) was first pushed3b6bf65f and clarified
-at ae96d717 after independent source review. The exact reviewed contract is
-[READY_FOR_DIRECTION](reviews/V2-8J-6-1-plan-3b6bf65f.json), with stable independent
-report committed unchanged at78ed0744. Human disclosure direction is still pending;
-nextCandidate.authorized:false and the active runtime/accepted baseline remain J5.
-No implementation, product test or private disclosure is authorized by readiness.
+Only the approved headless notes export is active; implementation/validation/
+independent acceptance are pending. All seven focused gates are registered; no
+product result claimed. No old matrix, browser build, model/search/real network,
+GPU or production activation is authorized. No old fixture/cleanup is repeated.
+Keep validation serial, low priority and bounded; monitor owned load and leave
+unrelated work alone. Do not infer load ownership from global PSI alone.
 
-Contract/review details belong to the linked roadmap/plan rather than another work
-list here. AGENTS/protocol require human direction for portable data-handling
-changes. Independent planning review and lightweight consistency checks are complete.
-The concrete human question follows the scoped docs/push; wait for that answer
-before runtime. The approval must cover complete query/identifier values in
-title/URL fields, independent portable retention and no general printable notes-
-page-fit promise. The reviewed contract pins exact scope and exclusions.
-
-This planning pass changed documentation only. No product test, service, database,
-browser/build/render, real/local model, source fetch/search, GPU, deployment or
-migration ran. No owned service or validation process remains. Do not acquire one
-for planning. Shared-machine policy tracks bounded owned load and leaves unrelated
-work alone; no cause is inferred from global pressure alone.
-
-Preserve unrelated untracked .agents/ and both PRESENTATION_FORGE_V2_* prompt/workdoc
-files. No authorizations for later UI/research/semantic work or activation follow.
+Preserve unrelated .agents/ and both PRESENTATION_FORGE_V2_* untracked originals.
+Later browser/public citation export remains a separate unauthorized contract.

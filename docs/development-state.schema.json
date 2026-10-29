@@ -175,7 +175,13 @@
               "copy-sqlite",
               "copy-postgres",
               "copy-transport",
-              "copy-browser"
+              "copy-browser",
+              "notes-domain",
+              "notes-sqlite",
+              "notes-postgres",
+              "notes-native",
+              "notes-cli",
+              "notes-visual"
             ]
           },
           "status": {
