@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { api } from "./api.js";
 import { parseHash, hashFor } from "./lib/router.js";
 import { createGuardedHashRouter } from "./lib/guarded-hash-router.js";
+import { projectSessionKey } from './lib/v2project.js';
 import { useNarrow } from "./lib/viewport.js";
 import HeaderBar from "./components/HeaderBar.jsx";
 import ParticleField from "./components/ParticleField.jsx";
@@ -52,6 +53,7 @@ function AppContent() {
   const [projectHistoryOpen, setProjectHistoryOpen] = useState(false);
   const routerRef = useRef(null);
   const editorGuardRef = useRef(null);
+  const copiedProjectRef = useRef(null);
   const registerNavigationGuard = useCallback((guard) => {
     editorGuardRef.current = guard;
     return () => { if (editorGuardRef.current === guard) editorGuardRef.current = null; };
@@ -213,6 +215,24 @@ function AppContent() {
   function navigate(view, opts = {}) {
     const hash = hashFor(view, opts);
     return routerRef.current?.navigate(hash);
+  }
+
+  async function adoptProjectCopy(handoff) {
+    const hash = hashFor('project',{ projectId: handoff.project.id });
+    const current = () => handoff.current() && projectSessionKey() === handoff.token;
+    try {
+      return await routerRef.current?.navigate(hash,{ transfer: {
+        authorize: (guard,target) => current() && target === hash && guard?.prepareCopy?.(handoff,target) === true,
+        commit: () => {
+          if (!current() || !handoff.transfer()) return false;
+          handoff.committed = true;
+          copiedProjectRef.current = handoff;
+          return true;
+        },
+      } }) ?? false;
+    } finally {
+      if (copiedProjectRef.current === handoff && window.location.hash !== hash) copiedProjectRef.current = null;
+    }
   }
 
   function applyHash(hash = window.location.hash) {
@@ -621,6 +641,9 @@ function AppContent() {
                   onBack={() => navigate("projects")}
                   onOpenProject={(id) => navigate("project", { projectId: id })}
                   onProjectDeleted={() => navigate("projects")}
+                  onAdoptProjectCopy={adoptProjectCopy}
+                  copyHandoff={copiedProjectRef.current?.project.id === activeProjectId ? copiedProjectRef.current : null}
+                  onCopyConsumed={(handoff) => { if (copiedProjectRef.current === handoff) copiedProjectRef.current = null; }}
                 />
               </ErrorBoundary>
             )}

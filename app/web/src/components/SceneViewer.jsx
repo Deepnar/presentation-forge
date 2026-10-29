@@ -16,7 +16,7 @@ import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
-import { apiList, apiCreate, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
+import { apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import { useNarrow } from "../lib/viewport.js";
 
 // Restores focus to the opener when a dialog closes. Dialogs trap
@@ -733,7 +733,7 @@ function LayoutGallery({ sibling, onInsert, onClose }) {
   );
 }
 
-export default function SceneViewer({ initial = {}, projectId = null, autoOpenHistory = false, registerNavigationGuard = null, onBack = null, onOpenProject = null, onProjectDeleted = null }) {
+export default function SceneViewer({ initial = {}, projectId = null, autoOpenHistory = false, registerNavigationGuard = null, onBack = null, onOpenProject = null, onProjectDeleted = null, onAdoptProjectCopy = null, copyHandoff = null, onCopyConsumed = null }) {
   // Embedded (workspace) mode binds a persisted project by id and
   // offers back-navigation; standalone (scenes.html) mode drives
   // everything from the query string and localStorage instead.
@@ -1070,6 +1070,14 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const projectRef = useRef(null);
   const savedEngineRevRef = useRef(0);
   const pendingSaveRef = useRef(null);
+  const copyingRef = useRef(null);
+  const [copyBusy, setCopyBusy] = useState(false);
+  const [copyNotice, setCopyNotice] = useState(null);
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; autosaveRef.current?.cancel(); };
+  }, []);
   const abandonedDocumentsRef = useRef(new WeakSet());
   const pendingLeaveRef = useRef(null);
   const leavePolicyRef = useRef(null);
@@ -1172,24 +1180,29 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     }
   }
   async function saveNow(saveOrigin = "manual", guard = null) {
+    if (copyingRef.current) return { ok: false, code: "copy-pending", message: "Wait for the project copy to finish." };
     if (guard && !guard.current()) return { ok: false, code: "op-rejected", message: "session changed" };
     const adapter = adapterRef.current;
     const doc = docRef.current;
     let proj = projectRef.current;
+    const token = projectSessionKey(), boundId = proj?.id;
+    const currentSave = () => mountedRef.current && projectSessionKey() === token && docRef.current === doc &&
+      projectRef.current?.id === boundId && !abandonedDocumentsRef.current.has(doc);
     if (!doc || !proj) return { ok: false, code: "op-rejected", message: "no project bound — save as a new project first" };
     if (abandonedDocumentsRef.current.has(doc)) return { ok: false, code: "op-rejected", message: "document discarded" };
     if (adapter?.hasPendingEdit?.()) {
       const r = await adapter.commitPendingEdit();
       if (!r.ok) return r;
     }
-    if (docRef.current !== doc || projectRef.current?.id !== proj.id || abandonedDocumentsRef.current.has(doc)) return { ok: false, code: "op-rejected", message: "project changed or discarded during save" };
+    if (!currentSave()) return { ok: false, code: "op-rejected", message: "project changed or discarded during save" };
     if (pendingSaveRef.current) {
       const result = await pendingSaveRef.current;
       if (!result.ok) return result;
-      if (docRef.current !== doc || projectRef.current?.id !== proj.id || abandonedDocumentsRef.current.has(doc)) return { ok: false, code: "op-rejected", message: "project changed or discarded during save" };
+      if (!currentSave()) return { ok: false, code: "op-rejected", message: "project changed or discarded during save" };
       return saveNow(saveOrigin, guard);
     }
     if (guard && !guard.current()) return { ok: false, code: "op-rejected", message: "session changed" };
+    if (copyingRef.current) return { ok: false, code: "copy-pending", message: "Wait for the project copy to finish." };
     proj = projectRef.current;
     if (docRef.current !== doc || !proj) return { ok: false, code: "op-rejected", message: "project changed during save" };
     const snapNow = doc.snapshot();
@@ -1208,9 +1221,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           title: proj.title,
           scenes,
           provenance: collectProvenance(saveOrigin),
-        }, guard ? capturedAssistantFetch(guard) : undefined);
+        }, capturedProjectFetch(token, () => currentSave() && (!guard || guard.current())));
         if (guard && !guard.current()) return { ok: false, code: "op-rejected", message: "session changed" };
-        if (docRef.current !== doc || projectRef.current?.id !== proj.id) return { ok: false, code: "op-rejected", message: "project changed during save" };
+        if (!currentSave()) return { ok: false, code: "op-rejected", message: "project changed during save" };
         savedEngineRevRef.current = atEngineRev;
         projectRef.current = { ...proj, revision: updated.revision, updatedAt: updated.updatedAt };
         setProject(projectRef.current);
@@ -1221,10 +1234,11 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           setSaveState("saved");
         } else {
           setSaveState("dirty");
-          autosaveRef.current?.schedule();
+          if (!copyingRef.current) autosaveRef.current?.schedule();
         }
         return { ok: true, revision: updated.revision };
       } catch (err) {
+        if (!currentSave()) return { ok: false, code: "op-rejected", message: "project session changed" };
         if (guard && !guard.current()) return { ok: false, code: "op-rejected", message: "session changed" };
         if (err?.code === "stale-revision") {
           setSaveState("stale");
@@ -1242,55 +1256,86 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     pendingSaveRef.current = task;
     let result;
     try { result = await task; } finally { if (pendingSaveRef.current === task) pendingSaveRef.current = null; }
-    if (result.ok && docRef.current === doc && !abandonedDocumentsRef.current.has(doc) && doc.snapshot().revision !== savedEngineRevRef.current) return saveNow(saveOrigin, guard);
+    if (result.ok && !copyingRef.current && currentSave() && doc.snapshot().revision !== savedEngineRevRef.current) return saveNow(saveOrigin, guard);
     return result;
   }
   saveNowRef.current = saveNow;
 
   function markDirtyFromEngine() {
+    if (!copyingRef.current) setCopyNotice(null);
     if (!projectRef.current) {
       setSaveState((s) => (editOn ? "dirty" : s));
       return;
     }
     const rev = docRef.current?.snapshot().revision ?? 0;
     setSaveState(rev === savedEngineRevRef.current ? "saved" : "dirty");
-    if (rev !== savedEngineRevRef.current) autosaveRef.current?.schedule();
+    if (rev !== savedEngineRevRef.current && !copyingRef.current) autosaveRef.current?.schedule();
   }
 
   async function saveAsNewProject() {
-    const doc = docRef.current;
-    if (!editOn || !doc) return;
-    if (adapterRef.current?.hasPendingEdit?.()) {
-      const r = await adapterRef.current.commitPendingEdit();
-      if (!r.ok) return;
-    }
-    const snapNow = doc.snapshot();
-    setSaveState("saving");
-    setSaveError(null);
+    const doc = docRef.current, source = projectRef.current, viewer = viewerRef.current, adapter = adapterRef.current;
+    if (!editOn || !doc || !adapter || copyingRef.current) return;
+    const token = projectSessionKey(), sourceId = source?.id ?? null;
+    const current = () => mountedRef.current && projectSessionKey() === token && docRef.current === doc &&
+      viewerRef.current === viewer && adapterRef.current === adapter && (projectRef.current?.id ?? null) === sourceId && !abandonedDocumentsRef.current.has(doc);
+    const drafts = () => gridDraftsRef.current.size || titleDraftRef.current !== null || titleRequestRef.current || assistantRef.current?.hasDraft();
+    if (drafts()) { setCopyNotice('Apply or cancel data/title drafts and finish the Assistant message before copying.'); return; }
+    const ticket = { current };
+    copyingRef.current = ticket;
+    setCopyBusy(true); setCopyNotice('Copying…'); autosaveRef.current?.cancel();
+    let committed = false;
     try {
-      const created = await apiCreate({
-        title: projectRef.current?.title ?? `Project ${new Date().toLocaleString()}`,
-        scenes: structuredClone(snapNow.scenes),
-        origin: { kind: "mixed" },
-      });
-      projectRef.current = { id: created.id, title: created.title, revision: created.revision, updatedAt: created.updatedAt };
-      setProject(projectRef.current);
-      savedEngineRevRef.current = snapNow.revision;
-      setSaveState("saved");
-      writeLastProject(created.id);
-      // Standalone deep link only: embedded mode is routed by hash
-      // and must never rewrite the URL out from under the router.
-      if (!embedded) {
-        try {
-          const q = new URLSearchParams(window.location.search);
-          q.set("project", created.id);
-          window.history.replaceState(null, "", `${window.location.pathname}?${q}`);
-        } catch { /* deep link is a hint only */ }
+      if (adapterRef.current?.hasPendingEdit?.()) {
+        const result = await adapterRef.current.commitPendingEdit();
+        if (!result.ok) { if (current()) setCopyNotice('Resolve the text draft before copying.'); return; }
       }
-      refreshProjectList();
-    } catch (err) {
-      setSaveState(/unavailable|network|fetch/i.test(err?.message ?? "") ? "unavailable" : "error");
-      setSaveError(err.message);
+      if (pendingSaveRef.current) await pendingSaveRef.current;
+      if (!current()) return;
+      if (drafts() || adapterRef.current?.hasPendingEdit?.()) { setCopyNotice('Drafts changed. Finish them before copying.'); return; }
+      const snapshot = doc.snapshot(), sourceRevision = projectRef.current?.revision;
+      const scenes = structuredClone(snapshot.scenes), cited = scenes.some(scene => scene.citations?.length);
+      if (cited && (!sourceId || projectRef.current?.recoverable)) { setCopyNotice('Open the source project before copying its citations.'); return; }
+      const viewport = { ...viewer.api.snapshot(), scrollTop: scrollRef.current?.scrollTop ?? 0, scrollLeft: scrollRef.current?.scrollLeft ?? 0 };
+      const clean = () => current() && copyingRef.current === ticket && !ticket.invalidated && !pendingLeaveRef.current &&
+        !pendingSwitchRef.current && projectRef.current?.revision === sourceRevision &&
+        doc.snapshot().revision === snapshot.revision && !drafts() && !pendingSaveRef.current && !adapterRef.current?.hasPendingEdit?.();
+      const fetchCopy = capturedProjectFetch(token,current);
+      const input = { title: projectRef.current?.title ?? `Project ${new Date().toLocaleString()}`, scenes };
+      const created = cited ? await apiCopy(sourceId,input,fetchCopy) : await apiCreate({ ...input, origin: { kind: 'mixed' } },fetchCopy);
+      committed = true;
+      if (!current()) return;
+      if (!created || !/^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/.test(created.id) || created.id === sourceId || created.revision !== 0 ||
+        created.title !== input.title || !Array.isArray(created.scenes) || created.scenes.some(scene => (scene.citations ?? []).some(c => c.source.projectId !== created.id)))
+        throw new Error('Copy was saved but its response could not be safely opened. Check the workspace.');
+      const { createDocument } = await import('../../../../packages/model/engine.ts');
+      const prepared = await createDocument(structuredClone(created.scenes));
+      if (!clean()) { if (current()) setCopyNotice('Copy saved. Current edits and drafts kept; open the copy from the workspace.'); return; }
+      if (embedded) {
+        const handoff = { project: created, document: prepared, viewport, token, current: clean, committed: false, consumed: false };
+        handoff.transfer = () => {
+          if (!clean()) return false;
+          autosaveRef.current?.cancel();
+          docRef.current = null; adapterRef.current = null;
+          try { adapter.detach(); } catch { /* the saved copy already owns this released snapshot */ }
+          return true;
+        };
+        ticket.handoff = handoff;
+        const adopted = await onAdoptProjectCopy?.(handoff);
+        if (!adopted && current()) setCopyNotice('Copy saved. Current editor kept; open the copy from the workspace.');
+      } else {
+        const attached = await attachLoadedProject(created,{ current: clean, document: prepared, viewport });
+        if (attached) { setCopyNotice('Copy saved. Session undo cleared; the original keeps its version history.'); document.querySelector('[aria-label="Save project"]')?.focus({ preventScroll: true }); }
+        else if (current()) setCopyNotice('Copy saved. Current editor kept; open it from Projects.');
+      }
+    } catch (error) {
+      if (current()) setCopyNotice(committed ? 'Copy saved; opening failed. Current edits kept. Check the workspace.' :
+        error?.status && error.status < 500 ? error.message : 'Copy could not be confirmed. Current edits kept; check the workspace before retrying.');
+    } finally {
+      if (copyingRef.current === ticket) {
+        copyingRef.current = null;
+        if (mountedRef.current && projectSessionKey() === token) setCopyBusy(false);
+        if (current() && doc.snapshot().revision !== savedEngineRevRef.current) autosaveRef.current?.schedule();
+      }
     }
   }
 
@@ -1310,8 +1355,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     const targetViewer = viewerRef.current;
     const { createDocument } = await import("../../../../packages/model/engine.ts");
     const { attachEditor } = await import("../../../../packages/editor/scene-edit.js");
-    const fresh = await createDocument(structuredClone(loaded.scenes));
+    const fresh = options.document ?? await createDocument(structuredClone(loaded.scenes));
     if (!targetViewer || viewerRef.current !== targetViewer || options.current && !options.current()) return false;
+    if (options.commit && !options.commit()) return false;
     try {
       adapterRef.current?.detach();
     } catch { /* teardown only */ }
@@ -1381,6 +1427,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   // In embedded workspace mode a different id navigates (the router
   // remounts one editor per project) instead of swapping in place.
   async function openProject(id) {
+    if (copyingRef.current) copyingRef.current.invalidated = true;
     if (adapterRef.current?.hasPendingEdit?.()) {
       const r = await adapterRef.current.commitPendingEdit();
       if (!r.ok) return;
@@ -1715,10 +1762,12 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     return Boolean(doc && doc.snapshot().revision !== savedEngineRevRef.current);
   }
   function discardDocument() {
+    if (copyingRef.current) copyingRef.current.invalidated = true;
     if (docRef.current) abandonedDocumentsRef.current.add(docRef.current);
     autosaveRef.current?.cancel();
   }
   async function requestLeave(label, run, cancel = () => {}) {
+    if (copyingRef.current) copyingRef.current.invalidated = true;
     if (pendingLeaveRef.current) { cancel(); return; }
     if (adapterRef.current?.hasPendingEdit?.()) {
       const result = await adapterRef.current.commitPendingEdit();
@@ -1758,6 +1807,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     const detach = registerNavigationGuard({
       projectId,
       isDirty: () => leavePolicyRef.current.isDirty(),
+      prepareCopy: (handoff,hash) => copyingRef.current?.handoff === handoff && handoff.current() && hash === `#/project/${handoff.project.id}`,
       confirm: () => new Promise(resolve => {
         leavePolicyRef.current.request("another page", () => resolve(true), () => resolve(false)).catch(() => resolve(false));
       }),
@@ -1805,7 +1855,25 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   useEffect(() => {
     if (!embedded || !viewerReady) return undefined;
     let cancelled = false;
-    openProject(projectId).then(() => {
+    const handoff = copyHandoff;
+    const currentCopy = () => !cancelled && mountedRef.current && projectSessionKey() === handoff?.token &&
+      handoff?.committed && !handoff.consumed && projectId === handoff.project.id && window.location.hash === `#/project/${projectId}`;
+    const opening = handoff ? (currentCopy() ? attachLoadedProject(handoff.project,{
+      current: currentCopy, document: handoff.document, viewport: handoff.viewport,
+      commit: () => { if (!currentCopy()) return false; handoff.consumed = true; return true; },
+    }).then(attached => {
+      if (attached && !cancelled) {
+        onCopyConsumed?.(handoff);
+        setCopyNotice('Copy saved. Session undo cleared; the original keeps its version history.');
+        document.querySelector('[aria-label="Save project"]')?.focus({ preventScroll: true });
+      }
+    }) : Promise.resolve()) : openProject(projectId);
+    opening.catch(() => {
+      if (handoff) onCopyConsumed?.(handoff);
+      if (!cancelled && mountedRef.current && handoff?.token === projectSessionKey()) {
+        setSaveState('error'); setSaveError('The copy is saved. Reopen it from the workspace.');
+      }
+    }).then(() => {
       if (!cancelled && autoHistoryRef.current && projectRef.current) {
         autoHistoryRef.current = false;
         openHistory({ id: projectRef.current.id, title: projectRef.current.title });
@@ -2013,9 +2081,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         {titleError && <span role="alert" className="max-w-[300px] truncate text-[11px] text-danger" title={titleError}>{titleError}</span>}
         {editOn && (
           <>
-            <button type="button" aria-label="Save project" title={project ? `Save ${project.title} (rev ${project.revision})` : "Save as a new project"} disabled={saveState === "saving"} onClick={() => (project && !project.recoverable ? saveNow() : saveAsNewProject())} className={shellBtn}>Save</button>
-            <span data-save-state={saveState} data-project-state={JSON.stringify(project ?? null)} title={saveError ?? project?.title ?? "no project"} className="flex-none rounded-full border border-line px-2 py-0.5 text-[12px] text-fg-muted">
-              {saveState === "saving" ? "Saving…" : saveState === "saved" ? `Saved${project ? ` · rev ${project.revision}` : ""}` : saveState === "dirty" ? "Unsaved changes" : saveState === "stale" ? "Conflict — newer saved version" : saveState === "error" ? "Save failed" : saveState === "unavailable" ? "Storage unavailable — edits not saved" : project?.title ?? "No project"}
+            <button type="button" aria-label="Save project" title={project ? `Save ${project.title} (rev ${project.revision})` : "Save as a new project"} disabled={copyBusy || saveState === "saving"} onClick={() => (project && !project.recoverable ? saveNow() : saveAsNewProject())} className={shellBtn}>Save</button>
+            <span role="status" aria-live="polite" data-copy-notice={copyNotice ?? undefined} data-save-state={saveState} data-project-state={JSON.stringify(project ?? null)} title={copyNotice ?? saveError ?? project?.title ?? "no project"} className="max-w-[320px] truncate flex-none rounded-full border border-line px-2 py-0.5 text-[12px] text-fg-muted">
+              {copyNotice ?? (saveState === "saving" ? "Saving…" : saveState === "saved" ? `Saved${project ? ` · rev ${project.revision}` : ""}` : saveState === "dirty" ? "Unsaved changes" : saveState === "stale" ? "Conflict — newer saved version" : saveState === "error" ? "Save failed" : saveState === "unavailable" ? "Storage unavailable — edits not saved" : project?.title ?? "No project")}
             </span>
             <button type="button" aria-label="Undo" disabled={!editOn || textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Undo"} onClick={() => adapterRef.current?.undo()} className={shellBtn}>↩ Undo</button>
             <button type="button" aria-label="Redo" disabled={!editOn || textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Redo"} onClick={() => adapterRef.current?.redo()} className={shellBtn}>↪ Redo</button>
@@ -2296,7 +2364,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
             {saveState === "stale" && (
               <>
                 <button type="button" onClick={() => openProject(project.id)} className={shellBtn}>Load newer version</button>{" "}
-                <button type="button" onClick={saveAsNewProject} className={shellBtn}>Save as new project</button>{" "}
+                <button type="button" disabled={copyBusy} onClick={saveAsNewProject} className={shellBtn}>Save as new project</button>{" "}
               </>
             )}
             <button type="button" onClick={() => saveNow()} className={shellBtn}>Retry save</button>
@@ -2555,7 +2623,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
               <button type="button" aria-label="Close projects" onClick={() => setProjectsOpen(false)} className={`${shellBtn} ml-auto`}>✕</button>
             </div>
             <div className="flex flex-wrap gap-2 border-b border-line px-3 py-2">
-              <button type="button" data-project-save-current disabled={!editOn} title={editOn ? "Save the current deck as a new project" : "Enter edit mode first"} onClick={saveAsNewProject} className={`${shellBtn} disabled:opacity-40`}>Save current deck as project</button>
+              <button type="button" data-project-save-current disabled={!editOn || copyBusy} title={editOn ? "Save the current deck as a new project" : "Enter edit mode first"} onClick={saveAsNewProject} className={`${shellBtn} disabled:opacity-40`}>Save current deck as project</button>
+              {copyNotice && <span role="status" data-project-copy-notice className="text-[12px] text-fg-muted">{copyNotice}</span>}
               {project && !project.recoverable && (
                 <ProjectExportButton data-project-export projectId={project.id} title={project.title} className="rounded-md px-2 py-1 text-[12px] text-accent transition hover:bg-hover">Export {project.title} (.pptx)</ProjectExportButton>
               )}

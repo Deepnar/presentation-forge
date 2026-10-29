@@ -84,6 +84,30 @@ export async function apiCreate({ title, scenes, theme, origin }, fetchFn = fetc
   return body.project;
 }
 
+// Authorization belongs to the action's captured session, including local anonymity.
+export function capturedProjectFetch(token, current, fetchFn = fetch) {
+  return (url,options = {}) => {
+    if (!current() || projectSessionKey() !== token)
+      throw Object.assign(new Error('The project session changed.'), { code: 'session-changed' });
+    const headers = new Headers(options.headers);
+    if (token) headers.set('Authorization',`Bearer ${token}`);
+    else headers.delete('Authorization');
+    return fetchFn(url,{ ...options, headers, credentials: 'omit' });
+  };
+}
+
+export async function apiCopy(id, { title, scenes, theme }, fetchFn = fetch) {
+  const response = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/copy`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ title, scenes, ...(theme ? { theme } : {}) }),
+  });
+  const body = await response.json().catch(() => null);
+  if (!response.ok || !body?.ok || !body.project) throw Object.assign(
+    new Error(body?.error ?? 'Copy could not be confirmed. Check the workspace before trying again.'),
+    { code: body?.code, status: response.status });
+  return body.project;
+}
+
 export async function apiLoad(id, fetchFn = fetch) {
   const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, { headers: { ...authHeaders() } });
   const body = await res.json().catch(() => null);

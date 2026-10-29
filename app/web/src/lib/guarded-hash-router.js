@@ -29,20 +29,23 @@ export function createGuardedHashRouter({ window: win, apply, getGuard = () => n
     win.history.go(index - at);
     return promise;
   }
-  async function allowed(hash) {
+  async function allowed(hash, transfer = null) {
     const guard = getGuard(hash);
+    if (transfer) return transfer.authorize(guard,hash) === true;
     return !guard?.isDirty() || await guard.confirm(hash);
   }
-  async function navigate(hash, { replace = false } = {}) {
+  async function navigate(hash, { replace = false, transfer = null } = {}) {
     if (!live || busy) return false;
     if (hash === current.hash) { apply(hash); return true; }
     busy = true;
     try {
-      if (!await allowed(hash) || !live) return false;
+      if (!await allowed(hash,transfer) || !live) return false;
       if (traversal) await traversal.promise;
       if (!live) return false;
       await travel(current.index);
       if (!live) return false;
+      // A copied snapshot only authorizes the exact state still present after traversal.
+      if (transfer && (!transfer.authorize(getGuard(hash),hash) || !transfer.commit())) return false;
       const index = replace ? current.index : current.index + 1;
       stamp(hash, index, !replace);
       accept(hash, index);
