@@ -56,10 +56,14 @@ was saved/fsynced before one exact-ID removal; root and reviewer independently
 verified absence/private credential deletion. No owned service remains. Never
 recreate old fixtures or repeat completed cleanup helpers.
 
-J4 is complete. Stop after its acceptance documentation/push. Only later planning
-is permitted by acceptance; [source-aware copy](ROADMAP.md#assistant-citation-project-copy)
-and [citation presentation](ROADMAP.md#assistant-citation-native-presentation)
-retain separate direction/implementation gates. nextCandidate.authorized is false.
+J4 closeout is complete. The next planning-only contract is
+[J5 source-aware copy and safe editor adoption](V2-8J-5-PLAN.md), first pushed at
+a20ae631. Its readiness review and human-direction state are in HANDOFF and the
+[roadmap](ROADMAP.md#assistant-citation-project-copy). No J5 runtime/test/schema/
+database work is authorized yet; nextCandidate.authorized is false. Leave J4's
+accepted source and validation inventory unchanged during planning.
+[Citation presentation](ROADMAP.md#assistant-citation-native-presentation) retains
+its separate direction/implementation gate and native export stays refused.
 
 ## Accepted predecessor — J3 citation-reference checks complete
 

@@ -1,42 +1,47 @@
 # Presentation Forge handoff — 2026-10-29
 
-Branch v2, push origin/v2 only. J4 is independently accepted at exact frozen
-`665cd0459b0f267b32e808a59046e3d0b914e74f`, from J3
-`edda5ec7c2105bebff4a429a04b3fbe5b09048b4`. Human approved bounded metadata,
-history and cited-copy/export containment before runtime at b0cb7aa. Separate
-reviewer /root/i8_source_review issued [ACCEPT](reviews/V2-8J-4-665cd04.json)
-after final pushed packet ef1d11ac audit; root committed that stable decision
-unchanged at452bc61e. Later descendants contain documentation/evidence only.
+Branch v2; push origin/v2 only. J4 is complete and independently accepted at
+`665cd0459b0f267b32e808a59046e3d0b914e74f` in
+[the exact-source decision](reviews/V2-8J-4-665cd04.json). Accepted closeout is
+2fa10cc5. Current work is **J5 planning only**, proposed contract first pushed at
+`a20ae631090220e6a36c6eb8901fa1d796e28e34`; amended contract is
+`1b37cdd674fa680ac15bb266e2e16bf4eff25f05`.
 
-Read state, [contract](V2-8J-4-PLAN.md), [evaluation](V2-8J-4-EVAL.md), manifest,
-CONTINUATION and [roadmap](ROADMAP.md#assistant-citation-lifecycle).
-Selected41/41: pure13, actual SQLite7/PostgreSQL7 and boundary14. Typecheck0;
-independent2/2 new actual-PG challenges pass in5272ms. No current fail/skip/cancel
-or required unexecuted gate. All root attempts68=66pass/2fixture-fail/0skip/cancel
-retain corrected fault-trigger verification order and overlap; assertions and
-runtime were not weakened. The regex hypothesis was disproved, with original
-passing probe/harness correction explicit. Exact earlier boundary/type invocation
-and unchanged-source applicability remain in the manifest; no rerun is inferred.
+Read AGENTS, state, CONTINUATION, protocol, BLOCKED/TRAPS and the active
+[roadmap entry](ROADMAP.md#assistant-citation-project-copy), then
+[V2-8J-5-PLAN.md](V2-8J-5-PLAN.md). The proposal combines private referenced-source
+copy with safe adoption through existing controls; it does not authorize runtime,
+tests, schemas, services or implementation. J4's accepted source/inventory remain
+unchanged; nextCandidate is J5, authorized:false. The existing independent reviewer
+/root/i8_source_review issued [READY_FOR_DIRECTION](reviews/V2-8J-5-plan-a20ae631.json)
+at exact amended contract1b37cdd6, with all five material findings resolved and no
+technical planning blocker. Stable decision/report were committed unchanged.
+Human direction is still needed for retained-source duplication and the editor
+handoff. Do not treat readiness as product acceptance or the general continue
+request as this data-policy decision.
 
-Scene-owned unverified citation metadata survives edits, undo/history and
-regeneration without restoring cleared sources or becoming provider authority.
-Fresh headless qualification uses canonical exact-owner/project/catalog authority;
-range validity/content equality never become factual support. Cited new-project
-copy/create and native export intentionally refuse. No UI/public transport,
-model/API/search/local inference/GPU call or activation was added.
+This pass performed source inspection and documentation consistency only. No
+product check, model/API/search/local inference/GPU, database/service, build or
+render was run (product tests0). Protocol validation and diff checks pass; local
+documentation links resolve. No J5 behavior/performance/visual result is claimed.
+The inherited copy await/adoption risk is unreproduced; the plan
+requires a focused delayed-response check before claiming a regression/correction.
+Review pins cover pre-await captured headless inputs, uncertain commit outcomes,
+prepared-copy-aware leave authority, manual/recursive save fences and Assistant
+draft preservation. These are contract corrections, not executed product fixes.
+The concrete private-source independence/refusal and no-auto-retry policies are
+proposed, not built. Cited create/copy and native export remain refused in runtime.
+Later scope/authority lives solely in the roadmap.
 
-Independent final audit verified21 changed source/test paths,16 runtime hashes,
-retained counts/applicability and cleanup with0errors. Reviewer DB/pools closed
-and slot released. Root saved/fsynced actual0 user-DB catalog before removing
-exact owned ID4b4e26def208b80a004b9caa848cf8fc405d8068a196bfdedfcc61cf6931f2aa
-ONCE. Root and reviewer independently verified absence/private credential deletion.
-No owned service or validation process remains. Never recreate old I4/J2/J3/J4
-services or repeat completed cleanup helpers; I4 historical unknown count stays
-unknown. Standing BYOK locale, earlier J1/I7 timing and native/visual/I4 provenance
-limits remain separate and unrerun. No old broad matrix or new render-quality claim.
+Retain [J4 evaluation](V2-8J-4-EVAL.md) and source manifest unchanged: selected41/41,
+typecheck0, independent2/2 actual-PG challenges; all root attempts68=66pass/2fixture-
+fail/0skip/cancel. Earlier evidence applicability, teardown-order correction and
+disproved regex hypothesis stay explicit. No old matrix is to be repeated.
+J4 exact owned fixture removal and private credential deletion were independently
+verified after the saved/fsynced actual0-user-DB catalog. No owned service remains;
+never recreate old I4/J2/J3/J4 services or repeat completed cleanup helpers. I4's
+historical unknown count stays unknown. Standing BYOK locale, earlier J1/I7 timing
+and native/visual/I4 provenance limits remain separate and unrerun.
 
-J4 is complete. Stop after acceptance documentation and scoped push. Acceptance
-permits planning only; all later scope/authority lives in the roadmap and
-nextCandidate.authorized remains false. Original .agents/,
-PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md and
+Original .agents/, PRESENTATION_FORGE_V2_1_MASTER_AGENT_PROMPT.md and
 PRESENTATION_FORGE_V2_2_ARCHITECTURE_WORKDOC.md remain untouched/untracked.

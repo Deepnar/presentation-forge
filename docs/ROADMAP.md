@@ -9205,8 +9205,13 @@ local inference. Only that separate transport correction is authorized; this aud
   <a id="assistant-citation-project-copy"></a>
 
   - [ ] **V2-8J-5 source-aware project copy and safe live-editor adoption — proposed.**
-    [Concrete contract](V2-8J-5-PLAN.md), from accepted J4 `665cd04`, needs independent
-    readiness and human direction before implementation. Recommend copying only
+    [Concrete contract](V2-8J-5-PLAN.md), from accepted J4 `665cd04`, is independently
+    [ready for direction](reviews/V2-8J-5-plan-a20ae631.json) at `1b37cdd6`;
+    human retention/editor-handoff direction remains pending before implementation.
+    Five source-inspected contract gaps were resolved: mutable-input capture,
+    commit uncertainty, dirty-copy router authority, save dispatch/publication and
+    Assistant drafts. Product execution0; these are plan corrections, not fixes
+    validated in runtime. Recommend copying only
     referenced snippets into the same exact owner's new project, atomically
     rebinding source IDs and preserving original retrieval provenance. Each copy
     retains snippets independently of the original's clear/delete; stale/missing/

@@ -133,6 +133,12 @@ review or service blocker remains. [Evaluation](V2-8J-4-EVAL.md) retains failure
 corrections and scope limits. Later direction/authority lives only in
 [the roadmap](ROADMAP.md#assistant-search-source-integrity).
 
+The next [J5 copy contract](V2-8J-5-PLAN.md) is planning only. Human direction on
+retained private-source duplication and editor adoption is required before code;
+independent plan readiness does not supply it. See the current
+[roadmap gate](ROADMAP.md#assistant-citation-project-copy) and HANDOFF for review
+status. This is a direction gate, not an unavailable service or failed J4 check.
+
 ### 3.1 Browser regression coverage
 
 **Blocks:** `Nothing can test the browser` in the roadmap.
