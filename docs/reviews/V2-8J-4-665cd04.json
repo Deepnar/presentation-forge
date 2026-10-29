@@ -1,0 +1,72 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "implementationSha": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "acceptedBaseline": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+  "packetHead": "ef1d11ac37d24fcc62588ab874a36ecae8af9852",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-29",
+  "evidence": "docs/v2-8j-4-evidence/independent/review.md",
+  "contract": "docs/V2-8J-4-PLAN.md",
+  "humanDirection": "Bounded J4 metadata/history/unresolved-source and cited-copy/export containment explicitly approved before runtime at b0cb7aa, following readiness review of plan bbfbf8c.",
+  "scope": "Revisioned scene-owned unverified citation metadata, qualified exact-owner headless attach/replace/remove/inspect, portable content anchors, command/undo/history/duplicate/recompile preservation and central cited-create/native-export refusal. No source-aware copy, citation presentation or new provider/public authority.",
+  "assessment": "No confirmed product defect or blocking evidence issue remains. Metadata/project binding validation covers authoritative ingress; generic same-project metadata remains explicitly unverified and survives source clear and history pruning. Fresh qualification uses one canonical owner/project/catalog transaction and transient exact quote validation. Commands and history share atomic rollback; removal is independent of missing/protected targets and source resolution. Target/content/source/range observations stay separate with claimSupport not-assessed. Agent citation ingress, cited creation and native export are contained as approved; tool/H authority and private source bodies remain unchanged.",
+  "findings": [
+    {
+      "issue": "Reviewer hypothesized trailing-LF acceptance by unflagged JavaScript patterns.",
+      "status": "disproved-and-withdrawn",
+      "assessment": "Actual Node24 probe and the isolated negative fixture passed against unchanged runtime. No product regex fix was warranted. The outer expected-red harness assertion and premature classification are review/preparation mistakes, not failed product leaves.",
+      "evidence": "docs/v2-8j-4-evidence/fixed-format-assessment.json"
+    }
+  ],
+  "retainedValidation": {
+    "requiredFinalTests": { "total": 41, "pass": 41, "fail": 0, "skip": 0, "cancelled": 0 },
+    "components": { "citationLifecycle": 13, "actualSQLite": 7, "actualPostgreSQL": 7, "coreTypeDriftAndJ3Pure": 14 },
+    "typecheckExitCode": 0,
+    "allRootProductTestAttemptsIncludingOverlap": { "total": 68, "pass": 66, "fail": 2, "skip": 0, "cancelled": 0 },
+    "evidence": "docs/v2-8j-4-evidence/execution-summary.json",
+    "failureAssessment": "Initial SQLite/PostgreSQL files each passed6/7 and failed verification because history snapshot listing attempted its idempotent baseline insert while the injected failure trigger remained active. The same complete rollback assertion now runs after trigger teardown; corrected complete7/7 files pass. Runtime/assertions were unchanged. Original failures and the runner's initial child-exit propagation mistake remain retained.",
+    "sourceApplicability": "All16 changed runtime paths equal initial6628bb4. Later changes add one passing LF negative fixture and repair shared fault-test teardown only. Final pure/storage runs bind frozen665cd04. Applicable initial boundary/type inputs, runtime/config and old fixture bytes match frozen source; committed-byte comparison covers uncaptured old boundary fixtures. No repeat is inferred from applicability."
+  },
+  "independentlyExecuted": {
+    "invocationHead": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+    "backend": "Verified exact owned isolated PostgreSQL; unique reviewer database",
+    "tests": { "total": 2, "pass": 2, "fail": 0, "skip": 0, "cancelled": 0 },
+    "durationMs": 5272,
+    "challenges": [
+      "Orphan/locked citation removal succeeds under an unknown-policy catalog without resolving or repairing source rows/catalog, while qualified inspect continues to refuse invalid-state.",
+      "Stale-generation inspection skips a byte-coherent hash-corrupt same-ID re-registered body; selecting an explicitly current-generation reference refuses the entire output without partial observations."
+    ],
+    "resourceAdmission": "Own observer waited through a physical-disk spike and required two final consecutive ready samples under unchanged thresholds/classifier; actual connection use followed exact ID/image/binding/limits verification.",
+    "evidence": "docs/v2-8j-4-evidence/independent/challenge-final.json"
+  },
+  "independentlyInspected": [
+    "Approved policy/plan, pushed runtime/test deltas, negative authority paths, scene/project admission, canonical write/history boundaries, anchor/locator semantics, duplication/recompile/undo and central export refusal.",
+    "Fresh completed EVAL/state/manifest/as-built/roadmap/handoff; raw/canonical test counts, invocation applicability and original fixture/review/preparation failures.",
+    "21 frozen changed paths,16 runtime hashes,12 unchanged accepted source/tool/H/history boundaries, raw file markers and initial/final runtime/config equality; read-only packet audit0errors.",
+    "Actual-empty catalog saved before one exact-ID cleanup, fresh independent Docker absence and private connection.json/pg.env deletion."
+  ],
+  "cleanup": {
+    "reviewDatabaseDropped": true,
+    "reviewPoolsClosed": true,
+    "rootRecordedActualUserDatabaseCount": 0,
+    "singleExactIdRemovalRecorded": true,
+    "independentlyObservedExactOwnedContainerAbsent": true,
+    "privateConnectionAndEnvironmentFilesAbsent": true,
+    "evidence": "docs/v2-8j-4-evidence/independent/packet-audit.json"
+  },
+  "reviewProcedureLimit": "A metadata-only connection-file key-name probe preceded exact Docker verification. It printed only the key name, no URL/secret, and made no connection/mutation. Exact identity and fresh admission preceded all actual connection use; the sequence is retained in identity-preflight.json rather than described as fully compliant private-file access ordering.",
+  "residualLimits": [
+    "Generic citation metadata and hashes are unverified; equality does not prove a prior operation, factual support, freshness or permission. Results may stale immediately after release.",
+    "Source clear does not restore deleted snippets through undo/history, and no new backup/media secure-erasure guarantee is made.",
+    "Existing adapter lock waits have no new wall-clock deadline/cancellation guarantee; citation target/projection/capacity bounds do not redefine ordinary accepted scenes.",
+    "Cited project creation/copy and native export intentionally refuse. Source-aware copy, safe live-editor adoption, notes/visible citation presentation and claim qualification remain separate contracts.",
+    "Actual tmpfs PostgreSQL fixtures establish backend behavior, not hardware/power-loss durability. No old browser/build/render/native/benchmark/legacy/provider/bulk/broad-fault sweep, live API/model/search/local inference/GPU or activation ran.",
+    "Native validation covers fail-closed containment, not new rendering quality. Standing BYOK locale, earlier J1/I7 timing and inherited I4/native/visual provenance remain separate and unrerun."
+  ],
+  "outstandingBlockingIssues": [],
+  "requiredUnexecutedGates": [],
+  "stopPoint": "Record exact-source J4 acceptance and close out documentation/push. Acceptance permits planning only; later copy/presentation/creation/public integration, deployment and paid infrastructure require separate approved scope."
+}

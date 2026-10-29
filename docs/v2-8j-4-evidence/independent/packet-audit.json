@@ -1,0 +1,123 @@
+{
+  "implementationSha": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "acceptedBaseline": "edda5ec7c2105bebff4a429a04b3fbe5b09048b4",
+  "packetHead": "ef1d11ac37d24fcc62588ab874a36ecae8af9852",
+  "atUtc": "2026-10-29T06:33:06.676084+00:00",
+  "method": "Read-only final hash/count/Git/cleanup audit; no product/service execution",
+  "frozenChangedPaths": [
+    "packages/compiler/compile.js",
+    "packages/model/citation-content.ts",
+    "packages/model/citation-targets.ts",
+    "packages/model/citations.ts",
+    "packages/model/commands.ts",
+    "packages/model/engine.ts",
+    "packages/model/scene.generated.ts",
+    "packages/model/scene.schema.json",
+    "packages/model/scene.ts",
+    "packages/projects/document.js",
+    "packages/renderer-pptx/render.ts",
+    "src/projects/citation-references.js",
+    "src/projects/citations.js",
+    "src/projects/snippet-locator.js",
+    "src/projects/store-postgres.js",
+    "src/projects/store.js",
+    "test/v2-citations-8j.test.js",
+    "test/v2-citations-contract.js",
+    "test/v2-citations-fixture.js",
+    "test/v2-citations-postgres-8j.test.js",
+    "test/v2-citations-sqlite-8j.test.js"
+  ],
+  "runtimePathCount": 16,
+  "selected": {
+    "citation-lifecycle": {
+      "total": 13,
+      "pass": 13,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "citation-write-sqlite": {
+      "total": 7,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "citation-write-postgres": {
+      "total": 7,
+      "pass": 7,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "citation-boundaries": {
+      "total": 14,
+      "pass": 14,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "requiredTests": {
+    "total": 41,
+    "pass": 41,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "allRootAttemptsIncludingOverlap": {
+    "total": 68,
+    "pass": 66,
+    "fail": 2,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "typecheckExitCode": 0,
+  "initialToFrozenRuntimeConfigUnchanged": true,
+  "uncapturedBoundaryFixturesCommittedBytesVerified": [
+    "test/v2-citation-references-8j.test.js",
+    "test/v2-core-boundary.test.js",
+    "test/v2-types-drift.test.js"
+  ],
+  "unchangedAcceptedBoundaries": [
+    "packages/model/source-identity.ts",
+    "packages/model/source.schema.json",
+    "packages/model/intent.schema.json",
+    "packages/tools/request.schema.json",
+    "packages/tools/result.schema.json",
+    "packages/tools/session.ts",
+    "packages/agent/turns.ts",
+    "src/projects/source-read.js",
+    "src/projects/sources.js",
+    "src/projects/history.js",
+    "src/projects/runtime-document.js",
+    "src/projects/source-schema.js"
+  ],
+  "disprovedProbeRawCounts": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "independentChallenges": {
+    "total": 2,
+    "pass": 2,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "challengeInvocationHead": "665cd0459b0f267b32e808a59046e3d0b914e74f",
+  "cleanup": {
+    "actualUserDatabaseCount": 0,
+    "singleExactIdRemovalRecorded": true,
+    "independentExactContainerAbsent": true,
+    "privateCredentialPathsAbsent": true,
+    "reviewDatabaseDropped": true
+  },
+  "reviewLimits": [
+    "Regex hypothesis disproved and withdrawn; no runtime correction.",
+    "Private connection-file key-name read preceded exact verification; no secret/connection/mutation occurred, and actual connection use followed verification/fresh admission."
+  ],
+  "errors": []
+}

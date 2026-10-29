@@ -84,4 +84,7 @@ made no connection or mutation and printed no URL/secret. The report does not
 claim all private-file access occurred after verification. All actual connection
 use followed exact verification and fresh admission.
 
-Final pushed packet and root-owned exact-service cleanup remain pending.
+Final packet and cleanup audit completed after pushed packet
+`ef1d11ac37d24fcc62588ab874a36ecae8af9852`; exact source665cd04 is ACCEPT in
+`docs/reviews/V2-8J-4-665cd04.json`. `review.md` and `packet-audit.json` retain
+scope, counts, independent cleanup observations and procedural limits.

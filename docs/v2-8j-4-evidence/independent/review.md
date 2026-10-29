@@ -5,7 +5,9 @@ Accepted baseline `edda5ec7c2105bebff4a429a04b3fbe5b09048b4`.
 Frozen implementation `665cd0459b0f267b32e808a59046e3d0b914e74f`.
 Bounded metadata/history/unresolved-source/copy-export direction was approved
 before runtime at `b0cb7aa`, following readiness of plan `bbfbf8c`.
-Final exact-source verdict awaits the completed pushed packet audit.
+Decision: **ACCEPT** exact frozen source above, after reviewing pushed packet
+`ef1d11ac37d24fcc62588ab874a36ecae8af9852`. Final packet audit completed
+2026-10-29; no new product execution occurred during that audit.
 
 ## Source assessment
 
@@ -98,4 +100,33 @@ fail-closed containment, not a new visual/native fidelity claim. Temporary tmpfs
 PostgreSQL proves actual backend contracts, not power-loss durability. Standing
 BYOK, initial J1/I7 timing and inherited I4/native/visual provenance remain separate.
 
-Final packet/hash/count/cleanup audit and exact-source decision remain pending.
+## Final packet and cleanup audit
+
+Fresh EVAL/state/manifest/as-built/roadmap/handoff consistently identify frozen
+665cd04 and preserve J3 as the accepted baseline until this separate decision is
+recorded. Five required gates have retained passing evidence: pure13, actual
+SQLite7, actual PostgreSQL7, affected boundary/drift/J3pure14 and typecheck0.
+Selected41/41 and all root68=66pass/2fixture-fail/0skip/0cancel reconcile against
+original results and the isolated passing LF probe's raw TAP. Independent2/2
+remain separate. Preparation/review mistakes are not counted as failed leaves.
+
+The read-only audit verifies21 frozen changed runtime/test paths, all16 runtime
+hashes against each applicable selected execution and the independent challenge,
+raw file markers, committed old boundary-fixture equality where original capture
+omitted those paths, and initial6628bb4→final665cd04 runtime/config equality.
+Twelve unchanged source/tool/H/history boundaries match accepted J3. The later
+packet is docs-only. `packet-audit.json` records0errors; no SHA-only rerun or new
+product check is implied by these comparisons.
+
+Root saved/fsynced the actual empty user-database catalog before one exact-ID
+removal. The committed catalog/count is actual0, separately from inherited I4's
+unavailable historical count. A fresh successful Docker inventory independently
+confirms the exact owned container is absent. Both private connection.json and
+pg.env are absent. The unique review database/pools were already dropped/closed.
+No owned persistent service remains. The earlier key-name access-order limit is
+retained, not erased by successful cleanup.
+
+No confirmed product defect, blocking packet issue or required unexecuted gate
+remains for this approved J4 slice. Acceptance permits planning only; cited copy/
+create and native export remain intentionally refused until separately approved
+source-aware copy/editor-adoption and presentation contracts are implemented.
