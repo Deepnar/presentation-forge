@@ -1,0 +1,23 @@
+{
+  "implementationSha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
+  "packetHead": "08783656b19461fec331f72fa1507010344cd8b2",
+  "checksPassed": 305,
+  "errors": [],
+  "selected": {
+    "total": 33,
+    "pass": 33,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "allRootAttempts": {
+    "total": 39,
+    "pass": 35,
+    "fail": 4,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "reconstructedWholeFiles": 4,
+  "selectedLeavesWithLineage": 33,
+  "method": "Independent read-only source/hash/executed-leaf-union/reconstructed-lineage/artifact/cleanup consistency. No product test, DB, raster or service execution."
+}

@@ -1,0 +1,100 @@
+{
+  "invocationHead": "b1e221f2d90f51b899ad101f3190ea552f0b3574",
+  "admission": {
+    "at": "2026-10-29T12:44:20.950575+00:00",
+    "cpuBusyPercent": 10.200364298724951,
+    "memoryAvailableBytes": 42632298496,
+    "diskBusyPercent": {
+      "nvme0n1": 2.099542095116457
+    },
+    "globalIoPsi": "some avg10=45.45 avg60=45.80 avg300=46.08 total=11632977377\nfull avg10=43.80 avg60=43.76 avg300=43.90 total=11093520290",
+    "policy": "Global PSI is not attributed to this project. One bounded offline two-CPU native challenge, low priority, no unrelated process action."
+  },
+  "trackedDelta": [],
+  "sourceHashes": {
+    "packages/renderer-pptx/render.ts": "f7e3a494af18dc3f4e4ae1347a681d895ea003f353db58a80eaf1eceaed8b2b0",
+    "packages/renderer-pptx/source-notes.ts": "bda289c69be124589e8624357bccf383a431f37e2ee29b59f3bf9cf58112564a",
+    "packages/renderer-pptx/shape-ids.ts": "039c02e96f96d84ac0083f347881f931f3fb0fa76d9908abc84e12325ae796d3",
+    "src/projects/citation-export.js": "ed56af48a734a3c42bfa06a0244b39290186a52d3495c665363dffe2595f5b63",
+    "src/projects/source-read.js": "1c79e587033fff4b318b24ce963270aade800adeeb3524b98fa0fc4a8dbe7318",
+    "packages/model/citation-content.ts": "376f17b621332dff5537b1caac7db8318f7cda9f63a1914d1f73ca8c8f7defe1",
+    "packages/model/citation-targets.ts": "339f3a7bf223e05210602a83a593058ed6e99b259c61a4e3df3bfc27fd34617a",
+    "test/v2-tool-fixture.js": "a3fd7ce4386c7524eb8c327bd3453d30d56103066d9ac6d07975da019dedf61c",
+    "test/v2-citations-fixture.js": "240550e13d36e2a8a0be80f409bde1096d6c410fd5b0bdacdc950cc0c1ef8af2",
+    "test/v2-source-registry-fixture.js": "b437f230bb1b00e2161429b43fd066853ba831b72653e407ae1e0f299412be48",
+    "test/v2-citation-export-fixture.js": "3e518b7a456e8bc70b3a97657ce8e01f4d16658aacdcaa44265829fd3fbeaee0",
+    "docs/v2-8j-6-1-evidence/independent/empty-slide-challenge.mjs": "b67d8eae4450d99f840f34172a88fc8f44855294468b019798fe515906bb348b",
+    "docs/v2-8j-6-1-evidence/independent/run-empty-slide.py": "4359868435add231c12462bc6b25065e90c57a39e0d7cae32c3cf90073b26293"
+  },
+  "startedAt": "2026-10-29T12:44:20.956086+00:00",
+  "timeoutSeconds": 30,
+  "argv": [
+    "nice",
+    "-n",
+    "15",
+    "ionice",
+    "-c",
+    "3",
+    "taskset",
+    "-c",
+    "20,21",
+    "node",
+    "--test",
+    "--test-reporter=./tools/validated-tap.mjs",
+    "docs/v2-8j-6-1-evidence/independent/empty-slide-challenge.mjs"
+  ],
+  "ownedProcessGroup": 1854389,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationMs": 364,
+  "ownedResources": {
+    "cpuSeconds": 0.47617499999999996,
+    "peakSummedRssBytes": 175357952,
+    "samples": [
+      {
+        "elapsedSeconds": 0.014833223998721223,
+        "members": [
+          {
+            "pid": 1854389,
+            "rssBytes": 36536320
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 0.13017745399702108,
+        "members": [
+          {
+            "pid": 1854389,
+            "rssBytes": 58281984
+          },
+          {
+            "pid": 1854397,
+            "rssBytes": 90730496
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 0.24353123899709317,
+        "members": [
+          {
+            "pid": 1854389,
+            "rssBytes": 58281984
+          },
+          {
+            "pid": 1854397,
+            "rssBytes": 117075968
+          }
+        ]
+      },
+      {
+        "elapsedSeconds": 0.356208629997127,
+        "members": [
+          {
+            "pid": 1854389,
+            "rssBytes": 59490304
+          }
+        ]
+      }
+    ]
+  }
+}

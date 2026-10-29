@@ -1,0 +1,20 @@
+{
+  "observedAt": "2026-10-29T12:50:33.551713+00:00",
+  "groups": [
+    {
+      "invocation": "empty-slide-fixture-error",
+      "group": 1854389,
+      "remainingMembers": []
+    },
+    {
+      "invocation": "empty-slide-before",
+      "group": 1854748,
+      "remainingMembers": []
+    },
+    {
+      "invocation": "empty-slide-after",
+      "group": 1860751,
+      "remainingMembers": []
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "classification": "independent fixture error",
+  "tests": {
+    "total": 2,
+    "pass": 0,
+    "fail": 2,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "cause": "Explicit record() citation used its placeholder source ID instead of pureFixture default retained source ID, so source-unavailable correctly stopped before native generation.",
+  "originalSource": "docs/v2-8j-6-1-evidence/independent/empty-slide-fixture-original.mjs",
+  "correction": "Bind explicit citations to the actual retained source; keep source/runtime unchanged and preserve all assertions. Initial failure is not product fail-first evidence."
+}

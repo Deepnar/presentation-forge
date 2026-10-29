@@ -1,0 +1,49 @@
+{
+  "observedAt": "2026-10-29T12:50:33.528233+00:00",
+  "imagesViewed": [
+    "native/qualified/slide-1.png",
+    "native/qualified/slide-2.png",
+    "native/qualified/slide-3.png",
+    "native/short-notes/notes.png"
+  ],
+  "shortNotesPngSha256": "52ae2a5a78c3eac0c80fac800479566870e4db08977e8b28184f00d1f7d4d5c8",
+  "slideControls": [
+    {
+      "slide": 1,
+      "qualifiedSha256": "9dd779675f875202cbb295afb50f6933e39d730fc4bf6188064b4e8b56698d8a",
+      "controlSha256": "9dd779675f875202cbb295afb50f6933e39d730fc4bf6188064b4e8b56698d8a",
+      "pngBytesIdentical": true
+    },
+    {
+      "slide": 2,
+      "qualifiedSha256": "3309e590df2f5ecddb196aa5d85c927b6e012c58ec9ac23cc16aac5f97344786",
+      "controlSha256": "3309e590df2f5ecddb196aa5d85c927b6e012c58ec9ac23cc16aac5f97344786",
+      "pngBytesIdentical": true
+    },
+    {
+      "slide": 3,
+      "qualifiedSha256": "78f831c24b604451260da84ca73182c8593c2827d4099ad5104f7b5febda9546",
+      "controlSha256": "78f831c24b604451260da84ca73182c8593c2827d4099ad5104f7b5febda9546",
+      "pngBytesIdentical": true
+    }
+  ],
+  "pdfArtifacts": [
+    {
+      "path": "docs/v2-8j-6-1-evidence/native/control/control.pdf",
+      "bytes": 32532,
+      "sha256": "a9fc917853eb21036402ff6a84fbd4139f327c901a326362263c818b0fa1b353"
+    },
+    {
+      "path": "docs/v2-8j-6-1-evidence/native/qualified/qualified.pdf",
+      "bytes": 32532,
+      "sha256": "fe8e497cb55702c263f3d05dc2dab42a9a90b9104cf421f54153798788c4f679"
+    },
+    {
+      "path": "docs/v2-8j-6-1-evidence/native/short-notes/short-notes.pdf",
+      "bytes": 32641,
+      "sha256": "bdf94cf3516c16638f57d9202c831f549fd65b0e2b5f33817ba43a7af4d70d6c"
+    }
+  ],
+  "method": "Direct view of retained four PNGs and read-only exact PNG-byte/control/PDF header+hash checks; no new native generation or rasterization.",
+  "limits": "Representative short notes page only; no long printable-fit or interactive PowerPoint claim."
+}

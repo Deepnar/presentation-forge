@@ -1,0 +1,13 @@
+{
+  "observedAt": "2026-10-29T12:47:31.086498+00:00",
+  "containerId": "26cfc4d5808686a82afa867b5de4924b8d4a449be188d3c274fce34eb83c10d6",
+  "positiveDaemonVersion": "29.8.2",
+  "filteredQueryExitCode": 0,
+  "matchingIds": [],
+  "privateFilesExist": {
+    ".codex/v2-8j-6-1-session/connection.json": false,
+    ".codex/v2-8j-6-1-session/pg.env": false
+  },
+  "credentialsReadOrDatabaseUsed": false,
+  "serviceUse": "Released unused; no independent PostgreSQL connection, database or cleanup action."
+}

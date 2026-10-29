@@ -1,0 +1,129 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-29",
+  "implementationSha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
+  "initialImplementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+  "acceptedBaseline": "f6487737557c20d481cbc3e84216d7144bb116e8",
+  "approvedPlanSha": "ae96d71755114c9dbdbfc209d5c81763a4aa5e3b",
+  "approvalPinnedSha": "91e06210e2877fb39b50a0bb9223a31bccce22d7",
+  "packetSha": "08783656b19461fec331f72fa1507010344cd8b2",
+  "evidence": "docs/v2-8j-6-1-evidence/independent/review.md",
+  "assessment": "The approved bounded J6-1 headless notes-only export is implemented with complete focused evidence and no outstanding blocker. Exact-owner current saved snapshot qualification, title/full-URL-only portable additions, private single-use renderer authority, actual native mapping verification and private exclusive file publication satisfy the contract. Independent review exposed the empty-authored-slide scope defect; the targeted correction is retained with valid fail-first and final2/2 evidence. Final executed-leaf unions/source lineage/native artifacts/cleanup were independently checked. Acceptance is J6-1 only.",
+  "independence": "Reviewer context is separate from implementation. Reviewer wrote only independent challenge/review/evidence files; runtime, root tests/state/docs and Git were not mutated. The parent commits this record unchanged.",
+  "resolvedFinding": {
+    "issue": "Slide-level citations could publish notes for an empty or chrome/decor-only authored native scope, contrary to the approved empty-target refusal.",
+    "source": "packages/renderer-pptx/source-notes.ts:SourceNotesTrace.notes",
+    "validFailFirst": "docs/v2-8j-6-1-evidence/independent/empty-slide-before.json",
+    "resultBefore": {
+      "total": 2,
+      "pass": 0,
+      "fail": 2,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "resolution": "A slide citation now requires a nonempty map of actually emitted authored non-chrome target primitives. Chrome and background decor still render but cannot satisfy that source scope. No valid scene/layout branch was changed.",
+    "correctedAt": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
+    "finalEvidence": "docs/v2-8j-6-1-evidence/independent/empty-slide-after.json"
+  },
+  "sourceAssessment": {
+    "qualification": "Complete strict input capture before awaiting; exact owner/null without admin source override; one saved document/catalog lock with expected counters, bounded accounting/body pages, current targets/anchors/ranges and immutable private snapshot. Generation and publication occur after lock release. Inspect grants no reusable permission.",
+    "disclosure": "Only approved retained title/full URL values, deterministic portable association/object labels and unassessed-support/print notice are added. Controls/bidi are reversibly literal-escaped; no appended source bodies/excerpts/provider/private ID/hash/range fields, hyperlinks or source-page fetch.",
+    "rendererBoundary": "Renderer-owned private issuer/map consumes authority before async generation. External JSON/raw options cannot mint it. Src-to-renderer callback direction avoids SQL/auth/server reverse import. Raw/file/current GET cited refusal and other preflight remain; no scene/history/source/H/provider authority expansion.",
+    "mappingAndPublication": "Actual emitted native primitive names and post-identity-normalization slide/object/notes relationships are verified before bytes return. CLI consent is per invocation with no stale retry. Verified0700/0600 owned temporary resources, flush/close and exclusive hard-link publication prevent overwrite or partial final output; errors are sanitized and unknown post-publication acknowledgement remains unknown."
+  },
+  "inspectedEvidence": {
+    "selected": {
+      "total": 33,
+      "pass": 33,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "selection": {
+      "domain": 7,
+      "sqlite": 5,
+      "postgres": 5,
+      "newNative": 5,
+      "affectedRenderer": 7,
+      "cliContainment": 4
+    },
+    "selectionSemantics": "Explicit deduplicated unions of actual successful executed leaves, including leaves from failed processes. Not one green whole-file invocation or a rerun at the final documentation SHA.",
+    "allRootAttempts": {
+      "total": 39,
+      "pass": 35,
+      "fail": 4,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "failureAssessment": "Four fixture/expectation failures retained and corrected without weakening assertions. Visual substring-wrap failure, artifact-only correction and metadata/governance failures remain separate from test leaf totals.",
+    "sourceLineage": "Four post-run reconstructed whole test files independently match contemporaneous invocation SHA256 before comparing bodies. All33 selected passing bodies/shared helpers match final. Clean tracked-file Git blob proof covers existing renderer tests; CLI shutdown-only and trace-guard deltas have later affected passes. No original snapshot-capture or SHA-only-rerun claim.",
+    "typecheck": "Final typecheck-02 exit0 at exact ecf82d3f after typed guard change;2267ms.",
+    "packetAudit": "docs/v2-8j-6-1-evidence/independent/packet-audit.json",
+    "packetAuditResult": {
+      "checksPassed": 305,
+      "errors": 0
+    }
+  },
+  "independentlyExecuted": {
+    "finalTests": {
+      "total": 2,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "allAttempts": {
+      "total": 6,
+      "pass": 2,
+      "fail": 4,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "attemptClassification": "Initial2fail were reviewer fixture mistakes using a placeholder source ID; source/log/assessment preserved. Next2fail are valid product fail-first on cb3a8522. Final same2 cases pass on ecf82d3f without changing assertions.",
+    "fixtureAssessment": "docs/v2-8j-6-1-evidence/independent/empty-slide-fixture-assessment.json",
+    "invocationHead": "33f1006556f31f6527d40e20f8fb7e74fbcb1250",
+    "durationMs": 315,
+    "exitCode": 0,
+    "timedOut": false,
+    "scope": "Offline framework-free/native-in-memory empty/chrome-only slide refusal checks. Exact source/helper hashes, headroom observations, low priority/two-CPU limits/watchdog and owned resources retained. No independent database/browser/raster/external-network/model/GPU execution."
+  },
+  "visualAssessment": {
+    "evidence": "docs/v2-8j-6-1-evidence/independent/visual-verification.json",
+    "viewed": [
+      "native/qualified/slide-1.png",
+      "native/qualified/slide-2.png",
+      "native/qualified/slide-3.png",
+      "native/short-notes/notes.png"
+    ],
+    "assessment": "All3 qualified1067x600 PNGs are independently byte-identical to uncited controls. Four images viewed; short actual notes page preserves readable full label/title/URL/notice without overlap or clipping. Retained actual PDFs have verified headers/hashes. OOXML checks, rather than raster equality alone, establish editable primitives and mappings.",
+    "limits": "Original visual generation produced artifacts but exited1 on notice line wrapping; later artifact-only whitespace normalization exits0 without rerendering. The refusal-only final guard retains valid output applicability with affected structural positive comparison. Long printed fit and interactive/cross-viewer PowerPoint qualification are not claimed."
+  },
+  "cleanup": {
+    "complete": true,
+    "reviewerPostgresUse": "Released unused; no credential read, connection, database or pool created by reviewer.",
+    "rootActualUserDatabases": [],
+    "rootOtherClients": 0,
+    "containerId": "26cfc4d5808686a82afa867b5de4924b8d4a449be188d3c274fce34eb83c10d6",
+    "exactOwnedContainerAbsent": true,
+    "privateCredentialsAbsent": true,
+    "reviewerRunnersAbsent": true,
+    "independentVerification": "docs/v2-8j-6-1-evidence/independent/cleanup-verification.json",
+    "assessment": "Root saved actual empty catalog before its single exact-ID removal. Reviewer positively queried the live Docker daemon and observed exact ID and both private files absent. No old fixture/cleanup was used or recreated."
+  },
+  "unexecutedRequiredChecks": [],
+  "waivers": [],
+  "remainingIssues": [],
+  "residualLimits": [
+    "Complete approved title/URL values include private queries/identifier strings and become independent portable data; later clear/delete cannot revoke captured/downloaded output.",
+    "Claim support remains not assessed; content anchors/range boundaries establish no verified claim or stored quote match.",
+    "Long notes may overflow printed notes pages; only representative short notes rendering and exact bounded text are qualified, not general printing or interactive Microsoft PowerPoint.",
+    "The opaque factory boundary does not sandbox arbitrary trusted Node execution; inherited authored asset embedding is unchanged and not newly SSRF-qualified.",
+    "Private publication is local POSIX only; ambiguous publication/shutdown outcomes may leave a complete file and have no automatic retry. Lock waits gain no deadline and tmpfs checks establish no power-loss durability.",
+    "Accepted unchanged evidence is reused; standing BYOK locale and prior J1/I7/I4/native provenance limitations remain separate and unrerun."
+  ],
+  "stopPoint": "J6-1 accepted only. No browser/public export, visible/print presentation, research/provider context, semantic creation, activation, deployment or next-feature implementation is authorized by this decision."
+}
