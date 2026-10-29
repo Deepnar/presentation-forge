@@ -9204,34 +9204,40 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-citation-project-copy"></a>
 
-  - [ ] **Source-aware project copy and safe live-editor adoption — contract needed.**
-    After accepted J4, agree copying retained snippets into a new owner-private project,
-    atomic source-ID rebinding, original retrieval provenance, stale/missing-source
-    refusal or explicit alternative, and capacity/history behaviour. Generic create
-    must not silently carry foreign IDs or drop references. Cover actual Save-as-
-    new input: it copies live unsaved scenes, not merely the stored source project.
-    Source inspection at `309ced2` found the awaited create response changes
-    projectRef without a fresh session/revision/pending-editor check, and does not
-    install rewritten scenes. This is an **unreproduced race risk**, not an executed
-    failure. Exercise it narrowly and preserve edits/navigation during copy before
-    adopting a response or claiming saved. Source rebinding also requires updating
-    authoritative live scene IDs and undo identity. Admin project CRUD grants no
-    private-source copy authority. J4 gates citation-bearing copy pending this work.
+  - [ ] **V2-8J-5 source-aware project copy and safe live-editor adoption — proposed.**
+    [Concrete contract](V2-8J-5-PLAN.md), from accepted J4 `665cd04`, needs independent
+    readiness and human direction before implementation. Recommend copying only
+    referenced snippets into the same exact owner's new project, atomically
+    rebinding source IDs and preserving original retrieval provenance. Each copy
+    retains snippets independently of the original's clear/delete; stale/missing/
+    foreign/corrupt source references refuse the whole operation. No source bodies
+    become public, provider context or admin-readable through this capability.
+    Copy live unsaved scenes; a newer saved source revision alone must not block
+    the existing Save-as-new conflict-recovery action. Use existing controls with
+    guarded fresh-engine/router adoption, preserving later edits/drafts and undo
+    when adoption is deferred. The awaited-response hazard remains an
+    **unreproduced source-inspected race risk** until narrowly exercised.
+    Generic cited create and native export remain refused. Existing uncited CRUD
+    permissions remain; admin CRUD supplies no private-source authority. Explicit
+    creates have no automatic retry or exactly-once promise; lost responses leave
+    creation unknown, requiring workspace inspection before a deliberate retry.
 
   <a id="assistant-citation-native-presentation"></a>
 
   - [ ] **Citation presentation and native export — direction needed.**
     Agree visible attribution versus speaker notes, which retained metadata may
     enter portable files, stale/missing-source behaviour and source-to-slide/object
-    mappings before implementation. Notes would disclose private URLs/titles or
-    excerpts and cannot be added as an incidental renderer change. Reuse canonical
+    mappings before implementation. J5 proposes private copy only; its acceptance
+    would not authorize portable disclosure or remove export refusal. Notes would
+    disclose private URLs/titles or excerpts and cannot be added as an incidental
+    renderer change. Reuse canonical
     scenes/native preflight; cover direct/browser/file and stored-project export,
     hidden targets, legacy access and admin privacy boundaries. Require appropriate
     native/visual evidence when presentation is implemented. Accepted J4 enforces
     central cited-scene export refusal; it does not complete citation-preserving export.
 
-  Dependency sequence after accepted J4: agree source-aware copy/native mappings
-  and verified locator/claim-support boundaries before research-backed semantic
+  Dependency sequence after accepted J4: agree/implement/review J5 source-aware copy,
+  then agree native mappings and verified locator/claim-support boundaries before research-backed semantic
   creation. Semantic tools retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
   parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning
