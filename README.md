@@ -271,6 +271,21 @@ and remain optional: Open is available while a preview loads or fails. The
 [cover validation and review record](docs/V2-7C-1-EVAL.md) identifies the exact
 implementation and its acceptance status.
 
+Saved projects with retained citations have an owner-only notes export on local
+POSIX filesystems:
+
+```sh
+npm run export-project -- <project-id> --output <new-path.pptx> --include-source-notes
+```
+
+Authenticated projects require the owner's existing session in `FORGE_PROJECT_TOKEN`.
+The flag explicitly consents **each time** to complete retained source titles and
+URLs, including private query values, in PowerPoint speaker notes. Downloaded notes
+survive source clear/project deletion; support remains not assessed and long notes
+may overflow printed pages. Output is private0600 and never replaces an existing
+file. Uncited projects can omit the flag. Browser/current public cited export still
+refuses; see the [accepted scope and evidence](docs/V2-8J-6-1-EVAL.md).
+
 V2 also provides a trusted headless CLI for bounded scripted edits to saved
 projects: `npm run agent-run -- start --project ID --plan FILE`, followed by
 `work`, `status` or `cancel` with `--project ID --run RUN_ID`. Start persists and

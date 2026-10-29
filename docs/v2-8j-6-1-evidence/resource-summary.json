@@ -90,9 +90,25 @@
       "cpuUserSeconds": 2.544,
       "cpuSystemSeconds": 0.281,
       "peakLiveGroupRssBytes": 506519552
+    },
+    {
+      "invocation": "native-empty-fix-01",
+      "durationMs": 464,
+      "cpuUserSeconds": 0.576,
+      "cpuSystemSeconds": 0.053,
+      "peakLiveGroupRssBytes": 34185216
+    },
+    {
+      "invocation": "typecheck-02",
+      "durationMs": 2267,
+      "cpuUserSeconds": 3.055,
+      "cpuSystemSeconds": 0.206,
+      "peakLiveGroupRssBytes": 464879616
     }
   ],
-  "currentOwnedPostgresStats": {
+  "policy": "Only this recorded ID was queried. Prior fixtures and unrelated work untouched. CPU/RSS attribution only; aggregate host PSI is not a cause claim.",
+  "summaryAtUtc": "2026-10-29T12:53:27.666651+00:00",
+  "ownedPostgresStatsBeforeCleanup": {
     "BlockIO": "5.9MB / 73.7kB",
     "CPUPerc": "0.00%",
     "Container": "26cfc4d5808686a82afa867b5de4924b8d4a449be188d3c274fce34eb83c10d6",
@@ -103,5 +119,10 @@
     "NetIO": "239kB / 380kB",
     "PIDs": "6"
   },
-  "policy": "Only this recorded ID was queried. Prior fixtures and unrelated work untouched. CPU/RSS attribution only; aggregate host PSI is not a cause claim."
+  "ownedPostgresNow": "Removed once; see cleanup.json and independent/cleanup-verification.json.",
+  "totals": {
+    "rootUserCpuSeconds": 19.387,
+    "rootSystemCpuSeconds": 2.171,
+    "peakLiveGroupRssBytes": 508968960
+  }
 }

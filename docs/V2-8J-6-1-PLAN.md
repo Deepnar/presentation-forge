@@ -1,6 +1,8 @@
 # V2-8J-6-1 — owner-qualified citation notes export
 
-Status: **human-approved; implementation in progress**.
+Status: **implemented and independently accepted at ecf82d3f**.
+[Implementation decision](reviews/V2-8J-6-1-ecf82d3f.json) and
+[evaluation](V2-8J-6-1-EVAL.md) record the completed bounded result.
 Human approved “Approve notes-only foundation (Recommended)” on2026-10-29 after
 the explicit full-URL/private-query, independent-retention and print-limit question.
 [Direction record](v2-8j-6-1-evidence/human-direction.json) pins reviewed ae96d717.
@@ -12,8 +14,8 @@ Accepted baseline: `f6487737557c20d481cbc3e84216d7144bb116e8` (J5), independentl
 [accepted](reviews/V2-8J-5-f6487737.json). Planning entry:
 `2fb36ad0e2694abfd953722fe5605dfa9e674a62`; branch v2, push origin/v2 only.
 [The roadmap](ROADMAP.md#assistant-citation-native-presentation) owns scope and
-sequence. This is a proposed bounded contract, not implemented behavior or a
-second work list. The current continuation authorizes preparing/reviewing it.
+sequence. The approved implementation contract follows; historical planning-only authority
+and its stop are preserved below. Current acceptance is indexed in development-state.json.
 
 ## Recommended direction
 
@@ -200,8 +202,8 @@ the parent browser citation-export interaction; the roadmap records that seam.
 
 ## Focused verification after human approval
 
-Planning runs no product tests/services. Proposed files/gates below do not exist
-or claim results; pin the final inventory at implementation entry.
+Planning ran no product tests/services. The implementation entry later pinned
+these focused gates; exact executed results and source applicability are in the evaluation.
 
 | Gate | Smallest meaningful new/affected checks |
 |---|---|
@@ -246,7 +248,7 @@ inspected images, exact resource/fixture ownership and remaining uncertainty.
 The human direction question must include complete-URL query disclosure, independent
 portable retention and the absence of a general printable notes-page-fit promise.
 
-For **this planning pass**, stop after independent technical readiness, lightweight
+For **the historical planning pass** (completed before human direction), stop after independent technical readiness, lightweight
 documentation checks, scoped push and the concrete human direction question. Leave
 J5 accepted and nextCandidate.authorized:false. Readiness does not authorize code,
 tests, schema/database work, private disclosure or activation. After approved J6-1

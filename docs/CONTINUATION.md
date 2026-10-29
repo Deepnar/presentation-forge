@@ -32,7 +32,35 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Latest accepted slice — J5 source-aware project copy complete
+## Latest accepted slice — J6-1 qualified citation notes export complete
+
+Human approved reviewed ae96d717 on2026-10-29, pinned91e06210 before runtime.
+Corrected source `ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d` is independently
+[accepted](reviews/V2-8J-6-1-ecf82d3f.json); stable separate decision committed
+unchanged at68f8da17. Read [evaluation](V2-8J-6-1-EVAL.md), approved contract,
+state and HANDOFF. Selected33/33, final typecheck0, independent final2/2 and
+305/0 packet audit are complete. All root39=35pass/4fixture-fail, independent
+6=2pass/2fixture-fail/2valid-product-fail retain every attempt. Reconstructed
+old test files exactly match contemporaneous hashes; no original capture or
+single green whole-file process is inferred from executed-leaf unions.
+
+One owner-bound saved project/catalog snapshot qualifies every citation before
+native generation. Explicit consent exports full title/URL values to literal
+speaker notes with verified portable mappings; empty authored slide scope now
+refuses after independent fail-first correction. Private0600 exclusive publication
+preserves existing files. No scene/history/source mutation, public/UI export,
+provider/model/search call or activation. Raw/file/current GET cited refusal stays.
+Representative notes and three pixel-identical slide/control rasters were viewed;
+long printed fit and interactive Microsoft PowerPoint are not claimed.
+
+Actual empty database catalog/0other clients was saved/fsynced before one exact-ID
+removal, and private files/runners/service absence are independently verified.
+No owned service remains. Do not recreate fixtures or repeat completed cleanup.
+J6-1 closeout is complete; further direction and scope are solely in the
+[roadmap](ROADMAP.md#assistant-citation-native-presentation). Acceptance authorizes
+planning only, not the later browser/public export implementation or activation.
+
+## Accepted predecessor — J5 source-aware project copy complete
 
 Human approved the reviewed J5 contract1b37cdd6 on2026-10-29, pinned7df22d94 before
 runtime. Exact source `f6487737557c20d481cbc3e84216d7144bb116e8` is independently
@@ -44,15 +72,14 @@ no required gate remains unexecuted. No unchanged old matrix was repeated.
 
 Referenced private sources copy atomically to the same owner with new bindings and
 independent retention; guarded fresh-engine adoption preserves later human work.
-Generic cited create/import and native export remain refused. Exact owned cleanup
+Generic cited create/import and unqualified native export remain refused. Exact owned cleanup
 saved/fsynced actual0catalog before one removal; independent service/private-file/
 runner absence verification is complete. No owned service remains. Never recreate
 old fixtures or repeat cleanup. Current shared-machine policy monitors bounded own
 load and leaves unrelated work alone; global PSI alone is not attribution.
 
-J5 closeout is complete. Current subsequent planning status is in HANDOFF and
-state; the [J6-1 contract](ROADMAP.md#assistant-citation-notes-export) remains
-a direction-gated candidate, not runtime authorization. Further scope/direction is solely in the
+J5 closeout is complete. Accepted qualified notes export is separately recorded
+in J6-1 above. Further scope/direction is solely in the
 [roadmap](ROADMAP.md#assistant-citation-native-presentation); acceptance permits
 planning, not dependent implementation, model/search runs or activation.
 

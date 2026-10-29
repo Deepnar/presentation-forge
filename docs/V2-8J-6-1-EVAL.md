@@ -1,4 +1,4 @@
-# V2-8J-6-1 evaluation — validated, independent review pending
+# V2-8J-6-1 evaluation — independently accepted
 
 Accepted baseline `f6487737557c20d481cbc3e84216d7144bb116e8` (J5). Frozen
 implementation `ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d`, branch v2. Human approved
@@ -6,7 +6,9 @@ reviewed contract ae96d717 on2026-10-29; [direction](v2-8j-6-1-evidence/human-di
 was pinned91e06210 before runtime. [Contract](V2-8J-6-1-PLAN.md),
 [roadmap](ROADMAP.md#assistant-citation-notes-export) and
 [focused inventory](v2-8j-6-1-evidence/validation-plan.json) define scope.
-Implementation is complete; acceptance is pending a separate exact-source review.
+Exact source is independently [accepted](reviews/V2-8J-6-1-ecf82d3f.json) from J5.
+The stable separate decision was committed unchanged at68f8da17. No acceptance
+was supplied by the implementer.
 
 ## Result and preservation
 
@@ -69,9 +71,8 @@ wording; duplicate citation associations in a long-note fixture. The corrected
 leaves passed without weakening assertions. Root validation initially missed one product gap: a current slide citation
 could export without any emitted authored target. Independent fail-first2/2
 reproduces empty and chrome/decor-only slides. Correction ecf82d3f now rejects
-those scopes; new regression and affected positive path pass2/2. Reviewer
-challenge correction/recheck remains pending; its first fixture-only2fail are
-retained separately from the valid product reproduction2fail. The notes PDF extractor initially expected a continuous substring where
+those scopes; new regression and affected positive path pass2/2. Independent corrected challenges pass2/2; the reviewer retains its first
+fixture-only2fail separately from the valid product reproduction2fail. The notes PDF extractor initially expected a continuous substring where
 the valid notice wrapped; artifact-only whitespace normalization passed without
 re-rendering. Initial governance registration missed a schema conditional (2errors,
 corrected1192f3ee). Later packet assembly used two unsupported status spellings and
@@ -101,7 +102,8 @@ is capped1CPU/512MiB with256MiB tmpfs; actual contract databases were dropped an
 pools closed. The reviewer released it unused. Root saved/fsynced the actual empty user
 database catalog with0other clients, removed only the exact owned ID once, and
 confirmed live-daemon absence/private credential deletion. See cleanup.json and
-cleanup-catalog.json; independent absence verification remains pending. No old
+cleanup-catalog.json; independent positive live-daemon/private-file/runner absence
+verification is complete. No owned service or validation process remains. No old
 fixture/cleanup was reused, no unrelated process was stopped, and global PSI was
 not treated as attribution to this work.
 
@@ -120,11 +122,27 @@ benchmark matrix, production build, migration, deployment or activation ran.
 The standing BYOK locale failure and inherited J1/I7 timing/I4/native/visual limits
 remain separate and unrerun. Browser citation-export interaction, visible attribution,
 printable pagination, research orchestration and semantic creation remain in the
-roadmap. Recommend acceptance of this bounded foundation only after independent
-review and owned cleanup. Stop after J6-1 handoff; do not implement the next surface.
+roadmap. Separate review accepts this bounded foundation after exact-source audit and
+verified owned cleanup. Stop after J6-1 handoff; do not implement the next surface.
 
 Initial runtime freeze cb3a8522 and packet b1e221f2 remain in history; final ecf82d3f
 adds only the reviewed empty-scope guard/regression. Existing valid-render visual
 evidence carries forward because the new branch rejects empty scopes and the
 affected positive case still proves exact native scene XML equality to control.
 No new raster or old-suite repeat was warranted.
+
+## Independent decision and closeout
+
+Independent review retained a fixture-only first2fail, then valid product fail-first
+2fail, and final same2/2pass after correction, all0skip/cancelled. Root all39 and
+review all6 are separate overlapping attempts, not unique-case totals. Final root
+selection33/33 and independent2/2 satisfy all selected gates; no required check,
+waiver or source issue remains. The independent packet audit verified305checks with
+0errors, every selected raw success/body/helper hash, native visuals and cleanup.
+The review supplied acceptance; root commits/propagates its record unchanged.
+
+Final owned root checks used19.387user+2.171system CPU seconds, with maximum sampled
+live-group RSS508968960bytes (~485MiB). No unrelated process was changed; the owned
+fixture is absent. [Changed files](v2-8j-6-1-evidence/changed-files.json) records
+scoped source/tests and documentation/evidence from implementation entry4ebfbf05.
+J6-1 is complete. Stop at handoff; no browser/public export or next feature started.

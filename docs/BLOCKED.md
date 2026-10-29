@@ -140,10 +140,12 @@ cleanup; no J5 blocker remains. Exact active scope/status lives in the
 [roadmap](ROADMAP.md#assistant-citation-project-copy) and state; no decision blocker
 remains for this bounded slice.
 
-The next [J6-1 contract](ROADMAP.md#assistant-citation-notes-export) is a planning
-contract received explicit human portable-disclosure direction on2026-10-29;
-implementation and focused validation are authorized, with independent acceptance
-still pending. No direction blocker remains for that bounded scope. See the roadmap for exact scope.
+J6-1 notes-only export is independently [accepted](reviews/V2-8J-6-1-ecf82d3f.json)
+at ecf82d3f after human direction, focused33/33, independent2/2, finaltypecheck0,
+305/0audit and verified cleanup. No validation/review/service blocker remains.
+[Evaluation](V2-8J-6-1-EVAL.md) preserves the corrected empty-scope defect, fixture
+failures and portable/print limits. Later scope and direction live only in the
+[roadmap](ROADMAP.md#assistant-citation-native-presentation).
 
 ### 3.1 Browser regression coverage
 

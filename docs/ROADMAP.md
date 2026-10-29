@@ -9176,7 +9176,8 @@ local inference. Only that separate transport correction is authorized; this aud
     Exact-owner headless attachment/removal/inspection reuse canonical commands,
     project/catalog snapshots and atomic history. Edits, undo/history, duplication
     and exact-ID regeneration preserve unresolved/stale metadata without restoring
-    cleared sources. Cited new-project copying and native export refuse centrally;
+    cleared sources. J4 initially refused cited copy/native export; qualified J5 copy
+    and J6-1 notes export are separately recorded below. Generic paths still refuse;
     existing uncited behaviour and tool/H/Assistant authority remain unchanged.
 
     Selected pure13/SQLite7/PostgreSQL7/boundary14=41/41, typecheck0 and independent
@@ -9236,7 +9237,7 @@ local inference. Only that separate transport correction is authorized; this aud
     [J5 evaluation](V2-8J-5-EVAL.md). Final real-browser5/5 exercises the corrected
     current adoption and draft/navigation/restore guards; no retroactive baseline
     DOM claim is made.
-    Generic cited create and native export remain refused. Existing uncited CRUD
+    Generic cited create and unqualified native export remain refused. Existing uncited CRUD
     permissions remain; admin CRUD supplies no private-source authority. Explicit
     creates have no automatic retry or exactly-once promise; lost responses leave
     creation unknown, requiring workspace inspection before a deliberate retry.
@@ -9254,48 +9255,50 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-citation-native-presentation"></a>
 
-  - [ ] **Citation presentation and native export — direction needed.**
-    Agree visible attribution versus speaker notes, which retained metadata may
-    enter portable files, stale/missing-source behaviour and source-to-slide/object
-    mappings before implementation. Accepted J5 permits private copy only; it
-    does not authorize portable disclosure or remove export refusal. Notes would
-    disclose private URLs/titles or excerpts and cannot be added as an incidental
-    renderer change. Reuse canonical
-    scenes/native preflight; cover direct/browser/file and stored-project export,
-    hidden targets, legacy access and admin privacy boundaries. Require appropriate
-    native/visual evidence when presentation is implemented. Accepted J4 enforces
-    central cited-scene export refusal; it does not complete citation-preserving export.
+  - [ ] **Citation presentation and native export — headless notes accepted; browser/visible direction needed.**
+    Accepted J6-1 below adds only owner-qualified headless speaker notes containing
+    explicitly consented complete retained titles/URLs, with verified portable
+    mappings and bounded complete text. Raw/file/current saved GET cited exports
+    still refuse. The parent remains open: agree browser disclosure/download,
+    draft/session handling and any visible attribution or printable pagination
+    before implementation. No excerpts, provider context or verified claim support
+    are authorized. Reuse the canonical scenes, qualification and native renderer;
+    later surfaces must preserve exact-owner source privacy and human work.
 
     <a id="assistant-citation-notes-export"></a>
 
-    - [ ] **V2-8J-6-1 headless owner-qualified citation notes export — validated, independent review pending.**
-      The2026-10-29 continuation starts planning from accepted J5f6487737, not
-      implementation. [Concrete contract](V2-8J-6-1-PLAN.md) is independently
-      [ready for direction](reviews/V2-8J-6-1-plan-3b6bf65f.json) at ae96d717;
-      human approved the notes-only foundation on2026-10-29 in the explicit
-      [direction record](v2-8j-6-1-evidence/human-direction.json). Implement explicit
-      per-export consent for retained title/full URL (including query values) in
-      speaker notes only, with portable slide/object labels and claim support not
-      assessed. Preserve complete bounded Notes-editor text; printable notes-page
-      fit is not promised. No excerpts,
-      appended private ID/provider fields, new source retention or public/UI export
-      authority. Qualify one exact-owner saved snapshot; stale/missing/hidden/
-      ambiguous/changed references refuse the complete export. Preserve native
-      content and scene/history bytes, and keep raw/current GET cited refusal.
-      This is portable disclosure beyond accepted private-copy retention; obtain
-      human data-handling direction after completed independent technical readiness.
-      Six material pins are resolved: printable scope, inherited asset policy,
-      private exclusive publication, anchored non-chrome mapping, private issuer
-      lifecycle and literal field-value disclosure. Planning changed docs only;
-      protocol/link/source consistency passed with no product execution.
-      Focus only on new qualification/actual stores/native notes/CLI containment
-      and a small native visual fixture; no old matrix/model/GPU work is planned.
-      Corrected implementation ecf82d3f has selected33/33 focused passes, typecheck0
-      and actual native visual evidence; all39root attempts retain4fixture failures. Independent review reproduced
-      empty/chrome-only slide disclosure; the corrected trace requires an emitted
-      authored target. Final review of that narrow correction is pending.
-      Read [evaluation](V2-8J-6-1-EVAL.md) for union/source applicability. Independent
-      exact-source acceptance and owned cleanup remain pending; no next surface is authorized.
+    - [x] **V2-8J-6-1 headless owner-qualified citation notes export — independently accepted.**
+      Human approved reviewed ae96d717 on2026-10-29, pinned91e06210 before runtime.
+      Corrected source `ecf82d3f` is independently
+      [accepted](reviews/V2-8J-6-1-ecf82d3f.json); stable decision committed unchanged
+      at68f8da17. [Contract](V2-8J-6-1-PLAN.md) and
+      [evaluation](V2-8J-6-1-EVAL.md) record exact-owner saved snapshot qualification,
+      explicit consent for full retained title/URL speaker notes, literal control
+      encoding, verified portable/native mapping and private0600 exclusive output.
+      Missing/stale/foreign/hidden/ambiguous/changed or non-rendered targets refuse.
+      No excerpts/appended private IDs, scene/history writes, public/UI export,
+      provider context, source fetching or activation. Generic cited paths still refuse.
+
+      Selected33/33, finaltypecheck0, independent final2/2 and305/0audit pass. All
+      root39=35pass/4fixture-fail and independent6=2pass/2fixture-fail/2valid-fail
+      retain every attempt. Original passing leaf bodies are tied to contemporaneous
+      whole-file hashes; explicit unions are not single green whole-file processes.
+      Review found empty/chrome-only slide disclosure; the corrected trace requires
+      an emitted authored scope. Three cited/control rasters are pixel-identical;
+      the actual short notes page was inspected. Long printed fit is not promised.
+      Actual0catalog/0other clients was saved/fsynced before one owned-ID removal;
+      independent service/private-file/runner absence verification is complete.
+
+      **Look-ahead.** The next browser interaction can reuse the canonical saved
+      snapshot facade and native renderer. Consent remains per export, not a saved
+      preference or reusable receipt. Browser drafts/session/download lifecycle and
+      visible/printed attribution keep their separate contracts below.
+
+      > **Learned.** A slide identity and current content anchor do not guarantee
+      > rendered authored content: chrome/decor cannot satisfy citation scope.
+      > Byte ceilings preserve bounded complete Notes-editor text but establish no
+      > printed fit. Executed-leaf unions require exact source lineage; post-run
+      > reconstructions are useful only after matching contemporaneous whole-file hashes.
 
     - [ ] **Browser citation-export interaction — follows accepted J6-1.**
       Agree the existing export action's explicit disclosure/preview/download
@@ -9308,9 +9311,9 @@ local inference. Only that separate transport correction is authorized; this aud
       pagination also needs that presentation contract: byte limits alone cannot
       establish fit in the native notes body. J6-1 alone leaves this parent open.
 
-  Dependency sequence after accepted J5 source-aware copy:
-  agree native mappings and verified locator/claim-support boundaries before research-backed semantic
-  creation. Semantic tools retain deterministic compile/preservation/approval
+  Dependency sequence after accepted J6-1 headless notes:
+  agree browser export/visible attribution and verified locator/claim-support
+  boundaries before research-backed semantic creation. Semantic tools retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
   parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning
   only, with no dependent implementation implied.

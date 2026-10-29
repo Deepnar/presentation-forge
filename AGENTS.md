@@ -97,7 +97,7 @@ The J4 revisioned scene citation lifecycle is independently accepted at `665cd04
 owner-qualified headless attach/remove/inspect and unverified metadata survive
 commands, undo/history and regeneration without restoring cleared sources.
 Content hashes and retained ranges do not establish claim support. Generic cited
-create/import and native PPTX export remain refused. The separate J5 source-aware
+create/import and unqualified native PPTX export remain refused. The separate J5 source-aware
 copy and guarded live-editor adoption are independently accepted at `f6487737`:
 only referenced private snippets copy atomically to the same owner with rebound
 source IDs and independent retention. Fresh-engine adoption preserves the captured
@@ -105,6 +105,15 @@ scene/viewport; later edits/drafts/navigation/session changes defer or suppress 
 The original retains its history; the new session has empty undo. Unknown responses
 have no automatic retry/exactly-once promise. No provider/H/Assistant research or
 portable citation disclosure authority is added.
+The separate J6-1 headless citation notes exporter is independently accepted at
+`ecf82d3f`: exact-owner saved snapshot qualification and explicit per-export
+consent permit only retained full title/URL values in native speaker notes.
+Portable labels map to verified emitted authored non-chrome objects; empty authored
+slide scopes refuse. Notes preserve bounded complete text but may overflow printed
+pages; support remains not-assessed. Downloaded content survives source clear/delete.
+The owner CLI publishes complete0600 files exclusively; stale requests never retry.
+Generic/raw/file/current GET cited exports remain refused. No browser/public export,
+provider research/context or activation authority is added.
 Saved chat does not automatically become provider context. Further host progress/
 scheduling, provider routing, citation presentation, research
 orchestration, live-provider qualification and

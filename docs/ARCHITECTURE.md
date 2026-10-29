@@ -3156,7 +3156,7 @@ host activation is added. Exact source `f6487737` is independently
 focused execution, visual/response limits and cleanup. Later direction/authority
 remains solely in the [roadmap](ROADMAP.md#assistant-citation-native-presentation).
 
-### J6-1 owner-qualified citation speaker notes (implementation under review)
+### J6-1 owner-qualified citation speaker notes (accepted ecf82d3f)
 
 `src/projects/citation-export.js` exposes metadata-only `inspect` and exact-owner
 `render` over the canonical citation read transaction. Each render captures a strict

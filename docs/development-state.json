@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "f6487737557c20d481cbc3e84216d7144bb116e8",
+    "sha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8J-5-f6487737.json"
+    "source": "docs/reviews/V2-8J-6-1-ecf82d3f.json"
   },
   "implementationHead": {
     "sha": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
-    "note": "Approved J6-1 runtime frozen; focused retained executed-leaf evidence complete, independent review of empty-scope correction pending. CLI close handling has a narrow subsequent passing publication case."
+    "note": "J6-1 independently accepted after empty-scope correction, final focused evidence, source-lineage audit and exact owned cleanup. Later commits contain documentation/evidence only."
   },
   "activeMilestone": {
     "id": "V2-8J-6-1",
@@ -15,53 +15,53 @@
     "evalDoc": "docs/V2-8J-6-1-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8J-6-1-ecf82d3f.json",
+    "accepted": true
   },
   "validation": [
     {
       "id": "notes-domain",
       "status": "passed",
       "evidence": "docs/v2-8j-6-1-evidence/notes-domain.json",
-      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
+      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
     },
     {
       "id": "notes-sqlite",
       "status": "passed",
       "evidence": "docs/v2-8j-6-1-evidence/notes-sqlite.json",
-      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
+      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
     },
     {
       "id": "notes-postgres",
       "status": "passed",
       "evidence": "docs/v2-8j-6-1-evidence/notes-postgres.json",
-      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
+      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
     },
     {
       "id": "notes-native",
       "status": "passed",
       "evidence": "docs/v2-8j-6-1-evidence/notes-native.json",
-      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
+      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
     },
     {
       "id": "notes-cli",
       "status": "passed",
       "evidence": "docs/v2-8j-6-1-evidence/notes-cli.json",
-      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
+      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
     },
     {
       "id": "typecheck",
       "status": "passed",
       "evidence": "docs/v2-8j-6-1-evidence/typecheck.json",
-      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
+      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
     },
     {
       "id": "notes-visual",
       "status": "passed",
       "evidence": "docs/v2-8j-6-1-evidence/notes-visual.json",
-      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
+      "reason": "Complete focused evidence independently accepted at ecf82d3f; retained executed-leaf unions, source applicability and all attempts are explicit."
     }
   ],
   "knownBlockers": [],
