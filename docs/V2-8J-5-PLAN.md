@@ -1,6 +1,8 @@
 # V2-8J-5 — source-aware copy and safe editor adoption
 
-Status: **human-approved; implementation in progress**.
+Status: **human-approved; exact implementationf6487737 independently accepted**.
+[Evaluation](V2-8J-5-EVAL.md) and [decision](reviews/V2-8J-5-f6487737.json) record
+completed execution and cleanup; the contract below preserves its approved scope.
 Human direction on2026-10-29: “ok continue”, directly after the explicit J5
 private retention/editor-handoff approval question. This approves reviewed contract
 `1b37cdd674fa680ac15bb266e2e16bf4eff25f05`, independently ready in

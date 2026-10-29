@@ -88,7 +88,9 @@ an owner-private project registry for explicitly selected normalized web snippet
 retained until source clear or project deletion and preserved by chat clear and
 Version history. J3 independently accepts headless checks of exact saved targets,
 retained sources and optional exact snippet-relative quote ranges in one snapshot;
-claim support remains not-assessed and no citation is attached. Citation attachment,
+claim support remains not-assessed and J3 attaches nothing. J4 independently accepts
+revisioned unverified scene citations; J5 independently accepts qualified private
+source-aware copies and guarded editor adoption. Native citation export,
 non-snippet verified locators/claim support, research
 orchestration and semantic creation retain their roadmap gates.
 V2-8H independently accepts bounded project-linked visible chat and durable atomic

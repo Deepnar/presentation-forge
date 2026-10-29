@@ -9044,8 +9044,8 @@ local inference. Only that separate transport correction is authorized; this aud
   paths. Accepted J3 below checks explicit saved target/source references and
   snippet-relative locators without persisting attachment. Accepted J4 below
   supplies revisioned scene-owned metadata and clear/edit/history semantics.
-  Source-aware project copy, citation export/presentation and verified claim-support policy have
-  separate contracts before dependent implementation. Add separate
+  Accepted J5 supplies private source-aware copy. Citation export/presentation and
+  verified claim-support policy retain separate contracts before dependent implementation. Add separate
   paper/project adapters under their own contracts. Verify source-to-block/slide/export
   mappings; distinguish claim support from matching IDs/numbers and retain
   unsupported/uncertain outcomes. Prompt-injection fixtures and eventual labeled
@@ -9265,6 +9265,30 @@ local inference. Only that separate transport correction is authorized; this aud
     hidden targets, legacy access and admin privacy boundaries. Require appropriate
     native/visual evidence when presentation is implemented. Accepted J4 enforces
     central cited-scene export refusal; it does not complete citation-preserving export.
+
+    - [ ] **V2-8J-6-1 headless owner-qualified citation notes export — contract under review.**
+      The2026-10-29 continuation starts planning from accepted J5f6487737, not
+      implementation. [Concrete contract](V2-8J-6-1-PLAN.md) recommends explicit
+      per-export consent for retained title/full URL in speaker notes only, with
+      portable slide/object labels and claim support not assessed. No excerpts,
+      private IDs/provider metadata, new source retention or public/UI export
+      authority. Qualify one exact-owner saved snapshot; stale/missing/hidden/
+      ambiguous/changed references refuse the complete export. Preserve native
+      content and scene/history bytes, and keep raw/current GET cited refusal.
+      This is portable disclosure beyond accepted private-copy retention; obtain
+      human data-handling direction after independent technical readiness.
+      Focus only on new qualification/actual stores/native notes/CLI containment
+      and a small native visual fixture; no old matrix/model/GPU work is planned.
+      No runtime or validation is authorized by this planning entry.
+
+    - [ ] **Browser citation-export interaction — follows accepted J6-1.**
+      Agree the existing export action's explicit disclosure/preview/download
+      surface, captured-session/revision checks, unsaved-draft handling and private
+      response lifecycle before implementation. Cover all current workspace and
+      editor entry points without giving admin/legacy paths source access. Reuse
+      the canonical headless export authority; no client-supplied notes/forged
+      consent receipt. This is distinct from on-slide attribution/appendix design,
+      which keeps its separate surface direction. J6-1 alone leaves this parent open.
 
   Dependency sequence after accepted J5 source-aware copy:
   agree native mappings and verified locator/claim-support boundaries before research-backed semantic
@@ -9734,8 +9758,8 @@ The accepted `ModelProvider` supports bounded text/client tools and context limi
 structured output, vision, reasoning, files and streaming currently refuse explicitly.
 Expand those capabilities only in later approved contracts. A separate
 `SearchProvider` with SearXNG as the default implementation is accepted in V2-8F;
-its canonical `web_search` tool integration remains unimplemented. `web_search`
-is a Forge tool, never a vendor feature. Academic
+J1 separately accepts bounded headless canonical `web_search`; durable/public
+research integration remains gated. `web_search` is a Forge tool, never a vendor feature. Academic
 (`paper_search`: arXiv/Crossref) and project (`project_search`) tools
 stay separate; all produce normalized sources that blocks cite by stable
 ID. The agent is one capable runtime with strong tools, not a giant
