@@ -9302,7 +9302,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
     <a id="assistant-citation-browser-export"></a>
 
-    - [ ] **V2-8J-6-2 browser citation-export interaction — approved, implementation in progress.**
+    - [ ] **V2-8J-6-2 browser citation-export interaction — implemented, independent review pending.**
       The2026-10-29 continuation starts planning from accepted J6-1 ecf82d3f.
       [Concrete contract](V2-8J-6-2-PLAN.md) recommends the existing Export action:
       uncited direct download, cited exact-owner revision/count preview and fresh
@@ -9316,11 +9316,22 @@ local inference. Only that separate transport correction is authorized; this aud
       The human replied “ok continue” to the concrete implementation question
       on2026-10-29; [direction](v2-8j-6-2-evidence/human-direction.json) authorizes
       only this bounded implementation and focused offline evidence. No activation
-      or provider/model call is authorized; independent acceptance remains pending. On-slide attribution/appendix and printable pagination retain
-      their separate presentation contract; the parent remains incomplete.
+      or real provider/model call is authorized. Frozen source65430f9b is pushed;
+      [evaluation](V2-8J-6-2-EVAL.md) records selected22/22, retained35attempts
+      (25pass/10failed attempts), final production build and viewed desktop/narrow
+      evidence. Separate implementation acceptance and final short/zoom review
+      evidence remain pending. On-slide attribution/appendix and printable pagination
+      retain their separate presentation contract; the parent remains incomplete.
+
+      > **Learned.** Private metadata and rendering need shared finite admission;
+      > an aborted client is not completed native work. A saved badge alone cannot
+      > authorize export through draft/save/copy/restore/AI reload. Session and route
+      > epochs must survive same-value ABA, and AI approval invalidates export before
+      > saved changes reload. Theme token names can collide with typography utilities;
+      > inspect actual dialog text, not just DOM bounds.
 
   Dependency sequence after accepted J6-1 headless notes:
-  agree browser export/visible attribution and verified locator/claim-support
+  finish browser export acceptance, agree visible attribution and verified locator/claim-support
   boundaries before research-backed semantic creation. Semantic tools retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
   parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning

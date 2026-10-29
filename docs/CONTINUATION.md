@@ -32,6 +32,18 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
+## Current slice — J6-2 implementation under independent review
+
+Human direction was pinned8ba322e9 before runtime. Frozen source/tests
+`65430f9b657e0b941e20d8e14b4eed7e6763a96e` is pushed origin/v2. Read
+[V2-8J-6-2-EVAL.md](V2-8J-6-2-EVAL.md), state and HANDOFF: selected22/22 focused
+cases, final build and viewed desktop/narrow evidence are complete. Separate
+implementation review/short-viewport zoom evidence are pending; accepted baseline
+stays J6-1 below. Preserve all prior failed attempts/source-capture limitations.
+No old matrix, typed/native/store change, PG/service recreation, real model/search
+or production activation is authorized. Continue review/corrections/closeout only;
+stop at J6-2. Roadmap alone owns later candidates.
+
 ## Latest accepted slice — J6-1 qualified citation notes export complete
 
 Human approved reviewed ae96d717 on2026-10-29, pinned91e06210 before runtime.

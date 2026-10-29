@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8J-6-1-ecf82d3f.json"
   },
   "implementationHead": {
-    "sha": "1700892ea5ea3d6e67cc36f1a4decc5d5dfa4208",
-    "note": "Human continuation approves reviewed J6-2 recommendation; implementation begins from accepted J6-1. Validation and independent acceptance pending."
+    "sha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+    "note": "Approved J6-2 runtime/tests frozen and pushed; selected22/22 focused evidence complete, separate exact-source implementation review pending."
   },
   "activeMilestone": {
     "id": "V2-8J-6-2",
     "roadmapRef": "docs/ROADMAP.md#assistant-citation-browser-export",
     "evalDoc": "docs/V2-8J-6-2-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,33 +23,33 @@
   "validation": [
     {
       "id": "export-http",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused new/affected check; not executed."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-2-evidence/export-http.json",
+      "reason": "Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending."
     },
     {
       "id": "export-client",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused new/affected check; not executed."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-2-evidence/export-client.json",
+      "reason": "Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending."
     },
     {
       "id": "export-browser",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused new/affected check; not executed."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-2-evidence/export-browser.json",
+      "reason": "Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending."
     },
     {
       "id": "production-build",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused new/affected check; not executed."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-2-evidence/production-build.json",
+      "reason": "Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending."
     },
     {
       "id": "frontend-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved focused new/affected check; not executed."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-2-evidence/frontend-visual.json",
+      "reason": "Focused retained executed evidence; selected unions, earlier failures and source applicability are explicit. Independent acceptance pending."
     }
   ],
   "knownBlockers": [],

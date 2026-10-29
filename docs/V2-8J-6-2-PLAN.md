@@ -12,8 +12,8 @@ that commit. The subsequent human direction authorizes its implementation.
 Accepted baseline `ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d` (J6-1), independently
 [accepted](reviews/V2-8J-6-1-ecf82d3f.json). Planning entry
 `fa5c6c7b906bccfd01e030bb3fa833a7e2e69bfe`; branch v2, push origin/v2 only.
-Current continuation authorizes preparing this contract, not the public transport
-or UI implementation. [Roadmap](ROADMAP.md#assistant-citation-browser-export)
+The original planning continuation excluded public transport/UI implementation;
+the later pinned human direction above authorizes only this reviewed slice. [Roadmap](ROADMAP.md#assistant-citation-browser-export)
 is the sole work/dependency registry. Keep J6-1 accepted in development-state.json.
 
 ## Recommended surface

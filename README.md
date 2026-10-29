@@ -283,8 +283,17 @@ The flag explicitly consents **each time** to complete retained source titles an
 URLs, including private query values, in PowerPoint speaker notes. Downloaded notes
 survive source clear/project deletion; support remains not assessed and long notes
 may overflow printed pages. Output is private0600 and never replaces an existing
-file. Uncited projects can omit the flag. Browser/current public cited export still
-refuses; see the [accepted scope and evidence](docs/V2-8J-6-1-EVAL.md).
+file. Uncited projects can omit the flag. See the
+[accepted headless scope](docs/V2-8J-6-1-EVAL.md).
+
+The workspace/editor Export action now supports cited saved projects through a
+fresh **Export with source notes** confirmation. Finish editing and save first;
+Export preserves pending drafts and never saves them implicitly. Uncited saved
+projects download directly. Consent includes the same complete-title/URL,
+independent-retention and print limitations above. Generic/raw cited export still
+refuses; the new private notes transport is owner-only, with no admin source
+override. [Browser evidence and current review status](docs/V2-8J-6-2-EVAL.md)
+distinguish implementation from independent acceptance.
 
 V2 also provides a trusted headless CLI for bounded scripted edits to saved
 projects: `npm run agent-run -- start --project ID --plan FILE`, followed by

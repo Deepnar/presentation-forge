@@ -3185,6 +3185,40 @@ owned0700/0600 temporary resources on the output filesystem, flushes/closes comp
 bytes and exclusively hard-links the final name. It never overwrites an existing
 target or publishes partial bytes; unsupported publication refuses and a failed
 post-publication acknowledgement reports an unknown complete-file outcome.
-Existing saved GET, browser, raw and file renderers still refuse cited scenes.
-Public interaction and further presentation scope remain solely in the
+Existing unqualified saved GET, raw and file renderers still refuse cited scenes.
+The separately qualified browser interaction is described below. Further presentation scope remains solely in the
 [roadmap](ROADMAP.md#assistant-citation-native-presentation).
+
+
+### J6-2 browser citation notes export (implemented; review pending)
+
+`app/server/v2-native-export-routes.js` exposes metadata GET and explicit qualified
+POST over the accepted J6-1 facade. Strict shared trusted-token verification binds
+one exact owner, including credential-free local-null only; admin/cookie fallback
+cannot reveal sources. Raw-family private headers precede CORS, a2KiB identity
+UTF-8 JSON parser precedes the global parser, and late failures remain bounded and
+static. CORS OPTIONS is a non-disclosing exception. Both operations share process
+admission2host/1owner through actual work settlement, including disconnected callers.
+Only notes POST has the new64MiB complete-artifact ceiling; no renderer/cache/job,
+source fetch or document mutation is added. The ordinary uncited GET retains CRUD
+permissions and size behavior, adding saved-revision/no-store metadata and a stable
+cited-refusal code/header. That refusal cannot grant qualified export authority.
+
+`nativeExport.js` coordinates one captured flow per Workspace/SceneViewer scope.
+A saved-revision match, captured token/session epoch, route/navigation generation,
+mount/document identity and live clean-state checks guard every awaited stage and
+link activation. Metadata/errors are strict8KiB actual UTF-8 responses, notes bytes
+are bounded64MiB; uncited Blob behavior remains inherited. Fresh explicit modal
+consent sends exact counters once. Cancel/unmount/route/session changes and actual
+AI approval/reload invalidate late delivery. Blob anchors are removed and clicked
+URLs revoked after a bounded1second grace; cancellation cannot revoke an already
+requested download or interrupt settled server-library work.
+
+`ProjectExports.jsx` owns the topmost portal/focus trap, initial Cancel focus,
+Escape/backdrop cancellation even while rendering, scrollable disclosure and
+return focus. Editor pointer guards preserve unapplied inline/data/title drafts;
+engine/saved revisions and pending save/copy/restore/reload refs require clean
+saved state even in Done. No implicit commit/save/discard/reload occurs. Browser
+UI shows only revision/count and the disclosure, never a retained source preview.
+The three existing controls share this coordinator. See [focused evidence and
+current review status](V2-8J-6-2-EVAL.md); all later work is in the roadmap.
