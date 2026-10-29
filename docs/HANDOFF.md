@@ -1,34 +1,33 @@
 # Presentation Forge handoff — 2026-10-29
 
-Branch v2; push origin/v2 only. J5 exact source
-`f6487737557c20d481cbc3e84216d7144bb116e8` is independently
-[ACCEPTED](reviews/V2-8J-5-f6487737.json) from J4 baseline665cd045.
-Human approval of reviewed contract1b37cdd6 was pinned7df22d94 before runtime.
-The separate reviewer decision was committed unchanged ate95cafad.
-Read current state, [evaluation](V2-8J-5-EVAL.md), CONTINUATION, TRAPS and the
-[roadmap](ROADMAP.md#assistant-citation-project-copy).
+Branch v2; push origin/v2 only. Accepted runtime remains J5
+`f6487737557c20d481cbc3e84216d7144bb116e8`, independently
+[accepted](reviews/V2-8J-5-f6487737.json). Its selected39/39, independent2/2,
+build/typecheck0 and complete exact-owned cleanup remain intact. No J5 gate is
+reopened and no old fixture/cleanup is repeated.
 
-Selected39/39 (pure6/actual SQLite6/actual PostgreSQL6/HTTP+CLI5/router11/Chrome5),
-production build and typecheck0 pass. Independent new actual-PG2/2 and read-only
-packet audit338checks/0errors pass. All root114=102pass/12fail retain overlap,
-fixture errors and two expected fail-first regressions; no skip/cancel or required
-unexecuted gate. Runtime unchanged after26a1e86f; final browser fixture bytes match
-f6487737. Three final PNGs inspected by root and reviewer. Canvas size/x/scroll/
-selection preserved; y−59.375px with conflict-banner removal is explicitly retained.
+The continuation starts **planning only** for the next
+[roadmap contract](ROADMAP.md#assistant-citation-notes-export).
+[Proposed J6-1 contract](V2-8J-6-1-PLAN.md) was first pushed3b6bf65f and clarified
+at ae96d717 after independent source review. The exact reviewed contract is
+[READY_FOR_DIRECTION](reviews/V2-8J-6-1-plan-3b6bf65f.json), with stable independent
+report committed unchanged at78ed0744. Human disclosure direction is still pending;
+nextCandidate.authorized:false and the active runtime/accepted baseline remain J5.
+No implementation, product test or private disclosure is authorized by readiness.
 
-Root saved/fsynced actual user catalog[]/0otherClients after reviewer release,
-removed only exact owned container once and deleted temporary credentials.
-Independent positive live-daemon/service/private-file/runner absence verified.
-No owned service, test or browser remains. Never recreate historical fixtures or
-repeat completed cleanup. No live provider/search/local inference/GPU run,
-deployment or activation occurred. Do not rerun passed unchanged gates or old sweeps.
+Contract/review details belong to the linked roadmap/plan rather than another work
+list here. AGENTS/protocol require human direction for portable data-handling
+changes. Independent planning review and lightweight consistency checks are complete.
+The concrete human question follows the scoped docs/push; wait for that answer
+before runtime. The approval must cover complete query/identifier values in
+title/URL fields, independent portable retention and no general printable notes-
+page-fit promise. The reviewed contract pins exact scope and exclusions.
 
-Human direction requires monitoring our own processes, bounded low-priority serial
-validation and leaving unrelated work alone. Global PSI alone cannot attribute
-pressure to this task. Policy is recorded in AGENTS/protocol; source/attempt/resource/
-cleanup evidence is retained. Original untracked .agents/ and both
-PRESENTATION_FORGE_V2_* prompt/workdoc files remain untouched.
+This planning pass changed documentation only. No product test, service, database,
+browser/build/render, real/local model, source fetch/search, GPU, deployment or
+migration ran. No owned service or validation process remains. Do not acquire one
+for planning. Shared-machine policy tracks bounded owned load and leaves unrelated
+work alone; no cause is inferred from global pressure alone.
 
-J5 closeout is complete. Later scope and direction live solely in
-[the roadmap](ROADMAP.md#assistant-citation-native-presentation). No dependent feature
-is authorized; cited native export remains refused. Stop at this scoped handoff/push.
+Preserve unrelated untracked .agents/ and both PRESENTATION_FORGE_V2_* prompt/workdoc
+files. No authorizations for later UI/research/semantic work or activation follow.

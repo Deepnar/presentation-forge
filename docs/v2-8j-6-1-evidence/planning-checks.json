@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-29T12:19:28.662510+00:00",
+  "invocationHead": "78ed0744aa04da15c1edc6ec7c98e951f7983bf3",
+  "acceptedRuntime": "f6487737557c20d481cbc3e84216d7144bb116e8",
+  "reviewedContract": "ae96d71755114c9dbdbfc209d5c81763a4aa5e3b",
+  "reviewDecision": "READY_FOR_DIRECTION",
+  "nextAuthorized": false,
+  "runtimeDeltaPaths": [],
+  "checkedLocalLinks": 141,
+  "protocol": {
+    "command": "npm run dev:protocol",
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 0
+  },
+  "whitespace": {
+    "command": "git diff --check",
+    "exitCode": 0
+  },
+  "independentReviewCommittedUnchanged": true,
+  "productTests": 0,
+  "newServices": 0,
+  "modelSearchGpuCalls": 0,
+  "note": "Documentation/link/source-delta checks only; no product validation, private disclosure or implementation acceptance. The final continuity/header edits do not change reviewed contract scope."
+}

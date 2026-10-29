@@ -50,7 +50,9 @@ runner absence verification is complete. No owned service remains. Never recreat
 old fixtures or repeat cleanup. Current shared-machine policy monitors bounded own
 load and leaves unrelated work alone; global PSI alone is not attribution.
 
-J5 closeout is complete. Further scope/direction is solely in the
+J5 closeout is complete. Current subsequent planning status is in HANDOFF and
+state; the [J6-1 contract](ROADMAP.md#assistant-citation-notes-export) remains
+a direction-gated candidate, not runtime authorization. Further scope/direction is solely in the
 [roadmap](ROADMAP.md#assistant-citation-native-presentation); acceptance permits
 planning, not dependent implementation, model/search runs or activation.
 

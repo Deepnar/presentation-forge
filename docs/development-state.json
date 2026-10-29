@@ -66,9 +66,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Citation presentation and native export contract",
+    "id": "V2-8J-6-1 owner-qualified citation notes export contract",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-native-presentation"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-notes-export"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
