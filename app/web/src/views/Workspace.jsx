@@ -8,6 +8,7 @@ import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { validateScene } from "../../../../packages/model/scene.ts";
 import { ensureDeckFonts } from "../fonts.js";
 import ProjectExportButton from "../components/ProjectExportButton.jsx";
+import { ProjectExportProvider,useProjectExports } from "../components/ProjectExports.jsx";
 import { apiList, apiCreate, apiRename, apiRemove, apiCover, projectSessionKey } from "../lib/v2project.js";
 import { buildBlankScenes, buildLayoutScenes, layoutTemplateList, defaultProjectTitle } from "../lib/v2create.js";
 import { relative } from "../lib/time.js";
@@ -27,7 +28,7 @@ function metaLine(p) {
   return bits.join(" · ");
 }
 
-export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, onOpenGenerated, onGeneratedChanged, focusSearch = 0, accountKey = null }) {
+export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, onOpenGenerated, onGeneratedChanged, focusSearch = 0, accountKey = null, navigationStamp }) {
   const [catalog, setCatalog] = useState({ saved: { status: 'idle', items: [] }, generated: { status: 'idle', items: [] }, search: { status: 'idle', query: '', hits: [] } });
   const [catalogLoader, setCatalogLoader] = useState(null);
   const [query, setQuery] = useState(''), [type, setType] = useState('all');
@@ -149,9 +150,22 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, onOpe
     }
   }
 
+  const exportState=useRef(null);
+  exportState.current={accountKey,sessionChanged,catalog,busy,creating,renamingId,confirmDelete,confirmGenerated};
+  const exportScope=useProjectExports(input=>{
+    const account=accountKey,route=window.location.href,stamp=navigationStamp?.();
+    const current=()=>{
+      const value=exportState.current,row=value.catalog.saved.items.find(p=>p.id===input.id);
+      return value.accountKey===account&&!value.sessionChanged&&window.location.href===route&&navigationStamp?.()===stamp&&row?.revision===input.revision;
+    };
+    const clean=()=>{const v=exportState.current;return !v.busy&&!v.creating&&!v.renamingId&&!v.confirmDelete&&!v.confirmGenerated;};
+    return {...input,current,clean};
+  });
+
   if (sessionChanged) return <div ref={recovery} role="alert" tabIndex={-1} className="m-6 rounded-card border border-line bg-panel p-4 text-sm">Your sign-in changed. Reload before viewing projects. <Button onClick={() => location.reload()}>Reload page</Button></div>;
 
   return (
+    <ProjectExportProvider scope={exportScope}>
     <div className="flex h-full min-h-0 flex-col overflow-y-auto" data-project-catalog onClickCapture={event => {
       if (covers && !covers.checkSession()) { event.preventDefault(); event.stopPropagation(); }
     }}>
@@ -293,7 +307,7 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, onOpe
                       <Button size="sm" onClick={() => { setRenamingId(p.id); setRenameDraft(p.title); }}>Rename</Button>
                       <ProjectExportButton
                         data-project-export={p.id}
-                        projectId={p.id} title={p.title}
+                        projectId={p.id} title={p.title} revision={p.revision}
                         className="rounded px-2.5 py-1.5 text-xs text-fg-muted transition hover:bg-hover hover:text-fg"
                       >
                         Export
@@ -321,5 +335,6 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, onOpe
         )}
       </div>
     </div>
+    </ProjectExportProvider>
   );
 }

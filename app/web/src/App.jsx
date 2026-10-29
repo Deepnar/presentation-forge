@@ -447,7 +447,7 @@ function AppContent() {
           />
           <div className="flex-1">
             {tourExtra === "privacy" ? <Privacy /> : tourExtra === "terms" ? <Terms /> : tourExtra === "contact" ? <Contact /> : tourExtra === "docs" ? <Docs /> : tourExtra === "usage" ? <Usage /> : tourExtra === "tour-themes" ? <TourThemes onAuth={() => openAuth("register")} /> : tourExtra === "themes" ? <TourThemes onAuth={() => openAuth("register")} /> : tourExtra === "projects" ? (
-              <Workspace
+              <Workspace navigationStamp={navigationStamp}
                 onOpen={() => openAuth("login")}
                 onHistory={() => openAuth("login")}
                 onCreateAI={() => openAuth("register")}
@@ -624,7 +624,7 @@ function AppContent() {
             {view === "themes" && <Themes leftOpen={leftOpen} onToggleLeft={() => setLeftOpen((o) => !o)} />}
             {view === "projects" && (
               <ErrorBoundary key="workspace-err">
-                <Workspace key={user.email} accountKey={user.email} focusSearch={focusSearch}
+                <Workspace key={user.email} accountKey={user.email} focusSearch={focusSearch} navigationStamp={navigationStamp}
                   onOpenGenerated={project => navigate(defaultProjectPage(project), { slug: project.slug })}
                   onGeneratedChanged={bumpDeck}
                   onOpen={(id) => navigate("project", { projectId: id })}

@@ -3,6 +3,7 @@ import { ConfirmModal } from "./ui.jsx";
 import { assistantFailure, assistantScope } from "../lib/v2assistant.js";
 import { projectSessionKey } from "../lib/v2project.js";
 import ProjectExportButton from "./ProjectExportButton.jsx";
+import { ProjectExportProvider,useProjectExports } from "./ProjectExports.jsx";
 // SceneViewer — read-only V2 scene viewer. Thin React shell over
 // packages/editor/scene-dom.js (the single viewer implementation;
 // the headless smoke page drives the same module). React owns no
@@ -1498,6 +1499,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     if (!editOn || !doc || !projectId || projectRef.current.recoverable) throw assistantFailure("read-only");
     if (gridDraftsRef.current.size) throw assistantFailure("pending-data");
     if (titleDraftRef.current !== null || titleRequestRef.current) throw assistantFailure("pending-title");
+    if(options.proposalRevision!==undefined)exportScope.controller.cancel();
     const saved = await saveNow("manual", { token: options.token, current });
     if (!current()) throw assistantFailure("session-changed");
     if (gridDraftsRef.current.size) throw assistantFailure("pending-data");
@@ -1509,6 +1511,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       scope: assistantScope(doc.snapshot().scenes, options.slideId, options.selectedIds, options.scopeMode) };
     return value;
   }
+  const assistantSyncPendingRef=useRef(0);
   async function syncAssistantSaved(options, discard = false) {
     const doc = docRef.current, proj = projectRef.current;
     const current = () => options.current() && projectSessionKey() === options.token && docRef.current === doc && projectRef.current?.id === proj?.id;
@@ -1528,6 +1531,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       !pendingSaveRef.current && !gridDraftsRef.current.size && !titleRequestRef.current && titleDraftRef.current === null;
     const viewport = { ...viewerRef.current.api.snapshot(), scrollTop: scrollRef.current?.scrollTop ?? 0, scrollLeft: scrollRef.current?.scrollLeft ?? 0 };
     const focused = document.activeElement;
+    exportScope.controller.cancel();
+    assistantSyncPendingRef.current++;
+    try {
     const loaded = await apiLoad(proj.id, capturedAssistantFetch({ token: options.token, current }));
     if (!clean()) return { deferred: true };
     if (loaded.id !== proj.id || !Number.isSafeInteger(loaded.revision) || loaded.revision < 0) throw assistantFailure("invalid-response");
@@ -1535,6 +1541,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     const attached = await attachLoadedProject(loaded, { current: clean, viewport });
     if (attached && focused?.isConnected) focused.focus({ preventScroll: true });
     return { loaded: attached === true, deferred: !attached };
+    } finally { assistantSyncPendingRef.current--; }
   }
   function describeAssistantTarget(edit) {
     const scenes = docRef.current?.snapshot().scenes ?? [];
@@ -2002,6 +2009,22 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     };
   }, [deck, fonts.settled]);
 
+  const exportState=useRef(null);
+  exportState.current={saveState,preparing:editStatus.preparing,assistantReloadBusy,historyFor,galleryOpen,presenting,pendingLeave,pendingSwitchId};
+  const exportScope=useProjectExports(input=>{
+    const doc=docRef.current,viewer=viewerRef.current,route=window.location.href,stamp=navigationStamp?.()??routeEpochRef.current;
+    const current=()=>mountedRef.current&&docRef.current===doc&&viewerRef.current===viewer&&projectRef.current?.id===input.id&&
+      projectRef.current?.revision===input.revision&&window.location.href===route&&(navigationStamp?.()??routeEpochRef.current)===stamp;
+    const clean=()=>{
+      const v=exportState.current;
+      return !!doc&&!projectRef.current?.recoverable&&!abandonedDocumentsRef.current.has(doc)&&v.saveState==='saved'&&!v.preparing&&
+        doc.snapshot().revision===savedEngineRevRef.current&&!adapterRef.current?.hasPendingEdit?.()&&!gridDraftsRef.current.size&&
+        titleDraftRef.current===null&&!titleRequestRef.current&&!pendingSaveRef.current&&!copyingRef.current&&!restoreBusyRef.current&&
+        !assistantSyncPendingRef.current&&!v.assistantReloadBusy&&!v.historyFor&&!v.galleryOpen&&!v.presenting&&!v.pendingLeave&&!v.pendingSwitchId;
+    };
+    return {...input,current,clean};
+  });
+
   const readOnlyStatus = {
     saved: "Read-only · saved",
     saving: "Read-only · saving…",
@@ -2076,6 +2099,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   } : null;
 
   return (
+    <ProjectExportProvider scope={exportScope}>
     <div className="flex h-screen flex-col bg-base text-fg" data-workspace-editor={project?.id ?? "unbound"}>
       {/* Embedded routes own project identity; standalone scenes retain
           the developer harness without offering it inside saved work. */}
@@ -2117,7 +2141,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           <button type="button" aria-label="Version history" title={`Version history for ${project.title}`} onClick={() => openHistory(project)} className={shellBtn}>History</button>
         )}
         {project && !project.recoverable && (
-          <ProjectExportButton data-topbar-export projectId={project.id} title={project.title} className="rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg">Export</ProjectExportButton>
+          <ProjectExportButton data-topbar-export projectId={project.id} title={project.title} revision={project.revision} className="rounded-md px-2 py-1 text-[12px] text-fg-muted transition hover:bg-hover hover:text-fg">Export</ProjectExportButton>
         )}
         <button type="button" aria-label="Present" title="Present from the current slide" onClick={openPresent} className={shellBtn}>Present</button>
         <button type="button" aria-label="Assistant" title={embedded ? "Open Assistant" : "AI assistant (not available in standalone viewer)"} aria-pressed={rightTab === "assistant" && rightOpen} onClick={() => chooseRightTab("assistant")} className={shellBtn}>Assistant</button>
@@ -2649,7 +2673,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
               <button type="button" data-project-save-current disabled={!editOn || copyBusy} title={editOn ? "Save the current deck as a new project" : "Enter edit mode first"} onClick={saveAsNewProject} className={`${shellBtn} disabled:opacity-40`}>Save current deck as project</button>
               {(copyBusy || copyNotice) && <span role="status" data-project-copy-notice className="text-[12px] text-fg-muted">{copyBusy ? 'Copying…' : copyNotice}</span>}
               {project && !project.recoverable && (
-                <ProjectExportButton data-project-export projectId={project.id} title={project.title} className="rounded-md px-2 py-1 text-[12px] text-accent transition hover:bg-hover">Export {project.title} (.pptx)</ProjectExportButton>
+                <ProjectExportButton data-project-export projectId={project.id} title={project.title} revision={project.revision} className="rounded-md px-2 py-1 text-[12px] text-accent transition hover:bg-hover">Export {project.title} (.pptx)</ProjectExportButton>
               )}
             </div>
             <div data-project-list className="flex flex-col gap-2 overflow-y-auto p-3">
@@ -2789,5 +2813,6 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         </div>
       )}
     </div>
+    </ProjectExportProvider>
   );
 }
