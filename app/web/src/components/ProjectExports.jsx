@@ -41,10 +41,10 @@ function SourceNotesDialog({scope}) {
   return createPortal(<div data-source-export-backdrop className="fixed inset-0 z-[100] flex items-center justify-center bg-sunken/95 p-4 backdrop-blur-sm"
     onClick={event=>{if(event.target===event.currentTarget)controller.cancel();}}>
     <div ref={root} role="dialog" aria-modal="true" aria-labelledby="source-export-title" aria-describedby="source-export-disclosure" data-source-export-dialog tabIndex={-1}
-      className="flex max-h-full w-full max-w-md flex-col overflow-hidden rounded-card border border-line bg-panel p-4 text-fg shadow-[var(--shadow-float)]">
+      className="flex max-h-full w-full max-w-md flex-col overflow-y-auto rounded-card border border-line bg-panel p-4 text-fg shadow-[var(--shadow-float)]">
       <h2 id="source-export-title" className="shrink-0 text-[16px] font-semibold text-fg">Export with source notes</h2>
       <p className="mt-1 shrink-0 text-xs text-fg-muted">Saved revision {state.metadata.snapshot.projectRevision} · {state.metadata.citationCount} source references</p>
-      <p id="source-export-disclosure" className="my-4 min-h-0 overflow-y-auto text-sm leading-relaxed text-fg-muted">
+      <p id="source-export-disclosure" className="my-4 min-h-[4.5em] shrink-0 overflow-y-auto text-sm leading-relaxed text-fg-muted">
         This PowerPoint file will include full retained source titles and URLs in speaker notes, including private query values.
         Clearing sources or deleting this project will not remove notes from a downloaded file. Claim support is not assessed.
         Long notes may overflow printed notes pages.

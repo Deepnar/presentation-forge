@@ -44,7 +44,7 @@ async function launch(url, w, h) {
   const profile = await mkdtemp(path.join(tmpdir(), "opencode-shot-"));
   const dbgPort = 19000 + Math.floor(Math.random() * 9000);
   const chrome = spawn("google-chrome-stable", [
-    "--headless=new", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage",
+    "--headless=new", "--disable-background-networking", "--disable-component-update", "--disable-extensions", "--disable-sync", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage",
     "--no-first-run", `--user-data-dir=${profile}`, "--hide-scrollbars",
     `--window-size=${w},${h}`, `--ozone-override-screen-size=${w},${h}`,
     `--remote-debugging-port=${dbgPort}`, "about:blank",
