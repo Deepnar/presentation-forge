@@ -304,7 +304,7 @@
     }
   },
   "sourceApplicability": [
-    "All runtime typed renderer/domain bytes match the invocation sourceHashes. CLI has only sanitized-close handling added after cli-01; its complete publication/cleanup case passed again at cli-close-01.",
+    "render.ts, citation-export.js and export-file.js match their original invocation hashes. source-notes.ts adds only the empty-authored-scope guard after initial cb3a8522; native-empty-fix-01 and typecheck-02 pin its final bytes. export-cli.js adds only sanitized shutdown handling; cli-close-01 pins final bytes. See leaf-lineage.json for exact source/selected-body applicability.",
     "Original passing domain leaves are unchanged; the failed range fixture now uses multibyte text and passed alone. Two later boundary cases passed once.",
     "The passing native capacity/tamper leaf is unchanged. Three failed native fixture leaves were corrected and passed alone. No assertion was weakened.",
     "Independent empty/chrome-only slide finding corrected after original freeze; affected positive plus new root regression passed2/2, final typecheck passed again after the typed guard changed.",
@@ -340,5 +340,6 @@
     "fail": 4,
     "skip": 0,
     "cancelled": 0
-  }
+  },
+  "leafLineage": "docs/v2-8j-6-1-evidence/leaf-lineage.json"
 }

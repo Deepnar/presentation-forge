@@ -1,0 +1,23 @@
+{
+  "atUtc": "2026-10-29T12:47:36.338766+00:00",
+  "rootOwnedProcessGroups": [
+    1830621,
+    1833748,
+    1833907,
+    1835390,
+    1835506,
+    1835619,
+    1838219,
+    1838401,
+    1838627,
+    1840251,
+    1841992,
+    1842407,
+    1843955,
+    1855023,
+    1856471
+  ],
+  "liveMembers": [],
+  "testOrBuildRunning": false,
+  "note": "Read-only exact owned process-group observation; no process was stopped. Reviewer runs are separately owned."
+}

@@ -39,6 +39,12 @@ No scene, history, source, chat or provider authority changes; no public UI/endp
 HEAD, tested working-tree hashes/delta, watchdog, CPU/RSS samples and source
 applicability. Selected logs are explicit **unions of executed successful leaves**,
 not claims of one green whole-file process. Original failing runs remain intact.
+[Leaf lineage](v2-8j-6-1-evidence/leaf-lineage.json) checks33selected bodies. Four
+old test-file versions were reconstructed after execution by reversing only the
+recorded fixture edits/removing later appends, then matched byte-for-byte against
+the contemporaneous invocation SHA256 before comparing selected passing bodies.
+These are labeled reconstructions, not original source snapshots. The changed
+renderer guard and CLI shutdown handling have explicit final-byte applicability.
 
 | Selected gate | Pass | Fail | Skip | Cancelled |
 |---|---:|---:|---:|---:|
