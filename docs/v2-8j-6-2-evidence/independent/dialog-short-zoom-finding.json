@@ -1,6 +1,6 @@
 {
   "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
-  "status": "CORRECTION_REQUIRED",
+  "status": "RESOLVED",
   "kind": "independent-browser-finding",
   "issue": "Short effective viewport at emulated200% zoom clips the explicit consent action and collapses the private disclosure scroll area.",
   "source": "app/web/src/components/ProjectExports.jsx:38",
@@ -18,5 +18,8 @@
     "cancelled": 0
   },
   "cleanup": "Fixture/API/browser closed and owned temp fixture directory removed. No PG/external service/model/provider/build; no old fixture or cleanup repeated.",
-  "correction": "Keep complete disclosure and both actions reachable at short/zoom sizing, including a whole-dialog scroll fallback if necessary; do not hide/truncate disclosure or weaken bounds assertions."
+  "correction": "Keep complete disclosure and both actions reachable at short/zoom sizing, including a whole-dialog scroll fallback if necessary; do not hide/truncate disclosure or weaken bounds assertions.",
+  "originalStatus": "CORRECTION_REQUIRED",
+  "correctedAt": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "finalEvidence": "docs/v2-8j-6-2-evidence/independent/dialog-short-zoom-after.json"
 }

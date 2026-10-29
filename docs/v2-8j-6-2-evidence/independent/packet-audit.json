@@ -1,0 +1,94 @@
+{
+  "atUtc": "2026-10-29T18:19:57.120348+00:00",
+  "packetSha": "488fba2e1324429489326f482a86a9caef519911",
+  "implementationSha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "checks": 423,
+  "errors": [],
+  "downloadedZipInspection": [
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-3K7W8R/downloads-1/Host pickup.pptx",
+      "notesParts": 2,
+      "hasRetainedTitle": false,
+      "hasRetainedUrl": false
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-HWYVm0/downloads-1/Saved notes browser.pptx",
+      "notesParts": 2,
+      "hasRetainedTitle": false,
+      "hasRetainedUrl": false
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-KRj3B0/downloads-4/Saved notes browser.pptx",
+      "notesParts": 2,
+      "hasRetainedTitle": true,
+      "hasRetainedUrl": true
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-LnAVFW/downloads-1/Saved notes browser.pptx",
+      "notesParts": 2,
+      "hasRetainedTitle": true,
+      "hasRetainedUrl": true
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-LnAVFW/downloads-1/Uncited direct control.pptx",
+      "notesParts": 2,
+      "hasRetainedTitle": false,
+      "hasRetainedUrl": false
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-LnAVFW/downloads-2/Saved notes browser.pptx",
+      "notesParts": 2,
+      "hasRetainedTitle": false,
+      "hasRetainedUrl": false
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-LnAVFW/downloads-4/Saved notes browser.pptx",
+      "notesParts": 2,
+      "hasRetainedTitle": false,
+      "hasRetainedUrl": false
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-l7a1bx/downloads-1/Saved notes browser.pptx",
+      "notesParts": 2,
+      "hasRetainedTitle": true,
+      "hasRetainedUrl": true
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-l7a1bx/downloads-1/Uncited direct control.pptx",
+      "notesParts": 2,
+      "hasRetainedTitle": false,
+      "hasRetainedUrl": false
+    },
+    {
+      "path": "docs/v2-8j-6-2-evidence/browser/attempt-l7a1bx/downloads-4/Host pickup.pptx",
+      "notesParts": 2,
+      "hasRetainedTitle": false,
+      "hasRetainedUrl": false
+    }
+  ],
+  "freshOwnedGroupAbsence": {
+    "groups": [
+      2421127,
+      2421362,
+      2422154,
+      2423764,
+      2428609,
+      2430420,
+      2430626,
+      2433874,
+      2435855,
+      2436108,
+      2439042,
+      2441445,
+      2441548,
+      2442859,
+      2445383,
+      2445572,
+      2448477,
+      2451166,
+      2453675
+    ],
+    "liveMembers": []
+  },
+  "method": "Read-only source/Git/retained logs/hash/ZIP XML/process identity audit, not product tests or new rendering. Original snapshots and selected bodies verified directly; early dirty tracked capture gap remains explicit."
+}

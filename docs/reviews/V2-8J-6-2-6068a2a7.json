@@ -1,0 +1,138 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-29",
+  "implementationSha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "initialImplementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+  "acceptedBaseline": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
+  "approvedPlanSha": "063e46d2e78d26b40445558ca0dc42e09aa30daa",
+  "approvalPinnedSha": "8ba322e9fd5f55a07ba849267dce656fec157c75",
+  "packetSha": "488fba2e1324429489326f482a86a9caef519911",
+  "evidence": "docs/v2-8j-6-2-evidence/independent/review.md",
+  "assessment": "The approved bounded J6-2 browser notes-export contract is satisfied with no unresolved blocker. Exact-owner disclosure, conditional consent, clean-saved editor and late-response guards, finite private admission and corrected short/zoom reachability are supported by focused source/evidence review. Acceptance is J6-2 only.",
+  "independence": "Separate reviewer context from implementation. Reviewer modified only independent challenge/review/evidence files; no runtime/root test/state/doc/Git mutation. Parent commits this record unchanged.",
+  "resolvedFindings": [
+    {
+      "id": "workspace-route-epoch",
+      "issue": "URL equality alone did not fence Workspace route ABA.",
+      "resolution": "Capture/compare App navigationStamp plus URL in Workspace, passed by authenticated and anonymous/local mounts.",
+      "source": "app/web/src/views/Workspace.jsx",
+      "correctedByInitialFreeze": "65430f9b657e0b941e20d8e14b4eed7e6763a96e"
+    },
+    {
+      "id": "assistant-approval-start",
+      "issue": "Saved-noop settle could allow a held export to finish while approval began before reload.",
+      "resolution": "Cancel on proposalRevision approval/retry-approved bridge before saveNow; actual held decision and reload browser assertions pass.",
+      "source": "app/web/src/components/SceneViewer.jsx:settleAssistant",
+      "correctedByInitialFreeze": "65430f9b657e0b941e20d8e14b4eed7e6763a96e"
+    },
+    {
+      "id": "short-zoom-disclosure",
+      "issue": "Emulated200% short viewport collapsed disclosure to0px and clipped the explicit consent action.",
+      "source": "app/web/src/components/ProjectExports.jsx:SourceNotesDialog",
+      "failFirst": "docs/v2-8j-6-2-evidence/independent/dialog-short-zoom.json",
+      "resolution": "Whole-dialog scrolling and non-collapsing readable disclosure minimum; complete text endpoints and each action reachable by scrolling.",
+      "correctedAt": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+      "finalEvidence": "docs/v2-8j-6-2-evidence/independent/dialog-short-zoom-after.json",
+      "harnessClarification": "Original immediate-action visibility assertion was stricter than approved scroll fallback; final reachability scrolls each action into view, retains positive readable text and complete first/last-character checks. Original failure/source remain retained."
+    }
+  ],
+  "inspectedEvidence": {
+    "selectedRoot": {
+      "total": 22,
+      "pass": 22,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "selection": {
+      "http": 6,
+      "client": 10,
+      "browser": 6
+    },
+    "allRootAttempts": {
+      "total": 35,
+      "pass": 25,
+      "fail": 10,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "selectionSemantics": "Actually executed passing-leaf union; not one green final whole-file invocation.",
+    "productionBuilds": {
+      "total": 6,
+      "exitZero": 6,
+      "final": "docs/v2-8j-6-2-evidence/build-06.json"
+    },
+    "typecheck": "Not applicable: no typed change.",
+    "screenshotsDirectlyViewed": 6,
+    "downloadedPptxChecked": 10,
+    "packetAudit": {
+      "checks": 423,
+      "errors": 0,
+      "evidence": "docs/v2-8j-6-2-evidence/independent/packet-audit.json"
+    },
+    "historicalCrxFragmentsVerified": 4
+  },
+  "independentlyExecuted": {
+    "selected": {
+      "total": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "allProductAttempts": {
+      "total": 4,
+      "pass": 3,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "preCaseHarnessFailures": 1,
+    "bodyCases": {
+      "total": 2,
+      "pass": 2,
+      "implementationSha": "65430f9b657e0b941e20d8e14b4eed7e6763a96e",
+      "applicability": "Direct imported source hashes unchanged at final6068a2a7; no repeat.",
+      "durationMs": 64,
+      "evidence": "docs/v2-8j-6-2-evidence/independent/body-boundaries.json"
+    },
+    "browserCase": {
+      "total": 1,
+      "pass": 1,
+      "assertionPhases": 4,
+      "implementationSha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+      "durationMs": 5474,
+      "evidence": "docs/v2-8j-6-2-evidence/independent/dialog-short-zoom-after.json",
+      "method": "Actual fresh loopback SQLite/API+CDP Chrome;320x320, CSS zoom2/640x360 effective320x180, final desktop and held metadata after actual route/unmount. Not actual browser-menu zoom."
+    },
+    "exclusions": "No new build/PG/native render/model/search/provider/GPU/old fixture or broad suite. Two focused browser invocations were necessary for the responsive fail-first correction."
+  },
+  "cleanup": {
+    "ownedReviewerFixturesClosed": true,
+    "ownedReviewerTemporaryDirectoriesRemoved": true,
+    "freshRootAndReviewerGroupAbsence": true,
+    "evidence": "docs/v2-8j-6-2-evidence/independent/packet-audit.json",
+    "persistentPgCreated": false,
+    "oldCleanupRepeated": false,
+    "note": "Root later fresh cleanup observation includes build06 group; docs-only stronger observation may be committed during closeout."
+  },
+  "residualLimits": [
+    "CSS200% sizing/reflow emulation is executed; actual browser-menu zoom and dark-mode execution are not.",
+    "Source titles/full URLs including private queries remain in downloaded files after original clear/delete; support not-assessed and long notes may overflow printed pages.",
+    "Process-local admission has no distributed quota/hard generation deadline;64MiB complete-output ceiling does not establish pre-generation asset-memory bounds.",
+    "Legacy uncited auth/size/assets and inherited native/lock-wait/J1/I7/I4/BYOK locale limits are unchanged rather than newly certified.",
+    "No interactive PowerPoint, new native raster, live provider/model/search/GPU qualification or deployment/activation claim."
+  ],
+  "outstandingFindings": [],
+  "stopPoint": "J6-2 acceptance propagation/closeout only. No next-feature implementation, public scope expansion, deployment, paid infrastructure, model/search run or activation is authorized by this decision.",
+  "provenanceLimits": [
+    "Early full dirty tracked bytes were not captured; later complete captures and inspected unchanged integration/body lineage are explicit.",
+    "Initial canvas-failure coordinates are unavailable; exact original cause is not reconstructed.",
+    "Earlier browser background traffic is not certified loopback-only;4CRX fragments are verified/preserved in Git and separately classified.",
+    "One earlier same-title fixture download was overwritten; later distinct notes/control artifacts are retained."
+  ]
+}
