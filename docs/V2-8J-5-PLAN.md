@@ -164,7 +164,10 @@ actions for both cited copies and uncited generic creation. No new copy surface
 or bulk-copy dashboard action is proposed.
 
 - At entry, require a writable current document; reject unapplied chart/table or
-  title drafts/title requests with a useful existing-surface message. Commit an
+  title drafts/title requests and an unsent Assistant draft with a useful
+  existing-surface message. Reuse the Assistant's `hasDraft()` leave safeguard;
+  chat text is outside the copied scene snapshot and must not be silently
+  discarded, submitted or copied. Commit an
   inline text draft under the captured document/session guard; failed commit
   retains the draft and sends no copy request. Recheck after every await.
 - Fence pending saves: pause future autosave and manual-save dispatch, cancel its
@@ -173,10 +176,10 @@ or bulk-copy dashboard action is proposed.
   and the live snapshot. A stale/failing save alone must not veto Save-as-new
   recovery. Its success/error publication must retain captured session/document
   guards so it cannot repaint an adopted project or a new account. Do not trigger
-  another save or drain merely to copy. Recheck grid/title/inline drafts and
+  another save or drain merely to copy. Recheck grid/title/inline/Assistant drafts and
   auth/document identity before dispatch.
 - Capture the account/session token, mounted viewer, document identity, abandonment
-  state, project ID/revision, engine revision, draft state and viewport. Pin request
+  state, project ID/revision, engine revision, all draft state and viewport. Pin request
   authorization to that captured session, including anonymous local identity;
   never substitute whichever account happens to be current after an await.
 - Edits may continue during the request. A successful response does not mark those
@@ -188,7 +191,7 @@ or bulk-copy dashboard action is proposed.
   and explain the session-undo reset through the existing status surface.
 - Embedded mode must use the existing guarded hash router. Carry a one-use,
   session-bound prepared-copy handoff through the authorized transition/remount;
-  final freshness checks precede replacement of the source editor. Do not just
+  final freshness checks, including `hasDraft()`, precede replacement of the source editor. Do not just
   change `projectRef`, bypass ordinary leave guards, rewrite its query URL, or
   remount from the older source snapshot. Standalone mode keeps its existing
   project-query convention after the same guarded installation.
@@ -199,7 +202,8 @@ or bulk-copy dashboard action is proposed.
   Consume this one-use handoff for only its captured destination/session/document
   at the final synchronous router commit, after any awaited history traversal.
   Then the intentional source remount/unmount is part of this handoff, distinct
-  from an external discard/unmount. Cancel, another route, edit/draft drift or an
+  from an external discard/unmount. Cancel, another route, edit/draft drift (also
+  newly entered Assistant text) or an
   auth change invalidates adoption and keeps ordinary save/discard/cancel policy.
   The destination mount must still validate the bound handoff before installation.
 - If new edits/drafts/pending saves prevent adoption, keep the source editor,
