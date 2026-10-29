@@ -1,0 +1,139 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/i8_source_review",
+  "context": "/root/i8_source_review",
+  "plannedBy": "/root",
+  "reviewDate": "2026-10-29",
+  "initialPlanSha": "087819d39df46ffa44c7159c8edd1ad84f70f1af",
+  "reviewedPlanSha": "063e46d2e78d26b40445558ca0dc42e09aa30daa",
+  "acceptedBaseline": "ecf82d3fa74bb7fcfc111e5cbeaf36bcb49fa47d",
+  "planningEntrySha": "fa5c6c7b906bccfd01e030bb3fa833a7e2e69bfe",
+  "plan": "docs/V2-8J-6-2-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-citation-browser-export",
+  "evidence": "docs/v2-8j-6-2-evidence/independent/plan-readiness.md",
+  "assessment": "Revised contract is technically coherent and bounded enough for explicit human browser-surface/private-disclosure direction. All five source-backed review findings are resolved. This is readiness only, not human approval, implementation authorization or acceptance.",
+  "scopeAssessment": "Conditional existing Export with uncited direct compatibility, exact-owner metadata plus fresh notes-only consent, clean-saved editor guards and captured late-response/Blob handling can reuse the accepted headless qualifier without schema/store/renderer/provider authority changes. Private source/admin boundaries remain distinct from existing uncited CRUD permissions.",
+  "resolvedFindings": [
+    {
+      "id": "metadata-admission",
+      "issue": "POST-only admission omitted full saved-document/catalog inspect work.",
+      "sourceBasis": [
+        "src/projects/citation-export.js:74"
+      ],
+      "resolution": "Both GET metadata and POST render share process2/owner1 finite no-queue admission; slots cover actual work only, never confirmation.",
+      "resolvedAt": "063e46d2e78d26b40445558ca0dc42e09aa30daa"
+    },
+    {
+      "id": "uncited-size-compatibility",
+      "issue": "Shared browser consumption limit could silently change accepted uncited downloads.",
+      "sourceBasis": [
+        "app/web/src/components/ProjectExportButton.jsx:7",
+        "app/web/src/lib/v2project.js:50"
+      ],
+      "resolution": "New64MiB server/browser cap applies only to notes POST; uncited legacy size behavior remains unchanged and unqualified.",
+      "resolvedAt": "063e46d2e78d26b40445558ca0dc42e09aa30daa"
+    },
+    {
+      "id": "bounded-response-parsing",
+      "issue": "Compact server metadata did not explicitly bound client error/metadata consumption or exact validation.",
+      "sourceBasis": [
+        "app/web/src/lib/v2project.js:50"
+      ],
+      "resolution": "Actual8KiB UTF-8 JSON metadata/error bound, exact schema/project/safe counters/count validation before modal, static error allowlist, no-store/omit/redirect:error.",
+      "resolvedAt": "063e46d2e78d26b40445558ca0dc42e09aa30daa"
+    },
+    {
+      "id": "cors-header-order",
+      "issue": "Existing CORS can short-circuit before private parser headers/method handling.",
+      "sourceBasis": [
+        "app/server/index.js:55",
+        "app/server/v2-conversation-routes.js:78",
+        "docs/TRAPS.md:1988"
+      ],
+      "resolution": "Raw-path private headers precede short-circuiting middleware; explicit non-disclosing OPTIONS exception and scoped static late errors preserve CORS policy.",
+      "resolvedAt": "063e46d2e78d26b40445558ca0dc42e09aa30daa"
+    },
+    {
+      "id": "scope-owned-flow",
+      "issue": "Independent button instances can each start conflicting dialogs despite per-button refs.",
+      "sourceBasis": [
+        "app/web/src/views/Workspace.jsx:294",
+        "app/web/src/components/SceneViewer.jsx:2120",
+        "app/web/src/components/SceneViewer.jsx:2652"
+      ],
+      "resolution": "One synchronously claimed flow per Workspace/SceneViewer scope across all triggers, owner-only release and no competing modal starts.",
+      "resolvedAt": "063e46d2e78d26b40445558ca0dc42e09aa30daa"
+    }
+  ],
+  "technicalBasis": [
+    {
+      "topic": "Canonical snapshot and private owner authority",
+      "sourceBasis": [
+        "src/projects/citation-export.js",
+        "src/projects/copy-auth.js",
+        "app/server/v2-projects-routes.js"
+      ],
+      "assessment": "Inspect and render remain separate accepted operations; exact saved counters re-enter one owner/document/catalog snapshot on every POST. Strict new Bearer binding cannot inherit permissive local downgrade/admin/cookie behavior."
+    },
+    {
+      "topic": "Editor/session/route and focus feasibility",
+      "sourceBasis": [
+        "app/web/src/components/SceneViewer.jsx",
+        "app/web/src/App.jsx",
+        "app/web/src/api.js",
+        "app/web/src/components/ui.jsx"
+      ],
+      "assessment": "Live engine/draft/save/copy/restore/reload refs and route epochs provide relevant seams. New synchronous auth generations and export guards must be implemented; existing generic button/modal are insufficient. Read-only status is not proof of saved state, and nested dialog layering/traps require actual browser evidence."
+    },
+    {
+      "topic": "Transport/resource and compatibility scope",
+      "sourceBasis": [
+        "app/server/index.js",
+        "app/server/v2-conversation-routes.js",
+        "app/web/src/lib/v2project.js"
+      ],
+      "assessment": "Early raw private headers/parser and late errors are implementable without CORS widening. New response limits/admission concern only the private family; ordinary uncited generation/size/auth compatibility is explicitly preserved rather than falsely certified."
+    }
+  ],
+  "focusedValidationAssessment": "After direction, use the selected real HTTP private-boundary/PPTX checks with focused fault fakes, production controller lifecycle/body-limit challenges, one serial Chrome file with real download/keyboard/draft/race/screenshots/canvas evidence, and one reused build. Reuse accepted unchanged J6-1 storage/native/visual evidence; no old matrix or service recreation is warranted. Amend inventory before any adapter/qualifier change.",
+  "outstandingTechnicalIssues": [],
+  "humanDirection": {
+    "status": "PENDING",
+    "requiredDecision": "Approve or revise conditional existing Export, clean-saved-only editor policy and exact-owner browser/HTTP notes disclosure of complete titles/full URLs including private queries; downloaded retention, unassessed support, long printed-note overflow, no automatic save/commit/retry and offline validation limits must remain explicit.",
+    "notImplied": "No implementation, product execution, public/private HTTP disclosure, activation, deployment or dependent feature authority. Accepted J6-1 and nextCandidate.authorized:false remain unchanged."
+  },
+  "implementationAccepted": false,
+  "executed": {
+    "productTests": 0,
+    "httpCalls": 0,
+    "databaseCalls": 0,
+    "serviceStarts": 0,
+    "browserCalls": 0,
+    "builds": 0,
+    "renders": 0,
+    "modelCalls": 0,
+    "searchCalls": 0,
+    "gpuCalls": 0,
+    "providerCalls": 0,
+    "gitMutations": 0,
+    "description": "Read-only source/Git/document inspection and lightweight review artifact consistency only; no product behavior or visual evidence executed for planning."
+  },
+  "limitations": [
+    "No working UI/HTTP behavior, accessibility, visual, native or security pass is claimed from planning inspection.",
+    "Implementation must establish synchronous auth-transition generation and live guard behavior; token/email equality alone cannot establish ABA safety.",
+    "New family slots are process-local without hard generation deadlines;64MiB is a complete-output limit rather than a pre-generation asset-memory bound.",
+    "Legacy uncited size/auth/asset behavior remains outside the new private-path resource/security guarantee.",
+    "Downloaded notes cannot be revoked by source clear/delete; long printed notes can overflow and claim support remains not-assessed.",
+    "No runtime/schema/store/renderer changes are proposed; accepted J6-1 remains the baseline."
+  ],
+  "documentChecks": {
+    "reviewedDraftPushed": true,
+    "acceptedRuntimeInputsUnchanged": true,
+    "acceptedStatePreserved": true,
+    "nextCandidateAuthorized": false,
+    "artifactConsistencyChecks": 10,
+    "errors": [],
+    "description": "Lightweight file/JSON/Git-ref/delta/anchor checks only; no product tests or network Git command."
+  }
+}
