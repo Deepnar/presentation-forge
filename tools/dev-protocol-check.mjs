@@ -37,7 +37,7 @@ const MILESTONES = {
   'V2-8J-5': {
     plan: 'docs/v2-8j-5-evidence/validation-plan.json',
     focused: 'copy-contract', files: ['test/v2-project-copy-8j.test.js'],
-    groups: {"copy-sqlite": ["test/v2-project-copy-sqlite-8j.test.js"], "copy-postgres": ["test/v2-project-copy-postgres-8j.test.js"], "copy-transport": ["test/v2-project-copy-transport-8j.test.js"], "copy-browser": ["test/v2-project-copy-chrome-8j.test.js"]},
+    groups: {"copy-sqlite": ["test/v2-project-copy-sqlite-8j.test.js"], "copy-postgres": ["test/v2-project-copy-postgres-8j.test.js"], "copy-transport": ["test/v2-project-copy-transport-8j.test.js", "test/v2-route-guard-7a.test.js"], "copy-browser": ["test/v2-project-copy-chrome-8j.test.js"]},
     required: ["copy-contract", "copy-sqlite", "copy-postgres", "copy-transport", "copy-browser", "typecheck"],
   },
 
