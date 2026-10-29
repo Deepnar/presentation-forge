@@ -1,3 +1,4 @@
+import { announceProjectSession } from './lib/projectSession.js';
 async function call(url, options) {
   const res = await fetch(url, {
     headers: { "Content-Type": "application/json", ...authHeader() },
@@ -25,10 +26,12 @@ function authHeader() {
 function rememberToken(token) {
   if (token) localStorage.setItem(TOKEN_KEY, token);
   else localStorage.removeItem(TOKEN_KEY);
+  announceProjectSession();
 }
 
 function clearToken() {
   localStorage.removeItem(TOKEN_KEY);
+  announceProjectSession();
 }
 
 function stream(url, body, handlers = {}) {
