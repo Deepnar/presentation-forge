@@ -273,6 +273,12 @@ function checkSchemaVersion(stored) {
   }
 }
 
+async function insertCreatedProject(client, doc, owner, provenance) {
+  await client.query("INSERT INTO v2_projects (id, owner, title, payload, revision, created_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7)",
+    [doc.id, owner ?? null, doc.title, JSON.stringify(doc), doc.revision, doc.createdAt, doc.updatedAt]);
+  await insertRevisionRow(client, { projectId: doc.id, doc, kind: "create", provenance });
+}
+
 export async function createProject({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null }) {
   const request = validateImportRequest(importRequest, owner);
   const prov = validateProvenance(provenance ?? undefined);
@@ -310,17 +316,7 @@ export async function createProject({ owner = null, title, scenes, theme = null,
         }
       }
 
-      try {
-        await client.query(
-          "INSERT INTO v2_projects (id, owner, title, payload, revision, created_at, updated_at) VALUES ($1,$2,$3,$4,$5,$6,$7)",
-          [doc.id, owner ?? null, doc.title, JSON.stringify(doc), doc.revision, doc.createdAt, now],
-        );
-      } catch (err) {
-        // Id collision or any insert failure: like SQLite, the
-        // whole creation is unavailable, never half-written.
-        throw storageUnavailable(err);
-      }
-      await insertRevisionRow(client, { projectId: doc.id, doc, kind: "create", provenance: prov.provenance });
+      await insertCreatedProject(client, doc, owner, prov.provenance);
       return { doc: structuredClone(doc), ...(request ? { reused: false } : {}) };
     });
   } catch (err) {
@@ -736,7 +732,7 @@ export async function readTurnMetadataPage(input) {
   } catch (error) { throw storageUnavailable(error); }
 }
 
-export async function withRuntimeTransaction({ owner = null, id }, job) {
+async function withLockedProjectTransaction({ owner = null, id }, job) {
   if (!validProjectId(id))
     throw Object.assign(new Error("Invalid project"), { code: "invalid-id" });
   const { runtimeDocument } = await import("./runtime-document.js");
@@ -777,6 +773,11 @@ export async function withRuntimeTransaction({ owner = null, id }, job) {
             ).rows[0].ms,
           );
         },
+        async insertCopy(destination) {
+          if (destination.id === id || destination.revision !== 0 || !(await validateProjectDocument(destination)).ok)
+            throw Object.assign(new Error("Invalid copy"), { code: "invalid-document" });
+          await insertCreatedProject(client, destination, owner, null);
+        },
         async saveScenes(scenes, provenance) {
           const next = await runtimeDocument(doc, scenes, provenance);
           if (!next.changed) return doc.revision;
@@ -811,6 +812,31 @@ export async function withRuntimeTransaction({ owner = null, id }, job) {
     });
   } catch (error) {
     throw storageUnavailable(error);
+  }
+}
+
+export function withRuntimeTransaction(binding, job) {
+  return withLockedProjectTransaction(binding, tx => job({ doc: tx.doc, query: tx.query,
+    now: tx.now, saveScenes: tx.saveScenes, beforeCommit: tx.beforeCommit }));
+}
+
+export async function withCopyTransaction(binding, job) {
+  let original, failed = false, completed = false;
+  try {
+    return await withLockedProjectTransaction(binding, async tx => {
+      try {
+        const result = await job(Object.freeze({ dialect: 'postgres', doc: tx.doc, query: tx.query, insertCopy: tx.insertCopy }));
+        completed = true;
+        return result;
+      } catch (error) {
+        original = error; failed = true;
+        throw Object.assign(new Error('Copy transaction refused.'), { code: 'runtime-fenced' });
+      }
+    });
+  } catch (error) {
+    if (failed && error?.code === 'runtime-fenced') throw original;
+    if (completed) throw Object.assign(new Error('Copy commit outcome is unknown.'), { code: 'copy-outcome-unknown' });
+    throw error;
   }
 }
 

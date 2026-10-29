@@ -117,6 +117,12 @@ export function canAccessProject(row, { owner, admin }) {
   return (row.owner ?? null) === (owner ?? null);
 }
 
+function insertCreatedProject(db, doc, owner, provenance) {
+  db.prepare("INSERT INTO v2_projects (id, owner, title, payload, revision, created_at, updated_at) VALUES (?,?,?,?,?,?,?)")
+    .run(doc.id, owner ?? null, doc.title, JSON.stringify(doc), doc.revision, doc.createdAt, doc.updatedAt);
+  insertRevisionRow(db, { projectId: doc.id, doc, kind: "create", provenance });
+}
+
 async function createProjectInner({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null }) {
   const request = validateImportRequest(importRequest, owner);
   const db = ensureSchema();
@@ -151,24 +157,7 @@ async function createProjectInner({ owner = null, title, scenes, theme = null, o
         return result;
       }
     }
-    try {
-      db.prepare(
-        "INSERT INTO v2_projects (id, owner, title, payload, revision, created_at, updated_at) VALUES (?,?,?,?,?,?,?)",
-      ).run(doc.id, owner ?? null, doc.title, JSON.stringify(doc), doc.revision, doc.createdAt, now);
-    } catch (err) {
-      db.exec("ROLLBACK");
-      const e = new Error(`storage unavailable: ${err.message}`);
-      e.code = "storage-unavailable";
-      throw e;
-    }
-    try {
-      insertRevisionRow(db, { projectId: doc.id, doc, kind: "create", provenance: prov.provenance });
-    } catch (err) {
-      db.exec("ROLLBACK");
-      const e = new Error(`storage unavailable: ${err.message}`);
-      e.code = "storage-unavailable";
-      throw e;
-    }
+    insertCreatedProject(db, doc, owner, prov.provenance);
     if (request) db.prepare("INSERT INTO v2_project_imports (request_key,source_digest,project_id) VALUES (?,?,?)").run(request.key, request.digest, doc.id);
     db.exec("COMMIT");
   } catch (err) {
@@ -732,7 +721,7 @@ export async function readTurnMetadataPage(input) {
 
 // A host-only transaction seam; callbacks must contain local validation, never I/O
 // to providers. Project/history and runtime effects share this one commit boundary.
-export async function withRuntimeTransaction({ owner = null, id }, job) {
+async function withLockedProjectTransaction({ owner = null, id }, job) {
   if (!validProjectId(id))
     throw Object.assign(new Error("Invalid project"), { code: "invalid-id" });
   return serializeWrite(async () => {
@@ -763,6 +752,11 @@ export async function withRuntimeTransaction({ owner = null, id }, job) {
           return Math.floor(
             db.prepare("SELECT unixepoch('subsec') * 1000 AS ms").get().ms,
           );
+        },
+        async insertCopy(destination) {
+          if (destination.id === id || destination.revision !== 0 || !(await validateProjectDocument(destination)).ok)
+            throw Object.assign(new Error("Invalid copy"), { code: "invalid-document" });
+          insertCreatedProject(db, destination, owner, null);
         },
         async saveScenes(scenes, provenance) {
           const next = await runtimeDocument(doc, scenes, provenance);
@@ -805,6 +799,26 @@ export async function withRuntimeTransaction({ owner = null, id }, job) {
       throw storageFailure(error);
     }
   });
+}
+
+export function withRuntimeTransaction(binding, job) {
+  return withLockedProjectTransaction(binding, tx => job({ doc: tx.doc, query: tx.query,
+    now: tx.now, saveScenes: tx.saveScenes, beforeCommit: tx.beforeCommit }));
+}
+
+// Destination insertion is private to copying, never inherited by runtime tools.
+export async function withCopyTransaction(binding, job) {
+  let completed = false;
+  try {
+    return await withLockedProjectTransaction(binding, async tx => {
+      const result = await job(Object.freeze({ dialect: 'sqlite', doc: tx.doc, query: tx.query, insertCopy: tx.insertCopy }));
+      completed = true;
+      return result;
+    });
+  } catch (error) {
+    if (completed) throw Object.assign(new Error('Copy commit outcome is unknown.'), { code: 'copy-outcome-unknown' });
+    throw error;
+  }
 }
 
 // Source SQL uses the actual adapter, never an environment-selected decoder.
