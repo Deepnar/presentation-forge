@@ -36,6 +36,7 @@
     "dev:protocol": "node tools/dev-protocol-check.mjs",
     "agent-run": "node --env-file-if-exists=.env src/agent/cli.js",
     "import-project": "node --env-file-if-exists=.env src/projects/import-cli.js",
+    "copy-project": "node --env-file-if-exists=.env src/projects/copy-cli.js",
     "agent-chat": "node --env-file-if-exists=.env src/agent/turn-cli.js"
   },
   "keywords": [],

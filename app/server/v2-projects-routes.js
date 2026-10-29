@@ -18,6 +18,7 @@ import { validateProjectDocument, validateSavePayload, validProjectId } from "..
 import { renderPptx, preflightScenes } from "../../packages/renderer-pptx/render.ts";
 import { projectStore } from "../../src/projects/backend.js";
 import { readProjectCover } from "../../src/projects/cover.js";
+import { registerV2CopyRoute } from './v2-copy-routes.js';
 
 export function projectsAllowed() {
   if (process.env.FORGE_V2_PROJECTS === "1") return true;
@@ -77,6 +78,7 @@ function mapStoreError(res, err) {
 }
 
 export function registerV2ProjectRoutes(app) {
+  registerV2CopyRoute(app, { allowed: projectsAllowed });
   app.get("/api/v2/projects/:id/cover", wrap(async (req, res) => {
     res.set("Cache-Control", "private, no-store");
     if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
