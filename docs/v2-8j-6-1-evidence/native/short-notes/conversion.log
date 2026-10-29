@@ -1,0 +1,1 @@
+convert /home/deepnar/Programs/presentations/docs/v2-8j-6-1-evidence/native/short-notes.pptx as a Impress document -> /home/deepnar/Programs/presentations/docs/v2-8j-6-1-evidence/native/short-notes/short-notes.pdf using filter : impress_pdf_Export:{"ExportNotesPages":{"type":"boolean","value":"true"},"ExportOnlyNotesPages":{"type":"boolean","value":"true"}}

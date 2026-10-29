@@ -38,7 +38,7 @@ const MILESTONES = {
   'V2-8J-6-1': {
     plan: 'docs/v2-8j-6-1-evidence/validation-plan.json',
     focused: 'notes-domain', files: ["test/v2-citation-export-8j.test.js"],
-    groups: {"notes-sqlite": ["test/v2-citation-export-sqlite-8j.test.js"], "notes-postgres": ["test/v2-citation-export-postgres-8j.test.js"], "notes-native": ["test/v2-citation-export-native-8j.test.js"], "notes-cli": ["test/v2-citation-export-cli-8j.test.js"]},
+    groups: {"notes-sqlite": ["test/v2-citation-export-sqlite-8j.test.js"], "notes-postgres": ["test/v2-citation-export-postgres-8j.test.js"], "notes-native": ["test/v2-citation-export-native-8j.test.js", "test/v2-renderer-pptx.test.js"], "notes-cli": ["test/v2-citation-export-cli-8j.test.js"]},
     required: ["notes-domain", "notes-sqlite", "notes-postgres", "notes-native", "notes-cli", "typecheck", "notes-visual"],
   },
   'V2-8J-5': {

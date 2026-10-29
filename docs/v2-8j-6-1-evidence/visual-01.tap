@@ -1,0 +1,8 @@
+file:///home/deepnar/Programs/presentations/docs/v2-8j-6-1-evidence/render-visual.mjs:35
+  for(const value of ['claim support not assessed','Title: "Evidence 0"','URL: "https://example.org/0"','C1'])if(!text.includes(value))throw Error('Notes-page PDF did not preserve '+value);
+                                                                                                                                             ^
+
+Error: Notes-page PDF did not preserve claim support not assessed
+    at file:///home/deepnar/Programs/presentations/docs/v2-8j-6-1-evidence/render-visual.mjs:35:142
+
+Node.js v24.16.0

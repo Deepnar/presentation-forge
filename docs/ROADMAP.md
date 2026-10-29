@@ -9268,7 +9268,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
     <a id="assistant-citation-notes-export"></a>
 
-    - [ ] **V2-8J-6-1 headless owner-qualified citation notes export — approved, implementation in progress.**
+    - [ ] **V2-8J-6-1 headless owner-qualified citation notes export — validated, independent review pending.**
       The2026-10-29 continuation starts planning from accepted J5f6487737, not
       implementation. [Concrete contract](V2-8J-6-1-PLAN.md) is independently
       [ready for direction](reviews/V2-8J-6-1-plan-3b6bf65f.json) at ae96d717;
@@ -9290,8 +9290,10 @@ local inference. Only that separate transport correction is authorized; this aud
       protocol/link/source consistency passed with no product execution.
       Focus only on new qualification/actual stores/native notes/CLI containment
       and a small native visual fixture; no old matrix/model/GPU work is planned.
-      Only this bounded implementation and its pinned focused validation are
-      authorized; independent implementation acceptance remains pending.
+      Frozen implementation cb3a8522 has selected32/32 focused passes, typecheck0
+      and actual native visual evidence; all37attempts retain4fixture failures.
+      Read [evaluation](V2-8J-6-1-EVAL.md) for union/source applicability. Independent
+      exact-source acceptance and owned cleanup remain pending; no next surface is authorized.
 
     - [ ] **Browser citation-export interaction — follows accepted J6-1.**
       Agree the existing export action's explicit disclosure/preview/download

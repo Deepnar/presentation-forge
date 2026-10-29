@@ -1,0 +1,66 @@
+TAP version 13
+# Subtest: v2 renderer pptx bytes
+    # Subtest: returns a non-empty Uint8Array with a ZIP signature
+    ok 1 - returns a non-empty Uint8Array with a ZIP signature
+      ---
+      duration_ms: 0.561153
+      type: 'test'
+      ...
+    # Subtest: rejects empty scene input loudly
+    ok 2 - rejects empty scene input loudly
+      ---
+      duration_ms: 0.364585
+      type: 'test'
+      ...
+    # Subtest: contains the expected slide parts
+    ok 3 - contains the expected slide parts
+      ---
+      duration_ms: 0.802198
+      type: 'test'
+      ...
+    # Subtest: keeps text, shape, chart, table, and line native
+    ok 4 - keeps text, shape, chart, table, and line native
+      ---
+      duration_ms: 9.777434
+      type: 'test'
+      ...
+    # Subtest: writes document metadata into OOXML properties
+    ok 5 - writes document metadata into OOXML properties
+      ---
+      duration_ms: 1.046606
+      type: 'test'
+      ...
+    # Subtest: renders fresh presentations per call
+    ok 6 - renders fresh presentations per call
+      ---
+      duration_ms: 16.055086
+      type: 'test'
+      ...
+    1..6
+ok 1 - v2 renderer pptx bytes
+  ---
+  duration_ms: 130.148352
+  type: 'suite'
+  ...
+# Subtest: v2 renderer node adapter
+    # Subtest: writes its rendered bytes to a path
+    ok 1 - writes its rendered bytes to a path
+      ---
+      duration_ms: 16.431688
+      type: 'test'
+      ...
+    1..1
+ok 2 - v2 renderer node adapter
+  ---
+  duration_ms: 16.687469
+  type: 'suite'
+  ...
+1..2
+# tests 7
+# suites 2
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 330.489967

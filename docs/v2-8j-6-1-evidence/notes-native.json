@@ -1,0 +1,62 @@
+{
+  "id": "notes-native",
+  "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+  "kind": "tests",
+  "command": "Assemble retained successful executed leaves from the exact invocation records listed in this evidence; no new product execution.",
+  "exitCode": 0,
+  "tests": {
+    "total": 11,
+    "pass": 11,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8j-6-1-evidence/notes-native-selected.tap",
+  "selection": {
+    "notes native: notes capacity and tampered slide/object/notes relationships fail before publication": {
+      "file": "test/v2-citation-export-native-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/native-01.json"
+    },
+    "notes native: complete editable mapping preserves visual scene XML and limits disclosure to literal titles URLs": {
+      "file": "test/v2-citation-export-native-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/native-02.json"
+    },
+    "notes native: raw options JSON cloned receipts and direct file paths cannot mint notes authority": {
+      "file": "test/v2-citation-export-native-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/native-02.json"
+    },
+    "notes native: complete long text survives while unsafe scalar data and incomplete mapping refuse": {
+      "file": "test/v2-citation-export-native-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/native-02.json"
+    },
+    "returns a non-empty Uint8Array with a ZIP signature": {
+      "file": "test/v2-renderer-pptx.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/shared-renderer-01.json"
+    },
+    "rejects empty scene input loudly": {
+      "file": "test/v2-renderer-pptx.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/shared-renderer-01.json"
+    },
+    "contains the expected slide parts": {
+      "file": "test/v2-renderer-pptx.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/shared-renderer-01.json"
+    },
+    "keeps text, shape, chart, table, and line native": {
+      "file": "test/v2-renderer-pptx.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/shared-renderer-01.json"
+    },
+    "writes document metadata into OOXML properties": {
+      "file": "test/v2-renderer-pptx.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/shared-renderer-01.json"
+    },
+    "renders fresh presentations per call": {
+      "file": "test/v2-renderer-pptx.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/shared-renderer-01.json"
+    },
+    "writes its rendered bytes to a path": {
+      "file": "test/v2-renderer-pptx.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/shared-renderer-01.json"
+    }
+  },
+  "sourceApplicability": "See manifest.json sourceApplicability and every invocation sourceHashes/argv/working-tree delta."
+}

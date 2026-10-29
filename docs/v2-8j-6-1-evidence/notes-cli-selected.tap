@@ -1,0 +1,17 @@
+TAP version 13
+# Retained executed-leaf union; not a new test invocation.
+# forge-test-file "test/v2-citation-export-cli-8j.test.js"
+# retained invocation docs/v2-8j-6-1-evidence/cli-close-01.json
+ok 1 - notes CLI: consent is explicit each time; private complete output refuses replacement and cleans temporary links
+# retained invocation docs/v2-8j-6-1-evidence/cli-01.json
+ok 2 - notes CLI: invalid supplied sessions never downgrade, foreign owners do not gain admin source rights
+# retained invocation docs/v2-8j-6-1-evidence/cli-01.json
+ok 3 - notes public containment: existing GET refuses cited query flags and uncited GET/CLI remain usable without consent
+# retained invocation docs/v2-8j-6-1-evidence/cli-01.json
+ok 4 - notes publication: competing files, symlinks, missing parents and simultaneous publishers preserve complete bytes
+1..4
+# tests 4
+# pass 4
+# fail 0
+# skipped 0
+# cancelled 0

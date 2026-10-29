@@ -7,9 +7,11 @@ foundation (Recommended)”. Direction/inventory are pinned before runtime in
 v2-8j-6-1-evidence/. Read state, contract, evaluation and the
 [active roadmap](ROADMAP.md#assistant-citation-notes-export).
 
-Only the approved headless notes export is active; implementation/validation/
-independent acceptance are pending. All seven focused gates are registered; no
-product result claimed. No old matrix, browser build, model/search/real network,
+Approved headless notes export is implemented at cb3a8522 and focused validation
+is complete: selected32/32; all attempts37=33pass/4fixture-fail; typecheck0.
+Three slide rasters are pixel-identical and one actual short notes page was viewed.
+Independent exact-source acceptance and new owned PostgreSQL cleanup remain pending.
+Read V2-8J-6-1-EVAL.md and its manifest; no whole-file pass is inferred from case unions. No old matrix, browser build, model/search/real network,
 GPU or production activation is authorized. No old fixture/cleanup is repeated.
 Keep validation serial, low priority and bounded; monitor owned load and leave
 unrelated work alone. Do not infer load ownership from global PSI alone.

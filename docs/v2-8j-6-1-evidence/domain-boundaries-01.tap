@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: notes domain: complete traversal and selected canonical source validation remain fail-closed
+ok 1 - notes domain: complete traversal and selected canonical source validation remain fail-closed
+  ---
+  duration_ms: 69.391865
+  type: 'test'
+  ...
+# Subtest: notes domain: qualified disclosure retains all non-citation native safety checks and scalar validation
+ok 2 - notes domain: qualified disclosure retains all non-citation native safety checks and scalar validation
+  ---
+  duration_ms: 4.298813
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 297.316842

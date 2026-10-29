@@ -1,0 +1,19 @@
+TAP version 13
+# Retained executed-leaf union; not a new test invocation.
+# forge-test-file "test/v2-citation-export-postgres-8j.test.js"
+# retained invocation docs/v2-8j-6-1-evidence/postgres-01.json
+ok 1 - Notes export PostgreSQL: read-only saved export checks every source page under one exact-owner snapshot
+# retained invocation docs/v2-8j-6-1-evidence/postgres-01.json
+ok 2 - Notes export PostgreSQL: owner foreign null admin and stale catalog/project boundaries cannot grant disclosure
+# retained invocation docs/v2-8j-6-1-evidence/postgres-01.json
+ok 3 - Notes export PostgreSQL: corrupt bodies and storage faults refuse without changing scene history or leaking errors
+# retained invocation docs/v2-8j-6-1-evidence/postgres-01.json
+ok 4 - Notes export PostgreSQL: clear waits for qualification; portable snapshot remains valid after the lock is released
+# retained invocation docs/v2-8j-6-1-evidence/postgres-01.json
+ok 5 - Notes export PostgreSQL: save clear and delete winning the parent lock invalidate already inspected counters
+1..5
+# tests 5
+# pass 5
+# fail 0
+# skipped 0
+# cancelled 0

@@ -1,0 +1,46 @@
+{
+  "id": "notes-domain",
+  "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+  "kind": "tests",
+  "command": "Assemble retained successful executed leaves from the exact invocation records listed in this evidence; no new product execution.",
+  "exitCode": 0,
+  "tests": {
+    "total": 7,
+    "pass": 7,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8j-6-1-evidence/notes-domain-selected.tap",
+  "selection": {
+    "notes domain: strict capture refuses extra authority and executable data before storage": {
+      "file": "test/v2-citation-export-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/domain-01.json"
+    },
+    "notes domain: capture binding and all counters before await; metadata has no source content": {
+      "file": "test/v2-citation-export-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/domain-01.json"
+    },
+    "notes domain: visibility follows anchored scope, ordinary locks export, chrome does not disclose": {
+      "file": "test/v2-citation-export-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/domain-01.json"
+    },
+    "notes domain: uncited mode cannot silently discard citations and backend failures are sanitized": {
+      "file": "test/v2-citation-export-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/domain-01.json"
+    },
+    "notes domain: complete target content range and snapshot failures refuse the entire export": {
+      "file": "test/v2-citation-export-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/domain-02.json"
+    },
+    "notes domain: complete traversal and selected canonical source validation remain fail-closed": {
+      "file": "test/v2-citation-export-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/domain-boundaries-01.json"
+    },
+    "notes domain: qualified disclosure retains all non-citation native safety checks and scalar validation": {
+      "file": "test/v2-citation-export-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/domain-boundaries-01.json"
+    }
+  },
+  "sourceApplicability": "See manifest.json sourceApplicability and every invocation sourceHashes/argv/working-tree delta."
+}

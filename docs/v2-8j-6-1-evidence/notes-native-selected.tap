@@ -1,0 +1,32 @@
+TAP version 13
+# Retained executed-leaf union; not a new test invocation.
+# forge-test-file "test/v2-citation-export-native-8j.test.js"
+# forge-test-file "test/v2-renderer-pptx.test.js"
+# retained invocation docs/v2-8j-6-1-evidence/native-01.json
+ok 1 - notes native: notes capacity and tampered slide/object/notes relationships fail before publication
+# retained invocation docs/v2-8j-6-1-evidence/native-02.json
+ok 2 - notes native: complete editable mapping preserves visual scene XML and limits disclosure to literal titles URLs
+# retained invocation docs/v2-8j-6-1-evidence/native-02.json
+ok 3 - notes native: raw options JSON cloned receipts and direct file paths cannot mint notes authority
+# retained invocation docs/v2-8j-6-1-evidence/native-02.json
+ok 4 - notes native: complete long text survives while unsafe scalar data and incomplete mapping refuse
+# retained invocation docs/v2-8j-6-1-evidence/shared-renderer-01.json
+ok 5 - returns a non-empty Uint8Array with a ZIP signature
+# retained invocation docs/v2-8j-6-1-evidence/shared-renderer-01.json
+ok 6 - rejects empty scene input loudly
+# retained invocation docs/v2-8j-6-1-evidence/shared-renderer-01.json
+ok 7 - contains the expected slide parts
+# retained invocation docs/v2-8j-6-1-evidence/shared-renderer-01.json
+ok 8 - keeps text, shape, chart, table, and line native
+# retained invocation docs/v2-8j-6-1-evidence/shared-renderer-01.json
+ok 9 - writes document metadata into OOXML properties
+# retained invocation docs/v2-8j-6-1-evidence/shared-renderer-01.json
+ok 10 - renders fresh presentations per call
+# retained invocation docs/v2-8j-6-1-evidence/shared-renderer-01.json
+ok 11 - writes its rendered bytes to a path
+1..11
+# tests 11
+# pass 11
+# fail 0
+# skipped 0
+# cancelled 0

@@ -1,0 +1,75 @@
+{
+  "invocationHead": "1192f3eeea87028ac053ca00709bc10666042793",
+  "command": "nice -n 15 ionice -c 3 taskset -c 20,21 node --test --test-concurrency=1 test/v2-citation-export-8j.test.js",
+  "argv": [
+    "nice",
+    "-n",
+    "15",
+    "ionice",
+    "-c",
+    "3",
+    "taskset",
+    "-c",
+    "20,21",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "test/v2-citation-export-8j.test.js"
+  ],
+  "startedAt": "2026-10-29T12:31:40.155094+00:00",
+  "sourceHashes": {
+    "packages/model/citations.ts": "2fbd43c08c14429d45ecbcd379c3d261925f27491d83743123f65cc165248f13",
+    "packages/model/engine.ts": "2f34515c6acc7ebd4cdf72d463f22768d8c1f2358a0ea32cd193c74de4cc1ce8",
+    "packages/model/scene.schema.json": "94fc9c543636afda87469b621269c36a57af3c9164fdfa6b6f362176a964557a",
+    "packages/model/source-identity.ts": "358940c1800815466ed10ec14c2c984273292063b765acee0e1836a36b307cb5",
+    "packages/projects/document.js": "69fcf2bb59a06ab2a7d1118985774fc096f01985815787b7e53f85055514fb69",
+    "packages/renderer-pptx/render.ts": "f7e3a494af18dc3f4e4ae1347a681d895ea003f353db58a80eaf1eceaed8b2b0",
+    "packages/renderer-pptx/source-notes.ts": "bda289c69be124589e8624357bccf383a431f37e2ee29b59f3bf9cf58112564a",
+    "src/auth.js": "4ef5c90b3fa3fa2a724da563efcbb227814ff92f001983d28f7bea5d3011951a",
+    "src/cloud.js": "faec309818ae169a2be00e30897e2628d579ae435b06b490bb2498dbc4110e74",
+    "src/db.js": "6343541689692e53584f1eea9ae9325ce6ef2712dbea07fd5ca39461da780fa2",
+    "src/projects/citation-export.js": "ed56af48a734a3c42bfa06a0244b39290186a52d3495c665363dffe2595f5b63",
+    "src/projects/export-cli.js": "93f20ae85c45dcf706ef565a9d832cfb16822dab1b2e36701611ff6249952bbf",
+    "src/projects/export-file.js": "e5e284bf7a667b31996e4b94d542bb0d6c6c1334700c41958ae7cd74bc425275",
+    "src/projects/history.js": "222a321e9b5385b3ceabe12dbc1a64e143a9513e96cc5da8cb05e914e2f0bb87",
+    "src/projects/source-read.js": "1c79e587033fff4b318b24ce963270aade800adeeb3524b98fa0fc4a8dbe7318",
+    "src/projects/source-schema.js": "4f56d1403b7636c4652dc15f4b30ac25c8af5751b0f769959a76185214f94760",
+    "src/projects/sources.js": "12c8ebc0db7223585210155be48a52431856620500fb9ce0fa047b6407093c47",
+    "test/v2-citation-export-8j.test.js": "9d9349e213e5007b3a247fc33fb6b93f20cb2f9cb191de6c3d015d9ff06da9d5",
+    "test/v2-citation-export-contract.js": "6a5c0cfb8ed706f820eb1aa92717320b746854d7b0fbfd66f9d06abf05931114",
+    "test/v2-citation-export-fixture.js": "3e518b7a456e8bc70b3a97657ce8e01f4d16658aacdcaa44265829fd3fbeaee0",
+    "test/v2-citation-export-postgres-8j.test.js": "cee55334c4b912cde46f8601b496a515bf87509b38ce815d5da36568d6ee3ca7",
+    "test/v2-citation-export-sqlite-8j.test.js": "2f00d6bf3f2bc7bd82f51b53b4b68dafc4e0c653b1fe9c380a20c0c6c6c9a940",
+    "tools/dev-protocol-check.mjs": "6a5a6bce32771950350e2457fa0eaaab01bddbdf79218f736847bca0b0e4d358",
+    "tsconfig.json": "6e29c654a6a38845dba3899bc6db8f252a889cb0970b851bfb260c4aad6bb956"
+  },
+  "trackedDelta": [
+    "package.json",
+    "packages/renderer-pptx/render.ts"
+  ],
+  "timeoutSeconds": 45,
+  "ownedProcessGroup": 1830621,
+  "ownedResources": {
+    "cpuUserSeconds": 0.709,
+    "cpuSystemSeconds": 0.109,
+    "peakLiveGroupRssBytes": 37126144,
+    "samples": [
+      {
+        "elapsedSeconds": 0.01,
+        "members": [
+          {
+            "pid": 1830621,
+            "cpuSeconds": 0.0,
+            "rssBytes": 37126144
+          }
+        ],
+        "liveRssBytes": 37126144
+      }
+    ],
+    "note": "One-second process-group samples; summed RSS includes shared mappings. Waited-child CPU accounting; no attribution of global PSI."
+  },
+  "exitCode": 1,
+  "durationMs": 715,
+  "timedOut": false,
+  "log": "docs/v2-8j-6-1-evidence/domain-01.tap"
+}

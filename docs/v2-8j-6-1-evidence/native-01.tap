@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: notes native: complete editable mapping preserves visual scene XML and limits disclosure to literal titles URLs
+not ok 1 - notes native: complete editable mapping preserves visual scene XML and limits disclosure to literal titles URLs
+  ---
+  duration_ms: 41.023698
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-citation-export-native-8j.test.js:32:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"code":"invalid-state","message":"Saved project or source state is invalid; no export was produced."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-citation-export-native-8j.test.js:36:10)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: notes native: raw options JSON cloned receipts and direct file paths cannot mint notes authority
+not ok 2 - notes native: raw options JSON cloned receipts and direct file paths cannot mint notes authority
+  ---
+  duration_ms: 7.021495
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-citation-export-native-8j.test.js:56:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok((await preflightScenes(scenes)).some(r=>r.reason.includes('citation')))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-citation-export-native-8j.test.js:58:10)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: notes native: complete long text survives while unsafe scalar data and incomplete mapping refuse
+not ok 3 - notes native: complete long text survives while unsafe scalar data and incomplete mapping refuse
+  ---
+  duration_ms: 4.388401
+  type: 'test'
+  location: '/home/deepnar/Programs/presentations/test/v2-citation-export-native-8j.test.js:66:1'
+  failureType: 'testCodeFailure'
+  error: "pptx export refused (1 problem(s)): slide 's1': scene contract invalid: Duplicate scene citation association."
+  code: 'export-unsafe'
+  name: 'ExportUnsafeError'
+  stack: |-
+    render (file:///home/deepnar/Programs/presentations/packages/renderer-pptx/render.ts:391:32)
+    async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-citation-export-native-8j.test.js:71:15)
+    async Test.run (node:internal/test_runner/test:1313:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:897:7)
+  ...
+# Subtest: notes native: notes capacity and tampered slide/object/notes relationships fail before publication
+ok 4 - notes native: notes capacity and tampered slide/object/notes relationships fail before publication
+  ---
+  duration_ms: 47.418371
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 350.028003

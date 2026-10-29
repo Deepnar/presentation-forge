@@ -1,0 +1,12 @@
+{
+  "id": "notes-visual",
+  "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+  "kind": "visual",
+  "command": "nice -n 15 ionice -c 3 taskset -c 20,21 node docs/v2-8j-6-1-evidence/inspect-existing-visual.mjs",
+  "exitCode": 0,
+  "log": "docs/v2-8j-6-1-evidence/visual-inspect-01.tap",
+  "inspected": true,
+  "inspectionRecord": "docs/v2-8j-6-1-evidence/visual-inspection.md",
+  "measurements": "docs/v2-8j-6-1-evidence/visual-measurements.json",
+  "initialRender": "docs/v2-8j-6-1-evidence/visual-01.json"
+}

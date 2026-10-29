@@ -1,0 +1,13 @@
+{
+  "id": "26cfc4d5808686a82afa867b5de4924b8d4a449be188d3c274fce34eb83c10d6",
+  "name": "forge-j6-1-20261029180444-d0e728",
+  "image": "sha256:cd17e2ac98240fce1541ad2a803b34009b4eea5aec8a832363cdc7eca62e722e",
+  "host": "127.0.0.1",
+  "port": 32769,
+  "cpus": 1,
+  "memoryBytes": 536870912,
+  "tmpfsBytes": 268435456,
+  "initialUserDatabaseCatalog": [],
+  "createdAt": "2026-10-29T12:34:46.513203+00:00",
+  "limitation": "Disposable local tmpfs PostgreSQL, no hardware/power-loss durability qualification."
+}

@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: notes domain: complete target content range and snapshot failures refuse the entire export
+ok 1 - notes domain: complete target content range and snapshot failures refuse the entire export
+  ---
+  duration_ms: 86.682227
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 354.313751

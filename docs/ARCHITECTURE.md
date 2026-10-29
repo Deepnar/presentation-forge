@@ -3155,3 +3155,36 @@ host activation is added. Exact source `f6487737` is independently
 [accepted](reviews/V2-8J-5-f6487737.json); [evaluation](V2-8J-5-EVAL.md) retains
 focused execution, visual/response limits and cleanup. Later direction/authority
 remains solely in the [roadmap](ROADMAP.md#assistant-citation-native-presentation).
+
+### J6-1 owner-qualified citation speaker notes (implementation under review)
+
+`src/projects/citation-export.js` exposes metadata-only `inspect` and exact-owner
+`render` over the canonical citation read transaction. Each render captures a strict
+revision/generation/disclosure request before awaiting storage, validates the complete
+saved document/catalog, resolves referenced sources in24-item pages and checks
+unique same-slide targets, current content anchors and optional UTF-8 range bounds.
+Visibility follows J4's anchored non-chrome scope; ordinary visible locks are allowed.
+The immutable title/URL projection leaves the parent lock before native generation.
+`renderUncited` independently refuses any citations, preserving the existing consent-free
+path without silently discarding metadata. No scene, catalog, chat or history write occurs.
+
+The renderer's trusted callback factory owns a private single-use prepared handle;
+raw JSON/options cannot issue one. `source-notes.ts` assigns portable Selection Pane
+names in native draw order and verifies actual OOXML objects, unique native IDs,
+slide relationships and complete notes text after normalization. Title/URL fields
+are reversible quoted literals with visible control/bidi escapes. No excerpt,
+appended Forge identifier, range, hash or provider field enters notes. Authored
+scene asset embedding retains its inherited policy; notes never fetch sources.
+Complete bounded Notes-editor text is preserved; printed notes-page fit is not
+promised. A cleared/deleted source cannot revoke a captured or downloaded file.
+
+`npm run export-project -- <id> --output <new-path> --include-source-notes` binds
+`FORGE_PROJECT_TOKEN` once, observes counters, then renders that exact snapshot
+without retry/admin override. Uncited output needs no flag. `export-file.js` writes
+owned0700/0600 temporary resources on the output filesystem, flushes/closes complete
+bytes and exclusively hard-links the final name. It never overwrites an existing
+target or publishes partial bytes; unsupported publication refuses and a failed
+post-publication acknowledgement reports an unknown complete-file outcome.
+Existing saved GET, browser, raw and file renderers still refuse cited scenes.
+Public interaction and further presentation scope remain solely in the
+[roadmap](ROADMAP.md#assistant-citation-native-presentation).

@@ -6,15 +6,15 @@
     "source": "docs/reviews/V2-8J-5-f6487737.json"
   },
   "implementationHead": {
-    "sha": "4ebfbf0537ee89051e59779adf71d8b6ad0048aa",
-    "note": "Human approved reviewed J6-1 contract ae96d717. Runtime implementation starting from acceptedJ5; focused validation pending, no self-acceptance."
+    "sha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+    "note": "Approved J6-1 runtime frozen; focused retained executed-leaf evidence complete, independent review pending. CLI close handling has a narrow subsequent passing publication case."
   },
   "activeMilestone": {
     "id": "V2-8J-6-1",
     "roadmapRef": "docs/ROADMAP.md#assistant-citation-notes-export",
     "evalDoc": "docs/V2-8J-6-1-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "in-progress",
+    "implementationStatus": "validated",
     "reviewStatus": "pending",
     "implementedBy": "/root",
     "reviewRecord": null,
@@ -23,45 +23,45 @@
   "validation": [
     {
       "id": "notes-domain",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved new/affected focused check; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-1-evidence/notes-domain.json",
+      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
     },
     {
       "id": "notes-sqlite",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved new/affected focused check; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-1-evidence/notes-sqlite.json",
+      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
     },
     {
       "id": "notes-postgres",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved new/affected focused check; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-1-evidence/notes-postgres.json",
+      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
     },
     {
       "id": "notes-native",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved new/affected focused check; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-1-evidence/notes-native.json",
+      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
     },
     {
       "id": "notes-cli",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved new/affected focused check; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-1-evidence/notes-cli.json",
+      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
     },
     {
       "id": "typecheck",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved new/affected focused check; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-1-evidence/typecheck.json",
+      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
     },
     {
       "id": "notes-visual",
-      "status": "pending",
-      "evidence": null,
-      "reason": "Approved new/affected focused check; not executed yet."
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-1-evidence/notes-visual.json",
+      "reason": "Focused executed evidence; retained attempts and source applicability in manifest, independent acceptance pending."
     }
   ],
   "knownBlockers": [],

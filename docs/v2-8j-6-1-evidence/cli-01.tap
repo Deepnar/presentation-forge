@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: notes CLI: consent is explicit each time; private complete output refuses replacement and cleans temporary links
+ok 1 - notes CLI: consent is explicit each time; private complete output refuses replacement and cleans temporary links
+  ---
+  duration_ms: 1875.523914
+  type: 'test'
+  ...
+# Subtest: notes CLI: invalid supplied sessions never downgrade, foreign owners do not gain admin source rights
+ok 2 - notes CLI: invalid supplied sessions never downgrade, foreign owners do not gain admin source rights
+  ---
+  duration_ms: 742.829854
+  type: 'test'
+  ...
+# Subtest: notes public containment: existing GET refuses cited query flags and uncited GET/CLI remain usable without consent
+ok 3 - notes public containment: existing GET refuses cited query flags and uncited GET/CLI remain usable without consent
+  ---
+  duration_ms: 281.937643
+  type: 'test'
+  ...
+# Subtest: notes publication: competing files, symlinks, missing parents and simultaneous publishers preserve complete bytes
+ok 4 - notes publication: competing files, symlinks, missing parents and simultaneous publishers preserve complete bytes
+  ---
+  duration_ms: 4.816631
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3191.085823

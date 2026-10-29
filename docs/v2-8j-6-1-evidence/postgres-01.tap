@@ -1,0 +1,41 @@
+TAP version 13
+# Subtest: Notes export PostgreSQL: read-only saved export checks every source page under one exact-owner snapshot
+ok 1 - Notes export PostgreSQL: read-only saved export checks every source page under one exact-owner snapshot
+  ---
+  duration_ms: 192.545887
+  type: 'test'
+  ...
+# {"backend":"postgres","citations":25,"renderMs":54.382299000000046,"bodyBatches":[24,1]}
+# Subtest: Notes export PostgreSQL: owner foreign null admin and stale catalog/project boundaries cannot grant disclosure
+ok 2 - Notes export PostgreSQL: owner foreign null admin and stale catalog/project boundaries cannot grant disclosure
+  ---
+  duration_ms: 29.979903
+  type: 'test'
+  ...
+# Subtest: Notes export PostgreSQL: corrupt bodies and storage faults refuse without changing scene history or leaking errors
+ok 3 - Notes export PostgreSQL: corrupt bodies and storage faults refuse without changing scene history or leaking errors
+  ---
+  duration_ms: 26.154998
+  type: 'test'
+  ...
+# Subtest: Notes export PostgreSQL: clear waits for qualification; portable snapshot remains valid after the lock is released
+ok 4 - Notes export PostgreSQL: clear waits for qualification; portable snapshot remains valid after the lock is released
+  ---
+  duration_ms: 29.26622
+  type: 'test'
+  ...
+# Subtest: Notes export PostgreSQL: save clear and delete winning the parent lock invalidate already inspected counters
+ok 5 - Notes export PostgreSQL: save clear and delete winning the parent lock invalidate already inspected counters
+  ---
+  duration_ms: 59.23942
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 739.728849

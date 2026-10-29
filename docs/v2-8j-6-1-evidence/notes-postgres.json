@@ -1,0 +1,38 @@
+{
+  "id": "notes-postgres",
+  "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+  "kind": "tests",
+  "command": "Assemble retained successful executed leaves from the exact invocation records listed in this evidence; no new product execution.",
+  "exitCode": 0,
+  "tests": {
+    "total": 5,
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8j-6-1-evidence/notes-postgres-selected.tap",
+  "selection": {
+    "Notes export PostgreSQL: read-only saved export checks every source page under one exact-owner snapshot": {
+      "file": "test/v2-citation-export-postgres-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/postgres-01.json"
+    },
+    "Notes export PostgreSQL: owner foreign null admin and stale catalog/project boundaries cannot grant disclosure": {
+      "file": "test/v2-citation-export-postgres-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/postgres-01.json"
+    },
+    "Notes export PostgreSQL: corrupt bodies and storage faults refuse without changing scene history or leaking errors": {
+      "file": "test/v2-citation-export-postgres-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/postgres-01.json"
+    },
+    "Notes export PostgreSQL: clear waits for qualification; portable snapshot remains valid after the lock is released": {
+      "file": "test/v2-citation-export-postgres-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/postgres-01.json"
+    },
+    "Notes export PostgreSQL: save clear and delete winning the parent lock invalidate already inspected counters": {
+      "file": "test/v2-citation-export-postgres-8j.test.js",
+      "invocation": "docs/v2-8j-6-1-evidence/postgres-01.json"
+    }
+  },
+  "sourceApplicability": "See manifest.json sourceApplicability and every invocation sourceHashes/argv/working-tree delta."
+}

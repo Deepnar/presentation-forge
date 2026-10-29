@@ -1,0 +1,24 @@
+{
+  "atUtc": "2026-10-29T12:34:44.854285+00:00",
+  "head": "1192f3eeea87028ac053ca00709bc10666042793",
+  "cpus": 24,
+  "memory": "MemTotal:       65245280 kB\nMemFree:         6085944 kB\nMemAvailable:   41452244 kB\nBuffers:              36 kB\nCached:         31987376 kB\nSwapCached:         9940 kB\nActive:         18160208 kB\nInactive:       30425644 kB\nActive(anon):   15320656 kB\nInactive(anon):  3890592 kB\nActive(file):    2839552 kB\nInactive(file): 26535052 kB\nUnevictable:     1222820 kB\nMlocked:           40152 kB\nSwapTotal:      65245180 kB\nSwapFree:       62815380 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:              5532 kB\nWriteback:             0 kB\nAnonPages:      17395576 kB\nMapped:          8639848 kB\nShmem:           2297976 kB\nKReclaimable:    6719256 kB\nSlab:            7289968 kB\nSReclaimable:    6719256 kB\nSUnreclaim:       570712 kB\nKernelStack:       40992 kB\nPageTables:       168504 kB\nSecPageTables:      2360 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    97867820 kB\nCommitted_AS:   49641000 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      482980 kB\nVmallocChunk:          0 kB\nPercpu:            24960 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   9402368 kB\nShmemHugePages:  1236992 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:              0 kB\nCmaFree:               0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nGPUActive:             0 kB\nGPUReclaim:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     2088704 kB\nDirectMap2M:    61282304 kB\nDirectMap1G:     5242880 kB\n",
+  "ioPressure": "some avg10=46.48 avg60=45.45 avg300=47.95 total=11363233151\nfull avg10=43.57 avg60=42.68 avg300=45.36 total=10835991219\n",
+  "memoryPressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=5705210\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5428263\n",
+  "cpuPressure": "some avg10=0.02 avg60=0.11 avg300=0.03 total=218753948\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+  "competingProcesses": [
+    "    PID    PPID %CPU   RSS COMMAND",
+    "1791151  902419 91.3 5874800 python3",
+    "1836336    7266 50.0 18164 python3",
+    "1717932    5011 15.7 1348512 Isolated Web Co",
+    "   4923    4249  9.9 824108 zen-bin",
+    "   1299       1  9.1 42364 ollama",
+    "   5075    5011  7.4 195240 RDD Process",
+    "   4249    4239  4.7 192984 Hyprland",
+    "1792495    1955  4.6 160308 postgres",
+    "  14899    5011  3.5 809900 Isolated Web Co",
+    "1397259    1299  2.3 10091268 llama-server",
+    "1738755    6882  1.9 752572 ChatGPT"
+  ],
+  "policy": "Admit one CPU/512MiB tmpfs PostgreSQL, serial two-CPU nice15/idle-I/O checks. Global pressure is not attributed to this work. No unrelated process is altered."
+}

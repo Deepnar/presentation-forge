@@ -1,0 +1,8 @@
+{
+  "id": "typecheck",
+  "implementationSha": "cb3a8522b7b35cc76fb399d7cc1101ee1fced647",
+  "kind": "command",
+  "command": "nice -n 15 ionice -c 3 taskset -c 20,21 npm run typecheck",
+  "exitCode": 0,
+  "log": "docs/v2-8j-6-1-evidence/typecheck-01.tap"
+}
