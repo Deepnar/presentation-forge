@@ -1,0 +1,10 @@
+{
+  "removedAt": "2026-10-29T11:46:50.259656+00:00",
+  "containerId": "27f4033a0d730f4e792ecc03f5be33832b678a5ad41ef9eaf24aa08757144c6a",
+  "singleExactIdRemoval": true,
+  "removalExitCode": 0,
+  "catalogEvidence": "docs/v2-8j-5-evidence/cleanup-catalog.json",
+  "exactIdAbsent": true,
+  "privateConnectionAbsent": true,
+  "privateEnvironmentAbsent": true
+}

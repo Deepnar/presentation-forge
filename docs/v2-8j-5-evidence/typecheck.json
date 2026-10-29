@@ -7,6 +7,6 @@
   "exitCode": 0,
   "log": "docs/v2-8j-5-evidence/typecheck.log",
   "durationMs": null,
-  "applicability": "Applicable unchanged runtime/selected test bytes from the captured run. Later source commits change only browser fixture setup/painted hit targets/settled screenshot timing; citedFixture now accepts an optional scenes input with the same seed() default used by HTTP/CLI. TypeScript packages/config/typed usage fixtures are unchanged. This is source applicability, not a new execution.",
-  "testedImplementationSha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0"
+  "applicability": "Typecheck executed once at d4556948. Only packages, tsconfig.json and test/v2-generated-usage.test.ts are byte-identical through frozen f6487737. Legacy/app JavaScript is outside tsconfig and changed between d4556948 and26a1e86f for the four adoption fixes; no claim of checking that JavaScript is made. No rerun inferred; original elapsed time was not captured.",
+  "testedImplementationSha": "d4556948a8febda09bb2c1ddab9912cfeb772bc3"
 }

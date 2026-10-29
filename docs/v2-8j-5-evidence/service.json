@@ -12,5 +12,6 @@
   },
   "backend": "PostgreSQL 15, isolated new J5 fixture",
   "ownership": "Created by this task; never reuse previous I4/J2/J3/J4 services",
-  "status": "running"
+  "status": "removed",
+  "cleanupEvidence": "docs/v2-8j-5-evidence/cleanup.json"
 }

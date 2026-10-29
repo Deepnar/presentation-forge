@@ -99,6 +99,6 @@
   "files": [
     "test/v2-project-copy-postgres-8j.test.js"
   ],
-  "testedImplementationSha": "26a1e86fb2be505b4dd382515e15ff9bd38e19b0",
+  "testedImplementationSha": "87471db530252f478cd82a220edd7c5d09d64e51",
   "applicability": "Applicable unchanged runtime/selected test bytes from the captured run. Later source commits change only browser fixture setup/painted hit targets/settled screenshot timing; citedFixture now accepts an optional scenes input with the same seed() default used by HTTP/CLI. TypeScript packages/config/typed usage fixtures are unchanged. This is source applicability, not a new execution."
 }
