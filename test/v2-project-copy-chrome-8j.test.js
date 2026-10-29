@@ -21,7 +21,8 @@ async function click(page,selector){await wait(page,`document.querySelector(${JS
 async function button(page,text,root='document'){const selector=await page.evaluate(`(()=>{const n=[...${root}.querySelectorAll('button')].find(n=>n.getClientRects().length&&n.textContent.trim()===${JSON.stringify(text)});if(!n)return null;n.dataset.copyTestButton='yes';return '[data-copy-test-button="yes"]'})()`);assert.ok(selector,text);await click(page,selector);await page.evaluate("document.querySelectorAll('[data-copy-test-button]').forEach(n=>delete n.dataset.copyTestButton)");}
 async function fill(page,selector,text){await click(page,selector);await page.evaluate(`document.querySelector(${JSON.stringify(selector)}).select()`);if(text)await page.insertText(text);else await page.key(8,'Backspace');}
 async function setup(t,{standalone=false,cited=true}={}){
-  const project=cited?await citedFixture(f):(await f.request('/api/v2/projects',{token:f.token,method:'POST',body:JSON.stringify({title:'Uncited copy source',scenes:seed()})}).then(r=>r.json())).project;
+  const scenes=seed();scenes[0].elements[0].paragraphs[0].runs=[{...scenes[0].elements[0].paragraphs[0].runs[0],text:'Measured results'}];
+  const project=cited?await citedFixture(f,scenes):(await f.request('/api/v2/projects',{token:f.token,method:'POST',body:JSON.stringify({title:'Uncited copy source',scenes})}).then(r=>r.json())).project;
   const page=await openViewer(f.base+'/scenes.html',{w:1360,h:900,timeoutMs:15000});t.after(()=>page.close());
   await page.onNewDocument("window.__copyErrors=[];addEventListener('error',e=>window.__copyErrors.push(e.message));");
   await page.evaluate(`localStorage.setItem('forge.token',${JSON.stringify(f.token)});localStorage.setItem('forge.leftNav','0');location.href=${JSON.stringify(f.base+(standalone?'/scenes.html?project=': '/#/project/')+project.id)}`);

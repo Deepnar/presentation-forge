@@ -3,8 +3,8 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { seed } from './v2-tool-fixture.js';
 const run=promisify(execFile);
-export async function citedFixture(f) {
-  const response=await f.request('/api/v2/projects',{token:f.token,method:'POST',body:JSON.stringify({title:'Copy source',scenes:seed()})});
+export async function citedFixture(f,scenes=seed()) {
+  const response=await f.request('/api/v2/projects',{token:f.token,method:'POST',body:JSON.stringify({title:'Copy source',scenes})});
   assert.equal(response.status,200);const {project}=await response.json();
   const code=`import * as store from './src/projects/store.js';import {createSourceRegistry} from './src/projects/sources.js';import {source} from './test/v2-source-registry-fixture.js';import {record} from './test/v2-citations-fixture.js';
     const b=JSON.parse(process.env.FORGE_COPY_BINDING),r=createSourceRegistry(store),s=source(b.id);
