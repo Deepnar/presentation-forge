@@ -44,6 +44,11 @@ A source-notes consent or opening Sources is not consent to this materialization
 - Reuse exact-owner trusted-token authentication, including credential-free local
   null-owner behavior. Supplied invalid tokens never downgrade, and administrator
   privileges cannot resolve or materialize another owner's retained sources.
+- Both preview and apply synchronously bounded-clone/freeze their complete owner,
+  project, theme and request inputs before their first await, refusing non-JSON,
+  accessors, unknown fields and unsafe counters. Only captured values are used
+  after authentication/theme/validation/transaction awaits. CLI likewise captures
+  token presence/value before awaiting; no mutable environment/session fallback.
 - Preview uses one canonical saved document/catalog snapshot. Fully validate the
   document and all citation associations, resolving current sources in bounded
   batches. Reuse existing export target/visibility/chrome/content/range rules;
@@ -54,7 +59,7 @@ A source-notes consent or opening Sources is not consent to this materialization
   normalized-design fingerprint, with the retention notice. It grants no write
   authority and includes no excerpts or raw retained bodies. No citation-bearing
   project is a valid empty successful appendix; uncited projects report no work.
-- Apply captures strict immutable request/owner before any await, requiring exact
+- Apply additionally requires exact
   project revision, source generation/revision, design fingerprint and fresh
   explicit `source-title-url-scene-v1` consent. Requalify inside the existing
   `withCitationTransaction`; use `createDocument` and one human command batch of
