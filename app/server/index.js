@@ -44,6 +44,8 @@ import { registerAdminRoutes } from "./admin-routes.js";
 import { registerArtifactRoutes, sniffImage } from "./artifact-routes.js";
 import { generationRunInfo, registerGenerationRoutes } from "./generation-routes.js";
 
+import { installCitationViewBoundary,registerCitationViewRoutes } from './v2-citation-view-routes.js';
+
 const app = express();
 app.use((_req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -54,6 +56,7 @@ app.use((_req, res, next) => {
   next();
 });
 installNativeExportHeaders(app);
+installCitationViewBoundary(app);
 const UI_ORIGIN = (process.env.FORGE_UI_ORIGIN ?? "").split(",").map((s) => s.trim()).filter(Boolean);
 if (UI_ORIGIN.length) {
   app.use(cors({ origin: UI_ORIGIN }));
@@ -498,6 +501,7 @@ registerV2ScenesRoutes(app);
 
 registerV2ProjectRoutes(app);
 registerNativeExportRoutes(app, { allowed: () => process.env.FORGE_V2_PROJECTS !== "0" });
+registerCitationViewRoutes(app, { allowed: () => process.env.FORGE_V2_PROJECTS !== "0" });
 registerV2TargetWakeRoute(app);
 registerV2AssistantAvailabilityRoute(app);
 registerV2ConversationRoutes(app);
