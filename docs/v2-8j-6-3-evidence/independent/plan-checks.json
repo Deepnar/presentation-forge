@@ -1,0 +1,104 @@
+{
+  "reviewedPlanSha": "65287b6181aa72ee7515ea8a3d407f5e81c6aca9",
+  "acceptedBaseline": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "kind": "lightweight-document-source-consistency",
+  "checks": [
+    {
+      "check": "exact-review-head",
+      "passed": true,
+      "detail": "65287b6181aa72ee7515ea8a3d407f5e81c6aca9"
+    },
+    {
+      "check": "local-origin-ref",
+      "passed": true,
+      "detail": "65287b6181aa72ee7515ea8a3d407f5e81c6aca9"
+    },
+    {
+      "check": "branch",
+      "passed": true,
+      "detail": "v2"
+    },
+    {
+      "check": "accepted-ancestry",
+      "passed": true,
+      "detail": "6068a2a7c5643a1958a140bcc60d0df6b891ccec"
+    },
+    {
+      "check": "planning-delta-only",
+      "passed": true,
+      "detail": [
+        "docs/ROADMAP.md",
+        "docs/V2-8J-6-3-PLAN.md",
+        "docs/development-state.json"
+      ]
+    },
+    {
+      "check": "accepted-runtime-unchanged",
+      "passed": true,
+      "detail": "No packages/src/app/test/tests changes from the accepted baseline."
+    },
+    {
+      "check": "accepted-baseline-preserved",
+      "passed": true,
+      "detail": {
+        "sha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+        "provenance": "independent-review",
+        "source": "docs/reviews/V2-8J-6-2-6068a2a7.json"
+      }
+    },
+    {
+      "check": "accepted-implementation-preserved",
+      "passed": true,
+      "detail": "6068a2a7c5643a1958a140bcc60d0df6b891ccec"
+    },
+    {
+      "check": "accepted-active-state",
+      "passed": true,
+      "detail": "V2-8J-6-2"
+    },
+    {
+      "check": "candidate-unapproved",
+      "passed": true,
+      "detail": {
+        "id": "V2-8J-6-3 saved Sources inspector contract",
+        "authorized": false,
+        "roadmapRef": "docs/ROADMAP.md#assistant-citation-source-inspector"
+      }
+    },
+    {
+      "check": "plan-baseline-and-stop",
+      "passed": true,
+      "detail": "Full accepted SHA and explicit human-direction stop are present."
+    },
+    {
+      "check": "roadmap-anchor",
+      "passed": true,
+      "detail": "docs/ROADMAP.md#assistant-citation-source-inspector"
+    },
+    {
+      "check": "plan-local-links",
+      "passed": true,
+      "detail": {
+        "links": 4,
+        "missing": []
+      }
+    },
+    {
+      "check": "diff-whitespace",
+      "passed": true,
+      "detail": "git diff --check reviewed parent..reviewed SHA"
+    },
+    {
+      "check": "protocol",
+      "passed": true,
+      "detail": "npm run dev:protocol independently executed: exit0,0errors,0warnings."
+    }
+  ],
+  "totals": {
+    "total": 15,
+    "pass": 15,
+    "fail": 0
+  },
+  "productTestsExecuted": 0,
+  "note": "No product, service, browser, database, native, model, search, provider or GPU execution. Local origin/v2 is inspected; no network Git operation or Git mutation."
+}

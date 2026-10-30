@@ -1,0 +1,74 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/j63_plan_review",
+  "context": "/root/j63_plan_review",
+  "plannedBy": "/root",
+  "reviewDate": "2026-10-30",
+  "reviewedPlanSha": "65287b6181aa72ee7515ea8a3d407f5e81c6aca9",
+  "acceptedBaseline": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "planningEntrySha": "62fdffabe7909305acf15882d7c518eb08442537",
+  "plan": "docs/V2-8J-6-3-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-citation-source-inspector",
+  "evidence": "docs/v2-8j-6-3-evidence/independent/plan-readiness.md",
+  "checks": "docs/v2-8j-6-3-evidence/independent/plan-checks.json",
+  "assessment": "The proposed saved Sources inspector contract is technically coherent and bounded enough for the required human surface/private-browser-disclosure direction. No blocking planning correction is required. Readiness is not implementation authorization or acceptance.",
+  "scopeAssessment": "Explicitly opened saved slide/single-object inspection can reuse one exact-owner parent-locked document/catalog snapshot, canonical source readers and J4 observation semantics. Draft preservation, unresolved associations, strict finite pages/private transport and session/navigation/read-generation cleanup are specified. No scene/source/history mutation, excerpts, provider context, renderer/export change or activation is added by the proposed scope.",
+  "technicalBasis": [
+    {
+      "topic": "Canonical read and source bounds",
+      "sources": ["src/projects/store.js:832", "src/projects/store-postgres.js:868", "src/projects/source-read.js", "src/projects/citation-export.js"],
+      "assessment": "Existing read callbacks and J2 readers permit one coherent owner/document/catalog snapshot with capped metadata and page-body reads. Full-document validation, immutable captured input and no nested/separate public transactions are required by the plan. Adapter/SQL changes trigger an amended actual-PG evidence selection."
+    },
+    {
+      "topic": "Unresolved observation semantics",
+      "sources": ["src/projects/citations.js", "packages/model/citation-targets.ts", "packages/model/citation-content.ts", "src/projects/snippet-locator.js"],
+      "assessment": "Containing-scene orphan handling and independent target/content/source/range states preserve accepted J4 meaning; stale generations cannot revive. Retained metadata disclosure despite target failure is explicit. Claim support remains not-assessed."
+    },
+    {
+      "topic": "Editor preservation and freshness",
+      "sources": ["app/web/src/components/SceneViewer.jsx", "app/web/src/lib/projectSession.js", "app/web/src/views/Workspace.jsx"],
+      "assessment": "Fixed scrolling Inspector, mounted formatting drafts, live document/save/reload refs, session epochs and navigation stamps are suitable seams. Production-controller and actual browser checks must prove the proposed draft-allowed saved-read lifecycle, pointer focus preservation, cleanup and unchanged canvas. Existing export clean-state policy cannot simply replace the new read policy."
+    },
+    {
+      "topic": "New private-browser disclosure boundary",
+      "sources": ["app/server/v2-native-export-routes.js", "src/projects/copy-auth.js", "docs/reviews/V2-8J-6-2-6068a2a7.json", "docs/DEVELOPMENT-PROTOCOL.md"],
+      "assessment": "Accepted authentication/private-header precedents are reusable, but J6-2 did not authorize retained title/full-URL browser preview. Explicit human direction remains required for this new surface, including URLs containing private queries."
+    }
+  ],
+  "focusedValidationAssessment": "The proposed owned SQLite domain/HTTP/CLI checks, production-controller boundaries, one serial browser file, one reused web build and conditional affected J4 cases are proportionate. Accepted unchanged adapter/native evidence is reused. No broad historical matrix, native regeneration, new persistent service or provider/model/search/GPU call is justified by planning.",
+  "outstandingTechnicalIssues": [],
+  "humanDirection": {
+    "status": "PENDING",
+    "requiredDecision": "Approve or revise the read-only Sources section within the existing Inspector and explicit owner-only transient browser display of complete retained titles/full URLs, including private query values; observations remain about saved revisions and claim support is not assessed. The dedicated source-management page requires a different contract.",
+    "notImplied": "No implementation, product execution, new HTTP/browser disclosure, source mutation/retention, excerpts, provider context, export/presentation change, research/semantic activation, deployment or dependent feature authority. Accepted J6-2 and nextCandidate.authorized:false remain unchanged."
+  },
+  "implementationAccepted": false,
+  "independence": "Separate reviewer context from planner. Reviewer wrote only the independent planning report/check record and this readiness JSON; no runtime, root state/document, Git or other-agent mutation. Parent may commit these artifacts unchanged.",
+  "executed": {
+    "documentChecks": {"total": 15, "pass": 15, "fail": 0},
+    "protocol": {"command": "npm run dev:protocol", "exitCode": 0, "errors": 0, "warnings": 0},
+    "productTests": 0,
+    "databaseCalls": 0,
+    "httpCalls": 0,
+    "serviceStarts": 0,
+    "browserCalls": 0,
+    "builds": 0,
+    "nativeRenders": 0,
+    "modelCalls": 0,
+    "searchCalls": 0,
+    "providerCalls": 0,
+    "gpuCalls": 0,
+    "gitMutations": 0,
+    "description": "Read-only source/document/local-Git inspection plus lightweight consistency and protocol checks. HEAD and local origin/v2 match the exact reviewed SHA; no network Git command. No product behavior is certified."
+  },
+  "limitations": [
+    "The proposed facade, route, CLI and UI do not yet exist; source feasibility is not runtime validation.",
+    "No product, browser visual/accessibility, race, security, database, performance or native pass is established by planning inspection.",
+    "Finite process-local admission does not bound distributed concurrency or SQL lock waits, and aborted delivery does not interrupt actual transaction settlement.",
+    "Transient UI cleanup is not secure browser-memory erasure or revocation of data already displayed.",
+    "The inspection retains accepted unverified citation semantics; matching targets/content/ranges and retained source identity do not establish claim support.",
+    "Human product/data-handling direction and later independent exact-source implementation review remain outstanding."
+  ],
+  "stopPoint": "Return this exact-plan readiness result for the concrete human direction choice. No implementation or dependent work is authorized by readiness."
+}
