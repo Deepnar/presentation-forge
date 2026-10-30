@@ -1,0 +1,58 @@
+{
+  "kind": "planning-document-source-consistency",
+  "sourceSha": "92ee9775f4bad1fb3891ad43987c802751a42abd",
+  "recordedAt": "2026-10-30T08:29:58.515095+00:00",
+  "checks": [
+    {
+      "check": "authorized branch retained",
+      "passed": true
+    },
+    {
+      "check": "accepted J6-3 source and separate decision retained",
+      "passed": true
+    },
+    {
+      "check": "candidate remains unauthorized",
+      "passed": true
+    },
+    {
+      "check": "no runtime edits from planning",
+      "passed": true
+    },
+    {
+      "check": "canonical transaction/save/engine primitives exist",
+      "passed": true
+    },
+    {
+      "check": "existing source/project limits match proposal",
+      "passed": true
+    },
+    {
+      "check": "new retention/admin and clear boundary explicit",
+      "passed": true
+    },
+    {
+      "check": "private ownership and incomplete claim support preserved",
+      "passed": true
+    },
+    {
+      "check": "no renderer-owned layout or silent truncation",
+      "passed": true
+    },
+    {
+      "check": "focused gates exclude model/old broad runs",
+      "passed": true
+    },
+    {
+      "check": "roadmap anchor and plan link exist",
+      "passed": true
+    }
+  ],
+  "totals": {
+    "total": 11,
+    "pass": 11,
+    "fail": 0
+  },
+  "productChecksExecuted": 0,
+  "limitations": "Source/document inspection only; no implementation correctness, native/browser behavior, human approval or acceptance claimed."
+}

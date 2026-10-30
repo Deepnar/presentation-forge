@@ -1,0 +1,17 @@
+{
+  "kind": "planning-retention-consistency",
+  "sourceSha": "36146428ae99162f16ec2fef0f23fc93532f6dd7",
+  "checks": [
+    {
+      "check": "Historical preservation/restoration qualified by accepted pruning; narrow retention-boundary assertion planned",
+      "passed": true
+    }
+  ],
+  "totals": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0
+  },
+  "productChecksExecuted": 0,
+  "scope": "One corrected prose contract; no history policy or product change."
+}

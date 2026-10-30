@@ -66,9 +66,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Visible/printed citation presentation contract",
+    "id": "V2-8J-6-4 editable References appendix",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-native-presentation"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-editable-appendix"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",

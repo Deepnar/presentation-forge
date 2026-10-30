@@ -32,6 +32,22 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
+## Current continuation — J6-4 presentation direction preparation
+
+The2026-10-30 continuation prepares only the next proposed contract from accepted
+J6-3 and entry66f3dfd0. Read [proposal](V2-8J-6-4-PLAN.md) and
+[roadmap](ROADMAP.md#assistant-citation-editable-appendix). Appendix-first headless
+preview/apply would copy full retained titles/URLs into ordinary editable scene/
+history text, with normal project/admin/export access and independent retention
+after source/chat clear. Later scoped scene reads can put that text in configured
+model/provider context, without insertion itself calling a model. This new
+direction/disclosure needs human approval before
+implementation. Corrected contract36146428 is independently
+[READY_FOR_DIRECTION](reviews/V2-8J-6-4-plan-36146428.json), stable record65dd94e8.
+Root14/14 and reviewer17/17 lightweight checks pass, with0 product runs. Readiness is
+not acceptance or consent. Keep J6-3 accepted/candidate unauthorized. No product
+checks, services, model/search/provider/GPU or old cleanup are authorized by planning.
+
 ## Latest accepted slice — J6-3 Sources inspector complete
 
 Human “ok continue” approved reviewed65287b61 Inspector/full-URL scope, pinned

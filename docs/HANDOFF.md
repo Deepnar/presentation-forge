@@ -1,25 +1,33 @@
 # Presentation Forge handoff — 2026-10-30
 
-Branch v2, push origin/v2 only. J6-3 Sources Inspector is independently accepted
-at8d34c95faf7a5c4d9e04dec590b362895d4fd283 (runtime719498cd), from J6-2 baseline
-6068a2a7. Human direction approved reviewed65287b61, pinnedec2bb489 before code.
-Separate exact-source decision docs/reviews/V2-8J-6-3-8d34c95f.json was committed
-unchanged ate96c9ba1 after pushed packet25ca0f92 and independent715/0 audit.
-State indexes accepted source; later documentation commits do not change that SHA.
+Branch v2, push origin/v2 only. Accepted source remains J6-3
+8d34c95faf7a5c4d9e04dec590b362895d4fd283; stable separate decisione96c9ba1 and
+closeout66f3dfd0. No acceptance/validation/cleanup blocker reopened. Prior selected
+36/36, independent1/1,715/0 audit and owned root/reviewer group absence are complete;
+original failures/source applicability remain in its EVAL. Never recreate fixtures
+or repeat those suites/cleanup. Preserve unrelated .agents/ and both master prompts.
 
-Selected root36/36: domain21, HTTP/CLI5, client6, Chrome4. New independent1/1,
-final build, viewed final normal/narrow/short/long images,0px stage movement and
-protocol0errors/0warnings complete. EVAL/manifest retain all47root product attempts
-43pass/4fail plus1prebody harness failure, corrections, executed-leaf union/old-build
-applicability and existing13 test source's no-contemporaneous-capture limit.
-The independently reproduced long-URL drag preserves title/inline drafts. Retained
-identity/range never verifies claim support; source text has no navigation/model
-or new retention authority. No unresolved J6-3 blocker remains.
+Current continuation prepared proposed J6-4 from entry66f3dfd0. Read
+V2-8J-6-4-PLAN.md and ROADMAP#assistant-citation-editable-appendix. Corrected contract
+36146428ae99162f16ec2fef0f23fc93532f6dd7 is independently READY_FOR_DIRECTION;
+record docs/reviews/V2-8J-6-4-plan-36146428.json committed unchanged at65dd94e8.
+Root14/14 and independent17/17 lightweight checks pass; protocol0errors/0warnings.
+All3planning findings resolved: provider-context disclosure, both-entry immutable
+capture and existing history pruning. No product/runtime/service/API/database/
+browser/build/native/model/search/provider/GPU or activation work ran in planning.
 
-All16root+1reviewer groups are freshly absent; owned SQLite/API/Chrome cleanup
-completed. No persistent PG or model/search/provider/GPU work/activation occurred.
-Never recreate old fixtures or repeat cleanup/matrices. Shared-machine work was
-bounded/monitored; unrelated jobs untouched. Preserve unrelated .agents/ and both
-master prompts. J6-3 closeout complete; STOP. Later scope/direction is only in
-ROADMAP#assistant-citation-native-presentation and the other V2-8 remaining entries;
-nextCandidate remains unauthorized. No dependent feature implementation started.
+Recommended first delivery is owner-only headless preview/apply+CLI, deterministic
+printable editable References appendix and one canonical history save. It would
+copy full source titles/URLs/private query values into ordinary project/history
+text, with normal project/admin/export access and possible later configured-provider
+input through scoped Assistant/scene reads. Source/chat clear cannot retract copies;
+restoration depends on existing history retention. Insertion itself calls no model
+or search and gives no research grant. Existing original scenes/sources/citations
+stay intact; later browser controls are separately gated in the roadmap.
+
+Human direction on this presentation/disclosure is pending. J6-3 stays accepted
+and nextCandidate.authorized:false. Do not infer permission from technical readiness,
+a generic continuation before the concrete choice, or prior notes/Sources consent.
+Stop for the reviewed appendix-first/data-handling question. On explicit approval,
+pin that direction and focused inventory before code; follow separate implementation
+review/acceptance. No dependent feature or production activation is authorized now.

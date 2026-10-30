@@ -9391,6 +9391,13 @@ local inference. Only that separate transport correction is authorized; this aud
       This is new retention/disclosure direction,
       not permission inherited from Sources or source-notes consent. Agree that
       policy and appendix-first versus on-slide-marker direction before code.
+      Corrected contract36146428 is separately
+      [READY_FOR_DIRECTION](reviews/V2-8J-6-4-plan-36146428.json), stable record
+      committed unchanged at65dd94e8. Three source-backed planning gaps were
+      corrected before readiness: later ordinary provider-context disclosure,
+      capture of both entries before awaits, and existing history-pruning policy.
+      Root14/14 and independent17/17 lightweight checks plus protocol0errors pass;
+      no product check or runtime implementation ran. Human direction still pending.
       No runtime, tests/services, model/search/provider/GPU work or activation is
       authorized by preparation. Keep J6-3 accepted and candidate unauthorized.
 

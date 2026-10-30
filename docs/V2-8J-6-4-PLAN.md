@@ -1,6 +1,11 @@
 # V2-8J-6-4 — editable References appendix, headless first
 
 Status: **proposed; human surface/data-handling direction pending**.
+Corrected contract36146428ae99162f16ec2fef0f23fc93532f6dd7 is independently
+[READY_FOR_DIRECTION](reviews/V2-8J-6-4-plan-36146428.json); separate record committed
+unchanged at65dd94e8. All3 planning gaps are resolved;17/17 lightweight reviewer
+checks pass, with0 product runs. This status header follows the reviewed body;
+readiness supplies neither human approval nor implementation acceptance.
 Accepted baseline8d34c95faf7a5c4d9e04dec590b362895d4fd283 (J6-3), independently
 [accepted](reviews/V2-8J-6-3-8d34c95f.json). Planning entry HEAD
 66f3dfd04504b7458c8636de082c70fc237bba91; branch v2, push origin/v2 only.

@@ -1,0 +1,22 @@
+{
+  "kind": "planning-correction-source-consistency",
+  "sourceSha": "09bfd1fcfe6d868d63b99d8236124bcaf7daee52",
+  "recordedAt": "2026-10-30T08:33:08.443983+00:00",
+  "checks": [
+    {
+      "check": "Later ordinary scene reads disclose configured-provider context explicitly without automatic insertion dispatch",
+      "passed": true
+    },
+    {
+      "check": "Both preview/apply capture all authority inputs before awaits; CLI captures token presence/value",
+      "passed": true
+    }
+  ],
+  "totals": {
+    "total": 2,
+    "pass": 2,
+    "fail": 0
+  },
+  "productChecksExecuted": 0,
+  "scope": "Only the two corrected contract clauses; earlier11 lightweight checks remain in planning-checks.json. No product or approval claim."
+}
