@@ -1,9 +1,12 @@
 # V2-8J-6-3 — saved Sources inspector
 
-Status: **human-approved; implementation in progress**.
+Status: **independently accepted implementation8d34c95f**.
+Separate [decision](reviews/V2-8J-6-3-8d34c95f.json) was committed unchanged
+ate96c9ba1; see [evaluation](V2-8J-6-3-EVAL.md). The historical planning body below
+is the approved contract, not authorization for dependent scope.
 The2026-10-30 reply “ok continue” to the concrete recommended Inspector/full-URL
 disclosure question approves only this reviewed contract. Direction and focused
-inventory are pinned before runtime; independent implementation acceptance pending.
+inventory were pinned before runtime; separate implementation acceptance is complete.
 Exact contract65287b6181aa72ee7515ea8a3d407f5e81c6aca9 passed separate
 [planning review](reviews/V2-8J-6-3-plan-65287b61.json), committed unchanged
 at3b3f6c11. No technical contract correction was required. Readiness does not

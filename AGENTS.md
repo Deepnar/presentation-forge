@@ -120,6 +120,14 @@ clean saved state and fresh full-title/URL notes consent through existing Export
 with captured owner/revision/session/navigation and bounded private transport.
 It adds no model/research authority or automatic save. Keep acceptance distinct
 from source completion; stop at the approved slice's closeout.
+The separate J6-3 saved Sources inspector is independently accepted at8d34c95f:
+explicit read-only saved slide/object pages expose literal complete retained titles/
+URLs to the exact owner with separate unverified observations. Shared CLI/HTTP
+reads use one coherent document/catalog snapshot. Native text selection preserves
+pending drafts; closing, scope/session/navigation or authoritative changes clear
+private rows and fence late reads. No source/scene/history mutation, new retention,
+provider context or research authority is added. Body bounds do not impose SQL
+lock deadlines. Later visible/printed policy remains separately gated.
 Saved chat does not automatically become provider context. Further host progress/
 scheduling, provider routing, citation presentation, research
 orchestration, live-provider qualification and

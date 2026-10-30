@@ -32,18 +32,22 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current continuation — J6-3 source review
+## Latest accepted slice — J6-3 Sources inspector complete
 
-Human “ok continue” approved the reviewed Inspector/full-URL contract, pinned
-before runtime atec2bb489. Exact runtime/tests8d34c95f are pushed to origin/v2.
-Read [evaluation](V2-8J-6-3-EVAL.md), [manifest](v2-8j-6-3-evidence/manifest.json),
-state and HANDOFF. Selected36/36, final build and viewed final desktop/narrow/short
-images are complete; all original failed attempts and source applicability remain.
-A separate reviewer is challenging the frozen source; acceptance is pending.
-Do not advance the candidate, repeat old suites or recreate prior services.
-Finish only independent review/corrections and scoped closeout for this slice.
+Human “ok continue” approved reviewed65287b61 Inspector/full-URL scope, pinned
+ec2bb489 before runtime. Exact8d34c95faf7a5c4d9e04dec590b362895d4fd283 is
+independently [accepted](reviews/V2-8J-6-3-8d34c95f.json); separate decision committed
+unchanged ate96c9ba1 after packet25ca0f92 and independent715/0 audit. Read
+[evaluation](V2-8J-6-3-EVAL.md), [manifest](v2-8j-6-3-evidence/manifest.json),
+state and HANDOFF. Selected36/36, new independent1/1, final build, viewed final
+normal/narrow/short/long images and0px stage delta are complete. Original failures,
+executed-leaf union/old-build applicability and uncaptured unchanged existing13
+source limit stay explicit. All16root+1reviewer groups absent; owned cleanup done.
+No old matrix, PG, model/search/provider/GPU or activation ran. Do not recreate
+fixtures or repeat completed cleanup. J6-3 closeout is complete; stop here. Later
+scope/direction remains solely in the [roadmap](ROADMAP.md#assistant-citation-native-presentation).
 
-## Latest accepted slice — J6-2 browser notes export complete
+## Accepted predecessor — J6-2 browser notes export complete
 
 Human direction was pinned8ba322e9 before runtime. Corrected source
 `6068a2a7c5643a1958a140bcc60d0df6b891ccec` is independently

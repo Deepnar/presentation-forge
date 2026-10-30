@@ -1,18 +1,25 @@
 # Presentation Forge handoff — 2026-10-30
 
-Branch v2, push origin/v2 only. Accepted baseline6068a2a7 (J6-2), retained until
-separate acceptance. Human approved reviewed J6-3 Sources Inspector/full-URL
-contract65287b61, pinnedec2bb489 before runtime. Exact implementation/tests
-8d34c95faf7a5c4d9e04dec590b362895d4fd283 is pushed; runtime719498cd.
-Read EVAL, manifest, current state and roadmap. Selected36/36, final build and
-viewed final desktop/narrow/short images pass. Root all47product=43pass/4fail plus
-one pre-body harness file failure are retained with corrections and applicability.
-Separate reviewer /root/j63_plan_review is running one bounded new-surface
-challenge and will audit the pushed packet before exact-source ACCEPT/HOLD.
-No self-acceptance. Finish only review/corrections and scoped J6-3 closeout.
+Branch v2, push origin/v2 only. J6-3 Sources Inspector is independently accepted
+at8d34c95faf7a5c4d9e04dec590b362895d4fd283 (runtime719498cd), from J6-2 baseline
+6068a2a7. Human direction approved reviewed65287b61, pinnedec2bb489 before code.
+Separate exact-source decision docs/reviews/V2-8J-6-3-8d34c95f.json was committed
+unchanged ate96c9ba1 after pushed packet25ca0f92 and independent715/0 audit.
+State indexes accepted source; later documentation commits do not change that SHA.
 
-No root validation group remains;16 recorded groups absent. No PG/model/search/
-provider/GPU work or activation occurred. Do not repeat old matrix or recreate
-historical fixtures. Independent fixture, if running, belongs to the reviewer;
-leave other shared-machine work alone. Preserve unrelated .agents/ and both
-master prompts. Future scope/direction lives only in ROADMAP; stop after J6-3.
+Selected root36/36: domain21, HTTP/CLI5, client6, Chrome4. New independent1/1,
+final build, viewed final normal/narrow/short/long images,0px stage movement and
+protocol0errors/0warnings complete. EVAL/manifest retain all47root product attempts
+43pass/4fail plus1prebody harness failure, corrections, executed-leaf union/old-build
+applicability and existing13 test source's no-contemporaneous-capture limit.
+The independently reproduced long-URL drag preserves title/inline drafts. Retained
+identity/range never verifies claim support; source text has no navigation/model
+or new retention authority. No unresolved J6-3 blocker remains.
+
+All16root+1reviewer groups are freshly absent; owned SQLite/API/Chrome cleanup
+completed. No persistent PG or model/search/provider/GPU work/activation occurred.
+Never recreate old fixtures or repeat cleanup/matrices. Shared-machine work was
+bounded/monitored; unrelated jobs untouched. Preserve unrelated .agents/ and both
+master prompts. J6-3 closeout complete; STOP. Later scope/direction is only in
+ROADMAP#assistant-citation-native-presentation and the other V2-8 remaining entries;
+nextCandidate remains unauthorized. No dependent feature implementation started.

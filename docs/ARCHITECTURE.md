@@ -3224,7 +3224,7 @@ UI shows only revision/count and the disclosure, never a retained source preview
 The three existing controls share this coordinator. See [focused evidence and
 current review status](V2-8J-6-2-EVAL.md); all later work is in the roadmap.
 
-### J6-3 saved Sources inspector
+### J6-3 saved Sources inspector (accepted8d34c95f)
 
 `src/projects/citation-view.js` projects one owner-qualified saved document/catalog
 transaction into strict title/URL-only pages. It shares J4 target/content/source/

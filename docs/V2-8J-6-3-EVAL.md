@@ -1,10 +1,12 @@
-# V2-8J-6-3 evaluation — validated, independent review pending
+# V2-8J-6-3 evaluation — independently accepted
 
 Approved contract65287b6181aa72ee7515ea8a3d407f5e81c6aca9; human “ok continue”
 after the concrete Inspector/full-URL question is pinned atec2bb489 before code.
 Accepted baseline6068a2a7c5643a1958a140bcc60d0df6b891ccec (J6-2).
 Exact pushed implementation/tests:8d34c95faf7a5c4d9e04dec590b362895d4fd283;
-runtime719498cd. Branch v2, origin/v2 only. No self-acceptance or dependent work.
+runtime719498cd. Branch v2, origin/v2 only. Separate
+[ACCEPT](reviews/V2-8J-6-3-8d34c95f.json) is committed unchanged ate96c9ba1 after
+pushed packet25ca0f92 and independent715/0 audit. No dependent work authorized.
 
 Sources is explicitly opened inside the existing bound editor Inspector. One
 owner-qualified saved document/catalog snapshot supplies strict24-row pages of
@@ -80,7 +82,11 @@ Separate preparatory source findings are retained unchanged in
 
 A lightweight protocol run initially used unsupported implementationStatus
 “complete”; corrected to schema value “validated”. This was a state-label error,
-not a product failure. Final protocol result follows packet audit.
+not a product failure. Root packet audit632/0 and final protocol0errors/0warnings passed. Independent
+audit715/0 and protocol0errors/0warnings passed. Its first audit parser produced
+6false alarms by double-counting repeated Node failure summaries/file wrapper;
+original parser/results remain in independent/packet-audit-first.*. No product or
+evidence assertion changed.
 
 ## Visuals, resources and limitations
 
@@ -114,7 +120,10 @@ URL drag with title/inline draft preservation, no links/horizontal overflow, and
 first/last reference endpoints plus Show more at320x320 and320x210. All5 images
 were viewed independently; dedicated fixture was closed. See
 [independent invocation](v2-8j-6-3-evidence/independent/browser-long-selection-01.json).
-Separate final exact-source acceptance remains pending.
+Separate final exact-source ACCEPT is complete. Fresh independent verification
+finds all16root+1reviewer groups absent; cleanup hooks completed. Root additionally
+viewed the independent final short URL-end and Show more images.
 
-Recommendation: accept this bounded slice only after separate exact-source review.
-Stop after review, scoped documentation/evidence push and handoff.
+Independent decision: **ACCEPT** this bounded slice; no unresolved blocker.
+Scoped acceptance propagation, documentation/evidence push and handoff complete.
+Stop here; no visible/printed presentation or other dependent implementation.

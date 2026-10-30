@@ -124,7 +124,7 @@ point at it without creating a broken or misleading payment link.
 
 ## 3. Decisions — nobody should make these alone
 
-### Current V2 state: J6-2 browser export accepted
+### Current V2 state: J6-3 Sources inspector accepted
 
 Human approved bounded J4 on2026-10-28; exact source665cd04 is independently
 [accepted](reviews/V2-8J-4-665cd04.json) on2026-10-29. Selected41/41, typecheck0,
@@ -156,11 +156,13 @@ on2026-10-29. Corrected source6068a2a7 is independently
 review or service blocker remains. Later scope remains solely in the roadmap.
 
 The [J6-3 Sources inspector](ROADMAP.md#assistant-citation-source-inspector)
-contract65287b61 was independently ready and then human-approved on2026-10-30,
-pinnedec2bb489. Pushed8d34c95f has selected36/36 checks, final build and viewed
-images; separate final source review is pending. There is no outstanding surface
-or privacy direction for this bounded read slice. Later scope remains gated in
-the roadmap; no model/search/provider activation is authorized.
+contract65287b61 was human-approved on2026-10-30, pinnedec2bb489. Exact8d34c95f
+is independently [accepted](reviews/V2-8J-6-3-8d34c95f.json), stable recorde96c9ba1.
+Selected36/36, new independent1/1, final build, viewed images and715/0 packet audit
+are complete. All16root+1reviewer groups absent; owned cleanup complete. No J6-3
+validation/review/service blocker remains. [Evaluation](V2-8J-6-3-EVAL.md) retains
+original failures, source-capture/applicability and inherited limits. Later scope
+remains gated in the roadmap; no model/search/provider activation is authorized.
 
 ### 3.1 Browser regression coverage
 

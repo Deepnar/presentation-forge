@@ -16,4 +16,8 @@ Root inspected actual PNGs with view_image after build-final-02:
 
 No source fetch, anchor, preview, downloaded PPTX, new native render or model was
 used. Prior images/failed attempts remain original. Independent long-text and
-short-view endpoint challenge, if completed, has its own evidence and method.
+short-view endpoint challenge passed1/1; all5 independent images were viewed by
+the reviewer. Root also viewed independent/long-selection-6aaPk2/short-logical-
+reflow-url-end.png and short-logical-reflow-more.png: full URL endpoint and
+pagination action are reachable without horizontal overflow. Exact filenames
+(no line wrapping) and observations are in the independent challenge directory.

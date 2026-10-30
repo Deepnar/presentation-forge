@@ -1,13 +1,13 @@
 {
   "version": 1,
   "acceptedBaseline": {
-    "sha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+    "sha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
     "provenance": "independent-review",
-    "source": "docs/reviews/V2-8J-6-2-6068a2a7.json"
+    "source": "docs/reviews/V2-8J-6-3-8d34c95f.json"
   },
   "implementationHead": {
     "sha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
-    "note": "Pushed frozen J6-3 runtime/tests; selected36/36 and build pass. Final independent review pending; prior baseline retained."
+    "note": "Exact J6-3 runtime/tests independently accepted; separate decision committed unchanged ate96c9ba1. Scoped closeout complete; later candidate remains unauthorized."
   },
   "activeMilestone": {
     "id": "V2-8J-6-3",
@@ -15,10 +15,10 @@
     "evalDoc": "docs/V2-8J-6-3-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
     "implementationStatus": "validated",
-    "reviewStatus": "pending",
+    "reviewStatus": "accepted",
     "implementedBy": "/root",
-    "reviewRecord": null,
-    "accepted": false
+    "reviewRecord": "docs/reviews/V2-8J-6-3-8d34c95f.json",
+    "accepted": true
   },
   "validation": [
     {

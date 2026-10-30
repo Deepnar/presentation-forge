@@ -9045,8 +9045,9 @@ local inference. Only that separate transport correction is authorized; this aud
   snippet-relative locators without persisting attachment. Accepted J4 below
   supplies revisioned scene-owned metadata and clear/edit/history semantics.
   Accepted J5 supplies private source-aware copy and J6-1/J6-2 qualified CLI/browser
-  source-notes export. Visible source inspection/presentation and verified
-  claim-support policy retain separate contracts before dependent implementation.
+  source-notes export. Accepted J6-3 supplies read-only saved Sources inspection.
+  Visible slide/printed presentation and verified claim-support policy retain
+  separate contracts before dependent implementation.
   Add separate paper/project adapters under their own contracts. Verify source-to-block/slide/export
   mappings; distinguish claim support from matching IDs/numbers and retain
   unsupported/uncertain outcomes. Prompt-injection fixtures and eventual labeled
@@ -9339,40 +9340,40 @@ local inference. Only that separate transport correction is authorized; this aud
 
     <a id="assistant-citation-source-inspector"></a>
 
-    - [ ] **V2-8J-6-3 saved Sources inspector — approved, implementation in progress.**
-      The2026-10-30 continuation starts the next concrete contract from accepted
-      J6-2 source6068a2a7 and entry62fdffab. [Proposed contract](V2-8J-6-3-PLAN.md)
-      recommends an explicitly opened, read-only Sources section inside the existing
-      project Inspector: saved slide/single-object associations, transient owner-only
-      retained title/full-URL display and independent unresolved/current status.
-      Unsaved drafts stay intact; observations describe only the saved revision.
-      No excerpts/provider context, source mutation, on-slide labels, printable
-      pagination or model/research activation. Reuse one canonical owner/document/
-      catalog read snapshot and shared headless/CLI authority; no public-method
-      composition across snapshots. Bound pages, bytes and active reads, with exact
-      scope/session/navigation cleanup. The dedicated source-management page is the
-      alternative surface, not an implicitly authorized fallback. Human direction
-      on surface and new private browser disclosure is required before code;
-      exact contract65287b61 is independently
-      [READY_FOR_DIRECTION](reviews/V2-8J-6-3-plan-65287b61.json), committed unchanged
-      at3b3f6c11 after15/15 lightweight review checks and no product execution.
-      Root planning checks10/10 and protocol0errors pass. No technical planning
-      blocker remains. Human “ok continue” after the concrete question on2026-10-30
-      approves the recommended surface/full-URL read disclosure;
-      [direction](v2-8j-6-3-evidence/human-direction.json) is pinned before code.
-      Focused new read/transport/client/browser evidence follows direction, reusing accepted unchanged native/store
-      evidence. Later visible/print policy and semantic creation remain separate.
-      Source implementation and focused tests are pushed at8d34c95f; independent
-      acceptance remains pending. Preparatory review found two concrete defects:
-      empty streamed chunks could grow retained storage/starve timers, and source
-      text selection could blur-resolve title/inline drafts. Both were reproduced
-      before correction. Fixed-buffer/yield/deadline/cancel handling and scoped
-      pointer focusout preservation now pass their affected checks. Actual held
-      source reads across title save and canonical history reload are covered.
-      [Evaluation](V2-8J-6-3-EVAL.md) retains every original attempt.
+    - [x] **V2-8J-6-3 saved Sources inspector — independently accepted.**
+      Human “ok continue” after the concrete recommended surface/full-URL question
+      approved reviewed contract65287b61 on2026-10-30; direction pinnedec2bb489
+      before runtime. Exact implementation/tests8d34c95f from accepted J6-2
+      source6068a2a7 is independently
+      [accepted](reviews/V2-8J-6-3-8d34c95f.json); separate record committed unchanged
+      ate96c9ba1 after pushed packet25ca0f92 and715/0 independent audit.
+      Explicitly opened read-only Sources in the existing Inspector shows saved
+      slide/single-object associations, full literal owner-private titles/URLs and
+      independent unresolved/current statuses. Drafts remain intact; one coherent
+      owner/document/catalog snapshot supports shared CLI/HTTP reads, bounded24-row
+      pages and transient exact scope/session/navigation cleanup. No excerpt,
+      source mutation, on-slide label, printable pagination or model authority.
+      Selected36/36 (domain21, transport5, client6, Chrome4), final build, final
+      viewed images/0px stage delta and new independent1/1 long-text/native selection/
+      short-layout challenge pass. Both reproduced source defects—empty streamed
+      chunks and source-text blur resolving drafts—are narrowly corrected. Held
+      actual title-save/history-reload suppression is covered. All47root product
+      attempts43pass/4fail plus1prebody harness failure and source applicability
+      limits remain in [evaluation](V2-8J-6-3-EVAL.md). All16root+1reviewer groups
+      absent; owned fixture cleanup complete; no old matrix/backend recreation.
+      Look-ahead: later visible/printed presentation can reuse the saved DTO/snapshot
+      seam, but needs its own disclosure/layout/claim policy; semantic creation and
+      provider/research authority remain separately gated. Stop at this closeout.
+
+      > **Learned.** Byte ceilings alone do not bound empty streamed chunks; fixed
+      > storage, yielding and deadlines must work together. Reading selectable text
+      > can trigger inherited blur commits even when every button preserves drafts.
+      > Pointer-only focus handling preserves native selection without changing the
+      > editor's general keyboard policy. Retained source identity still cannot
+      > establish claim support.
 
   Dependency sequence after accepted J6-1/J6-2 notes export:
-  finish source-inspection direction, then agree visible attribution and verified locator/claim-support
+  J6-3 saved inspection is accepted; agree visible attribution and verified locator/claim-support
   boundaries before research-backed semantic creation. Semantic tools retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
   parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning

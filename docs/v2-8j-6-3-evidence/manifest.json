@@ -431,6 +431,16 @@
       "skip": 0,
       "cancelled": 0
     },
-    "kind": "New long-text/native URL-selection/short-view challenge; separate final acceptance pending."
+    "kind": "New long-text/native URL-selection/short-view challenge; separate exact-source ACCEPT complete."
+  },
+  "independentAcceptance": {
+    "record": "docs/reviews/V2-8J-6-3-8d34c95f.json",
+    "stableDecisionCommit": "e96c9ba1d17ed6d611d1e8cbdf8865d0e8a42bca",
+    "reviewedPacket": "25ca0f92505b4d57d36874a4ebb4dc4b8975984a",
+    "audit": {
+      "checks": 715,
+      "errors": 0
+    },
+    "scope": "J6-3 only; closeout complete; no dependent implementation authority."
   }
 }
