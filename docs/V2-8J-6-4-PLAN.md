@@ -32,6 +32,11 @@ text reads/copies and eligible downloads apply to that copied text. Source clear
 and chat clear do not remove it; undo/restore may bring it back from deck history.
 Downloaded files keep their copies independently. Source catalog bodies remain
 owner-private and unmodified; excerpts, quotes and provider fields are never copied.
+Ordinary scene reads also follow existing Assistant/content-tool rules: if these
+appendix slides or their text are later read in an AI turn, complete copied titles/
+URLs and private query values can enter the configured model/provider context.
+Insertion itself calls no model and grants no research/search capability; it adds
+no automatic dispatch or expansion of the existing selected-scene/tool scope.
 A source-notes consent or opening Sources is not consent to this materialization.
 
 ## Qualification, consent and one atomic write
@@ -142,7 +147,7 @@ pin a focused inventory before code, reusing accepted evidence for unchanged are
 
 | Gate | New/affected evidence |
 |---|---|
-| Compiler/domain | Stable ordering/dedup, Unicode/control text, exact full content, multi-page long entries, orphan headings, readable floors, ID collisions, complete project/node/page/byte limits, target/source/range refusal and strict captured inputs |
+| Compiler/domain | Stable ordering/dedup, Unicode/control text, exact full content, multi-page long entries, orphan headings, readable floors, ID collisions, complete project/node/page/byte limits, target/source/range refusal and strict captured inputs; one offline ordinary scene-tool projection proves the disclosed title/URL provider-context consequence and absence of excerpts/registry bodies, without any provider call |
 | Canonical persistence | Small new shared actual SQLite/PostgreSQL cases: exact owner/admin/null boundaries; catalog/save/clear races; one command/history commit; rollback on fault; stale/unknown outcomes; untouched original scenes/sources/history; new-page edits and restoration |
 | CLI/native | Metadata-only preview, explicit disclosure/counter/design binding, no retry/private echo; existing qualified notes export versus raw cited refusal; literal complete native editable text, mappings and IDs |
 | Visual | One small long-reference fixture compiled once: browser SVG view and native raster of the same appended scenes; inspect first/continued/last pages, full text endpoints, readable fit and unchanged original-slide render control |
@@ -167,7 +172,8 @@ still need the focused proof above. No migration/deployment or paid infrastructu
 ## Acceptance and stop
 
 Human approval must explicitly cover appendix-first direction and ordinary scene/
-history text disclosure/retention. Exact-owner authority, deterministic readable
+history text disclosure/retention, including later configured-provider context via
+existing scoped scene reads. Exact-owner authority, deterministic readable
 pagination, complete preserved values, one atomic canonical save and native/browser
 scene parity must pass selected evidence with separate exact-source ACCEPT.
 Record all commands/totals, source/delta, failure classifications, resource ownership,

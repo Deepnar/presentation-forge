@@ -9385,7 +9385,10 @@ local inference. Only that separate transport correction is authorized; this aud
       Existing pages remain untouched; long references continue at readable size.
       Copied text becomes ordinary scene/history data, subject to existing project
       access (including admin) and text/export rules; source/chat clear cannot
-      retract it or downloaded copies. This is new retention/disclosure direction,
+      retract it or downloaded copies. Later ordinary Assistant/tool reads of those
+      slides may send copied titles/URLs/private query values to configured model
+      providers; insertion itself has no model call or new research grant.
+      This is new retention/disclosure direction,
       not permission inherited from Sources or source-notes consent. Agree that
       policy and appendix-first versus on-slide-marker direction before code.
       No runtime, tests/services, model/search/provider/GPU work or activation is
