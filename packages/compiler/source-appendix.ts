@@ -15,11 +15,17 @@ function scalar(value: string): boolean { return !/[\ufffe\uffff]/.test(value) &
 function lines(text: string, width: number, style: FitStyle): string[] {
   if(!text.length)return [''];
   const result: string[]=[];let part='',used=0;
-  for(const {segment:glyph} of new Intl.Segmenter('und',{granularity:'grapheme'}).segment(text)){
-    const advance=Math.max(measure(glyph,style)*1.18,(glyph.codePointAt(0)??0)>=0x2e80?style.size/72*1.1:0);
-    if(advance>width)appendixFailure('appendix-fit');
-    if(part&&used+advance>width){result.push(part);part='';used=0;}
-    part+=glyph;used+=advance;
+  const segmenter=new Intl.Segmenter('und',{granularity:'grapheme'});
+  const advance=(glyph:string)=>Math.max(measure(glyph,style)*1.18,(glyph.codePointAt(0)??0)>=0x2e80?style.size/72*1.1:0);
+  for(const {segment:glyph} of segmenter.segment(text)){
+    const amount=advance(glyph);if(amount>width)appendixFailure('appendix-fit');
+    if(part&&used+amount>width){
+      // Keep ordinary words together; long unbroken values still split at graphemes.
+      const at=part.lastIndexOf(' '),cut=at>=0?at+1:part.length;
+      result.push(part.slice(0,cut));part=part.slice(cut);used=0;
+      for(const {segment} of segmenter.segment(part))used+=advance(segment);
+    }
+    part+=glyph;used+=amount;
   }
   if(part)result.push(part);return result;
 }
@@ -80,5 +86,6 @@ export function compileSourceAppendix(references: readonly AppendixReference[], 
     const title=`References · ${i+1} / ${pages.length}`;
     if(measure(title,heading)>width*.9)appendixFailure('appendix-fit');pages[i].elements[0].paragraphs![0].runs[0].text=title;
   }
+  let outputNodes=0;const pending:unknown[]=[pages];while(pending.length){const item=pending.pop();if(++outputNodes>APPENDIX_LIMITS.nodes)appendixFailure('appendix-capacity');if(item&&typeof item==='object')pending.push(...Object.values(item));}
   const output=JSON.stringify(pages);if(new TextEncoder().encode(output).length>APPENDIX_LIMITS.bytes)appendixFailure('appendix-capacity');return pages;
 }
