@@ -72,8 +72,11 @@ A source-notes consent or opening Sources is not consent to this materialization
   native preflight and export parity are proved afterward in focused validation.
 - Store no second source registry, source excerpt, consent capability, cached plan
   or private scene manifest. Original scene content/order/ownership/tombstones,
-  sources, citation records and earlier history remain exact. No-change/refusal
-  writes nothing. Transaction failure rolls back the entire batch and new history.
+  sources and citation records remain exact. Earlier history has no dedicated
+  rewrite; canonical save/history pruning still applies under the accepted
+  retention policy. No extra pinning or history lifetime guarantee is introduced.
+  No-change/refusal writes nothing. Transaction failure rolls back the entire
+  batch, new history and any pruning in that transaction.
 - Requests are single attempts. An old revision refuses on retry; unknown commit
   acknowledgement is reported as unknown and requires inspecting current history.
   Do not promise automatic retries or exactly-once delivery. Deliberately applying
@@ -85,6 +88,8 @@ insertion does not inject commands into that session or trigger automatic adopti
 its later stale save uses existing conflict handling. Explicit reopen attaches the
 new saved document with fresh session undo. Version history supplies durable
 restoration, including restoration that brings copied source text back.
+Restoration is limited to versions still recoverable under existing retention;
+appendix insertion neither extends that policy nor guarantees permanent undo.
 
 ## Deterministic composition and future compatibility
 
@@ -153,7 +158,7 @@ pin a focused inventory before code, reusing accepted evidence for unchanged are
 | Gate | New/affected evidence |
 |---|---|
 | Compiler/domain | Stable ordering/dedup, Unicode/control text, exact full content, multi-page long entries, orphan headings, readable floors, ID collisions, complete project/node/page/byte limits, target/source/range refusal and strict captured inputs; one offline ordinary scene-tool projection proves the disclosed title/URL provider-context consequence and absence of excerpts/registry bodies, without any provider call |
-| Canonical persistence | Small new shared actual SQLite/PostgreSQL cases: exact owner/admin/null boundaries; catalog/save/clear races; one command/history commit; rollback on fault; stale/unknown outcomes; untouched original scenes/sources/history; new-page edits and restoration |
+| Canonical persistence | Small new shared actual SQLite/PostgreSQL cases: exact owner/admin/null boundaries; catalog/save/clear races; one command/history commit; rollback on fault; stale/unknown outcomes; untouched original scenes/sources, no dedicated earlier-history rewrite, one retention-boundary assertion for canonical pruning; new-page edits and restoration within current retention |
 | CLI/native | Metadata-only preview, explicit disclosure/counter/design binding, no retry/private echo; existing qualified notes export versus raw cited refusal; literal complete native editable text, mappings and IDs |
 | Visual | One small long-reference fixture compiled once: browser SVG view and native raster of the same appended scenes; inspect first/continued/last pages, full text endpoints, readable fit and unchanged original-slide render control |
 | Typecheck | Once for new typed compiler seam; schema generation/drift only if typed schema actually changes |
