@@ -9255,13 +9255,12 @@ local inference. Only that separate transport correction is authorized; this aud
 
   <a id="assistant-citation-native-presentation"></a>
 
-  - [ ] **Citation presentation and native export — headless notes accepted; browser/visible direction needed.**
-    Accepted J6-1 below adds only owner-qualified headless speaker notes containing
-    explicitly consented complete retained titles/URLs, with verified portable
-    mappings and bounded complete text. Raw/file/current saved GET cited exports
-    still refuse. The parent remains open: agree browser disclosure/download,
-    draft/session handling and any visible attribution or printable pagination
-    before implementation. No excerpts, provider context or verified claim support
+  - [ ] **Citation presentation and native export — CLI/browser notes accepted; visible/printed direction needed.**
+    Accepted J6-1/J6-2 below provide owner-qualified CLI/browser speaker notes with
+    explicit full-title/URL consent, verified portable mappings and guarded saved
+    editor/download lifecycle. Raw/file/unqualified saved GET cited exports still
+    refuse. The parent remains open: agree visible saved-reference inspection,
+    on-slide attribution and printable pagination before their implementation. No excerpts, provider context or verified claim support
     are authorized. Reuse the canonical scenes, qualification and native renderer;
     later surfaces must preserve exact-owner source privacy and human work.
 
@@ -9337,8 +9336,28 @@ local inference. Only that separate transport correction is authorized; this aud
       > saved changes reload. Theme token names can collide with typography utilities;
       > inspect actual dialog text, not just DOM bounds.
 
+    <a id="assistant-citation-source-inspector"></a>
+
+    - [ ] **V2-8J-6-3 saved Sources inspector — contract preparation, direction pending.**
+      The2026-10-30 continuation starts the next concrete contract from accepted
+      J6-2 source6068a2a7 and entry62fdffab. [Proposed contract](V2-8J-6-3-PLAN.md)
+      recommends an explicitly opened, read-only Sources section inside the existing
+      project Inspector: saved slide/single-object associations, transient owner-only
+      retained title/full-URL display and independent unresolved/current status.
+      Unsaved drafts stay intact; observations describe only the saved revision.
+      No excerpts/provider context, source mutation, on-slide labels, printable
+      pagination or model/research activation. Reuse one canonical owner/document/
+      catalog read snapshot and shared headless/CLI authority; no public-method
+      composition across snapshots. Bound pages, bytes and active reads, with exact
+      scope/session/navigation cleanup. The dedicated source-management page is the
+      alternative surface, not an implicitly authorized fallback. Human direction
+      on surface and new private browser disclosure is required before code;
+      independent contract readiness is pending. Focused new read/transport/client/
+      browser evidence follows direction, reusing accepted unchanged native/store
+      evidence. Later visible/print policy and semantic creation remain separate.
+
   Dependency sequence after accepted J6-1/J6-2 notes export:
-  agree visible attribution and verified locator/claim-support
+  finish source-inspection direction, then agree visible attribution and verified locator/claim-support
   boundaries before research-backed semantic creation. Semantic tools retain deterministic compile/preservation/approval
   authority. Qualification/spend/surface entries below still own their gates;
   parent source integrity and V2-8 remain incomplete. Acceptance authorizes planning

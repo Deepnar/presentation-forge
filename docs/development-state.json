@@ -60,9 +60,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "Visible citation presentation and printable pagination contract",
+    "id": "V2-8J-6-3 saved Sources inspector contract",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-native-presentation"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-source-inspector"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
@@ -79,5 +79,5 @@
     "blockers": "docs/BLOCKED.md",
     "traps": "docs/TRAPS.md"
   },
-  "updated": "2026-10-29"
+  "updated": "2026-10-30"
 }
