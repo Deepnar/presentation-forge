@@ -1,0 +1,129 @@
+{
+  "decision": "READY_FOR_DIRECTION",
+  "kind": "independent-plan-review",
+  "reviewer": "/root/j63_plan_review",
+  "context": "/root/j63_plan_review",
+  "plannedBy": "/root",
+  "reviewDate": "2026-10-30",
+  "initialPlanSha": "92ee9775f4bad1fb3891ad43987c802751a42abd",
+  "reviewedPlanSha": "36146428ae99162f16ec2fef0f23fc93532f6dd7",
+  "acceptedBaseline": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "planningEntrySha": "66f3dfd04504b7458c8636de082c70fc237bba91",
+  "plan": "docs/V2-8J-6-4-PLAN.md",
+  "roadmap": "docs/ROADMAP.md#assistant-citation-editable-appendix",
+  "evidence": "docs/v2-8j-6-4-evidence/independent/plan-readiness.md",
+  "checks": "docs/v2-8j-6-4-evidence/independent/plan-checks.json",
+  "assessment": "The corrected headless editable References appendix contract is technically coherent and sufficiently bounded for explicit human product/disclosure direction. All three source-backed planning gaps are resolved. No blocking technical planning issue remains; readiness is neither approval nor implementation acceptance.",
+  "scopeAssessment": "Exact-owner preview/apply and CLI materialize qualified retained titles/fullURLs into deterministic paginated ordinary editable scenes through one canonical engine/history transaction. Original scenes/sources/citations remain unchanged; canonical history pruning retains its accepted policy. New scene/history/admin/download/later-provider disclosure is explicit and separately gated; no browser control, research authority, automatic provider dispatch or native-export bypass is added.",
+  "resolvedFindings": [
+    {
+      "id": "ordinary-text-provider-disclosure",
+      "issue": "Original materialization notice omitted that ordinary appendix text can enter configured-provider context through existing scoped Assistant/content-tool reads.",
+      "sourceBasis": [
+        "app/web/src/lib/v2assistant.js:assistantSubmission",
+        "packages/tools/session.ts:projectElement"
+      ],
+      "resolution": "Consent/notice and roadmap explicitly include later full-title/URL/private-query provider input, with no insertion-time model call, automatic dispatch, new research grant or scope expansion. Planned evidence adds one offline ordinary scene-tool projection check.",
+      "resolvedAt": "9a7294b7ea2beeee243331322de819af823e7dd9"
+    },
+    {
+      "id": "preview-input-capture",
+      "issue": "The initial immutable-input requirement explicitly named Apply while Preview is also a public asynchronous owner-qualified entry.",
+      "sourceBasis": [
+        "src/projects/citation-export.js:capture",
+        "docs/TRAPS.md:Snapshot authority before asynchronous work"
+      ],
+      "resolution": "Both preview/apply synchronously bounded-clone/freeze complete owner/project/theme/request inputs before any await and use only captured values; CLI captures token presence/value. Planned strict-capture cases cover both.",
+      "resolvedAt": "09bfd1fcfe6d868d63b99d8236124bcaf7daee52"
+    },
+    {
+      "id": "canonical-history-retention",
+      "issue": "The initial promise that earlier history remains exact conflicts with canonical saveScenes history pruning at existing retention boundaries.",
+      "sourceBasis": [
+        "src/projects/store.js:saveScenes",
+        "src/projects/store-postgres.js:saveScenes",
+        "src/projects/history.js:computePrunePlan"
+      ],
+      "resolution": "Original scenes/sources/citations remain exact, with no dedicated earlier-history rewrite; canonical pruning still applies. No new pinning, lifetime or permanent undo guarantee. Restoration is limited to still-recoverable versions and planned persistence evidence includes one retention-boundary assertion.",
+      "resolvedAt": "36146428ae99162f16ec2fef0f23fc93532f6dd7"
+    }
+  ],
+  "technicalBasis": [
+    {
+      "topic": "Coherent source qualification and intentional disclosure",
+      "sources": [
+        "src/projects/citation-export.js",
+        "src/projects/source-read.js",
+        "src/projects/copy-auth.js",
+        "packages/tools/session.ts"
+      ],
+      "assessment": "Accepted exact-owner saved qualification and bounded readers are reusable. Complete refusal on stale/missing/changed/hidden/ambiguous references prevents silent omission. Materialized text intentionally follows normal scene/history/admin/provider access while source registry bodies remain owner-private; consent is new and operation-specific."
+    },
+    {
+      "topic": "Canonical atomic insertion and preservation",
+      "sources": [
+        "src/projects/store.js:withCitationTransaction",
+        "src/projects/store-postgres.js:withCitationTransaction",
+        "packages/model/engine.ts",
+        "src/projects/runtime-document.js",
+        "packages/compiler/compile.js:recompileSlide"
+      ],
+      "assessment": "Canonical slide.insert/setLayoutState and saveScenes support one human batch/durable history revision, detached new scenes and exact original-scene preservation. No nested save, alternate document or live-editor adoption is necessary. Canonical pruning retains its accepted policy and rolls back atomically with a failed write; no historical payload lifetime is extended. Unknown commit acknowledgement remains distinct from confirmed rollback."
+    },
+    {
+      "topic": "Theme, complete-fit pagination and native parity",
+      "sources": [
+        "src/theme-loader.js",
+        "packages/core/design.ts",
+        "packages/compiler/text-fit.ts",
+        "packages/compiler/typography.ts",
+        "packages/projects/document.js",
+        "packages/renderer-pptx/source-notes.ts"
+      ],
+      "assessment": "The correct normalized-theme/compiler/scene seams exist; deterministic long-reference splitting is new work to prove. Explicit theme/fingerprint, readable floors, complete literal segments, continuation packing, collision/capacity refusal and actual SVG/native visual evidence avoid relying on unchecked generic fitting. Existing qualified export consent/refusal boundaries remain."
+    }
+  ],
+  "focusedValidationAssessment": "New compiler/domain cases plus small actual SQLite/PostgreSQL mutation/race/fault and canonical-retention-boundary cases, metadata-only CLI/consent checks, one offline ordinary scene-tool projection, same-scene SVG/native long-fixture evidence and typed seam checking are proportionate. Missing selected PG/native tooling leaves required evidence unexecuted and holds implementation acceptance. No new UI rebuild, broad old interaction/database/native matrix or real provider/model/search/GPU call is justified.",
+  "outstandingTechnicalIssues": [],
+  "humanDirection": {
+    "status": "PENDING",
+    "requiredDecision": "Approve or revise appendix-first headless materialization of complete retained titles/URLs/private query values into ordinary editable scene/history text, with normal project/admin/copy/download access, retention independent of source/chat clear and later configured-provider context through ordinary scoped AI reads. On-slide markers first is a different contract.",
+    "notImplied": "No implementation, product execution, source disclosure/retention change, provider dispatch, UI, research/semantic activation, deployment, migration or dependent roadmap authority. Accepted J6-3 and unauthorized candidate remain unchanged."
+  },
+  "implementationAccepted": false,
+  "independence": "Separate reviewer context from planner; modified only independent readiness report/checks and this JSON. No runtime/root document/state/Git mutations or other agents. Parent commits artifacts unchanged.",
+  "executed": {
+    "documentChecks": {
+      "total": 17,
+      "pass": 17,
+      "fail": 0
+    },
+    "protocol": {
+      "command": "npm run dev:protocol",
+      "exitCode": 0,
+      "errors": 0,
+      "warnings": 0
+    },
+    "productTests": 0,
+    "databaseCalls": 0,
+    "httpCalls": 0,
+    "services": 0,
+    "browserCalls": 0,
+    "builds": 0,
+    "nativeRenders": 0,
+    "modelCalls": 0,
+    "searchCalls": 0,
+    "providerCalls": 0,
+    "gpuCalls": 0,
+    "gitMutations": 0,
+    "description": "Read-only source/document/local-Git consistency and protocol checks only. HEAD/local origin match reviewed SHA; no runtime delta from accepted J6-3."
+  },
+  "limitations": [
+    "The proposed appendix compiler/facade/CLI do not exist yet; feasibility is not behavioral, security, atomicity, visual, native or performance validation.",
+    "Long-value pagination must implement and verify complete readable output rather than treating existing generic fit helpers as an already complete algorithm.",
+    "Ordinary copied text cannot retain private-registry access/clear semantics; the new human disclosure/retention/provider-context decision remains pending.",
+    "Source/header/body identity and range validity do not establish claim support. Existing BYOK locale and unchanged adapter/native/live-provider limitations remain separate.",
+    "Restoration depends on existing recoverable-history retention; materialization adds no pinning, permanent undo or guarantee that every earlier payload survives a new save."
+  ],
+  "stopPoint": "Reviewed concrete proposal and human direction question only. Pin a focused inventory after approval before any code; later exact-source implementation ACCEPT/HOLD remains mandatory."
+}

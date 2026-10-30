@@ -1,0 +1,89 @@
+{
+  "kind": "lightweight-independent-plan-consistency",
+  "reviewedPlanSha": "36146428ae99162f16ec2fef0f23fc93532f6dd7",
+  "initialPlanSha": "92ee9775f4bad1fb3891ad43987c802751a42abd",
+  "acceptedBaseline": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "planSha256": "02772fc611f5058df98efae7759bc9d498e2af7d3097399dd0e4728f3759ede2",
+  "checks": [
+    {
+      "check": "exact-head",
+      "passed": true
+    },
+    {
+      "check": "local-origin-ref",
+      "passed": true
+    },
+    {
+      "check": "branch-v2",
+      "passed": true
+    },
+    {
+      "check": "accepted-ancestry",
+      "passed": true
+    },
+    {
+      "check": "runtime-unchanged",
+      "passed": true
+    },
+    {
+      "check": "accepted-baseline-preserved",
+      "passed": true
+    },
+    {
+      "check": "accepted-implementation-preserved",
+      "passed": true
+    },
+    {
+      "check": "active-j63-accepted",
+      "passed": true
+    },
+    {
+      "check": "candidate-unauthorized",
+      "passed": true
+    },
+    {
+      "check": "explicit-materialization-disclosure",
+      "passed": true
+    },
+    {
+      "check": "both-operations-capture",
+      "passed": true
+    },
+    {
+      "check": "direction-stop",
+      "passed": true
+    },
+    {
+      "check": "roadmap-anchor",
+      "passed": true
+    },
+    {
+      "check": "plan-local-links",
+      "passed": true,
+      "detail": {
+        "links": 2,
+        "missing": []
+      }
+    },
+    {
+      "check": "diff-whitespace",
+      "passed": true
+    },
+    {
+      "check": "protocol",
+      "passed": true,
+      "detail": "Independently executed npm run dev:protocol: exit0/0errors/0warnings."
+    },
+    {
+      "check": "canonical-retention-qualified",
+      "passed": true
+    }
+  ],
+  "totals": {
+    "total": 17,
+    "pass": 17,
+    "fail": 0
+  },
+  "productTestsExecuted": 0,
+  "note": "Read-only local Git/source/document inspection and protocol only; no network Git mutation, runtime work, services, database/API calls, browser/build/native/model/search/provider/GPU execution."
+}
