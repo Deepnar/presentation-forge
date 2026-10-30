@@ -92,7 +92,9 @@ claim support remains not-assessed and J3 attaches nothing. J4 independently acc
 revisioned unverified scene citations; J5 independently accepts qualified private
 source-aware copies and guarded editor adoption. J6-1 independently accepts
 explicitly consented owner-only headless full-title/URL speaker notes with verified
-portable mappings; public/browser citation export and printable presentation,
+portable mappings. J6-2 independently accepts guarded browser notes export;
+J6-3 accepts owner-only saved Sources inspection without changing drafts or
+retention. Printable/on-slide presentation,
 non-snippet verified locators/claim support, research
 orchestration and semantic creation retain their roadmap gates.
 V2-8H independently accepts bounded project-linked visible chat and durable atomic

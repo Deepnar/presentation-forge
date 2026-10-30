@@ -9261,8 +9261,9 @@ local inference. Only that separate transport correction is authorized; this aud
     Accepted J6-1/J6-2 below provide owner-qualified CLI/browser speaker notes with
     explicit full-title/URL consent, verified portable mappings and guarded saved
     editor/download lifecycle. Raw/file/unqualified saved GET cited exports still
-    refuse. The parent remains open: agree visible saved-reference inspection,
-    on-slide attribution and printable pagination before their implementation. No excerpts, provider context or verified claim support
+    refuse. Accepted J6-3 supplies saved-reference inspection. The parent remains
+    open: agree on-slide attribution and printable pagination before their
+    implementation. No excerpts, provider context or verified claim support
     are authorized. Reuse the canonical scenes, qualification and native renderer;
     later surfaces must preserve exact-owner source privacy and human work.
 
@@ -9371,6 +9372,31 @@ local inference. Only that separate transport correction is authorized; this aud
       > Pointer-only focus handling preserves native selection without changing the
       > editor's general keyboard policy. Retained source identity still cannot
       > establish claim support.
+
+    <a id="assistant-citation-editable-appendix"></a>
+
+    - [ ] **V2-8J-6-4 editable References appendix — proposed, direction pending.**
+      The2026-10-30 continuation prepares the next contract from accepted J6-3
+      source8d34c95f and entry66f3dfd0. [Proposal](V2-8J-6-4-PLAN.md) recommends
+      appendix-first printable presentation: deterministic full-title/URL native
+      editable pages appended atomically through the canonical command/history
+      seam. First delivery is exact-owner headless preview/apply and CLI; reopen
+      uses the existing editor and existing qualified notes export remains guarded.
+      Existing pages remain untouched; long references continue at readable size.
+      Copied text becomes ordinary scene/history data, subject to existing project
+      access (including admin) and text/export rules; source/chat clear cannot
+      retract it or downloaded copies. This is new retention/disclosure direction,
+      not permission inherited from Sources or source-notes consent. Agree that
+      policy and appendix-first versus on-slide-marker direction before code.
+      No runtime, tests/services, model/search/provider/GPU work or activation is
+      authorized by preparation. Keep J6-3 accepted and candidate unauthorized.
+
+    - [ ] **Browser appendix interaction — after accepted headless contract.**
+      Reuse the canonical materialization facade in the existing Sources section
+      only after agreeing its preview/consent and draft/save/adoption behavior.
+      Preserve pending work and future human-edited references; no new source
+      retention authority is implied by the button. This is a dependency entry,
+      not a parallel UI implementation or reason to bypass the headless gate.
 
   Dependency sequence after accepted J6-1/J6-2 notes export:
   J6-3 saved inspection is accepted; agree visible attribution and verified locator/claim-support
