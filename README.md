@@ -271,6 +271,21 @@ and remain optional: Open is available while a preview loads or fails. The
 [cover validation and review record](docs/V2-7C-1-EVAL.md) identifies the exact
 implementation and its acceptance status.
 
+The project editor's Inspector includes a collapsed **Sources** section. Opening
+it reads the saved slide or single selected object's references without saving
+pending edits. Complete retained titles/URLs stay plain owner-only text; separate
+target/content/source/range statuses never imply verified claim support. Reads
+are paged explicitly, and closing or changing scope/session clears the displayed
+rows. The same saved read is available headlessly:
+
+```sh
+npm run inspect-project-sources -- <project-id> --revision <N> --slide <slide-id>
+```
+
+Authenticated reads use the owner's session in `FORGE_PROJECT_TOKEN`. Full URLs
+may include private query values; the interface does not follow them or fetch
+their pages. See [scope, evidence and review status](docs/V2-8J-6-3-EVAL.md).
+
 Saved projects with retained citations have an owner-only notes export on local
 POSIX filesystems:
 

@@ -3223,3 +3223,31 @@ saved state even in Done. No implicit commit/save/discard/reload occurs. Browser
 UI shows only revision/count and the disclosure, never a retained source preview.
 The three existing controls share this coordinator. See [focused evidence and
 current review status](V2-8J-6-2-EVAL.md); all later work is in the roadmap.
+
+### J6-3 saved Sources inspector
+
+`src/projects/citation-view.js` projects one owner-qualified saved document/catalog
+transaction into strict title/URL-only pages. It shares J4 target/content/source/
+range observations, reads only selected current-generation bodies, and binds
+opaque24-row cursors to project revision, catalog generation/revision and scope.
+Missing targets and cleared sources remain separate unverified observations;
+claim support is always not-assessed. No excerpts, digests or source/provider bodies
+enter the shared browser DTO. There are no source/document/history writes.
+
+GET `citation-view` has an early private raw-family boundary before CORS/global
+parsers, strict Bearer-owner authority and2host/1owner admission held through
+actual settlement even after abort. Query/cursor/success/error bounds are8KiB/
+512bytes/256KiB/8KiB. `inspect-project-sources` uses the same domain facade and
+owner session; no HTTP-only authority or store/SQL change is added.
+
+`SavedSources.jsx` is an explicitly opened, read-only section in the bound editor
+Inspector. It shows the saved revision, complete literal title/URL and separate
+statuses, with no link, preview or automatic fetch. Pointer-only focusout capture
+preserves title/inline drafts while retaining native source text selection. Buttons
+also preserve grid drafts. Keyboard editing behavior stays inherited. The client
+retains one transient read, fixed bounded response storage, periodic event-loop
+yielding and a15second body deadline with non-awaited cancellation. That deadline
+does not bound server SQL locks or fetch-header delivery. Session epochs, current
+scope/document/navigation and authoritative save/copy/restore/reload invalidate
+private rows and late reads. Closed/inactive views do not poll or retain pages.
+See [focused evidence and review status](V2-8J-6-3-EVAL.md).
