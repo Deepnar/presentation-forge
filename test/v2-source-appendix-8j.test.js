@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import { compileSourceAppendix,literalReferenceText } from '../packages/compiler/source-appendix.ts';
+import { measure } from '../packages/core/fit.ts';
 import { validateScene } from '../packages/model/scene.ts';
 import { createDocument } from '../packages/model/engine.ts';
 import { createToolSession } from '../packages/tools/session.ts';
@@ -16,6 +17,8 @@ test('Appendix compiler: deterministic complete Unicode/control/long URL paginat
  for(const page of pages){assert.equal((await validateScene(page)).ok,true);assert.ok(page.elements.some(e=>e.paragraphs[0].runs[0].text==='Claim support is not assessed.'));for(const e of page.elements){assert.ok(e.x>=0&&e.y>=0&&e.x+e.w<=page.width+.001&&e.y+e.h<=page.height+.001);for(const r of e.paragraphs[0].runs)assert.ok(r.size>=12&&r.line>=1.2);}}
  assert.equal(text(pages,'reference-1-title'),literalReferenceText(reference.title));
  const words=compileSourceAppendix([{title:'Complete title '.repeat(25).trim(),url:'https://example.org/',slides:[1]}],d,options).flatMap(p=>p.elements).filter(e=>e.semanticRef==='reference-1-title').map(e=>e.paragraphs[0].runs[0].text);assert.ok(words.slice(0,-1).every(line=>line.endsWith(' ')));assert.equal(text(pages,'reference-1-url'),reference.url);assert.ok(text(pages,'reference-1-label').includes('continued'));
+ const narrow=structuredClone(d);narrow.grid.margins.left=2.8;narrow.grid.margins.right=2.8;const mixed=compileSourceAppendix([{title:'i '+ '👨‍👩‍👦'.repeat(30),url:'https://example.org/',slides:[1]}],narrow,options);
+ for(const e of mixed.flatMap(p=>p.elements).filter(e=>e.semanticRef==='reference-1-title')){const run=e.paragraphs[0].runs[0],width=[...new Intl.Segmenter('und',{granularity:'grapheme'}).segment(run.text)].reduce((n,{segment:g})=>n+Math.max(measure(g,run)*1.18,g.codePointAt(0)>=0x2e80?run.size/72*1.1:0),0);assert.ok(width<=e.w+1e-9,'every emitted line respects measured width');}
  const ids=pages.flatMap(p=>[p.id,...p.elements.map(e=>e.id)]);assert.equal(new Set(ids).size,ids.length);
  const collision=compileSourceAppendix([reference],d,{...options,reservedIds:[pages[0].elements[0].id]});assert.notEqual(collision[0].id,pages[0].id);
 });

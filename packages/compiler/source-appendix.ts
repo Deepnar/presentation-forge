@@ -19,7 +19,7 @@ function lines(text: string, width: number, style: FitStyle): string[] {
   const advance=(glyph:string)=>Math.max(measure(glyph,style)*1.18,(glyph.codePointAt(0)??0)>=0x2e80?style.size/72*1.1:0);
   for(const {segment:glyph} of segmenter.segment(text)){
     const amount=advance(glyph);if(amount>width)appendixFailure('appendix-fit');
-    if(part&&used+amount>width){
+    while(part&&used+amount>width){
       // Keep ordinary words together; long unbroken values still split at graphemes.
       const at=part.lastIndexOf(' '),cut=at>=0?at+1:part.length;
       result.push(part.slice(0,cut));part=part.slice(cut);used=0;
