@@ -1,9 +1,8 @@
 import { cloneJson } from '../../packages/tools/json.ts';
 import { createDocument } from '../../packages/model/engine.ts';
-import { indexCitationTargets } from '../../packages/model/citation-targets.ts';
-import { citationContentDigests } from '../../packages/model/citation-content.ts';
+import { observed,observeSavedTargets,citationObservations } from './citation-observations.js';
 import { SOURCE_LIMITS, catalog, expected, bodies, refuse, sourceRefusalCode } from './source-read.js';
-import { validSnippetLocator, snippetLocatorStatus, snippetRangeStatus } from './snippet-locator.js';
+import { validSnippetLocator, snippetLocatorStatus } from './snippet-locator.js';
 
 const integer = v => Number.isSafeInteger(v) && v >= 0;
 const id = v => typeof v === 'string' && v.length > 0 && v.length <= 200;
@@ -61,15 +60,6 @@ const messages = Object.freeze({
   'result-too-large': 'The complete citation result exceeds its output limit.',
   'storage-unavailable': 'Citation storage is unavailable.',
 });
-async function observed(scenes, targets) {
-  try {
-    const rows = indexCitationTargets(scenes,targets,true);
-    return { rows, digests: await citationContentDigests(rows) };
-  } catch (error) {
-    if (error?.code === 'target-budget-exceeded') refuse('target-budget-exceeded');
-    throw error;
-  }
-}
 function savedCitations(doc) {
   return new Map(doc.scenes.flatMap(scene => (scene.citations ?? []).map(citation => [citation.id,{scene,citation}])));
 }
@@ -114,21 +104,9 @@ export function createProjectCitations(backend) {
         }
         if (operation === 'inspect') {
           const selected = ids.map(id => saved.get(id));
-          const scoped = selected.filter(({scene,citation:r}) => r.target.slideId === scene.id);
-          const {rows,digests} = await observed(tx.doc.scenes,scoped.map(r => r.citation.target));
-          const observations = new Map(scoped.map((r,i) => [r.citation.id,{row:rows[i],digest:digests[i]}]));
+          const observations = await observeSavedTargets(tx.doc.scenes,selected);
           const retained = await bodies(tx,binding,[...new Set(selected.filter(r => r.citation.source.generation === c.generation).map(r => r.citation.source.id))]);
-          return output({ok:true,snapshot:snapshot(binding,tx.doc.revision,c),citations:selected.map(({citation:r}) => {
-            const observation = observations.get(r.id), target = observation?.row.status ?? 'scope-mismatch';
-            const source = r.source.generation !== c.generation ? 'stale-generation' : retained.has(r.source.id) ? 'retained' : 'missing';
-            // A saved range contains no quote; scalar/range validation cannot claim a match.
-            let locator = 'not-requested';
-            if (r.locator) {
-              locator = source !== 'retained' ? 'unavailable' : snippetRangeStatus(r.locator,retained.get(r.source.id).excerpt);
-            }
-            return {id:r.id,target,content:target !== 'present' ? 'unavailable' : observation.digest === r.anchor.digest ? 'current' : 'changed',
-              source,locator,claimSupport:'not-assessed'};
-          })});
+          return output({ok:true,snapshot:snapshot(binding,tx.doc.revision,c),citations:citationObservations(selected,c,retained,observations)});
         }
         const ops = [];
         if (operation === 'attach') {
