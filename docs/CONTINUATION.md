@@ -32,6 +32,16 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
+## Current continuation — J6-3 contract preparation
+
+The2026-10-30 continuation starts only the next proposed contract, linked in the
+[roadmap](ROADMAP.md#assistant-citation-source-inspector). Read
+[V2-8J-6-3-PLAN.md](V2-8J-6-3-PLAN.md) and current HANDOFF. Planning source65287b61
+has no product changes and is independently
+[READY_FOR_DIRECTION](reviews/V2-8J-6-3-plan-65287b61.json), stable record3b3f6c11.
+Human surface/privacy direction remains pending. State intentionally retains the accepted J6-2 milestone and candidate
+unauthorized. Do not infer implementation permission or recreate old fixtures.
+
 ## Latest accepted slice — J6-2 browser notes export complete
 
 Human direction was pinned8ba322e9 before runtime. Corrected source
@@ -49,7 +59,8 @@ results cannot download. Short/zoom whole-dialog scrolling preserves disclosure
 and action reachability. No store/renderer/model authority changed. No owned
 fixture/service remains; never recreate old fixtures or repeat completed cleanup.
 No old matrix, PG, native raster, real model/search/GPU or activation ran. J6-2
-closeout is complete; stop here. Later scope/authorization lives only in the
+closeout is complete; the later continuation prepares only the next contract.
+Further scope/authorization lives only in the
 [roadmap](ROADMAP.md#assistant-citation-native-presentation).
 
 ## Accepted predecessor — J6-1 qualified citation notes export complete

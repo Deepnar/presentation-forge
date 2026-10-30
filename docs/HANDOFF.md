@@ -1,35 +1,28 @@
-# Presentation Forge handoff — 2026-10-29
+# Presentation Forge handoff — 2026-10-30
 
-Branch v2, push origin/v2 only. J6-2 corrected source
-6068a2a7c5643a1958a140bcc60d0df6b891ccec is independently ACCEPTED from J6-1ecf82d3f
-in reviews/V2-8J-6-2-6068a2a7.json. Stable separate decision committed unchanged
-at9a66f6fc; audited packet488fba2e. State now records that accepted baseline.
-Read AGENTS, protocol, state, V2-8J-6-2-EVAL and active roadmap. Human direction
-was pinned8ba322e9 before code. J6-2 closeout is complete; stop here.
+Branch v2, push origin/v2 only. Accepted source remains J6-2
+6068a2a7c5643a1958a140bcc60d0df6b891ccec, exact decision
+reviews/V2-8J-6-2-6068a2a7.json. Closeout62fdffab is complete; its product/evidence/
+owned cleanup are not pending and must not be repeated. Preserve original unrelated
+untracked .agents/ and both master prompts.
 
-Existing Export supports cited saved decks with fresh full-title/URL source-notes
-consent, clean-saved guards and captured revision/owner/session/navigation. Drafts
-are preserved. Approval/reload cancel stale exports. Short/zoom scrolling keeps
-full disclosure/actions reachable; no store/renderer/provider authority changed.
+The human's2026-10-30 continuation starts the next contract preparation.
+Planning commit65287b6181aa72ee7515ea8a3d407f5e81c6aca9 and
+[roadmap](ROADMAP.md#assistant-citation-source-inspector) link the concrete
+[V2-8J-6-3 proposal](V2-8J-6-3-PLAN.md). The separate reviewer found the exact contract independently
+[READY_FOR_DIRECTION](reviews/V2-8J-6-3-plan-65287b61.json); stable decision was
+committed unchanged at3b3f6c11. No technical contract correction was required.
+Root lightweight planning checks10/10 and independent15/15 pass, with protocol
+0errors/0warnings. Human surface/data-handling direction is still
+required before code. State retains J6-2 accepted and candidate authorized:false.
 
-Focused selected22/22 (HTTP6/client10/Chrome6), independent3/3 and423/0 packet audit
-pass. All root attempts35=25pass/10fail/0skip/cancel; all independent product
-attempts4=3pass/1responsive-fail, plus one pre-body import harness error. All originals
-remain; no single final whole-file pass is inferred. Six builds exited0, final06
-matches corrected frontend. No typed change/new typecheck.10 actual downloaded
-PPTX artifacts are retained. Root/reviewer viewed final desktop/narrow/320-short/
-emulated200% screenshots; settled canvasdelta0 from retained root case. Actual
-browser-menu zoom, dark-mode, interactive PowerPoint/long-print remain unexecuted.
+No runtime/schema/dependency change, product test, service, browser/build/native
+render or real/local model/search/provider/GPU call ran. Only lightweight planning
+consistency/governance checks are appropriate now. Existing accepted evidence is
+spot-checked, not replayed. No owned backend/process was created; never recreate
+old fixtures or cleanup. Leave unrelated processes/databases/work untouched.
 
-Early dirty-tracked source hash omission, original startup delta uncertainty,
-Chrome background CRX fragments and one same-title overwrite are explicit in
-EVAL/manifest/review. No source/provider/model/search call occurred; earlier Chrome
-background traffic is not certified loopback-only. Exact fragments are preserved
-historically and removed from current tree; future fixtures disable background work.
-
-All15 root and4 reviewer owned process groups are absent; owned browser/API/SQLite
-fixtures and private temp directories are closed/removed. No persistent PG acquired.
-Never recreate old fixtures or repeat completed cleanup/old matrix. No real API/local
-model/search/GPU call, deployment or production activation. Leave unrelated work
-alone; preserve .agents/ and both untracked master prompts. No dependent work is
-authorized. Future scope/direction exists only in docs/ROADMAP.md.
+Contract preparation/readiness and scoped documentation/push are complete.
+Obtain the concrete human direction required by AGENTS before implementation. Do not substitute
+another feature while the decision is pending. Future scope is written solely in
+the linked roadmap; no dependent implementation or activation is authorized.

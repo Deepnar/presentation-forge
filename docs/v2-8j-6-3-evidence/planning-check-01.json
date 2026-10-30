@@ -1,0 +1,51 @@
+{
+  "kind": "planning-consistency",
+  "clientDate": "2026-10-30",
+  "invocationHead": "65287b6181aa72ee7515ea8a3d407f5e81c6aca9",
+  "approvedBaseline": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "checks": {
+    "branch_v2": true,
+    "baseline_retained": true,
+    "j62_acceptance_retained": true,
+    "candidate_not_authorized": true,
+    "docs_only_delta": true,
+    "accepted_runtime_unchanged": true,
+    "surface_direction_required": true,
+    "full_url_privacy_explicit": true,
+    "no_model_or_product_execution_authorized": true,
+    "contract_links_resolve": true
+  },
+  "passed": 10,
+  "failed": 0,
+  "links": [
+    {
+      "target": "reviews/V2-8J-6-2-6068a2a7.json",
+      "exists": true
+    },
+    {
+      "target": "ROADMAP.md#assistant-citation-source-inspector",
+      "exists": true
+    },
+    {
+      "target": "ROADMAP.md#assistant-citation-native-presentation",
+      "exists": true
+    },
+    {
+      "target": "ROADMAP.md#assistant-semantic-creation",
+      "exists": true
+    }
+  ],
+  "workingDocs": [
+    "docs/BLOCKED.md",
+    "docs/CONTINUATION.md",
+    "docs/HANDOFF.md",
+    "docs/ROADMAP.md",
+    "docs/V2-8J-6-3-PLAN.md",
+    "docs/development-state.json"
+  ],
+  "productTestsExecuted": 0,
+  "servicesStarted": 0,
+  "rendersExecuted": 0,
+  "modelSearchProviderCalls": 0,
+  "note": "Read-only source/document checks; these are not product test passes or implementation acceptance."
+}

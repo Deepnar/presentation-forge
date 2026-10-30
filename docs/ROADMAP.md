@@ -9044,8 +9044,9 @@ local inference. Only that separate transport correction is authorized; this aud
   paths. Accepted J3 below checks explicit saved target/source references and
   snippet-relative locators without persisting attachment. Accepted J4 below
   supplies revisioned scene-owned metadata and clear/edit/history semantics.
-  Accepted J5 supplies private source-aware copy. Citation export/presentation and
-  verified claim-support policy retain separate contracts before dependent implementation.
+  Accepted J5 supplies private source-aware copy and J6-1/J6-2 qualified CLI/browser
+  source-notes export. Visible source inspection/presentation and verified
+  claim-support policy retain separate contracts before dependent implementation.
   Add separate paper/project adapters under their own contracts. Verify source-to-block/slide/export
   mappings; distinguish claim support from matching IDs/numbers and retain
   unsupported/uncertain outcomes. Prompt-injection fixtures and eventual labeled
@@ -9352,8 +9353,12 @@ local inference. Only that separate transport correction is authorized; this aud
       scope/session/navigation cleanup. The dedicated source-management page is the
       alternative surface, not an implicitly authorized fallback. Human direction
       on surface and new private browser disclosure is required before code;
-      independent contract readiness is pending. Focused new read/transport/client/
-      browser evidence follows direction, reusing accepted unchanged native/store
+      exact contract65287b61 is independently
+      [READY_FOR_DIRECTION](reviews/V2-8J-6-3-plan-65287b61.json), committed unchanged
+      at3b3f6c11 after15/15 lightweight review checks and no product execution.
+      Root planning checks10/10 and protocol0errors pass. No technical planning
+      blocker remains; human surface/full-URL disclosure direction is pending.
+      Focused new read/transport/client/browser evidence follows direction, reusing accepted unchanged native/store
       evidence. Later visible/print policy and semantic creation remain separate.
 
   Dependency sequence after accepted J6-1/J6-2 notes export:

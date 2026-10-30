@@ -1,6 +1,11 @@
 # V2-8J-6-3 — saved Sources inspector
 
-Status: **proposed; independent readiness and human direction pending**.
+Status: **independently READY_FOR_DIRECTION; human direction pending**.
+Exact contract65287b6181aa72ee7515ea8a3d407f5e81c6aca9 passed separate
+[planning review](reviews/V2-8J-6-3-plan-65287b61.json), committed unchanged
+at3b3f6c11. No technical contract correction was required. Readiness does not
+authorize implementation, product execution or the new browser disclosure.
+This status header follows the reviewed contract; its body remains unchanged.
 Accepted baseline6068a2a7c5643a1958a140bcc60d0df6b891ccec (J6-2), independently
 [accepted](reviews/V2-8J-6-2-6068a2a7.json). Planning entry HEAD
 62fdffabe7909305acf15882d7c518eb08442537; branch v2, push origin/v2 only.
