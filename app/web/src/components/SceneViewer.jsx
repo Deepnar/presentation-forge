@@ -3,6 +3,7 @@ import { ConfirmModal } from "./ui.jsx";
 import { assistantFailure, assistantScope } from "../lib/v2assistant.js";
 import { projectSessionKey } from "../lib/v2project.js";
 import ProjectExportButton from "./ProjectExportButton.jsx";
+import SavedSources from "./SavedSources.jsx";
 import { ProjectExportProvider,useProjectExports } from "./ProjectExports.jsx";
 // SceneViewer — read-only V2 scene viewer. Thin React shell over
 // packages/editor/scene-dom.js (the single viewer implementation;
@@ -1122,6 +1123,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   }
   async function enterEdit() {
     if (editOn || !viewerRef.current) return;
+    invalidateSources();
     const targetViewer = viewerRef.current;
     setEditStatus({ rev: 0, error: null, preparing: true });
     try {
@@ -1187,6 +1189,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       return { actor: "human", saveOrigin, envelopeIds: [], engineRevision: null, historyLength: null };
     }
   }
+  const sourceInvalidatorRef=useRef(null),sourceEpochRef=useRef(0);
+  const registerSourceInvalidator=useCallback(fn=>{sourceInvalidatorRef.current=fn;},[]);
+  function invalidateSources(){sourceEpochRef.current++;sourceInvalidatorRef.current?.();}
   async function saveNow(saveOrigin = "manual", guard = null) {
     if (copyingRef.current) return { ok: false, code: "copy-pending", message: "Wait for the project copy to finish." };
     if (guard && !guard.current()) return { ok: false, code: "op-rejected", message: "session changed" };
@@ -1219,6 +1224,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       setSaveState("saved");
       return { ok: true, revision: atEngineRev, noop: true };
     }
+    invalidateSources();
     setSaveState("saving");
     setSaveError(null);
     const task = (async () => {
@@ -1292,6 +1298,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     const drafts = () => gridDraftsRef.current.size || titleDraftRef.current !== null || titleRequestRef.current || assistantRef.current?.hasDraft();
     if (drafts()) { setCopyNotice('Apply or cancel data/title drafts and finish the Assistant message before copying.'); return; }
     const ticket = { current };
+    invalidateSources();
     copyingRef.current = ticket;
     setCopyBusy(true); setCopyNotice(null); autosaveRef.current?.cancel();
     let committed = false;
@@ -1465,6 +1472,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     }
     pendingSwitchRef.current = null;
     setPendingSwitchId(null);
+    invalidateSources();
     setSaveState("saving");
     setSaveError(null);
     const previousDocument = docRef.current;
@@ -1499,7 +1507,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     if (!editOn || !doc || !projectId || projectRef.current.recoverable) throw assistantFailure("read-only");
     if (gridDraftsRef.current.size) throw assistantFailure("pending-data");
     if (titleDraftRef.current !== null || titleRequestRef.current) throw assistantFailure("pending-title");
-    if(options.proposalRevision!==undefined)exportScope.controller.cancel();
+    if(options.proposalRevision!==undefined){exportScope.controller.cancel();invalidateSources();}
     const saved = await saveNow("manual", { token: options.token, current });
     if (!current()) throw assistantFailure("session-changed");
     if (gridDraftsRef.current.size) throw assistantFailure("pending-data");
@@ -1532,6 +1540,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     const viewport = { ...viewerRef.current.api.snapshot(), scrollTop: scrollRef.current?.scrollTop ?? 0, scrollLeft: scrollRef.current?.scrollLeft ?? 0 };
     const focused = document.activeElement;
     exportScope.controller.cancel();
+    invalidateSources();
     assistantSyncPendingRef.current++;
     try {
     const loaded = await apiLoad(proj.id, capturedAssistantFetch({ token: options.token, current }));
@@ -1634,6 +1643,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       setRestoreError('Wait for the project copy to finish, then restore again.'); return;
     }
     if (restoreBusyRef.current) return;
+    invalidateSources();
     restoreBusyRef.current = true;
     try {
     if (adapterRef.current?.hasPendingEdit?.()) {
@@ -1766,6 +1776,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       return;
     }
     setTitleError(null);
+    invalidateSources();
     titleRequestRef.current = true;
     try {
       const u = await apiRename(proj.id, { title, baseRevision: proj.revision });
@@ -2100,7 +2111,10 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
 
   return (
     <ProjectExportProvider scope={exportScope}>
-    <div className="flex h-screen flex-col bg-base text-fg" data-workspace-editor={project?.id ?? "unbound"}>
+    <div className="flex h-screen flex-col bg-base text-fg" data-workspace-editor={project?.id ?? "unbound"} onBlurCapture={e=>{
+      // Selecting literal source text may move focus, but cannot resolve a draft.
+      if(e.target.matches?.('[data-project-title],[data-text-edit]')&&e.relatedTarget?.closest?.('[data-saved-sources][data-preserve-source-draft]'))e.stopPropagation();
+    }}>
       {/* Embedded routes own project identity; standalone scenes retain
           the developer harness without offering it inside saved work. */}
       <div data-topbar className="flex min-h-[44px] flex-none items-center gap-1.5 overflow-x-auto [&>*]:shrink-0 border-b border-line bg-panel px-3 py-1.5">
@@ -2563,6 +2577,23 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                   <div className="text-[12px] text-fg-faint">Nothing selected. Click the slide to select an object, or double-click text to edit it.</div>
                 )}
               </div>
+              {embedded&&project&&!project.recoverable&&docRef.current&&<SavedSources
+                active={rightOpen&&rightTab==='inspector'} register={registerSourceInvalidator}
+                preservePointer={()=>Boolean(adapterRef.current?.hasPendingEdit?.()||titleDraftRef.current!==null||gridDraftsRef.current.size)}
+                capture={()=>{
+                  const doc=docRef.current,viewer=viewerRef.current,proj=projectRef.current,value=viewer?.api.snapshot();
+                  if(!doc||!proj||!value)return null;
+                  const route=window.location.href,stamp=navigationStamp?.()??routeEpochRef.current,epoch=sourceEpochRef.current;
+                  const elementId=value.selectedIds.length===1?value.selectedIds[0]:null;
+                  return {id:proj.id,revision:proj.revision,slideId:value.slideId,elementId,current:()=>{
+                    const now=viewerRef.current?.api.snapshot();
+                    return mountedRef.current&&docRef.current===doc&&viewerRef.current===viewer&&projectRef.current?.id===proj.id&&projectRef.current?.revision===proj.revision&&
+                      window.location.href===route&&(navigationStamp?.()??routeEpochRef.current)===stamp&&sourceEpochRef.current===epoch&&
+                      now?.slideId===value.slideId&&(now.selectedIds.length===1?now.selectedIds[0]:null)===elementId&&
+                      !titleRequestRef.current&&!pendingSaveRef.current&&!copyingRef.current&&!restoreBusyRef.current&&!assistantSyncPendingRef.current;
+                  }};
+                }}
+              />}
               {styledShape && (
                 <StylePanel
                   key={`${snap.slideId}:${styledShape.id}:${editStatus.rev}`}
