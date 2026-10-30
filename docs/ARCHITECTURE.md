@@ -3251,3 +3251,38 @@ does not bound server SQL locks or fetch-header delivery. Session epochs, curren
 scope/document/navigation and authoritative save/copy/restore/reload invalidate
 private rows and late reads. Closed/inactive views do not poll or retain pages.
 See [focused evidence and review status](V2-8J-6-3-EVAL.md).
+
+### J6-4 headless editable References appendix (source under review)
+
+`source-appendix.js` captures exact owner/project/theme/request before awaiting,
+then reuses one `withCitationReadTransaction` for metadata-only preview or
+`withCitationTransaction` for consented apply. Shared `citation-qualification.js`
+extracts the accepted notes export's saved target/content/visibility/catalog/range
+checks without adding export capability. Both operations refuse unresolved
+associations completely. Equal URLs alone never merge distinct retained IDs;
+first occurrence and saved containing-slide ordinals determine the reference list.
+
+`packages/compiler/source-appendix.ts` owns all page geometry and typography.
+Normalized design roles supply resolved native text; explicit measured lines
+preserve ordinary word boundaries and split long values only at graphemes.
+Readable floors, repeated headings/continuation labels/support notice, complete
+value preservation and finite project/page/byte/node bounds fail closed. Collision
+checking reserves one revision-bound namespace against all existing scene/element
+identities. No provider sees layout controls or raw theme data through this path.
+
+One human engine batch inserts pages and sets them detached; `saveScenes` writes
+one new durable revision/history row with existing pruning and atomic rollback.
+Existing scene content/order/ownership/citations and source catalog remain intact.
+No manifest, source excerpt, stored consent or second authoritative document is
+added. Unknown save acknowledgement never retries; current history must be inspected.
+
+`add-project-references` previews only counters/counts/design fingerprint/notice.
+Apply requires explicit counters/fingerprint and `--include-source-text`; strict
+owner tokens cannot downgrade or use admin source override. Returned JSON/errors
+never echo retained values. Full titles/URLs are deliberately copied into ordinary
+scene/history text: normal project/admin/copy/export and later scoped AI-read rules
+apply, independently of source/chat clear. Source registry privacy is unchanged.
+An existing editor keeps drafts and stale-save protection until deliberate reopen;
+no live adoption/browser control/scheduler/provider dispatch is introduced. Existing
+qualified notes export is required for a cited project and retains its consent/
+preflight guards. See [evidence and review status](V2-8J-6-4-EVAL.md).

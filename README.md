@@ -286,6 +286,30 @@ Authenticated reads use the owner's session in `FORGE_PROJECT_TOKEN`. Full URLs
 may include private query values; the interface does not follow them or fetch
 their pages. See [scope, evidence and review status](docs/V2-8J-6-3-EVAL.md).
 
+An owner can preview an editable **References** appendix headlessly:
+
+```sh
+npm run add-project-references -- <project-id> [--theme <existing-theme>]
+```
+
+The preview returns counts, saved/source revisions, a design fingerprint and the
+disclosure. To append its pages, use those exact values in a separate command:
+
+```sh
+npm run add-project-references -- <project-id> --include-source-text \
+  --revision <project-revision> --source-generation <generation> \
+  --source-revision <source-revision> --design-fingerprint <fingerprint>
+```
+
+Repeat the same `--theme` choice if preview required one. Authenticated operations
+use `FORGE_PROJECT_TOKEN`. Complete titles/URLs, including private queries, become
+ordinary editable deck/history text with normal project/admin/copy/export access
+and possible later AI input through scoped scene reads. Source/chat clear does not
+remove those copies; history follows existing retention. Insertion uses no model.
+Reopen deliberately to load the appended pages; an already-open editor keeps its
+drafts and existing conflict handling. Long values continue across readable native
+pages; claim support remains unassessed. See [scope and review status](docs/V2-8J-6-4-EVAL.md).
+
 Saved projects with retained citations have an owner-only notes export on local
 POSIX filesystems:
 
