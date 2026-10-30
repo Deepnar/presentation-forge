@@ -184,7 +184,11 @@
               "notes-visual",
               "export-http",
               "export-client",
-              "export-browser"
+              "export-browser",
+              "view-domain",
+              "view-transport",
+              "view-client",
+              "view-browser"
             ]
           },
           "status": {
@@ -379,7 +383,8 @@
                   "V2-8J-4",
                   "V2-8J-5",
                   "V2-8J-6-1",
-                  "V2-8J-6-2"
+                  "V2-8J-6-2",
+                  "V2-8J-6-3"
                 ]
               }
             },

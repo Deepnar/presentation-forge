@@ -1,0 +1,31 @@
+{
+  "acceptedBaseline": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "approvedContract": "docs/V2-8J-6-3-PLAN.md",
+  "humanDirection": "docs/v2-8j-6-3-evidence/human-direction.json",
+  "gates": {
+    "view-domain": [
+      "test/v2-citation-view-8j.test.js",
+      "test/v2-citations-8j.test.js"
+    ],
+    "view-transport": [
+      "test/v2-citation-view-http-8j.test.js"
+    ],
+    "view-client": [
+      "test/v2-citation-view-client-8j.test.js"
+    ],
+    "view-browser": [
+      "test/v2-citation-view-chrome-8j.test.js"
+    ],
+    "production-build": [],
+    "frontend-visual": []
+  },
+  "requiredFiles": [
+    "test/v2-citation-view-8j.test.js",
+    "test/v2-citations-8j.test.js",
+    "test/v2-citation-view-http-8j.test.js",
+    "test/v2-citation-view-client-8j.test.js",
+    "test/v2-citation-view-chrome-8j.test.js"
+  ],
+  "rationale": "Focused new read/transport/client/one serial browser plus affected canonical observation pure cases, one reused build and visual inspection. No adapter/SQL reader/typed change planned; reuse accepted unchanged native/PG evidence.",
+  "excluded": "No broad old matrix, new PG/native/benchmark/model/search/GPU/provider/activation. Typecheck only if typed boundary changes."
+}

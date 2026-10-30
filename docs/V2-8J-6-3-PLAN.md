@@ -1,6 +1,9 @@
 # V2-8J-6-3 — saved Sources inspector
 
-Status: **independently READY_FOR_DIRECTION; human direction pending**.
+Status: **human-approved; implementation in progress**.
+The2026-10-30 reply “ok continue” to the concrete recommended Inspector/full-URL
+disclosure question approves only this reviewed contract. Direction and focused
+inventory are pinned before runtime; independent implementation acceptance pending.
 Exact contract65287b6181aa72ee7515ea8a3d407f5e81c6aca9 passed separate
 [planning review](reviews/V2-8J-6-3-plan-65287b61.json), committed unchanged
 at3b3f6c11. No technical contract correction was required. Readiness does not

@@ -1,0 +1,7 @@
+{
+  "date": "2026-10-30",
+  "question": "May I implement reviewed J6-3 as a read-only Sources section in the existing Inspector? Opening it will show the owner saved citation status and complete retained titles/URLs\u2014including private query values\u2014while preserving drafts. It adds no stored data, model calls or on-slide changes. AGENTS.md requires this surface/data-handling choice before code.",
+  "reply": "ok continue",
+  "approvedRecommendation": "Sources in existing Inspector; exact reviewed contract65287b6181aa72ee7515ea8a3d407f5e81c6aca9",
+  "scope": "Transient exact-owner full title/URL read only, including private query values; focused offline implementation, no real model/search/provider call or activation."
+}

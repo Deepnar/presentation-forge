@@ -16,6 +16,7 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
+  'view-domain': 'tests', 'view-transport': 'tests', 'view-client': 'tests', 'view-browser': 'tests',
   'export-http': 'tests', 'export-client': 'tests', 'export-browser': 'tests',
   'notes-domain': 'tests', 'notes-sqlite': 'tests', 'notes-postgres': 'tests', 'notes-native': 'tests', 'notes-cli': 'tests', 'notes-visual': 'visual',
   'copy-contract': 'tests', 'copy-sqlite': 'tests', 'copy-postgres': 'tests', 'copy-transport': 'tests', 'copy-browser': 'tests',
@@ -36,6 +37,12 @@ const KINDS = {
 const DEFAULT_REQUIRED_CHECKS = ['non-browser-bulk', 'serial-browser', 'postgres-contract',
   'cross-process-faults', 'production-build', 'typecheck', 'benchmark-50', 'frontend-visual'];
 const MILESTONES = {
+  'V2-8J-6-3': {
+    plan: 'docs/v2-8j-6-3-evidence/validation-plan.json',
+    focused: 'view-domain', files: ['test/v2-citation-view-8j.test.js', 'test/v2-citations-8j.test.js'],
+    groups: { 'view-transport': ['test/v2-citation-view-http-8j.test.js'], 'view-client': ['test/v2-citation-view-client-8j.test.js'], 'view-browser': ['test/v2-citation-view-chrome-8j.test.js'] },
+    required: ['view-domain', 'view-transport', 'view-client', 'view-browser', 'production-build', 'frontend-visual'],
+  },
   'V2-8J-6-2': {
     plan: 'docs/v2-8j-6-2-evidence/validation-plan.json',
     focused: 'export-http', files: ['test/v2-native-export-http-8j.test.js'],

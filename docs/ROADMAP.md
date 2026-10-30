@@ -9339,7 +9339,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
     <a id="assistant-citation-source-inspector"></a>
 
-    - [ ] **V2-8J-6-3 saved Sources inspector — contract preparation, direction pending.**
+    - [ ] **V2-8J-6-3 saved Sources inspector — approved, implementation in progress.**
       The2026-10-30 continuation starts the next concrete contract from accepted
       J6-2 source6068a2a7 and entry62fdffab. [Proposed contract](V2-8J-6-3-PLAN.md)
       recommends an explicitly opened, read-only Sources section inside the existing
@@ -9357,7 +9357,9 @@ local inference. Only that separate transport correction is authorized; this aud
       [READY_FOR_DIRECTION](reviews/V2-8J-6-3-plan-65287b61.json), committed unchanged
       at3b3f6c11 after15/15 lightweight review checks and no product execution.
       Root planning checks10/10 and protocol0errors pass. No technical planning
-      blocker remains; human surface/full-URL disclosure direction is pending.
+      blocker remains. Human “ok continue” after the concrete question on2026-10-30
+      approves the recommended surface/full-URL read disclosure;
+      [direction](v2-8j-6-3-evidence/human-direction.json) is pinned before code.
       Focused new read/transport/client/browser evidence follows direction, reusing accepted unchanged native/store
       evidence. Later visible/print policy and semantic creation remain separate.
 

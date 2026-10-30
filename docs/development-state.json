@@ -6,50 +6,56 @@
     "source": "docs/reviews/V2-8J-6-2-6068a2a7.json"
   },
   "implementationHead": {
-    "sha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
-    "note": "Independent ACCEPT for corrected J6-2 source; root22/22, independent3/3 and423/0 packet audit. Decision committed unchanged at9a66f6fc; later commits are closeout documentation/evidence only."
+    "sha": "6ae013907b48687ba7676e6d62ac7b6f299b31b2",
+    "note": "Human continuation approves recommended J6-3 surface/disclosure; approved inventory pinned before runtime. Implementation/review pending."
   },
   "activeMilestone": {
-    "id": "V2-8J-6-2",
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-browser-export",
-    "evalDoc": "docs/V2-8J-6-2-EVAL.md",
+    "id": "V2-8J-6-3",
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-source-inspector",
+    "evalDoc": "docs/V2-8J-6-3-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8J-6-2-6068a2a7.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "export-http",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-2-evidence/export-http.json",
-      "reason": "Focused retained evidence complete; exact-source independent ACCEPT covers source applicability, earlier failures and corrected short/zoom replay."
+      "id": "view-domain",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused check; not executed."
     },
     {
-      "id": "export-client",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-2-evidence/export-client.json",
-      "reason": "Focused retained evidence complete; exact-source independent ACCEPT covers source applicability, earlier failures and corrected short/zoom replay."
+      "id": "view-transport",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused check; not executed."
     },
     {
-      "id": "export-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-2-evidence/export-browser.json",
-      "reason": "Focused retained evidence complete; exact-source independent ACCEPT covers source applicability, earlier failures and corrected short/zoom replay."
+      "id": "view-client",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused check; not executed."
+    },
+    {
+      "id": "view-browser",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused check; not executed."
     },
     {
       "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-2-evidence/production-build.json",
-      "reason": "Focused retained evidence complete; exact-source independent ACCEPT covers source applicability, earlier failures and corrected short/zoom replay."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused check; not executed."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-2-evidence/frontend-visual.json",
-      "reason": "Focused retained evidence complete; exact-source independent ACCEPT covers source applicability, earlier failures and corrected short/zoom replay."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused check; not executed."
     }
   ],
   "knownBlockers": [],
@@ -60,9 +66,9 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8J-6-3 saved Sources inspector contract",
+    "id": "Visible/printed citation presentation contract",
     "authorized": false,
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-source-inspector"
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-native-presentation"
   },
   "docs": {
     "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
