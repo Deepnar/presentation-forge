@@ -1,0 +1,82 @@
+{
+  "decision": "ACCEPT",
+  "kind": "independent-review",
+  "reviewer": "/root/j63_plan_review",
+  "context": "/root/j63_plan_review",
+  "implementedBy": "/root",
+  "reviewDate": "2026-10-30",
+  "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "runtimeSha": "719498cd4983392ec4ef6423eb38f85d6caaf557",
+  "acceptedBaseline": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "approvedPlanSha": "65287b6181aa72ee7515ea8a3d407f5e81c6aca9",
+  "approvalPinnedSha": "ec2bb48967fcef10816b23c4f8e5c18f48338ab8",
+  "packetSha": "25ca0f92505b4d57d36874a4ebb4dc4b8975984a",
+  "evidence": "docs/v2-8j-6-3-evidence/independent/review.md",
+  "assessment": "The approved bounded saved Sources inspector contract is satisfied. Exact-owner coherent saved reads, unresolved citation semantics, private finite transport, draft preservation and late-response cleanup are supported by source/evidence review and a new actual-browser challenge. No unresolved blocker remains. Acceptance is J6-3 only.",
+  "independence": "Separate reviewer context from implementation. Reviewer modified only independent findings/challenge/audit/report artifacts and this decision; no runtime/root state/doc/Git mutation or other agents. Parent commits this record unchanged.",
+  "resolvedFindings": [
+    {
+      "id": "empty-body-chunks",
+      "issue": "Byte-only streamed-body accumulation retained unbounded empty chunks and could starve timers.",
+      "resolution": "Fixed success/error buffers,64-read event-loop yielding, monotonic15s body deadline and non-awaited cancellation. Root fail-first is retained; final production client6/6 inspected.",
+      "source": "app/web/src/lib/citationView.js",
+      "evidence": "docs/v2-8j-6-3-evidence/client-final-04.json"
+    },
+    {
+      "id": "source-text-blur",
+      "issue": "Pointer selection of source text could resolve a title/inline draft through inherited blur behavior.",
+      "resolution": "Scoped pointer-only focusout capture preserves drafts and native selection. Root title fail-first retained; independent trusted URL drag preserves both title and inline drafts.",
+      "source": "app/web/src/components/SceneViewer.jsx",
+      "evidence": "docs/v2-8j-6-3-evidence/independent/browser-long-selection-01.json"
+    },
+    {
+      "id": "actual-reload-browser-evidence",
+      "issue": "Initial held-response cases lacked actual authoritative reload evidence.",
+      "resolution": "Added real title-save and history-restore/reload phases with held source delivery, saved HTTP revision/scenes and preserved-title assertions.",
+      "evidence": "docs/v2-8j-6-3-evidence/browser-corrections-05.json"
+    }
+  ],
+  "inspectedEvidence": {
+    "selectedRoot": {"total": 36, "pass": 36, "fail": 0, "skip": 0, "cancelled": 0},
+    "selection": {"domain": 21, "transport": 5, "client": 6, "browser": 4},
+    "allRootProductAttempts": {"total": 47, "pass": 43, "fail": 4, "skip": 0, "cancelled": 0},
+    "preBodyHarnessFileFailures": 1,
+    "selectionSemantics": "Explicit successful executed-leaf union; not one final green whole-file process. Unchanged pagination/route/session browser case uses earlier build01 with changed reader/pointer behavior separately covered at final source.",
+    "builds": {"total": 2, "exitZero": 2, "final": "docs/v2-8j-6-3-evidence/build-final-02.json"},
+    "screenshotsDirectlyViewed": {"root": 3, "independent": 5},
+    "rootCanvasMaxDeltaPx": 0,
+    "packetAudit": {"checks": 715, "pass": 715, "errors": 0, "evidence": "docs/v2-8j-6-3-evidence/independent/packet-audit.json"}
+  },
+  "independentlyExecuted": {
+    "product": {"total": 1, "pass": 1, "fail": 0, "skip": 0, "cancelled": 0},
+    "backend": "Fresh owned temporary SQLite/production API and CDP Chrome; existing final build02 reused, no rebuild.",
+    "evidence": "docs/v2-8j-6-3-evidence/independent/browser-long-selection-01.json",
+    "durationMs": 4874,
+    "cpuSeconds": 2.276,
+    "sampledSummedPeakGroupRssBytes": 1906270208,
+    "method": "Complete long title/fullURL equality, visible control/bidi escaping, real native URL drag with title/inline draft preservation, no links/horizontal overflow, endpoint and Show more reachability at320x320/320x210 logical reflow, then25th row loaded. Five screenshots inspected. Not actual browser-menu zoom.",
+    "protocol": {"command": "npm run dev:protocol", "exitCode": 0, "errors": 0, "warnings": 0},
+    "auditParserCorrection": "First independent audit double-counted repeated Node failure summaries and a pre-body file wrapper;6false alarms/source preserved in packet-audit-first.*. Corrected parser gives715/0; no product/evidence assertion changed.",
+    "exclusions": "No duplicate root product matrix, new build, PostgreSQL, native raster, benchmark, typecheck, live/local model/search/provider/GPU or production work."
+  },
+  "cleanup": {
+    "independentBrowserCloseCompleted": true,
+    "independentFixtureStopCompleted": true,
+    "freshAbsentRootGroups": 16,
+    "freshAbsentReviewerGroups": 1,
+    "evidence": "docs/v2-8j-6-3-evidence/independent/packet-audit.json",
+    "persistentPgCreated": false,
+    "oldCleanupRepeated": false,
+    "limit": "Fresh process-group absence and successful fixture cleanup hooks; unrecorded exact browser-profile paths or pre-removal database state are not reconstructed."
+  },
+  "outstandingFindings": [],
+  "residualLimits": [
+    "Existing13 J4 test source was not contemporaneously captured by root; accepted baseline/Git no-delta applicability is inspected, not retroactively captured. Recorded snapshots do not claim a complete dependency graph.",
+    "Selected coverage is an executed-leaf union; original failed attempts and earlier-build applicability remain explicit.",
+    "Actual browser-menu zoom and dark-mode execution are unexecuted; narrow/short logical CSS reflow and endpoint/action scrolling are verified.",
+    "Private UI cleanup is not secure memory erasure or revocation of already displayed full URLs, which may contain private query values.",
+    "Body deadline excludes fetch-header and SQL lock waits. Admission is process-local, not distributed quota or interruption of already-running reads.",
+    "Retained source identity, target/content equality and snippet range do not establish claim support. BYOK locale and unchanged adapter/native/live-provider limits remain separate."
+  ],
+  "stopPoint": "J6-3 acceptance propagation, scoped docs/evidence push and handoff only. No visible/printed citation implementation, semantic/research/provider authority, deployment, migration or dependent feature is authorized by this acceptance."
+}

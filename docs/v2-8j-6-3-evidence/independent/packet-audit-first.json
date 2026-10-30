@@ -1,0 +1,3069 @@
+{
+  "reviewedImplementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "acceptedBaseline": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "packetSha": "25ca0f92505b4d57d36874a4ebb4dc4b8975984a",
+  "recordedAt": "2026-10-30T08:13:15.794422+00:00",
+  "kind": "independent-source-evidence-consistency-audit",
+  "totals": {
+    "checks": 715,
+    "pass": 709,
+    "errors": 6
+  },
+  "checks": [
+    {
+      "check": "implementation-pushed-ancestry",
+      "passed": true,
+      "detail": {
+        "implementation": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+        "localOrigin": "25ca0f92505b4d57d36874a4ebb4dc4b8975984a",
+        "packet": "25ca0f92505b4d57d36874a4ebb4dc4b8975984a"
+      }
+    },
+    {
+      "check": "manifest-implementation",
+      "passed": true
+    },
+    {
+      "check": "manifest-baseline",
+      "passed": true
+    },
+    {
+      "check": "approved-direction-precedes-runtime",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "working-source:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "working-source:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:package.json",
+      "passed": true
+    },
+    {
+      "check": "working-source:package.json",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "frozen-source:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "working-source:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:domain-01",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:domain-01",
+      "passed": true,
+      "detail": {
+        "total": 20,
+        "pass": 20,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:domain-01:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-01:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:domain-missing-02",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:domain-missing-02",
+      "passed": true,
+      "detail": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:domain-missing-02:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:transport-01",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:transport-01",
+      "passed": true,
+      "detail": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:transport-01:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-01:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:transport-verified-02",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:transport-verified-02",
+      "passed": true,
+      "detail": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:transport-verified-02:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:client-01",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:client-01",
+      "passed": false,
+      "detail": {
+        "total": 6,
+        "pass": 4,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:client-01:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-01:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:client-body-02",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:client-body-02",
+      "passed": true,
+      "detail": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:client-body-02:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-body-02:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:client-empty-fail-03",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:client-empty-fail-03",
+      "passed": false,
+      "detail": {
+        "total": 2,
+        "pass": 0,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-empty-fail-03:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:client-final-04",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:client-final-04",
+      "passed": true,
+      "detail": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:client-final-04:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:client-final-04:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:browser-01",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:browser-01",
+      "passed": false,
+      "detail": {
+        "total": 4,
+        "pass": 2,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:browser-01:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-01:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:browser-keyboard-02",
+      "passed": true
+    },
+    {
+      "check": "prebody-harness-distinct",
+      "passed": false
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-02:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:browser-keyboard-03",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:browser-keyboard-03",
+      "passed": true,
+      "detail": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-keyboard-03:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:browser-pointer-fail-04",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:browser-pointer-fail-04",
+      "passed": false,
+      "detail": {
+        "total": 2,
+        "pass": 0,
+        "fail": 2,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-pointer-fail-04:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:browser-corrections-05",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:browser-corrections-05",
+      "passed": true,
+      "detail": {
+        "total": 2,
+        "pass": 2,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-corrections-05:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "invocation-has-finite-outcome:browser-reflow-final-06",
+      "passed": true
+    },
+    {
+      "check": "attempt-leaves:browser-reflow-final-06",
+      "passed": true,
+      "detail": {
+        "total": 1,
+        "pass": 1,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:package.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "original-snapshot:browser-reflow-final-06:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "all-product-attempts",
+      "passed": false,
+      "detail": {
+        "total": 51,
+        "pass": 43,
+        "fail": 8,
+        "skip": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "gate-artifact:view-domain",
+      "passed": true
+    },
+    {
+      "check": "gate-count:view-domain",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation view: saved slide/object exact DTO discloses title URL only, without writes",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation view: saved slide/object exact DTO discloses title URL only, without writes",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation view: unresolved target and changed content remain separate from retained source identity",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation view: unresolved target and changed content remain separate from retained source identity",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation view: 24/25 stable pages bind scope and complete catalog snapshot without receipt authority",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation view: 24/25 stable pages bind scope and complete catalog snapshot without receipt authority",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation view: captured immutable input refuses extra authority unsafe counters and cursor forgery",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation view: captured immutable input refuses extra authority unsafe counters and cursor forgery",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation view: corrupt source or document cannot publish a partial page or reflected private text",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation view: corrupt source or document cannot publish a partial page or reflected private text",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation view: traversal and snippet boundaries retain canonical unassessed observations",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation view: traversal and snippet boundaries retain canonical unassessed observations",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation view SQLite: exact owners and atomic saved read survive competing save and source clear",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation view SQLite: exact owners and atomic saved read survive competing save and source clear",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: fixed-format labels refuse literal trailing line feeds",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: fixed-format labels refuse literal trailing line feeds",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: strict scene shape and project-wide admission preserve unverified records",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: strict scene shape and project-wide admission preserve unverified records",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: anchors ignore styling and run boundaries but preserve exact authored content",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: anchors ignore styling and run boundaries but preserve exact authored content",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: chart table image and slide content changes have distinct bounded anchors",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: chart table image and slide content changes have distinct bounded anchors",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: exact targets and protected ancestor/group scopes never use first matches",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: exact targets and protected ancestor/group scopes never use first matches",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: commands are atomic, no-op aware and exactly undoable",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: commands are atomic, no-op aware and exactly undoable",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: raw agent citation ingress refuses while ordinary edits preserve metadata",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: raw agent citation ingress refuses while ordinary edits preserve metadata",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: duplication remaps only unique live identities and retains unresolved tuples",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: duplication remaps only unique live identities and retains unresolved tuples",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: deletion leaves orphans and session undo retains exact metadata for 200 changes",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: deletion leaves orphans and session undo retains exact metadata for 200 changes",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: recompilation preserves exact orphan records and detached identity",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: recompilation preserves exact orphan records and detached identity",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: central native preflight refuses all cited targets before producing bytes",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: central native preflight refuses all cited targets before producing bytes",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: tool projections and scalar range observations disclose no citation payload",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: tool projections and scalar range observations disclose no citation payload",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation lifecycle: strict domain capture refuses accessors and captures binding before awaits",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation lifecycle: strict domain capture refuses accessors and captures binding before awaits",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Citation view: missing current source has an unresolved row with no revived title or URL",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Citation view: missing current source has an unresolved row with no revived title or URL",
+      "passed": true
+    },
+    {
+      "check": "gate-artifact:view-transport",
+      "passed": true
+    },
+    {
+      "check": "gate-count:view-transport",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources HTTP/CLI: actual private projection parity and source clear preserve project/history",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources HTTP/CLI: actual private projection parity and source clear preserve project/history",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources HTTP: foreign administrator missing cookie and supplied invalid credentials cannot disclose or downgrade",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources HTTP: foreign administrator missing cookie and supplied invalid credentials cannot disclose or downgrade",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources HTTP: raw query path method/body and CORS failures retain bounded private static responses",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources HTTP: raw query path method/body and CORS failures retain bounded private static responses",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources HTTP: finite read admission survives client abort until actual work settles, then releases on errors",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources HTTP: finite read admission survives client abort until actual work settles, then releases on errors",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources HTTP/CLI: verified-owner policy and supplied bad CLI token refuse before source work",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources HTTP/CLI: verified-owner policy and supplied bad CLI token refuse before source work",
+      "passed": true
+    },
+    {
+      "check": "gate-artifact:view-client",
+      "passed": true
+    },
+    {
+      "check": "gate-count:view-client",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources client: explicit bounded read captures owner and DTO without storing or mutation requests",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources client: explicit bounded read captures owner and DTO without storing or mutation requests",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources client: obsolete fetch/body and same-token session epoch cannot populate or clear a newer read",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources client: obsolete fetch/body and same-token session epoch cannot populate or clear a newer read",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources client: exact schema scalar URLs counters byte ceiling MIME and static errors fail closed",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources client: exact schema scalar URLs counters byte ceiling MIME and static errors fail closed",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources client: explicit pagination and stale counters discard every prior private row",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources client: explicit pagination and stale counters discard every prior private row",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources client: live scope invalidation and rapid duplicate starts have no queue or retry",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources client: live scope invalidation and rapid duplicate starts have no queue or retry",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources client: empty chunks yield and stalled bodies expire without retained chunk growth",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources client: empty chunks yield and stalled bodies expire without retained chunk growth",
+      "passed": true
+    },
+    {
+      "check": "gate-artifact:view-browser",
+      "passed": true
+    },
+    {
+      "check": "gate-count:view-browser",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources Chrome: saved read preserves title table and inline drafts, fixed canvas, explicit disclosure only",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources Chrome: saved read preserves title table and inline drafts, fixed canvas, explicit disclosure only",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources Chrome: pagination clear and late route/session reads never revive private source rows",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources Chrome: pagination clear and late route/session reads never revive private source rows",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources Chrome: held source responses cannot publish across title save and authoritative history reload",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources Chrome: held source responses cannot publish across title save and authoritative history reload",
+      "passed": true
+    },
+    {
+      "check": "selected-leaf:Sources Chrome: unresolved saved references work in Done with keyboard narrow and short reflow",
+      "passed": true
+    },
+    {
+      "check": "selected-file-in-argv:Sources Chrome: unresolved saved references work in Done with keyboard narrow and short reflow",
+      "passed": true
+    },
+    {
+      "check": "selected-total",
+      "passed": true,
+      "detail": 36
+    },
+    {
+      "check": "new-domain-seven-unchanged",
+      "passed": true,
+      "detail": "First seven original cases precede only appended eighth case."
+    },
+    {
+      "check": "existing-thirteen-no-git-delta",
+      "passed": true,
+      "detail": "No original pre-execution hash exists for this unchanged accepted file; no capture claim inferred."
+    },
+    {
+      "check": "selected-old-browser-case-unchanged",
+      "passed": true
+    },
+    {
+      "check": "build-exit:build-01",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:package.json",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-01:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "build-exit:build-final-02",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:package.json",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "build-source-snapshot:build-final-02:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "final-build-ui-hashes",
+      "passed": true
+    },
+    {
+      "check": "independent-new-browser-pass",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:README.md",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:app/server/index.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:app/server/v2-citation-view-routes.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:app/web/src/components/SavedSources.jsx",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:app/web/src/components/SceneViewer.jsx",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:app/web/src/lib/citationView.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:docs/ARCHITECTURE.md",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:docs/ROADMAP.md",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:docs/development-state.json",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:docs/v2-8j-6-3-evidence/independent/browser-long-selection.mjs",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:docs/v2-8j-6-3-evidence/independent/run-browser-long-selection.py",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:package.json",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:packages/model/citations.ts",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:packages/model/engine.ts",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:packages/model/scene.schema.json",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:packages/model/source-identity.ts",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:packages/projects/citation-view-contract.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:packages/projects/document.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:packages/renderer-pptx/render.ts",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/auth.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/cloud.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/db.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/projects/citation-observations.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/projects/citation-view-cli.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/projects/citation-view.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/projects/citations.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/projects/history.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/projects/source-read.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/projects/source-schema.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:src/projects/sources.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:test/v2-citation-view-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:test/v2-citation-view-chrome-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:test/v2-citation-view-client-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:test/v2-citation-view-fixture.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:test/v2-citation-view-http-8j.test.js",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:tools/chrome-shot.mjs",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:tools/dev-protocol-check.mjs",
+      "passed": true
+    },
+    {
+      "check": "independent-source-snapshot:tsconfig.json",
+      "passed": true
+    },
+    {
+      "check": "independent-phase-completion",
+      "passed": true
+    },
+    {
+      "check": "independent-hook-cleanup",
+      "passed": true
+    },
+    {
+      "check": "inspected-png-present:docs/v2-8j-6-3-evidence/browser/attempt-GodMZm/sources-desktop.png",
+      "passed": true
+    },
+    {
+      "check": "inspected-png-present:docs/v2-8j-6-3-evidence/browser/attempt-24U0HT/sources-narrow.png",
+      "passed": true
+    },
+    {
+      "check": "inspected-png-present:docs/v2-8j-6-3-evidence/browser/attempt-24U0HT/sources-short-reflow.png",
+      "passed": true
+    },
+    {
+      "check": "inspected-png-present:docs/v2-8j-6-3-evidence/independent/long-selection-6aaPk2/desktop-native-selection.png",
+      "passed": true
+    },
+    {
+      "check": "inspected-png-present:docs/v2-8j-6-3-evidence/independent/long-selection-6aaPk2/narrow-long-url-end.png",
+      "passed": true
+    },
+    {
+      "check": "inspected-png-present:docs/v2-8j-6-3-evidence/independent/long-selection-6aaPk2/narrow-long-more.png",
+      "passed": true
+    },
+    {
+      "check": "inspected-png-present:docs/v2-8j-6-3-evidence/independent/long-selection-6aaPk2/short-logical-reflow-url-end.png",
+      "passed": true
+    },
+    {
+      "check": "inspected-png-present:docs/v2-8j-6-3-evidence/independent/long-selection-6aaPk2/short-logical-reflow-more.png",
+      "passed": true
+    },
+    {
+      "check": "fresh-owned-group-absence:browser-01.json",
+      "passed": true,
+      "detail": {
+        "pgid": 257221,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:browser-corrections-05.json",
+      "passed": true,
+      "detail": {
+        "pgid": 276030,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:browser-keyboard-02.json",
+      "passed": true,
+      "detail": {
+        "pgid": 261589,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:browser-keyboard-03.json",
+      "passed": true,
+      "detail": {
+        "pgid": 261866,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:browser-pointer-fail-04.json",
+      "passed": true,
+      "detail": {
+        "pgid": 272666,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:browser-reflow-final-06.json",
+      "passed": true,
+      "detail": {
+        "pgid": 277148,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:build-01.json",
+      "passed": true,
+      "detail": {
+        "pgid": 256943,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:build-final-02.json",
+      "passed": true,
+      "detail": {
+        "pgid": 275753,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:client-01.json",
+      "passed": true,
+      "detail": {
+        "pgid": 245108,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:client-body-02.json",
+      "passed": true,
+      "detail": {
+        "pgid": 245388,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:client-empty-fail-03.json",
+      "passed": true,
+      "detail": {
+        "pgid": 272075,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:client-final-04.json",
+      "passed": true,
+      "detail": {
+        "pgid": 272601,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:domain-01.json",
+      "passed": true,
+      "detail": {
+        "pgid": 244518,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:domain-missing-02.json",
+      "passed": true,
+      "detail": {
+        "pgid": 245449,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:transport-01.json",
+      "passed": true,
+      "detail": {
+        "pgid": 246410,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:transport-verified-02.json",
+      "passed": true,
+      "detail": {
+        "pgid": 247155,
+        "members": []
+      }
+    },
+    {
+      "check": "fresh-owned-group-absence:independent/browser-long-selection-01.json",
+      "passed": true,
+      "detail": {
+        "pgid": 285248,
+        "members": []
+      }
+    }
+  ],
+  "productAttempts": {
+    "total": 51,
+    "pass": 43,
+    "fail": 8,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "selectedProductCases": 36,
+  "independentProductCases": {
+    "total": 1,
+    "pass": 1,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "limitations": [
+    "This audit executes no product test; it inspects retained original logs/source snapshots and current local Git ancestry/bytes.",
+    "Existing13 accepted J4 test bodies were not contemporaneously captured by root; unchanged Git source is inspected rather than retroactively captured.",
+    "Selected cases are an executed-leaf union; old browser pagination case is on earlier build with later changed stream storage/pointer guards independently covered.",
+    "Cleanup hook completion plus fresh17process-group absences are checked; no pre-removal database state or exact browser-profile deletion is reconstructed."
+  ]
+}
