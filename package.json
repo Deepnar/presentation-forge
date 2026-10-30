@@ -38,6 +38,7 @@
     "import-project": "node --env-file-if-exists=.env src/projects/import-cli.js",
     "copy-project": "node --env-file-if-exists=.env src/projects/copy-cli.js",
     "agent-chat": "node --env-file-if-exists=.env src/agent/turn-cli.js",
+    "add-project-references": "node --env-file-if-exists=.env src/projects/source-appendix-cli.js",
     "export-project": "node --env-file-if-exists=.env src/projects/export-cli.js",
     "inspect-project-sources": "node --env-file-if-exists=.env src/projects/citation-view-cli.js"
   },
