@@ -1,0 +1,52 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,rm} from 'node:fs/promises';
+import path from 'node:path';import os from 'node:os';
+import {pureFixture,registerCited} from './v2-citation-export-fixture.js';
+import {source} from './v2-source-registry-fixture.js';
+import {record,target} from './v2-citations-fixture.js';
+import {seed} from './v2-tool-fixture.js';
+import {createCitationView} from '../src/projects/citation-view.js';
+import {setDbPathForTest,closeDb} from '../src/db.js';
+import * as store from '../src/projects/store.js';
+import {createSourceRegistry} from '../src/projects/sources.js';
+const binding={id:'project',owner:'owner'},input=(extra={})=>({projectRevision:1,slideId:'s1',...extra});
+async function rig(count=1,options={}){const sources=Array.from({length:count},(_,i)=>source('project',i,{url:`https://example.org/${i}?private=value`,...options.source}));const citations=sources.map((s,i)=>record(i+1,{source:{projectId:'project',id:s.id,generation:0},...options.citation}));const e=await pureFixture({sources,citations,...options});return {...e,view:createCitationView(e.backend)};}
+test('Citation view: saved slide/object exact DTO discloses title URL only, without writes',async()=>{
+ const e=await rig(),value=await e.view.read(binding,input());assert.equal(value.ok,true,JSON.stringify(value));assert.equal(value.rows[0].reference.url,'https://example.org/0?private=value');assert.equal(value.rows[0].targetStatus,'present');assert.equal(value.rows[0].contentStatus,'current');assert.equal(value.rows[0].claimSupport,'not-assessed');assert.equal(JSON.stringify(value).includes('excerpt'),false);assert.equal(JSON.stringify(value).includes('searchProvider'),false);assert.equal(JSON.stringify(value).includes('digest'),false);assert.deepEqual(e.stats.batches,[1]);
+ assert.equal((await e.view.read(binding,input({elementId:'text'}))).total,1);assert.equal((await e.view.read(binding,input({elementId:'table'}))).total,0);assert.equal((await e.view.read(binding,input({elementId:'unsaved'}))).scope.status,'not-saved');assert.equal((await e.view.read(binding,input({slideId:'unsaved'}))).scope.status,'not-saved');
+});
+test('Citation view: unresolved target and changed content remain separate from retained source identity',async()=>{
+ const e=await rig();e.doc.scenes[0].elements[0].paragraphs[0].runs[0].text='Changed';let v=await e.view.read(binding,input());assert.equal(v.rows[0].contentStatus,'changed');assert.ok(v.rows[0].reference);
+ e.doc.scenes[0].citations[0].target=target('gone');v=await e.view.read(binding,input());assert.equal(v.rows[0].targetStatus,'missing');assert.equal(v.rows[0].contentStatus,'unavailable');assert.ok(v.rows[0].reference);
+ e.doc.scenes[0].citations[0].target=target('text','s2');v=await e.view.read(binding,input());assert.equal(v.rows[0].targetStatus,'scope-mismatch');assert.ok(v.rows[0].reference);
+ e.doc.scenes[0].citations[0].source.generation=1;v=await e.view.read(binding,input());assert.equal(v.rows[0].sourceStatus,'stale-generation');assert.equal('reference'in v.rows[0],false);
+});
+test('Citation view: 24/25 stable pages bind scope and complete catalog snapshot without receipt authority',async()=>{
+ const e=await rig(25),a=await e.view.read(binding,input());assert.equal(a.rows.length,24);assert.equal(a.total,25);assert.ok(a.nextCursor.length<=512);const b=await e.view.read(binding,input({cursor:a.nextCursor}));assert.equal(b.rows.length,1);assert.equal(b.nextCursor,null);assert.equal(new Set([...a.rows,...b.rows].map(r=>r.id)).size,25);assert.deepEqual(e.stats.batches,[24,1]);
+ assert.equal((await e.view.read(binding,input({elementId:'text',cursor:a.nextCursor}))).code,'invalid-request');
+ const old=e.backend.withCitationReadTransaction;e.backend.withCitationReadTransaction=(bind,job)=>old(bind,tx=>job({...tx,query:async(sql,params)=>{const rows=await tx.query(sql,params);if(sql.includes('FROM v2_project_source_catalog'))rows[0].revision='2';return rows;}}));assert.equal((await e.view.read(binding,input({cursor:a.nextCursor}))).code,'stale-catalog');
+});
+test('Citation view: captured immutable input refuses extra authority unsafe counters and cursor forgery',async()=>{
+ const e=await rig();for(const change of [{owner:'foreign'},{projectRevision:-1},{slideId:''},{elementId:[]},{cursor:'x'.repeat(513)},{cursor:'bad'}])assert.equal((await e.view.read(binding,input(change))).ok,false);
+ assert.equal((await e.view.read({...binding,admin:true},input())).code,'invalid-request');assert.equal((await e.view.read(binding,input({projectRevision:0}))).code,'stale-project');
+ let release,arrived;const gate=new Promise(r=>release=r),seen=new Promise(r=>arrived=r),old=e.backend.withCitationReadTransaction;
+ e.backend.withCitationReadTransaction=async(b,job)=>{arrived(b);await gate;return old(b,job);};const request=input(),identity={...binding},pending=e.view.read(identity,request);assert.equal((await seen).owner,'owner');request.slideId='s2';identity.owner='foreign';release();assert.equal((await pending).total,1);
+});
+test('Citation view: corrupt source or document cannot publish a partial page or reflected private text',async()=>{
+ const e=await rig(2);e.sources[1].title='\ud800';let v=await e.view.read(binding,input());assert.equal(v.ok,false);assert.equal('rows'in v,false);assert.equal(JSON.stringify(v).includes('private=value'),false);
+ const f=await rig();f.doc.scenes[0].citations[0].source.projectId='foreign';assert.equal((await f.view.read(binding,input())).code,'invalid-state');
+ f.backend.withCitationReadTransaction=()=>{throw Error('SECRET-PRIVATE-URL');};v=await f.view.read(binding,input());assert.equal(v.code,'storage-unavailable');assert.equal(JSON.stringify(v).includes('SECRET'),false);
+});
+test('Citation view: traversal and snippet boundaries retain canonical unassessed observations',async()=>{
+ const e=await rig(1,{citation:{locator:{kind:'snippet-utf8-v1',startByte:0,endByte:999}}});assert.equal((await e.view.read(binding,input())).rows[0].locatorStatus,'invalid');
+ const f=await rig();const el=f.doc.scenes[0].elements[0];f.doc.scenes[0].elements=Array.from({length:10001},(_,i)=>({...el,id:'n'+i}));assert.equal((await f.view.read(binding,input())).code,'target-budget-exceeded');
+});
+test('Citation view SQLite: exact owners and atomic saved read survive competing save and source clear',async t=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'forge-view-j63-'));setDbPathForTest(path.join(dir,'forge.db'));t.after(async()=>{store.closeProjectStore();closeDb();await rm(dir,{recursive:true,force:true});});
+ const {doc}=await store.createProject({owner:'owner',title:'Private sources',scenes:seed()}),binding={id:doc.id,owner:'owner'},registry=createSourceRegistry(store);await registerCited({store,binding,registry},25);
+ const view=createCitationView(store);assert.equal((await view.read({...binding,owner:'foreign'},input())).code,'not-found');assert.equal((await view.read({...binding,owner:null},input())).code,'not-found');
+ let release,entered;const gate=new Promise(r=>release=r),seen=new Promise(r=>entered=r);t.after(()=>release());
+ const held=createCitationView({withCitationReadTransaction:(b,job)=>store.withCitationReadTransaction(b,async tx=>{entered();await gate;return job(tx);})});const pending=held.read(binding,input());await seen;
+ let cleared=false,saved=false;const clear=registry.clear(binding,{generation:0,revision:2}).then(r=>{cleared=true;return r;});const scenes=seed();scenes[0].elements[0].paragraphs[0].runs[0].text='New saved';const save=store.saveProject({...binding,baseRevision:1,scenes}).then(r=>{saved=true;return r;});await new Promise(r=>setTimeout(r,20));assert.equal(cleared,false);assert.equal(saved,false);release();const result=await pending;assert.equal(result.rows.length,24);assert.equal(result.rows[0].contentStatus,'current');assert.ok(result.rows[0].reference);assert.equal((await clear).ok,true);assert.equal((await save).status,'saved');assert.equal((await view.read(binding,input())).code,'stale-project');assert.equal((await view.read(binding,{projectRevision:2,slideId:'s1'})).total,0);
+});

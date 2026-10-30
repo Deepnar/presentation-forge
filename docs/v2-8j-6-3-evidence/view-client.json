@@ -1,0 +1,48 @@
+{
+  "id": "view-client",
+  "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "kind": "tests",
+  "command": "Assemble explicit successful executed-leaf selections from retained original invocations; no new execution.",
+  "exitCode": 0,
+  "tests": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8j-6-3-evidence/view-client-selected.tap",
+  "selection": {
+    "Sources client: explicit bounded read captures owner and DTO without storing or mutation requests": {
+      "file": "test/v2-citation-view-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+      "durationMs": 23.052729
+    },
+    "Sources client: obsolete fetch/body and same-token session epoch cannot populate or clear a newer read": {
+      "file": "test/v2-citation-view-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+      "durationMs": 6.562337
+    },
+    "Sources client: exact schema scalar URLs counters byte ceiling MIME and static errors fail closed": {
+      "file": "test/v2-citation-view-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+      "durationMs": 3.511
+    },
+    "Sources client: explicit pagination and stale counters discard every prior private row": {
+      "file": "test/v2-citation-view-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+      "durationMs": 2.371207
+    },
+    "Sources client: live scope invalidation and rapid duplicate starts have no queue or retry": {
+      "file": "test/v2-citation-view-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+      "durationMs": 0.358891
+    },
+    "Sources client: empty chunks yield and stalled bodies expire without retained chunk growth": {
+      "file": "test/v2-citation-view-client-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+      "durationMs": 59.548471
+    }
+  },
+  "sourceApplicability": "See manifest.json sourceApplicability and original per-invocation hashes/content-addressed snapshots. Selected union is not one green final whole-file process."
+}

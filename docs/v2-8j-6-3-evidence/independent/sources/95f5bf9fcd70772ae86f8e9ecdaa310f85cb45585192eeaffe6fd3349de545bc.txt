@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "acceptedBaseline": {
+    "sha": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+    "provenance": "independent-review",
+    "source": "docs/reviews/V2-8J-6-2-6068a2a7.json"
+  },
+  "implementationHead": {
+    "sha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+    "note": "Pushed frozen J6-3 runtime/tests; selected36/36 and build pass. Final independent review pending; prior baseline retained."
+  },
+  "activeMilestone": {
+    "id": "V2-8J-6-3",
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-source-inspector",
+    "evalDoc": "docs/V2-8J-6-3-EVAL.md",
+    "architectureDoc": "docs/ARCHITECTURE.md",
+    "implementationStatus": "complete",
+    "reviewStatus": "pending",
+    "implementedBy": "/root",
+    "reviewRecord": null,
+    "accepted": false
+  },
+  "validation": [
+    {
+      "id": "view-domain",
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-3-evidence/view-domain.json",
+      "reason": "Focused executed-leaf selection with retained original attempts and source applicability; see manifest."
+    },
+    {
+      "id": "view-transport",
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-3-evidence/view-transport.json",
+      "reason": "Focused executed-leaf selection with retained original attempts and source applicability; see manifest."
+    },
+    {
+      "id": "view-client",
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-3-evidence/view-client.json",
+      "reason": "Focused executed-leaf selection with retained original attempts and source applicability; see manifest."
+    },
+    {
+      "id": "view-browser",
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-3-evidence/view-browser.json",
+      "reason": "Focused executed-leaf selection with retained original attempts and source applicability; see manifest."
+    },
+    {
+      "id": "production-build",
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-3-evidence/production-build.json",
+      "reason": "Focused executed-leaf selection with retained original attempts and source applicability; see manifest."
+    },
+    {
+      "id": "frontend-visual",
+      "status": "passed",
+      "evidence": "docs/v2-8j-6-3-evidence/frontend-visual.json",
+      "reason": "Final retained PNGs viewed; stage max delta0px; exact reflow method and scrolling limit recorded."
+    }
+  ],
+  "knownBlockers": [],
+  "standingFailures": [
+    {
+      "id": "byok-locale",
+      "source": "docs/ROADMAP.md#byok-locale-standing-failure"
+    }
+  ],
+  "nextCandidate": {
+    "id": "Visible/printed citation presentation contract",
+    "authorized": false,
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-native-presentation"
+  },
+  "docs": {
+    "protocol": "docs/DEVELOPMENT-PROTOCOL.md",
+    "vision": "docs/PRODUCT-VISION.md",
+    "acceptance": "docs/ACCEPTANCE-CRITERIA.md",
+    "decisions": "docs/DECISIONS.md",
+    "continuation": "docs/CONTINUATION.md",
+    "planner": "docs/agents/PLANNER.md",
+    "implementer": "docs/agents/IMPLEMENTER.md",
+    "reviewer": "docs/agents/REVIEWER.md",
+    "roadmap": "docs/ROADMAP.md",
+    "architecture": "docs/ARCHITECTURE.md",
+    "handoff": "docs/HANDOFF.md",
+    "blockers": "docs/BLOCKED.md",
+    "traps": "docs/TRAPS.md"
+  },
+  "updated": "2026-10-30"
+}

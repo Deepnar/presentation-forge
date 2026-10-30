@@ -1,0 +1,14 @@
+{
+  "viewport": [
+    320,
+    210
+  ],
+  "rail": [
+    32,
+    44,
+    288,
+    166
+  ],
+  "errors": [],
+  "method": "320x210 CSS viewport reflow, equivalent logical space of640x420 at200%; not actual browser-menu zoom."
+}

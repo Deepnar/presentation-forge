@@ -155,12 +155,12 @@ on2026-10-29. Corrected source6068a2a7 is independently
 423/0 packet audit and completed owned cleanup. No J6-2 direction, validation,
 review or service blocker remains. Later scope remains solely in the roadmap.
 
-The separately proposed [J6-3 Sources inspector](ROADMAP.md#assistant-citation-source-inspector)
-is independently [READY_FOR_DIRECTION](reviews/V2-8J-6-3-plan-65287b61.json) at
-contract65287b61; technical planning checks are complete. It needs explicit human
-direction on its surface and transient owner-only full-title/URL display. The2026-10-30 continuation starts
-preparation, not this new data-handling surface. No product/service blocker is
-inferred; the concrete choice stays in the roadmap and linked contract.
+The [J6-3 Sources inspector](ROADMAP.md#assistant-citation-source-inspector)
+contract65287b61 was independently ready and then human-approved on2026-10-30,
+pinnedec2bb489. Pushed8d34c95f has selected36/36 checks, final build and viewed
+images; separate final source review is pending. There is no outstanding surface
+or privacy direction for this bounded read slice. Later scope remains gated in
+the roadmap; no model/search/provider activation is authorized.
 
 ### 3.1 Browser regression coverage
 

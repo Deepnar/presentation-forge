@@ -1,0 +1,11 @@
+# ASSEMBLED selected successful executed leaves; not a new whole-file execution.
+# forge-test-file "test/v2-citation-view-chrome-8j.test.js"
+ok 1 - Sources Chrome: saved read preserves title table and inline drafts, fixed canvas, explicit disclosure only # docs/v2-8j-6-3-evidence/browser-corrections-05.json
+ok 2 - Sources Chrome: pagination clear and late route/session reads never revive private source rows # docs/v2-8j-6-3-evidence/browser-01.json
+ok 3 - Sources Chrome: held source responses cannot publish across title save and authoritative history reload # docs/v2-8j-6-3-evidence/browser-corrections-05.json
+ok 4 - Sources Chrome: unresolved saved references work in Done with keyboard narrow and short reflow # docs/v2-8j-6-3-evidence/browser-reflow-final-06.json
+# tests 4
+# pass 4
+# fail 0
+# skipped 0
+# cancelled 0

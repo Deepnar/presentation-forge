@@ -9362,6 +9362,14 @@ local inference. Only that separate transport correction is authorized; this aud
       [direction](v2-8j-6-3-evidence/human-direction.json) is pinned before code.
       Focused new read/transport/client/browser evidence follows direction, reusing accepted unchanged native/store
       evidence. Later visible/print policy and semantic creation remain separate.
+      Source implementation and focused tests are pushed at8d34c95f; independent
+      acceptance remains pending. Preparatory review found two concrete defects:
+      empty streamed chunks could grow retained storage/starve timers, and source
+      text selection could blur-resolve title/inline drafts. Both were reproduced
+      before correction. Fixed-buffer/yield/deadline/cancel handling and scoped
+      pointer focusout preservation now pass their affected checks. Actual held
+      source reads across title save and canonical history reload are covered.
+      [Evaluation](V2-8J-6-3-EVAL.md) retains every original attempt.
 
   Dependency sequence after accepted J6-1/J6-2 notes export:
   finish source-inspection direction, then agree visible attribution and verified locator/claim-support

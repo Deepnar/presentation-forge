@@ -1,0 +1,13 @@
+# ASSEMBLED selected successful executed leaves; not a new whole-file execution.
+# forge-test-file "test/v2-citation-view-client-8j.test.js"
+ok 1 - Sources client: explicit bounded read captures owner and DTO without storing or mutation requests # docs/v2-8j-6-3-evidence/client-final-04.json
+ok 2 - Sources client: obsolete fetch/body and same-token session epoch cannot populate or clear a newer read # docs/v2-8j-6-3-evidence/client-final-04.json
+ok 3 - Sources client: exact schema scalar URLs counters byte ceiling MIME and static errors fail closed # docs/v2-8j-6-3-evidence/client-final-04.json
+ok 4 - Sources client: explicit pagination and stale counters discard every prior private row # docs/v2-8j-6-3-evidence/client-final-04.json
+ok 5 - Sources client: live scope invalidation and rapid duplicate starts have no queue or retry # docs/v2-8j-6-3-evidence/client-final-04.json
+ok 6 - Sources client: empty chunks yield and stalled bodies expire without retained chunk growth # docs/v2-8j-6-3-evidence/client-final-04.json
+# tests 6
+# pass 6
+# fail 0
+# skipped 0
+# cancelled 0

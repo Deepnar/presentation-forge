@@ -1,0 +1,28 @@
+✖ Sources client: empty chunks yield and stalled bodies expire without retained chunk growth (28.443404ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 74.600461
+
+✖ failing tests:
+
+test at test/v2-citation-view-client-8j.test.js:32:1
+✖ Sources client: empty chunks yield and stalled bodies expire without retained chunk growth (28.443404ms)
+  AssertionError [ERR_ASSERTION]: empty reads must allow timers to run
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-citation-view-client-8j.test.js:35:86)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,436 @@
+{
+  "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "acceptedBaseline": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "selected": {
+    "view-domain": {
+      "id": "view-domain",
+      "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+      "kind": "tests",
+      "command": "Assemble explicit successful executed-leaf selections from retained original invocations; no new execution.",
+      "exitCode": 0,
+      "tests": {
+        "total": 21,
+        "pass": 21,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-6-3-evidence/view-domain-selected.tap",
+      "selection": {
+        "Citation view: saved slide/object exact DTO discloses title URL only, without writes": {
+          "file": "test/v2-citation-view-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 46.064931
+        },
+        "Citation view: unresolved target and changed content remain separate from retained source identity": {
+          "file": "test/v2-citation-view-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 2.940192
+        },
+        "Citation view: 24/25 stable pages bind scope and complete catalog snapshot without receipt authority": {
+          "file": "test/v2-citation-view-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 7.324228
+        },
+        "Citation view: captured immutable input refuses extra authority unsafe counters and cursor forgery": {
+          "file": "test/v2-citation-view-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 1.382369
+        },
+        "Citation view: corrupt source or document cannot publish a partial page or reflected private text": {
+          "file": "test/v2-citation-view-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 1.446901
+        },
+        "Citation view: traversal and snippet boundaries retain canonical unassessed observations": {
+          "file": "test/v2-citation-view-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 45.901204
+        },
+        "Citation view SQLite: exact owners and atomic saved read survive competing save and source clear": {
+          "file": "test/v2-citation-view-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 56.605296
+        },
+        "Citation lifecycle: fixed-format labels refuse literal trailing line feeds": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 37.839538
+        },
+        "Citation lifecycle: strict scene shape and project-wide admission preserve unverified records": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 23.874831
+        },
+        "Citation lifecycle: anchors ignore styling and run boundaries but preserve exact authored content": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 3.171598
+        },
+        "Citation lifecycle: chart table image and slide content changes have distinct bounded anchors": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 2.719667
+        },
+        "Citation lifecycle: exact targets and protected ancestor/group scopes never use first matches": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 5.771724
+        },
+        "Citation lifecycle: commands are atomic, no-op aware and exactly undoable": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 4.604503
+        },
+        "Citation lifecycle: raw agent citation ingress refuses while ordinary edits preserve metadata": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 1.682801
+        },
+        "Citation lifecycle: duplication remaps only unique live identities and retains unresolved tuples": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 3.559998
+        },
+        "Citation lifecycle: deletion leaves orphans and session undo retains exact metadata for 200 changes": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 47.973929
+        },
+        "Citation lifecycle: recompilation preserves exact orphan records and detached identity": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 17.573087
+        },
+        "Citation lifecycle: central native preflight refuses all cited targets before producing bytes": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 1.252592
+        },
+        "Citation lifecycle: tool projections and scalar range observations disclose no citation payload": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 8.238866
+        },
+        "Citation lifecycle: strict domain capture refuses accessors and captures binding before awaits": {
+          "file": "test/v2-citations-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+          "durationMs": 0.878151
+        },
+        "Citation view: missing current source has an unresolved row with no revived title or URL": {
+          "file": "test/v2-citation-view-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/domain-missing-02.json",
+          "durationMs": 43.377206
+        }
+      },
+      "sourceApplicability": "See manifest.json sourceApplicability and original per-invocation hashes/content-addressed snapshots. Selected union is not one green final whole-file process."
+    },
+    "view-transport": {
+      "id": "view-transport",
+      "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+      "kind": "tests",
+      "command": "Assemble explicit successful executed-leaf selections from retained original invocations; no new execution.",
+      "exitCode": 0,
+      "tests": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-6-3-evidence/view-transport-selected.tap",
+      "selection": {
+        "Sources HTTP/CLI: actual private projection parity and source clear preserve project/history": {
+          "file": "test/v2-citation-view-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/transport-01.json",
+          "durationMs": 1995.987873
+        },
+        "Sources HTTP: foreign administrator missing cookie and supplied invalid credentials cannot disclose or downgrade": {
+          "file": "test/v2-citation-view-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/transport-01.json",
+          "durationMs": 1218.216026
+        },
+        "Sources HTTP: raw query path method/body and CORS failures retain bounded private static responses": {
+          "file": "test/v2-citation-view-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/transport-01.json",
+          "durationMs": 21.418858
+        },
+        "Sources HTTP: finite read admission survives client abort until actual work settles, then releases on errors": {
+          "file": "test/v2-citation-view-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/transport-01.json",
+          "durationMs": 51.820997
+        },
+        "Sources HTTP/CLI: verified-owner policy and supplied bad CLI token refuse before source work": {
+          "file": "test/v2-citation-view-http-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/transport-verified-02.json",
+          "durationMs": 1380.487112
+        }
+      },
+      "sourceApplicability": "See manifest.json sourceApplicability and original per-invocation hashes/content-addressed snapshots. Selected union is not one green final whole-file process."
+    },
+    "view-client": {
+      "id": "view-client",
+      "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+      "kind": "tests",
+      "command": "Assemble explicit successful executed-leaf selections from retained original invocations; no new execution.",
+      "exitCode": 0,
+      "tests": {
+        "total": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-6-3-evidence/view-client-selected.tap",
+      "selection": {
+        "Sources client: explicit bounded read captures owner and DTO without storing or mutation requests": {
+          "file": "test/v2-citation-view-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+          "durationMs": 23.052729
+        },
+        "Sources client: obsolete fetch/body and same-token session epoch cannot populate or clear a newer read": {
+          "file": "test/v2-citation-view-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+          "durationMs": 6.562337
+        },
+        "Sources client: exact schema scalar URLs counters byte ceiling MIME and static errors fail closed": {
+          "file": "test/v2-citation-view-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+          "durationMs": 3.511
+        },
+        "Sources client: explicit pagination and stale counters discard every prior private row": {
+          "file": "test/v2-citation-view-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+          "durationMs": 2.371207
+        },
+        "Sources client: live scope invalidation and rapid duplicate starts have no queue or retry": {
+          "file": "test/v2-citation-view-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+          "durationMs": 0.358891
+        },
+        "Sources client: empty chunks yield and stalled bodies expire without retained chunk growth": {
+          "file": "test/v2-citation-view-client-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/client-final-04.json",
+          "durationMs": 59.548471
+        }
+      },
+      "sourceApplicability": "See manifest.json sourceApplicability and original per-invocation hashes/content-addressed snapshots. Selected union is not one green final whole-file process."
+    },
+    "view-browser": {
+      "id": "view-browser",
+      "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+      "kind": "tests",
+      "command": "Assemble explicit successful executed-leaf selections from retained original invocations; no new execution.",
+      "exitCode": 0,
+      "tests": {
+        "total": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0,
+        "cancelled": 0
+      },
+      "log": "docs/v2-8j-6-3-evidence/view-browser-selected.tap",
+      "selection": {
+        "Sources Chrome: saved read preserves title table and inline drafts, fixed canvas, explicit disclosure only": {
+          "file": "test/v2-citation-view-chrome-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/browser-corrections-05.json",
+          "durationMs": 3716.650947
+        },
+        "Sources Chrome: pagination clear and late route/session reads never revive private source rows": {
+          "file": "test/v2-citation-view-chrome-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/browser-01.json",
+          "durationMs": 3275.890072
+        },
+        "Sources Chrome: held source responses cannot publish across title save and authoritative history reload": {
+          "file": "test/v2-citation-view-chrome-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/browser-corrections-05.json",
+          "durationMs": 2658.385388
+        },
+        "Sources Chrome: unresolved saved references work in Done with keyboard narrow and short reflow": {
+          "file": "test/v2-citation-view-chrome-8j.test.js",
+          "invocation": "docs/v2-8j-6-3-evidence/browser-reflow-final-06.json",
+          "durationMs": 4811.020418
+        }
+      },
+      "sourceApplicability": "See manifest.json sourceApplicability and original per-invocation hashes/content-addressed snapshots. Selected union is not one green final whole-file process."
+    }
+  },
+  "attempts": {
+    "domain-01": {
+      "total": 20,
+      "pass": 20,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "domain-missing-02": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "transport-01": {
+      "total": 4,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "transport-verified-02": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "client-01": {
+      "total": 5,
+      "pass": 4,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "client-body-02": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "client-empty-fail-03": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "client-final-04": {
+      "total": 6,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-01": {
+      "total": 3,
+      "pass": 2,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-keyboard-02": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-keyboard-03": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-pointer-fail-04": {
+      "total": 1,
+      "pass": 0,
+      "fail": 1,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-corrections-05": {
+      "total": 2,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "browser-reflow-final-06": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    }
+  },
+  "productAttempts": {
+    "total": 47,
+    "pass": 43,
+    "fail": 4,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "preBodyHarnessFailure": {
+    "invocation": "browser-keyboard-02",
+    "productBodies": 0,
+    "nodeFileFailure": 1,
+    "reason": "Diagnostic expression quoting produced a syntax error before any case body; preserved separately."
+  },
+  "selectedTests": {
+    "total": 36,
+    "pass": 36,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "sourceApplicability": {
+    "domain": "New domain test/runtime snapshots were captured before execution. Domain runtime/shared contract/extracted observations unchanged from domain-01 through frozen source. domain-missing-02 appends eighth new case; first seven bodies unchanged. Existing13 test/v2-citations-8j.test.js was executed but not captured by the runner; its applicability relies on accepted baseline/Git no-delta inspection, not contemporaneous whole-file capture.",
+    "transport": "Transport/service/CLI/canonical dependencies unchanged from transport-01 through frozen source. transport-verified-02 adds only the fifth credential/verification challenge.",
+    "client": "All final six case bodies ran against the final production controller in client-final-04. Fixed-buffer, periodic yield, monotonic deadline and stalled cancel correction followed reproduced empty-read failure.",
+    "browser": "case1 and new case4 ran against final build-final-02 in browser-corrections-05; case3 final source/reflow ran in browser-reflow-final-06. Unchanged pagination/source-clear/route/session case2 reuses browser-01 against build-01: final reader storage/yield/deadline and source text pointer guards were later corrected and directly validated in client-final-04 and corrected browser case1; finite valid DTO, pagination and route/session authority remain unchanged. No implicit claim of final whole-file replay.",
+    "build": "build-final-02 hashes match frozen production runtime. Later commits only freeze tests/docs/evidence. browser-pointer-fail-04 used existing build-01 to reproduce title blur; its captured current controller hash does not identify that older compiled client. No product success is selected from that attempt."
+  },
+  "failureClassification": {
+    "client-01": "Fixture: stream already closed, so reader cancellation callback could not be expected; corrected fixture keeps partial body readable without weakening assertion.",
+    "browser-01": "Harness: raw CDP Enter without text did not activate native button; later trusted Enter with carriage return passes. Original cause beyond injected key path unproven.",
+    "browser-keyboard-02": "Pre-body diagnostic quoting syntax error; no product bodies ran.",
+    "client-empty-fail-03": "Reproduced new product stream resource/yield defect. Fixed bounded storage/yield/deadline/cancel; client-final-04 passes.",
+    "browser-pointer-fail-04": "Reproduced title draft cancellation on selectable source text. Fixed pointer-specific focusout capture preserving native selection; browser-corrections-05 passes."
+  },
+  "finalSourceHashes": {
+    "app/server/index.js": "8b2aa8d2883efa9705eb240b7588aa6750df66cc2627d409530aa7967a5d3bb7",
+    "app/server/v2-citation-view-routes.js": "a4ee132517c5ef2ea48d699983592a9b1bed470ac52347f5f103836f1be53b48",
+    "app/web/src/components/SavedSources.jsx": "db02421fb926c31313e4d62e88ef1ea9b195ce72f1e07a5d94995967a66deed6",
+    "app/web/src/components/SceneViewer.jsx": "04ec4ba9983fdf8510a9009ebbdf7c41729fff2ad5f7ba80da9cd3601e2af615",
+    "app/web/src/lib/citationView.js": "5e0168c166c47019c8cee5de28aa5cc3e12d56d2c08f8c9416119094daf94cb6",
+    "package.json": "ca486a40abdda209487d6fa5675e551e337c8f4d323dd5cca4bdd3d3619badc0",
+    "packages/projects/citation-view-contract.js": "9b390bba1fc4d9a802d9deac37a8cf7d196bbe2c2e88ddb7e64f36c621083222",
+    "src/projects/citation-observations.js": "2fde978e8a6a0474025db9f5b1a108cc388948edc49b848654bd6e3dda49f21c",
+    "src/projects/citation-view-cli.js": "425c8ceba9bf5e9e0048acfa2b237611c2b5ee244624ff04ce44a5a35a8d1e8b",
+    "src/projects/citation-view.js": "91371d2dfe487d7e626aa4afa071318fece019f361282a04ab39763c01268aab",
+    "src/projects/citations.js": "72e14316e64c9a5b14dd97babee1bd082c699c13d0ad9649e5ef2eb7469c46eb",
+    "test/v2-citation-view-8j.test.js": "b2c9753d1a2fb6bea18aae63df6d4cca304fb591ba29efc9cf867669ca213ba7",
+    "test/v2-citation-view-chrome-8j.test.js": "c7836ecd1a3d9c3b01e8712c28559053d5fd87a40690da0172d2c25cf96ddd3d",
+    "test/v2-citation-view-client-8j.test.js": "082c53b6a36830fe64e45c39c6a848691d1b1cf7860c2d61ecbce9878e860495",
+    "test/v2-citation-view-fixture.js": "7fe4b3316c13c975868f6c5649a64d61fd7c20ba7e592256228aee7d466ba9b1",
+    "test/v2-citation-view-http-8j.test.js": "56828c7a4a862c2ea01217783500df891145da4b42a1f5319b028834b3a82dd3"
+  },
+  "builds": {
+    "build-01": {
+      "durationMs": 1015,
+      "exitCode": 0,
+      "invocation": "docs/v2-8j-6-3-evidence/build-01.json"
+    },
+    "build-final-02": {
+      "durationMs": 867,
+      "exitCode": 0,
+      "invocation": "docs/v2-8j-6-3-evidence/build-final-02.json"
+    }
+  },
+  "resourceBounds": "One bounded serial process group at a time, nice15/idle I/O/CPU20-21; per-invocation waited-child CPU and 1s live RSS/I/O samples retained. Global PSI not attributed to this work.",
+  "unexecuted": "Broad unchanged suites, PostgreSQL replay, native raster, benchmark, typecheck (no typed/SQL/adapter/renderer change), live/local model/search/provider calls and activation excluded by approved focused contract. No required case unexecuted.",
+  "independentChallenge": {
+    "sourceSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+    "invocation": "docs/v2-8j-6-3-evidence/independent/browser-long-selection-01.json",
+    "tests": {
+      "total": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "cancelled": 0
+    },
+    "kind": "New long-text/native URL-selection/short-view challenge; separate final acceptance pending."
+  }
+}

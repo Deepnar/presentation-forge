@@ -1,0 +1,45 @@
+{
+  "kind": "preparatory-source-review",
+  "reviewer": "/root/j63_plan_review",
+  "context": "/root/j63_plan_review",
+  "acceptedBaseline": "6068a2a7c5643a1958a140bcc60d0df6b891ccec",
+  "approvalPinnedSha": "ec2bb48967fcef10816b23c4f8e5c18f48338ab8",
+  "implementationSha": null,
+  "status": "dirty-source-not-accepted",
+  "productChecksExecuted": 0,
+  "findings": [
+    {
+      "id": "empty-body-chunks",
+      "source": "app/web/src/lib/citationView.js:boundedJson",
+      "capturedSourceSha256": "015312cf98ebbf866bcd0ecb76675bbc8d60e521a8848e7c97980be6054a4e12",
+      "issue": "Zero-byte chunks are retained in an unbounded chunks array; byte ceiling cannot stop retained-entry growth or microtask starvation.",
+      "required": "Bound response storage, yield/deadline/cancellation behavior and verify through the production controller.",
+      "basis": "docs/TRAPS.md: Byte bounds do not bound immediately resolved empty stream chunks."
+    },
+    {
+      "id": "source-text-blur",
+      "source": "app/web/src/components/SavedSources.jsx",
+      "capturedSourceSha256": "30edde58505e56fa35fee253cd5f269f5d283e87a6ab6a659d0a0cdaaf5038c3",
+      "issue": "Only source buttons intercept pointer blur. Pointer interaction with selectable source title/URL can blur the title or inline editor, cancelling or committing its pending draft.",
+      "required": "Challenge source-text pointer interaction with pending title/inline drafts; preserve both drafts and native selection.",
+      "basis": [
+        "app/web/src/components/SceneViewer.jsx:project title onBlur",
+        "packages/editor/scene-edit.js:onFocusOut",
+        "docs/V2-8J-6-3-PLAN.md: Reading Sources never commits, saves, discards, adopts or reloads the document."
+      ]
+    },
+    {
+      "id": "actual-reload-browser-evidence",
+      "source": "test/v2-citation-view-chrome-8j.test.js",
+      "capturedSourceSha256": "3d58fd411e165c12b8f71a27759cdc32b975dc5299256b77717f9dca1f8d8172",
+      "issue": "Current held-response cases exercise route/session changes but no actual authoritative save/restore/AI reload.",
+      "required": "One narrow actual reload phase while a source response is held; no repeat of unrelated browser cases.",
+      "basis": "Approved browser gate explicitly includes held route/session/actual reload suppression."
+    }
+  ],
+  "notes": [
+    "Findings were sent to root before source freeze. These are source/evidence findings, not independently reproduced runtime failures.",
+    "Original reviewed source bytes are retained under the root packet sources/<sha256>.txt.",
+    "No runtime/root-doc/Git mutations, service/browser/build/database/API/native/model/search/provider/GPU calls or other agents."
+  ]
+}

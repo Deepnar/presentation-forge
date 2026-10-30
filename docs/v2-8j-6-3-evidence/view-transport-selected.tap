@@ -1,0 +1,12 @@
+# ASSEMBLED selected successful executed leaves; not a new whole-file execution.
+# forge-test-file "test/v2-citation-view-http-8j.test.js"
+ok 1 - Sources HTTP/CLI: actual private projection parity and source clear preserve project/history # docs/v2-8j-6-3-evidence/transport-01.json
+ok 2 - Sources HTTP: foreign administrator missing cookie and supplied invalid credentials cannot disclose or downgrade # docs/v2-8j-6-3-evidence/transport-01.json
+ok 3 - Sources HTTP: raw query path method/body and CORS failures retain bounded private static responses # docs/v2-8j-6-3-evidence/transport-01.json
+ok 4 - Sources HTTP: finite read admission survives client abort until actual work settles, then releases on errors # docs/v2-8j-6-3-evidence/transport-01.json
+ok 5 - Sources HTTP/CLI: verified-owner policy and supplied bad CLI token refuse before source work # docs/v2-8j-6-3-evidence/transport-verified-02.json
+# tests 5
+# pass 5
+# fail 0
+# skipped 0
+# cancelled 0

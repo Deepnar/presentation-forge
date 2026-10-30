@@ -1,0 +1,29 @@
+# ASSEMBLED selected successful executed leaves; not a new whole-file execution.
+# forge-test-file "test/v2-citation-view-8j.test.js"
+# forge-test-file "test/v2-citations-8j.test.js"
+ok 1 - Citation view: saved slide/object exact DTO discloses title URL only, without writes # docs/v2-8j-6-3-evidence/domain-01.json
+ok 2 - Citation view: unresolved target and changed content remain separate from retained source identity # docs/v2-8j-6-3-evidence/domain-01.json
+ok 3 - Citation view: 24/25 stable pages bind scope and complete catalog snapshot without receipt authority # docs/v2-8j-6-3-evidence/domain-01.json
+ok 4 - Citation view: captured immutable input refuses extra authority unsafe counters and cursor forgery # docs/v2-8j-6-3-evidence/domain-01.json
+ok 5 - Citation view: corrupt source or document cannot publish a partial page or reflected private text # docs/v2-8j-6-3-evidence/domain-01.json
+ok 6 - Citation view: traversal and snippet boundaries retain canonical unassessed observations # docs/v2-8j-6-3-evidence/domain-01.json
+ok 7 - Citation view SQLite: exact owners and atomic saved read survive competing save and source clear # docs/v2-8j-6-3-evidence/domain-01.json
+ok 8 - Citation lifecycle: fixed-format labels refuse literal trailing line feeds # docs/v2-8j-6-3-evidence/domain-01.json
+ok 9 - Citation lifecycle: strict scene shape and project-wide admission preserve unverified records # docs/v2-8j-6-3-evidence/domain-01.json
+ok 10 - Citation lifecycle: anchors ignore styling and run boundaries but preserve exact authored content # docs/v2-8j-6-3-evidence/domain-01.json
+ok 11 - Citation lifecycle: chart table image and slide content changes have distinct bounded anchors # docs/v2-8j-6-3-evidence/domain-01.json
+ok 12 - Citation lifecycle: exact targets and protected ancestor/group scopes never use first matches # docs/v2-8j-6-3-evidence/domain-01.json
+ok 13 - Citation lifecycle: commands are atomic, no-op aware and exactly undoable # docs/v2-8j-6-3-evidence/domain-01.json
+ok 14 - Citation lifecycle: raw agent citation ingress refuses while ordinary edits preserve metadata # docs/v2-8j-6-3-evidence/domain-01.json
+ok 15 - Citation lifecycle: duplication remaps only unique live identities and retains unresolved tuples # docs/v2-8j-6-3-evidence/domain-01.json
+ok 16 - Citation lifecycle: deletion leaves orphans and session undo retains exact metadata for 200 changes # docs/v2-8j-6-3-evidence/domain-01.json
+ok 17 - Citation lifecycle: recompilation preserves exact orphan records and detached identity # docs/v2-8j-6-3-evidence/domain-01.json
+ok 18 - Citation lifecycle: central native preflight refuses all cited targets before producing bytes # docs/v2-8j-6-3-evidence/domain-01.json
+ok 19 - Citation lifecycle: tool projections and scalar range observations disclose no citation payload # docs/v2-8j-6-3-evidence/domain-01.json
+ok 20 - Citation lifecycle: strict domain capture refuses accessors and captures binding before awaits # docs/v2-8j-6-3-evidence/domain-01.json
+ok 21 - Citation view: missing current source has an unresolved row with no revived title or URL # docs/v2-8j-6-3-evidence/domain-missing-02.json
+# tests 21
+# pass 21
+# fail 0
+# skipped 0
+# cancelled 0

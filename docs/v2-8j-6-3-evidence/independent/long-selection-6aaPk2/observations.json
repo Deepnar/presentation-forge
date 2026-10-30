@@ -1,0 +1,411 @@
+{
+  "backend": "actual fresh owned temporary SQLite/API and CDP Chrome",
+  "sourceSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "build": "root build-final-02, reused without build",
+  "phases": [
+    {
+      "phase": "native-url-drag-title-draft",
+      "selected": "https://example.org",
+      "points": [
+        1095,
+        109.25,
+        1208.46875,
+        109.25
+      ]
+    },
+    {
+      "phase": "native-url-drag-inline-draft",
+      "selected": "https://example.org",
+      "points": [
+        1095,
+        109.875,
+        1208.46875,
+        109.875
+      ]
+    },
+    {
+      "phase": "narrow-long",
+      "viewport": [
+        320,
+        320
+      ],
+      "method": "320px narrow",
+      "overflow": {
+        "clientWidth": 287,
+        "scrollWidth": 287,
+        "rows": [
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ]
+        ]
+      },
+      "firstTitle": {
+        "text": "Long source title <literal> 😀\\u000a\\u202e WideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideW END 0",
+        "character": "L",
+        "rect": [
+          54,
+          113.375,
+          61.078125,
+          128.375
+        ],
+        "rail": [
+          33,
+          88.1875,
+          320,
+          320
+        ],
+        "fits": true
+      },
+      "lastTitle": {
+        "text": "Long source title <literal> 😀\\u000a\\u202e WideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideW END 0",
+        "character": "0",
+        "rect": [
+          158.59375,
+          113.375,
+          166.5,
+          128.375
+        ],
+        "rail": [
+          33,
+          88.1875,
+          320,
+          320
+        ],
+        "fits": true
+      },
+      "firstUrl": {
+        "text": "https://example.org/long/0?private=qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq&end=END",
+        "character": "h",
+        "rect": [
+          54,
+          113.375,
+          61.40625,
+          128.375
+        ],
+        "rail": [
+          33,
+          88.1875,
+          320,
+          320
+        ],
+        "fits": true
+      },
+      "lastUrl": {
+        "text": "https://example.org/long/0?private=qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq&end=END",
+        "character": "D",
+        "rect": [
+          209.078125,
+          113.375,
+          218.109375,
+          128.375
+        ],
+        "rail": [
+          33,
+          88.1875,
+          320,
+          320
+        ],
+        "fits": true
+      },
+      "action": {
+        "text": "Show more",
+        "rect": [
+          45,
+          189.375,
+          127,
+          218.5625
+        ],
+        "fits": true
+      }
+    },
+    {
+      "phase": "short-logical-reflow",
+      "viewport": [
+        320,
+        210
+      ],
+      "method": "320x210 logical CSS reflow; not browser-menu zoom",
+      "overflow": {
+        "clientWidth": 287,
+        "scrollWidth": 287,
+        "rows": [
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ],
+          [
+            261,
+            261
+          ]
+        ]
+      },
+      "firstTitle": {
+        "text": "Long source title <literal> 😀\\u000a\\u202e WideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideW END 0",
+        "character": "L",
+        "rect": [
+          54,
+          113.375,
+          61.078125,
+          128.375
+        ],
+        "rail": [
+          33,
+          88.1875,
+          320,
+          210
+        ],
+        "fits": true
+      },
+      "lastTitle": {
+        "text": "Long source title <literal> 😀\\u000a\\u202e WideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideWideW END 0",
+        "character": "0",
+        "rect": [
+          158.59375,
+          113.375,
+          166.5,
+          128.375
+        ],
+        "rail": [
+          33,
+          88.1875,
+          320,
+          210
+        ],
+        "fits": true
+      },
+      "firstUrl": {
+        "text": "https://example.org/long/0?private=qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq&end=END",
+        "character": "h",
+        "rect": [
+          54,
+          113.375,
+          61.40625,
+          128.375
+        ],
+        "rail": [
+          33,
+          88.1875,
+          320,
+          210
+        ],
+        "fits": true
+      },
+      "lastUrl": {
+        "text": "https://example.org/long/0?private=qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq&end=END",
+        "character": "D",
+        "rect": [
+          209.078125,
+          113.375,
+          218.109375,
+          128.375
+        ],
+        "rail": [
+          33,
+          88.1875,
+          320,
+          210
+        ],
+        "fits": true
+      },
+      "action": {
+        "text": "Show more",
+        "rect": [
+          45,
+          134.375,
+          127,
+          163.5625
+        ],
+        "fits": true
+      }
+    },
+    {
+      "phase": "reachable-pagination-action",
+      "rows": 25
+    }
+  ],
+  "cleanup": {
+    "browserClosed": true,
+    "fixtureStopped": true
+  }
+}

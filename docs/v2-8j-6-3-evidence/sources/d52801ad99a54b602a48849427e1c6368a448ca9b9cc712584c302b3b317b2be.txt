@@ -1,0 +1,36 @@
+import test,{before,after} from 'node:test';import assert from 'node:assert/strict';
+import {execFile} from 'node:child_process';import {promisify} from 'node:util';import http from 'node:http';import express from 'express';
+import {citationViewFixture} from './v2-citation-view-fixture.js';
+import {installCitationViewBoundary,registerCitationViewRoutes} from '../app/server/v2-citation-view-routes.js';
+import {setDbPathForTest,closeDb} from '../src/db.js';import {setHostedForTest} from '../src/cloud.js';
+const run=promisify(execFile);let f,doc;const route=(id,extra='')=>`/api/v2/projects/${id}/citation-view?revision=${doc.revision}&slide=s1${extra}`;
+before(async()=>{f=await citationViewFixture();doc=await f.viewProject({count:25});});after(async()=>{closeDb();await f?.stop();});
+function privateHeaders(r){assert.equal(r.headers.get('cache-control'),'private, no-store');assert.equal(r.headers.get('pragma'),'no-cache');assert.match(r.headers.get('vary'),/Authorization/);}
+test('Sources HTTP/CLI: actual private projection parity and source clear preserve project/history',async()=>{
+ const path=route(doc.id),before=await f.request(`/api/v2/projects/${doc.id}`,{token:f.token}).then(r=>r.json()),history=await f.request(`/api/v2/projects/${doc.id}/revisions`,{token:f.token}).then(r=>r.json());
+ const response=await f.request(path,{token:f.token});privateHeaders(response);assert.equal(response.status,200);const value=await response.json();assert.equal(value.rows.length,24);assert.equal(value.rows[0].reference.title,'Evidence 0');assert.equal(JSON.stringify(value).includes('excerpt'),false);assert.equal(JSON.stringify(value).includes('retrievedAt'),false);
+ const cli=await run(process.execPath,['src/projects/citation-view-cli.js',doc.id,'--revision',String(doc.revision),'--slide','s1'],{env:{...f.env,FORGE_PROJECT_TOKEN:f.token},timeout:15000});assert.deepEqual(JSON.parse(cli.stdout),value);assert.equal(cli.stderr,'');
+ const page=await f.request(route(doc.id,'&cursor='+value.nextCursor),{token:f.token}).then(r=>r.json());assert.equal(page.rows.length,1);
+ await f.clearSources(doc.id);const stale=await f.request(route(doc.id,'&cursor='+value.nextCursor),{token:f.token});assert.equal(stale.status,409);assert.equal((await stale.json()).code,'stale-catalog');const refreshed=await f.request(path,{token:f.token}).then(r=>r.json());assert.equal(refreshed.rows[0].sourceStatus,'stale-generation');assert.equal('reference'in refreshed.rows[0],false);
+ assert.deepEqual(await f.request(`/api/v2/projects/${doc.id}`,{token:f.token}).then(r=>r.json()),before);assert.deepEqual(await f.request(`/api/v2/projects/${doc.id}/revisions`,{token:f.token}).then(r=>r.json()),history);
+});
+test('Sources HTTP: foreign administrator missing cookie and supplied invalid credentials cannot disclose or downgrade',async()=>{
+ await f.sql('UPDATE users SET role=? WHERE email=?',['admin','import-other@example.test']);
+ for(const [token,status] of [[undefined,401],['bad',401],[f.otherToken,404]]){const r=await f.request(route(doc.id),{token});privateHeaders(r);assert.equal(r.status,status);assert.equal((await r.text()).includes('Evidence'),false);}
+ assert.equal((await f.request(route(doc.id),{headers:{Cookie:'forge_session='+f.token}})).status,401);
+ assert.equal((await f.request(route(doc.id),{headers:{Authorization:''}})).status,401);
+ const local=await citationViewFixture({FORGE_HOSTED:'0'});try{const response=await local.request('/api/v2/projects',{method:'POST',body:JSON.stringify({title:'Null owner',scenes:doc.scenes.map(s=>({...s,citations:undefined}))})}),p=(await response.json()).project;const path=`/api/v2/projects/${p.id}/citation-view?revision=0&slide=s1`;assert.equal((await local.request(path)).status,200);assert.equal((await local.request(path,{token:'invalid'})).status,401);}finally{await local.stop();}
+});
+test('Sources HTTP: raw query path method/body and CORS failures retain bounded private static responses',async()=>{
+ for(const [path,options,status] of [[route(doc.id,'&owner=foreign'),{},422],[route(doc.id,'&revision=1'),{},422],[route(doc.id,'&cursor=%zz'),{},422],[route(doc.id,'&cursor='+('a'.repeat(8300))),{},422],[route(doc.id),{method:'POST',body:'PRIVATE'},405],[route(doc.id),{method:'HEAD'},405],[`/api/v2/projects/%zz/citation-view?revision=1&slide=s1`,{},422],[`/api/v2/projects/${doc.id}/citation-view/extra`,{},404]]){const r=await f.request(path,{token:f.token,...options});privateHeaders(r);assert.equal(r.status,status,path);assert.equal((await r.text()).includes('PRIVATE'),false);}
+ const preflight=await f.request(route(doc.id),{method:'OPTIONS',headers:{Origin:'http://fixture.invalid','Access-Control-Request-Method':'GET'}});privateHeaders(preflight);assert.equal(preflight.status,204);
+ const body=await new Promise((resolve,reject)=>{const req=http.request(f.base+route(doc.id),{method:'GET',headers:{'Content-Type':'application/json','Content-Length':'7',Authorization:'Bearer '+f.token}},r=>{let text='';r.on('data',c=>text+=c);r.on('end',()=>resolve({status:r.statusCode,text,headers:r.headers}));});req.on('error',reject);req.end('PRIVATE');});assert.equal(body.status,422);assert.equal(body.text.includes('PRIVATE'),false);assert.equal(body.headers['cache-control'],'private, no-store');
+});
+test('Sources HTTP: finite read admission survives client abort until actual work settles, then releases on errors',async t=>{
+ setDbPathForTest(f.env.FORGE_DB_PATH);setHostedForTest(false);t.after(()=>{closeDb();setHostedForTest(null);});
+ let resolve,arrived;let gate=new Promise(r=>resolve=r),started=new Promise(r=>arrived=r),mode='hold';const result={ok:true,snapshot:{projectId:doc.id,projectRevision:doc.revision,sourceGeneration:1,sourceRevision:3},scope:{slideId:'s1',elementId:null,status:'present'},total:0,rows:[],nextCursor:null};
+ const app=express();installCitationViewBoundary(app);registerCitationViewRoutes(app,{service:async()=>({read:async()=>{if(mode==='throw')throw Error('PRIVATE');if(mode==='malformed')return {...result,excerpt:'PRIVATE'};arrived();await gate;return result;}})});const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));t.after(async()=>{resolve();server.closeAllConnections();await new Promise(r=>server.close(r));});const base=`http://127.0.0.1:${server.address().port}`;
+ const abort=new AbortController(),first=fetch(base+route(doc.id),{signal:abort.signal});first.catch(()=>{});await started;abort.abort();await assert.rejects(first);assert.equal((await fetch(base+route(doc.id))).status,429);
+ const second=fetch(base+route(doc.id),{headers:{Authorization:'Bearer '+f.token}});second.catch(()=>{});await new Promise(r=>setTimeout(r,15));assert.equal((await fetch(base+route(doc.id),{headers:{Authorization:'Bearer '+f.otherToken}})).status,429);resolve();assert.equal((await second).status,200);await new Promise(r=>setTimeout(r,10));
+ for(const m of ['throw','malformed']){mode=m;const r=await fetch(base+route(doc.id));assert.equal(r.status,503);assert.equal((await r.text()).includes('PRIVATE'),false);}mode='hold';assert.equal((await fetch(base+route(doc.id))).status,200);
+});

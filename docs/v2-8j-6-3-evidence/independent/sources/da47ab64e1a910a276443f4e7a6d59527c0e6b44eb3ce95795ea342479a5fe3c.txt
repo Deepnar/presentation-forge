@@ -1,0 +1,465 @@
+# Presentation Forge
+
+<p align="center">
+  <img src="app/web/public/logo.svg" width="80" height="80" alt="Presentation Forge logo" />
+</p>
+
+<p align="center">
+  <strong>A topic goes in. A themed deck and a graded report come out.</strong><br />
+  Local-first presentation and report generation for academic work.
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-242424?style=flat-square" alt="MIT license" /></a>
+  <img src="https://img.shields.io/badge/node-24%2B-242424?style=flat-square" alt="Node.js 24 or newer" />
+  <img src="https://img.shields.io/badge/themes-34-242424?style=flat-square" alt="34 themes" />
+  <img src="https://img.shields.io/badge/slide%20types-74-242424?style=flat-square" alt="74 slide types" />
+  <img src="https://img.shields.io/badge/test%20suite-242424?style=flat-square" alt="Automated test suite" />
+  <img src="https://img.shields.io/badge/local--first-242424?style=flat-square" alt="Local-first" />
+</p>
+
+| Mixed-mode HPC | First impressions | Perovskite solar cells |
+|:---:|:---:|:---:|
+| [<img src="published/previews/mixed-mode-programming.webp" width="280" alt="Mixed-mode programming performance chart in the Sci-Fi HUD theme" />](published/mixed-mode-programming-presentation.pdf) | [<img src="published/previews/first-impressions.webp" width="280" alt="First-impressions networking process in the Letterpress theme" />](published/first-impressions-presentation.pdf) | [<img src="published/previews/perovskite-solar-cells.webp" width="280" alt="Perovskite solar-cell efficiency chart in the academic theme" />](published/perovskite-solar-cells-presentation.pdf) |
+| Sci-Fi HUD · 21 slides | Letterpress · 20 slides | Academic · 14 slides |
+| [PDF](published/mixed-mode-programming-presentation.pdf) · [PPTX](published/mixed-mode-programming-presentation.pptx) · [report](published/mixed-mode-programming-report.docx) · [script](published/mixed-mode-programming-script.md) | [PDF](published/first-impressions-presentation.pdf) · [PPTX](published/first-impressions-presentation.pptx) · [report](published/first-impressions-report.docx) · [script](published/first-impressions-script.md) | [PDF](published/perovskite-solar-cells-presentation.pdf) · [PPTX](published/perovskite-solar-cells-presentation.pptx) · [report](published/perovskite-solar-cells-report.docx) · [script](published/perovskite-solar-cells-script.md) |
+
+These are complete outputs from the current pipeline. Open a PDF in GitHub, or
+download the editable presentation, companion report and speaker script.
+
+| A real briefing session — topic → choices → optional thesis |
+|:---:|
+| <img src="app/gallery/landing/briefing-workflow.gif" width="720" alt="Presentation Forge accepting a presentation topic, asking for deck choices, and opening optional thesis and audience questions" /> |
+
+Captured from a fresh private Docker install. The session enters a real topic,
+chooses presentation settings, and opens the actual optional-detail questions.
+It stops before generation because no model was available; it does **not**
+pretend a deck was produced. [Download the MP4](app/gallery/landing/briefing-workflow.mp4).
+
+| A real local app session — project workspace → slide viewer |
+|:---:|
+| <img src="app/gallery/landing/app-workflow.gif" width="720" alt="Presentation Forge opening the public Green Hydrogen deck, then showing its editable first PowerPoint slide" /> |
+
+Captured from the local Docker bundle using the public Green Hydrogen deck in
+this repository. It shows opening and inspecting existing work, **not a
+fabricated live-generation run**. [Download the MP4](app/gallery/landing/app-workflow.mp4).
+
+## Run it locally
+
+Install [Docker](https://docs.docker.com/get-docker/), then:
+
+```bash
+git clone https://github.com/Deepnar/presentation-forge.git
+cd presentation-forge
+docker compose up -d --build --wait
+```
+
+Open <http://localhost:8090>. The first visit creates one local owner and signs
+you in; after that, public signup is closed. There is no email verification,
+Google login or password-reset ceremony in this private-machine mode.
+
+Forge and its private SearXNG research service now run. To generate, choose one
+of two model paths:
+
+- **Bring your own key:** open your account menu and add an OpenAI-compatible
+  provider key under **Profile → Cloud**. Only model requests go to that provider. Forge starts
+  with a 180,000-token rolling 24-hour safety budget, caps each BYOK response
+  at 12,000 tokens, and allows at most one transport retry; the key owner can
+  change the daily guard in Profile. Your provider bills your account directly,
+  so also set a hard spending limit in its dashboard.
+- **Keep inference local:** install [Ollama](https://ollama.com), run
+  `ollama pull qwen3:4b`, and leave Forge on Auto. This is a lightweight
+  starting model; use a stronger model or BYOK when output quality matters.
+
+### Model compatibility
+
+Forge can connect to many Ollama and OpenAI-compatible models, but transport
+compatibility does not guarantee good presentation writing. A useful author
+model must reliably follow the deck schema, return complete structured content,
+stay grounded in the supplied research and revise fields without dropping them.
+Smaller or aggressively optimized models may produce valid files with repetitive,
+sparse or malformed slides.
+
+Always inspect the rasterized preview before presenting or publishing a deck.
+In repository testing, `muse-spark-1.3-contributor` completed the API workflow
+but produced inconsistent deck quality, so it is supported as a transport target
+and is not used as the public quality baseline. The hosted Auto route remains the
+product baseline; local and BYOK results depend on the model selected.
+
+```bash
+# Optional install check; Node runs inside the container.
+docker compose exec forge env FORGE_CHECK_URL=http://localhost:5174 node tools/local-check.mjs
+```
+
+Windows and macOS work through Docker Desktop. Linux may need Ollama exposed to
+Docker's host gateway when using local inference. [`LOCAL_SETUP.md`](LOCAL_SETUP.md)
+has that command, platform notes, data locations and troubleshooting. This
+private bundle binds only to localhost; use [`docs/DEPLOY.md`](docs/DEPLOY.md)
+for an internet-facing multi-user service.
+
+---
+
+## The rule that makes it work
+
+**The model never writes layout.** Asking a language model for coordinates and
+font sizes fails the moment content changes length. So it cannot express them:
+
+| Layer | Owns | Written by |
+|---|---|---|
+| **chrome** | crest, banner, presenter line, slide number | locked code in `src/chrome.js` |
+| **theme** | palette, type, spacing, shape | human-authored `themes/*.yaml` |
+| **content** | what the slides say | the model, as schema-validated YAML |
+
+The model picks a semantic slide *type* and writes its content. It cannot supply
+a coordinate, a hex value, or a font name — those keys do not exist in the
+schema it is decoding against.
+
+Which is what makes this possible. **The same slide, same words, four themes:**
+
+| One slide, four themes — 6-second loop |
+|:---:|
+| <img src="app/gallery/landing/theme-system.gif" width="720" alt="The same statistics slide cycling through Swiss International, Neubrutalism, Editorial Magazine, and Sci-Fi HUD themes" /> |
+
+This is a real render loop, not a product simulation. Nothing in the content
+changes between frames; switching theme is one field in `deck.yaml`, and 34 of
+them ship. [Download the MP4](app/gallery/landing/theme-system.mp4).
+
+## The pipeline
+
+```text
+brief → research → outline → HUMAN GATE → content → validate → render → preview → critique
+         notes.md   plan.yaml              deck.yaml           .pptx     PNGs
+                                                               .docx
+```
+
+The gate is deliberate: nothing renders until a person has read the outline and
+approved it. Everything after it is deterministic or checked.
+
+- **Research** from SearXNG, arXiv, Crossref, or your own uploaded documents.
+  Claims are checked back against the saved notes before a deck is finalised.
+- **Per-slide retrieval.** Each slide is shown the research *that slide* needs
+  rather than the whole corpus — which is both cheaper and better writing.
+- **Rendered, then read back.** A written `.pptx` proves only that the file
+  parsed. Slides are rasterised and the text read off the image, because
+  `pres.writeFile()` succeeds happily for text running off the canvas.
+- **A vision critic** looks at the rendered PNGs and fixes what it sees.
+
+---
+
+## The vocabulary
+
+74 slide types: 73 native layouts plus the deliberate `freeform` exception.
+The model chooses among them by what the content *is* — a comparison becomes a
+comparison layout, not a bulleted list about comparing.
+
+| `timeline` | `compare` | `chart` |
+|:---:|:---:|:---:|
+| <img src="app/gallery/landing/swiss-international--timeline.webp" width="280" alt="Timeline slide" /> | <img src="app/gallery/landing/swiss-international--compare.webp" width="280" alt="Compare slide" /> | <img src="app/gallery/landing/swiss-international--chart.webp" width="280" alt="Chart slide" /> |
+| **`pyramid`** | **`matrix`** | **`flow`** |
+| <img src="app/gallery/landing/swiss-international--pyramid.webp" width="280" alt="Pyramid slide" /> | <img src="app/gallery/landing/swiss-international--matrix.webp" width="280" alt="Matrix slide" /> | <img src="app/gallery/landing/swiss-international--flow.webp" width="280" alt="Flow slide" /> |
+| **`table`** | **`funnel`** | **`big-number`** |
+| <img src="app/gallery/landing/swiss-international--table.webp" width="280" alt="Table slide" /> | <img src="app/gallery/landing/swiss-international--funnel.webp" width="280" alt="Funnel slide" /> | <img src="app/gallery/landing/swiss-international--big-number.webp" width="280" alt="Big number slide" /> |
+
+**Text stays editable.** `freeform` is the one type rasterised whole — it is the
+deliberate exception, where the model writes the slide as HTML. A *plate* theme
+is not the same thing: Chrome renders only the decorative background to a PNG,
+and every word on top of it is still native PowerPoint text you can select and
+retype.
+
+---
+
+## Real output
+
+The three complete examples at the top of this page are committed so they can
+be inspected without running the application:
+
+| Presentation | Size | Files |
+|---|---|---|
+| **Mixed-Mode Programming for HPC** | 21 slides + report + script | [PDF](./published/mixed-mode-programming-presentation.pdf) · [PPTX](./published/mixed-mode-programming-presentation.pptx) · [DOCX](./published/mixed-mode-programming-report.docx) · [script](./published/mixed-mode-programming-script.md) |
+| **First Impressions and Networking** | 20 slides + report + script | [PDF](./published/first-impressions-presentation.pdf) · [PPTX](./published/first-impressions-presentation.pptx) · [DOCX](./published/first-impressions-report.docx) · [script](./published/first-impressions-script.md) |
+| **Perovskite Solar Cells** | 14 slides + report + script | [PDF](./published/perovskite-solar-cells-presentation.pdf) · [PPTX](./published/perovskite-solar-cells-presentation.pptx) · [DOCX](./published/perovskite-solar-cells-report.docx) · [script](./published/perovskite-solar-cells-script.md) |
+
+Browse [`published/`](./published/). Private decks live in `decks/<slug>/` and
+are gitignored.
+
+---
+
+## Reports are the other half
+
+The deck is free and themed; the report is rigid and **graded against an
+institutional template**. Your department's `.docx` is the donor: the renderer
+strips only its body and keeps everything else byte-identical — the watermark
+in the header, the footer's page field, the styles, the media.
+
+The section list is read from the donor itself, so a different college's
+template is an upload, not a code change. Table-of-contents page numbers are
+real: the render is two-pass, converting once to find where each heading lands.
+
+---
+
+## Run from source *(contributors)*
+
+Use this only when developing Forge itself rather than using it. It exposes the
+Vite UI on :5173 and API on :5174, and expects the renderer prerequisites on
+your host:
+
+```bash
+npm install
+npm run fonts
+npm run brand
+cp config/identity.example.yaml config/identity.yaml
+ollama pull qwen3:4b
+npm run dev
+```
+
+[`LOCAL_SETUP.md`](LOCAL_SETUP.md) covers the source path, platform-specific
+prerequisites and troubleshooting. [`docs/DEPLOY.md`](docs/DEPLOY.md) is the
+separate hardened production route — hosted mode, Caddy/TLS, mail, persistent
+secrets, administrator controls and tenant limits.
+
+---
+
+## Everyday commands
+
+```bash
+npm run dev                                   # API :5174 + UI :5173
+npm test                                      # automated test suite
+
+npm run render decks/<slug>/deck.yaml         # content -> .pptx
+npm run preview decks/<slug>/out/deck.pptx    # .pptx -> PNGs
+
+npm run themematrix                           # every theme x every type, fit verdicts
+npm run textcheck                             # did every word survive onto the page
+npm run drawcheck                             # did every field reach the page at all
+npm run deckscore <slug>                      # a deck, scored /100
+npm run deckscore -- --history                # what previous runs scored
+
+npm run forge -- new "<topic>" --research     # headless: outline
+npm run forge -- generate <slug> --critic     # headless: deck
+```
+
+The CLI is not a wrapper around the app — both call the same `src/`. The API
+layer holds no presentation logic, because the pipeline has to run headless.
+
+---
+
+## Verification that proves something
+
+On branch `v2`, a completed source deck can be converted into a saved editable
+project through the shared import boundary:
+
+```sh
+npm run import-project -- <slug> --request-id <stable-request-id>
+```
+
+Use the same 8–64 character request id for retries; the service returns the
+current project and preserves later edits. Hosted calls require an existing
+session in `FORGE_IMPORT_TOKEN`; local operator calls admit ownerless sources
+only. A changed source requires an explicit new request. Unsupported content,
+identity/assets or readable-fit failures refuse the entire import with diagnostics.
+Completed presentation chats and the legacy deck page also offer **Open in
+editor**. It creates or reopens the saved editable copy through the same service,
+keeps human edits on retry and retains access to the original deck. Unsupported
+content refuses visibly; changed-source or deleted-target retries never replace
+edits or recreate a deleted project. See the exact
+[coverage and limits](docs/v2-7b-1-evidence/COVERAGE.md) and
+[browser validation/review status](docs/V2-7B-2-EVAL.md).
+
+Saved project cards show the first saved slide above their title and actions.
+Previews use the same scene renderer as the editor, refresh with saved revisions
+and remain optional: Open is available while a preview loads or fails. The
+[cover validation and review record](docs/V2-7C-1-EVAL.md) identifies the exact
+implementation and its acceptance status.
+
+The project editor's Inspector includes a collapsed **Sources** section. Opening
+it reads the saved slide or single selected object's references without saving
+pending edits. Complete retained titles/URLs stay plain owner-only text; separate
+target/content/source/range statuses never imply verified claim support. Reads
+are paged explicitly, and closing or changing scope/session clears the displayed
+rows. The same saved read is available headlessly:
+
+```sh
+npm run inspect-project-sources -- <project-id> --revision <N> --slide <slide-id>
+```
+
+Authenticated reads use the owner's session in `FORGE_PROJECT_TOKEN`. Full URLs
+may include private query values; the interface does not follow them or fetch
+their pages. See [scope, evidence and review status](docs/V2-8J-6-3-EVAL.md).
+
+Saved projects with retained citations have an owner-only notes export on local
+POSIX filesystems:
+
+```sh
+npm run export-project -- <project-id> --output <new-path.pptx> --include-source-notes
+```
+
+Authenticated projects require the owner's existing session in `FORGE_PROJECT_TOKEN`.
+The flag explicitly consents **each time** to complete retained source titles and
+URLs, including private query values, in PowerPoint speaker notes. Downloaded notes
+survive source clear/project deletion; support remains not assessed and long notes
+may overflow printed pages. Output is private0600 and never replaces an existing
+file. Uncited projects can omit the flag. See the
+[accepted headless scope](docs/V2-8J-6-1-EVAL.md).
+
+The workspace/editor Export action now supports cited saved projects through a
+fresh **Export with source notes** confirmation. Finish editing and save first;
+Export preserves pending drafts and never saves them implicitly. Uncited saved
+projects download directly. Consent includes the same complete-title/URL,
+independent-retention and print limitations above. Generic/raw cited export still
+refuses; the new private notes transport is owner-only, with no admin source
+override. [Browser evidence and current review status](docs/V2-8J-6-2-EVAL.md)
+distinguish implementation from independent acceptance.
+
+V2 also provides a trusted headless CLI for bounded scripted edits to saved
+projects: `npm run agent-run -- start --project ID --plan FILE`, followed by
+`work`, `status` or `cancel` with `--project ID --run RUN_ID`. Start persists and
+exits; a separate worker resumes the durable run. Owner-bound projects additionally
+require the trusted operator's `--owner OWNER` on each call. See the
+[run-plan schema](packages/agent/run-plan.schema.json),
+[durable execution contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8b-durable-run-core)
+and [validation/review record](docs/V2-8B-EVAL.md).
+
+Internal, operator-configured adapters now support bounded text/tool exchanges
+through OpenAI-compatible Chat Completions and Anthropic Messages. They use explicit
+capabilities and injected credentials, validate semantic proposals and leave editing
+authority with the canonical tools. [The accepted exchange contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8c-provider-exchange-boundary)
+and [evidence](docs/V2-8C-EVAL.md) distinguish local protocol fixtures from live
+provider qualification. Hosted conversational integration and the Assistant remain
+in the [roadmap](docs/ROADMAP.md#v2-8-remaining).
+
+Trusted host callers can now prepare a single scoped provider turn against an exact
+saved project revision and explicitly queue its opaque edit proposal through the
+existing durable runtime. Read/text/refusal outcomes do not mutate project content;
+edit proposals preflight through canonical commands and retain owner/revision guards.
+A proposal belongs to one host instance; queued runs retain durable recovery. See
+the [preparation contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8d-provider-backed-run-preparation)
+and [independent validation](docs/V2-8D-EVAL.md). This internal boundary adds no new
+public route, credential setup or Assistant interface.
+
+The same runner also supports bounded `converse` invocations: canonical scoped
+reads return correlated semantic results to subsequent exchanges until text,
+refusal or one atomic edit proposal. Explicit enqueue retains the same authority;
+history and proposals remain ephemeral to one host instance. Exchange/tool/output
+budgets and cancellation bound the whole invocation. See the independently accepted
+[conversation contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8e-bounded-tool-conversation-preparation)
+and [V2-8E evidence](docs/V2-8E-EVAL.md).
+
+An internal shared-search boundary normalizes SearXNG results into project-scoped
+citation sources independently of the model provider. Operator configuration stays
+outside query arguments; transport, output and cancellation limits are explicit.
+Its independently accepted
+[contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary) and
+[evidence](docs/V2-8F-EVAL.md) identify the exact scope and limitations. Legacy
+research retains its existing entry points; model search-tool integration remains
+in the [roadmap](docs/ROADMAP.md#v2-8-remaining).
+
+A written `.pptx` proves the file parsed and nothing else. `pres.writeFile()`
+succeeds for decks with text off the canvas and invisible-on-invisible colour
+pairs. So the checks ask four different questions, and each was added because
+the ones before it were clean on a defect that shipped:
+
+1. **Is the box on the slide?** A geometry watcher runs inside every render.
+2. **Was the field drawn at all?** `drawcheck` writes a marker into each field
+   and reads back what the layout emitted.
+3. **Does the text fit?** `themematrix` across 34 themes × 74 types.
+4. **Did it survive the render?** `textcheck` rasterises and reads it back.
+
+None of them replaces looking at the image.
+
+---
+
+## Project map
+
+```text
+app/server/       Express transport over the shared core — no logic of its own
+app/web/          Vite + React browser application
+src/              renderer, pipeline, research, validation, previews, metering
+themes/           34 design languages
+styles/           reusable token overrides layered over a theme
+schema/           the content contracts for decks and reports
+templates/        starting content templates
+config/           models, identity, accounts, keys
+brand/            institutional marks, per operator and per account
+app/gallery/      committed theme specimens — the images above
+decks/<slug>/     a portable workspace: content, plan, research, output
+docker/           image, Compose stack, TLS, SearXNG
+docs/             architecture, blockers, economics, roadmap, traps
+```
+
+## Data and privacy
+
+No external database service is required. A deck workspace is ordinary files
+and copies to another installation.
+
+| Data | Location | Committed? |
+|---|---|---|
+| Deck content, outline, research, output | `decks/<slug>/` | definitions yes, output no |
+| Institution identity | `config/identity.yaml`, `config/identities/` | no |
+| Accounts, sessions, keys, usage | `config/forge.db` | no — keys encrypted under `FORGE_KEY_PEPPER` |
+| Provider keys (install-wide) | `config/local.yaml` | no |
+| Brand assets | `brand/` | no — they may carry protected marks |
+
+With Ollama, model calls never leave the machine. Research providers and an
+explicitly chosen hosted provider involve network requests; the deck, the
+research and the account data stay local.
+
+**Retention.** Nothing is deleted unless `FORGE_SWEEP_DAYS` is set, and then the
+clock is *inactivity*, not age. `GET /api/policy` reports what the running
+install actually enforces, so the notice in the app cannot drift from the
+scheduler behind it.
+
+## Hosted deployment
+
+The internet-facing stack is intentionally separate: TLS, SMTP, secure cookies,
+operator secrets, tenant limits and retention. It still uses the same image and
+builds for amd64 and arm64. See [`docs/DEPLOY.md`](docs/DEPLOY.md); the root
+Compose file is private local software and must not be exposed as a public
+service.
+
+## Further reading
+
+| Doc | Answers |
+|---|---|
+| [ARCHITECTURE](docs/ARCHITECTURE.md) | how it is built, as built |
+| [ROADMAP](docs/ROADMAP.md) | **all** work — done, planned, and why |
+| [BLOCKED](docs/BLOCKED.md) | what cannot be worked on, and who can unblock it |
+| [ECONOMICS](docs/ECONOMICS.md) | what a deck costs to produce and what it can be sold for |
+| [PRODUCTION](docs/PRODUCTION.md) | what stands between here and real users |
+| [TRAPS](docs/TRAPS.md) | failure modes that have already bitten |
+| [LOCAL_SETUP](LOCAL_SETUP.md) | prerequisites and troubleshooting |
+
+## Star history
+
+<p align="center">
+  <a href="https://www.star-history.com/#Deepnar/presentation-forge&Date">
+    <picture>
+      <source
+        media="(prefers-color-scheme: dark)"
+        srcset="https://api.star-history.com/svg?repos=Deepnar/presentation-forge&type=Date&theme=dark"
+      />
+      <source
+        media="(prefers-color-scheme: light)"
+        srcset="https://api.star-history.com/svg?repos=Deepnar/presentation-forge&type=Date"
+      />
+      <img
+        alt="Star history for Presentation Forge"
+        src="https://api.star-history.com/svg?repos=Deepnar/presentation-forge&type=Date"
+      />
+    </picture>
+  </a>
+</p>
+
+## Community
+
+Questions and early ideas belong in
+[GitHub Discussions](https://github.com/Deepnar/presentation-forge/discussions).
+Reproducible defects and scoped feature requests use the repository issue
+templates. Before contributing, read [CONTRIBUTING.md](CONTRIBUTING.md) and the
+[Code of Conduct](CODE_OF_CONDUCT.md). Report vulnerabilities privately through
+the process in [SECURITY.md](SECURITY.md); never put keys or private deck content
+in a public issue.
+
+## License
+
+[MIT](LICENSE). Institutional marks, donor templates and assets you add remain
+yours and may carry their own restrictions.

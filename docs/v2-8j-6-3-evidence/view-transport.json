@@ -1,0 +1,43 @@
+{
+  "id": "view-transport",
+  "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "kind": "tests",
+  "command": "Assemble explicit successful executed-leaf selections from retained original invocations; no new execution.",
+  "exitCode": 0,
+  "tests": {
+    "total": 5,
+    "pass": 5,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8j-6-3-evidence/view-transport-selected.tap",
+  "selection": {
+    "Sources HTTP/CLI: actual private projection parity and source clear preserve project/history": {
+      "file": "test/v2-citation-view-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/transport-01.json",
+      "durationMs": 1995.987873
+    },
+    "Sources HTTP: foreign administrator missing cookie and supplied invalid credentials cannot disclose or downgrade": {
+      "file": "test/v2-citation-view-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/transport-01.json",
+      "durationMs": 1218.216026
+    },
+    "Sources HTTP: raw query path method/body and CORS failures retain bounded private static responses": {
+      "file": "test/v2-citation-view-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/transport-01.json",
+      "durationMs": 21.418858
+    },
+    "Sources HTTP: finite read admission survives client abort until actual work settles, then releases on errors": {
+      "file": "test/v2-citation-view-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/transport-01.json",
+      "durationMs": 51.820997
+    },
+    "Sources HTTP/CLI: verified-owner policy and supplied bad CLI token refuse before source work": {
+      "file": "test/v2-citation-view-http-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/transport-verified-02.json",
+      "durationMs": 1380.487112
+    }
+  },
+  "sourceApplicability": "See manifest.json sourceApplicability and original per-invocation hashes/content-addressed snapshots. Selected union is not one green final whole-file process."
+}

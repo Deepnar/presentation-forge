@@ -1,0 +1,38 @@
+{
+  "id": "view-browser",
+  "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "kind": "tests",
+  "command": "Assemble explicit successful executed-leaf selections from retained original invocations; no new execution.",
+  "exitCode": 0,
+  "tests": {
+    "total": 4,
+    "pass": 4,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8j-6-3-evidence/view-browser-selected.tap",
+  "selection": {
+    "Sources Chrome: saved read preserves title table and inline drafts, fixed canvas, explicit disclosure only": {
+      "file": "test/v2-citation-view-chrome-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/browser-corrections-05.json",
+      "durationMs": 3716.650947
+    },
+    "Sources Chrome: pagination clear and late route/session reads never revive private source rows": {
+      "file": "test/v2-citation-view-chrome-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/browser-01.json",
+      "durationMs": 3275.890072
+    },
+    "Sources Chrome: held source responses cannot publish across title save and authoritative history reload": {
+      "file": "test/v2-citation-view-chrome-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/browser-corrections-05.json",
+      "durationMs": 2658.385388
+    },
+    "Sources Chrome: unresolved saved references work in Done with keyboard narrow and short reflow": {
+      "file": "test/v2-citation-view-chrome-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/browser-reflow-final-06.json",
+      "durationMs": 4811.020418
+    }
+  },
+  "sourceApplicability": "See manifest.json sourceApplicability and original per-invocation hashes/content-addressed snapshots. Selected union is not one green final whole-file process."
+}

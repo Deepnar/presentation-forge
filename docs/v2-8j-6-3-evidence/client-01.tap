@@ -1,0 +1,32 @@
+✔ Sources client: explicit bounded read captures owner and DTO without storing or mutation requests (24.24619ms)
+✖ Sources client: obsolete fetch/body and same-token session epoch cannot populate or clear a newer read (5.640209ms)
+✔ Sources client: exact schema scalar URLs counters byte ceiling MIME and static errors fail closed (3.586717ms)
+✔ Sources client: explicit pagination and stale counters discard every prior private row (2.640791ms)
+✔ Sources client: live scope invalidation and rapid duplicate starts have no queue or retry (0.329629ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90.645236
+
+✖ failing tests:
+
+test at test/v2-citation-view-client-8j.test.js:12:1
+✖ Sources client: obsolete fetch/body and same-token session epoch cannot populate or clear a newer read (5.640209ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-citation-view-client-8j.test.js:14:323)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

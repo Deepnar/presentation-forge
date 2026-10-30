@@ -1,0 +1,396 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://forge.local/schemas/slide-scene.json",
+  "title": "SlideScene",
+  "description": "Layer C: editable scene graph. Source of truth for the browser editor and the PPTX exporter. Canonical units are inches on a 13.333x7.5 canvas.",
+  "type": "object",
+  "required": ["id", "width", "height", "background", "elements", "layoutState"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "width": { "type": "number", "const": 13.333 },
+    "height": { "type": "number", "const": 7.5 },
+    "background": {
+      "type": "object",
+      "required": ["fill"],
+      "additionalProperties": false,
+      "properties": {
+        "fill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+        "decor": {
+          "type": "array",
+          "description": "Theme-owned native dressing resolved by the compiler from DesignSystem. Projected behind all elements; never edited, never a ContentBlock carrier.",
+          "items": { "$ref": "#/definitions/backgroundDecor" }
+        },
+        "image": { "$ref": "#/definitions/backgroundImage" }
+      }
+    },
+    "layoutState": { "enum": ["managed", "customized", "detached"] },
+        "suppressed": {
+          "type": "array",
+          "description": "Slide-scoped regeneration tombstones: compiler element IDs deleted by human command. Regeneration skips fresh elements with these IDs instead of resurrecting them; matching is by exact element ID only, so renamed or genuinely new elements are never suppressed. Human-added deletions record nothing here.",
+          "items": {
+            "type": "object",
+            "required": ["id"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "semanticRef": { "type": "string" }
+            }
+          }
+        },
+    "citations": { "type": "array", "maxItems": 128, "items": { "$ref": "#/definitions/citationRecord" } },
+    "recipeId": { "type": "string" },
+    "elements": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/sceneElement" }
+    }
+  },
+  "definitions": {
+    "citationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "id",
+        "target",
+        "source",
+        "anchor"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^cit_[0-9a-f]{32}$"
+        },
+        "target": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "slideId"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "slide"
+                },
+                "slideId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "slideId",
+                "elementId"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "element"
+                },
+                "slideId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "elementId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            }
+          ]
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "projectId",
+            "id",
+            "generation"
+          ],
+          "properties": {
+            "projectId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+            },
+            "id": {
+              "type": "string",
+              "pattern": "^src_[0-9a-f]{64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "anchor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "digest"
+          ],
+          "properties": {
+            "kind": {
+              "const": "content-sha256-v1"
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "locator": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "startByte",
+            "endByte"
+          ],
+          "properties": {
+            "kind": {
+              "const": "snippet-utf8-v1"
+            },
+            "startByte": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8191
+            },
+            "endByte": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 8192
+            }
+          }
+        }
+      }
+    },
+    "backgroundDecor": {
+      "type": "object",
+      "required": ["shape", "x", "y", "w", "h", "fill"],
+      "additionalProperties": false,
+      "properties": {
+        "shape": { "enum": ["rect", "ellipse"] },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "w": { "type": "number", "exclusiveMinimum": 0 },
+        "h": { "type": "number", "exclusiveMinimum": 0 },
+        "fill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+        "fillAlpha": { "type": "number", "minimum": 0, "maximum": 1 },
+        "rotation": { "type": "number" }
+      }
+    },
+    "backgroundImage": {
+      "type": "object",
+      "description": "Adapter-resolved decorative background asset (e.g. a rasterized theme plate). Opaque renderer-ready reference: data URIs embed portably, other adapters may supply blob-backed sources. Content stays native above it; the hash is the determinism proof and dedup key.",
+      "required": ["src", "hash"],
+      "additionalProperties": false,
+      "properties": {
+        "src": { "type": "string", "minLength": 1 },
+        "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "textRun": {
+      "type": "object",
+      "required": ["text"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string" },
+        "bold": { "type": "boolean" },
+        "italic": { "type": "boolean" },
+        "size": { "type": "number", "exclusiveMinimum": 0 },
+        "color": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+        "role": { "type": "string", "minLength": 1 },
+        "family": { "type": "string" },
+        "weight": { "type": "number" },
+        "tracking": { "type": "number" },
+        "line": { "type": "number", "exclusiveMinimum": 0 },
+        "transform": { "enum": ["upper"] }
+      }
+    },
+    "paragraph": {
+      "type": "object",
+      "required": ["runs"],
+      "additionalProperties": false,
+      "properties": {
+        "runs": { "type": "array", "items": { "$ref": "#/definitions/textRun" } },
+        "align": { "enum": ["left", "center", "right"] },
+        "bullet": { "type": "boolean" }
+      }
+    },
+    "sceneElement": {
+      "type": "object",
+      "required": ["id", "kind", "x", "y", "w", "h", "z", "provenance"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["text", "shape", "image", "line", "chart", "table", "group"] },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "w": { "type": "number", "exclusiveMinimum": 0 },
+        "h": { "type": "number", "exclusiveMinimum": 0 },
+        "rotation": { "type": "number" },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
+        "locked": { "type": "boolean" },
+        "valign": { "enum": ["top", "middle", "bottom"] },
+        "z": { "type": "integer", "minimum": 0 },
+        "provenance": { "enum": ["compiler", "agent", "human", "import"] },
+        "semanticRef": { "type": "string" },
+        "customized": { "type": "boolean" },
+        "contentCustomized": {
+          "type": "boolean",
+          "description": "Human rewrote this element's authored content (text). Geometry ownership stays on `customized`; regeneration keeps human paragraphs when this is set and refreshes them from the compiler when it is not."
+        },
+        "styleCustomized": {
+          "type": "boolean",
+          "description": "Human restyled this shape's appearance (fill/stroke). Geometry ownership stays on `customized`, text on `contentCustomized`; regeneration keeps the human shape styling when this is set and refreshes it from the compiler when it is not."
+        },
+        "formatCustomized": {
+          "type": "boolean",
+          "description": "Human restyled this text's appearance (color/size/bold/italic). Wording ownership stays on `contentCustomized`, geometry on `customized`; regeneration keeps the human run appearance when this is set and refreshes wording from the compiler when content is not customized."
+        },
+        "dataCustomized": {
+          "type": "boolean",
+          "description": "Human edited this chart's data (categories, series values/names, chart kind). Geometry ownership stays on `customized`; regeneration keeps the human chart payload when this is set and refreshes it from the compiler when it is not. Label typography stays compiler-owned always."
+        },
+        "tableCustomized": {
+          "type": "boolean",
+          "description": "Human edited this table's cells (rows content and structure). Geometry ownership stays on `customized`; regeneration keeps the human matrix when this is set and refreshes it from the compiler when it is not. Header flag, layout, and typography stay compiler-owned always."
+        },
+        "hidden": {
+          "type": "boolean",
+          "description": "Human hid this element in the editor. Hidden elements are preserved verbatim in the scene but omitted from browser and PowerPoint projections (never deleted, never rasterized); re-showing restores content, geometry, and draw order exactly."
+        },
+        "fitPolicy": { "enum": ["wrap", "one-line", "stat"] },
+            "paragraphs": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/paragraph" }
+            },
+            "shape": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "form": { "enum": ["rect", "roundRect", "ellipse"] },
+                "fill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                "fillAlpha": { "type": "number", "minimum": 0, "maximum": 1 },
+                "stroke": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                "strokeWidth": { "type": "number", "minimum": 0 },
+                "strokeAlpha": { "type": "number", "minimum": 0, "maximum": 1 }
+              }
+            },
+            "image": {
+              "type": "object",
+              "required": ["src"],
+              "additionalProperties": false,
+              "properties": {
+                "src": { "type": "string" },
+                "alt": { "type": "string" }
+              }
+            },
+            "line": {
+              "type": "object",
+              "required": ["x2", "y2"],
+              "additionalProperties": false,
+              "properties": {
+                "x2": { "type": "number" },
+                "y2": { "type": "number" },
+                "stroke": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                "strokeWidth": { "type": "number", "minimum": 0 }
+              }
+            },
+            "chart": {
+              "type": "object",
+              "required": ["chartKind", "categories", "series"],
+              "additionalProperties": false,
+              "properties": {
+                "chartKind": { "enum": ["bar", "hbar", "line", "pie", "doughnut", "area"] },
+                "categories": { "type": "array", "items": { "type": "string" } },
+                "series": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["name", "values"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": { "type": "string" },
+                      "values": { "type": "array", "items": { "type": "number" } }
+                    }
+                  }
+                },
+                "labels": {
+                  "type": "object",
+                  "description": "Compiler-resolved chart label typography (category axis, value axis, legend). Renderers project these sizes rather than guessing; labels never shrink below them.",
+                  "required": ["family", "size", "color"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "family": { "type": "string" },
+                    "size": { "type": "number", "exclusiveMinimum": 0 },
+                    "color": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
+                  }
+                }
+              }
+            },
+            "table": {
+              "type": "object",
+              "required": ["rows"],
+              "additionalProperties": false,
+              "properties": {
+                "rows": {
+                  "type": "array",
+                  "items": { "type": "array", "items": { "type": "string" } }
+                },
+                "header": { "type": "boolean" },
+                "layout": {
+                  "type": "object",
+                  "description": "Compiler-resolved table presentation: row geometry, header treatment, cell typography, padding, grid. Renderers project it verbatim and never recompute it.",
+                  "additionalProperties": false,
+                  "properties": {
+                    "rowHeights": {
+                      "type": "array",
+                      "items": { "type": "number", "exclusiveMinimum": 0 }
+                    },
+                    "colWidths": {
+                      "type": "array",
+                      "description": "Resolved column widths in inches, summing to the element width. Both renderers divide columns from these numbers so measurement and projection agree.",
+                      "items": { "type": "number", "exclusiveMinimum": 0 }
+                    },
+                    "headerFill": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                    "headerColor": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                    "headerSize": { "type": "number", "exclusiveMinimum": 0 },
+                    "headerBold": { "type": "boolean" },
+                    "bodyColor": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                    "bodySize": { "type": "number", "exclusiveMinimum": 0 },
+                    "fontFamily": { "type": "string" },
+                    "padding": { "type": "number", "minimum": 0 },
+                    "gridColor": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
+                  }
+                }
+              }
+            },
+            "group": {
+              "type": "object",
+              "required": ["children"],
+              "additionalProperties": false,
+              "properties": {
+                "children": {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/sceneElement" }
+                }
+              }
+            }
+          }
+        }
+  }
+}

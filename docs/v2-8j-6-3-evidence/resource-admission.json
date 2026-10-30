@@ -1,0 +1,27 @@
+{
+  "cpuCount": 24,
+  "memoryAvailableKiB": 44346868,
+  "pressure": {
+    "cpu": "some avg10=0.70 avg60=0.20 avg300=0.04 total=11205696\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2571\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=2530\n",
+    "io": "some avg10=32.54 avg60=34.51 avg300=38.00 total=1393662955\nfull avg10=30.12 avg60=32.57 avg300=36.20 total=1351476139\n"
+  },
+  "diskSectorDeltaOverHalfSecond": {
+    "nvme0n1": [
+      7872,
+      0
+    ]
+  },
+  "competingProcessNames": [
+    "    PID %CPU COMMAND",
+    " 247047  112 python3",
+    "   9281 96.4 python3",
+    " 246166 92.1 updatedb",
+    "   6068 15.0 RDD Process",
+    "   9904  8.8 Isolated Web Co",
+    "   5920  8.1 zen-bin",
+    "  11108  4.5 postgres"
+  ],
+  "freeStorage": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/nvme0n1p5  1.7T  831G  822G  51% /home\n",
+  "admission": "One serial low-priority two-CPU build then Chrome, finite watchdog and owned group monitoring. Leave unrelated work alone; global PSI is not attribution."
+}

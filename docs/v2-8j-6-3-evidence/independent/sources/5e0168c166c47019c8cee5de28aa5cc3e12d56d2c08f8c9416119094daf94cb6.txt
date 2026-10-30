@@ -1,0 +1,50 @@
+import { projectSessionSnapshot } from './projectSession.js';
+import { VIEW_LIMITS,validCitationView,safeInteger,targetId } from '../../../../packages/projects/citation-view-contract.js';
+const messages={'stale-project':'The saved project changed. Reopen it to read sources.','stale-catalog':'Retained sources changed. Refresh sources explicitly.','unauthorized':'Sign in with the project owner to read sources.','email-unverified':'Confirm your email before reading sources.','not-found':'Saved sources are not available to this account.','busy':'A source read is already running. Try again after it finishes.','invalid-response':'The saved source response could not be safely read.','invalid-state':'Saved references cannot be safely read.','invalid-request':'This saved reference scope is unavailable.','target-budget-exceeded':'Saved references exceed the inspection limit.','result-too-large':'The complete source page exceeds its limit.','storage-unavailable':'Saved sources are unavailable.'};
+const fault=code=>Object.assign(new Error(messages[code]??messages['storage-unavailable']),{code:Object.hasOwn(messages,code)?code:'storage-unavailable'});
+async function boundedJson(response,current,signal,timeoutMs){
+ const reader=response.body?.getReader();if(!reader)throw fault('invalid-response');let done=false,size=0,reads=0,expired=false;
+ const bytes=new Uint8Array(response.ok?VIEW_LIMITS.bytes:VIEW_LIMITS.errorBytes),deadline=performance.now()+timeoutMs;
+ const cancel=()=>{reader.cancel().catch(()=>{});},timer=setTimeout(()=>{expired=true;cancel();},timeoutMs);
+ signal.addEventListener('abort',cancel,{once:true});
+ try{if((response.headers.get('Content-Type')??'').split(';')[0].trim().toLowerCase()!=='application/json')throw fault('invalid-response');
+  while(true){
+   if(!current()||signal.aborted)throw fault('context-changed');if(expired||performance.now()>=deadline)throw fault('storage-unavailable');
+   const part=await reader.read();if(!current()||signal.aborted)throw fault('context-changed');if(expired||performance.now()>=deadline)throw fault('storage-unavailable');
+   if(part.done){done=true;break;}if(!(part.value instanceof Uint8Array)||size+part.value.length>bytes.length)throw fault('invalid-response');bytes.set(part.value,size);size+=part.value.length;
+   // Empty, immediately resolved reads must still allow cancellation and timers.
+   if(++reads%64===0)await new Promise(resolve=>setTimeout(resolve,0));
+  }
+  try{return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes.subarray(0,size)));}catch{throw fault('invalid-response');}
+ }finally{clearTimeout(timer);signal.removeEventListener('abort',cancel);if(!done)cancel();reader.releaseLock();}
+}
+export function createCitationViewClient({session=projectSessionSnapshot,fetchFn=(...args)=>fetch(...args),onChange=()=>{},bodyTimeoutMs=15000}={}){
+ if(!Number.isInteger(bodyTimeoutMs)||bodyTimeoutMs<1||bodyTimeoutMs>15000)throw new TypeError('Invalid source body timeout.');
+ let ticket=null,pending=false,state={phase:'closed',rows:[]};
+ const emit=v=>{state=Object.freeze(v);onChange(state);};
+ const current=t=>{try{const s=session();return ticket===t&&s.token===t.token&&s.epoch===t.epoch&&t.current();}catch{return false;}};
+ function close(){if(!ticket&&state.phase==='closed')return;const t=ticket;ticket=null;pending=false;t?.abort.abort();emit({phase:'closed',rows:[]});}
+ async function load(t,cursor){
+  if(pending||!current(t))return false;pending=true;
+  const prior=cursor?state.rows:[],snapshot=cursor?state.snapshot:null,total=cursor?state.total:null;
+  emit({phase:'loading',rows:prior,snapshot,total,nextCursor:null});
+  try{
+   const params=new URLSearchParams({revision:String(t.revision),slide:t.slideId});if(t.elementId!==null)params.set('element',t.elementId);if(cursor)params.set('cursor',cursor);
+   if(!current(t))return false;
+   const response=await fetchFn(`/api/v2/projects/${encodeURIComponent(t.id)}/citation-view?${params}`,{headers:t.token===null?{}:{Authorization:`Bearer ${t.token}`},signal:t.abort.signal,credentials:'omit',cache:'no-store',redirect:'error'});
+   if(!current(t)){response.body?.cancel().catch(()=>{});return false;}
+   const value=await boundedJson(response,()=>current(t),t.abort.signal,bodyTimeoutMs);if(!current(t))return false;
+   if(!response.ok)throw fault(value?.code);
+   if(!validCitationView(value,t))throw fault('invalid-response');
+   if(snapshot&&(value.snapshot.sourceGeneration!==snapshot.sourceGeneration||value.snapshot.sourceRevision!==snapshot.sourceRevision||value.total!==total))throw fault('stale-catalog');
+   if(value.rows.length!==Math.min(VIEW_LIMITS.page,value.total-prior.length)||Boolean(value.nextCursor)!==(prior.length+value.rows.length<value.total)||new Set([...prior,...value.rows].map(r=>r.id)).size!==prior.length+value.rows.length)throw fault('invalid-response');
+   pending=false;emit({phase:'ready',...value,rows:[...prior,...value.rows]});return true;
+  }catch(error){if(current(t)){pending=false;emit({phase:'error',rows:[],error:messages[error?.code]??messages['storage-unavailable'],code:Object.hasOwn(messages,error?.code)?error.code:'storage-unavailable'});}return false;}
+  finally{if(ticket===t){pending=false;if(!current(t))close();}}
+ }
+ function read(input){if(pending)return Promise.resolve(false);close();const {id,revision,slideId,elementId=null,current:guard=()=>true}=input,s=session();
+  if(typeof id!=='string'||!/^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/.test(id)||!safeInteger(revision)||!targetId(slideId)||elementId!==null&&!targetId(elementId))return Promise.resolve(false);
+  const t={id,revision,slideId,elementId,current:guard,token:s.token,epoch:s.epoch,abort:new AbortController()};ticket=t;if(!current(t)){close();return Promise.resolve(false);}return load(t,null);
+ }
+ return Object.freeze({read,close,more:()=>ticket&&state.phase==='ready'&&state.nextCursor?load(ticket,state.nextCursor):Promise.resolve(false),check:()=>{if(ticket&&!current(ticket))close();},snapshot:()=>state});
+}

@@ -32,15 +32,16 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current continuation — J6-3 contract preparation
+## Current continuation — J6-3 source review
 
-The2026-10-30 continuation starts only the next proposed contract, linked in the
-[roadmap](ROADMAP.md#assistant-citation-source-inspector). Read
-[V2-8J-6-3-PLAN.md](V2-8J-6-3-PLAN.md) and current HANDOFF. Planning source65287b61
-has no product changes and is independently
-[READY_FOR_DIRECTION](reviews/V2-8J-6-3-plan-65287b61.json), stable record3b3f6c11.
-Human surface/privacy direction remains pending. State intentionally retains the accepted J6-2 milestone and candidate
-unauthorized. Do not infer implementation permission or recreate old fixtures.
+Human “ok continue” approved the reviewed Inspector/full-URL contract, pinned
+before runtime atec2bb489. Exact runtime/tests8d34c95f are pushed to origin/v2.
+Read [evaluation](V2-8J-6-3-EVAL.md), [manifest](v2-8j-6-3-evidence/manifest.json),
+state and HANDOFF. Selected36/36, final build and viewed final desktop/narrow/short
+images are complete; all original failed attempts and source applicability remain.
+A separate reviewer is challenging the frozen source; acceptance is pending.
+Do not advance the candidate, repeat old suites or recreate prior services.
+Finish only independent review/corrections and scoped closeout for this slice.
 
 ## Latest accepted slice — J6-2 browser notes export complete
 

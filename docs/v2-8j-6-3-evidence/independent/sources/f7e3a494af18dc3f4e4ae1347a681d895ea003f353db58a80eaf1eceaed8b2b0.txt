@@ -1,0 +1,427 @@
+// @forge/core-adjacent @forge/renderer-pptx — canonical SlideScene to
+// editable PPTX bytes. Consumes the SAME scene representation as the
+// browser editor (hard invariant): text/charts/tables survive as editable
+// OOXML, never raster. Chrome arrives as ordinary locked scene
+// elements; the renderer projects them like any other element and
+// never plans chrome itself. In-memory only: no output path, no
+// filesystem write. The Node-only file adapter lives in node.ts.
+//
+// Scene fields without a PPTX projection yet (element rotation,
+// locked/provenance as metadata) are preserved in the scene for
+// editor/seed use; V2-5 extends fidelity when those gain real
+// compiler/editor consumers. Image src stays the current
+// path/URL-style asset seam (see node.ts and the V2-2D report).
+
+import PptxGenJSModule from "pptxgenjs";
+import type { SlideScene, SceneElement, BackgroundDecor } from "../model/scene.generated.ts";
+import { validateScene } from "../model/scene.ts";
+import { runBold, visibleText } from "../core/text-run.ts";
+import { maxColumns, padTableRows } from "../core/table.ts";
+import { uniquePptxShapeIds } from "./shape-ids.ts";
+import { isSystemChrome } from "../model/scene-constants.ts";
+import { SourceNotesTrace, sourceNotesSnapshot, type QualifiedSourceNotes } from "./source-notes.ts";
+
+// The library's default-export typing does not expose its constructor
+// under nodenext module resolution. This narrow structural interface
+// covers exactly the surface the renderer uses; the single cast below
+// is the only boundary concession, and slide-shape methods stay loosely
+// typed because pptxgenjs itself types them as Function.
+interface PptxSlide {
+  background: unknown;
+  addText(...args: unknown[]): void;
+  addShape(...args: unknown[]): void;
+  addImage(...args: unknown[]): void;
+  addChart(...args: unknown[]): void;
+  addTable(...args: unknown[]): void;
+  addNotes(notes: string): void;
+}
+
+interface PptxPresentation {
+  layout: string;
+  title: string;
+  author: string;
+  subject: string;
+  company: string;
+  revision: string;
+  defineLayout(opts: { name: string; width: number; height: number }): void;
+  addSlide(): PptxSlide;
+  write(opts: { outputType: "uint8array" }): Promise<unknown>;
+}
+
+const PptxGenJS = PptxGenJSModule as unknown as new () => PptxPresentation;
+
+export interface ExportPreflightIssue {
+  slideId: string;
+  elementId: string | null;
+  reason: string;
+}
+
+// Fail-closed export preflight: the renderer faithfully projects
+// valid scenes or refuses unsafe ones — it never silently drops
+// authored data and never rewrites scenes to pass. Every rule
+// below is a demonstrated loss, not a hypothesis: the native
+// chart library keeps only the first pie/doughnut series, and
+// empty chart/table payloads historically rendered nothing with
+// no error. Callers holding a multi-series pie route it through
+// the compiler's chart-to-table fallback (or the V2-5 command
+// system) before exporting; the filesystem adapter inherits this
+// boundary because rejection precedes any byte generation.
+export class ExportUnsafeError extends Error {
+  readonly code = "export-unsafe";
+  readonly issues: ExportPreflightIssue[];
+  constructor(issues: ExportPreflightIssue[]) {
+    super(`pptx export refused (${issues.length} problem(s)): ${issues.map((i) => `slide '${i.slideId}'${i.elementId ? ` element '${i.elementId}'` : ""}: ${i.reason}`).join("; ")}`);
+    this.name = "ExportUnsafeError";
+    this.issues = issues;
+  }
+}
+
+function walkElements(els: SceneElement[], out: SceneElement[] = []): SceneElement[] {
+  for (const el of els ?? []) {
+    out.push(el);
+    walkElements(el.group?.children ?? [], out);
+  }
+  return out;
+}
+
+export async function preflightScenes(scenes: readonly SlideScene[]): Promise<ExportPreflightIssue[]> {
+  return preflight(scenes, false);
+}
+
+async function preflight(scenes: readonly SlideScene[], qualified: boolean): Promise<ExportPreflightIssue[]> {
+  const issues: ExportPreflightIssue[] = [];
+  for (const scene of scenes ?? []) {
+    const slideId = (scene as SlideScene)?.id ?? "(unknown slide)";
+    const verdict = await validateScene(scene);
+    if (!verdict.ok) {
+      issues.push({ slideId, elementId: null, reason: `scene contract invalid: ${verdict.errors.join("; ")}` });
+      continue;
+    }
+    if (scene.citations?.length && !qualified) {
+      issues.push({ slideId, elementId: null, reason: "Citation-bearing native export requires source-preserving presentation support." });
+      continue;
+    }
+    for (const el of walkElements(scene.elements)) {
+      // Hidden elements are omitted from output, so their payloads
+      // cannot fail preflight — unhiding re-arms the checks at the
+      // next export.
+      if (el.hidden === true) continue;
+      if (el.kind === "chart") {
+        const c = el.chart;
+        if (!c) {
+          issues.push({ slideId, elementId: el.id, reason: "chart element carries no chart payload — nothing would render" });
+        } else if ((c.series ?? []).length > 1 && (c.chartKind === "pie" || c.chartKind === "doughnut")) {
+          issues.push({
+            slideId,
+            elementId: el.id,
+            reason: `${c.chartKind} with ${(c.series ?? []).length} series would keep only the first in native output — route through the compiler chart-to-table fallback before exporting`,
+          });
+        } else if ((c.series ?? []).length === 0) {
+          issues.push({ slideId, elementId: el.id, reason: "chart has no series — nothing would render" });
+        }
+      } else if (el.kind === "table") {
+        const rows = el.table?.rows ?? [];
+        if (!el.table || rows.length === 0) {
+          issues.push({ slideId, elementId: el.id, reason: "table has no rows — nothing would render" });
+        }
+      }
+    }
+  }
+  return issues;
+}
+
+export interface PptxRenderOptions {
+  title?: string;
+  author?: string;
+  subject?: string;
+  company?: string;
+  revision?: string;
+}
+
+const CHART_TYPE: Record<string, string> = {
+  bar: "bar", hbar: "bar", line: "line", pie: "pie", doughnut: "doughnut", area: "area",
+};
+
+function addTextElement(slide: PptxSlide, el: SceneElement): void {
+  // pptxgenjs takes a flat run list; a paragraph break is breakLine on the
+  // run that ends the paragraph. Bullet/align live on the paragraph's runs.
+  // Resolved Layer C typography projects verbatim: family -> fontFace,
+  // tracking (points) -> charSpacing (points), line ratio -> lineSpacing
+  // (points, the same size*line product the legacy textStyle helper
+  // uses), transform -> visible uppercase text. Never autoFit: final
+  // sizes are baked into the scene by the compiler fitter.
+  const runs: { text: string; options: Record<string, unknown> }[] = [];
+  const paras = el.paragraphs ?? [];
+  paras.forEach((p, pi) => {
+    (p.runs ?? []).forEach((r, ri) => {
+      const size = r.size ?? 12;
+      const options: Record<string, unknown> = {
+        bold: runBold(r),
+        italic: r.italic,
+        fontSize: size,
+        color: r.color,
+        align: ri === 0 ? (p.align ?? "left") : undefined,
+        bullet: ri === 0 ? (p.bullet ? { code: "2022" } : false) : undefined,
+        breakLine: ri === p.runs.length - 1 && pi < paras.length - 1,
+      };
+      if (r.family) options.fontFace = r.family;
+      if (r.tracking) options.charSpacing = r.tracking;
+      if (r.line) options.lineSpacing = Math.round(size * r.line * 10) / 10;
+      runs.push({ text: visibleText(r), options });
+    });
+  });
+  if (!runs.length) return;
+  // Element opacity projects to PptxGenJS transparency, the same
+  // mapping the legacy chrome facade uses: round((1 - opacity) * 100).
+  // Fully opaque or absent opacity omits the property, preserving the
+  // legacy slide-number behavior (no transparency key at all).
+  slide.addText(runs, {
+    x: el.x, y: el.y, w: el.w, h: el.h,
+    valign: el.valign ?? "top", margin: 0.05,
+    ...(el.opacity !== undefined && el.opacity < 1
+      ? { transparency: Math.round((1 - el.opacity) * 100) }
+      : {}),
+  });
+}
+
+function addShapeElement(slide: PptxSlide, el: SceneElement): void {
+  const form = { rect: "rect", roundRect: "roundRect", ellipse: "ellipse" }[el.shape?.form ?? "rect"];
+  // Fill alpha projects to OOXML transparency, the inverse scale the
+  // legacy decor path uses: round((1 - alpha) * 100). Absent or fully
+  // opaque alpha omits the property, preserving historical bytes.
+  const fillT = el.shape?.fillAlpha !== undefined && el.shape.fillAlpha < 1
+    ? Math.round((1 - el.shape.fillAlpha) * 100)
+    : undefined;
+  const strokeT = el.shape?.strokeAlpha !== undefined && el.shape.strokeAlpha < 1
+    ? Math.round((1 - el.shape.strokeAlpha) * 100)
+    : undefined;
+  slide.addShape(form, {
+    x: el.x, y: el.y, w: el.w, h: el.h,
+    fill: {
+      color: el.shape?.fill ?? "FFFFFF",
+      ...(fillT !== undefined ? { transparency: fillT } : {}),
+    },
+    line: el.shape?.stroke
+      ? {
+        color: el.shape.stroke,
+        width: el.shape.strokeWidth ?? 1,
+        ...(strokeT !== undefined ? { transparency: strokeT } : {}),
+      }
+      : { type: "none" },
+  });
+}
+
+// Theme-owned background dressing. Drawn once per slide, immediately
+// after the slide background and before every element, in array order
+// — decor can never cover content. Coordinates may bleed off-canvas
+// on purpose (corner halos, full-bleed rules); that is the theme's
+// declared geometry, projected verbatim.
+function addDecorShape(slide: PptxSlide, d: BackgroundDecor): void {
+  const form = d.shape === "ellipse" ? "ellipse" : "rect";
+  const t = d.fillAlpha !== undefined && d.fillAlpha < 1
+    ? Math.round((1 - d.fillAlpha) * 100)
+    : undefined;
+  slide.addShape(form, {
+    x: d.x, y: d.y, w: d.w, h: d.h,
+    fill: { color: d.fill, ...(t !== undefined ? { transparency: t } : {}) },
+    line: { type: "none" },
+    ...(d.rotation ? { rotation: d.rotation } : {}),
+  });
+}
+
+function addImageElement(slide: PptxSlide, el: SceneElement): void {
+  if (!el.image?.src) {
+    slide.addShape("rect", { x: el.x, y: el.y, w: el.w, h: el.h, fill: { color: "D8D8D2" }, line: { type: "none" } });
+    slide.addText([{ text: "[image]", options: { align: "center", color: "5C5C59" } }], { x: el.x, y: el.y + el.h / 2 - 0.2, w: el.w, h: 0.4 });
+    return;
+  }
+  // Renderer-ready asset seam: the scene carries what the adapter
+  // resolved. Data URIs ride the PptxGenJS data path; everything else
+  // rides the path as before. Nothing is fetched, probed, or read
+  // here beyond what PptxGenJS itself embeds.
+  const at = { x: el.x, y: el.y, w: el.w, h: el.h, sizing: { type: "cover", w: el.w, h: el.h } };
+  if (/^data:/i.test(el.image.src)) {
+    slide.addImage({ data: el.image.src, ...at });
+    return;
+  }
+  slide.addImage({ path: el.image.src, ...at });
+}
+
+function addChartElement(slide: PptxSlide, el: SceneElement): void {
+  const c = el.chart;
+  if (!c) return;
+  const data = (c.series ?? []).map((s) => ({ name: s.name, labels: c.categories, values: s.values }));
+  if (!data.length) return;
+  // Label typography resolves once in Layer C and projects here
+  // verbatim; PowerPoint never guesses sizes, and labels never
+  // shrink below the contract. Legend sits right, deterministically.
+  const labels = c.labels;
+  slide.addChart(
+    CHART_TYPE[c.chartKind] ?? "bar",
+    data,
+    {
+      x: el.x, y: el.y, w: el.w, h: el.h,
+      barDir: c.chartKind === "hbar" ? "bar" : "col",
+      showTitle: false, showLegend: true, legendPos: "r",
+      ...(labels ? {
+        catAxisLabelFontFace: labels.family || undefined,
+        catAxisLabelFontSize: labels.size,
+        catAxisLabelColor: labels.color,
+        valAxisLabelFontFace: labels.family || undefined,
+        valAxisLabelFontSize: labels.size,
+        valAxisLabelColor: labels.color,
+        legendFontFace: labels.family || undefined,
+        legendFontSize: labels.size,
+        legendColor: labels.color,
+      } : {}),
+    },
+  );
+}
+
+function addTableElement(slide: PptxSlide, el: SceneElement): void {
+  const table = el.table;
+  const rows = table?.rows ?? [];
+  if (!rows.length) return;
+  const layout = table?.layout;
+  if (!layout) {
+    // Pre-contract scenes keep their historical rendering exactly,
+    // except ragged rows pad with empty cells: pptxgenjs paints
+    // absent cells solid green, which is never what the author
+    // wrote. Padding is projection-only; scene data is untouched.
+    const cols = maxColumns(rows);
+    const legacy = padTableRows(rows, cols).map((row) =>
+      row.map((cell) => ({ text: cell, options: { fontSize: 10 } })),
+    );
+    slide.addTable(legacy, { x: el.x, y: el.y, w: el.w, h: el.h, border: { pt: 0.5, color: "D8D8D2" } });
+    return;
+  }
+  // Column widths resolve once in Layer C; ragged rows pad with
+  // empty cells carrying the row's own styling so the grid stays
+  // complete without touching authored data. Cells anchor top like
+  // the SVG projection; full text (including \n breaks) always
+  // rides along — PowerPoint wraps natively and the compiler has
+  // already diagnosed anything that cannot fit.
+  const cols = maxColumns(rows);
+  const colW = layout.colWidths?.length === cols ? layout.colWidths : undefined;
+  const padded = padTableRows(rows, cols);
+  const body = padded.map((row, ri) => {
+    const isHeader = !!table?.header && ri === 0;
+    const style = {
+      fontSize: isHeader ? (layout.headerSize ?? 10) : (layout.bodySize ?? 10),
+      ...(layout.fontFamily ? { fontFace: layout.fontFamily } : {}),
+      color: isHeader ? (layout.headerColor ?? "000000") : (layout.bodyColor ?? "000000"),
+      bold: isHeader ? (layout.headerBold ?? true) : false,
+      valign: "top" as const,
+      ...(isHeader && layout.headerFill ? { fill: { color: layout.headerFill } } : {}),
+    };
+    return row.map((cell) => ({ text: cell, options: style }));
+  });
+  slide.addTable(body, {
+    x: el.x, y: el.y, w: el.w, h: el.h,
+    ...(colW ? { colW } : {}),
+    ...(layout.rowHeights?.length ? { rowH: layout.rowHeights } : {}),
+    border: { pt: 0.5, color: layout.gridColor ?? "D8D8D2" },
+    ...(layout.padding !== undefined ? { margin: layout.padding } : {}),
+  });
+}
+
+function addLineElement(slide: PptxSlide, el: SceneElement): void {
+  const line = el.line ?? { x2: el.x, y2: el.y };
+  const flipV = (line.y2 ?? el.y) < el.y;
+  const flipH = (line.x2 ?? el.x) < el.x;
+  slide.addShape("line", {
+    x: Math.min(el.x, line.x2 ?? el.x),
+    y: Math.min(el.y, line.y2 ?? el.y),
+    w: Math.abs((line.x2 ?? el.x) - el.x) || 0.01,
+    h: Math.abs((line.y2 ?? el.y) - el.y) || 0.01,
+    line: { color: line.stroke ?? "888888", width: line.strokeWidth ?? 1.5 },
+    flipV, flipH,
+  });
+}
+
+function drawElement(slide: PptxSlide, el: SceneElement, dx = 0, dy = 0, trace?: SourceNotesTrace, index = 0, scope: readonly SceneElement[] = [], chrome = false): void {
+  // Hidden elements stay in the scene and vanish from output —
+  // omitted, never rasterized, restorable by re-showing.
+  if (el.hidden === true) return;
+  const at = { ...el, x: el.x + dx, y: el.y + dy };
+  const blocked = chrome || isSystemChrome(el), next = blocked ? [] : [...scope, el];
+  const emitted = trace ? trace.emitter(slide, index, next) : slide;
+  switch (el.kind) {
+    case "text": addTextElement(emitted as PptxSlide, at); break;
+    case "shape": addShapeElement(emitted as PptxSlide, at); break;
+    case "image": addImageElement(emitted as PptxSlide, at); break;
+    case "chart": addChartElement(emitted as PptxSlide, at); break;
+    case "table": addTableElement(emitted as PptxSlide, at); break;
+    case "line": addLineElement(emitted as PptxSlide, at); break;
+    case "group":
+      for (const c of el.group?.children ?? []) drawElement(slide, c, at.x, at.y, trace, index, next, blocked);
+      break;
+    default: break;
+  }
+}
+
+export async function renderPptx(
+  scenes: readonly SlideScene[],
+  options: PptxRenderOptions = {},
+): Promise<Uint8Array> {
+  return render(scenes, options);
+}
+
+const preparedNotes = new WeakMap<object, QualifiedSourceNotes>();
+
+// Only trusted host assembly supplies an executable canonical qualifier.
+export function createCitationNotesRenderer<T>(qualify: (request: T) => Promise<QualifiedSourceNotes>): (request: T) => Promise<Uint8Array> {
+  if (typeof qualify !== "function") throw new Error("A canonical source-notes qualifier is required.");
+  const callback = qualify;
+  return async request => {
+    const snapshot = sourceNotesSnapshot(await callback(request));
+    const handle = Object.freeze({});
+    preparedNotes.set(handle, snapshot);
+    return render(snapshot.scenes, { title: snapshot.title }, handle);
+  };
+}
+
+async function render(scenes: readonly SlideScene[], options: PptxRenderOptions, handle?: object): Promise<Uint8Array> {
+  const snapshot = handle ? preparedNotes.get(handle) : undefined;
+  if (handle) preparedNotes.delete(handle);
+  if (handle && (!snapshot || snapshot.scenes !== scenes)) throw new Error("Invalid source-notes authority.");
+  if (!scenes.length) throw new Error("renderPptx requires at least one scene");
+  const trace = snapshot ? new SourceNotesTrace(snapshot) : undefined;
+  const unsafe = await preflight(scenes, !!snapshot);
+  if (unsafe.length > 0) throw new ExportUnsafeError(unsafe);
+  const pres = new PptxGenJS();
+  pres.defineLayout({ name: "V2", width: scenes[0].width, height: scenes[0].height });
+  pres.layout = "V2";
+  if (options.title !== undefined) pres.title = options.title;
+  if (options.author !== undefined) pres.author = options.author;
+  if (options.subject !== undefined) pres.subject = options.subject;
+  if (options.company !== undefined) pres.company = options.company;
+  if (options.revision !== undefined) pres.revision = options.revision;
+  for (const [index, scene] of scenes.entries()) {
+    const slide = pres.addSlide();
+    // The background (image when the adapter resolved one, flat fill
+    // otherwise) is assigned BEFORE any element is drawn: pptxgenjs
+    // numbers a later background relationship against chart parts and
+    // the image silently never paints. Decor follows the background
+    // and precedes content, so dressing stays behind editable text.
+    const bgImage = scene.background.image;
+    if (bgImage && /^data:/i.test(bgImage.src)) {
+      slide.background = { data: bgImage.src.replace(/^data:[^,]+,/, ""), path: "plate.png" };
+    } else if (bgImage) {
+      slide.background = { path: bgImage.src };
+    } else {
+      slide.background = { color: scene.background.fill };
+    }
+    for (const d of scene.background.decor ?? []) addDecorShape(trace ? trace.emitter(slide, index, []) as PptxSlide : slide, d);
+    const els = [...scene.elements].sort((a, b) => a.z - b.z);
+    for (const el of els) drawElement(slide, el, 0, 0, trace, index);
+    if (trace) { const notes = trace.notes(index); if (notes) slide.addNotes(notes); }
+  }
+  const out = await pres.write({ outputType: "uint8array" });
+  if (!(out instanceof Uint8Array)) {
+    throw new Error(`renderPptx expected uint8array output, received ${typeof out}`);
+  }
+  const bytes = await uniquePptxShapeIds(out);
+  if (trace) await trace.verify(bytes);
+  return bytes;
+}

@@ -1,0 +1,8 @@
+{
+  "kind": "lightweight-evidence-audit",
+  "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "checks": 632,
+  "errors": 0,
+  "command": "python docs/v2-8j-6-3-evidence/audit-packet.py",
+  "scope": "Original captured bytes, frozen runtime/test hashes, successful selected leaves, unchanged accepted existing13 source and final build applicability. Does not rerun product tests or prove acceptance."
+}

@@ -1,0 +1,38 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {createCitationViewClient} from '../app/web/src/lib/citationView.js';
+import {validCitationView,literalSourceText} from '../packages/projects/citation-view-contract.js';
+const row={id:'cit_'+'0'.repeat(32),target:{kind:'element',slideId:'s1',elementId:'text'},targetStatus:'present',contentStatus:'current',sourceStatus:'retained',locatorStatus:'not-requested',claimSupport:'not-assessed',reference:{title:'<b>Literal</b>',url:'https://example.org/?private=value'}};
+const value=()=>({ok:true,snapshot:{projectId:'p',projectRevision:1,sourceGeneration:0,sourceRevision:1},scope:{slideId:'s1',elementId:null,status:'present'},total:1,rows:[structuredClone(row)],nextCursor:null});
+const input=()=>({id:'p',revision:1,slideId:'s1'}),json=(v,status=200)=>new Response(JSON.stringify(v),{status,headers:{'Content-Type':'application/json'}});
+const deferred=()=>{let resolve;return {promise:new Promise(r=>resolve=r),resolve};};
+function rig(responses){let auth={token:'owner',epoch:1};const calls=[],states=[],controller=createCitationViewClient({session:()=>auth,fetchFn:async(url,options)=>{calls.push({url,options});const v=responses.shift();return typeof v==='function'?v():await v;},onChange:s=>states.push(s)});return {controller,calls,states,session:v=>auth=v};}
+test('Sources client: explicit bounded read captures owner and DTO without storing or mutation requests',async()=>{
+ const r=rig([json(value())]);assert.equal(r.calls.length,0);await r.controller.read(input());assert.equal(r.controller.snapshot().phase,'ready');const c=r.calls[0];assert.match(c.url,/revision=1&slide=s1/);assert.equal(c.options.headers.Authorization,'Bearer owner');assert.equal(c.options.credentials,'omit');assert.equal(c.options.redirect,'error');assert.equal(c.options.cache,'no-store');r.controller.close();assert.deepEqual(r.controller.snapshot(),{phase:'closed',rows:[]});assert.equal(literalSourceText('x\u202ey\n'),'x\\u202ey\\u000a');
+});
+test('Sources client: obsolete fetch/body and same-token session epoch cannot populate or clear a newer read',async()=>{
+ for(const body of [false,true]){const d=deferred();let cancel=false;const first=body?new Response(new ReadableStream({async pull(c){await d.promise;c.enqueue(new TextEncoder().encode(JSON.stringify(value())));},cancel(){cancel=true;}}),{headers:{'Content-Type':'application/json'}}):d.promise;
+  const r=rig([first,json(value())]),pending=r.controller.read(input());await new Promise(q=>setTimeout(q,0));r.controller.close();await r.controller.read(input());d.resolve(json(value()));await pending;assert.equal(r.controller.snapshot().phase,'ready');assert.equal(r.controller.snapshot().rows.length,1);if(body)assert.equal(cancel,true);
+ }
+ const d=deferred(),r=rig([d.promise]);const p=r.controller.read(input());r.session({token:'owner',epoch:3});d.resolve(json(value()));await p;assert.deepEqual(r.controller.snapshot(),{phase:'closed',rows:[]});
+});
+test('Sources client: exact schema scalar URLs counters byte ceiling MIME and static errors fail closed',async()=>{
+ const bad=[{...value(),excerpt:'PRIVATE'}, {...value(),snapshot:{...value().snapshot,projectId:'foreign'}},{...value(),rows:[{...row,reference:{...row.reference,url:'javascript:alert(1)'}}]},{...value(),rows:[{...row,reference:{...row.reference,title:'\ud800'}}]}, {...value(),rows:[{...row,claimSupport:'verified'}]}];
+ for(const response of [...bad.map(v=>json(v)),new Response('<html>PRIVATE</html>',{headers:{'Content-Type':'text/html'}}),new Response('x'.repeat(262145),{headers:{'Content-Type':'application/json'}}),new Response('x'.repeat(8193),{status:503,headers:{'Content-Type':'application/json'}}),json({code:'unrecognized',error:'PRIVATE'},403)]){const r=rig([response]);await r.controller.read(input());assert.equal(r.controller.snapshot().phase,'error');assert.deepEqual(r.controller.snapshot().rows,[]);assert.equal(JSON.stringify(r.states).includes('PRIVATE'),false);}
+ assert.equal(validCitationView({...value(),scope:{...value().scope,status:'not-saved'}},input()),false);
+});
+test('Sources client: explicit pagination and stale counters discard every prior private row',async()=>{
+ const a=value();a.total=25;a.rows=Array.from({length:24},(_,i)=>({...structuredClone(row),id:'cit_'+i.toString(16).padStart(32,'0')}));a.nextCursor='opaque';const b=value();b.total=25;b.rows[0].id='cit_'+'f'.repeat(32);
+ const r=rig([json(a),json(b)]);await r.controller.read(input());assert.equal(r.calls.length,1);await r.controller.more();assert.equal(r.controller.snapshot().rows.length,25);assert.equal(r.calls.length,2);
+ const stale=rig([json(a),json({...b,snapshot:{...b.snapshot,sourceRevision:2}})]);await stale.controller.read(input());await stale.controller.more();assert.equal(stale.controller.snapshot().code,'stale-catalog');assert.deepEqual(stale.controller.snapshot().rows,[]);assert.equal(stale.calls.length,2);
+ const duplicate=rig([json(a),json({...b,rows:[row]})]);await duplicate.controller.read(input());await duplicate.controller.more();assert.equal(duplicate.controller.snapshot().phase,'error');
+});
+test('Sources client: live scope invalidation and rapid duplicate starts have no queue or retry',async()=>{
+ const d=deferred();let current=true;const r=rig([d.promise]);const p=r.controller.read({...input(),current:()=>current});assert.equal(await r.controller.read(input()),false);assert.equal(r.calls.length,1);current=false;r.controller.check();d.resolve(json(value()));await p;assert.equal(r.controller.snapshot().phase,'closed');assert.equal(r.calls.length,1);
+});
+test('Sources client: empty chunks yield and stalled bodies expire without retained chunk growth',async()=>{
+ let reads=0,timerRan=false;const timer=setTimeout(()=>{timerRan=true;},0);
+ const response=new Response(new ReadableStream({pull(c){if(reads++<2048)c.enqueue(new Uint8Array());else{c.enqueue(new TextEncoder().encode(JSON.stringify(value())));c.close();}}}),{headers:{'Content-Type':'application/json'}});
+ const r=rig([response]);await r.controller.read(input());clearTimeout(timer);assert.equal(timerRan,true,'empty reads must allow timers to run');assert.equal(r.controller.snapshot().phase,'ready');
+ let cancelled=false;const stalled=new Response(new ReadableStream({cancel(){cancelled=true;return new Promise(()=>{});}}),{headers:{'Content-Type':'application/json'}});
+ const client=createCitationViewClient({session:()=>({token:null,epoch:0}),fetchFn:async()=>stalled,bodyTimeoutMs:15});await client.read(input());assert.equal(cancelled,true);assert.equal(client.snapshot().phase,'error');assert.deepEqual(client.snapshot().rows,[]);
+});

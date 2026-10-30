@@ -1,0 +1,14 @@
+{
+  "viewport": [
+    320,
+    420
+  ],
+  "rail": [
+    32,
+    44,
+    288,
+    376
+  ],
+  "errors": [],
+  "method": "320px narrow viewport"
+}

@@ -1,0 +1,123 @@
+{
+  "id": "view-domain",
+  "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "kind": "tests",
+  "command": "Assemble explicit successful executed-leaf selections from retained original invocations; no new execution.",
+  "exitCode": 0,
+  "tests": {
+    "total": 21,
+    "pass": 21,
+    "fail": 0,
+    "skip": 0,
+    "cancelled": 0
+  },
+  "log": "docs/v2-8j-6-3-evidence/view-domain-selected.tap",
+  "selection": {
+    "Citation view: saved slide/object exact DTO discloses title URL only, without writes": {
+      "file": "test/v2-citation-view-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 46.064931
+    },
+    "Citation view: unresolved target and changed content remain separate from retained source identity": {
+      "file": "test/v2-citation-view-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 2.940192
+    },
+    "Citation view: 24/25 stable pages bind scope and complete catalog snapshot without receipt authority": {
+      "file": "test/v2-citation-view-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 7.324228
+    },
+    "Citation view: captured immutable input refuses extra authority unsafe counters and cursor forgery": {
+      "file": "test/v2-citation-view-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 1.382369
+    },
+    "Citation view: corrupt source or document cannot publish a partial page or reflected private text": {
+      "file": "test/v2-citation-view-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 1.446901
+    },
+    "Citation view: traversal and snippet boundaries retain canonical unassessed observations": {
+      "file": "test/v2-citation-view-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 45.901204
+    },
+    "Citation view SQLite: exact owners and atomic saved read survive competing save and source clear": {
+      "file": "test/v2-citation-view-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 56.605296
+    },
+    "Citation lifecycle: fixed-format labels refuse literal trailing line feeds": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 37.839538
+    },
+    "Citation lifecycle: strict scene shape and project-wide admission preserve unverified records": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 23.874831
+    },
+    "Citation lifecycle: anchors ignore styling and run boundaries but preserve exact authored content": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 3.171598
+    },
+    "Citation lifecycle: chart table image and slide content changes have distinct bounded anchors": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 2.719667
+    },
+    "Citation lifecycle: exact targets and protected ancestor/group scopes never use first matches": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 5.771724
+    },
+    "Citation lifecycle: commands are atomic, no-op aware and exactly undoable": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 4.604503
+    },
+    "Citation lifecycle: raw agent citation ingress refuses while ordinary edits preserve metadata": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 1.682801
+    },
+    "Citation lifecycle: duplication remaps only unique live identities and retains unresolved tuples": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 3.559998
+    },
+    "Citation lifecycle: deletion leaves orphans and session undo retains exact metadata for 200 changes": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 47.973929
+    },
+    "Citation lifecycle: recompilation preserves exact orphan records and detached identity": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 17.573087
+    },
+    "Citation lifecycle: central native preflight refuses all cited targets before producing bytes": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 1.252592
+    },
+    "Citation lifecycle: tool projections and scalar range observations disclose no citation payload": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 8.238866
+    },
+    "Citation lifecycle: strict domain capture refuses accessors and captures binding before awaits": {
+      "file": "test/v2-citations-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-01.json",
+      "durationMs": 0.878151
+    },
+    "Citation view: missing current source has an unresolved row with no revived title or URL": {
+      "file": "test/v2-citation-view-8j.test.js",
+      "invocation": "docs/v2-8j-6-3-evidence/domain-missing-02.json",
+      "durationMs": 43.377206
+    }
+  },
+  "sourceApplicability": "See manifest.json sourceApplicability and original per-invocation hashes/content-addressed snapshots. Selected union is not one green final whole-file process."
+}

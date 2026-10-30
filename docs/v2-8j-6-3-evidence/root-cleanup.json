@@ -1,0 +1,87 @@
+{
+  "recordedAt": "2026-10-30T08:09:16.166390+00:00",
+  "rootOwnedGroups": [
+    {
+      "invocation": "browser-01.json",
+      "pgid": 257221,
+      "members": []
+    },
+    {
+      "invocation": "browser-corrections-05.json",
+      "pgid": 276030,
+      "members": []
+    },
+    {
+      "invocation": "browser-keyboard-02.json",
+      "pgid": 261589,
+      "members": []
+    },
+    {
+      "invocation": "browser-keyboard-03.json",
+      "pgid": 261866,
+      "members": []
+    },
+    {
+      "invocation": "browser-pointer-fail-04.json",
+      "pgid": 272666,
+      "members": []
+    },
+    {
+      "invocation": "browser-reflow-final-06.json",
+      "pgid": 277148,
+      "members": []
+    },
+    {
+      "invocation": "build-01.json",
+      "pgid": 256943,
+      "members": []
+    },
+    {
+      "invocation": "build-final-02.json",
+      "pgid": 275753,
+      "members": []
+    },
+    {
+      "invocation": "client-01.json",
+      "pgid": 245108,
+      "members": []
+    },
+    {
+      "invocation": "client-body-02.json",
+      "pgid": 245388,
+      "members": []
+    },
+    {
+      "invocation": "client-empty-fail-03.json",
+      "pgid": 272075,
+      "members": []
+    },
+    {
+      "invocation": "client-final-04.json",
+      "pgid": 272601,
+      "members": []
+    },
+    {
+      "invocation": "domain-01.json",
+      "pgid": 244518,
+      "members": []
+    },
+    {
+      "invocation": "domain-missing-02.json",
+      "pgid": 245449,
+      "members": []
+    },
+    {
+      "invocation": "transport-01.json",
+      "pgid": 246410,
+      "members": []
+    },
+    {
+      "invocation": "transport-verified-02.json",
+      "pgid": 247155,
+      "members": []
+    }
+  ],
+  "backend": "Fresh owned temporary SQLite/API per fixture, closed by fixture finally/after hooks. No PostgreSQL created or reused. No production activation/model/search/provider call.",
+  "limitations": "Process-group absence verifies recorded owned runners and inheriting children. No reconstruction of unavailable historical services or a secure memory-erasure claim."
+}

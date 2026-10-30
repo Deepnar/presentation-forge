@@ -1,0 +1,75 @@
+✔ Sources Chrome: saved read preserves title table and inline drafts, fixed canvas, explicit disclosure only (3850.626876ms)
+✔ Sources Chrome: pagination clear and late route/session reads never revive private source rows (3275.890072ms)
+✖ Sources Chrome: unresolved saved references work in Done with keyboard narrow and short reflow (12312.396835ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19728.030446
+
+✖ failing tests:
+
+test at test/v2-citation-view-chrome-8j.test.js:5:24
+✖ Sources Chrome: unresolved saved references work in Done with keyboard narrow and short reflow (12312.396835ms)
+  Error: Browser condition document.querySelector('[data-source-row]'); I
+  ← Workspace
+  Slides
+  History
+  Export
+  Present
+  Assistant
+  Inspector
+  1 / 2
+  Measured
+  0
+  5
+  10
+  A
+  B
+  ■ Score
+  Cell
+  Score
+  A
+  1.25
+  B
+  12.5
+  Slide 1 · Custom
+  Unrelated private slide
+  Slide 2
+  ← Prev
+  Next →
+  −
+  100%
+  +
+  Fit
+  Edit
+  Slide 1 of 2 · Read-only · saved · Custom slide
+  Measured
+  0
+  5
+  10
+  A
+  B
+  ■ Score
+  Cell
+  Score
+  A
+  1.25
+  B
+  12.5
+  Inspector
+  Assistant
+  ×
+  Nothing selected. Click the slide to select an object, or double-click text to edit it.
+  Sources
+  Slide 1 of 2
+  Layout Custom slide
+  Objects 3
+  Read-only — press Edit in the toolbar to change this slide.
+      at wait (file:///home/deepnar/Programs/presentations/test/v2-citation-view-chrome-8j.test.js:6:210)
+      at async TestContext.<anonymous> (file:///home/deepnar/Programs/presentations/test/v2-citation-view-chrome-8j.test.js:33:176)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7)

@@ -1,0 +1,101 @@
+{
+  "measurements": {
+    "browser-01.json": {
+      "durationMs": 19793,
+      "cpuSeconds": 5.712,
+      "peakLiveGroupRssBytes": 1915604992,
+      "watchdog": false
+    },
+    "browser-corrections-05.json": {
+      "durationMs": 6723,
+      "cpuSeconds": 3.845,
+      "peakLiveGroupRssBytes": 1883889664,
+      "watchdog": false
+    },
+    "browser-keyboard-02.json": {
+      "durationMs": 114,
+      "cpuSeconds": 0.077,
+      "peakLiveGroupRssBytes": 33521664,
+      "watchdog": false
+    },
+    "browser-keyboard-03.json": {
+      "durationMs": 5120,
+      "cpuSeconds": 2.73,
+      "peakLiveGroupRssBytes": 1875161088,
+      "watchdog": false
+    },
+    "browser-pointer-fail-04.json": {
+      "durationMs": 4419,
+      "cpuSeconds": 2.72,
+      "peakLiveGroupRssBytes": 1768460288,
+      "watchdog": false
+    },
+    "browser-reflow-final-06.json": {
+      "durationMs": 5175,
+      "cpuSeconds": 2.793,
+      "peakLiveGroupRssBytes": 1844817920,
+      "watchdog": false
+    },
+    "build-01.json": {
+      "durationMs": 1015,
+      "cpuSeconds": 1.348,
+      "peakLiveGroupRssBytes": 32530432,
+      "watchdog": false
+    },
+    "build-final-02.json": {
+      "durationMs": 867,
+      "cpuSeconds": 1.2,
+      "peakLiveGroupRssBytes": 34369536,
+      "watchdog": false
+    },
+    "client-01.json": {
+      "durationMs": 165,
+      "cpuSeconds": 0.148,
+      "peakLiveGroupRssBytes": 34938880,
+      "watchdog": false
+    },
+    "client-body-02.json": {
+      "durationMs": 164,
+      "cpuSeconds": 0.132,
+      "peakLiveGroupRssBytes": 35708928,
+      "watchdog": false
+    },
+    "client-empty-fail-03.json": {
+      "durationMs": 114,
+      "cpuSeconds": 0.124,
+      "peakLiveGroupRssBytes": 37289984,
+      "watchdog": false
+    },
+    "client-final-04.json": {
+      "durationMs": 214,
+      "cpuSeconds": 0.162,
+      "peakLiveGroupRssBytes": 37683200,
+      "watchdog": false
+    },
+    "domain-01.json": {
+      "durationMs": 966,
+      "cpuSeconds": 1.188,
+      "peakLiveGroupRssBytes": 34463744,
+      "watchdog": false
+    },
+    "domain-missing-02.json": {
+      "durationMs": 365,
+      "cpuSeconds": 0.441,
+      "peakLiveGroupRssBytes": 36933632,
+      "watchdog": false
+    },
+    "transport-01.json": {
+      "durationMs": 3769,
+      "cpuSeconds": 4.701,
+      "peakLiveGroupRssBytes": 537341952,
+      "watchdog": false
+    },
+    "transport-verified-02.json": {
+      "durationMs": 1818,
+      "cpuSeconds": 2.371,
+      "peakLiveGroupRssBytes": 367624192,
+      "watchdog": false
+    }
+  },
+  "notes": "Waited-child CPU and one-second live-group RSS samples; summed RSS can count shared mappings. CPU20-21, nice15, idle I/O, serial watchdogs. No global load attribution or GPU/model job."
+}

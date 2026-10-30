@@ -1,0 +1,27 @@
+{
+  "cpuCount": 24,
+  "memoryAvailableKiB": 40566504,
+  "pressure": {
+    "cpu": "some avg10=0.00 avg60=0.00 avg300=0.04 total=17569138\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2890\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=2844\n",
+    "io": "some avg10=37.75 avg60=38.43 avg300=38.28 total=1876432268\nfull avg10=36.50 avg60=37.02 avg300=36.66 total=1810421387\n"
+  },
+  "diskSectorDeltaOverHalfSecond": {
+    "nvme0n1": [
+      0,
+      8
+    ]
+  },
+  "competingProcesses": [
+    "    PID %CPU COMMAND",
+    "   9281 96.1 python3",
+    " 247047 95.5 python3",
+    "   6068 18.8 RDD Process",
+    "   9904 11.1 Isolated Web Co",
+    "   5920  9.4 zen-bin",
+    " 285113  5.5 python3",
+    " 264483  5.2 postgres",
+    "   4157  4.3 Hyprland"
+  ],
+  "policy": "One independent serial challenge, nice15/idleIO/twoCPU20,21 with100s process-group watchdog and owned monitoring. Reuse finalbuild02. Leave unrelated work alone."
+}

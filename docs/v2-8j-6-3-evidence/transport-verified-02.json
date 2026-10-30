@@ -1,0 +1,123 @@
+{
+  "sourceSnapshotDirectory": "docs/v2-8j-6-3-evidence/sources",
+  "invocationHead": "ec2bb48967fcef10816b23c4f8e5c18f48338ab8",
+  "command": "nice -n 15 ionice -c 3 taskset -c 20,21 node --test --test-concurrency=1 \"--test-name-pattern=verified-owner policy\" test/v2-citation-view-http-8j.test.js",
+  "argv": [
+    "nice",
+    "-n",
+    "15",
+    "ionice",
+    "-c",
+    "3",
+    "taskset",
+    "-c",
+    "20,21",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=verified-owner policy",
+    "test/v2-citation-view-http-8j.test.js"
+  ],
+  "startedAt": "2026-10-30T07:48:32.406910+00:00",
+  "sourceHashes": {
+    "app/server/index.js": "8b2aa8d2883efa9705eb240b7588aa6750df66cc2627d409530aa7967a5d3bb7",
+    "app/server/v2-citation-view-routes.js": "a4ee132517c5ef2ea48d699983592a9b1bed470ac52347f5f103836f1be53b48",
+    "app/web/src/components/SavedSources.jsx": "30edde58505e56fa35fee253cd5f269f5d283e87a6ab6a659d0a0cdaaf5038c3",
+    "app/web/src/components/SceneViewer.jsx": "8606da3c99f5484d5a10e69697884f49a29a0bb48882edad0d15984001fc6872",
+    "app/web/src/lib/citationView.js": "015312cf98ebbf866bcd0ecb76675bbc8d60e521a8848e7c97980be6054a4e12",
+    "package.json": "ca486a40abdda209487d6fa5675e551e337c8f4d323dd5cca4bdd3d3619badc0",
+    "packages/model/citations.ts": "2fbd43c08c14429d45ecbcd379c3d261925f27491d83743123f65cc165248f13",
+    "packages/model/engine.ts": "2f34515c6acc7ebd4cdf72d463f22768d8c1f2358a0ea32cd193c74de4cc1ce8",
+    "packages/model/scene.schema.json": "94fc9c543636afda87469b621269c36a57af3c9164fdfa6b6f362176a964557a",
+    "packages/model/source-identity.ts": "358940c1800815466ed10ec14c2c984273292063b765acee0e1836a36b307cb5",
+    "packages/projects/citation-view-contract.js": "9b390bba1fc4d9a802d9deac37a8cf7d196bbe2c2e88ddb7e64f36c621083222",
+    "packages/projects/document.js": "69fcf2bb59a06ab2a7d1118985774fc096f01985815787b7e53f85055514fb69",
+    "packages/renderer-pptx/render.ts": "f7e3a494af18dc3f4e4ae1347a681d895ea003f353db58a80eaf1eceaed8b2b0",
+    "src/auth.js": "4ef5c90b3fa3fa2a724da563efcbb227814ff92f001983d28f7bea5d3011951a",
+    "src/cloud.js": "faec309818ae169a2be00e30897e2628d579ae435b06b490bb2498dbc4110e74",
+    "src/db.js": "6343541689692e53584f1eea9ae9325ce6ef2712dbea07fd5ca39461da780fa2",
+    "src/projects/citation-observations.js": "2fde978e8a6a0474025db9f5b1a108cc388948edc49b848654bd6e3dda49f21c",
+    "src/projects/citation-view-cli.js": "425c8ceba9bf5e9e0048acfa2b237611c2b5ee244624ff04ce44a5a35a8d1e8b",
+    "src/projects/citation-view.js": "91371d2dfe487d7e626aa4afa071318fece019f361282a04ab39763c01268aab",
+    "src/projects/citations.js": "72e14316e64c9a5b14dd97babee1bd082c699c13d0ad9649e5ef2eb7469c46eb",
+    "src/projects/history.js": "222a321e9b5385b3ceabe12dbc1a64e143a9513e96cc5da8cb05e914e2f0bb87",
+    "src/projects/source-read.js": "1c79e587033fff4b318b24ce963270aade800adeeb3524b98fa0fc4a8dbe7318",
+    "src/projects/source-schema.js": "4f56d1403b7636c4652dc15f4b30ac25c8af5751b0f769959a76185214f94760",
+    "src/projects/sources.js": "12c8ebc0db7223585210155be48a52431856620500fb9ce0fa047b6407093c47",
+    "test/v2-citation-view-8j.test.js": "b2c9753d1a2fb6bea18aae63df6d4cca304fb591ba29efc9cf867669ca213ba7",
+    "test/v2-citation-view-client-8j.test.js": "8020827171bbfb4e61a98aa3beab2e971d49374dda3af10e6c6bdc2c2f8562ec",
+    "test/v2-citation-view-fixture.js": "7fe4b3316c13c975868f6c5649a64d61fd7c20ba7e592256228aee7d466ba9b1",
+    "test/v2-citation-view-http-8j.test.js": "56828c7a4a862c2ea01217783500df891145da4b42a1f5319b028834b3a82dd3",
+    "tools/chrome-shot.mjs": "8d0bd28ad9c8f6cb907a3063c5a6a90f111b1aa402d88dd4d5a0d06e5b92ce13",
+    "tools/dev-protocol-check.mjs": "e4cfdbf2e893c04eb11bdacf630eb540450e989d041b3521de357ec398f8edfa",
+    "tsconfig.json": "6e29c654a6a38845dba3899bc6db8f252a889cb0970b851bfb260c4aad6bb956"
+  },
+  "trackedDelta": [
+    "app/server/index.js",
+    "app/web/src/components/SceneViewer.jsx",
+    "package.json",
+    "src/projects/citations.js"
+  ],
+  "timeoutSeconds": 90,
+  "ownedProcessGroup": 247155,
+  "ownedResources": {
+    "cpuUserSeconds": 2.158,
+    "cpuSystemSeconds": 0.213,
+    "peakLiveGroupRssBytes": 367624192,
+    "samples": [
+      {
+        "elapsedSeconds": 0.02,
+        "members": [
+          {
+            "io": {
+              "read_bytes": 0,
+              "write_bytes": 0
+            },
+            "pid": 247155,
+            "cpuSeconds": 0.01,
+            "rssBytes": 35475456
+          }
+        ],
+        "liveRssBytes": 35475456
+      },
+      {
+        "elapsedSeconds": 1.03,
+        "members": [
+          {
+            "io": {
+              "read_bytes": 0,
+              "write_bytes": 0
+            },
+            "pid": 247155,
+            "cpuSeconds": 0.04,
+            "rssBytes": 57389056
+          },
+          {
+            "io": {
+              "read_bytes": 0,
+              "write_bytes": 0
+            },
+            "pid": 247181,
+            "cpuSeconds": 0.49,
+            "rssBytes": 134565888
+          },
+          {
+            "io": {
+              "read_bytes": 0,
+              "write_bytes": 0
+            },
+            "pid": 247195,
+            "cpuSeconds": 0.81,
+            "rssBytes": 175669248
+          }
+        ],
+        "liveRssBytes": 367624192
+      }
+    ],
+    "note": "One-second process-group samples; summed RSS includes shared mappings. Waited-child CPU accounting; no attribution of global PSI."
+  },
+  "exitCode": 0,
+  "durationMs": 1818,
+  "timedOut": false,
+  "log": "docs/v2-8j-6-3-evidence/transport-verified-02.tap"
+}

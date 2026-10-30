@@ -1,0 +1,9 @@
+{
+  "id": "frontend-visual",
+  "implementationSha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
+  "kind": "visual",
+  "command": "Inspect final retained desktop/narrow/short PNGs with view_image; read exact stage/viewport measurements. No new render.",
+  "exitCode": 0,
+  "inspected": true,
+  "log": "docs/v2-8j-6-3-evidence/visual-inspection.md"
+}

@@ -1,0 +1,14 @@
+✔ Sources client: explicit bounded read captures owner and DTO without storing or mutation requests (23.052729ms)
+✔ Sources client: obsolete fetch/body and same-token session epoch cannot populate or clear a newer read (6.562337ms)
+✔ Sources client: exact schema scalar URLs counters byte ceiling MIME and static errors fail closed (3.511ms)
+✔ Sources client: explicit pagination and stale counters discard every prior private row (2.371207ms)
+✔ Sources client: live scope invalidation and rapid duplicate starts have no queue or retry (0.358891ms)
+✔ Sources client: empty chunks yield and stalled bodies expire without retained chunk growth (59.548471ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 147.141525

@@ -1,0 +1,12 @@
+✔ Sources HTTP/CLI: actual private projection parity and source clear preserve project/history (1995.987873ms)
+✔ Sources HTTP: foreign administrator missing cookie and supplied invalid credentials cannot disclose or downgrade (1218.216026ms)
+✔ Sources HTTP: raw query path method/body and CORS failures retain bounded private static responses (21.418858ms)
+✔ Sources HTTP: finite read admission survives client abort until actual work settles, then releases on errors (51.820997ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3725.835262
