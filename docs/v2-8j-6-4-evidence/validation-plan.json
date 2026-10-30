@@ -3,7 +3,8 @@
   "humanDirection": "docs/v2-8j-6-4-evidence/human-direction.json",
   "gates": {
     "appendix-domain": [
-      "test/v2-source-appendix-8j.test.js"
+      "test/v2-source-appendix-8j.test.js",
+      "test/v2-citation-export-8j.test.js"
     ],
     "appendix-sqlite": [
       "test/v2-source-appendix-sqlite-8j.test.js"
@@ -21,8 +22,10 @@
     "test/v2-source-appendix-8j.test.js",
     "test/v2-source-appendix-sqlite-8j.test.js",
     "test/v2-source-appendix-postgres-8j.test.js",
-    "test/v2-source-appendix-cli-native-8j.test.js"
+    "test/v2-source-appendix-cli-native-8j.test.js",
+    "test/v2-citation-export-8j.test.js"
   ],
   "rationale": "Focused new compiler/domain, canonical per-backend writes, CLI/native, typed seam and one shared native/SVG visual fixture. Reuse accepted UI/store/export evidence for unchanged paths.",
-  "excluded": "No old bulk matrix, production UI build, full browser suite, benchmark, model/search/provider/GPU call or activation. Missing selected PG/native evidence stays unexecuted."
+  "excluded": "No old bulk matrix, production UI build, full browser suite, benchmark, model/search/provider/GPU call or activation. Missing selected PG/native evidence stays unexecuted.",
+  "expandedAffectedBoundary": "Extracting shared export qualification directly affects seven existing pure notes cases; their one run is retained, no broad export suite repetition."
 }

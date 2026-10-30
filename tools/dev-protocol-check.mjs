@@ -40,7 +40,7 @@ const DEFAULT_REQUIRED_CHECKS = ['non-browser-bulk', 'serial-browser', 'postgres
 const MILESTONES = {
   'V2-8J-6-4': {
     plan: 'docs/v2-8j-6-4-evidence/validation-plan.json',
-    focused: 'appendix-domain', files: ['test/v2-source-appendix-8j.test.js'],
+    focused: 'appendix-domain', files: ['test/v2-source-appendix-8j.test.js', 'test/v2-citation-export-8j.test.js'],
     groups: { 'appendix-sqlite': ['test/v2-source-appendix-sqlite-8j.test.js'], 'appendix-postgres': ['test/v2-source-appendix-postgres-8j.test.js'], 'appendix-cli-native': ['test/v2-source-appendix-cli-native-8j.test.js'] },
     required: ['appendix-domain', 'appendix-sqlite', 'appendix-postgres', 'appendix-cli-native', 'typecheck', 'frontend-visual'],
   },
