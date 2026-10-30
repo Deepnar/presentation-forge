@@ -6,56 +6,56 @@
     "source": "docs/reviews/V2-8J-6-3-8d34c95f.json"
   },
   "implementationHead": {
-    "sha": "8d34c95faf7a5c4d9e04dec590b362895d4fd283",
-    "note": "Exact J6-3 runtime/tests independently accepted; separate decision committed unchanged ate96c9ba1. Scoped closeout complete; later candidate remains unauthorized."
+    "sha": "7e5041aa264f85a81bcee1e5c0f1d1b1e99dfd52",
+    "note": "Explicit appendix-first approval pinned before runtime. Bounded J6-4 implementation/validation/review pending; accepted baseline remains J6-3."
   },
   "activeMilestone": {
-    "id": "V2-8J-6-3",
-    "roadmapRef": "docs/ROADMAP.md#assistant-citation-source-inspector",
-    "evalDoc": "docs/V2-8J-6-3-EVAL.md",
+    "id": "V2-8J-6-4",
+    "roadmapRef": "docs/ROADMAP.md#assistant-citation-editable-appendix",
+    "evalDoc": "docs/V2-8J-6-4-EVAL.md",
     "architectureDoc": "docs/ARCHITECTURE.md",
-    "implementationStatus": "validated",
-    "reviewStatus": "accepted",
+    "implementationStatus": "in-progress",
+    "reviewStatus": "pending",
     "implementedBy": "/root",
-    "reviewRecord": "docs/reviews/V2-8J-6-3-8d34c95f.json",
-    "accepted": true
+    "reviewRecord": null,
+    "accepted": false
   },
   "validation": [
     {
-      "id": "view-domain",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-3-evidence/view-domain.json",
-      "reason": "Focused executed-leaf selection with retained original attempts and source applicability; see manifest."
+      "id": "appendix-domain",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused gate; not executed."
     },
     {
-      "id": "view-transport",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-3-evidence/view-transport.json",
-      "reason": "Focused executed-leaf selection with retained original attempts and source applicability; see manifest."
+      "id": "appendix-sqlite",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused gate; not executed."
     },
     {
-      "id": "view-client",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-3-evidence/view-client.json",
-      "reason": "Focused executed-leaf selection with retained original attempts and source applicability; see manifest."
+      "id": "appendix-postgres",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused gate; not executed."
     },
     {
-      "id": "view-browser",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-3-evidence/view-browser.json",
-      "reason": "Focused executed-leaf selection with retained original attempts and source applicability; see manifest."
+      "id": "appendix-cli-native",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused gate; not executed."
     },
     {
-      "id": "production-build",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-3-evidence/production-build.json",
-      "reason": "Focused executed-leaf selection with retained original attempts and source applicability; see manifest."
+      "id": "typecheck",
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused gate; not executed."
     },
     {
       "id": "frontend-visual",
-      "status": "passed",
-      "evidence": "docs/v2-8j-6-3-evidence/frontend-visual.json",
-      "reason": "Final retained PNGs viewed; stage max delta0px; exact reflow method and scrolling limit recorded."
+      "status": "pending",
+      "evidence": null,
+      "reason": "Approved focused gate; not executed."
     }
   ],
   "knownBlockers": [],
@@ -66,7 +66,7 @@
     }
   ],
   "nextCandidate": {
-    "id": "V2-8J-6-4 editable References appendix",
+    "id": "Browser appendix interaction contract",
     "authorized": false,
     "roadmapRef": "docs/ROADMAP.md#assistant-citation-editable-appendix"
   },

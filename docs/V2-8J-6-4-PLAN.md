@@ -1,6 +1,10 @@
 # V2-8J-6-4 — editable References appendix, headless first
 
-Status: **proposed; human surface/data-handling direction pending**.
+Status: **human-approved; implementation in progress**.
+The2026-10-30 explicit “Approve appendix-first (Recommended)” response approves
+the reviewed contract and full scene/history/admin/later-provider disclosure.
+Direction and focused inventory are pinned before runtime. Implementation
+acceptance remains separate; historical planning body is unchanged.
 Corrected contract36146428ae99162f16ec2fef0f23fc93532f6dd7 is independently
 [READY_FOR_DIRECTION](reviews/V2-8J-6-4-plan-36146428.json); separate record committed
 unchanged at65dd94e8. All3 planning gaps are resolved;17/17 lightweight reviewer

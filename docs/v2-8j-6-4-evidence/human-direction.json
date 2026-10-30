@@ -1,0 +1,7 @@
+{
+  "approvedContract": "36146428ae99162f16ec2fef0f23fc93532f6dd7",
+  "question": "May I implement reviewed J6-4: printable, editable References slides through an owner-only CLI first? Full source titles/URLs\u2014including private query values\u2014would become normal deck/history text, accessible under project/admin/export rules and potentially sent to the configured AI by later scoped scene reads. Clearing sources would leave those copies. Insertion itself uses no model calls. AGENTS.md requires human direction for this new data handling.",
+  "answer": "Approve appendix-first (Recommended)",
+  "scope": "Reviewed headless J6-4 and focused offline validation only. No browser control, model/search call, activation or dependent feature.",
+  "approvedOn": "2026-10-30"
+}

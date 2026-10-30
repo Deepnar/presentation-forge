@@ -188,7 +188,11 @@
               "view-domain",
               "view-transport",
               "view-client",
-              "view-browser"
+              "view-browser",
+              "appendix-domain",
+              "appendix-sqlite",
+              "appendix-postgres",
+              "appendix-cli-native"
             ]
           },
           "status": {
@@ -384,7 +388,8 @@
                   "V2-8J-5",
                   "V2-8J-6-1",
                   "V2-8J-6-2",
-                  "V2-8J-6-3"
+                  "V2-8J-6-3",
+                  "V2-8J-6-4"
                 ]
               }
             },

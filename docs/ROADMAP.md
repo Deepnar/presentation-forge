@@ -9375,7 +9375,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
     <a id="assistant-citation-editable-appendix"></a>
 
-    - [ ] **V2-8J-6-4 editable References appendix — proposed, direction pending.**
+    - [ ] **V2-8J-6-4 editable References appendix — approved, implementation in progress.**
       The2026-10-30 continuation prepares the next contract from accepted J6-3
       source8d34c95f and entry66f3dfd0. [Proposal](V2-8J-6-4-PLAN.md) recommends
       appendix-first printable presentation: deterministic full-title/URL native
@@ -9398,6 +9398,10 @@ local inference. Only that separate transport correction is authorized; this aud
       capture of both entries before awaits, and existing history-pruning policy.
       Root14/14 and independent17/17 lightweight checks plus protocol0errors pass;
       no product check or runtime implementation ran. Human direction still pending.
+      Subsequent explicit “Approve appendix-first (Recommended)” authorizes the
+      reviewed headless scope and scene/history/admin/later-provider disclosure.
+      [Direction](v2-8j-6-4-evidence/human-direction.json) and focused inventory
+      are pinned before runtime; separate implementation acceptance remains pending.
       No runtime, tests/services, model/search/provider/GPU work or activation is
       authorized by preparation. Keep J6-3 accepted and candidate unauthorized.
 

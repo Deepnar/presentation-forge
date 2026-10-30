@@ -16,6 +16,7 @@ export const REQUIRED_FILES = [
 const SHA = /^[0-9a-f]{40}$/;
 const COUNTS = ['total', 'pass', 'fail', 'skip', 'cancelled'];
 const KINDS = {
+  'appendix-domain': 'tests', 'appendix-sqlite': 'tests', 'appendix-postgres': 'tests', 'appendix-cli-native': 'tests',
   'view-domain': 'tests', 'view-transport': 'tests', 'view-client': 'tests', 'view-browser': 'tests',
   'export-http': 'tests', 'export-client': 'tests', 'export-browser': 'tests',
   'notes-domain': 'tests', 'notes-sqlite': 'tests', 'notes-postgres': 'tests', 'notes-native': 'tests', 'notes-cli': 'tests', 'notes-visual': 'visual',
@@ -37,6 +38,12 @@ const KINDS = {
 const DEFAULT_REQUIRED_CHECKS = ['non-browser-bulk', 'serial-browser', 'postgres-contract',
   'cross-process-faults', 'production-build', 'typecheck', 'benchmark-50', 'frontend-visual'];
 const MILESTONES = {
+  'V2-8J-6-4': {
+    plan: 'docs/v2-8j-6-4-evidence/validation-plan.json',
+    focused: 'appendix-domain', files: ['test/v2-source-appendix-8j.test.js'],
+    groups: { 'appendix-sqlite': ['test/v2-source-appendix-sqlite-8j.test.js'], 'appendix-postgres': ['test/v2-source-appendix-postgres-8j.test.js'], 'appendix-cli-native': ['test/v2-source-appendix-cli-native-8j.test.js'] },
+    required: ['appendix-domain', 'appendix-sqlite', 'appendix-postgres', 'appendix-cli-native', 'typecheck', 'frontend-visual'],
+  },
   'V2-8J-6-3': {
     plan: 'docs/v2-8j-6-3-evidence/validation-plan.json',
     focused: 'view-domain', files: ['test/v2-citation-view-8j.test.js', 'test/v2-citations-8j.test.js'],
