@@ -13,6 +13,106 @@ Legend: `[x]` done · `[~]` in progress · `[ ]` not started
 > cannot move, and the other documentation explains the system as it is. None
 > of them is a second to-do list.
 
+<a id="finish-line"></a>
+
+## 0. Finish line — the order the product gets finished in
+
+Agreed 2026-11-01: finish the whole V2 product, nothing cut, with the gated
+slice protocol dropped (see `AGENTS.md` → Development workflow). This list is
+the order of work; the numbered sections below keep the history and the detail
+each item points at. Each item is complete when its *done when* is true in the
+running app, not when its code exists.
+
+Decisions taken with this list, so nobody re-litigates them:
+
+- **Hosting stays Express + Vite in a long-running container**
+  (`docker/`), not Next.js on Vercel. Generation is a multi-minute stream that
+  shells out to LibreOffice and Chrome; it is not serverless work. §12's V2-6/V2-7
+  "on Vercel" done-whens are replaced by F9 below.
+- **The Assistant runs on whichever provider the account has** — Auto, a BYOK
+  key or local Ollama — not only on an operator-enabled Auto host.
+- **The editor is where a deck lives.** The legacy deck page stays reachable
+  until F11 removes it, but every finished generation lands in the editor.
+
+1. **[x] F0 — Process reset.** Protocol machinery, review records and committed
+   test evidence removed; browser suites write to `out/evidence/`.
+2. **[ ] F1 — Every generation lands in the editor.** When a deck finishes
+   (UI or CLI), its saved V2 project is created in the same step and the UI
+   opens it in the editor. Re-generation and retries reuse the same project
+   and keep human edits (the import path already guarantees that). The chat
+   thread links to the project. *Done when:* topic → briefing → generate ends
+   in the editor with the deck, with no "Open in editor" click.
+3. **[ ] F2 — The Assistant works for every account.** Run turns in-process on
+   the account's resolved provider (Auto / BYOK / local), on by default whenever
+   a provider is usable, with progress shown in the panel and errors stated
+   plainly. Keep proposal → approve → apply. *Done when:* a local install with
+   only Ollama can ask the Assistant to rewrite a slide and apply it.
+4. **[ ] F3 — The Assistant can create and restructure.** Semantic proposals
+   for add slide(s), regenerate a slide, change a slide's composition and
+   rewrite across the deck, compiled deterministically, preserving human edits,
+   tombstones and detached slides (§12 "Canonical semantic creation and
+   regeneration tools"). *Done when:* "add a slide comparing X and Y after
+   slide 4" produces an approved, compiled, editable slide.
+5. **[ ] F4 — Editor completeness.** Insert image (upload, and licensed search
+   through the existing image supply), chart, table, line and icon; edit speaker
+   notes; change the project's theme/variant with recompilation that keeps
+   human edits; present mode with notes. *Done when:* a deck can be finished
+   in the editor without returning to the legacy deck page.
+6. **[ ] F5 — Editor UI redesign.** See
+   [the entry](#editor-ui-redesign). *Done when:* the editor reads as a slide
+   editor at a glance: icon toolbar with tooltips, no internal vocabulary.
+7. **[ ] F6 — Create from the workspace.** "New presentation" offers prompt,
+   upload-as-source and blank; the prompt path runs the briefing and generation
+   and lands in the editor (F1). *Done when:* a new user never needs the chat
+   page to make a deck.
+8. **[ ] F7 — Reports and notes in the project** (§12 V2-10). Generate the
+   `.docx` report and the speaker script from a project, list them with its
+   exports, sharing its sources. *Done when:* deck, report and script coexist
+   and cross-derive in one project.
+9. **[ ] F8 — File intelligence and PPTX import** (§12 V2-9). Uploaded PDF, DOCX,
+   PPTX, Markdown and CSV become project sources with roles; PPTX imports to an
+   editable scene with explicit fallbacks. *Done when:* "use this report as
+   truth and this PPTX as reference" makes a deck.
+10. **[ ] F9 — Hosted lifecycle** (§12 V2-6/V2-7, re-scoped). PostgreSQL store
+    as the hosted default, exports/previews on disk or object storage with
+    expiry and regenerate-on-demand, idempotent cleanup, the container image
+    and `docs/DEPLOY.md` updated for V2. *Done when:* a fresh container plus
+    Postgres runs prompt → editor → export with no local-only path.
+11. **[ ] F10 — One AI connection** (§12 V2-12). One place to connect a provider;
+    model plumbing only under Advanced. *Done when:* a non-technical user
+    connects once and never sees a model name.
+12. **[ ] F11 — Remove legacy surfaces** (§12 V2-13). Briefing wizard leftovers,
+    the old form editor and deck page, duplicate routes and pipeline code, once
+    F1–F10 cover them; old decks still open through the import path.
+13. **[ ] F12 — ChatGPT plugin** (§12 V2-11). Thin MCP adapter over the same
+    tools.
+
+Operator items that no code removes — a provider key, SMTP, a domain and a
+host — stay in [`BLOCKED.md`](BLOCKED.md) §2.
+
+<a id="editor-ui-redesign"></a>
+
+### [ ] Editor UI redesign — look like a slide editor, not a form
+
+Raised 2026-11-01 after reviewing the editor screenshots. Same behaviour,
+better surface. Today the toolbar is a row of words ("← Prev  Next →  −  100%
++  Fit  Done  + Text  + Rect  + Round  + Ellipse") and the inspector speaks the
+implementation's vocabulary ("Target: present · Saved content: current ·
+Snippet range: not-requested").
+
+- Icon toolbar with tooltips and keyboard hints, grouped Insert / Format /
+  Arrange, PowerPoint/Slides-like; the header keeps title, save state, undo,
+  redo, Present and Export as icon buttons.
+- A contextual toolbar beside the selection for the common text, fill and
+  arrange actions.
+- Right rail as icon tabs (Design, Assistant, Sources, History) with
+  plain-language copy; diagnostics stay behind the developer surface.
+- Slide rail polish (numbers, hover actions, drag affordance) and a bottom
+  status bar with slide position and a zoom slider.
+- Split `SceneViewer.jsx` (2,849 lines) into toolbar, rail, stage, inspector
+  and dialogs components while doing it, so the redesign is not one more layer
+  on a single component.
+
 ## 1. Foundation
 
 ### [x] Font pipeline
