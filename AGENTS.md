@@ -8,20 +8,13 @@ quality; local Ollama remains supported for local use and pipeline exercises.
 
 ## Start here
 
-Read this file, `docs/CONTINUATION.md`, `docs/HANDOFF.md`, `docs/TRAPS.md`,
-`docs/BLOCKED.md`, and the active `docs/ROADMAP.md` entry before changing code.
-Inspect branch, HEAD, tracked changes and untracked files. Preserve unrelated
-work. Never assume a branch or overwrite an existing checkout to match a prompt.
-
-`docs/DEVELOPMENT-PROTOCOL.md` defines the development cycle and authority order;
-`docs/development-state.json` records the accepted baseline, implementation under
-review and validation state. `docs/PRODUCT-VISION.md` records product direction;
-`docs/ACCEPTANCE-CRITERIA.md` defines common gates. Architecture records describe
-what is built; evaluation reports supply evidence, not automatic acceptance.
-
-The active task and accepted baseline are recorded in the state file and handoff.
-A candidate milestone is not authorized work. Never promote a milestone merely
-because its implementation exists.
+Read this file, `docs/HANDOFF.md`, the "Finish line" section of
+`docs/ROADMAP.md`, `docs/TRAPS.md` and `docs/BLOCKED.md` before changing code.
+Inspect branch, HEAD, tracked changes and untracked files, and preserve
+unrelated work. `docs/PRODUCT-VISION.md` records direction; architecture records
+describe what is built. `docs/history/` holds the per-slice records of earlier
+V2 work — read one when you need why something is the way it is, never as a
+procedure to follow.
 
 ## The one rule that governs everything
 
@@ -46,94 +39,11 @@ in `themes/*.yaml`; legacy model content is validated YAML. Extend the appropria
 semantic/compiler vocabulary when a composition is missing. Manual layout
 templates are editable scene skeletons, separate from AI composition families.
 Preserve human modifications, ownership flags, tombstones and detached scenes
-during regeneration. Human and future agent changes share validated commands,
-stale-revision checks and history. The headless durable run core, bounded provider
-exchanges, explicit provider-backed preparation/queue boundary, bounded
-host-instance tool conversations, the shared web-search provider boundary and
-headless durable visible turns with atomic proposal approval are independently
-accepted. Owner-authenticated conversation read/export/decide/cancel/clear HTTP
-transport is also independently accepted; it exposes no preparation or execution.
-The bounded headless explicit-turn worker and operator CLI are independently
-accepted at `58662ec`; they reuse stored approval and canonical run authority.
-Owner-authenticated durable turn submission is independently accepted at
-`2ba82cb`; it delegates to the same stored turn authority, with no provider dispatch,
-queue/scene/history write or automatic approval on submission.
-Owner-scoped bounded work discovery and its operator CLI are independently
-accepted at `8378a20`; metadata hints grant no claim, approval or execution
-authority and must re-enter the canonical worker for current checks.
-The Auto-only host policy and bounded operator pickup are independently accepted
-at `5cf5b5c`; they remain disabled by default, bind account budgets explicitly and
-reuse canonical turn/run authority. Explicit authenticated finite host wake is
-independently accepted at `dce5628`; it pins Bearer/account identity and remains
-separately disabled by default. Wake acknowledges a finite hint, not guaranteed
-owner-wide progress or completion. Exact project/generation/turn wake and the Auto work-auto operator path are
-independently accepted at `3da0801`; they reuse the same finite host capacity and
-canonical H/I2 authority without owner-history scanning. Different active targets
-are busy; coalesced receipts confer no fresh-validity or completion guarantee.
-The existing editor Assistant is independently accepted in V2-8I-8 at b9c2d20: freeform current-slide/selection chat, explicit proposals and exact-target
-wake reuse the accepted authority. Grid/title/inline/save guards and authoritative
-reload preserve human work; loading AI changes clears session undo and uses Version
-history for restoration. Availability is owner-bound metadata with CLI parity.
-Host execution remains default-off; no always-on scheduler is enabled.
-The separate J1 headless research entry is independently accepted at f161901:
-inspect-only canonical web_search requires a trusted single-use capability bound
-to the complete request, with finite queries/results and ephemeral normalized
-sources. Base content sessions and durable execution retain their earlier tool
-subsets; H/host/Assistant paths gain no research capability. Snippet identity does
-not establish verified claim support. J1 itself adds no persistence or public
-research activation. The separate J2 headless project web-source registry is
-independently accepted at `6d51cd4`: explicitly selected normalized snippets remain
-owner-private until source clear or canonical project deletion. Chat clear and
-Version history preserve sources; source clear is not restored through history.
-Registration/resolution add no Assistant/H research authority or automatic provider
-context. Retained source identity does not establish verified locators or claims.
-The J3 headless citation-reference checker is independently accepted at `edda5ec`:
-exact saved target/source and optional excerpt-relative UTF-8 quote checks share
-one owner/document/catalog snapshot. Target existence, retained source and locator
-match are separate observations; claim support stays not-assessed. Results attach
-nothing and grant no reusable approval. No source text enters scenes/history,
-provider context or a public surface through these checks.
-The J4 revisioned scene citation lifecycle is independently accepted at `665cd04`:
-owner-qualified headless attach/remove/inspect and unverified metadata survive
-commands, undo/history and regeneration without restoring cleared sources.
-Content hashes and retained ranges do not establish claim support. Generic cited
-create/import and unqualified native PPTX export remain refused. The separate J5 source-aware
-copy and guarded live-editor adoption are independently accepted at `f6487737`:
-only referenced private snippets copy atomically to the same owner with rebound
-source IDs and independent retention. Fresh-engine adoption preserves the captured
-scene/viewport; later edits/drafts/navigation/session changes defer or suppress it.
-The original retains its history; the new session has empty undo. Unknown responses
-have no automatic retry/exactly-once promise. No provider/H/Assistant research or
-portable citation disclosure authority is added.
-The separate J6-1 headless citation notes exporter is independently accepted at
-`ecf82d3f`: exact-owner saved snapshot qualification and explicit per-export
-consent permit only retained full title/URL values in native speaker notes.
-Portable labels map to verified emitted authored non-chrome objects; empty authored
-slide scopes refuse. Notes preserve bounded complete text but may overflow printed
-pages; support remains not-assessed. Downloaded content survives source clear/delete.
-The owner CLI publishes complete0600 files exclusively; stale requests never retry.
-Generic/raw/file/current GET cited exports remain refused. No browser/public export,
-provider research/context or activation authority is added.
-The separate J6-2 browser interaction is independently accepted at6068a2a7 in its exact-source
-review record; resolve current scope through state and that decision. It requires
-clean saved state and fresh full-title/URL notes consent through existing Export,
-with captured owner/revision/session/navigation and bounded private transport.
-It adds no model/research authority or automatic save. Keep acceptance distinct
-from source completion; stop at the approved slice's closeout.
-The separate J6-3 saved Sources inspector is independently accepted at8d34c95f:
-explicit read-only saved slide/object pages expose literal complete retained titles/
-URLs to the exact owner with separate unverified observations. Shared CLI/HTTP
-reads use one coherent document/catalog snapshot. Native text selection preserves
-pending drafts; closing, scope/session/navigation or authoritative changes clear
-private rows and fence late reads. No source/scene/history mutation, new retention,
-provider context or research authority is added. Body bounds do not impose SQL
-lock deadlines. Later visible/printed policy remains separately gated.
-Saved chat does not automatically become provider context. Further host progress/
-scheduling, provider routing, citation presentation, research
-orchestration, live-provider qualification and
-semantic creation remain in the
-[roadmap](docs/ROADMAP.md#v2-8-remaining). Resolve exact accepted
-scope through development-state.json and its independent review record.
+during regeneration. Human and AI changes share validated commands, stale-revision checks and
+history. The Assistant proposes; the human approves; the command engine applies.
+Model-supplied fields never carry caller authority (ids, owners, revisions).
+Sources and citations stay owner-private, and nothing copies source text into a
+deck or an export without the owner's explicit consent.
 
 Themes are split into `tokens` (exact machine values, read only by the renderer)
 and `voice` (tone guidance, read only by the model). These must never overlap:
@@ -210,17 +120,7 @@ neighbouring change makes them wrong. A roadmap that is only ever added to
 becomes an archive, and an archive is not a plan.
 
 - **Entries are intent + rationale, not specs.** When an item's turn comes,
-  discuss the concrete implementation before writing code. Never build straight
-  from the entry text.
-- **Stop and ask when the item needs direction — do not substitute another.**
-  Some items are taste and product judgement rather than defects: the front end
-  and the landing page, anything that changes what a surface IS rather than
-  whether it works, and any item whose entry says to agree direction first. On
-  those, say what the options are and WAIT for an answer. Do not assume the
-  human is away and quietly pick a different item instead; that is how the
-  highest-priority work stays untouched for weeks while the list below it gets
-  polished. Silence is not consent to start, and it is not permission to
-  reorder the list either — ask, then wait.
+  work out the concrete design against the code as it is, not the entry text.
 - **No first versions.** Build the robust, thought-through version — real
   algorithms, edge cases handled, end-state in mind. Not a throwaway MVP. If an
   item is too large for one pass, split it into robust sub-items rather than
@@ -249,27 +149,26 @@ becomes an archive, and an archive is not a plan.
 
 ## Development workflow
 
-The active coding agent works directly in this repository with its available
-tools. There is no required Hermes/opencode relay, TUI workflow, model-provider
-allowlist or dependency on an earlier conversation. Optional delegation must
-follow the current task's authorization; it does not make self-review independent.
+**Plan → build → verify → commit.** No separate contracts, direction gates,
+evidence packets, review records or acceptance files. The roadmap entry is the
+plan; the commit history is the record; `docs/HANDOFF.md` is the current state.
 
-Follow **PLAN → IMPLEMENT → VERIFY → INDEPENDENT REVIEW → ACCEPT/HOLD → HANDOFF**
-in `docs/DEVELOPMENT-PROTOCOL.md`, with role instructions in `docs/agents/`.
-Each task names its accepted baseline, bounded scope, invariants, non-goals,
-required tests/evidence, acceptance criteria, standing failures and stop point.
-An implementer cannot accept its own work. A separate reviewer or explicit human
-approval supplies acceptance; without either, record pending review and stop.
+- **Take the lead within the finish line.** The roadmap's "Finish line" section
+  is the agreed order of work. Pick the next item, build it fully and move on
+  without stopping for permission at each step.
+- **Build the real thing.** No throwaway first versions and no scope cuts to
+  finish faster — speed comes from less ceremony, not less product. When an
+  item is too big for one pass, split it into complete sub-items.
+- **Verify by running and looking.** Write tests for new behaviour, run the
+  tests for what changed and what it directly touches, and for anything visible
+  open it in the browser or rasterise it and look. Run the full suite before a
+  merge to `main`. A green typecheck or a written .pptx proves nothing on its own.
+- **Ask only for what is genuinely the owner's call:** new paid infrastructure
+  or accounts, spending real model budget beyond a few runs, production
+  deployment, destructive Git operations, and changes to how user data is
+  handled. Everything else, decide and record why in the commit or roadmap.
 
-Commit focused changes and push regularly to the explicitly authorized branch
-(`origin/v2` for this task). Never push to `main` by habit. Do not deploy or run
-irreversible migrations as a side effect of implementation acceptance.
-
-Work autonomously within approved scope. Obtain human direction for major
-product/architecture changes, new paid infrastructure, security-policy or user
-data-handling changes, removal of accepted functionality, destructive Git
-operations and production deployment. Prepare a concrete reviewable result first.
-Do not re-ask for actions already authorized by the current task.
+Commit focused changes and push to `origin/v2`. Never push to `main` by habit.
 
 ## Which model to judge the product by
 
@@ -335,34 +234,8 @@ npm run dev                                # API :5174 + UI :5173
 
 `src/preview.js` exists so output can be *seen*. Use it.
 
-**Focused validation is the default.** Test new or changed behaviour and the
-boundaries it directly affects. Use accepted evidence for unchanged subsystems;
-do not routinely repeat the full legacy/browser/database/benchmark matrix for
-each slice. Choose the smallest meaningful checks that establish a usable,
-correct result, then finish the scoped work. Expand coverage only for a concrete
-regression, shared-core impact, unresolved risk or explicit release requirement.
-After a relevant pass, rerun only when a subsequent change or failure warrants it.
-Independent review should inspect existing evidence and run narrow new-behaviour
-or challenge checks, rather than duplicate the entire implementation run.
-Documentation-only changes need lightweight consistency checks, not product tests.
-Record selected checks, exclusions and remaining uncertainty honestly; preserve
-assertions, ownership/data-integrity safeguards and the independent acceptance gate.
-Avoid GPU/model work and expensive rendering unless the changed behaviour needs it.
-
-Run browser files in bounded serial isolation: each may rebuild the same Vite
-`dist`, so never run the bulk browser set concurrently or overlap it with a build.
-Use a process watchdog; a timed-out or cancelled file is not a pass. Count leaf
-tests, skips, cancellations and unexecuted cases explicitly, preserving the
-standing BYOK locale failure separately. If PostgreSQL is unavailable, its
-contract/concurrency/fault/browser checks are unexecuted, not green.
-
-Respect shared-machine headroom. Inspect CPU, memory, actual storage activity and
-competing work before expensive validation, then monitor the owned process group.
-Use bounded serial checks and low priority/resource caps. Global pressure alone
-does not identify its cause or require an indefinite hold: leave unrelated work
-alone, and reduce or stop owned validation when it causes undue load. Do
-documentation and lightweight checks when expensive work cannot fit safely.
-Never stop unrelated processes or reuse another
-project's database. Identify the actual backend and implementation commit in
-every evidence report. Inspect screenshots for clipping/overlap and measure canvas
-stability; a written PPTX or a syntax check is insufficient.
+Browser suites share the Vite build output: run them serially
+(`node --test --test-concurrency=1 test/*chrome*.test.js`), never alongside a
+build. Their screenshots go to `out/evidence/`, which is not committed. If
+PostgreSQL is not running its suites skip — say so rather than calling them
+green. Leave unrelated processes and other projects' databases alone.
