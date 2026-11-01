@@ -45,7 +45,7 @@ separate from session-only undo/redo.
 
 AI composition families interpret semantic intent. Manual layout templates are
 editable scene skeletons for explicit human insertion. The template catalog
-must not become a rigid limit on AI generation. See [V2-5K](V2-5K-EVAL.md).
+must not become a rigid limit on AI generation. See [V2-5K](history/V2-5K-EVAL.md).
 
 ## Current workspace and remaining links
 
@@ -54,7 +54,7 @@ creation, a shared editor shell, contextual inspector and history. Its validatio
 and acceptance status are in [development-state.json](development-state.json).
 The existing Assistant tab now implements default-off, scoped editing of saved
 projects, with freeform requests and explicit proposal approval. Its source and
-review status are indexed in [V2-8I-8-EVAL.md](V2-8I-8-EVAL.md). “Create with AI” enters legacy chat;
+review status are indexed in [V2-8I-8-EVAL.md](history/V2-8I-8-EVAL.md). “Create with AI” enters legacy chat;
 completed presentations and the legacy deck page offer an explicit **Open in
 editor** action through the shared HTTP/headless conversion boundary. It creates
 or reopens a saved Layer-C project, preserves human edits on retry and retains
@@ -65,7 +65,7 @@ V2-7C-1 adds first-saved-slide previews to the existing project grid, using the
 authoritative scene and canonical SVG renderer. Previews are disposable reads;
 their loading, failure or retry never creates another project document. Its
 independently accepted source `f79ae07`, validation and review are indexed in
-[V2-7C-1-EVAL.md](V2-7C-1-EVAL.md).
+[V2-7C-1-EVAL.md](history/V2-7C-1-EVAL.md).
 C2 unifies generated originals and saved copies in one Projects catalog without
 merging documents or importing on reads. C3 separates standalone developer
 controls/diagnostics from normal saved-project editing; its current validation
@@ -75,11 +75,11 @@ and explicit preparation/queue boundary are independently accepted, including
 bounded host-instance tool conversations with correlated semantic read rounds.
 Scoped provider turns propose canonical semantic edits; an explicit trusted host
 action queues the opaque proposal and the editor/runtime retains authority.
-[The V2-8E evaluation](V2-8E-EVAL.md) distinguishes local protocol/persistence
+[The V2-8E evaluation](history/V2-8E-EVAL.md) distinguishes local protocol/persistence
 evidence from live content qualification and hosted cross-request approval.
 The shared web-search provider boundary is also independently accepted: SearXNG
 results normalize to project-scoped citation sources, separately from model
-providers. [V2-8F evidence](V2-8F-EVAL.md) qualifies the bounded local protocol;
+providers. [V2-8F evidence](history/V2-8F-EVAL.md) qualifies the bounded local protocol;
 live relevance retains its roadmap gate. J1 independently accepts a separate
 headless, inspect-only canonical search conversation with explicit single-use
 query-disclosure grants and ephemeral normalized sources. This does not give the
@@ -100,7 +100,7 @@ orchestration and semantic creation retain their roadmap gates.
 V2-8H independently accepts bounded project-linked visible chat and durable atomic
 approval over the existing run queue, with owner-only read/export/clear and CLI
 parity. Saved chat does not automatically become provider context. The
-[H evaluation](V2-8H-EVAL.md) distinguishes accepted headless continuity from
+[H evaluation](history/V2-8H-EVAL.md) distinguishes accepted headless continuity from
 authenticated hosted orchestration and visible Assistant integration.
 V2-8I-1 independently accepts owner-authenticated conversation read/export/decide/
 cancel/clear HTTP transport over H. It adds no public preparation/execution or

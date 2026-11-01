@@ -1376,7 +1376,7 @@ paths yet, `packages/` holds the first agent-native primitive:
   Already-unique archives retain their original bytes. This is generated-output
   correction, not an imported-PPTX repair service; source `45c2c4c` is
   [independently accepted](reviews/V2-PPTX-ID-45c2c4c.json), with
-  [native/visual preservation evidence](V2-PPTX-ID-EVAL.md). The scene remains
+  [native/visual preservation evidence](history/V2-PPTX-ID-EVAL.md). The scene remains
   the only document authority.
 - `packages/renderer-docx/` — `renderDocx(report, donorBytes, options)
   -> Uint8Array` (strict TS): deterministic OOXML body builders,
@@ -2657,7 +2657,7 @@ credential-owning HTTP transport in src/agent/model-provider.js. Distinct Chat
 Completions and Anthropic Messages protocols produce validated semantic proposals;
 canonical tools and durable project transactions retain editing authority. See
 [the as-built exchange contract](V2-8-AGENT-ARCHITECTURE.md#v2-8c-provider-exchange-boundary)
-and [evidence](V2-8C-EVAL.md). Source `e41d509` is independently
+and [evidence](history/V2-8C-EVAL.md). Source `e41d509` is independently
 [accepted](reviews/V2-8C-e41d509.json). No Assistant or provider loop is introduced
 by this boundary.
 
@@ -2665,7 +2665,7 @@ V2-8G hardens that same model HTTP adapter with response-byte-bounded storage,
 monotonic deadlines, periodic yielding and cancellation before reader release.
 Both protocols and their authority/privacy/usage/configuration contracts remain
 unchanged. Exact source `f3e784a` is [independently accepted](reviews/V2-8G-f3e784a.json);
-[the evaluation](V2-8G-EVAL.md) records complete fixture/native/visual validation,
+[the evaluation](history/V2-8G-EVAL.md) records complete fixture/native/visual validation,
 sampled retained-memory bounds and the live-quality/peak-memory limitations.
 
 
@@ -2678,7 +2678,7 @@ an explicit host action queues their private semantic plan through the accepted
 run core with fresh revision and commit-time cancellation/deadline guards.
 No prompt/transcript store, public route or new UI is introduced.
 [The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8d-provider-backed-run-preparation)
-and [evaluation](V2-8D-EVAL.md) identify exact source8c1e5c4 and its independent
+and [evaluation](history/V2-8D-EVAL.md) identify exact source8c1e5c4 and its independent
 [acceptance](reviews/V2-8D-8c1e5c4.json).
 
 
@@ -2689,7 +2689,7 @@ explicit queue path, adding bounded read-result exchanges and metadata-only trac
 Provider adapters translate canonical read rounds into their own message protocols;
 network work remains outside project transactions. No public surface or durable
 conversation store is added. [The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8e-bounded-tool-conversation-preparation)
-and [evaluation](V2-8E-EVAL.md) identify source `c71d65e` and its independent
+and [evaluation](history/V2-8E-EVAL.md) identify source `c71d65e` and its independent
 [acceptance](reviews/V2-8E-c71d65e.json). Its historical exports retain the inherited
 [nonvisual shape-ID limitation](ROADMAP.md#native-pptx-shape-id-uniqueness), now
 addressed separately by V2-PPTX-ID above. Interactive Microsoft PowerPoint
@@ -2703,7 +2703,7 @@ project-scoped SourceRef representation, independently of model adapters. The
 bounded form-POST transport keeps host binding/configuration out of semantic query
 arguments; no model tools, routes, source store or legacy rewiring are added.
 [The as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary) and
-[evaluation](V2-8F-EVAL.md) identify exact source `0cab854` and its independent
+[evaluation](history/V2-8F-EVAL.md) identify exact source `0cab854` and its independent
 [acceptance](reviews/V2-8F-0cab854.json). J1 below composes this boundary through
 a separate granted headless entry; F itself adds no model catalog or Assistant.
 
@@ -2720,7 +2720,7 @@ Exact source `22e7c97` is [independently accepted](reviews/V2-8H-22e7c97.json)
 for this headless boundary. Saved visible chat is not automatic cross-turn provider
 context; later authenticated orchestration and the visible Assistant retain their roadmap gates.
 The [as-built boundary](V2-8-AGENT-ARCHITECTURE.md#v2-8h-durable-visible-conversations-and-approval)
-and [evaluation](V2-8H-EVAL.md) distinguish implemented behavior from executed evidence.
+and [evaluation](history/V2-8H-EVAL.md) distinguish implemented behavior from executed evidence.
 
 
 ### V2-8I-1 authenticated conversation lifecycle transport
@@ -2738,7 +2738,7 @@ parameter-decoding failures that precede route execution. Pagination and mutatio
 queries are strict; export names derive from validated project IDs. No transport
 accepts client edits, provider configuration or worker execution. Queueing/replay,
 revision conflicts, cancellation and clear remain H domain operations with CLI
-parity. The [I1 evaluation](V2-8I-1-EVAL.md) and
+parity. The [I1 evaluation](history/V2-8I-1-EVAL.md) and
 [separate exact-source acceptance](reviews/V2-8I-1-5170adc.json) record complete
 validation and cleanup. Public orchestration and the visible Assistant retain
 their separate roadmap scope.
@@ -2770,7 +2770,7 @@ settled observation return0. A shutdown after an entered one-batch commit can
 therefore report success; shutdown does not invent user cancellation.
 
 Exact source `58662ec` is [independently accepted](reviews/V2-8I-2-58662ec.json).
-[I2's contract/evaluation](V2-8I-2-EVAL.md) records completed validation, native
+[I2's contract/evaluation](history/V2-8I-2-EVAL.md) records completed validation, native
 inspection, cleanup and remaining qualification limits. Later integration lives
 only in the roadmap.
 
@@ -2795,7 +2795,7 @@ added; existing CLI submission remains the headless equivalent.
 
 Source `2ba82cb` is implemented, behaviorally validated and independently
 [accepted](reviews/V2-8I-3-2ba82cb.json); exact evidence and limits are in
-[the I3 evaluation](V2-8I-3-EVAL.md). It leaves the visible
+[the I3 evaluation](history/V2-8I-3-EVAL.md). It leaves the visible
 Assistant and host execution policy at their roadmap boundaries.
 
 
@@ -2821,7 +2821,7 @@ is retained without new DDL/indexes. Existing indexes may require physical scans
 and sorting; row/output bounds are not a hard database work/time guarantee.
 Returned hints must re-enter I2 for current ownership/generation/lease/approval
 checks. Exact source8378a20 is [independently accepted](reviews/V2-8I-4-8378a20.json);
-[the evaluation](V2-8I-4-EVAL.md) records actual validation, focused independent
+[the evaluation](history/V2-8I-4-EVAL.md) records actual validation, focused independent
 review and the unavailable pre-removal service-count provenance. Hosted/UI policy
 remains in the roadmap.
 
@@ -2846,7 +2846,7 @@ Auto profile. Both files are bounded local reads; no model discovery occurs.
 FORGE_AGENT_HOST_ENABLED=1 and hosted mode are required; this slice created no
 activation configuration. Operator agent-chat pickup exposes the headless boundary
 with truthful bounded continuation/failure exits. No server auto-start, HTTP/UI, queue/schema or renderer
-change. [The evaluation](V2-8I-5-EVAL.md) records focused execution and the separate
+change. [The evaluation](history/V2-8I-5-EVAL.md) records focused execution and the separate
 [exact-source acceptance](reviews/V2-8I-5-5cf5b5c.json). The bridge stays disabled.
 
 
@@ -2873,7 +2873,7 @@ if necessary. HTTP close notification uses that helper; existing global signals 
 other jobs remain unchanged. Restart requires another explicit wake, with canonical
 ambiguity/replay fences. Approved terminal history can consume the finite prefix
 before later work; wake does not guarantee owner-wide progress.
-[Evaluation](V2-8I-6-EVAL.md) and [independent acceptance](reviews/V2-8I-6-dce5628.json)
+[Evaluation](history/V2-8I-6-EVAL.md) and [independent acceptance](reviews/V2-8I-6-dce5628.json)
 record exact source, focused tests and limitations. No production activation or
 live model qualification occurred.
 
@@ -2903,7 +2903,7 @@ same adapter, exact2048-byte generation/turnId JSON, trusted numeric account loo
 110second cancellation, cleanup and workExitCode. Provider/run/worker/budget
 overrides are refused. Independent CLI processes rely on canonical leases and
 shared account admission, not HTTP-local caps. No schema/query, UI or renderer
-change; owner-wide wake remains finite. [Evaluation](V2-8I-7-EVAL.md) records focused
+change; owner-wide wake remains finite. [Evaluation](history/V2-8I-7-EVAL.md) records focused
 execution, earlier harness/timing uncertainty and the separate
 [independent acceptance](reviews/V2-8I-7-3da0801.json).
 
@@ -2949,7 +2949,7 @@ The narrow rail is a modal overlay with topmost-dialog Escape, focus return and
 mutually exclusive left/right rails. Inactive panels are hidden and cannot focus.
 No model, compiler, renderer, store schema/query or canonical H/I2/I5/I7 authority
 changed. Contract/evidence and independent review status are indexed in
-[V2-8I-8-EVAL.md](V2-8I-8-EVAL.md) and development-state.json.
+[V2-8I-8-EVAL.md](history/V2-8I-8-EVAL.md) and development-state.json.
 
 ### V2-8J-1 granted headless web research (accepted at f161901)
 
@@ -2981,7 +2981,7 @@ invocation permits at most three sequential searches,24 returned rows,four model
 exchanges and30seconds; each search is bounded by10seconds. The complete final
 DTO is capped at65536characters. No source registry, verified claim support,
 query/transcript persistence, H accounting hooks, public transport or activation
-is introduced. [The contract](V2-8J-1-PLAN.md), [evaluation](V2-8J-1-EVAL.md) and
+is introduced. [The contract](history/V2-8J-1-PLAN.md), [evaluation](history/V2-8J-1-EVAL.md) and
 state distinguish implemented scope, evidence and independent acceptance.
 
 ### V2-8J-2 immutable project web-source registry
@@ -3024,8 +3024,8 @@ No new operation deadline or cancellation semantics are claimed; existing lock
 waits remain. No source-aware scene attachments, verified locators/claims, public
 surface, automatic J1/H/Assistant registration, model/search call or activation is
 added. The approved policy keeps selected snippets until source clear or canonical
-project deletion, with existing backup/media limits. [Contract](V2-8J-2-PLAN.md),
-[evaluation](V2-8J-2-EVAL.md) and state distinguish source, evidence and acceptance.
+project deletion, with existing backup/media limits. [Contract](history/V2-8J-2-PLAN.md),
+[evaluation](history/V2-8J-2-EVAL.md) and state distinguish source, evidence and acceptance.
 
 ### V2-8J-3 headless citation-reference observations
 
@@ -3066,15 +3066,15 @@ provider context, public route/CLI/UI, renderer change or activation is added. T
 are current-snapshot observations, not attached citations or reusable approval;
 later writes must re-enter canonical authority after save/restore/clear/delete.
 Existing adapter lock waits remain; cardinality/traversal limits do not establish
-a new deadline or cancellation guarantee. [Contract](V2-8J-3-PLAN.md),
-[evaluation](V2-8J-3-EVAL.md) and state distinguish implementation from acceptance.
+a new deadline or cancellation guarantee. [Contract](history/V2-8J-3-PLAN.md),
+[evaluation](history/V2-8J-3-EVAL.md) and state distinguish implementation from acceptance.
 
 ### V2-8J-4 revisioned scene citation lifecycle
 
 Independently [accepted](reviews/V2-8J-4-665cd04.json) at exact source
 `665cd0459b0f267b32e808a59046e3d0b914e74f`, after explicit bounded metadata/history
 and copy/export containment approval. Validation/review evidence is in
-[state](development-state.json) and [evaluation](V2-8J-4-EVAL.md).
+[state](development-state.json) and [evaluation](history/V2-8J-4-EVAL.md).
 
 Optional scene-owned `citations` contain versioned citation/target/source IDs,
 source generation, optional excerpt-relative UTF-8 byte ranges and a versioned
@@ -3152,7 +3152,7 @@ Assistant/grid/title drafts, viewport/navigation/session drift defer or suppress
 adoption. The committed copy remains available independently. Generic cited create/
 import and central native export refusal remain; no provider/research authority or
 host activation is added. Exact source `f6487737` is independently
-[accepted](reviews/V2-8J-5-f6487737.json); [evaluation](V2-8J-5-EVAL.md) retains
+[accepted](reviews/V2-8J-5-f6487737.json); [evaluation](history/V2-8J-5-EVAL.md) retains
 focused execution, visual/response limits and cleanup. Later direction/authority
 remains solely in the [roadmap](ROADMAP.md#assistant-citation-native-presentation).
 
@@ -3222,7 +3222,7 @@ engine/saved revisions and pending save/copy/restore/reload refs require clean
 saved state even in Done. No implicit commit/save/discard/reload occurs. Browser
 UI shows only revision/count and the disclosure, never a retained source preview.
 The three existing controls share this coordinator. See [focused evidence and
-current review status](V2-8J-6-2-EVAL.md); all later work is in the roadmap.
+current review status](history/V2-8J-6-2-EVAL.md); all later work is in the roadmap.
 
 ### J6-3 saved Sources inspector (accepted8d34c95f)
 
@@ -3250,7 +3250,7 @@ yielding and a15second body deadline with non-awaited cancellation. That deadlin
 does not bound server SQL locks or fetch-header delivery. Session epochs, current
 scope/document/navigation and authoritative save/copy/restore/reload invalidate
 private rows and late reads. Closed/inactive views do not poll or retain pages.
-See [focused evidence and review status](V2-8J-6-3-EVAL.md).
+See [focused evidence and review status](history/V2-8J-6-3-EVAL.md).
 
 ### J6-4 headless editable References appendix (source under review)
 
@@ -3285,4 +3285,4 @@ apply, independently of source/chat clear. Source registry privacy is unchanged.
 An existing editor keeps drafts and stale-save protection until deliberate reopen;
 no live adoption/browser control/scheduler/provider dispatch is introduced. Existing
 qualified notes export is required for a cited project and retains its consent/
-preflight guards. See [evidence and review status](V2-8J-6-4-EVAL.md).
+preflight guards. See [evidence and review status](history/V2-8J-6-4-EVAL.md).

@@ -262,13 +262,13 @@ editor**. It creates or reopens the saved editable copy through the same service
 keeps human edits on retry and retains access to the original deck. Unsupported
 content refuses visibly; changed-source or deleted-target retries never replace
 edits or recreate a deleted project. See the exact
-[coverage and limits](docs/v2-7b-1-evidence/COVERAGE.md) and
-[browser validation/review status](docs/V2-7B-2-EVAL.md).
+[coverage and limits](docs/history/OPEN-IN-EDITOR-COVERAGE.md) and
+[browser validation/review status](docs/history/V2-7B-2-EVAL.md).
 
 Saved project cards show the first saved slide above their title and actions.
 Previews use the same scene renderer as the editor, refresh with saved revisions
 and remain optional: Open is available while a preview loads or fails. The
-[cover validation and review record](docs/V2-7C-1-EVAL.md) identifies the exact
+[cover validation and review record](docs/history/V2-7C-1-EVAL.md) identifies the exact
 implementation and its acceptance status.
 
 The project editor's Inspector includes a collapsed **Sources** section. Opening
@@ -284,7 +284,7 @@ npm run inspect-project-sources -- <project-id> --revision <N> --slide <slide-id
 
 Authenticated reads use the owner's session in `FORGE_PROJECT_TOKEN`. Full URLs
 may include private query values; the interface does not follow them or fetch
-their pages. See [scope, evidence and review status](docs/V2-8J-6-3-EVAL.md).
+their pages. See [scope, evidence and review status](docs/history/V2-8J-6-3-EVAL.md).
 
 An owner can preview an editable **References** appendix headlessly:
 
@@ -308,7 +308,7 @@ and possible later AI input through scoped scene reads. Source/chat clear does n
 remove those copies; history follows existing retention. Insertion uses no model.
 Reopen deliberately to load the appended pages; an already-open editor keeps its
 drafts and existing conflict handling. Long values continue across readable native
-pages; claim support remains unassessed. See [scope and review status](docs/V2-8J-6-4-EVAL.md).
+pages; claim support remains unassessed. See [scope and review status](docs/history/V2-8J-6-4-EVAL.md).
 
 Saved projects with retained citations have an owner-only notes export on local
 POSIX filesystems:
@@ -323,7 +323,7 @@ URLs, including private query values, in PowerPoint speaker notes. Downloaded no
 survive source clear/project deletion; support remains not assessed and long notes
 may overflow printed pages. Output is private0600 and never replaces an existing
 file. Uncited projects can omit the flag. See the
-[accepted headless scope](docs/V2-8J-6-1-EVAL.md).
+[accepted headless scope](docs/history/V2-8J-6-1-EVAL.md).
 
 The workspace/editor Export action now supports cited saved projects through a
 fresh **Export with source notes** confirmation. Finish editing and save first;
@@ -331,7 +331,7 @@ Export preserves pending drafts and never saves them implicitly. Uncited saved
 projects download directly. Consent includes the same complete-title/URL,
 independent-retention and print limitations above. Generic/raw cited export still
 refuses; the new private notes transport is owner-only, with no admin source
-override. [Browser evidence and current review status](docs/V2-8J-6-2-EVAL.md)
+override. [Browser evidence and current review status](docs/history/V2-8J-6-2-EVAL.md)
 distinguish implementation from independent acceptance.
 
 V2 also provides a trusted headless CLI for bounded scripted edits to saved
@@ -341,13 +341,13 @@ exits; a separate worker resumes the durable run. Owner-bound projects additiona
 require the trusted operator's `--owner OWNER` on each call. See the
 [run-plan schema](packages/agent/run-plan.schema.json),
 [durable execution contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8b-durable-run-core)
-and [validation/review record](docs/V2-8B-EVAL.md).
+and [validation/review record](docs/history/V2-8B-EVAL.md).
 
 Internal, operator-configured adapters now support bounded text/tool exchanges
 through OpenAI-compatible Chat Completions and Anthropic Messages. They use explicit
 capabilities and injected credentials, validate semantic proposals and leave editing
 authority with the canonical tools. [The accepted exchange contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8c-provider-exchange-boundary)
-and [evidence](docs/V2-8C-EVAL.md) distinguish local protocol fixtures from live
+and [evidence](docs/history/V2-8C-EVAL.md) distinguish local protocol fixtures from live
 provider qualification. Hosted conversational integration and the Assistant remain
 in the [roadmap](docs/ROADMAP.md#v2-8-remaining).
 
@@ -357,7 +357,7 @@ existing durable runtime. Read/text/refusal outcomes do not mutate project conte
 edit proposals preflight through canonical commands and retain owner/revision guards.
 A proposal belongs to one host instance; queued runs retain durable recovery. See
 the [preparation contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8d-provider-backed-run-preparation)
-and [independent validation](docs/V2-8D-EVAL.md). This internal boundary adds no new
+and [independent validation](docs/history/V2-8D-EVAL.md). This internal boundary adds no new
 public route, credential setup or Assistant interface.
 
 The same runner also supports bounded `converse` invocations: canonical scoped
@@ -366,14 +366,14 @@ refusal or one atomic edit proposal. Explicit enqueue retains the same authority
 history and proposals remain ephemeral to one host instance. Exchange/tool/output
 budgets and cancellation bound the whole invocation. See the independently accepted
 [conversation contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8e-bounded-tool-conversation-preparation)
-and [V2-8E evidence](docs/V2-8E-EVAL.md).
+and [V2-8E evidence](docs/history/V2-8E-EVAL.md).
 
 An internal shared-search boundary normalizes SearXNG results into project-scoped
 citation sources independently of the model provider. Operator configuration stays
 outside query arguments; transport, output and cancellation limits are explicit.
 Its independently accepted
 [contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary) and
-[evidence](docs/V2-8F-EVAL.md) identify the exact scope and limitations. Legacy
+[evidence](docs/history/V2-8F-EVAL.md) identify the exact scope and limitations. Legacy
 research retains its existing entry points; model search-tool integration remains
 in the [roadmap](docs/ROADMAP.md#v2-8-remaining).
 

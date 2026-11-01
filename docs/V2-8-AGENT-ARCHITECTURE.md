@@ -144,7 +144,7 @@ it makes no claim about arbitrary future network/provider side effects.
 No live provider, Assistant UI, public run route, search, new composition, persistent
 undo, framework adoption, production migration or deployment is part of this slice.
 Exact source1fb39ff is [independently accepted](reviews/V2-8B-1fb39ff.md).
-Validation, retained limitations and cleanup are indexed by state/[evaluation](V2-8B-EVAL.md).
+Validation, retained limitations and cleanup are indexed by state/[evaluation](history/V2-8B-EVAL.md).
 
 
 <a id="v2-8c-provider-exchange-boundary-implementation-under-review"></a>
@@ -153,7 +153,7 @@ Validation, retained limitations and cleanup are indexed by state/[evaluation](V
 
 Source `e41d509c20fca21a70b9a0c587ccb83684aee7e6` is independently
 [accepted](reviews/V2-8C-e41d509.json) for this bounded exchange contract.
-[The evaluation](V2-8C-EVAL.md) records execution, inspection and limitations.
+[The evaluation](history/V2-8C-EVAL.md) records execution, inspection and limitations.
 
 `packages/agent/provider.ts` defines the typed ModelProvider, explicit capability
 profile, bounded request preparation and normalized response/tool validation.
@@ -177,7 +177,7 @@ vision, files and streaming are explicit unsupported features; there is no live
 provider loop, conversation persistence, Assistant UI, public transport, new key
 storage, search or provider qualification claim. Protocol fixtures exercise actual
 HTTP and canonical persistence on both backends. Current review/evidence is in
-[the evaluation](V2-8C-EVAL.md) and development-state.json.
+[the evaluation](history/V2-8C-EVAL.md) and development-state.json.
 
 Normalized usage inputTokens includes reported cached input once. Anthropic's
 uncached/cache-read/cache-write fields are summed; Chat Completions prompt_tokens
@@ -229,7 +229,7 @@ cannot be recovered after host restart; queued runs retain accepted recovery.
 No prompt, raw response, credential, transcript or new journal/table is stored.
 An explicit new preparation may call the provider again; no network exactly-once
 or conversational runtime claim is made. Exact source8c1e5c4 is independently
-[accepted](reviews/V2-8D-8c1e5c4.json). [The evaluation](V2-8D-EVAL.md) and state
+[accepted](reviews/V2-8D-8c1e5c4.json). [The evaluation](history/V2-8D-EVAL.md) and state
 index validation/review; later scope lives in the roadmap.
 
 
@@ -265,7 +265,7 @@ provider-default/configuration change is introduced. Conversations/proposals are
 host-instance ephemeral; queued runs retain accepted durability. This is not the
 hosted cross-request approval contract or live provider/content qualification.
 Exact source `c71d65e` is [independently accepted](reviews/V2-8E-c71d65e.json).
-[Evaluation](V2-8E-EVAL.md) and state index complete validation, independent
+[Evaluation](history/V2-8E-EVAL.md) and state index complete validation, independent
 execution and preserved limitations; future work remains only in the roadmap.
 
 
@@ -312,7 +312,7 @@ Visible block/BR boundaries remain spaces while inline word fragments stay joine
 credentials. Snippets remain untrusted data, not instructions or HTML to render.
 
 Exact source `0cab854` is [independently accepted](reviews/V2-8F-0cab854.json).
-[The evaluation](V2-8F-EVAL.md) and state index complete validation, independent
+[The evaluation](history/V2-8F-EVAL.md) and state index complete validation, independent
 execution, preservation and limitations. [The roadmap](ROADMAP.md#v2-8-remaining) owns
 later tool/source/Assistant scope and the separate hosted approval-lifetime seam.
 
@@ -326,7 +326,7 @@ checks and periodic event-loop yielding bound immediately resolved empty reads.
 It fences late header/body results and requests cancellation before releasing the
 reader on expiry/abort. This is a transport correction, not model streaming output,
 new provider capability, conversation persistence or framework adoption.
-[Evaluation](V2-8G-EVAL.md) records failed probes, unchanged assertions, complete
+[Evaluation](history/V2-8G-EVAL.md) records failed probes, unchanged assertions, complete
 224-file validation and current native/visual/resource observations. Exact source
 `f3e784a` is [independently accepted](reviews/V2-8G-f3e784a.json); 668 independent
 executions and retained-image inspection found no blocking issue. No live-model
@@ -351,7 +351,7 @@ conversation revision and seven cumulative safe-integer counters. Visible reques
 reply and trusted preparation inputs occupy private payloads; canonical pending
 plans are stored separately from operational metadata. Both budgets are 4 MiB per
 project; simultaneous count/record limits and final-result reservations are in
-`turn-limits.ts` (re-exported by `turn-state.ts`) and the [approved contract](V2-8H-EVAL.md). Schemas own runtime
+`turn-limits.ts` (re-exported by `turn-state.ts`) and the [approved contract](history/V2-8H-EVAL.md). Schemas own runtime
 validation and generated TypeScript types. Serialized UTF-8 bounds include JSON
 escaping and multibyte text, with matching save/load bounds.
 
@@ -428,7 +428,7 @@ The independently accepted [I3 submission](reviews/V2-8I-3-2ba82cb.json) adds on
 owner-authenticated durable HTTP ingress over H submit, with the existing
 request/revision/generation and private-parser contracts. It performs no provider
 dispatch or execution. [Its architecture](ARCHITECTURE.md#v2-8i-3-authenticated-turn-submission)
-and [evaluation](V2-8I-3-EVAL.md) distinguish acceptance from later host policy.
+and [evaluation](history/V2-8I-3-EVAL.md) distinguish acceptance from later host policy.
 
 ## V2-8I-4 owner-scoped discovery
 
@@ -438,5 +438,5 @@ domain identity checks exclude private chat/project/run bodies; filtered rows
 still advance the cursor. A hint grants no claim, reconciliation, provider or edit
 authority and must re-enter I2. No schema/index, HTTP/UI, scheduler or provider
 selection is added. [The main architecture](ARCHITECTURE.md#v2-8i-4-owner-scoped-work-discovery)
-and [I4 evaluation](V2-8I-4-EVAL.md) record exact scope and limits; source8378a20
+and [I4 evaluation](history/V2-8I-4-EVAL.md) record exact scope and limits; source8378a20
 is [independently accepted](reviews/V2-8I-4-8378a20.json).

@@ -248,7 +248,7 @@ rotates identity to replace edits, creates another copy implicitly, regenerates 
 saved scene or resurrects deletion. It opens a saved editable copy with separate
 subsequent edits; it does not synchronize changes back into legacy YAML. No new
 conversion types, assets, notes, database tables or security policy are added.
-Implementation validation/review status is in [V2-7B-2-EVAL.md](V2-7B-2-EVAL.md).
+Implementation validation/review status is in [V2-7B-2-EVAL.md](history/V2-7B-2-EVAL.md).
 
 ## 9. Saved-project cover cards (V2-7C-1)
 

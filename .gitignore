@@ -110,3 +110,7 @@ test/fixtures/
 # product, and can carry browser state or screenshots of private decks.
 .codex/
 .playwright-mcp/
+
+# Test and evaluation output. Browser suites and evaluation tools write
+# screenshots and logs here; they are reproducible and never committed.
+docs/*-evidence/

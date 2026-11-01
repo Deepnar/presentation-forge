@@ -30,8 +30,8 @@ checks. **Revisit:** only with evidence that the same separation is preserved.
 
 **Decision:** validated atomic commands, optimistic revisions, snapshot undo,
 customization flags, deletion tombstones and detached scenes. **Source:**
-[V2-5A contract](V2-5A-EDITOR-ARCHITECTURE.md), [V2-5B correction](V2-5B1-EVAL.md),
-[V2-5J lock correction](V2-5J1-EVAL.md); accepted editor milestones in roadmap.
+[V2-5A contract](V2-5A-EDITOR-ARCHITECTURE.md), [V2-5B correction](history/V2-5B1-EVAL.md),
+[V2-5J lock correction](history/V2-5J1-EVAL.md); accepted editor milestones in roadmap.
 **Alternatives:** semantic inverse-only undo did not restore all metadata; UI-only
 lock checks could be bypassed headlessly. **Reasoning:** engine boundary protects
 every caller and restores exact state. **Consequences:** future agent editing
@@ -41,7 +41,7 @@ changes require a separately approved design, not silent last-writer-wins.
 ## D4 — manual layout templates are separate from AI composition
 
 **Decision:** human insertion uses editable scene skeletons; AI generation uses
-semantic composition families. **Source:** [V2-5K evaluation](V2-5K-EVAL.md),
+semantic composition families. **Source:** [V2-5K evaluation](history/V2-5K-EVAL.md),
 accepted `fa557c4`. **Alternatives:** constraining generation to the legacy catalog
 is explicitly rejected in the roadmap. **Reasoning:** preserve flexible generation
 and predictable manual insertion. **Consequences:** common Layer C and slide.insert

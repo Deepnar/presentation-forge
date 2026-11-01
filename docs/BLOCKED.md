@@ -129,11 +129,11 @@ point at it without creating a broken or misleading payment link.
 Human approved bounded J4 on2026-10-28; exact source665cd04 is independently
 [accepted](reviews/V2-8J-4-665cd04.json) on2026-10-29. Selected41/41, typecheck0,
 independent2/2 and exact owned-fixture cleanup are complete. No J4 validation,
-review or service blocker remains. [Evaluation](V2-8J-4-EVAL.md) retains failures,
+review or service blocker remains. [Evaluation](history/V2-8J-4-EVAL.md) retains failures,
 corrections and scope limits. Later direction/authority lives only in
 [the roadmap](ROADMAP.md#assistant-search-source-integrity).
 
-[J5 copy](V2-8J-5-PLAN.md) received scoped human direction on2026-10-29 after
+[J5 copy](history/V2-8J-5-PLAN.md) received scoped human direction on2026-10-29 after
 independent readiness. Exact implementationf6487737 is independently accepted
 after complete focused validation, new review challenges and verified owned
 cleanup; no J5 blocker remains. Exact active scope/status lives in the
@@ -143,7 +143,7 @@ remains for this bounded slice.
 J6-1 notes-only export is independently [accepted](reviews/V2-8J-6-1-ecf82d3f.json)
 at ecf82d3f after human direction, focused33/33, independent2/2, finaltypecheck0,
 305/0audit and verified cleanup. No validation/review/service blocker remains.
-[Evaluation](V2-8J-6-1-EVAL.md) preserves the corrected empty-scope defect, fixture
+[Evaluation](history/V2-8J-6-1-EVAL.md) preserves the corrected empty-scope defect, fixture
 failures and portable/print limits. Later scope and direction live only in the
 [roadmap](ROADMAP.md#assistant-citation-native-presentation).
 
@@ -160,7 +160,7 @@ contract65287b61 was human-approved on2026-10-30, pinnedec2bb489. Exact8d34c95f
 is independently [accepted](reviews/V2-8J-6-3-8d34c95f.json), stable recorde96c9ba1.
 Selected36/36, new independent1/1, final build, viewed images and715/0 packet audit
 are complete. All16root+1reviewer groups absent; owned cleanup complete. No J6-3
-validation/review/service blocker remains. [Evaluation](V2-8J-6-3-EVAL.md) retains
+validation/review/service blocker remains. [Evaluation](history/V2-8J-6-3-EVAL.md) retains
 original failures, source-capture/applicability and inherited limits. Later scope
 remains gated in the roadmap; no model/search/provider activation is authorized.
 
@@ -170,7 +170,7 @@ approval, pinned5b2c9e0b. Source031ed503 has selected26/26, actual selected Post
 final typecheck and viewed native/SVG evidence. New independent PG1/1 passes;
 owned cleanup and independent absence verification are complete. Final packet/
 decision review is in progress; no human direction blocker remains
-for this exact scope. See [evaluation](V2-8J-6-4-EVAL.md). Later UI/marker/semantic
+for this exact scope. See [evaluation](history/V2-8J-6-4-EVAL.md). Later UI/marker/semantic
 scope is still gated solely in the roadmap.
 
 ### 3.1 Browser regression coverage
@@ -248,7 +248,7 @@ V2-8I-2 is independently accepted at58662ec with complete required validation,
 313primary+4native independent successful repeats and typecheck. Its owned service
 was removed after saved/fsynced actual0projectDBs; bounded exact-ID absence and5544
 refusal were independently verified. There is no remaining I2 validation/review/
-cleanup blocker. [The current evaluation](V2-8I-2-EVAL.md) records exact evidence
+cleanup blocker. [The current evaluation](history/V2-8I-2-EVAL.md) records exact evidence
 and limitations; dependent scope remains only in the linked roadmap entry.
 
 I3's admission-only hold and cancelled first browser attempt are historical. Full
@@ -256,7 +256,7 @@ validation passed all9gates/3048primary+4distinct native cases/119images, with a
 PostgreSQL and unchanged quiet thresholds. Separate exact-source
 [ACCEPT](reviews/V2-8I-3-2ba82cb.json) accepts2ba82cb; exact-owned cleanup and fresh
 independent verification are complete. There is no remaining I3 validation/review/
-cleanup blocker. [The evaluation](V2-8I-3-EVAL.md) retains helper/resource chronology,
+cleanup blocker. [The evaluation](history/V2-8I-3-EVAL.md) retains helper/resource chronology,
 standing locale and inherited limitations. Dependent scope remains gated in the
 roadmap; acceptance supplies no implementation/deployment authority.
 
@@ -273,29 +273,29 @@ a recorded validation followup, not a proven product regression; the owned
 review service has been removed after checks. Review status/baseline are indexed
 in development-state.json. V2-7C-1 covers are independently accepted at `f79ae07`;
 all required validation executed and its isolated service was removed after
-review. See [the evaluation](V2-7C-1-EVAL.md). C2 discovery is independently
+review. See [the evaluation](history/V2-7C-1-EVAL.md). C2 discovery is independently
 accepted at `bf1bd8f`; its validation and review executed with the owned service.
 After the interrupted session's host restart, the auto-remove/tmpfs container
 was already absent; cleanup observations and the unavailable pre-removal database
-count are explicit in [the C2 evaluation](V2-7C-2-EVAL.md). Current state indexes
+count are explicit in [the C2 evaluation](history/V2-7C-2-EVAL.md). Current state indexes
 acceptance. No constraint or green test authorizes another milestone.
 
 The approved V2-8A headless foundation is now independently accepted atd4f446c;
-see [evaluation](V2-8A-EVAL.md) and state. All required checks executed. The isolated
+see [evaluation](history/V2-8A-EVAL.md) and state. All required checks executed. The isolated
 service was removed after a saved0-database observation and closed5544probe.
 Acceptance authorizes planning only; later scope and standing limits remain in
 the roadmap. The explicit original-PPTX provenance limitation is not a new product
 blocker or a claim of recovered archives.
 
 The approved V2-8B durable run core is independently accepted at1fb39ff; see
-[evaluation](V2-8B-EVAL.md), [decision](reviews/V2-8B-1fb39ff.md) and state.
+[evaluation](history/V2-8B-EVAL.md), [decision](reviews/V2-8B-1fb39ff.md) and state.
 All required validation executed. Owned PostgreSQL cleanup saved/fsynced the
 zero-database observation before removal and verified5544closed. This historical
 execution does not turn unavailable future PostgreSQL checks into passes. Later
 scope and inherited limitations remain in the roadmap.
 
 The approved V2-8C provider exchange boundary is independently accepted at
-`e41d509`; [evaluation](V2-8C-EVAL.md) and [decision](reviews/V2-8C-e41d509.md)
+`e41d509`; [evaluation](history/V2-8C-EVAL.md) and [decision](reviews/V2-8C-e41d509.md)
 record no blocking findings and complete required execution. Current owned
 PostgreSQL cleanup saved/fsynced zero project databases before removal and verified
 port 5544 closed. The earlier reboot-lost service count remains unavailable.
@@ -303,7 +303,7 @@ Live-provider quality was outside this contract, not a passing fixture claim;
 later scope and inherited limits remain in the [roadmap](ROADMAP.md#v2-8-remaining).
 
 V2-8D preparation/explicit queueing is independently accepted at8c1e5c4; its
-[evaluation](V2-8D-EVAL.md) and [decision](reviews/V2-8D-8c1e5c4.json) report complete
+[evaluation](history/V2-8D-EVAL.md) and [decision](reviews/V2-8D-8c1e5c4.json) report complete
 required execution and no blocking finding. The owned service was removed after a
 saved/fsynced zero-project-database observation and verified5544closure. The earlier
 readiness-placeholder skip remains archived with unknown original cause; complete
@@ -311,19 +311,19 @@ readiness-placeholder skip remains archived with unknown original cause; complet
 hosted proposal-lifetime scope stay in the [roadmap](ROADMAP.md#v2-8-remaining).
 
 V2-8E bounded tool-conversation preparation is independently accepted atc71d65e;
-[evaluation](V2-8E-EVAL.md) and [decision](reviews/V2-8E-c71d65e.json) record complete
+[evaluation](history/V2-8E-EVAL.md) and [decision](reviews/V2-8E-c71d65e.json) record complete
 required execution and no blocking finding. Exact owned-service cleanup saved/fsynced
 actual0project databases and verified removal/5544closure. The inherited native
 identity limitation and remaining parent scope stay in the
 [roadmap](ROADMAP.md#native-pptx-shape-id-uniqueness).
 
 V2-8F shared web-search boundary is independently accepted at `0cab854`;
-[evaluation](V2-8F-EVAL.md) and [decision](reviews/V2-8F-0cab854.json) record complete
+[evaluation](history/V2-8F-EVAL.md) and [decision](reviews/V2-8F-0cab854.json) record complete
 required execution and no blocking finding. Exact owned-service cleanup saved/fsynced
 a fresh actual zero-project-database observation and verified removal/5544 closure.
 Remaining [parent scope](ROADMAP.md#v2-8-remaining) stays in the roadmap. The
 [older model-stream risk](ROADMAP.md#model-provider-stream-resource-bounds) is now
-resolved by independently accepted V2-8G source `f3e784a`; [evaluation](V2-8G-EVAL.md)
+resolved by independently accepted V2-8G source `f3e784a`; [evaluation](history/V2-8G-EVAL.md)
 records complete required validation and the separate standing limitations. Its
 owned service was removed after saved/fsynced zero-project-database observation
 and exact-ID/port-closure verification. Acceptance adds no feature authorization.
@@ -358,7 +358,7 @@ I4's critical-CPU resource hold is resolved by fresh180.701second quiet
 requalification and unchanged full5Kretry9/9,0fail/skip/cancelled. The original
 7pass/1timeout/1unfinished attempt remains retained. The later completed validation
 and acceptance are recorded below; these earlier requirements are historical, not
-current blockers. See [the evaluation](V2-8I-4-EVAL.md) and
+current blockers. See [the evaluation](history/V2-8I-4-EVAL.md) and
 [roadmap](ROADMAP.md#assistant-work-discovery).
 
 I4 is independently accepted at8378a20 after completed source validation and
@@ -367,20 +367,20 @@ independently verified; pre-removal count/cause remain unavailable. The decision
 explicitly accepts that operational provenance limit for source correctness and
 does not certify cleanup. Current independent PG replay remains unexecuted; no
 service recreation or additional broad run is required. No ongoing I4 product/
-validation/review blocker remains. [Evaluation](V2-8I-4-EVAL.md) preserves the gap;
+validation/review blocker remains. [Evaluation](history/V2-8I-4-EVAL.md) preserves the gap;
 [roadmap](ROADMAP.md#assistant-surface-integration) owns future gated scope.
 
 I5 is independently accepted at5cf5b5c with four focused gates complete (32new
 runtime tests and typecheck),36affected governance cases and3new independent
 challenges passing. No ongoing I5 validation/review blocker or persistent service
 exists. The Auto-only bridge remains disabled; live-provider use and activation
-are unexecuted. [Evaluation](V2-8I-5-EVAL.md) records bounded acceptance;
+are unexecuted. [Evaluation](history/V2-8I-5-EVAL.md) records bounded acceptance;
 [the roadmap](ROADMAP.md#assistant-surface-integration) owns later gated scope.
 
 
 I6 is independently accepted at dce5628: required26/26, affected governance37/37,
 typecheck0 and independent3/3 new challenges. No ongoing I6 validation/review or
-service blocker remains. [Evaluation](V2-8I-6-EVAL.md) retains the finite-hint,
+service blocker remains. [Evaluation](history/V2-8I-6-EVAL.md) retains the finite-hint,
 progress, close and offline limits. Later interface/progress direction is in
 [the roadmap](ROADMAP.md#assistant-surface-integration), not approval for activation.
 
@@ -388,21 +388,21 @@ I7 exact target wake is independently accepted at3da0801: required33/33,
 selected governance4/4, typecheck0 and new independent2/2. No ongoing I7 source/
 validation/review blocker or owned service remains. Its initial SQLite wait's
 cause remains unresolved, explicitly accepted for default-off source without live
-latency qualification. [Evaluation](V2-8I-7-EVAL.md) retains all prior attempts and
+latency qualification. [Evaluation](history/V2-8I-7-EVAL.md) retains all prior attempts and
 scope limits; [the roadmap](ROADMAP.md#assistant-surface-integration) alone owns
 later interface/fairness/activation decisions. No production activation follows.
 
 
 I8 source b9c2d20 is independently accepted: selected product26/26, governance4/4,
 typecheck0 and independent3/3. No ongoing I8 validation/review blocker remains. No missing backend/model execution blocks this offline/default-
-off slice. [Evaluation](V2-8I-8-EVAL.md) exposes selected-case browser evidence and
+off slice. [Evaluation](history/V2-8I-8-EVAL.md) exposes selected-case browser evidence and
 provenance limits. Scope/remaining authority is solely in
 [the roadmap](ROADMAP.md#assistant-visible-editor).
 
 
 J1 is independently accepted atf161901 with selected153/153, typecheck0 and
 independent2/2 passing. No J1 source/validation/review or owned-service blocker
-remains. [Evaluation](V2-8J-1-EVAL.md) preserves the first unresolved integration
+remains. [Evaluation](history/V2-8J-1-EVAL.md) preserves the first unresolved integration
 timeout, compiler-transcription and external API-lifecycle limits. Research remains
 headless with ephemeral sources; public activation and durable source/data policy
 are outside acceptance. Later scope/authority is solely in
@@ -412,7 +412,7 @@ are outside acceptance. Later scope/authority is solely in
 J2 is independently [accepted](reviews/V2-8J-2-6d51cd4.json) at6d51cd4 after
 human-approved private snippet retention/clear/delete implementation. Selected57/57,
 typecheck0 and independent2/2 pass; no J2 validation/review or owned-service blocker
-remains. [Evaluation](V2-8J-2-EVAL.md) retains the corrected failures, capture
+remains. [Evaluation](history/V2-8J-2-EVAL.md) retains the corrected failures, capture
 applicability and inherited lock-wait/erasure/provenance limits. No model run or
 production activation follows acceptance. Later scope/authority is solely in
 [the roadmap](ROADMAP.md#assistant-search-source-integrity).
@@ -423,6 +423,6 @@ human-approved read-only foundation implementation. Required50/50 plusselected
 governance2/2, independent2/2 and typecheck0 pass. No J3 validation/review or owned-
 service blocker remains; actual0 catalog was saved before exact-ID removal and
 private-credential deletion, with independent absence verification.
-[Evaluation](V2-8J-3-EVAL.md) retains preparation errors, source applicability,
+[Evaluation](history/V2-8J-3-EVAL.md) retains preparation errors, source applicability,
 lock-wait/locator limits and exclusions. All later scope/authority is solely in
 [the roadmap](ROADMAP.md#assistant-search-source-integrity).

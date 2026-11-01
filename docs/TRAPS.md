@@ -1930,7 +1930,7 @@ request can call the provider. Persist cancellation under its generation/fence
 without treating it as successful publication; if abort arrives during result row
 writes, roll back the result and record only cancellation in a fresh transaction.
 Test both cancellation before dispatch and after writes, then advance the lease
-and prove no automatic retry. See the [V2-8H correction](V2-8H-EVAL.md).
+and prove no automatic retry. See the [V2-8H correction](history/V2-8H-EVAL.md).
 
 ## Snapshot authority before asynchronous work
 
@@ -1940,7 +1940,7 @@ await, then capture only that private copy in all transactions and callbacks.
 Copying only inside the transaction leaves closures using the original object;
 reusing it for project B can make an A-authorized clear delete B's rows. Test
 ordinary same-owner project switching across every public operation, including
-linked-run reads and approval. See the [V2-8H correction](V2-8H-EVAL.md).
+linked-run reads and approval. See the [V2-8H correction](history/V2-8H-EVAL.md).
 
 ## Single-use permission must belong to the capability
 
@@ -1950,7 +1950,7 @@ the capability, consume synchronously before awaiting, and bind the full approve
 request rather than an ID callers can reuse with wider scope. Validate mismatches
 before consumption so refusal cannot spend the original permission. Cross-factory
 concurrency and same-ID changed text/scope are distinct checks. See the
-[V2-8J-1 correction](V2-8J-1-EVAL.md).
+[V2-8J-1 correction](history/V2-8J-1-EVAL.md).
 
 ## Error translation must preserve rollback and domain meaning
 
@@ -1960,7 +1960,7 @@ return a refusal value from inside the transaction: returning can commit earlier
 writes. A domain-specific bridge can retain the original privately, throw an
 existing fencing sentinel through canonical rollback, then restore the original
 outside. Test deliberate refusal after an actual write as well as stale/capacity
-paths. See the [J2 PostgreSQL correction](V2-8J-2-EVAL.md).
+paths. See the [J2 PostgreSQL correction](history/V2-8J-2-EVAL.md).
 
 ## Valid JSON does not guarantee scalar text for byte locators
 
@@ -1971,7 +1971,7 @@ Check scalar validity before encoding locator evidence. Preserve the source's
 accepted identity and report an unsupported excerpt instead of repairing it or
 silently tightening the existing source validator. A valid literal U+FFFD is a
 separate positive control; supplementary pairs and a literal leading BOM also
-need exact offset tests. See the [J3 checks](V2-8J-3-EVAL.md).
+need exact offset tests. See the [J3 checks](history/V2-8J-3-EVAL.md).
 
 ## Keep clock-boundary assertions independent of scheduler delay
 
@@ -2062,7 +2062,7 @@ require both complete snapshot indexes and verify backup hashes before any child
 work; initial admission also verifies every current original and the complete
 historical path set. A saved backend identity alone does not prove preservation
 finished. Resume may see regenerated originals but must still reject damaged
-backups. See the [I4 correction evidence](V2-8I-4-EVAL.md).
+backups. See the [I4 correction evidence](history/V2-8I-4-EVAL.md).
 
 ## Text drivers can replace bytes before identity validation
 
@@ -2087,7 +2087,7 @@ commit both settlement updates together. Inject a failure between those updates
 against the real database: both must roll back to the reservation. Unknown or
 aborted usage retains the estimate; normalized cached input is already part of
 input usage. Known usage above estimate must be charged in full and close further
-dispatch rather than be clipped. [I5 evidence](V2-8I-5-EVAL.md) covers these seams.
+dispatch rather than be clipped. [I5 evidence](history/V2-8I-5-EVAL.md) covers these seams.
 
 
 ## Pin bearer identity before crossing an await
@@ -2098,7 +2098,7 @@ recreated account. A private joined session.user_id/current-user snapshot preser
 identity without widening public user data. Carry that ID through policy opening
 and recheck it before work. Account and meter AsyncLocalStorage contexts must both
 be exited before background resources are created; runAsAccount(null) only calls
-the function and retains inherited context. [I6 evidence](V2-8I-6-EVAL.md) covers
+the function and retains inherited context. [I6 evidence](history/V2-8I-6-EVAL.md) covers
 actual account recreation and empty contexts across asynchronous boundaries.
 
 **Coalesced wake receipts acknowledge the already admitted hint.** Exact work must
@@ -2107,7 +2107,7 @@ different targets/modes are busy, not replacements. First inspection belongs
 inside reserved capacity/deadline. Pending identical callers share its outcome;
 already-admitted callers do not get fresh-validity guarantees. Re-enter canonical
 authority before every real invocation rather than adding unbounded coalesced
-reads outside the slot. See [I7's contract](V2-8I-7-PLAN.md).
+reads outside the slot. See [I7's contract](history/V2-8I-7-PLAN.md).
 
 **Negative admission tests must release deferred work even when assertions fail.**
 Register cleanup before the assertion, release the deferred operation before

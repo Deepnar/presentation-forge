@@ -7497,7 +7497,7 @@ scale); charts structurally exact without axes (V2-4C).
 
   **Sequence.** Both approved slices are implemented. B2's final 199-file matrix
   passes 2233 cases plus a distinct hosted PostgreSQL browser/CLI/export case;
-  full details and limitations are in [V2-7B-2-EVAL.md](V2-7B-2-EVAL.md).
+  full details and limitations are in [V2-7B-2-EVAL.md](history/V2-7B-2-EVAL.md).
   The separate reviewer accepted generation → project → edit → save/reopen →
   native-export for supported source decks. Broader V2-7 hosted/Vercel readiness
   and full legacy conversion parity remain outside this checkmark.
@@ -7586,7 +7586,7 @@ scale); charts structurally exact without axes (V2-4C).
   is [registered separately](#v2-7b-2-restore-timeout). BYOK locale, Fit and B1
   conditional coverage/refusals remain. Evidence-only capture settling corrected
   an offscreen chat-action image; original and replacement are retained.
-  See [evaluation](V2-7B-2-EVAL.md) for exact totals and measurement boundaries.
+  See [evaluation](history/V2-7B-2-EVAL.md) for exact totals and measurement boundaries.
   This closes the approved handoff; next-candidate implementation is not authorized.
 
   > **Learned.** Stable identity must outlive both UI entry points and ambiguous
@@ -7695,7 +7695,7 @@ scale); charts structurally exact without axes (V2-4C).
   hosted PostgreSQL HTTP/CLI replay/export check. Build, typecheck and all 50
   benchmark cells pass. All 23 final images were inspected; exact 480×900 narrow
   geometry and native relationship preservation are retained in
-  [V2-7B-1-EVAL.md](V2-7B-1-EVAL.md). B2 now completes the separately approved
+  [V2-7B-1-EVAL.md](history/V2-7B-1-EVAL.md). B2 now completes the separately approved
   explicit-action workflow above; the B1 evidence remains its historical prerequisite.
 
   > **Learned.** Field/string survival is weaker than meaning preservation:
@@ -7815,7 +7815,7 @@ scale); charts structurally exact without axes (V2-4C).
   - **Validation:** source `484875f`,206-file matrix2330/2330 plus1 distinct
     hosted case; focused37/37 and54 repeated backend cases pass; build/typecheck/
     all50cells pass;123 final images and7 native pages inspected. BYOK remains
-    separate9/1; prior B2 timeout did not recur. [Exact evaluation](V2-7C-3-EVAL.md).
+    separate9/1; prior B2 timeout did not recur. [Exact evaluation](history/V2-7C-3-EVAL.md).
     [Separate ACCEPT](reviews/V2-7C-3-484875f.json) names exact source
     `484875ff5c826a34028889ed2fc6118bfdc407ad`; independent69/69, build/type/
     protocol/50cells and8 native pages verified. Both existing and fresh visual
@@ -7901,7 +7901,7 @@ scale); charts structurally exact without axes (V2-4C).
 
   **Completion.** Exact source `bf1bd8f7dbce827be04ed530b2e7330b385e8baa`,
   [separate ACCEPT](reviews/V2-7C-2-bf1bd8f.json),
-  [evaluation](V2-7C-2-EVAL.md). All approved entry/navigation/search/lifecycle and
+  [evaluation](history/V2-7C-2-EVAL.md). All approved entry/navigation/search/lifecycle and
   copy-scoped deletion behavior is implemented. Selected 205-file matrix 2320 plus
   distinct hosted 1 pass, zero final skips/cancellations/required unexecuted cases;
   independent 109/109, build/typecheck/50 cells and actual native checks pass.
@@ -7998,7 +7998,7 @@ scale); charts structurally exact without axes (V2-4C).
   repeated PG Chrome 12/HTTP 9, build/typecheck/50 cells and 39 inspected images pass.
   Independent review reran 87 primary cases plus one narrow diagnostic, native
   three-page export, type/protocol/50 cells; all passed. See
-  [evaluation](V2-7C-1-EVAL.md) for exact counts and performance boundaries.
+  [evaluation](history/V2-7C-1-EVAL.md) for exact counts and performance boundaries.
 
   > **Learned.** A preview is a disposable saved-scene read, but its view, account,
   > asynchronous preparation and browser font faces each have a lifetime. Clearing
@@ -8049,7 +8049,7 @@ unexplained beyond its observed wrong Delete action; controlled evidence is dist
   been established. During C2 source `bf1bd8f` validation the unchanged SQLite
   file reproduced the restore wait timeout (10 pass/1 fail); one unchanged bounded
   complete-file retry passed11/11. Both logs and exact per-file selection are
-  retained in [C2 evidence](V2-7C-2-EVAL.md). This recurrence remains unexplained;
+  retained in [C2 evidence](history/V2-7C-2-EVAL.md). This recurrence remains unexplained;
   the C2 dialog-helper correction does not establish its cause. This is a validation
   followup, not conversion/feature scope.
 <a id="v2-7b-2-source-retry-timeout"></a>
@@ -8112,7 +8112,7 @@ unexplained beyond its observed wrong Delete action; controlled evidence is dist
   lexical identities and changes only later duplicates; ambiguous shape-target
   references refuse export. Scene geometry/styles/native content and relationships
   remain exact. Already-valid archives retain their bytes; old exports are not
-  silently rewritten. [Contract/results](V2-PPTX-ID-EVAL.md),
+  silently rewritten. [Contract/results](history/V2-PPTX-ID-EVAL.md),
   [independent ACCEPT](reviews/V2-PPTX-ID-45c2c4c.json).
   Required 376/376 across 19 files, typecheck and 50 cells passed; independent 271/271
   plus 5 overlapping repeats, 54-part audit, 161 original hashes and nine fresh raster
@@ -8338,7 +8338,7 @@ needs direction on scope before building.*
   headless case; focused 59/59; build/type/50cells pass. Independent 148/148 plus
   build/type/50cells and real native/XML checks; 91 final and 19 fresh images inspected.
   The full failed source-retry sequence, corrections and original untraced limits
-  remain explicit in [evaluation](V2-8A-EVAL.md). The owned PostgreSQL service was
+  remain explicit in [evaluation](history/V2-8A-EVAL.md). The owned PostgreSQL service was
   removed after a durably saved 0-database count;5544closed. Independent rerun omitted
   2 ignored original PPTX binaries from backup; original hash/scene/render/TAP witnesses
   remain, fresh checked archives are committed separately with new hashes. No
@@ -8480,7 +8480,7 @@ needs direction on scope before building.*
   separate. Build/type/50 cells pass;99 fresh images inspected. Independent current
   execution 65/65 plus build/type/protocol/50cells passes; earlier 204 on unchanged
   runtime source 501f2f8 remains explicitly historical, with 34 overlap. See
-  [evaluation](V2-8B-EVAL.md) for exact execution/provenance and limitations.
+  [evaluation](history/V2-8B-EVAL.md) for exact execution/provenance and limitations.
 
   > **Learned.** Individually valid checkpoint/receipt objects can still encode
   > an impossible history; reconcile every step against immutable plan and revision
@@ -8592,7 +8592,7 @@ needs direction on scope before building.*
   Wait for a quiet machine before expensive validation, preserve all evidence and
   original untracked work, require one separate high-effort exact-source reviewer,
   and stop after this slice's review/handoff/owned cleanup. No next feature follows
-  automatically. [Evaluation](V2-8C-EVAL.md) indexes implementation and results.
+  automatically. [Evaluation](history/V2-8C-EVAL.md) indexes implementation and results.
 
 <a id="v2-8d-provider-run-preparation"></a>
 
@@ -8676,7 +8676,7 @@ needs direction on scope before building.*
   deployment gates are outside this scope. Wait for measured quiet headroom before
   expensive validation, preserve all prior originals and unrelated untracked work.
   Require one separate high-effort exact-source ACCEPT/HOLD and stop after review,
-  owned cleanup and handoff. [Evaluation](V2-8D-EVAL.md) records exact results.
+  owned cleanup and handoff. [Evaluation](history/V2-8D-EVAL.md) records exact results.
 
   > **Learned.** Validated sanitized objects may still need ordinary JSON identity
   > before structural uniqueness comparison. Deliberate domain refusals must cross
@@ -8750,7 +8750,7 @@ needs direction on scope before building.*
   provider defaults, auth/data policy, paid infrastructure, production migration
   or deployment. Fixture plumbing is not live provider/Auto quality qualification.
   Require one independent high-effort exact-source ACCEPT/HOLD; stop after this
-  slice's review, owned cleanup and handoff. [Evaluation](V2-8E-EVAL.md) records
+  slice's review, owned cleanup and handoff. [Evaluation](history/V2-8E-EVAL.md) records
   evidence and limitations without self-acceptance.
 
   **2026-10-21 stop:** the human ended the session during validation of frozen
@@ -8789,7 +8789,7 @@ needs direction on scope before building.*
   All4443evidence files/96PPTXs plus5canonical originals were restored/hash-verified;
   10fresh original archives were preserved. The owned service was removed after a
   saved/fsynced actual0-project-database count; exact absence/5544closure verified.
-  [Evaluation](V2-8E-EVAL.md) retains resource, provenance and residual limits,
+  [Evaluation](history/V2-8E-EVAL.md) retains resource, provenance and residual limits,
   including the inherited [native shape-ID collision](#native-pptx-shape-id-uniqueness).
   Parent V2-8 remains incomplete; no further feature is authorized by this decision.
 
@@ -8851,7 +8851,7 @@ needs direction on scope before building.*
   wait for measured sustained headroom, and isolate an explicitly owned PostgreSQL
   service. Missing PostgreSQL is unexecuted. Keep locale and inherited visual /
   native identity / provenance limitations separate. Exact commands/totals/source,
-  failed attempts, corrections and performance belong in [the evaluation](V2-8F-EVAL.md).
+  failed attempts, corrections and performance belong in [the evaluation](history/V2-8F-EVAL.md).
   **Complete validation:** frozen0cab854 passed223files/2782leaves plus4distinct
   persisted/native scenarios (2786primary distinct);48focused repeats stay separate.
   All166PostgreSQL cases, build/type/all50cells and115hash-reconciled images passed;
@@ -8934,7 +8934,7 @@ local inference. Only that separate transport correction is authorized; this aud
   The 2026-10-22 continuation starts **V2-8H contract preparation**, from accepted
   `45c2c4c` and planning HEAD `2e0e40d`. The concrete recommended policy, atomic
   queue/cancel seams, recovery behavior and required evidence are prepared in
-  [the bounded contract](V2-8H-EVAL.md).
+  [the bounded contract](history/V2-8H-EVAL.md).
   Plan `9ead920` passed a separate read-only
   [readiness review](reviews/V2-8H-plan-9ead920.json) at `8599638`; this grants
   no implementation acceptance or human data-policy approval by itself.
@@ -9060,7 +9060,7 @@ local inference. Only that separate transport correction is authorized; this aud
     Human approved scoped implementation/query disclosure on2026-10-27, pinned
     a9edeba before code. Frozen sourcef161901 is separately
     [accepted](reviews/V2-8J-1-f161901.json), from accepted I8b9c2d20 and entry
-    HEAD2e6bf40. [Contract](V2-8J-1-PLAN.md) and [evaluation](V2-8J-1-EVAL.md)
+    HEAD2e6bf40. [Contract](history/V2-8J-1-PLAN.md) and [evaluation](history/V2-8J-1-EVAL.md)
     record the distinct granted inspect-only entry, canonical schemas/history,
     bounded injected search/model continuation and accumulated ephemeral sources.
     Base/durable/H/host/Assistant authority stays closed to search; no persistent
@@ -9094,7 +9094,7 @@ local inference. Only that separate transport correction is authorized; this aud
     before runtime, after the separate technical
     [readiness review](reviews/V2-8J-2-plan-84e1582.json). Frozen source6d51cd4 is
     independently [accepted](reviews/V2-8J-2-6d51cd4.json) from J1f161901 and entry
-    HEADf84c015. [Contract](V2-8J-2-PLAN.md) and [evaluation](V2-8J-2-EVAL.md)
+    HEADf84c015. [Contract](history/V2-8J-2-PLAN.md) and [evaluation](history/V2-8J-2-EVAL.md)
     record explicit selected-source registration, immutable owner-bound identity/
     resolution, bounded snapshot paging and atomic storage/clear/delete on actual
     SQLite/PostgreSQL. Selected normalized snippets stay private until source clear
@@ -9133,7 +9133,7 @@ local inference. Only that separate transport correction is authorized; this aud
     runtime, after separate [readiness](reviews/V2-8J-3-plan-7321c5f.json) of exact
     plan31ac753. Frozen source `edda5ec` is independently
     [accepted](reviews/V2-8J-3-edda5ec.json) from J2 `6d51cd4` and planning entry
-    HEAD `14aabf6`. [Contract](V2-8J-3-PLAN.md) and [evaluation](V2-8J-3-EVAL.md)
+    HEAD `14aabf6`. [Contract](history/V2-8J-3-PLAN.md) and [evaluation](history/V2-8J-3-EVAL.md)
     record exact saved slide/element, retained source and optional snippet-relative
     UTF-8 quote checks in one owner/document/catalog snapshot. Target/source/locator
     observations stay independent; claim support is always not-assessed. Existing
@@ -9172,7 +9172,7 @@ local inference. Only that separate transport correction is authorized; this aud
     Frozen source `665cd04` is independently
     [accepted](reviews/V2-8J-4-665cd04.json) on2026-10-29 from J3 `edda5ec`, after
     pushed packet ef1d11ac audit. Root committed the stable decision unchanged
-    at452bc61e. [Contract](V2-8J-4-PLAN.md) and [evaluation](V2-8J-4-EVAL.md)
+    at452bc61e. [Contract](history/V2-8J-4-PLAN.md) and [evaluation](history/V2-8J-4-EVAL.md)
     record scene-owned unverified IDs, source generations, optional ranges and
     content hashes; no new snippets/quotes/claims or stored support/approval.
     Exact-owner headless attachment/removal/inspection reuse canonical commands,
@@ -9208,7 +9208,7 @@ local inference. Only that separate transport correction is authorized; this aud
   <a id="assistant-citation-project-copy"></a>
 
   - [x] **V2-8J-5 source-aware project copy and safe live-editor adoption — independently accepted.**
-    [Concrete contract](V2-8J-5-PLAN.md), from accepted J4 `665cd04`, is independently
+    [Concrete contract](history/V2-8J-5-PLAN.md), from accepted J4 `665cd04`, is independently
     [ready for direction](reviews/V2-8J-5-plan-a20ae631.json) at `1b37cdd6`;
     Human approved the bounded retention/editor-handoff contract on2026-10-29
     (“ok continue” after the concrete approval question); implementation is authorized,
@@ -9236,7 +9236,7 @@ local inference. Only that separate transport correction is authorized; this aud
     when adoption is deferred. The inherited awaited-response regression is now
     reproduced by executing the original J4 handler with an isolated delayed
     response (baseline1fail, no DOM/browser claim); retained evidence is in
-    [J5 evaluation](V2-8J-5-EVAL.md). Final real-browser5/5 exercises the corrected
+    [J5 evaluation](history/V2-8J-5-EVAL.md). Final real-browser5/5 exercises the corrected
     current adoption and draft/navigation/restore guards; no retroactive baseline
     DOM claim is made.
     Generic cited create and unqualified native export remain refused. Existing uncited CRUD
@@ -9273,8 +9273,8 @@ local inference. Only that separate transport correction is authorized; this aud
       Human approved reviewed ae96d717 on2026-10-29, pinned91e06210 before runtime.
       Corrected source `ecf82d3f` is independently
       [accepted](reviews/V2-8J-6-1-ecf82d3f.json); stable decision committed unchanged
-      at68f8da17. [Contract](V2-8J-6-1-PLAN.md) and
-      [evaluation](V2-8J-6-1-EVAL.md) record exact-owner saved snapshot qualification,
+      at68f8da17. [Contract](history/V2-8J-6-1-PLAN.md) and
+      [evaluation](history/V2-8J-6-1-EVAL.md) record exact-owner saved snapshot qualification,
       explicit consent for full retained title/URL speaker notes, literal control
       encoding, verified portable/native mapping and private0600 exclusive output.
       Missing/stale/foreign/hidden/ambiguous/changed or non-rendered targets refuse.
@@ -9306,7 +9306,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
     - [x] **V2-8J-6-2 browser citation-export interaction — independently accepted6068a2a7.**
       The2026-10-29 continuation starts planning from accepted J6-1 ecf82d3f.
-      [Concrete contract](V2-8J-6-2-PLAN.md) recommends the existing Export action:
+      [Concrete contract](history/V2-8J-6-2-PLAN.md) recommends the existing Export action:
       uncited direct download, cited exact-owner revision/count preview and fresh
       source-notes confirmation. Require clean saved editor state; never auto-save
       or commit drafts. Preserve administrator uncited CRUD export while denying
@@ -9319,7 +9319,7 @@ local inference. Only that separate transport correction is authorized; this aud
       on2026-10-29; [direction](v2-8j-6-2-evidence/human-direction.json) authorizes
       only this bounded implementation and focused offline evidence. No activation
       or real provider/model call is authorized. Initial source65430f9b and corrected6068a2a7 are pushed;
-      [evaluation](V2-8J-6-2-EVAL.md) records selected22/22, retained35attempts
+      [evaluation](history/V2-8J-6-2-EVAL.md) records selected22/22, retained35attempts
       (25pass/10failed attempts), final production build and viewed desktop/narrow
       evidence. Independent short/zoom probe found clipped actions and a collapsed
       disclosure at effective200% zoom in a short viewport. Narrow dialog scroll
@@ -9360,7 +9360,7 @@ local inference. Only that separate transport correction is authorized; this aud
       chunks and source-text blur resolving drafts—are narrowly corrected. Held
       actual title-save/history-reload suppression is covered. All47root product
       attempts43pass/4fail plus1prebody harness failure and source applicability
-      limits remain in [evaluation](V2-8J-6-3-EVAL.md). All16root+1reviewer groups
+      limits remain in [evaluation](history/V2-8J-6-3-EVAL.md). All16root+1reviewer groups
       absent; owned fixture cleanup complete; no old matrix/backend recreation.
       Look-ahead: later visible/printed presentation can reuse the saved DTO/snapshot
       seam, but needs its own disclosure/layout/claim policy; semantic creation and
@@ -9377,9 +9377,9 @@ local inference. Only that separate transport correction is authorized; this aud
 
     - [ ] **V2-8J-6-4 editable References appendix — validated, review pending.**
       Human explicitly approved appendix-first reviewed36146428, pinned5b2c9e0b
-      before runtime. [Contract](V2-8J-6-4-PLAN.md),
+      before runtime. [Contract](history/V2-8J-6-4-PLAN.md),
       [direction](v2-8j-6-4-evidence/human-direction.json),
-      [evaluation](V2-8J-6-4-EVAL.md) and
+      [evaluation](history/V2-8J-6-4-EVAL.md) and
       [manifest](v2-8j-6-4-evidence/manifest.json) resolve scope/evidence.
       Frozen031ed503 is pushed. Exact-owner metadata preview and consented CLI apply
       append deterministic full-title/URL native editable detached References pages
@@ -9433,7 +9433,7 @@ local inference. Only that separate transport correction is authorized; this aud
 - [ ] **Assistant interaction and authenticated turn orchestration — existing-deck sequence approved; later contracts gated.**
   On2026-10-24 explicit continuation delegates dependency ordering. Following the
   recorded postH sequence, start with **V2-8I-1 authenticated conversation/approval
-  transport** in [the bounded contract](V2-8I-1-EVAL.md), then prepare worker/provider
+  transport** in [the bounded contract](history/V2-8I-1-EVAL.md), then prepare worker/provider
   orchestration before the existing-deck Assistant panel. This first step reuses
   accepted owner-only policy and H storage; it adds no UI or provider execution.
   I1 source `5170adc` implements the five lifecycle routes and strict private JSON
@@ -9448,7 +9448,7 @@ local inference. Only that separate transport correction is authorized; this aud
   Earlier resource holds are historical. Fresh admission/owned
   preparation succeeded without relaxing thresholds; the initial setup race and
   guarded same-ID recovery remain documented. No source change was needed by the
-  complete final run. See [the exact evaluation](V2-8I-1-EVAL.md) and current handoff.
+  complete final run. See [the exact evaluation](history/V2-8I-1-EVAL.md) and current handoff.
 
   - [x] **V2-8I-1 authenticated lifecycle transport** — complete and independently
     accepted at5170adc. Scope is read/export/decide/cancel/clear only; no public
@@ -9467,7 +9467,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   - [x] **V2-8I-2 bounded turn-worker orchestration — independently accepted.**
     The2026-10-24 human continuation authorized
-    [the bounded worker contract](V2-8I-2-EVAL.md): exact-turn H lookup,
+    [the bounded worker contract](history/V2-8I-2-EVAL.md): exact-turn H lookup,
     stateless preparation/approved-run orchestration and operator CLI parity.
     Preserve all existing leases/approvals/accounting, copy authority before awaits,
     return private metadata only and validate both stores/process recovery with
@@ -9510,7 +9510,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   - [x] **V2-8I-3 authenticated durable turn submission — independently accepted.**
     The 2026-10-25 continuation starts the next dependency after accepted I2.
-    [The concrete contract](V2-8I-3-EVAL.md) adds only owner-authenticated POST
+    [The concrete contract](history/V2-8I-3-EVAL.md) adds only owner-authenticated POST
     `/conversation/turns` over H submit, with matching-key replay, private bounded
     parsing and honest stale/busy/storage refusals. No provider dispatch, queue,
     scene write or automatic approval occurs on submission. The separate 256 KiB
@@ -9561,7 +9561,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   - [x] **V2-8I-4 owner-scoped durable work discovery — independently accepted.**
     The2026-10-26 continuation starts the next host/orchestration prerequisite
-    after acceptedI3. [The reviewed bounded contract](V2-8I-4-EVAL.md) adds only
+    after acceptedI3. [The reviewed bounded contract](history/V2-8I-4-EVAL.md) adds only
     trusted owner-scoped metadata pagination and an operator discover command.
     It scans canonical metadata with bounded keyset pages, preserves null-owner
     isolation and returns potential-work hints which I2 must recheck. No private
@@ -9600,7 +9600,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   - [x] **V2-8I-5 explicit Auto host policy and bounded pickup — independently accepted.**
     The2026-10-27 approved contract is built and accepted after I4.
-    [The concrete contract](V2-8I-5-PLAN.md) supplies an Auto-only, default-disabled,
+    [The concrete contract](history/V2-8I-5-PLAN.md) supplies an Auto-only, default-disabled,
     operator-invoked finite pickup bridge. It binds exact project owner email to the
     current account ID, requires account admission before provider network calls,
     retains conservative unknown-usage reservations and delegates every turn/run
@@ -9620,7 +9620,7 @@ local inference. Only that separate transport correction is authorized; this aud
     [Independent ACCEPT](reviews/V2-8I-5-5cf5b5c.json) names exact5cf5b5c and
     inspected packetb0fa687, adding3/3new narrow concurrency/cancellation/signal
     challenges without repeating prior suites. All final checks0fail/skip/cancelled.
-    [Evaluation](V2-8I-5-EVAL.md) retains every failure/correction and actual result.
+    [Evaluation](history/V2-8I-5-EVAL.md) retains every failure/correction and actual result.
     No real-model use or production activation occurred or is approved.
     The Auto-only recommendation keeps hosted quality and billing ownership explicit;
     BYOK/local integration remains separately scoped, without removing legacy support.
@@ -9640,7 +9640,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   - [x] **V2-8I-6 authenticated finite wake — independently accepted.**
     The 2026-10-27 continuation prepares the immediate dependency after accepted I5
-    `5cf5b5c`, from entry HEAD `be0e1af`. [The proposed contract](V2-8I-6-PLAN.md)
+    `5cf5b5c`, from entry HEAD `be0e1af`. [The proposed contract](history/V2-8I-6-PLAN.md)
     recommends an explicit authenticated wake endpoint over finite I5 pickup,
     separately default-disabled. Existing submit/decision endpoints retain their
     current effects. Pin exact owner/account identity, coalesce bounded instance
@@ -9654,7 +9654,7 @@ local inference. Only that separate transport correction is authorized; this aud
     offline validation, not activation, real-model spend or UI. Four focused new
     unit/SQLite/HTTP-process/typecheck gates apply; unchanged old suites remain
     accepted evidence. Source dce5628 implements the contract;26/26 new tests,
-    typecheck and37/37 affected governance pass. [Evaluation](V2-8I-6-EVAL.md)
+    typecheck and37/37 affected governance pass. [Evaluation](history/V2-8I-6-EVAL.md)
     retains exact working-byte/source provenance and exclusions. Separate exact-source
     [independent ACCEPT](reviews/V2-8I-6-dce5628.json) names exact dce5628 and
     packet fd2eed8, with3/3 new timer/close/context challenges passing. The reviewer
@@ -9678,7 +9678,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   - [x] **V2-8I-7 exact-turn wake — independently accepted.**
     The continuation from accepted I6 `dce5628`, entry HEAD `33e45b7`, prepares
-    [the concrete contract](V2-8I-7-PLAN.md). Recommend exact project/generation/turn
+    [the concrete contract](history/V2-8I-7-PLAN.md). Recommend exact project/generation/turn
     wake for the future Assistant's Send/Approve path, sharing I6 admission/caps and
     I5 Auto policy while going straight to H/I2 instead of scanning owner history.
     Preserve the owner-wide endpoint; refuse distinct active targets as busy rather
@@ -9690,7 +9690,7 @@ local inference. Only that separate transport correction is authorized; this aud
     focused target/affected-coordinator, SQLite/CLI, HTTP-process and typecheck gates
     reuse accepted unchanged evidence and avoid the historical matrix. No UI or
     activation follows automatically. Source3da0801 implements the contract;
-    [evaluation](V2-8I-7-EVAL.md) retains33/33 selected product leaves, typecheck0
+    [evaluation](history/V2-8I-7-EVAL.md) retains33/33 selected product leaves, typecheck0
     and4/4 affected governance cases. Earlier watchdog/harness attempts and the
     initial SQLite7/1 timing uncertainty remain explicit. Source hashes bind
     working execution to frozen bytes. Separate [ACCEPT](reviews/V2-8I-7-3da0801.json)
@@ -9716,7 +9716,7 @@ local inference. Only that separate transport correction is authorized; this aud
 
   - [x] **V2-8I-8 existing-deck browser Assistant — independently accepted.**
     Human approved the existing right-rail tab on2026-10-27; the concrete
-    [surface contract](V2-8I-8-PLAN.md) and separate plan review preceded code.
+    [surface contract](history/V2-8I-8-PLAN.md) and separate plan review preceded code.
     Exact source b9c2d2075da21608a92a458c1395ede0bbe67297 is
     [independently accepted](reviews/V2-8I-8-b9c2d20.json) from I7 baseline3da0801.
     Freeform current-slide/selection chat, saved visible turns and labeled semantic
@@ -9725,7 +9725,7 @@ local inference. Only that separate transport correction is authorized; this aud
     human work. Loading AI changes resets session undo, with History restoration
     disclosed. Owner-bound advisory availability has headless CLI parity and no
     provider lookup. Execution remains default-off; no creation/research or activation.
-    [Evaluation](V2-8I-8-EVAL.md) records selected product26/26, governance4/4,
+    [Evaluation](history/V2-8I-8-EVAL.md) records selected product26/26, governance4/4,
     typecheck0, four serial builds0 and independent final3/3. Chrome7/7 is explicitly
     selected-case coverage, with all failures and reviewed source deltas retained.
     Narrow corrections address doc:null ownership refusal, blocked saved-load
@@ -9993,7 +9993,7 @@ accumulated chunk array and release-before-outer-cancel pattern. The subsequent
 separately authorized V2-8G correction reproduced12failures/14injected cases and
 corrected the transport at `ec67315`; unchanged assertions then passed14/14.
 No live-model failure is claimed. Full regression and independent acceptance are
-complete in [the correction evaluation](V2-8G-EVAL.md) and
+complete in [the correction evaluation](history/V2-8G-EVAL.md) and
 [exact-source decision](reviews/V2-8G-f3e784a.json).
 Preserve both real HTTP protocols, normalized usage, canonical result/privacy gates
 and existing assertions. Any correction needs its own bounded contract, unchanged
@@ -10078,7 +10078,7 @@ and stage when a PostgreSQL test cannot start, without credentials, URLs or raw
 driver bodies; keep unavailable actual cases unexecuted rather than green. This
 is validation observability, separate from product behavior or relaxed readiness.
 The new V2-8E helper retains a bounded SELECT1 stage/code; earlier helpers still
-need this diagnostic treatment. [The V2-8D evaluation](V2-8D-EVAL.md) retains the original attempt and rerun status.
+need this diagnostic treatment. [The V2-8D evaluation](history/V2-8D-EVAL.md) retains the original attempt and rerun status.
 
 <a id="byok-locale-standing-failure"></a>
 

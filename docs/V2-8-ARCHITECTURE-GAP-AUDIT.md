@@ -52,7 +52,7 @@ Historical tests/evaluations below were read, never reexecuted.
 | Scoped semantic reads and content tools | Implemented | [Tool session](../packages/tools/session.ts#L93), [request schema](../packages/tools/request.schema.json#L4): three reads plus `edit_content`; no generic command/scene escape. [8A tool tests](../test/v2-tools-8a.test.js). |
 | Ownership, locks, revisions, human preservation | Implemented | [Tool checks and batch](../packages/tools/session.ts#L149), [runtime commit path](../packages/agent/runtime.ts#L397), [preservation tests](../test/v2-preservation.test.js). Engine revisions and saved project revisions differ. |
 | Durable plans, receipts, leases, takeover, cancellation | Implemented | [Runtime](../packages/agent/runtime.ts#L228), [run/receipt tables](../src/agent/schema.js#L1), [process contract](../test/v2-runtime-process-contract.js). Applies to queued canonical plans, not provider turns. |
-| SQLite / PostgreSQL shared authority | Implemented | [SQLite transaction](../src/projects/store.js#L711), [PostgreSQL project lock](../src/projects/store-postgres.js#L725); [8B evaluation](V2-8B-EVAL.md). Multi-instance edit fencing exists. |
+| SQLite / PostgreSQL shared authority | Implemented | [SQLite transaction](../src/projects/store.js#L711), [PostgreSQL project lock](../src/projects/store-postgres.js#L725); [8B evaluation](history/V2-8B-EVAL.md). Multi-instance edit fencing exists. |
 | Provider-independent bounded exchanges | Implemented | [Profile and normalization](../packages/agent/provider.ts#L7), [HTTP adapter](../src/agent/model-provider.js#L4), [8C tests](../test/v2-provider-8c.test.js). Two protocols, not qualification of every advertised vendor/model. |
 | Tool conversations within one invocation | Implemented | [Loop](../packages/agent/provider-run.ts#L134), [whole-invocation guard](../packages/agent/provider-run.ts#L253), [8E tests](../test/v2-conversation-8e.test.js). Up to eight exchanges; no automatic retry. |
 | Durable user-turn history / cross-request continuity | Planned | [Parent](ROADMAP.md#v2-8-remaining); [history starts empty](../packages/agent/provider-run.ts#L279). Legacy [browser-local chats](../app/web/src/lib/chats.js#L73) are not a V2 server conversation store. |
@@ -341,7 +341,7 @@ restarted or modified. Only local text/Git inspection and scoped documentation
 editing were used; any Git publication is documentation-only. No subagents were
 started. Existing binary evidence was neither generated nor overwritten.
 
-Historical [8E evaluation](V2-8E-EVAL.md) and [8F evaluation](V2-8F-EVAL.md), with
+Historical [8E evaluation](history/V2-8E-EVAL.md) and [8F evaluation](history/V2-8F-EVAL.md), with
 their separate review records, supply prior evidence only. Their totals are not
 new audit execution. All behavioral, live-model, deployment and consumer claims
 not established by source or retained records require future validation. This

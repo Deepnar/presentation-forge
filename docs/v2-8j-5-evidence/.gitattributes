@@ -1,3 +1,0 @@
-# Assertion output is retained byte-for-byte, including padded blank lines.
-*.tap -whitespace
-**/*.tap -whitespace
