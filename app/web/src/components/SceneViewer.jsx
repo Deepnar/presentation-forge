@@ -20,6 +20,7 @@ import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
 import { apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import { useNarrow } from "../lib/viewport.js";
+import SlideNotes from "./SlideNotes.jsx";
 
 // Restores focus to the opener when a dialog closes. Dialogs trap
 // nothing; they only borrow focus, and the opener (often a toolbar
@@ -2522,6 +2523,11 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
             />
           </div>
         </div>
+        <SlideNotes
+          scene={(editedScenes ?? shownScenes)[snap?.slideIndex ?? -1] ?? null}
+          editable={editOn && !textState.editing}
+          onCommit={(id, notes) => adapterRef.current?.setNotes(id, notes)}
+        />
         {/* Selection rings render as overlay boxes from scene-dom
         (data-overlay); the state attribute below is the DOM contract
         tests assert, not a visual. */}

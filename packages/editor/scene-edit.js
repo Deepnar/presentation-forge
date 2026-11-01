@@ -1540,6 +1540,23 @@ export function attachEditor(viewer, doc, opts = {}) {
     return track(result);
   }
 
+  async function setNotes(id, notes) {
+    const target = id ?? activeSlideId();
+    if (!target) return report({ ok: false, code: "op-rejected", message: "no active slide" });
+    const scene = doc.snapshot().scenes.find((s) => s.id === target);
+    if (!scene) return report({ ok: false, code: "unknown-slide", message: `unknown slide ${target}` });
+    if ((scene.notes ?? "") === notes) return { ok: true, noop: true };
+    const result = await doc.apply({
+      id: newEditId(), slideId: null,
+      op: { type: "slide.setNotes", id: target, notes },
+      baseRevision: doc.snapshot().revision, actor: "human",
+    });
+    if (!result.ok) return report(result);
+    if (result.noop) return result;
+    sync();
+    return result;
+  }
+
   // ——— V2-5J layer operations ———
   //
   // Draw order, user locks, and visibility over authoritative
@@ -1779,6 +1796,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     deleteSlides: (ids) => track(deleteSlides(ids ?? [])),
     reorderSlide: (id, toIndex) => track(reorderSlide(id, toIndex)),
     detachSlide: (id = null) => track(detachSlide(id)),
+    setNotes: (id, notes) => track(setNotes(id, notes)),
     detach() {
       if (drag) clearPreview();
       if (resize) cancelResize();
