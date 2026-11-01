@@ -9375,35 +9375,30 @@ local inference. Only that separate transport correction is authorized; this aud
 
     <a id="assistant-citation-editable-appendix"></a>
 
-    - [ ] **V2-8J-6-4 editable References appendix — approved, implementation in progress.**
-      The2026-10-30 continuation prepares the next contract from accepted J6-3
-      source8d34c95f and entry66f3dfd0. [Proposal](V2-8J-6-4-PLAN.md) recommends
-      appendix-first printable presentation: deterministic full-title/URL native
-      editable pages appended atomically through the canonical command/history
-      seam. First delivery is exact-owner headless preview/apply and CLI; reopen
-      uses the existing editor and existing qualified notes export remains guarded.
-      Existing pages remain untouched; long references continue at readable size.
-      Copied text becomes ordinary scene/history data, subject to existing project
-      access (including admin) and text/export rules; source/chat clear cannot
-      retract it or downloaded copies. Later ordinary Assistant/tool reads of those
-      slides may send copied titles/URLs/private query values to configured model
-      providers; insertion itself has no model call or new research grant.
-      This is new retention/disclosure direction,
-      not permission inherited from Sources or source-notes consent. Agree that
-      policy and appendix-first versus on-slide-marker direction before code.
-      Corrected contract36146428 is separately
-      [READY_FOR_DIRECTION](reviews/V2-8J-6-4-plan-36146428.json), stable record
-      committed unchanged at65dd94e8. Three source-backed planning gaps were
-      corrected before readiness: later ordinary provider-context disclosure,
-      capture of both entries before awaits, and existing history-pruning policy.
-      Root14/14 and independent17/17 lightweight checks plus protocol0errors pass;
-      no product check or runtime implementation ran. Human direction still pending.
-      Subsequent explicit “Approve appendix-first (Recommended)” authorizes the
-      reviewed headless scope and scene/history/admin/later-provider disclosure.
-      [Direction](v2-8j-6-4-evidence/human-direction.json) and focused inventory
-      are pinned before runtime; separate implementation acceptance remains pending.
-      No runtime, tests/services, model/search/provider/GPU work or activation is
-      authorized by preparation. Keep J6-3 accepted and candidate unauthorized.
+    - [ ] **V2-8J-6-4 editable References appendix — validated, review pending.**
+      Human explicitly approved appendix-first reviewed36146428, pinned5b2c9e0b
+      before runtime. [Contract](V2-8J-6-4-PLAN.md),
+      [direction](v2-8j-6-4-evidence/human-direction.json),
+      [evaluation](V2-8J-6-4-EVAL.md) and
+      [manifest](v2-8j-6-4-evidence/manifest.json) resolve scope/evidence.
+      Frozen031ed503 is pushed. Exact-owner metadata preview and consented CLI apply
+      append deterministic full-title/URL native editable detached References pages
+      in one canonical batch/durable revision, preserving originals/private bodies.
+      Both entries capture before awaits; complete saved qualification and explicit
+      scene/page/byte/node/fit bounds refuse partial output. Existing history pruning,
+      qualified notes export and stale editor-session guards remain authoritative.
+      Copied text follows ordinary project/admin/copy/export/later scoped provider
+      reads and survives source/chat clear; insertion adds no model/research authority.
+      Selected26/26, final typecheck and viewed final native/SVG evidence pass.
+      Separate reviewer inspected source/images and passed a new actual-PG1/1
+      challenge. Root attempts37=33pass/4fail plus1pre-body import failure retain
+      fixture corrections and the reproduced/corrected wide-grapheme flush defect.
+      Original mid-word title splitting was also corrected.0px canvas shift;
+      original native pixels unchanged. Source-capture/selection limits explicit.
+      Actual0userDB/0clients saved before exact owned-container cleanup; all22
+      recorded process groups absent. Separate packet/cleanup decision pending;
+      keep J6-3 accepted. No dependent browser control, provider/model/search/GPU
+      run, activation or other feature authorized. Stop at this scoped closeout.
 
     - [ ] **Browser appendix interaction — after accepted headless contract.**
       Reuse the canonical materialization facade in the existing Sources section

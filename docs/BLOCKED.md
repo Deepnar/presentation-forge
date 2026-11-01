@@ -164,13 +164,14 @@ validation/review/service blocker remains. [Evaluation](V2-8J-6-3-EVAL.md) retai
 original failures, source-capture/applicability and inherited limits. Later scope
 remains gated in the roadmap; no model/search/provider activation is authorized.
 
-The next [J6-4 appendix proposal](ROADMAP.md#assistant-citation-editable-appendix)
-is at its human direction gate: appendix-first presentation and ordinary scene/
-history disclosure of complete source titles/URLs (including later ordinary scene
-reads entering configured-provider context) need approval. Corrected36146428 is independently
-[ready for direction](reviews/V2-8J-6-4-plan-36146428.json), stable record65dd94e8,
-with no technical planning blocker. Planning readiness cannot supply that choice. J6-3 remains accepted; no product/service blocker has
-reopened and no model run is needed for preparation.
+The [J6-4 appendix contract](ROADMAP.md#assistant-citation-editable-appendix)
+received explicit appendix-first/ordinary scene-history-admin-later-provider
+approval, pinned5b2c9e0b. Source031ed503 has selected26/26, actual selected PostgreSQL,
+final typecheck and viewed native/SVG evidence. New independent PG1/1 passes;
+owned cleanup and independent absence verification are complete. Final packet/
+decision review is in progress; no human direction blocker remains
+for this exact scope. See [evaluation](V2-8J-6-4-EVAL.md). Later UI/marker/semantic
+scope is still gated solely in the roadmap.
 
 ### 3.1 Browser regression coverage
 

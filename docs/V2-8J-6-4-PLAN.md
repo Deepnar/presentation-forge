@@ -1,6 +1,6 @@
 # V2-8J-6-4 — editable References appendix, headless first
 
-Status: **human-approved; implementation in progress**.
+Status: **human-approved; validated implementation awaiting independent decision**.
 The2026-10-30 explicit “Approve appendix-first (Recommended)” response approves
 the reviewed contract and full scene/history/admin/later-provider disclosure.
 Direction and focused inventory are pinned before runtime. Implementation

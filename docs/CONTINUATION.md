@@ -32,21 +32,21 @@ V2-7-FRONTEND-ARCHITECTURE.md. Earlier evals are historical evidence; the roadma
 later acceptance state and the supplied baseline do not become pending merely
 because old eval wording predates review.
 
-## Current continuation — J6-4 presentation direction preparation
+## Current continuation — approved J6-4 implementation review
 
-The2026-10-30 continuation prepares only the next proposed contract from accepted
-J6-3 and entry66f3dfd0. Read [proposal](V2-8J-6-4-PLAN.md) and
-[roadmap](ROADMAP.md#assistant-citation-editable-appendix). Appendix-first headless
-preview/apply would copy full retained titles/URLs into ordinary editable scene/
-history text, with normal project/admin/export access and independent retention
-after source/chat clear. Later scoped scene reads can put that text in configured
-model/provider context, without insertion itself calling a model. This new
-direction/disclosure needs human approval before
-implementation. Corrected contract36146428 is independently
-[READY_FOR_DIRECTION](reviews/V2-8J-6-4-plan-36146428.json), stable record65dd94e8.
-Root14/14 and reviewer17/17 lightweight checks pass, with0 product runs. Readiness is
-not acceptance or consent. Keep J6-3 accepted/candidate unauthorized. No product
-checks, services, model/search/provider/GPU or old cleanup are authorized by planning.
+Human explicitly approved appendix-first reviewed36146428 and its ordinary scene/
+history/admin/later-provider disclosure; direction pinned5b2c9e0b before code.
+Frozen implementation031ed503 is pushed to origin/v2. Read
+[evaluation](V2-8J-6-4-EVAL.md), [manifest](v2-8j-6-4-evidence/manifest.json),
+state and HANDOFF. Selected26/26 (domain14,SQLite5,PostgreSQL5,CLI/native2), final
+strict typecheck and viewed final native/SVG evidence pass. Separate reviewer inspected exact
+source/images and passed one new actual-PG challenge1/1. Final packet decision is
+pending; do not self-accept. Task-owned PG was removed once after saved/fsynced
+actual0userDB/0other clients, private credentials deleted, port closed. All22
+recorded groups absent; reviewer independently verified cleanup absence. Never
+recreate fixtures or repeat completed cleanup; unrelated services stay untouched.
+Finish only J6-4 review/corrections/cleanup and scoped closeout. No new browser
+control, real provider/model/search/GPU work, deployment or dependent feature.
 
 ## Latest accepted slice — J6-3 Sources inspector complete
 
