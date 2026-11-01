@@ -22,8 +22,8 @@
 // server-side (env only); nothing here logs URLs, payloads, or
 // slide contents.
 import { assetSchema } from "./asset-schema.js";
+import { seedSources, SEED_SOURCE_SQL, seedSourceBytes } from "./source-seed.js";
 import { ASSET_LIMITS } from "./assets.js";
-import { hasCitations } from "../../packages/model/citations.ts";
 import {
   buildProjectDocument,
   validateProjectDocument,
@@ -281,7 +281,7 @@ async function insertCreatedProject(client, doc, owner, provenance) {
   await insertRevisionRow(client, { projectId: doc.id, doc, kind: "create", provenance });
 }
 
-export async function createProject({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null, assets = [] }) {
+export async function createProject({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null, assets = [], id = null, sources = null }) {
   const request = validateImportRequest(importRequest, owner);
   const prov = validateProvenance(provenance ?? undefined);
   if (!prov.ok) {
@@ -290,9 +290,8 @@ export async function createProject({ owner = null, title, scenes, theme = null,
     err.details = prov.errors;
     throw err;
   }
-  if (Array.isArray(scenes) && hasCitations(scenes))
-    throw Object.assign(new Error("Citation-bearing project creation requires source-aware copying."), { code: "invalid-document" });
-  const doc = buildProjectDocument({ title, scenes, theme, origin });
+  const doc = buildProjectDocument({ id, title, scenes, theme, origin });
+  const seed = seedSources(doc, sources);
   const verdict = await validateProjectDocument(doc);
   if (!verdict.ok) {
     const err = new Error(`invalid project: ${verdict.errors[0]}`);
@@ -320,6 +319,11 @@ export async function createProject({ owner = null, title, scenes, theme = null,
 
       await insertCreatedProject(client, doc, owner, prov.provenance);
       await insertAssets(client, doc.id, assets);
+      if (seed) {
+        const pg = sql => { let i = 0; return sql.replace(/\?/g, () => `$${++i}`); };
+        await client.query(pg(SEED_SOURCE_SQL.catalog), [doc.id, 0, 1, seed.sources.length, seed.bytes, 1]);
+        for (const source of seed.sources) await client.query(pg(SEED_SOURCE_SQL.source), [doc.id, source.id, JSON.stringify(source), seedSourceBytes(source)]);
+      }
       return { doc: structuredClone(doc), ...(request ? { reused: false } : {}) };
     });
   } catch (err) {

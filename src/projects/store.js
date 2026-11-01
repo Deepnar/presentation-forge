@@ -29,8 +29,8 @@
 // multi-host deployments. Hosted mode still requires a session (see the
 // routes); the store itself enforces owner scoping but not HTTP auth.
 import { assetSchema } from "./asset-schema.js";
+import { seedSources, SEED_SOURCE_SQL, seedSourceBytes } from "./source-seed.js";
 import { ASSET_LIMITS } from "./assets.js";
-import { hasCitations } from "../../packages/model/citations.ts";
 import { getDb, closeDb } from "../db.js";
 import {
   buildProjectDocument,
@@ -126,7 +126,7 @@ function insertCreatedProject(db, doc, owner, provenance) {
   insertRevisionRow(db, { projectId: doc.id, doc, kind: "create", provenance });
 }
 
-async function createProjectInner({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null, assets = [] }) {
+async function createProjectInner({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null, assets = [], id = null, sources = null }) {
   const request = validateImportRequest(importRequest, owner);
   const db = ensureSchema();
   const prov = validateProvenance(provenance ?? undefined);
@@ -136,9 +136,8 @@ async function createProjectInner({ owner = null, title, scenes, theme = null, o
     err.details = prov.errors;
     throw err;
   }
-  if (Array.isArray(scenes) && hasCitations(scenes))
-    throw Object.assign(new Error("Citation-bearing project creation requires source-aware copying."), { code: "invalid-document" });
-  const doc = buildProjectDocument({ title, scenes, theme, origin });
+  const doc = buildProjectDocument({ id, title, scenes, theme, origin });
+  const seed = seedSources(doc, sources);
   const verdict = await validateProjectDocument(doc);
   if (!verdict.ok) {
     const err = new Error(`invalid project: ${verdict.errors[0]}`);
@@ -162,6 +161,11 @@ async function createProjectInner({ owner = null, title, scenes, theme = null, o
     }
     insertCreatedProject(db, doc, owner, prov.provenance);
     insertAssets(db, doc.id, assets);
+    if (seed) {
+      db.prepare(SEED_SOURCE_SQL.catalog).run(doc.id, 0, 1, seed.sources.length, seed.bytes, 1);
+      const insert = db.prepare(SEED_SOURCE_SQL.source);
+      for (const source of seed.sources) insert.run(doc.id, source.id, JSON.stringify(source), seedSourceBytes(source));
+    }
     if (request) db.prepare("INSERT INTO v2_project_imports (request_key,source_digest,project_id) VALUES (?,?,?)").run(request.key, request.digest, doc.id);
     db.exec("COMMIT");
   } catch (err) {

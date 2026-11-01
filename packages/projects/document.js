@@ -89,10 +89,11 @@ function isoNow() {
 // Build a new document from authoritative scenes. The caller owns the
 // scenes array; it is cloned here so later engine edits cannot mutate
 // the stored copy through a shared reference.
-export function buildProjectDocument({ title, scenes, theme = null, origin = null }) {
+export function buildProjectDocument({ id = null, title, scenes, theme = null, origin = null }) {
   const now = isoNow();
+  if (id !== null && !validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
   return {
-    id: mintProjectId(),
+    id: id ?? mintProjectId(),
     title: String(title ?? "Untitled project"),
     schemaVersion: PROJECT_SCHEMA_VERSION,
     revision: 0,
