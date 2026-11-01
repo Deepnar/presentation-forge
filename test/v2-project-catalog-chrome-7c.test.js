@@ -8,7 +8,7 @@ import { createServer } from 'node:net';
 import { Pool } from 'pg';
 import { importApiFixture, IMPORT_DECK } from './v2-import-fixture.js';
 import { openViewer } from '../tools/chrome-shot.mjs';
-const EVIDENCE = path.resolve('docs/v2-7c-2-evidence'), OUT = path.resolve('out/v2-7c-2-validation/browser');
+const EVIDENCE = path.resolve('out/evidence/v2-7c-2-evidence'), OUT = path.resolve('out/v2-7c-2-validation/browser');
 let fixture, pool, database;
 async function wait(page, expression, timeout = 30000) {
   const end = Date.now() + timeout;

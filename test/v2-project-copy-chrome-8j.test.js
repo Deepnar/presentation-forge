@@ -7,7 +7,7 @@ import { importApiFixture } from './v2-import-fixture.js';
 import { citedFixture } from './v2-project-copy-fixture.js';
 import { seed } from './v2-tool-fixture.js';
 import { openViewer } from '../tools/chrome-shot.mjs';
-const OUT=path.resolve('docs/v2-8j-5-evidence/browser');let f;
+const OUT=path.resolve('out/evidence/v2-8j-5-evidence/browser');let f;
 before(async()=>{
   await mkdir(OUT,{recursive:true});const start=performance.now();
   const output=execFileSync('node_modules/.bin/vite',['build','--config','app/web/vite.config.js'],{timeout:180000,encoding:'utf8'});

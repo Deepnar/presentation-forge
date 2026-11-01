@@ -9,7 +9,7 @@ import { importApiFixture, IMPORT_DECK } from "./v2-import-fixture.js";
 import { openViewer } from "../tools/chrome-shot.mjs";
 import { EDITOR_IMPORT_REQUEST_ID } from "../app/web/src/lib/editorHandoff.js";
 
-const OUT = path.resolve("out/v2-7b-2-validation/browser"), EVIDENCE = path.resolve("docs/v2-7b-2-evidence");
+const OUT = path.resolve("out/v2-7b-2-validation/browser"), EVIDENCE = path.resolve("out/evidence/v2-7b-2-evidence");
 const SAVE = "document.querySelector('[data-save-state]')?.dataset.saveState";
 const PROJECT = "JSON.parse(document.querySelector('[data-save-state]')?.dataset.projectState ?? 'null')";
 const BUTTON = "[data-editor-handoff] button";

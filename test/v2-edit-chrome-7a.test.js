@@ -14,7 +14,7 @@ import JSZip from "jszip";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const DIST = path.join(ROOT, "app", "web", "dist");
-const OUT = path.join(ROOT, "docs", "v2-7a-evidence");
+const OUT = path.join(ROOT, "out", "evidence", "v2-7a-evidence");
 const STATIC_PORT = 5263;
 const API_PORT = 5276;
 const HOSTED_PORT = 5277;

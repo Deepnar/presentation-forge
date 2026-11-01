@@ -6,7 +6,7 @@ import JSZip from 'jszip';
 import { exportApiFixture } from './v2-native-export-fixture.js';
 import { wakeScenario,productionApi } from './v2-host-wake-fixture.js';
 import { openViewer } from '../tools/chrome-shot.mjs';
-let OUT;const ROOT=path.resolve('docs/v2-8j-6-2-evidence/browser');let f,serial=0;
+let OUT;const ROOT=path.resolve('out/evidence/v2-8j-6-2-evidence/browser');let f,serial=0;
 before(async()=>{await mkdir(ROOT,{recursive:true});OUT=await mkdtemp(path.join(ROOT,'attempt-'));f=await exportApiFixture();});after(async()=>{await f?.stop();});
 const check=(name,fn)=>test('Native export Chrome: '+name,{timeout:45000},fn);
 async function wait(page,condition,ms=10000){const end=Date.now()+ms;while(Date.now()<end){if(await page.evaluate(`Boolean(${condition})`).catch(()=>false))return;await new Promise(r=>setTimeout(r,30));}throw Error('Browser condition '+condition+'; '+await page.evaluate('document.body.innerText.slice(-1600)'));}

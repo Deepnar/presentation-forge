@@ -15,7 +15,7 @@ import JSZip from "jszip";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const DIST = path.join(ROOT, "app", "web", "dist");
-const OUT = path.join(ROOT, "docs", "v2-6c-evidence");
+const OUT = path.join(ROOT, "out", "evidence", "v2-6c-evidence");
 const STATIC_PORT = 5261;
 const API_PORT = 5274;
 const DECK = `http://127.0.0.1:${STATIC_PORT}/scenes.html?deck=mech-warm-humanist-plain&slide=0`;

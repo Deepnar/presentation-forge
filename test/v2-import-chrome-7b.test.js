@@ -7,7 +7,7 @@ import { importApiFixture } from "./v2-import-fixture.js";
 import { openViewer } from "../tools/chrome-shot.mjs";
 
 const OUT = path.resolve("out/v2-7b-1-validation/browser");
-const EVIDENCE = path.resolve("docs/v2-7b-1-evidence");
+const EVIDENCE = path.resolve("out/evidence/v2-7b-1-evidence");
 const SAVE = "document.querySelector('[data-save-state]')?.dataset.saveState";
 const PROJECT = "JSON.parse(document.querySelector('[data-save-state]')?.dataset.projectState ?? 'null')";
 let fixture;

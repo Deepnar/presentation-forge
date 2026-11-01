@@ -8,7 +8,7 @@ import { openViewer } from '../tools/chrome-shot.mjs';
 import { expectedReview } from './v2-provider-contract.js';
 import { wire } from './v2-provider-fixture.js';
 import { edit, textEdit } from './v2-tool-fixture.js';
-const OUT = path.resolve('docs/v2-8i-8-evidence');
+const OUT = path.resolve('out/evidence/v2-8i-8-evidence');
 const check = (name, body) => test('Assistant Chrome: ' + name, { timeout: 35000 }, body);
 async function wait(page, expression, timeout = 10000) {
   const end = performance.now() + timeout;
@@ -58,7 +58,7 @@ before(async () => {
   const child = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'build', '--config', 'app/web/vite.config.js'], { stdio: ['ignore', log.fd, log.fd] });
   const timer = setTimeout(() => child.kill('SIGKILL'), 90000);
   const result = await new Promise((resolve, reject) => { child.once('error', reject); child.once('close', (code, signal) => { clearTimeout(timer); resolve({ code, signal }); }); });
-  await log.close(); const record = JSON.stringify({ command: 'node node_modules/vite/bin/vite.js build --config app/web/vite.config.js', ...result, durationMs: Math.round(performance.now() - started), log: `docs/v2-8i-8-evidence/${logName}` }, null, 2);
+  await log.close(); const record = JSON.stringify({ command: 'node node_modules/vite/bin/vite.js build --config app/web/vite.config.js', ...result, durationMs: Math.round(performance.now() - started), log: `out/evidence/v2-8i-8-evidence/${logName}` }, null, 2);
   await writeFile(path.join(OUT, `browser-build-attempt-${attempt}.json`), record); await writeFile(path.join(OUT, 'browser-build.json'), record);
   assert.equal(result.code, 0, 'production build must succeed'); assert.equal(result.signal, null);
 });
