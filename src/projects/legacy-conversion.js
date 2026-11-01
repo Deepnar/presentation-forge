@@ -283,8 +283,8 @@ export async function importCoverage() {
     status: RULES[type] ? "supported-with-field-gates" : "refused",
     fields: RULES[type]?.fields.filter(field => declared(type).includes(field)) ?? [],
     schemaFields: declared(type),
-    refusedFields: declared(type).filter(field => !RULES[type]?.fields.includes(field) || field === "cites"),
-    reason: RULES[type] ? "All populated fields must pass explicit gates; cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck." : refusalFor(type),
+    refusedFields: declared(type).filter(field => !RULES[type]?.fields.includes(field)),
+    reason: RULES[type] ? "All populated fields must pass explicit gates; capacity and unsupported chart/flow semantics refuse the whole deck." : refusalFor(type),
   }]));
 }
 
@@ -314,7 +314,7 @@ export async function convertGeneratedDeck(deck, { identity = null } = {}) {
   if (validation.structural.length) throw importError("invalid-source", "source deck is invalid", validation.structural);
   if (!deck.title.trim() || deck.slides.length > 60) throw importError("invalid-source", "source needs a title and 1..60 slides");
   if (placeholderSlides(deck).length) throw importError("invalid-source", "source contains incomplete placeholder slides");
-  const details = [], dropped = [];
+  const details = [], dropped = [], cites = [];
   const refuse = (path, reason) => details.push({ path, reason });
   deck = { ...deck, slides: deck.slides.map((source, index) => stripUndeclared(source, slideSchema(source.type), `slides[${index}]`, dropped, RULES[source.type]?.fields ?? null)) };
   const keys = (record, allowed, path) => {
@@ -334,7 +334,10 @@ export async function convertGeneratedDeck(deck, { identity = null } = {}) {
       if (typeof source.notes !== "string" || source.notes.length > 20000) refuse(`${path}.notes`, "speaker notes must be text of at most 20000 characters");
       else if (source.notes.trim()) slide.speakerNotes = source.notes;
     }
-    if (source.cites?.length) refuse(`${path}.cites`, "claim citations require a source registry absent from the accepted scene contract");
+    (source.cites ?? []).forEach((cite, i) => {
+      if (!cite || typeof cite.url !== "string" || !cite.url.trim()) refuse(`${path}.cites[${i}]`, "a citation needs a URL");
+      else cites.push({ slide: index, url: cite.url.trim(), title: String(cite.title ?? "").trim(), accessed: cite.accessed ?? null });
+    });
     if (source.section !== undefined) {
       if (!Number.isInteger(source.section) || source.section < 0 || typeof deck.sections?.[source.section] !== "string") refuse(`${path}.section`, "section index does not resolve to an authored label");
       else contextText(deck.sections[source.section], `Section ${String(source.section + 1).padStart(2, "0")}`);
@@ -354,5 +357,5 @@ export async function convertGeneratedDeck(deck, { identity = null } = {}) {
   const intent = normalizeIntent({ id: "legacy-import", title: deck.title, slides });
   const verdict = await validateDeckIntent(intent);
   if (!verdict.ok) throw importError("unsupported-content", "source exceeds the accepted semantic contract", verdict.errors.map(reason => ({ path: "intent", reason })));
-  return { intent, dropped };
+  return { intent, dropped, cites };
 }

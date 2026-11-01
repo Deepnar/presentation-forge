@@ -116,7 +116,6 @@ test("before and after retain temporal roles when their authored titles repeat",
 });
 
 for (const [label, slide, pointer] of [
-  ["citations", { ...bullets, cites: [{ url: "https://example.test/source", title: "Evidence" }] }, "cites"],
   ["unsupported chart kinds", { type: "chart", headline: "Correlation", chart: { kind: "scatter", categories: ["A"], series: [{ name: "X", values: [1] }] } }, "chart.kind"],
   ["raster-only freeform", { type: "freeform", html: "<h1>Opaque</h1>" }, "freeform"],
 ]) test(`${label} refuse the whole deck with a field-specific diagnosis`, async () => {
@@ -134,6 +133,12 @@ for (const [label, slide, pointer, hidden] of [
   const { intent, dropped } = await convertGeneratedDeck(deck([bullets, slide]));
   assert.ok(dropped.some(d => d.path === pointer), JSON.stringify(dropped));
   assert.ok(!JSON.stringify(intent).includes(hidden));
+});
+
+test("claim citations convert to cite records for the importer to retain", async () => {
+  const { cites } = await convertGeneratedDeck(deck([bullets, { ...bullets, cites: [{ url: " https://example.test/source ", title: " Evidence ", accessed: "2026-08-01" }] }]));
+  assert.deepEqual(cites, [{ slide: 1, url: "https://example.test/source", title: "Evidence", accessed: "2026-08-01" }]);
+  await assert.rejects(convertGeneratedDeck(deck([{ ...bullets, cites: [{ title: "No address" }] }])), error => error.code === "invalid-source" || error.code === "unsupported-content");
 });
 
 test("drawn fields a type never declared still convert when they are text", async () => {

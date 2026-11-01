@@ -7,6 +7,55 @@ import { compileSceneDeck } from "../v2-compile.js";
 import { analyzeDeck } from "../../packages/compiler/quality.ts";
 import { preflightScenes } from "../../packages/renderer-pptx/render.ts";
 import { prepareAsset, assetRef } from "./assets.js";
+import { createHash } from "node:crypto";
+import { mintProjectId } from "../../packages/projects/document.js";
+import { webSourceId } from "../../packages/model/source-identity.ts";
+import { observed } from "./citation-observations.js";
+import { CITATION_LIMITS } from "../../packages/model/citations.ts";
+
+// A cite's URL as the source registry accepts it: http(s), no credentials,
+// no fragment. Anything else cannot be a retained web source.
+function citeUrl(raw) {
+  try {
+    const url = new URL(raw);
+    if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) return null;
+    url.hash = "";
+    return url.href.length <= 2000 ? url.href : null;
+  } catch { return null; }
+}
+
+// The deck's claim citations become the project's retained sources and
+// slide-level citations, anchored to the compiled slide content so a later
+// edit to that slide reads as "changed" rather than silently still current.
+async function citeSources(projectId, cites, scenes) {
+  const sources = new Map(), citations = new Map(), details = [];
+  for (const cite of cites) {
+    const url = citeUrl(cite.url);
+    if (!url) { details.push({ path: `slides[${cite.slide}].cites`, reason: "citation URL is not a plain http(s) address" }); continue; }
+    const title = (cite.title || new URL(url).hostname).slice(0, 500);
+    const id = webSourceId({ projectId, url, title, excerpt: "" });
+    const retrievedAt = cite.accessed && Number.isFinite(Date.parse(cite.accessed)) ? new Date(cite.accessed).toISOString() : new Date().toISOString();
+    if (!sources.has(id)) sources.set(id, { id, projectId, kind: "web", title, url, excerpt: "", searchProvider: "deck-import", retrievedAt });
+    const slideId = scenes[cite.slide].id;
+    const key = `${slideId}\n${id}`;
+    if (!citations.has(key)) citations.set(key, { slideId, sourceId: id });
+  }
+  if (details.length) throw importError("unsupported-content", "deck citations cannot be retained", details);
+  const rows = [...citations.values()];
+  const perScene = new Map();
+  for (const row of rows) perScene.set(row.slideId, (perScene.get(row.slideId) ?? 0) + 1);
+  if (rows.length > CITATION_LIMITS.perProject || [...perScene.values()].some(n => n > CITATION_LIMITS.perScene)) {
+    throw importError("unsupported-content", "deck has more citations than a project can retain", [{ path: "cites", reason: `at most ${CITATION_LIMITS.perScene} per slide and ${CITATION_LIMITS.perProject} per deck` }]);
+  }
+  const { digests } = await observed(scenes, rows.map(r => ({ kind: "slide", slideId: r.slideId })));
+  for (const [i, row] of rows.entries()) {
+    const scene = scenes.find(sc => sc.id === row.slideId);
+    const id = "cit_" + createHash("sha256").update(`${projectId}\n${row.slideId}\n${row.sourceId}`).digest("hex").slice(0, 32);
+    (scene.citations ??= []).push({ version: 1, id, target: { kind: "slide", slideId: row.slideId },
+      source: { projectId, id: row.sourceId, generation: 0 }, anchor: { kind: "content-sha256-v1", digest: digests[i] } });
+  }
+  return [...sources.values()];
+}
 
 // Swap each image block's deck-relative path for a stored asset reference,
 // returning the assets to store with the project.
@@ -63,7 +112,7 @@ export async function importGeneratedProject(args) {
   const store = await projectStore();
   const replay = await store.lookupImportedProject({ owner: source.owner, importRequest: source.importRequest });
   if (replay) return { project: replay.doc, reused: true, sourceDigest: source.digest, timings: { totalMs: performance.now() - start }, diagnostics: [] };
-  const { intent, dropped } = await convertGeneratedDeck(source.deck, { identity: source.identity });
+  const { intent, dropped, cites } = await convertGeneratedDeck(source.deck, { identity: source.identity });
   const brand = await importBrand(source.identity, readFile);
   const assets = [...await resolveImages(intent, source), ...brand.assets];
   const compileStart = performance.now();
@@ -74,6 +123,8 @@ export async function importGeneratedProject(args) {
   const preflight = await preflightScenes(compiled.scenes);
   if (blocked.length || compiled.fitDiagnostics.length || preflight.length) throw importError("unsupported-content", "source cannot fit or export safely with accepted compiler primitives", [...blocked, ...compiled.fitDiagnostics, ...preflight].map(f => ({ path: f.slideId ?? "scene", reason: f.message ?? f.reason ?? f.code ?? f.kind })));
   const compileMs = performance.now() - compileStart;
+  const projectId = mintProjectId();
+  const sources = cites.length ? await citeSources(projectId, cites, compiled.scenes) : null;
   await source.unchanged();
   const persistStart = performance.now();
   const result = await store.createProject({
@@ -81,7 +132,7 @@ export async function importGeneratedProject(args) {
     theme: { name: source.theme, variant: source.mode },
     origin: { kind: "import", sourceDeck: args.slug, intentId: source.digest },
     importRequest: source.importRequest,
-    assets,
+    assets, id: projectId, sources,
   });
   return { project: result.doc, reused: result.reused, sourceDigest: source.digest, diagnostics: analysis.findings, dropped, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
 }
