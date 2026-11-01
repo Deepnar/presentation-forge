@@ -235,6 +235,7 @@ export function compileSlide(slide, design, recipe = selectRecipe(slide), sink =
     elements: built.elements,
     layoutState: "managed",
     recipeId: built.recipeId,
+    ...(slide.speakerNotes ? { notes: slide.speakerNotes } : {}),
   };
 }
 
@@ -285,6 +286,12 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
     ? compilePlannedSlide(intent, planned, design, sink, slideChromePlan, backgrounds)
     : compileSlide(intent, design, undefined, sink);
   if (Object.hasOwn(prev, "citations")) fresh.citations = structuredClone(prev.citations);
+  // Notes a human wrote outrank the intent's; untouched notes follow it.
+  if (prev.notesEdited) {
+    if (prev.notes !== undefined) fresh.notes = prev.notes;
+    else delete fresh.notes;
+    fresh.notesEdited = true;
+  }
   const prevById = new Map(prev.elements.map((e) => [e.id, e]));
   const usedPrev = new Set();
   const findPrev = (el) => {

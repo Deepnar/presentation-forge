@@ -40,6 +40,15 @@
         },
     "citations": { "type": "array", "maxItems": 128, "items": { "$ref": "#/definitions/citationRecord" } },
     "recipeId": { "type": "string" },
+    "notes": {
+      "type": "string",
+      "maxLength": 20000,
+      "description": "Speaker notes for the presenter. Never drawn on the slide; exported as native PowerPoint notes."
+    },
+    "notesEdited": {
+      "type": "boolean",
+      "description": "True once a human set the notes. Regeneration keeps human notes instead of replacing them with the intent's."
+    },
     "elements": {
       "type": "array",
       "items": { "$ref": "#/definitions/sceneElement" }

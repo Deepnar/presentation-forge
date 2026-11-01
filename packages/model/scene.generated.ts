@@ -29,6 +29,14 @@ export interface SlideScene {
    */
   citations?: CitationRecord[];
   recipeId?: string;
+  /**
+   * Speaker notes for the presenter. Never drawn on the slide; exported as native PowerPoint notes.
+   */
+  notes?: string;
+  /**
+   * True once a human set the notes. Regeneration keeps human notes instead of replacing them with the intent's.
+   */
+  notesEdited?: boolean;
   elements: SceneElement[];
 }
 export interface BackgroundDecor {

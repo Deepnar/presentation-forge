@@ -415,7 +415,10 @@ async function render(scenes: readonly SlideScene[], options: PptxRenderOptions,
     for (const d of scene.background.decor ?? []) addDecorShape(trace ? trace.emitter(slide, index, []) as PptxSlide : slide, d);
     const els = [...scene.elements].sort((a, b) => a.z - b.z);
     for (const el of els) drawElement(slide, el, 0, 0, trace, index);
-    if (trace) { const notes = trace.notes(index); if (notes) slide.addNotes(notes); }
+    // Authored notes come first; consented source notes follow them so a
+    // presenter reads their own script before the reference trail.
+    const notes = trace ? trace.notes(index, scene.notes ?? "") : scene.notes ?? "";
+    if (notes) slide.addNotes(notes);
   }
   const out = await pres.write({ outputType: "uint8array" });
   if (!(out instanceof Uint8Array)) {

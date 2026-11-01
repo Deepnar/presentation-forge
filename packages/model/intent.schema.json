@@ -64,7 +64,7 @@
           }
         },
         "sourceRefs": { "type": "array", "items": { "type": "string" } },
-        "speakerNotes": { "type": "string", "maxLength": 2000 }
+        "speakerNotes": { "type": "string", "maxLength": 20000 }
       }
     },
     "contentBlock": {

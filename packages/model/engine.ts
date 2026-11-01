@@ -33,7 +33,10 @@ export type SlideOp =
   | { type: "slide.delete"; id: string }
   | { type: "slide.duplicate"; id: string }
   | { type: "slide.reorder"; id: string; toIndex: number }
-  | { type: "slide.setLayoutState"; id: string; layoutState: SlideScene["layoutState"] };
+  | { type: "slide.setLayoutState"; id: string; layoutState: SlideScene["layoutState"] }
+  // `edited` is only ever supplied by an inverse, to restore whether the
+  // previous notes were human-written; a forward edit always marks them so.
+  | { type: "slide.setNotes"; id: string; notes: string; edited?: boolean };
 
 export type CitationOp =
   | { type: "citation.put"; mode: "add" | "replace"; citation: Citation }
@@ -125,7 +128,8 @@ interface EngineState {
 export const MAX_HISTORY = 200;
 
 const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.setChartData", "element.setTableData", "element.reorder", "element.setLocked", "element.setVisibility", "element.updateText", "element.add", "element.delete"]);
-const SLIDE_TYPES = new Set(["slide.insert", "slide.delete", "slide.duplicate", "slide.reorder", "slide.setLayoutState"]);
+const SLIDE_TYPES = new Set(["slide.insert", "slide.delete", "slide.duplicate", "slide.reorder", "slide.setLayoutState", "slide.setNotes"]);
+const MAX_NOTES = 20000;
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
@@ -390,6 +394,13 @@ function checkOp(placed: unknown): string | null {
       if (!idStr(op.id) || !Number.isInteger(op.toIndex) || (op.toIndex as number) < 0) {
         return "slide.reorder needs id and a non-negative toIndex";
       }
+      return null;
+    case "slide.setNotes":
+      if (!idStr(op.id) || typeof op.notes !== "string" || op.notes.length > MAX_NOTES) {
+        return `slide.setNotes needs id and notes of at most ${MAX_NOTES} characters`;
+      }
+      if (op.edited !== undefined && typeof op.edited !== "boolean") return "slide.setNotes edited must be a boolean";
+      if (Object.keys(op).some((k) => !["type", "id", "notes", "edited"].includes(k))) return "slide.setNotes has unknown fields";
       return null;
     default:
       return `unknown op type ${(op as { type: string }).type}`;
@@ -674,6 +685,18 @@ function runPlaced(scenes: SlideScene[], placed: PlacedOp): PlacedOp {
       scenes.length = 0;
       scenes.push(...next);
       return { slideId: null, op: { type: "slide.setLayoutState", id, layoutState: prev } };
+    }
+    case "slide.setNotes": {
+      const { id, notes, edited } = op as { id: string; notes: string; edited?: boolean };
+      const i = scenes.findIndex((s) => s.id === id);
+      if (i < 0) reject("unknown-slide", `unknown slide ${id}`);
+      const prev = scenes[i];
+      const next: SlideScene = { ...prev, notesEdited: edited ?? true };
+      if (notes) next.notes = notes;
+      else delete next.notes;
+      if (!next.notesEdited) delete next.notesEdited;
+      scenes[i] = next;
+      return { slideId: null, op: { type: "slide.setNotes", id, notes: prev.notes ?? "", edited: prev.notesEdited === true } };
     }
     case "slide.reorder": {
       const { id, toIndex } = op as { id: string; toIndex: number };

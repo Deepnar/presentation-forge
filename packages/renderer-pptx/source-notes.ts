@@ -103,10 +103,10 @@ export class SourceNotesTrace {
       addTable: (...args) => call('addTable', args),
     };
   }
-  notes(index: number): string {
+  notes(index: number, authored = ''): string {
     const scene = this.snapshot.scenes[index], row = this.rows[index];
     const references = this.snapshot.references.filter(r => r.sceneIndex === index);
-    if (!references.length) return '';
+    if (!references.length) { row.notes = authored; return authored; }
     const elements = new Map<string, SceneElement[]>();
     const stack = [...scene.elements];
     while (stack.length) {
@@ -128,7 +128,7 @@ export class SourceNotesTrace {
       const number = this.snapshot.references.indexOf(ref) + 1;
       lines.push(`C${number} — ${target}`, `Title: ${literal(ref.title)}`, `URL: ${literal(ref.url)}`);
     }
-    const notes = lines.join('\n');
+    const notes = [authored, lines.join('\n')].filter(Boolean).join('\n\n');
     if (encoder.encode(notes).length > 1048576) capacity();
     row.notes = notes;
     if (this.rows.reduce((n, r) => n + encoder.encode(r.notes).length, 0) > 4194304) capacity();

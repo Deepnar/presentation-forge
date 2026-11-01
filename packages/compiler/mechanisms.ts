@@ -1355,6 +1355,7 @@ export function compilePlannedSlide(
     elements: clampScene(elements),
     layoutState: "managed",
     recipeId: comp.family,
+    ...(slide.speakerNotes ? { notes: slide.speakerNotes } : {}),
   };
 }
 
