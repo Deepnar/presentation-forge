@@ -119,38 +119,49 @@ test("incomplete, checkpointed and shorter-than-plan sources refuse before writi
   assert.equal((await store.listProjects({ owner: principal.email })).projects.length, before);
 });
 
-test("unrepresentable content and institutional chrome refuse atomically", async () => {
+test("unrepresentable content refuses atomically", async () => {
   const before = (await store.listProjects({ owner: principal.email })).projects.length;
-  for (const args of [await source({ deck: { ...sourceDeck, slides: [...sourceDeck.slides, { type: "venn", headline: "Sets", sets: [{ label: "A", items: ["One"] }, { label: "B", items: ["Two"] }] }] } }), await source({ meta: { team: { members: [{ name: "Do not drop" }] } } })]) {
-    await assert.rejects(importGeneratedProject(args), { code: "unsupported-content" });
-  }
+  const args = await source({ deck: { ...sourceDeck, slides: [...sourceDeck.slides, { type: "venn", headline: "Sets", sets: [{ label: "A", items: ["One"] }, { label: "B", items: ["Two"] }] }] } });
+  await assert.rejects(importGeneratedProject(args), { code: "unsupported-content" });
   assert.equal((await store.listProjects({ owner: principal.email })).projects.length, before);
 });
-
-test("untyped comparison extensions refuse before creating a project, history or receipt", async () => {
+test("untyped comparison extensions the renderer never drew are dropped and reported", async () => {
   const args = await source({ deck: { title: "Options", slides: [{ type: "vs", headline: "Choose", left: { title: "A", body: { detail: "Do not lose" } }, right: { title: "B" } }] } });
-  const counts = () => ["v2_projects", "v2_project_revisions", "v2_project_imports"].map(table => getDb().prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n);
-  const before = counts();
-  await assert.rejects(importGeneratedProject(args), error => error.code === "unsupported-content" && error.details.some(d => d.path.endsWith("left.body")));
-  assert.deepEqual(counts(), before);
+  const result = await importGeneratedProject(args);
+  assert.ok(result.dropped.some(d => d.path.endsWith("left.body")));
+  assert.ok(!JSON.stringify(result.project).includes("Do not lose"));
 });
-
-test("effective identity includes inherited operator and per-owner settings and refuses their loss", async () => {
-  const args = await source();
-  const base = path.join(process.env.FORGE_CONFIG_DIR, "identity.example.yaml");
+test("inherited operator and per-owner identity reach the title slide and footer", async () => {
   const operator = path.join(process.env.FORGE_CONFIG_DIR, "identity.yaml");
   const user = userIdentityFile(principal.email);
   await mkdir(path.dirname(user), { recursive: true });
-  const before = (await store.listProjects({ owner: principal.email })).projects.length;
-  for (const [file, value] of [[base, { institution: { name: "Inherited institution" } }], [operator, { brand: { banner: "brand/banner.png" } }], [user, { team: { label: "Remembered presenter" } }]]) {
-    await writeFile(file, YAML.stringify(value));
-    try { await assert.rejects(importGeneratedProject(args), { code: "unsupported-content" }); }
-    finally { await rm(file, { force: true }); }
-  }
-  assert.equal((await store.listProjects({ owner: principal.email })).projects.length, before);
+  await writeFile(operator, YAML.stringify({ institution: { name: "Inherited institution" }, guide: { name: "Dr. Guide" }, brand: { banner: "brand/missing-banner.png" } }));
+  await writeFile(user, YAML.stringify({ team: { label: "Remembered team", members: [{ name: "Asha", presenting: true }, { name: "Ben" }] } }));
+  try {
+    const { project } = await importGeneratedProject(await source());
+    const text = JSON.stringify(project.scenes[0]);
+    for (const value of ["Remembered team — Asha · Ben", "Guide: Dr. Guide"]) assert.ok(text.includes(value), value);
+    const presenter = project.scenes[1].elements.find(e => e.id.endsWith(":chrome:presenter"));
+    assert.equal(presenter.paragraphs[0].runs[0].text, "Asha", "presenting members stand in for an unnamed slide presenter");
+    assert.ok(!project.scenes[0].elements.some(e => e.kind === "image"), "a missing banner draws nothing rather than failing");
+  } finally { await rm(operator, { force: true }); await rm(user, { force: true }); }
 });
 
-test("presenter remains locked furniture; effective chrome changes conflict and suppressed metadata refuses", async () => {
+test("brand marks become locked chrome images stored once", async () => {
+  const sharp = (await import("sharp")).default;
+  const brandDir = path.join(scratch, "brand");
+  await mkdir(brandDir, { recursive: true });
+  await writeFile(path.join(brandDir, "banner.png"), await sharp({ create: { width: 600, height: 100, channels: 3, background: "#123456" } }).png().toBuffer());
+  await writeFile(path.join(brandDir, "crest.png"), await sharp({ create: { width: 100, height: 120, channels: 3, background: "#654321" } }).png().toBuffer());
+  const { project } = await importGeneratedProject(await source({ meta: { brand: { banner: path.join(brandDir, "banner.png"), crest: path.join(brandDir, "crest.png") } } }));
+  const banner = project.scenes[0].elements.find(e => e.kind === "image");
+  assert.ok(banner && banner.locked && /^asset:/.test(banner.image.src));
+  const crests = project.scenes.slice(1).map(s => s.elements.find(e => e.kind === "image"));
+  assert.ok(crests.every(c => c && c.locked && c.image.src === crests[0].image.src));
+  const hashes = new Set(project.scenes.flatMap(s => s.elements.filter(e => e.kind === "image").map(e => e.image.src)));
+  assert.equal((await store.getProjectAssets({ owner: principal.email, id: project.id, hashes: [...hashes].map(h => h.slice(6)) })).size, 2);
+});
+test("presenter remains locked furniture; chrome policy changes conflict and suppression follows the renderer", async () => {
   const deck = structuredClone(sourceDeck); deck.slides[1].presenter = "Presenter A";
   const args = await source({ deck }); const original = await importGeneratedProject(args);
   const presenter = original.project.scenes[1].elements.find(e => e.id.endsWith(":chrome:presenter"));
@@ -165,13 +176,15 @@ test("presenter remains locked furniture; effective chrome changes conflict and 
     assert.ok(!next.project.scenes.some(scene => scene.elements.some(e => e.id.endsWith(":chrome:slide-number"))));
     assert.ok(next.project.scenes[1].elements.some(e => e.id.endsWith(":chrome:presenter")));
   } finally { await rm(operator, { force: true }); }
-  for (const chrome of [{ branding: "none" }, { presenter_on_slides: false }, { unknown: true }]) {
-    await assert.rejects(importGeneratedProject(await source({ deck, meta: { chrome } })), { code: "unsupported-content" });
+  for (const chrome of [{ branding: "none" }, { presenter_on_slides: false }]) {
+    const { project } = await importGeneratedProject(await source({ deck, meta: { chrome } }));
+    assert.ok(!project.scenes.some(scene => scene.elements.some(e => e.id.endsWith(":chrome:presenter"))), JSON.stringify(chrome));
   }
-  const divider = structuredClone(sourceDeck); divider.slides[0].presenter = "Do not drop";
-  await assert.rejects(importGeneratedProject(await source({ deck: divider })), { code: "unsupported-content" });
+  await assert.rejects(importGeneratedProject(await source({ deck, meta: { chrome: { unknown: true } } })), { code: "unsupported-content" });
+  const divider = structuredClone(sourceDeck); divider.slides[0].presenter = "Not on the cover";
+  const { project } = await importGeneratedProject(await source({ deck: divider }));
+  assert.ok(!JSON.stringify(project.scenes[0]).includes("Not on the cover"), "the cover never shows a presenter, as before");
 });
-
 test("filesystem symlinks, traversal and YAML alias inputs cannot bypass the source boundary", async () => {
   await assert.rejects(importGeneratedProject({ slug: "../private", requestId: "request-one", principal }), { code: "not-found" });
   const args = await source();

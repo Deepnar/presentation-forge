@@ -11,34 +11,59 @@ import { effectiveBranding } from "../../packages/core/chrome.ts";
 import { surfaceForPlan } from "../../packages/compiler/background.ts";
 import { contrastBackground } from "../v2-plates.js";
 import { importError } from "./legacy-conversion.js";
+import { loadBrand } from "../chrome.js";
+import { prepareAsset, assetRef } from "./assets.js";
 
 const MAX_SOURCE_BYTES = 2 * 1024 * 1024;
 const MAX_ASSET_BYTES = 15 * 1024 * 1024;
-const META_CONTENT = ["academic", "guide", "team", "institution", "brand", "identity"];
-const present = value => typeof value === "object" && value !== null ? Object.values(value).some(present) : value !== undefined && value !== null && value !== "" && value !== false;
 
-function chromeProfile(identity, deck) {
-  const forbidden = META_CONTENT.filter(key => present(identity[key]));
-  if (forbidden.length) throw importError("unsupported-content", "effective source identity needs an audited institutional chrome adapter", forbidden.map(key => ({ path: `identity.${key}`, reason: "inherited or source identity cannot be silently dropped or made editable" })));
+function chromeProfile(identity) {
   const cfg = identity.chrome ?? {};
   const keys = ["branding", "slide_numbers", "presenter_on_slides", "crest_on_content_slides"];
   if (typeof cfg !== "object" || Array.isArray(cfg) || Object.keys(cfg).some(key => !keys.includes(key)) || keys.slice(1).some(key => cfg[key] !== undefined && typeof cfg[key] !== "boolean") || (cfg.branding !== undefined && !["full", "minimal", "none"].includes(cfg.branding))) {
     throw importError("unsupported-content", "source chrome policy has unsupported fields or values", [{ path: "identity.chrome", reason: "only the canonical branding and boolean footer/crest policy is audited" }]);
   }
-  const profile = { branding: effectiveBranding(cfg.branding), slideNumbers: cfg.slide_numbers !== false, presenterOnSlides: cfg.presenter_on_slides !== false, crestOnContentSlides: cfg.crest_on_content_slides !== false };
-  const suppressed = deck?.slides?.flatMap((slide, index) => slide.presenter && (DIVIDER_TYPES.has(slide.type) || REFERENCE_TYPES.has(slide.type) || profile.branding === "none" || !profile.presenterOnSlides)
-    ? [{ path: `slides[${index}].presenter`, reason: "authored presenter would be suppressed by legacy chrome and has no scene metadata carrier" }] : []) ?? [];
-  if (suppressed.length) throw importError("unsupported-content", "source presenter cannot be preserved under its chrome policy", suppressed);
-  return profile;
+  return { branding: effectiveBranding(cfg.branding), slideNumbers: cfg.slide_numbers !== false, presenterOnSlides: cfg.presenter_on_slides !== false, crestOnContentSlides: cfg.crest_on_content_slides !== false };
 }
 
-export function importChrome(profile, source, presenters) {
-  return (intent, design, { backgrounds, plan }) => ({ slides: intent.slides.map((slide, index) => ({
-    slideId: slide.id, surface: source.slides[index].type === "title" ? "title" : "content", ...profile,
-    presenterText: presenters[index], index: index + 1, total: intent.slides.length,
-    background: contrastBackground(backgrounds, surfaceForPlan(plan.slides[index]), design),
-    mutedInk: design.palette.inkMuted.hex, captionFamily: design.roles.caption?.family,
-  })) });
+// The footer names whoever presents a slide: the slide's own presenter, else
+// the presenting members, else the team label — the legacy renderer's rule.
+function presenterFallback(identity) {
+  const presenting = (identity.team?.members ?? []).filter(m => m?.presenting && String(m.name ?? "").trim());
+  return presenting.length ? presenting.map(m => String(m.name).trim()).join(" · ") : String(identity.team?.label ?? "").trim();
+}
+
+// Brand marks become project assets so every slide can reference one stored
+// copy. `crest` is preferred and its ratio alone earns heading clearance; a
+// light/dark variant stands in when it is the only mark, as before.
+export async function importBrand(identity, readFile) {
+  const brand = await loadBrand(identity);
+  const assets = [];
+  const asset = async mark => {
+    if (!mark) return null;
+    const prepared = await prepareAsset(new Uint8Array(await readFile(mark.path)));
+    assets.push(prepared);
+    return { src: assetRef(prepared.hash), ratio: prepared.width / prepared.height };
+  };
+  const banner = await asset(brand.banner);
+  const selectedCrest = await asset(brand.crest ?? brand.crestLight ?? brand.crestDark);
+  return { banner, selectedCrest, primaryCrestRatio: brand.crest ? selectedCrest?.ratio ?? null : null, assets };
+}
+
+export function importChrome(profile, source, identity, brand = {}) {
+  const fallback = presenterFallback(identity);
+  return (intent, design, { backgrounds, plan }) => ({ slides: intent.slides.map((slide, index) => {
+    const type = source.slides[index].type;
+    return {
+      slideId: slide.id, surface: type === "title" ? "title" : "content", ...profile,
+      banner: brand.banner ?? null, selectedCrest: brand.selectedCrest ?? null, primaryCrestRatio: brand.primaryCrestRatio ?? null,
+      suppressPresenter: DIVIDER_TYPES.has(type) || REFERENCE_TYPES.has(type),
+      presenterText: String(source.slides[index].presenter ?? "").trim() || fallback,
+      index: index + 1, total: intent.slides.length,
+      background: contrastBackground(backgrounds, surfaceForPlan(plan.slides[index]), design),
+      mutedInk: design.palette.inkMuted.hex, captionFamily: design.roles.caption?.family,
+    };
+  }) });
 }
 
 async function boundedText(file, optional = false) {
@@ -135,14 +160,15 @@ export async function readImportSource({ slug, requestId, principal = null, loca
   }
   const effectiveIdentity = async () => deepMerge(await loadIdentity(null, { owner }), meta);
   const identity = await effectiveIdentity();
-  const profile = chromeProfile(identity, deck);
+  const profile = chromeProfile(identity);
   const unchanged = async () => {
     if (JSON.stringify(await read()) !== JSON.stringify(bytes)) throw importError("source-changed", "source changed during import; retry after generation finishes");
     if (JSON.stringify(await effectiveIdentity()) !== JSON.stringify(identity)) throw importError("source-changed", "effective identity changed during import; retry after configuration settles");
   };
   await unchanged();
-  const theme = deck?.theme ?? meta.theme ?? "warm-humanist";
-  if (deck?.theme && meta.theme && deck.theme !== meta.theme) throw importError("unsupported-content", "source theme overrides disagree", [{ path: "theme", reason: "select one source theme before importing" }]);
-  const digest = createHash("sha256").update(JSON.stringify({ slug, deck: bytes.deckText, plan: bytes.planText, theme, style: deck?.style ?? null, mode, chrome: profile })).digest("hex");
-  return { deck, owner, theme, style: deck?.style ?? null, mode, profile, digest, importRequest: { key: `${slug}:${requestId}`, digest }, unchanged, readAsset: rel => readDeckAsset(dir, rel) };
+  // The theme the user last chose for the deck (meta) wins over the one the
+  // generator wrote, as it does when the deck page re-renders.
+  const theme = meta.theme ?? deck?.theme ?? "warm-humanist";
+  const digest = createHash("sha256").update(JSON.stringify({ slug, deck: bytes.deckText, plan: bytes.planText, theme, style: deck?.style ?? null, mode, chrome: profile, identity: { academic: identity.academic, guide: identity.guide, team: identity.team, brand: identity.brand } })).digest("hex");
+  return { deck, owner, theme, style: deck?.style ?? null, mode, profile, digest, importRequest: { key: `${slug}:${requestId}`, digest }, unchanged, identity, readAsset: rel => readDeckAsset(dir, rel) };
 }

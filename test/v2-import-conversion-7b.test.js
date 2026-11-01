@@ -55,14 +55,13 @@ test("conversion preserves slide order, section context, visible notes and both 
     { ...bullets, section: 0, speaker_note: "Explain the caveat", presenter: "Presenter A" },
     { type: "compare", headline: "Trade-off", left: { title: "Liquid", kicker: "Mature", body: "Easy to make", points: ["Flammable"] }, right: { title: "Solid", body: "Safer", points: ["Costly"] }, verdict: "Trial solid" },
   ], { subtitle: "A grounded decision", sections: ["Evidence"] });
-  const { intent, presenters } = await convertGeneratedDeck(source);
+  const { intent } = await convertGeneratedDeck(source);
   assert.equal(intent.slides.length, source.slides.length);
   assert.equal((await validateDeckIntent(intent)).ok, true);
   assert.deepEqual(intent.slides.map(s => s.id), ["legacy-s1", "legacy-s2", "legacy-s3"]);
-  const content = JSON.stringify({ intent, presenters });
-  assert.equal(presenters[1], "Presenter A");
-  assert.ok(!JSON.stringify(intent).includes("Presenter A"));
-  for (const text of ["First claim", "Explain the caveat", "Presenter A", "A grounded decision", "Mature", "Easy to make", "Flammable", "Costly", "Trial solid"]) assert.ok(content.includes(text), text);
+  const content = JSON.stringify(intent);
+  assert.ok(!content.includes("Presenter A"), "the presenter is chrome, not content");
+  for (const text of ["First claim", "Explain the caveat", "A grounded decision", "Mature", "Easy to make", "Flammable", "Costly", "Trial solid"]) assert.ok(content.includes(text), text);
   assert.equal(intent.slides[1].speakerNotes, undefined);
 });
 
@@ -118,16 +117,47 @@ test("before and after retain temporal roles when their authored titles repeat",
 
 for (const [label, slide, pointer] of [
   ["citations", { ...bullets, cites: [{ url: "https://example.test/source", title: "Evidence" }] }, "cites"],
-  ["unknown populated fields", { ...bullets, invented: "Do not lose me" }, "invented"],
-  ["nested unknown fields", { type: "compare", headline: "Options", left: { title: "A", body: "One", surprise: "Keep me" }, right: { title: "B", body: "Two" } }, "surprise"],
-  ["untyped vs body", { type: "vs", headline: "Options", left: { title: "A", body: { detail: "Authored fact" } }, right: { title: "B" } }, "left.body"],
-  ["untyped before-after kicker", { type: "before-after", headline: "Change", before: { title: "A", body: "Old", kicker: { detail: "Authored fact" } }, after: { title: "B", body: "New" } }, "before.kicker"],
-  ["untyped quote source", { type: "quote", quote: "Evidence", attribution: "A", source: { detail: "Authored fact" } }, "source"],
-  ["untyped callout points", { type: "callout", headline: "Finding", body: "Evidence", points: [{ detail: "Authored fact" }] }, "points"],
   ["unsupported chart kinds", { type: "chart", headline: "Correlation", chart: { kind: "scatter", categories: ["A"], series: [{ name: "X", values: [1] }] } }, "chart.kind"],
   ["raster-only freeform", { type: "freeform", html: "<h1>Opaque</h1>" }, "freeform"],
 ]) test(`${label} refuse the whole deck with a field-specific diagnosis`, async () => {
   await assert.rejects(convertGeneratedDeck(deck([bullets, slide])), error => error.code === "unsupported-content" && error.details.some(d => d.path.includes(pointer) || d.reason.includes(pointer)));
+});
+
+for (const [label, slide, pointer, hidden] of [
+  ["unknown populated fields", { ...bullets, invented: "Do not lose me" }, "slides[1].invented", "Do not lose me"],
+  ["nested unknown fields", { type: "compare", headline: "Options", left: { title: "A", body: "One", surprise: "Keep me" }, right: { title: "B", body: "Two" } }, "slides[1].left.surprise", "Keep me"],
+  ["untyped vs body", { type: "vs", headline: "Options", left: { title: "A", body: { detail: "Authored fact" } }, right: { title: "B" } }, "slides[1].left.body", "Authored fact"],
+  ["untyped before-after kicker", { type: "before-after", headline: "Change", before: { title: "A", body: "Old", kicker: { detail: "Authored fact" } }, after: { title: "B", body: "New" } }, "slides[1].before.kicker", "Authored fact"],
+  ["untyped quote source", { type: "quote", quote: "Evidence", attribution: "A", source: { detail: "Authored fact" } }, "slides[1].source", "Authored fact"],
+  ["untyped callout points", { type: "callout", headline: "Finding", body: "Evidence", points: [{ detail: "Authored fact" }] }, "slides[1].points", "Authored fact"],
+]) test(`${label} the renderer never drew are dropped and reported`, async () => {
+  const { intent, dropped } = await convertGeneratedDeck(deck([bullets, slide]));
+  assert.ok(dropped.some(d => d.path === pointer), JSON.stringify(dropped));
+  assert.ok(!JSON.stringify(intent).includes(hidden));
+});
+
+test("drawn fields a type never declared still convert when they are text", async () => {
+  const { intent, dropped } = await convertGeneratedDeck(deck([
+    { type: "quote", quote: "Evidence", attribution: "A", source: "Journal of Cells" },
+    { type: "callout", headline: "Finding", body: "Evidence", points: ["First point", "Second point"] },
+  ]));
+  assert.deepEqual(dropped, []);
+  const text = JSON.stringify(intent);
+  for (const value of ["Journal of Cells", "First point", "Second point"]) assert.ok(text.includes(value), value);
+});
+
+test("the title slide carries team, guide and course as editable text", async () => {
+  const identity = {
+    team: { label: "Group 2", members: [{ name: " Asha Rao ", roll: "21" }, { name: "Ben Ito" }, { name: "  " }] },
+    guide: { name: "Dr. K. Menon", designation: "Assistant Professor" },
+    academic: { subject: "Microprocessors", year: "2026-27", semester: "V" },
+  };
+  const { intent } = await convertGeneratedDeck(deck([{ type: "title", headline: "Cell choice" }, bullets]), { identity });
+  const credits = intent.slides[0].blocks.find(b => b.text?.startsWith("Group 2"));
+  assert.equal(credits.text, "Group 2 — Asha Rao (21) · Ben Ito\nGuide: Dr. K. Menon · Assistant Professor\nMicroprocessors  ·  2026-27");
+  assert.ok(!JSON.stringify(intent.slides[1]).includes("Group 2"), "only the title slide carries credits");
+  const bare = await convertGeneratedDeck(deck([{ type: "title", headline: "Cell choice" }]), { identity: {} });
+  assert.ok(!bare.intent.slides[0].blocks.some(b => b.emphasis === "context" && b.text?.includes("Guide")));
 });
 
 test("strict validation refuses invalid lengths, empty decks and excessive slide counts", async () => {

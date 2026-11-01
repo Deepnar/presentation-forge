@@ -1,5 +1,6 @@
 import { performance } from "node:perf_hooks";
-import { readImportSource, importChrome } from "./import-source.js";
+import { readFile } from "node:fs/promises";
+import { readImportSource, importChrome, importBrand } from "./import-source.js";
 import { convertGeneratedDeck, importError } from "./legacy-conversion.js";
 import { projectStore } from "./backend.js";
 import { compileSceneDeck } from "../v2-compile.js";
@@ -62,10 +63,11 @@ export async function importGeneratedProject(args) {
   const store = await projectStore();
   const replay = await store.lookupImportedProject({ owner: source.owner, importRequest: source.importRequest });
   if (replay) return { project: replay.doc, reused: true, sourceDigest: source.digest, timings: { totalMs: performance.now() - start }, diagnostics: [] };
-  const { intent, presenters } = await convertGeneratedDeck(source.deck);
-  const assets = await resolveImages(intent, source);
+  const { intent, dropped } = await convertGeneratedDeck(source.deck, { identity: source.identity });
+  const brand = await importBrand(source.identity, readFile);
+  const assets = [...await resolveImages(intent, source), ...brand.assets];
   const compileStart = performance.now();
-  const compiled = await compileSceneDeck({ intent, theme: source.theme, style: source.style, mode: source.mode, chromeForDeck: importChrome(source.profile, source.deck, presenters) });
+  const compiled = await compileSceneDeck({ intent, theme: source.theme, style: source.style, mode: source.mode, chromeForDeck: importChrome(source.profile, source.deck, source.identity, brand) });
   assertContent(intent, compiled.scenes);
   const analysis = await analyzeDeck(intent, compiled.design, compiled.chrome);
   const blocked = analysis.findings.filter(f => f.layer === "L1");
@@ -81,5 +83,5 @@ export async function importGeneratedProject(args) {
     importRequest: source.importRequest,
     assets,
   });
-  return { project: result.doc, reused: result.reused, sourceDigest: source.digest, diagnostics: analysis.findings, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
+  return { project: result.doc, reused: result.reused, sourceDigest: source.digest, diagnostics: analysis.findings, dropped, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
 }

@@ -21,17 +21,29 @@ function slideSchema(type) {
   return { type: "object", properties };
 }
 
-// The legacy schema deliberately permits extra slide/nested properties. Only
-// declared, typed fields are safe to consume; shared converters must not coerce
-// another family's untyped extensions into strings or lose their structure.
-function auditFields(value, node, path, refuse) {
+// The legacy schema deliberately permits extra slide/nested properties, and
+// the renderer draws only declared ones. Undeclared fields were never on the
+// page, so the copy that converts drops them (and says so) rather than
+// refusing the deck or coercing another family's extension into text.
+function stripUndeclared(value, node, path, dropped, consumed = null) {
   if (node.$ref) node = node.$ref.slice(2).split("/").reduce((part, key) => part[key], schema);
   if (node.anyOf) node = node.anyOf.find(branch => branch.type === (Array.isArray(value) ? "array" : typeof value)) ?? node;
-  if (Array.isArray(value)) value.forEach((item, index) => auditFields(item, node.items ?? {}, `${path}[${index}]`, refuse));
-  else if (value && typeof value === "object") for (const [key, item] of Object.entries(value)) {
-    if (!Object.hasOwn(node.properties ?? {}, key)) refuse(`${path}.${key}`, "field is not declared and typed for this source family");
-    else auditFields(item, node.properties[key], `${path}.${key}`, refuse);
+  if (Array.isArray(value)) return value.map((item, index) => stripUndeclared(item, node.items ?? {}, `${path}[${index}]`, dropped));
+  if (!value || typeof value !== "object") return value;
+  const out = {};
+  for (const [key, item] of Object.entries(value)) {
+    // A few fields the layouts draw were never declared on their type
+    // (quote.source, callout.points); a rule that consumes one keeps it.
+    if (consumed?.includes(key) && !Object.hasOwn(node.properties ?? {}, key)) {
+      const textual = typeof item === "string" || (Array.isArray(item) && item.every(x => typeof x === "string"));
+      if (textual) out[key] = item;
+      else dropped.push({ path: `${path}.${key}`, reason: "field is not text, so the renderer could not have drawn it" });
+      continue;
+    }
+    if (!Object.hasOwn(node.properties ?? {}, key)) { dropped.push({ path: `${path}.${key}`, reason: "undeclared field the renderer never drew" }); continue; }
+    out[key] = stripUndeclared(item, node.properties[key], `${path}.${key}`, dropped);
   }
+  return out;
 }
 const RULES = {};
 function rule(types, fields, convert) {
@@ -276,7 +288,22 @@ export async function importCoverage() {
   }]));
 }
 
-export async function convertGeneratedDeck(deck) {
+// The title slide's credits as the legacy cover printed them: team and
+// members, guide, then subject and year. They become ordinary editable text —
+// a student fixing a misspelt name should not need to regenerate.
+export function titleCredits(identity) {
+  const clean = value => String(value ?? "").trim();
+  const team = identity?.team ?? {};
+  const names = (team.members ?? []).map(m => clean(m?.name) && (clean(m.roll) ? `${clean(m.name)} (${clean(m.roll)})` : clean(m.name))).filter(Boolean).join(" · ");
+  const guide = clean(identity?.guide?.name);
+  return [
+    [clean(team.label), names].filter(Boolean).join(" — "),
+    guide ? `Guide: ${guide}${clean(identity.guide.designation) ? ` · ${clean(identity.guide.designation)}` : ""}` : "",
+    [clean(identity?.academic?.subject), clean(identity?.academic?.year)].filter(Boolean).join("  ·  "),
+  ].filter(Boolean);
+}
+
+export async function convertGeneratedDeck(deck, { identity = null } = {}) {
   try { if (JSON.stringify(deck).length > 2 * 1024 * 1024) throw new Error(); }
   catch { throw importError("invalid-source", "source is cyclic, too deep or exceeds the import bound"); }
   if (!deck || typeof deck !== "object" || findDangerousKey(deck)) throw importError("invalid-source", "source contains unsafe structure");
@@ -287,11 +314,9 @@ export async function convertGeneratedDeck(deck) {
   if (validation.structural.length) throw importError("invalid-source", "source deck is invalid", validation.structural);
   if (!deck.title.trim() || deck.slides.length > 60) throw importError("invalid-source", "source needs a title and 1..60 slides");
   if (placeholderSlides(deck).length) throw importError("invalid-source", "source contains incomplete placeholder slides");
-  const details = [];
-  const usedSections = new Set();
+  const details = [], dropped = [];
   const refuse = (path, reason) => details.push({ path, reason });
-  deck.slides.forEach((source, index) => auditFields(source, slideSchema(source.type), `slides[${index}]`, refuse));
-  if (details.length) throw importError("unsupported-content", "source has fields without an audited typed conversion", details);
+  deck = { ...deck, slides: deck.slides.map((source, index) => stripUndeclared(source, slideSchema(source.type), `slides[${index}]`, dropped, RULES[source.type]?.fields ?? null)) };
   const keys = (record, allowed, path) => {
     for (const key of Object.keys(record)) if (!allowed.includes(key)) refuse(`${path}.${key}`, "field has no audited semantic conversion");
   };
@@ -312,19 +337,22 @@ export async function convertGeneratedDeck(deck) {
     if (source.cites?.length) refuse(`${path}.cites`, "claim citations require a source registry absent from the accepted scene contract");
     if (source.section !== undefined) {
       if (!Number.isInteger(source.section) || source.section < 0 || typeof deck.sections?.[source.section] !== "string") refuse(`${path}.section`, "section index does not resolve to an authored label");
-      else { usedSections.add(source.section); contextText(deck.sections[source.section], `Section ${String(source.section + 1).padStart(2, "0")}`); }
+      else contextText(deck.sections[source.section], `Section ${String(source.section + 1).padStart(2, "0")}`);
     }
     contextText(source.standfirst, "Context");
     rule.convert(source, { deck, path, slide, blocks: slide.blocks, add, text, keys, refuse });
     if (source.type !== "title" && index === 0) contextText(deck.subtitle, "Deck context");
+    if (source.type === "title" && identity) {
+      const credits = titleCredits(identity);
+      if (credits.length) add("text", { text: credits.join("\n"), emphasis: "context" });
+    }
     if (source.speaker_note) add("callout", { label: "Audience note", text: source.speaker_note });
     if (!slide.blocks.length) text(source.headline ?? deck.title);
     return slide;
   });
-  (deck.sections ?? []).forEach((_label, index) => { if (!usedSections.has(index)) refuse(`sections[${index}]`, "unreferenced section metadata cannot be silently discarded"); });
   if (details.length) throw importError("unsupported-content", "source content cannot be preserved by this import", details);
   const intent = normalizeIntent({ id: "legacy-import", title: deck.title, slides });
   const verdict = await validateDeckIntent(intent);
   if (!verdict.ok) throw importError("unsupported-content", "source exceeds the accepted semantic contract", verdict.errors.map(reason => ({ path: "intent", reason })));
-  return { intent, presenters: deck.slides.map(slide => slide.presenter ?? "") };
+  return { intent, dropped };
 }
