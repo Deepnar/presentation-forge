@@ -95,6 +95,9 @@ export function createProjectCopier(backend) {
         } };
         if (utf8(result) > COPY_INPUT_BYTES) refuse('capacity-exceeded');
         await tx.insertCopy(project);
+        // Images travel with the scenes that reference them.
+        await tx.query('INSERT INTO v2_project_assets(project_id,hash,mime,width,height,size,bytes,created_at) SELECT ?,hash,mime,width,height,size,bytes,created_at FROM v2_project_assets WHERE project_id=?',
+          [project.id,binding.id]);
         if (copied.size) {
           await tx.query('INSERT INTO v2_project_source_catalog(project_id,generation,revision,count,bytes,policy_version) VALUES(?,?,?,?,?,?)',
             [project.id,0,1,copied.size,bytes,1]);

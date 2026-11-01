@@ -28,6 +28,8 @@
 // volume, but not volume loss, image rebuilds without the mount, or
 // multi-host deployments. Hosted mode still requires a session (see the
 // routes); the store itself enforces owner scoping but not HTTP auth.
+import { assetSchema } from "./asset-schema.js";
+import { ASSET_LIMITS } from "./assets.js";
 import { hasCitations } from "../../packages/model/citations.ts";
 import { getDb, closeDb } from "../db.js";
 import {
@@ -78,6 +80,7 @@ function ensureSchema() {
     );
   `);
   db.exec(sourceSchema("sqlite"));
+  db.exec(assetSchema("sqlite"));
   ensureHistorySchema(db);
   return db;
 }
@@ -123,7 +126,7 @@ function insertCreatedProject(db, doc, owner, provenance) {
   insertRevisionRow(db, { projectId: doc.id, doc, kind: "create", provenance });
 }
 
-async function createProjectInner({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null }) {
+async function createProjectInner({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null, assets = [] }) {
   const request = validateImportRequest(importRequest, owner);
   const db = ensureSchema();
   const prov = validateProvenance(provenance ?? undefined);
@@ -158,19 +161,91 @@ async function createProjectInner({ owner = null, title, scenes, theme = null, o
       }
     }
     insertCreatedProject(db, doc, owner, prov.provenance);
+    insertAssets(db, doc.id, assets);
     if (request) db.prepare("INSERT INTO v2_project_imports (request_key,source_digest,project_id) VALUES (?,?,?)").run(request.key, request.digest, doc.id);
     db.exec("COMMIT");
   } catch (err) {
     try {
       db.exec("ROLLBACK");
     } catch { /* already rolled back */ }
-    if (err && (err.code === "invalid-document" || err.code === "storage-unavailable" || err.code === "import-source-changed" || err.code === "import-target-deleted" || err.code === "not-found")) throw err;
+    if (err && (err.code === "invalid-document" || err.code === "storage-unavailable" || err.code === "import-source-changed" || err.code === "import-target-deleted" || err.code === "not-found" || err.code === "asset-quota")) throw err;
     const e = new Error(`storage unavailable: ${err.message}`);
     e.code = "storage-unavailable";
     throw e;
   }
   return { doc: structuredClone(doc), ...(request ? { reused: false } : {}) };
 }
+
+function assetBudgetError() {
+  return Object.assign(new Error(`project images exceed ${ASSET_LIMITS.projectBytes / 1024 / 1024} MB`), { code: "asset-quota" });
+}
+
+// Content-addressed: a repeat of a stored image is a no-op, and the budget
+// counts each distinct image once.
+function insertAssets(db, projectId, assets) {
+  if (!assets?.length) return;
+  const used = db.prepare("SELECT COALESCE(SUM(size),0) AS n FROM v2_project_assets WHERE project_id=?").get(projectId).n;
+  const has = db.prepare("SELECT 1 FROM v2_project_assets WHERE project_id=? AND hash=?");
+  const insert = db.prepare("INSERT INTO v2_project_assets (project_id,hash,mime,width,height,size,bytes,created_at) VALUES (?,?,?,?,?,?,?,?)");
+  const now = new Date().toISOString();
+  let total = Number(used);
+  for (const a of assets) {
+    if (has.get(projectId, a.hash)) continue;
+    total += a.size;
+    if (total > ASSET_LIMITS.projectBytes) throw assetBudgetError();
+    insert.run(projectId, a.hash, a.mime, a.width, a.height, a.size, a.bytes, now);
+  }
+}
+
+async function putProjectAssetInner({ owner = null, admin = false, id, asset }) {
+  if (!validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
+  const db = ensureSchema();
+  const row = db.prepare("SELECT owner FROM v2_projects WHERE id=?").get(id);
+  if (!row || !canAccessProject(row, { owner, admin })) return { stored: false };
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    insertAssets(db, id, [asset]);
+    db.exec("COMMIT");
+  } catch (err) {
+    try { db.exec("ROLLBACK"); } catch { /* already rolled back */ }
+    throw err;
+  }
+  return { stored: true, asset: { hash: asset.hash, mime: asset.mime, width: asset.width, height: asset.height, size: asset.size } };
+}
+
+export function putProjectAsset(args) {
+  return serializeWrite(() => putProjectAssetInner(args)).catch(error => { throw error?.code === "asset-quota" || error?.code === "invalid-id" ? error : storageFailure(error); });
+}
+
+// Assets a project's scenes may embed, keyed by hash; unknown hashes are
+// simply absent.
+export async function getProjectAssets({ owner = null, admin = false, id, hashes }) {
+  if (!validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
+  const out = new Map();
+  try {
+    const db = ensureSchema();
+    const row = db.prepare("SELECT owner FROM v2_projects WHERE id=?").get(id);
+    if (!row || !canAccessProject(row, { owner, admin })) return out;
+    const get = db.prepare("SELECT hash,mime,width,height,size,bytes FROM v2_project_assets WHERE project_id=? AND hash=?");
+    for (const hash of new Set(hashes)) {
+      const a = get.get(id, hash);
+      if (a) out.set(hash, { ...a, bytes: Buffer.from(a.bytes) });
+    }
+  } catch (error) { throw storageFailure(error); }
+  return out;
+}
+
+// One image by hash, if any project the caller can open holds it. This is
+// what lets a renderer resolve `asset:` references without project context.
+export async function getAccessibleAsset({ owner = null, admin = false, hash }) {
+  try {
+    const db = ensureSchema();
+    const rows = db.prepare("SELECT p.owner AS owner, a.mime AS mime, a.bytes AS bytes FROM v2_project_assets a JOIN v2_projects p ON p.id=a.project_id WHERE a.hash=?").all(hash);
+    const hit = rows.find(r => canAccessProject(r, { owner, admin }));
+    return hit ? { mime: hit.mime, bytes: Buffer.from(hit.bytes) } : null;
+  } catch (error) { throw storageFailure(error); }
+}
+
 
 export async function lookupImportedProject({ owner = null, importRequest }) {
   const request = validateImportRequest(importRequest, owner);

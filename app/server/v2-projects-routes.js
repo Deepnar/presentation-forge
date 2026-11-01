@@ -19,6 +19,8 @@ import { renderPptx, preflightScenes } from "../../packages/renderer-pptx/render
 import { projectStore } from "../../src/projects/backend.js";
 import { readProjectCover } from "../../src/projects/cover.js";
 import { registerV2CopyRoute } from './v2-copy-routes.js';
+import express from "express";
+import { ASSET_LIMITS, prepareAsset, assetRef, scenesForExport } from "../../src/projects/assets.js";
 
 export function projectsAllowed() {
   if (process.env.FORGE_V2_PROJECTS === "1") return true;
@@ -74,10 +76,61 @@ function mapStoreError(res, err) {
   }
   if (code === "stale") return res.status(409).json({ ok: false, error: err.message, code: "stale" });
   if (code === "revision-pruned") return res.status(410).json({ ok: false, error: err.message, code: "revision-pruned" });
+  if (code === "asset-quota" || code === "asset-too-large") return res.status(413).json({ ok: false, error: err.message, code });
+  if (code === "asset-invalid" || code === "asset-unsupported") return res.status(415).json({ ok: false, error: err.message, code });
   return fail(res, 500, err?.message ?? "project request failed");
 }
 
+// Writers authenticate by bearer header only, never the cookie, so a
+// cross-site form cannot add images to someone's project.
+async function projectWriter(req) {
+  if (!isHosted()) {
+    const user = await resolveUser(req).catch(() => null);
+    return user ? { owner: user.email, admin: isAdmin(user) } : { owner: null, admin: false };
+  }
+  const user = await resolveUser(req);
+  return user ? { owner: user.email, admin: isAdmin(user) } : { denied: true };
+}
+
 export function registerV2ProjectRoutes(app) {
+  app.post("/api/v2/projects/:id/assets",
+    express.raw({ type: () => true, limit: ASSET_LIMITS.bytes + 1024 }),
+    wrap(async (req, res) => {
+      if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+      if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+      const who = await projectWriter(req);
+      if (who.denied) return fail(res, 401, "log in to use saved projects");
+      try {
+        const asset = await prepareAsset(Buffer.isBuffer(req.body) ? new Uint8Array(req.body) : new Uint8Array());
+        const { putProjectAsset } = await projectStore();
+        const result = await putProjectAsset({ owner: who.owner, admin: who.admin, id: req.params.id, asset });
+        if (!result.stored) return fail(res, 404, "no such project");
+        ok(res, { asset: { ...result.asset, src: assetRef(result.asset.hash) } });
+      } catch (err) {
+        mapStoreError(res, err);
+      }
+    }));
+
+  // Images are immutable and content-addressed, so a browser may cache one
+  // for as long as it likes — but only privately, since access is per owner.
+  app.get("/api/v2/assets/:hash", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!/^[0-9a-f]{64}$/.test(req.params.hash)) return fail(res, 400, "invalid asset");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    try {
+      const { getAccessibleAsset } = await projectStore();
+      const asset = await getAccessibleAsset({ owner: who.owner, admin: who.admin, hash: req.params.hash });
+      if (!asset) return fail(res, 404, "no such asset");
+      res.set("Cache-Control", "private, max-age=31536000, immutable");
+      res.vary("Authorization").vary("Cookie");
+      res.set("X-Content-Type-Options", "nosniff");
+      res.type(asset.mime).send(Buffer.from(asset.bytes));
+    } catch (err) {
+      mapStoreError(res, err);
+    }
+  }));
+
   registerV2CopyRoute(app, { allowed: projectsAllowed });
   app.get("/api/v2/projects/:id/cover", wrap(async (req, res) => {
     res.set("Cache-Control", "private, no-store");
@@ -302,7 +355,9 @@ export function registerV2ProjectRoutes(app) {
         return res.status(422).json({ ok: false, error: "stored scenes fail export preflight", issues: unsafe,
           ...(doc.scenes.some(scene => scene.citations?.length) ? { code: "citation-preservation-required" } : {}) });
       }
-      const bytes = await renderPptx(doc.scenes, { title: doc.title });
+      const { getProjectAssets } = await projectStore();
+      const scenes = await scenesForExport({ getProjectAssets }, { owner: who.owner, admin: who.admin, id: doc.id }, doc.scenes);
+      const bytes = await renderPptx(scenes, { title: doc.title });
       res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
       res.setHeader("Content-Disposition", `attachment; filename="${doc.id}.pptx"`);
       res.send(Buffer.from(bytes));

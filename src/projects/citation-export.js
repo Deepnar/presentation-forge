@@ -1,3 +1,4 @@
+import { scenesForExport } from './assets.js';
 import { qualifyCitationSnapshot } from './citation-qualification.js';
 import { cloneJson } from '../../packages/tools/json.ts';
 import { validProjectId } from '../../packages/projects/document.js';
@@ -51,7 +52,8 @@ export function createProjectCitationExporter(backend) {
       const {doc,metadata,references}=await qualifyCitationSnapshot(tx,binding,request,operation);
       context.metadata=freeze(metadata);
       if(operation==='inspect')return context.metadata;
-      return freeze(structuredClone({scenes:doc.scenes,title:doc.title,...(operation==='render'?{references}:{})}));
+      const scenes=await scenesForExport(backend,{owner:binding.owner,id:binding.id},doc.scenes);
+      return freeze(structuredClone({scenes,title:doc.title,...(operation==='render'?{references}:{})}));
     });
   }
   const native=createCitationNotesRenderer(qualify);

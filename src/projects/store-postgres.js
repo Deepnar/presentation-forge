@@ -21,6 +21,8 @@
 // FORGE_PROJECTS_PG_POOL_MAX (default 10). Credentials stay
 // server-side (env only); nothing here logs URLs, payloads, or
 // slide contents.
+import { assetSchema } from "./asset-schema.js";
+import { ASSET_LIMITS } from "./assets.js";
 import { hasCitations } from "../../packages/model/citations.ts";
 import {
   buildProjectDocument,
@@ -152,7 +154,7 @@ const PROJECT_DDL = `
 `;
 
 async function ensureSchema(clientOrPool) {
-  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres"));
+  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres") + assetSchema("postgres"));
 }
 
 // Schema is idempotent DDL and must never run inside a write
@@ -279,7 +281,7 @@ async function insertCreatedProject(client, doc, owner, provenance) {
   await insertRevisionRow(client, { projectId: doc.id, doc, kind: "create", provenance });
 }
 
-export async function createProject({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null }) {
+export async function createProject({ owner = null, title, scenes, theme = null, origin = null, provenance = null, importRequest = null, assets = [] }) {
   const request = validateImportRequest(importRequest, owner);
   const prov = validateProvenance(provenance ?? undefined);
   if (!prov.ok) {
@@ -317,13 +319,77 @@ export async function createProject({ owner = null, title, scenes, theme = null,
       }
 
       await insertCreatedProject(client, doc, owner, prov.provenance);
+      await insertAssets(client, doc.id, assets);
       return { doc: structuredClone(doc), ...(request ? { reused: false } : {}) };
     });
   } catch (err) {
-    if (err && (err.code === "invalid-document" || err.code === "storage-unavailable")) throw err;
+    if (err && (err.code === "invalid-document" || err.code === "storage-unavailable" || err.code === "asset-quota")) throw err;
     throw storageUnavailable(err);
   }
 }
+
+// Content-addressed: a repeat of a stored image is a no-op, and the budget
+// counts each distinct image once. The project row lock serializes
+// concurrent uploads to one project against the same budget.
+async function insertAssets(client, projectId, assets) {
+  if (!assets?.length) return;
+  await client.query("SELECT 1 FROM v2_projects WHERE id=$1 FOR UPDATE", [projectId]);
+  let total = Number((await client.query("SELECT COALESCE(SUM(size),0) AS n FROM v2_project_assets WHERE project_id=$1", [projectId])).rows[0].n);
+  const now = new Date().toISOString();
+  for (const a of assets) {
+    const has = await client.query("SELECT 1 FROM v2_project_assets WHERE project_id=$1 AND hash=$2", [projectId, a.hash]);
+    if (has.rowCount) continue;
+    total += a.size;
+    if (total > ASSET_LIMITS.projectBytes) {
+      throw Object.assign(new Error(`project images exceed ${ASSET_LIMITS.projectBytes / 1024 / 1024} MB`), { code: "asset-quota" });
+    }
+    await client.query("INSERT INTO v2_project_assets (project_id,hash,mime,width,height,size,bytes,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
+      [projectId, a.hash, a.mime, a.width, a.height, a.size, a.bytes, now]);
+  }
+}
+
+export async function putProjectAsset({ owner = null, admin = false, id, asset }) {
+  if (!validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
+  try {
+    await ensureSchemaPool(await pool());
+    return await withTxn(async (client) => {
+      const row = (await client.query("SELECT owner FROM v2_projects WHERE id=$1", [id])).rows[0];
+      if (!row || !canAccessProject(row, { owner, admin })) return { stored: false };
+      await insertAssets(client, id, [asset]);
+      return { stored: true, asset: { hash: asset.hash, mime: asset.mime, width: asset.width, height: asset.height, size: asset.size } };
+    });
+  } catch (err) {
+    if (err?.code === "asset-quota" || err?.code === "storage-unavailable") throw err;
+    throw storageUnavailable(err);
+  }
+}
+
+export async function getProjectAssets({ owner = null, admin = false, id, hashes }) {
+  if (!validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
+  const out = new Map();
+  try {
+    const p = await pool();
+    await ensureSchemaPool(p);
+    const row = (await p.query("SELECT owner FROM v2_projects WHERE id=$1", [id])).rows[0];
+    if (!row || !canAccessProject(row, { owner, admin })) return out;
+    const wanted = [...new Set(hashes)];
+    if (!wanted.length) return out;
+    const res = await p.query("SELECT hash,mime,width,height,size,bytes FROM v2_project_assets WHERE project_id=$1 AND hash = ANY($2::text[])", [id, wanted]);
+    for (const a of res.rows) out.set(a.hash, { ...a, size: Number(a.size), width: Number(a.width), height: Number(a.height) });
+  } catch (err) { throw storageUnavailable(err); }
+  return out;
+}
+
+export async function getAccessibleAsset({ owner = null, admin = false, hash }) {
+  try {
+    const p = await pool();
+    await ensureSchemaPool(p);
+    const rows = (await p.query("SELECT p.owner AS owner, a.mime AS mime, a.bytes AS bytes FROM v2_project_assets a JOIN v2_projects p ON p.id=a.project_id WHERE a.hash=$1", [hash])).rows;
+    const hit = rows.find(r => canAccessProject(r, { owner, admin }));
+    return hit ? { mime: hit.mime, bytes: hit.bytes } : null;
+  } catch (err) { throw storageUnavailable(err); }
+}
+
 
 export async function lookupImportedProject({ owner = null, importRequest }) {
   const request = validateImportRequest(importRequest, owner);
