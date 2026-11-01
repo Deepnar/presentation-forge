@@ -53,16 +53,11 @@ list, and update the architecture document when built behavior changes.
 
 ## Verify a change
 
-Use focused checks for new or changed behaviour and directly affected boundaries.
-Reuse accepted evidence for unchanged areas; repeat broader suites only for a
-concrete regression, shared-core risk or release requirement. Documentation-only
-changes need lightweight consistency checks. See the
-[focused validation policy](docs/DEVELOPMENT-PROTOCOL.md#focused-validation-policy).
-
-Run browser suites serially with bounded watchdogs, and never overlap them with
-each other or a Vite build because they share build output. Respect shared-machine
-quiet windows; avoid model/GPU work unless the changed behaviour requires it.
-Record exact totals and exclusions; unavailable PostgreSQL checks are unexecuted.
+Run the tests for what you changed and the code it directly touches; run the
+full suite before a merge to `main`. Browser suites share the Vite build output,
+so run them serially (`node --test --test-concurrency=1 test/*chrome*.test.js`)
+rather than alongside each other or a build. Screenshots they take land in
+`out/evidence/`, which is not committed.
 
 For presentation changes, render and inspect the result:
 
