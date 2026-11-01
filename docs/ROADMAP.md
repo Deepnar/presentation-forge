@@ -51,12 +51,13 @@ Decisions taken with this list, so nobody re-litigates them:
      `slide.setNotes` with undo, regeneration keeps human notes, native PPTX
      notes ahead of consented citation notes, conversion keeps them, and a
      notes panel under the editor canvas.
-   - **F1b** Project assets: content-addressed image storage per project
-     (SQLite/Postgres), served to the editor and embedded on export; image
-     slide types convert. It comes before brand marks because a 250 KB crest
-     inlined on every slide breaks the 6 MB project limit.
-   - **F1c** Academic identity and brand marks: team, guide and subject/year
-     as editable title-slide text; banner and crest as locked chrome assets.
+   - **[x] F1b** Project assets: content-addressed image storage per project
+     (SQLite/Postgres), owner-checked `/api/v2/assets/:hash`, inlined for
+     native export with real crop/letterbox; eight image slide types convert;
+     captions draw. Length caps no longer refuse a deck (renderer parity).
+   - **[x] F1c** Academic identity and brand marks: team, guide and
+     subject/year as editable title-slide text; banner and crest as locked
+     chrome assets; presenter fallback; undeclared fields dropped and reported.
    - **F1d** The remaining refused types (diagram, flow, matrix, funnel,
      pyramid, venn, hierarchy, roadmap, journey, …) get compiler compositions
      and conversions; `freeform` converts its raster as a locked image.
