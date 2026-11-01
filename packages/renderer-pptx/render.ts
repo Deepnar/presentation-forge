@@ -12,6 +12,7 @@
 // compiler/editor consumers. Image src stays the current
 // path/URL-style asset seam (see node.ts and the V2-2D report).
 
+import { dataUriPixelSize } from "./image-size.ts";
 import PptxGenJSModule from "pptxgenjs";
 import type { SlideScene, SceneElement, BackgroundDecor } from "../model/scene.generated.ts";
 import { validateScene } from "../model/scene.ts";
@@ -230,7 +231,9 @@ function addDecorShape(slide: PptxSlide, d: BackgroundDecor): void {
 }
 
 function addImageElement(slide: PptxSlide, el: SceneElement): void {
-  if (!el.image?.src) {
+  // An `asset:` reference the caller did not inline has no bytes here;
+  // drawing the placeholder keeps the gap visible instead of failing the deck.
+  if (!el.image?.src || /^asset:/.test(el.image.src)) {
     slide.addShape("rect", { x: el.x, y: el.y, w: el.w, h: el.h, fill: { color: "D8D8D2" }, line: { type: "none" } });
     slide.addText([{ text: "[image]", options: { align: "center", color: "5C5C59" } }], { x: el.x, y: el.y + el.h / 2 - 0.2, w: el.w, h: 0.4 });
     return;
@@ -239,8 +242,12 @@ function addImageElement(slide: PptxSlide, el: SceneElement): void {
   // resolved. Data URIs ride the PptxGenJS data path; everything else
   // rides the path as before. Nothing is fetched, probed, or read
   // here beyond what PptxGenJS itself embeds.
-  const at = { x: el.x, y: el.y, w: el.w, h: el.h, sizing: { type: "cover", w: el.w, h: el.h } };
+  const at = { x: el.x, y: el.y, w: el.w, h: el.h, sizing: { type: el.image.fit === "contain" ? "contain" : "cover", w: el.w, h: el.h } };
   if (/^data:/i.test(el.image.src)) {
+    // PptxGenJS crops from the w/h it is given, so they carry the image's
+    // own aspect while sizing carries the box.
+    const natural = dataUriPixelSize(el.image.src);
+    if (natural) { at.w = el.w; at.h = el.w * natural.h / natural.w; }
     slide.addImage({ data: el.image.src, ...at });
     return;
   }

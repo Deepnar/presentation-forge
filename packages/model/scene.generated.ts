@@ -136,6 +136,10 @@ export interface SceneElement {
   image?: {
     src: string;
     alt?: string;
+    /**
+     * cover fills the box and crops; contain shows the whole image inside it. Absent means cover.
+     */
+    fit?: "cover" | "contain";
   };
   line?: {
     x2: number;

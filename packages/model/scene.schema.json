@@ -305,7 +305,8 @@
               "additionalProperties": false,
               "properties": {
                 "src": { "type": "string" },
-                "alt": { "type": "string" }
+                "alt": { "type": "string" },
+                "fit": { "enum": ["cover", "contain"], "description": "cover fills the box and crops; contain shows the whole image inside it. Absent means cover." }
               }
             },
             "line": {

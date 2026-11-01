@@ -63,6 +63,28 @@ describe("v2 quality baseline", () => {
     const supportRefs = new Set(
       intent.slides.flatMap((s) => s.blocks.filter((b) => b.kind !== "text").map((b) => b.id)),
     );
+    // Authored image captions were silently dropped before media slides
+    // drew them; each caption is a sanctioned addition directly after its
+    // image, and its image shrinks within the old box to make room.
+    const captionOf = new Map(intent.slides.flatMap((s) => s.blocks
+      .filter((b) => b.kind === "image" && b.caption).map((b) => [`${s.id}:${b.id}:caption`, b])));
+    actual.forEach((scene) => {
+      for (const id of captionOf.keys()) {
+        const at = scene.elements.findIndex((e) => e.id === id);
+        if (at < 0) continue;
+        const caption = scene.elements[at];
+        assert.equal(caption.kind, "text", `${id}: caption is text`);
+        assert.equal(caption.paragraphs.map((p) => p.runs.map((r) => r.text).join("")).join("\n"), captionOf.get(id).caption);
+        const image = scene.elements[at - 1];
+        assert.equal(image.kind, "image", `${id}: caption follows its image`);
+        assert.ok(caption.y >= image.y + image.h - 1e-9, `${id}: caption sits below its image`);
+        scene.elements.splice(at, 1);
+        // The caption takes a draw-order slot; later elements keep their
+        // relative order, which the ID-order check below still pins.
+        for (const later of scene.elements.slice(at)) delete later.z;
+        for (const later of want[actual.indexOf(scene)].elements.slice(at)) delete later.z;
+      }
+    });
     actual.forEach((scene, i) => {
       assert.equal(scene.id, want[i].id, "same slide");
       assert.deepEqual(
@@ -114,6 +136,11 @@ describe("v2 quality baseline", () => {
           assert.equal(el.w, prev.w, `${scene.id}/${el.id}: support never changes width`);
           assert.ok(el.h > 0, `${scene.id}/${el.id}: support keeps positive height`);
           assert.ok(el.y >= regionTop - 1e-9, `${scene.id}/${el.id}: support stays below the title`);
+          continue;
+        }
+        if (el.kind === "image" && captionOf.has(`${el.id.replace(/:content$/, "")}:caption`)) {
+          assert.equal(el.x, prev.x); assert.equal(el.y, prev.y); assert.equal(el.w, prev.w);
+          assert.ok(el.h < prev.h && el.h > 0, `${scene.id}/${el.id}: image shrinks in place for its caption`);
           continue;
         }
         assert.equal(el.kind, "text", `${scene.id}/${el.id}: only text boxes may move`);

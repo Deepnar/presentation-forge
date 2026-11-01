@@ -65,6 +65,10 @@ export interface ContentBlock {
   value?: string;
   src?: string;
   alt?: string;
+  /**
+   * Whether the image may be cropped to fill its region (cover) or must show whole (contain).
+   */
+  fit?: "cover" | "contain";
   caption?: string;
   chartKind?: "bar" | "hbar" | "line" | "pie" | "doughnut" | "area";
   categories?: string[];

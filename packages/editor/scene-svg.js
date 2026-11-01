@@ -169,12 +169,12 @@ function elementSvg(el, opts = {}) {
       return `<rect data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)} x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${rx}" fill="${fill}"${fillOp}${stroke}${strokeOp}/>`;
     }
     case "image": {
-      const src = el.image?.src ?? "";
+      const src = imageSrc(el.image?.src ?? "", opts);
       // Embedded and remote images project; anything else (empty,
       // local paths a browser cannot resolve) keeps the historical
       // gray seat so missing assets read as missing, never broken.
-      if (/^(data:|https?:)/i.test(src)) {
-        return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}><image x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" preserveAspectRatio="xMidYMid slice" href="${esc(src)}"><title>${esc(el.image?.alt || "image")}</title></image></g>`;
+      if (/^(data:|https?:|blob:)/i.test(src) || src.startsWith(ASSET_ROUTE)) {
+        return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}><image x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" preserveAspectRatio="xMidYMid ${el.image?.fit === "contain" ? "meet" : "slice"}" href="${esc(src)}"><title>${esc(el.image?.alt || "image")}</title></image></g>`;
       }
       return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="#D8D8D2"/><text x="${(x + w / 2).toFixed(1)}" y="${(y + h / 2).toFixed(1)}" text-anchor="middle" font-size="16" fill="#5C5C59">${esc(el.image?.alt || "[image]")}</text></g>`;
     }
@@ -256,7 +256,7 @@ function elementSvg(el, opts = {}) {
   }
 }
 
-function backgroundSvg(scene) {
+function backgroundSvg(scene, opts = {}) {
   // Canonical background layering, shared with the PPTX renderer:
   // flat fallback fill, then the plate asset, then native decor in
   // declared order. Decor sits above the image on both projections so
@@ -266,7 +266,7 @@ function backgroundSvg(scene) {
   // as the paint for transparent pixels and for viewers that cannot
   // load the image) and below decor and content.
   if (scene.background.image) {
-    parts.push(`<image x="0" y="0" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" preserveAspectRatio="xMidYMid slice" href="${esc(scene.background.image.src)}"/>`);
+    parts.push(`<image x="0" y="0" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" preserveAspectRatio="xMidYMid slice" href="${esc(imageSrc(scene.background.image.src, opts))}"/>`);
   }
   for (const d of scene.background.decor ?? []) {
     const fill = `#${d.fill}`;
@@ -284,9 +284,19 @@ function backgroundSvg(scene) {
   return parts.join("");
 }
 
+// Project images are stored once and referenced as `asset:<sha256>`; the
+// browser fetches them from the asset route, which checks ownership.
+// Server-side callers that rasterize pass their own resolver.
+export const ASSET_ROUTE = "/api/v2/assets/";
+function imageSrc(src, opts) {
+  const match = /^asset:([0-9a-f]{64})$/.exec(src);
+  if (!match) return src;
+  return opts.assetUrl ? opts.assetUrl(match[1]) ?? "" : `${ASSET_ROUTE}${match[1]}`;
+}
+
 export function sceneToSvg(scene, opts = {}) {
   // Hidden elements are preserved in the scene and omitted from
   // the projection — never deleted, never rasterized.
   const els = [...scene.elements].filter((el) => el.hidden !== true).sort((a, b) => a.z - b.z).map((el) => elementSvg(el, opts)).join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" viewBox="0 0 ${(scene.width * IN).toFixed(0)} ${(scene.height * IN).toFixed(0)}">${backgroundSvg(scene)}${els}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${(scene.width * IN).toFixed(0)}" height="${(scene.height * IN).toFixed(0)}" viewBox="0 0 ${(scene.width * IN).toFixed(0)} ${(scene.height * IN).toFixed(0)}">${backgroundSvg(scene, opts)}${els}</svg>`;
 }

@@ -324,7 +324,7 @@ function renderBlockPrimary(
       return {
         id, kind: "image", x: region.x, y: region.y, w: region.w, h: region.h, z,
         provenance: "compiler", semanticRef: block.id,
-        image: { src: block.src ?? "", alt: block.alt ?? "" },
+        image: { src: block.src ?? "", alt: block.alt ?? "", ...(block.fit ? { fit: block.fit } : {}) },
       };
     case "chart": {
       const kind = chartKindFor(block);
@@ -1221,25 +1221,53 @@ function mediaLedScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const images = slide.blocks.filter((b) => b.kind === "image");
   const rest = slide.blocks.filter((b) => b.kind !== "image");
   const gap = 0.5;
+  const captionH = 0.35;
+  // An authored caption is content, so it is always drawn; the alt text
+  // stands in only on evidence slides, where the image is the argument.
+  const captionOf = (block: ContentBlock): string | undefined =>
+    block.caption ?? (comp.variantKey === "media-led/evidence" ? block.alt : undefined);
+  const placeImage = (block: ContentBlock, region: { x: number; y: number; w: number; h: number }) => {
+    const caption = captionOf(block);
+    const lines = caption ? caption.split("\n").length : 0;
+    const textH = captionH * lines;
+    const imageH = caption ? Math.max(0.3, region.h - textH - 0.05) : region.h;
+    placePrimary(ctx, els, block, { x: region.x, y: region.y, w: region.w, h: imageH }, takeZ);
+    if (caption) {
+      els.push(textEl(`${slide.id}:${block.id}:caption`, block.id,
+        { x: region.x, y: region.y + imageH + 0.05, w: region.w, h: textH },
+        caption.split("\n").map((line) => ({ runs: [{ text: line, role: "caption", color: design.palette.inkMuted.hex }], align: "left" as const })),
+        takeZ(), fitOf(ctx)));
+    }
+  };
+  // Images with nothing to sit beside take the whole box as a grid.
+  if (!rest.length && images.length) {
+    const h = Math.max(0.5, bottom - y);
+    const cols = images.length <= 3 ? images.length : images.length === 4 ? 2 : 3;
+    const rows = Math.ceil(images.length / cols);
+    const cellW = (box.w - gap * (cols - 1)) / cols;
+    const cellH = (h - 0.3 * (rows - 1)) / rows;
+    images.forEach((block, i) => {
+      placeImage(block, { x: box.x + (i % cols) * (cellW + gap), y: y + Math.floor(i / cols) * (cellH + 0.3), w: cellW, h: cellH });
+    });
+    if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+      els.push(...takeawayEls(ctx, y, box.bottom, takeZ()));
+    }
+    return els;
+  }
   const share = comp.mediaTreatment === "dominant" ? 0.65
     : comp.mediaTreatment === "subordinate" ? 0.3
     : 0.45;
   const mediaW = images.length ? (box.w - gap) * share : 0;
   const textW = images.length ? box.w - mediaW - gap : box.w;
-  const mediaX = box.x;
-  const textX = box.x + mediaW + gap;
+  const mediaRight = slide.layoutHint?.mediaSide === "right";
+  const mediaX = mediaRight ? box.x + textW + gap : box.x;
+  const textX = mediaRight ? box.x : box.x + mediaW + gap;
   const h = Math.max(0.5, bottom - y);
   const imageHeights = distribute(h - 0.2 * images.length, images.map(() => 1), 0.5);
   let my = y;
   images.forEach((block, i) => {
     const ih = imageHeights[i];
-    placePrimary(ctx, els, block, { x: mediaX, y: my, w: mediaW, h: ih }, takeZ);
-    if (comp.variantKey === "media-led/evidence" && block.alt) {
-      els.push(textEl(`${slide.id}:${block.id}:caption`, block.id,
-        { x: mediaX, y: my + ih - 0.35, w: mediaW, h: 0.35 },
-        [{ runs: [{ text: block.alt, role: "caption", color: design.palette.inkMuted.hex }], align: "left" as const }],
-        takeZ(), fitOf(ctx)));
-    }
+    placeImage(block, { x: mediaX, y: my, w: mediaW, h: ih });
     my += ih + 0.2;
   });
   const restHeights = distribute(h - 0.1 * rest.length, rest.map(() => 1), 0.3);
