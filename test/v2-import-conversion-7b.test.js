@@ -117,7 +117,6 @@ test("before and after retain temporal roles when their authored titles repeat",
 });
 
 for (const [label, slide, pointer] of [
-  ["real speaker notes", { ...bullets, notes: "Private speaker instructions" }, "notes"],
   ["citations", { ...bullets, cites: [{ url: "https://example.test/source", title: "Evidence" }] }, "cites"],
   ["unknown populated fields", { ...bullets, invented: "Do not lose me" }, "invented"],
   ["nested unknown fields", { type: "compare", headline: "Options", left: { title: "A", body: "One", surprise: "Keep me" }, right: { title: "B", body: "Two" } }, "surprise"],

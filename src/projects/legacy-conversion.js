@@ -233,8 +233,8 @@ export async function importCoverage() {
     status: RULES[type] ? "supported-with-field-gates" : "refused",
     fields: RULES[type]?.fields.filter(field => declared(type).includes(field)) ?? [],
     schemaFields: declared(type),
-    refusedFields: declared(type).filter(field => !RULES[type]?.fields.includes(field) || ["notes", "cites"].includes(field)),
-    reason: RULES[type] ? "All populated fields must pass explicit gates; notes/cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck." : refusalFor(type),
+    refusedFields: declared(type).filter(field => !RULES[type]?.fields.includes(field) || field === "cites"),
+    reason: RULES[type] ? "All populated fields must pass explicit gates; cites, unknown nested fields, capacity and unsupported chart/flow semantics refuse the whole deck." : refusalFor(type),
   }]));
 }
 
@@ -264,7 +264,10 @@ export async function convertGeneratedDeck(deck) {
     const rule = RULES[source.type];
     if (!rule) { refuse(`${path}.${source.type}`, refusalFor(source.type)); return slide; }
     keys(source, rule.fields, path);
-    if (source.notes) refuse(`${path}.notes`, "real speaker notes have no storage/export field in the accepted scene contract");
+    if (source.notes !== undefined) {
+      if (typeof source.notes !== "string" || source.notes.length > 20000) refuse(`${path}.notes`, "speaker notes must be text of at most 20000 characters");
+      else if (source.notes.trim()) slide.speakerNotes = source.notes;
+    }
     if (source.cites?.length) refuse(`${path}.cites`, "claim citations require a source registry absent from the accepted scene contract");
     if (source.section !== undefined) {
       if (!Number.isInteger(source.section) || source.section < 0 || typeof deck.sections?.[source.section] !== "string") refuse(`${path}.section`, "section index does not resolve to an authored label");
