@@ -5,6 +5,25 @@ import { projectStore } from "./backend.js";
 import { compileSceneDeck } from "../v2-compile.js";
 import { analyzeDeck } from "../../packages/compiler/quality.ts";
 import { preflightScenes } from "../../packages/renderer-pptx/render.ts";
+import { prepareAsset, assetRef } from "./assets.js";
+
+// Swap each image block's deck-relative path for a stored asset reference,
+// returning the assets to store with the project.
+async function resolveImages(intent, source) {
+  const assets = new Map(), details = [];
+  for (const slide of intent.slides) for (const block of slide.blocks) {
+    if (block.kind !== "image") continue;
+    try {
+      const asset = await prepareAsset(await source.readAsset(block.src));
+      assets.set(asset.hash, asset);
+      block.src = assetRef(asset.hash);
+    } catch (error) {
+      details.push(...(error.details ?? [{ path: `${slide.id}.${block.id}`, reason: error.message }]));
+    }
+  }
+  if (details.length) throw importError("unsupported-content", "deck images cannot be imported", details);
+  return [...assets.values()];
+}
 
 function assertContent(intent, scenes) {
   const details = [];
@@ -26,6 +45,9 @@ function assertContent(intent, scenes) {
       } else if (block.kind === "table") {
         const actual = elements.find(e => e.kind === "table")?.table;
         if (!actual || JSON.stringify(actual.rows) !== JSON.stringify(block.rows) || actual.header !== block.header) missing("native table data cannot be preserved exactly");
+      } else if (block.kind === "image") {
+        if (!elements.some(e => e.kind === "image" && e.image?.src === block.src)) missing("compiler omitted the image");
+        if (block.caption && !block.caption.split("\n").every(line => text.includes(line))) missing("compiler omitted the image caption");
       } else {
         for (const value of [block.text, block.label, block.value, ...(block.items ?? [])]) if (value && !text.includes(value)) missing("compiler omitted or changed authored text");
       }
@@ -41,6 +63,7 @@ export async function importGeneratedProject(args) {
   const replay = await store.lookupImportedProject({ owner: source.owner, importRequest: source.importRequest });
   if (replay) return { project: replay.doc, reused: true, sourceDigest: source.digest, timings: { totalMs: performance.now() - start }, diagnostics: [] };
   const { intent, presenters } = await convertGeneratedDeck(source.deck);
+  const assets = await resolveImages(intent, source);
   const compileStart = performance.now();
   const compiled = await compileSceneDeck({ intent, theme: source.theme, style: source.style, mode: source.mode, chromeForDeck: importChrome(source.profile, source.deck, presenters) });
   assertContent(intent, compiled.scenes);
@@ -56,6 +79,7 @@ export async function importGeneratedProject(args) {
     theme: { name: source.theme, variant: source.mode },
     origin: { kind: "import", sourceDeck: args.slug, intentId: source.digest },
     importRequest: source.importRequest,
+    assets,
   });
   return { project: result.doc, reused: result.reused, sourceDigest: source.digest, diagnostics: analysis.findings, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
 }

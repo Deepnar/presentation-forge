@@ -87,6 +87,46 @@ rule("big-number", ["value", "label", "body", "sub"], (s, c) => {
 rule("quote pull-quote epigraph", ["quote", "attribution", "source"], (s, c) => {
   c.add("quote", { text: s.quote }); c.text(s.attribution, "Attribution"); c.text(s.source, "Source");
 });
+// Image paths stay deck-relative here; the importer reads each file into the
+// project's asset store and swaps in the asset reference before compiling.
+const image = (c, src, extra = {}) => c.add("image", { src, alt: extra.caption ?? c.slide.title ?? "", ...extra });
+rule("image", ["image", "caption", "fit"], (s, c) => {
+  image(c, s.image, { emphasis: "primary", ...(s.caption ? { caption: s.caption } : {}), ...(s.fit ? { fit: s.fit } : {}) });
+});
+rule("image-text illustrated-points", ["image", "side", "body", "points", "caption"], (s, c) => {
+  c.slide.layoutHint = { mediaSide: s.side === "left" ? "left" : "right" };
+  if (s.image) image(c, s.image, { mediaRole: "explanatory", ...(s.caption ? { caption: s.caption } : {}) });
+  const items = s.type === "image-text" ? s.body : s.points;
+  if (items?.length) c.add("list", { items });
+});
+rule("image-grid", ["images"], (s, c) => {
+  s.images.forEach((item, i) => {
+    c.keys(item, ["src", "caption"], `${c.path}.images[${i}]`);
+    image(c, item.src, item.caption ? { caption: item.caption } : {});
+  });
+});
+rule("hero-image", ["image", "subtitle"], (s, c) => {
+  image(c, s.image, { emphasis: "primary", ...(s.subtitle ? { caption: s.subtitle } : {}) });
+});
+// Two pictures side by side read as a grid of images; the comparison family
+// would lay them out as text cards.
+rule("split-screen", ["left", "right", "left_caption", "right_caption"], (s, c) => {
+  image(c, s.left, s.left_caption ? { caption: s.left_caption } : {});
+  image(c, s.right, s.right_caption ? { caption: s.right_caption } : {});
+});
+rule("side-by-side", ["left", "right"], (s, c) => {
+  for (const name of ["left", "right"]) {
+    const panel = s[name];
+    c.keys(panel, ["image", "title", "body"], `${c.path}.${name}`);
+    const caption = [panel.title, panel.body].filter(Boolean).join("\n");
+    image(c, panel.image, caption ? { caption } : {});
+  }
+});
+rule("testimonial", ["quote", "name", "role", "image"], (s, c) => {
+  if (s.image) image(c, s.image, { mediaRole: "decorative", fit: "cover", caption: s.name });
+  c.add("quote", { text: s.quote });
+  c.text([s.name, s.role].filter(Boolean).join(", "), "Attribution");
+});
 rule("callout emphasis warning tip takeaway", ["label", "body", "points"], (s, c) => {
   c.add("callout", { text: s.body, label: s.label ?? s.type });
   if (s.points) c.add("list", { items: s.points });
@@ -220,10 +260,8 @@ rule("data-source", ["sources"], (s, c) => {
   s.sources.forEach((source, i) => { c.keys(source, ["name", "url", "description"], `${c.path}.sources[${i}]`); c.text([source.url, source.description].filter(Boolean).join("\n"), source.name); });
 });
 
-const MEDIA = new Set(["image", "image-text", "illustrated-points", "image-grid", "hero-image", "split-screen", "side-by-side", "testimonial"]);
 function refusalFor(type) {
   if (type === "freeform") return "freeform HTML is raster-only and cannot become native editable content";
-  if (MEDIA.has(type)) return `${type} requires the separately approved portable asset boundary`;
   return `${type} has no audited, faithful conversion using the accepted semantic/compiler primitives`;
 }
 
@@ -243,7 +281,10 @@ export async function convertGeneratedDeck(deck) {
   catch { throw importError("invalid-source", "source is cyclic, too deep or exceeds the import bound"); }
   if (!deck || typeof deck !== "object" || findDangerousKey(deck)) throw importError("invalid-source", "source contains unsafe structure");
   const validation = await validateDeck(deck);
-  if (!validation.ok) throw importError("invalid-source", "source deck is invalid", validation.errors);
+  // Same rule the renderer applies (loadDeck): length caps move as the fitter
+  // learns what fits, so an older deck over today's caps is still a deck. The
+  // compiler fits its text; only structural damage refuses.
+  if (validation.structural.length) throw importError("invalid-source", "source deck is invalid", validation.structural);
   if (!deck.title.trim() || deck.slides.length > 60) throw importError("invalid-source", "source needs a title and 1..60 slides");
   if (placeholderSlides(deck).length) throw importError("invalid-source", "source contains incomplete placeholder slides");
   const details = [];

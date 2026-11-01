@@ -13,6 +13,7 @@ import { contrastBackground } from "../v2-plates.js";
 import { importError } from "./legacy-conversion.js";
 
 const MAX_SOURCE_BYTES = 2 * 1024 * 1024;
+const MAX_ASSET_BYTES = 15 * 1024 * 1024;
 const META_CONTENT = ["academic", "guide", "team", "institution", "brand", "identity"];
 const present = value => typeof value === "object" && value !== null ? Object.values(value).some(present) : value !== undefined && value !== null && value !== "" && value !== false;
 
@@ -62,6 +63,30 @@ async function boundedText(file, optional = false) {
     if (error.code === "ELOOP") throw importError("invalid-source", "source files must not be symbolic links");
     if (error.code === "ENOENT") throw importError("not-found", "no such source deck");
     throw error;
+  } finally { await handle?.close(); }
+}
+
+// An image a deck references, read only from inside that deck's own folder:
+// no absolute paths, no parent traversal, no symbolic links.
+async function readDeckAsset(dir, rel) {
+  if (typeof rel !== "string" || !rel || /^[a-z][a-z0-9+.-]*:/i.test(rel) || path.isAbsolute(rel)) {
+    throw importError("unsupported-content", "image must be a file inside the deck folder", [{ path: String(rel).slice(0, 200), reason: "remote or absolute image reference" }]);
+  }
+  const file = path.resolve(dir, rel);
+  if (!file.startsWith(dir + path.sep)) {
+    throw importError("unsupported-content", "image must be a file inside the deck folder", [{ path: rel.slice(0, 200), reason: "image path leaves the deck folder" }]);
+  }
+  let handle;
+  try {
+    // A symlinked parent directory would pass the lexical check above.
+    if (!(await realpath(file)).startsWith(dir + path.sep)) throw Object.assign(new Error(), { code: "ELOOP" });
+    handle = await open(file, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+    const stat = await handle.stat();
+    if (!stat.isFile() || stat.size > MAX_ASSET_BYTES) throw importError("unsupported-content", "image is not a regular file or is too large", [{ path: rel.slice(0, 200), reason: "unreadable or oversized image" }]);
+    return new Uint8Array(await handle.readFile());
+  } catch (error) {
+    if (error.code === "unsupported-content") throw error;
+    throw importError("unsupported-content", "a referenced image is missing", [{ path: rel.slice(0, 200), reason: error.code === "ELOOP" ? "image is a symbolic link" : "image file is missing" }]);
   } finally { await handle?.close(); }
 }
 
@@ -119,5 +144,5 @@ export async function readImportSource({ slug, requestId, principal = null, loca
   const theme = deck?.theme ?? meta.theme ?? "warm-humanist";
   if (deck?.theme && meta.theme && deck.theme !== meta.theme) throw importError("unsupported-content", "source theme overrides disagree", [{ path: "theme", reason: "select one source theme before importing" }]);
   const digest = createHash("sha256").update(JSON.stringify({ slug, deck: bytes.deckText, plan: bytes.planText, theme, style: deck?.style ?? null, mode, chrome: profile })).digest("hex");
-  return { deck, owner, theme, style: deck?.style ?? null, mode, profile, digest, importRequest: { key: `${slug}:${requestId}`, digest }, unchanged };
+  return { deck, owner, theme, style: deck?.style ?? null, mode, profile, digest, importRequest: { key: `${slug}:${requestId}`, digest }, unchanged, readAsset: rel => readDeckAsset(dir, rel) };
 }

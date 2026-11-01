@@ -125,7 +125,6 @@ for (const [label, slide, pointer] of [
   ["untyped quote source", { type: "quote", quote: "Evidence", attribution: "A", source: { detail: "Authored fact" } }, "source"],
   ["untyped callout points", { type: "callout", headline: "Finding", body: "Evidence", points: [{ detail: "Authored fact" }] }, "points"],
   ["unsupported chart kinds", { type: "chart", headline: "Correlation", chart: { kind: "scatter", categories: ["A"], series: [{ name: "X", values: [1] }] } }, "chart.kind"],
-  ["image references", { type: "image", image: "../../private.png" }, "image"],
   ["raster-only freeform", { type: "freeform", html: "<h1>Opaque</h1>" }, "freeform"],
 ]) test(`${label} refuse the whole deck with a field-specific diagnosis`, async () => {
   await assert.rejects(convertGeneratedDeck(deck([bullets, slide])), error => error.code === "unsupported-content" && error.details.some(d => d.path.includes(pointer) || d.reason.includes(pointer)));
