@@ -61,8 +61,8 @@ Decisions taken with this list, so nobody re-litigates them:
    - **F1d** The remaining refused types (diagram, flow, matrix, funnel,
      pyramid, venn, hierarchy, roadmap, journey, …) get compiler compositions
      and conversions; `freeform` converts its raster as a locked image.
-   - **F1f** Claim citations (`cites`) register as project sources and attach
-     as slide citations instead of refusing the deck.
+   - **[x] F1f** Claim citations (`cites`) become owner-private project
+     sources and slide citations, created with the project in one transaction.
    - **F1e** Import on completion and the UI handoff described above.
 3. **[ ] F2 — The Assistant works for every account.** Run turns in-process on
    the account's resolved provider (Auto / BYOK / local), on by default whenever

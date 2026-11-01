@@ -1,23 +1,51 @@
-# Presentation Forge handoff — 2026-10-30
+# Handoff — 2026-11-01
 
-J6-4 appendix-first scope was explicitly approved against36146428; direction and
-six-gate inventory pinned5b2c9e0b before runtime. Frozen implementation/tests
-031ed503a62c90437020ec396c951d42b711103c are pushed to origin/v2. Accepted baseline
-remains J6-3 8d34c95f until a separate exact-source decision. Branch v2 only.
-Read state, V2-8J-6-4-EVAL.md and v2-8j-6-4-evidence/manifest.json.
+Branch `v2`, pushed to `origin/v2`. Work follows the **Finish line** at the top
+of [ROADMAP.md](ROADMAP.md#finish-line); the gated plan/review/evidence protocol
+was removed today (see `AGENTS.md` → Development workflow).
 
-Selected26/26 (domain14/SQLite5/actualPostgreSQL5/CLI-native2), final typecheck0,
-viewed final native/SVG and final-compiler scene equality pass. Separate reviewer
-/root/j63_plan_review inspected source/images and passed one new actual-PG challenge
-1/1. Root attempts37=33pass/4fail plus1pre-body import wrapper are retained; no
-selected skip/cancel/unexecuted. Full capture/selection limits remain in evaluation.
-Root packet audit1204/0 is complete; final independent packet/cleanup decision
-pending. No runtime/test change after031ed503. Finish only review/corrections and
-scoped acceptance/hold closeout; never self-accept or begin the next feature.
+## Where things stand
 
-One task-owned container was removed once after actual0userDB/0other-clients was
-saved/fsynced. Port32768closed; private credential directory deleted. All21root+
-1reviewer recorded groups absent. Independent absence verification complete. Do not
-recreate fixtures/repeat cleanup. Unrelated processes/containers untouched.
-No model/provider/search/local inference/GPU, activation or production migration.
-Preserve unrelated .agents/ and both PRESENTATION_FORGE master prompt files.
+The V2 editor could not open a single real generated deck: the deck → project
+converter refused academic identity, images, speaker notes, citations, decks
+over today's length caps, and 24 of 74 slide types. F1 is making that converter
+faithful, then landing every generation in the editor.
+
+Done today (each with tests, pushed):
+
+- **F0** process reset — protocol machinery, review records and 291 MB of
+  committed test evidence removed; browser suites write to `out/evidence/`.
+- **F1a** speaker notes — scene `notes`/`notesEdited`, `slide.setNotes` with
+  undo, regeneration keeps human notes, native PPTX notes, notes panel under
+  the editor canvas.
+- **F1b** project assets — `v2_project_assets` (SQLite + Postgres), images
+  referenced as `asset:<sha256>`, `POST /api/v2/projects/:id/assets` (bearer
+  only), `GET /api/v2/assets/:hash` (owner-checked, cookie ok), inlined for
+  export with real crop/letterbox; eight image slide types convert; captions draw.
+- **F1c** academic identity — team/guide/course as editable title-slide text,
+  banner and crest as locked chrome assets, presenter fallback restored,
+  undeclared fields dropped and reported, length caps no longer refuse.
+- **F1f** citations — deck `cites` become owner-private project sources and
+  slide citations created atomically with the project.
+
+## Next
+
+**F1d**: the slide types still refused — `flow` with `direction` (most common),
+`feature-grid` icons and `cards` images (needs an icon facility), `framework`,
+`diagram`, `layered-architecture`, `roadmap`, `matrix`, `icon-list`,
+`branching-flow`, `journey`, `venn`, `dependencies`, plus `progress-bars`,
+`sparklines`, `funnel`, `pyramid`, `hierarchy`, `freeform`. Then **F1e**
+(import on generation completion + land in the editor).
+
+To see what still refuses on the real decks in `decks/`, convert each one with
+`convertGeneratedDeck` and group the refusal `details` by slide type and field.
+
+## Machine etiquette
+
+The owner runs other GPU/CPU work here (opencode with many headless Chrome
+processes). Do not start local model inference or the full test suite without
+asking. Run focused suites with an explicit file list and
+`--test-concurrency=1` under `nice` — a glob that matches nothing makes
+`node --test` run everything.
+
+The TCET gateway answered `/v1/models` but returned HTTP 500 on chat today.
