@@ -42,6 +42,27 @@ Decisions taken with this list, so nobody re-litigates them:
    and keep human edits (the import path already guarantees that). The chat
    thread links to the project. *Done when:* topic → briefing → generate ends
    in the editor with the deck, with no "Open in editor" click.
+
+   Measured 2026-11-01: **none of the 18 decks on disk imports.** The
+   converter refuses whole decks for academic identity, any image slide, any
+   speaker note and 24 of 74 slide types, so landing in the editor first needs
+   a faithful converter, in this order:
+   - **[x] F1a** Speaker notes in the scene: schema field + `notesEdited`,
+     `slide.setNotes` with undo, regeneration keeps human notes, native PPTX
+     notes ahead of consented citation notes, conversion keeps them, and a
+     notes panel under the editor canvas.
+   - **F1b** Project assets: content-addressed image storage per project
+     (SQLite/Postgres), served to the editor and embedded on export; image
+     slide types convert. It comes before brand marks because a 250 KB crest
+     inlined on every slide breaks the 6 MB project limit.
+   - **F1c** Academic identity and brand marks: team, guide and subject/year
+     as editable title-slide text; banner and crest as locked chrome assets.
+   - **F1d** The remaining refused types (diagram, flow, matrix, funnel,
+     pyramid, venn, hierarchy, roadmap, journey, …) get compiler compositions
+     and conversions; `freeform` converts its raster as a locked image.
+   - **F1f** Claim citations (`cites`) register as project sources and attach
+     as slide citations instead of refusing the deck.
+   - **F1e** Import on completion and the UI handoff described above.
 3. **[ ] F2 — The Assistant works for every account.** Run turns in-process on
    the account's resolved provider (Auto / BYOK / local), on by default whenever
    a provider is usable, with progress shown in the panel and errors stated
