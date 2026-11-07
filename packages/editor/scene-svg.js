@@ -113,10 +113,13 @@ function textSvg(el, opts = {}) {
   // inspection; V2-4 owns exact visual parity.
   let y;
   const total = chunks.reduce((n, c) => n + c.advance, 0);
+  // A line's baseline sits about 0.35em below the middle of its own line
+  // box, so the first baseline is half a line plus that below the block top.
+  const firstBaseline = chunks.length ? chunks[0].advance / 2 + chunks[0].size * 0.35 : 0;
   if (valign === "middle" && chunks.length) {
-    y = (el.y + el.h / 2) * IN - total / 2 + chunks[0].size * 0.35;
+    y = (el.y + el.h / 2) * IN - total / 2 + firstBaseline;
   } else if (valign === "bottom" && chunks.length) {
-    y = (el.y + el.h) * IN - total + chunks[0].size * 0.35;
+    y = (el.y + el.h) * IN - total + firstBaseline;
   } else if (chunks.length) {
     y = el.y * IN + TEXT_INSET_PX + chunks[0].size * ASCENT;
   } else {
