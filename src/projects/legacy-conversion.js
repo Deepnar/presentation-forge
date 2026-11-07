@@ -159,8 +159,8 @@ rule("chart", ["chart", "aside"], (s, c) => {
   if (s.aside?.length) c.add("list", { items: s.aside });
 });
 rule("flow", ["steps", "direction"], (s, c) => {
-  if (s.direction !== undefined) c.refuse(`${c.path}.direction`, "authored flow orientation cannot be preserved by the accepted semantic compiler");
   c.slide.relationship = "sequence";
+  if (s.direction === "ttb") c.slide.layoutHint = { flowDirection: "down" };
   s.steps.forEach((step, i) => { c.keys(step, ["title", "body"], `${c.path}.steps[${i}]`); c.text(step.body ?? "", step.title); });
 });
 rule("definition", ["term", "definition", "example"], (s, c) => { c.text(s.definition, s.term); c.text(s.example, "Example"); });

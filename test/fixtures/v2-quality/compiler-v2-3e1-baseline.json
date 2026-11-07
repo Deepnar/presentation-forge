@@ -302,9 +302,31 @@
             0.7,
             1.77,
             5.14,
-            4.36
+            3.96
           ],
           "semanticRef": "s4img"
+        },
+        {
+          "id": "s4:s4img:caption",
+          "kind": "text",
+          "geom": [
+            0.7,
+            5.78,
+            5.14,
+            0.35
+          ],
+          "semanticRef": "s4img",
+          "fitPolicy": "wrap",
+          "runs": [
+            {
+              "role": "caption",
+              "family": "Inter",
+              "weight": 500,
+              "size": 10,
+              "tracking": 0.2,
+              "line": 1.35
+            }
+          ]
         },
         {
           "id": "s4:s4body:content",

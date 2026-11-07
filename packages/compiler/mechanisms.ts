@@ -1128,6 +1128,46 @@ function sequenceScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
       });
     });
     y = bottom;
+  } else if (slide.layoutHint?.flowDirection === "down" && steps.length >= 2) {
+    // Top to bottom: a rail of numbered chips with each step beside its
+    // chip. Element IDs match the across layout (frame, badge, link), so
+    // switching direction keeps any human edit tied to the same step.
+    const n = steps.length;
+    const chip = 0.5;
+    const railX = box.x + 0.34;
+    const textX = railX + 0.6;
+    const textW = box.x + box.w - textX;
+    const rowGap = 0.12;
+    const avail = Math.max(0.8, bottom - y) - (rest.length ? 1.2 : 0);
+    const rowH = Math.max(chip, (avail - rowGap * (n - 1)) / n);
+    steps.forEach((block, i) => {
+      const ry = y + i * (rowH + rowGap);
+      const cy = ry + rowH / 2;
+      if (i < n - 1) {
+        els.push({
+          id: `${slide.id}:${block.id}:link`, kind: "line",
+          x: railX, y: cy + chip / 2, w: 0.01, h: 0.01, z: takeZ(),
+          provenance: "compiler", semanticRef: block.id,
+          line: { x2: railX, y2: cy + rowH + rowGap - chip / 2, stroke: design.palette.rule.hex, strokeWidth: 1.5 },
+        });
+      }
+      els.push(shapeEl(`${slide.id}:${block.id}:frame`, block.id,
+        { x: railX - chip / 2, y: cy - chip / 2, w: chip, h: chip }, "ellipse", design.palette.accent.hex, takeZ()));
+      els.push({ ...textEl(`${slide.id}:${block.id}:badge`, block.id,
+        { x: railX - chip / 2, y: cy - chip / 2, w: chip, h: chip },
+        [{ runs: [{ text: String(i + 1), role: "subhead", bold: true, color: design.palette.onAccent.hex }], align: "center" as const }],
+        takeZ(), { ...fitOf(ctx), policy: "one-line" }), valign: "middle" as const });
+      // Centred on the row so the step reads level with its chip.
+      const step = placePrimary(ctx, els, block, { x: textX, y: ry, w: textW, h: rowH }, takeZ);
+      if (step.kind === "text") step.valign = "middle";
+    });
+    y += n * (rowH + rowGap);
+    const restHeights = distribute(Math.max(0.4, bottom - y) - 0.1 * rest.length, rest.map(() => 1), 0.3);
+    rest.forEach((block, i) => {
+      const h = restHeights[i];
+      placePrimary(ctx, els, block, { x: box.x, y, w: box.w, h }, takeZ);
+      y += h + 0.1;
+    });
   } else {
     const n = Math.max(steps.length, 1);
     const cw = (box.w - gap * (n - 1)) / n;

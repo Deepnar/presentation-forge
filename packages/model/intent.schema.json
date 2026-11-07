@@ -60,7 +60,8 @@
               "enum": ["title", "content", "comparison", "media", "chart", "process"]
             },
             "emphasis": { "type": "string", "maxLength": 120 },
-            "mediaSide": { "enum": ["left", "right"] }
+            "mediaSide": { "enum": ["left", "right"] },
+            "flowDirection": { "enum": ["across", "down"], "description": "Whether a sequence reads left to right or top to bottom. Absent means across." }
           }
         },
         "sourceRefs": { "type": "array", "items": { "type": "string" } },

@@ -49,6 +49,10 @@ export interface SlideIntent {
     recipe?: "title" | "content" | "comparison" | "media" | "chart" | "process";
     emphasis?: string;
     mediaSide?: "left" | "right";
+    /**
+     * Whether a sequence reads left to right or top to bottom. Absent means across.
+     */
+    flowDirection?: "across" | "down";
   };
   sourceRefs?: string[];
   speakerNotes?: string;
