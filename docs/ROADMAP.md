@@ -58,9 +58,10 @@ Decisions taken with this list, so nobody re-litigates them:
    - **[x] F1c** Academic identity and brand marks: team, guide and
      subject/year as editable title-slide text; banner and crest as locked
      chrome assets; presenter fallback; undeclared fields dropped and reported.
-   - **F1d** The remaining refused types (diagram, flow, matrix, funnel,
-     pyramid, venn, hierarchy, roadmap, journey, …) get compiler compositions
-     and conversions; `freeform` converts its raster as a locked image.
+   - **F1d** The remaining refused types (diagram, matrix, funnel, pyramid,
+     venn, hierarchy, roadmap, journey, …) get compiler compositions and
+     conversions; `freeform` converts its raster as a locked image. Flow
+     direction is done (numbered rail for top-to-bottom).
    - **[x] F1f** Claim citations (`cites`) become owner-private project
      sources and slide citations, created with the project in one transaction.
    - **F1e** Import on completion and the UI handoff described above.

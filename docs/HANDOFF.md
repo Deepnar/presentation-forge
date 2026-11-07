@@ -1,4 +1,4 @@
-# Handoff — 2026-11-01
+# Handoff — 2026-11-07
 
 Branch `v2`, pushed to `origin/v2`. Work follows the **Finish line** at the top
 of [ROADMAP.md](ROADMAP.md#finish-line); the gated plan/review/evidence protocol
@@ -28,10 +28,13 @@ Done today (each with tests, pushed):
 - **F1f** citations — deck `cites` become owner-private project sources and
   slide citations created atomically with the project.
 
+2026-11-07: `flow` direction converts — a top-to-bottom flow compiles to a
+numbered rail (`layoutHint.flowDirection: "down"`). Also fixed the editor's SVG
+renderer placing middle/bottom-aligned text half a line high.
+
 ## Next
 
-**F1d**: the slide types still refused — `flow` with `direction` (most common),
-`feature-grid` icons and `cards` images (needs an icon facility), `framework`,
+**F1d**: the slide types still refused — `feature-grid` icons and `cards` images (needs an icon facility), `framework`,
 `diagram`, `layered-architecture`, `roadmap`, `matrix`, `icon-list`,
 `branching-flow`, `journey`, `venn`, `dependencies`, plus `progress-bars`,
 `sparklines`, `funnel`, `pyramid`, `hierarchy`, `freeform`. Then **F1e**
