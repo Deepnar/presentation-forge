@@ -73,6 +73,10 @@ export interface ContentBlock {
    * Whether the image may be cropped to fill its region (cover) or must show whole (contain).
    */
   fit?: "cover" | "contain";
+  /**
+   * A short emoji or symbol that heads the block, drawn as text.
+   */
+  icon?: string;
   caption?: string;
   chartKind?: "bar" | "hbar" | "line" | "pie" | "doughnut" | "area";
   categories?: string[];

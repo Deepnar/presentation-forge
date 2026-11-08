@@ -698,12 +698,24 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const primaries = slide.blocks.filter((b) => comp.emphasisTargets.includes(b.id));
   const rest = slide.blocks.filter((b) => !comp.emphasisTargets.includes(b.id));
   const gap = 0.3;
+  // An authored icon heads its card as text, at the size the legacy cards
+  // drew it; the block's own content starts below it.
+  const iconH = 0.5;
+  const placeCard = (block: ContentBlock, region: Box) => {
+    if (!block.icon) return placePrimary(ctx, els, block, region, takeZ);
+    els.push(textEl(`${slide.id}:${block.id}:icon`, block.id,
+      { x: region.x, y: region.y, w: region.w, h: Math.min(iconH, region.h / 2) },
+      [{ runs: [{ text: block.icon, role: "heading", color: ink(design) }], align: "left" as const }],
+      takeZ(), { ...fitOf(ctx), policy: "one-line" }));
+    const below = Math.min(iconH, region.h / 2);
+    return placePrimary(ctx, els, block, { ...region, y: region.y + below, h: Math.max(0.2, region.h - below) }, takeZ);
+  };
   const primaryHeights = distribute(Math.max(0.4, bottom - y) - gap * primaries.length, primaries.map(() => 1.6), 0.8);
   primaries.forEach((block, pi) => {
     const h = primaryHeights[pi];
     els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
       { x: box.x, y, w: box.w, h }, "roundRect", design, takeZ()));
-    placePrimary(ctx, els, block, { x: box.x + 0.3, y: y + 0.15, w: box.w - 0.6, h: Math.max(0.2, h - 0.3) }, takeZ);
+    placeCard(block, { x: box.x + 0.3, y: y + 0.15, w: box.w - 0.6, h: Math.max(0.2, h - 0.3) });
     y += h + gap;
   });
   if (rest.length) {
@@ -711,7 +723,9 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     const cols = rest.length <= 2 ? rest.length : dense ? 3 : 2;
     const rows = Math.ceil(rest.length / cols);
     const cw = (box.w - gap * (cols - 1)) / cols;
-    const heights = distribute(Math.max(0.4, bottom - y) - gap * rows, rest.map(() => 1), 0.6);
+    // One height per row: the grid shares the space between its rows, not
+    // between its cards, or a two-row grid of four leaves half the room empty.
+    const heights = distribute(Math.max(0.4, bottom - y) - gap * (rows - 1), Array.from({ length: rows }, () => 1), 0.6);
     let ri = 0;
     rest.forEach((block, i) => {
       if (i % cols === 0 && i > 0) {
@@ -722,7 +736,7 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
       const cx = box.x + (i % cols) * (cw + gap);
       els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
         { x: cx, y, w: cw, h: ch }, "roundRect", design, takeZ()));
-      placePrimary(ctx, els, block, { x: cx + 0.25, y: y + 0.15, w: cw - 0.5, h: Math.max(0.2, ch - 0.3) }, takeZ);
+      placeCard(block, { x: cx + 0.25, y: y + 0.15, w: cw - 0.5, h: Math.max(0.2, ch - 0.3) });
     });
   }
   if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
