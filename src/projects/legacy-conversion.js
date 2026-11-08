@@ -65,7 +65,10 @@ rule("checklist", ["items"], (s, c) => {
 });
 rule("cards", ["cards"], (s, c) => {
   s.cards.forEach((card, i) => {
-    c.keys(card, ["title", "body", "kicker"], `${c.path}.cards[${i}]`);
+    // The cards layout never drew a card's image; it was a request the image
+    // step had not filled. Dropped like any field that was never on the page.
+    if (card.image !== undefined) c.drop(`${c.path}.cards[${i}].image`, "the cards layout never drew card images");
+    c.keys(card, ["title", "body", "kicker", "image"], `${c.path}.cards[${i}]`);
     c.text([card.kicker, card.body].filter(Boolean).join("\n"), card.title);
   });
 });
@@ -101,7 +104,13 @@ rule("quote pull-quote epigraph", ["quote", "attribution", "source"], (s, c) => 
 });
 // Image paths stay deck-relative here; the importer reads each file into the
 // project's asset store and swaps in the asset reference before compiling.
-const image = (c, src, extra = {}) => c.add("image", { src, alt: extra.caption ?? c.slide.title ?? "", ...extra });
+// An image the supply step never filled is still "[image] <description>":
+// it becomes an empty image slot carrying the description, for the owner to
+// fill in the editor, rather than a missing file that refuses the deck.
+const PENDING_IMAGE = /^\[image\]\s*/i;
+const image = (c, src, extra = {}) => PENDING_IMAGE.test(src)
+  ? c.add("image", { src: "", alt: src.replace(PENDING_IMAGE, "").slice(0, 300), ...extra })
+  : c.add("image", { src, alt: extra.caption ?? c.slide.title ?? "", ...extra });
 rule("image", ["image", "caption", "fit"], (s, c) => {
   image(c, s.image, { emphasis: "primary", ...(s.caption ? { caption: s.caption } : {}), ...(s.fit ? { fit: s.fit } : {}) });
 });
@@ -175,7 +184,10 @@ rule("agenda", ["items"], (s, c) => {
   s.items.forEach((item, i) => { c.keys(item, ["title", "desc"], `${c.path}.items[${i}]`); c.text(item.desc ?? "", item.title); });
 });
 rule("feature-grid", ["items"], (s, c) => {
-  s.items.forEach((item, i) => { c.keys(item, ["title", "body"], `${c.path}.items[${i}]`); c.text(item.body ?? "", item.title); });
+  s.items.forEach((item, i) => {
+    c.keys(item, ["icon", "title", "body"], `${c.path}.items[${i}]`);
+    c.add("text", { text: item.body ?? "", label: item.title, ...(String(item.icon ?? "").trim() ? { icon: String(item.icon).trim() } : {}) });
+  });
 });
 rule("grid-items", ["items"], (s, c) => {
   s.items.forEach((item, i) => { c.keys(item, ["label", "value"], `${c.path}.items[${i}]`); c.text(item.value, item.label); });
@@ -343,7 +355,7 @@ export async function convertGeneratedDeck(deck, { identity = null } = {}) {
       else contextText(deck.sections[source.section], `Section ${String(source.section + 1).padStart(2, "0")}`);
     }
     contextText(source.standfirst, "Context");
-    rule.convert(source, { deck, path, slide, blocks: slide.blocks, add, text, keys, refuse });
+    rule.convert(source, { deck, path, slide, blocks: slide.blocks, add, text, keys, refuse, drop: (at, reason) => dropped.push({ path: at, reason }) });
     if (source.type !== "title" && index === 0) contextText(deck.subtitle, "Deck context");
     if (source.type === "title" && identity) {
       const credits = titleCredits(identity);

@@ -62,7 +62,7 @@ async function citeSources(projectId, cites, scenes) {
 async function resolveImages(intent, source) {
   const assets = new Map(), details = [];
   for (const slide of intent.slides) for (const block of slide.blocks) {
-    if (block.kind !== "image") continue;
+    if (block.kind !== "image" || !block.src) continue;
     try {
       const asset = await prepareAsset(await source.readAsset(block.src));
       assets.set(asset.hash, asset);
@@ -88,6 +88,9 @@ function assertContent(intent, scenes) {
       const text = elements.flatMap(e => e.paragraphs?.map(p => p.runs.map(r => r.text).join("")) ?? []).join("\n");
       const missing = reason => details.push({ path: `${source.id}.${block.id}`, reason });
       if (!elements.length) { missing("compiler omitted the semantic carrier"); continue; }
+      if (block.icon && !scene.elements.some(e => e.semanticRef === block.id && e.id.endsWith(":icon") && (e.paragraphs ?? []).some(p => p.runs.map(r => r.text).join("") === block.icon))) {
+        missing("compiler omitted the block's icon");
+      }
       if (block.kind === "chart") {
         const actual = elements.find(e => e.kind === "chart")?.chart;
         if (!actual || JSON.stringify(actual.categories) !== JSON.stringify(block.categories) || JSON.stringify(actual.series) !== JSON.stringify(block.series)) missing("native chart data cannot be preserved exactly");
