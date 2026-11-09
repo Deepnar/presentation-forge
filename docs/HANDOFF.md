@@ -1,4 +1,4 @@
-# Handoff — 2026-11-08
+# Handoff — 2026-11-09
 
 Branch `v2`, pushed to `origin/v2`. Work follows the **Finish line** at the top
 of [ROADMAP.md](ROADMAP.md#finish-line); the gated plan/review/evidence protocol
@@ -38,21 +38,25 @@ requests become empty image slots with the description as alt text; card
 images (never drawn by the old layout) are dropped and reported. Card grids
 now share height between rows instead of cards.
 
+2026-11-09: `framework` converts to a radial hierarchy
+(`layoutHint.arrangement: "radial"`): concept in a central ellipse, elements on
+a ring with spokes, falling back to tiers if the ring would touch. `icon-list`
+converts to icon-headed cards. Tiered hierarchy children share height by row.
+
 ## Next
 
-3 of the 18 decks in `decks/` now convert. What still refuses, most common
-first: `framework` (6), `diagram` (5), `layered-architecture` (4), `roadmap`
-(4), `matrix` (3), `icon-list` (3 — can reuse the new block `icon`),
+7 of the 18 decks in `decks/` now convert. Still refused, most common first:
+`diagram` (5), `layered-architecture` (4), `roadmap` (4), `matrix` (3),
 `branching-flow`, `journey`, `venn`, `dependencies`; one deck whose intent
-exceeds a cap; two `cites` without a usable URL; five slides missing a
-`headline` (structural, the old renderer refuses them too). Not seen in real
+exceeds a cap; three `cites` without a usable URL; six slides missing a
+`headline` (structural — the old renderer refuses them too). Not seen in real
 decks but still refused: `progress-bars`, `sparklines`, `funnel`, `pyramid`,
 `hierarchy`, `freeform`. Then **F1e** (import on generation completion + land
 in the editor).
 
 Known layout bug to fix while in there: the across `sequence` layout divides
 its height by step count, so long flows get short cards (the same bug card
-grids had).
+grids and tiered hierarchies had).
 
 To see what still refuses on the real decks in `decks/`, convert each one with
 `convertGeneratedDeck` and group the refusal `details` by slide type and field.
