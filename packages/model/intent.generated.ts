@@ -53,6 +53,10 @@ export interface SlideIntent {
      * Whether a sequence reads left to right or top to bottom. Absent means across.
      */
     flowDirection?: "across" | "down";
+    /**
+     * How a hierarchy is drawn: the first block above the rest (tiers), or at the centre with the rest around it (radial). Absent means tiers.
+     */
+    arrangement?: "tiers" | "radial";
   };
   sourceRefs?: string[];
   speakerNotes?: string;

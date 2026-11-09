@@ -1219,6 +1219,67 @@ function sequenceScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   return els;
 }
 
+// The first block at the centre and the rest on a ring around it, joined by
+// spokes — a concept and its parts. Returns null when the ring cannot clear
+// the hub or its own cards, so the caller falls back to tiers instead of
+// drawing an overlap.
+function radialHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: () => number): SceneElement[] | null {
+  const { slide, design, box } = ctx;
+  const [hub, ...parts] = slide.blocks;
+  const n = parts.length;
+  if (n < 2 || n > 6) return null;
+  const areaH = bottom - top;
+  const cardW = Math.min(3.0, box.w / 4.2), cardH = Math.min(1.25, areaH / 3.2);
+  const hubW = Math.min(3.2, box.w * 0.26), hubH = Math.min(1.5, areaH * 0.32);
+  const cx = box.x + box.w / 2, cy = top + areaH / 2;
+  const radX = box.w / 2 - cardW / 2, radY = areaH / 2 - cardH / 2;
+  if (radX <= 0 || radY <= 0) return null;
+  const centres = parts.map((_, i) => {
+    const a = (2 * Math.PI * i) / n - Math.PI / 2;
+    return { x: cx + radX * Math.cos(a), y: cy + radY * Math.sin(a) };
+  });
+  const overlaps = (a: { x: number; y: number; w: number; h: number }, b: { x: number; y: number; w: number; h: number }, pad: number) =>
+    Math.abs(a.x - b.x) < (a.w + b.w) / 2 + pad && Math.abs(a.y - b.y) < (a.h + b.h) / 2 + pad;
+  const cards = centres.map((c) => ({ ...c, w: cardW, h: cardH }));
+  // The hub is an ellipse, so a card clears it when the card's nearest point
+  // to the centre lies outside the (padded) ellipse — corners may tuck in.
+  const clearsHub = (c: { x: number; y: number; w: number; h: number }) => {
+    const nx = Math.min(Math.max(cx, c.x - c.w / 2), c.x + c.w / 2) - cx;
+    const ny = Math.min(Math.max(cy, c.y - c.h / 2), c.y + c.h / 2) - cy;
+    return (nx / (hubW / 2 + 0.15)) ** 2 + (ny / (hubH / 2 + 0.15)) ** 2 >= 1;
+  };
+  if (!cards.every(clearsHub)) return null;
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (overlaps(cards[i], cards[j], 0.1)) return null;
+
+  const els: SceneElement[] = [];
+  // Spokes first, so the hub and cards draw over their ends.
+  parts.forEach((block, i) => {
+    els.push({
+      id: `${slide.id}:${block.id}:link`, kind: "line",
+      x: cx, y: cy, w: 0.01, h: 0.01, z: takeZ(),
+      provenance: "compiler", semanticRef: block.id,
+      line: { x2: centres[i].x, y2: centres[i].y, stroke: design.palette.accent.hex, strokeWidth: 1.5 },
+    });
+  });
+  els.push(cardEl(`${slide.id}:${hub.id}:frame`, hub.id,
+    { x: cx - hubW / 2, y: cy - hubH / 2, w: hubW, h: hubH }, "ellipse", design, takeZ()));
+  // The ellipse's inscribed rectangle keeps the hub's text off its curve.
+  const inset = { w: hubW * 0.7, h: hubH * 0.7 };
+  const hubText = placePrimary(ctx, els, hub, { x: cx - inset.w / 2, y: cy - inset.h / 2, w: inset.w, h: inset.h }, takeZ);
+  if (hubText.kind === "text") {
+    hubText.valign = "middle";
+    for (const p of hubText.paragraphs ?? []) p.align = "center";
+  }
+  parts.forEach((block, i) => {
+    const { x, y } = centres[i];
+    els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
+      { x: x - cardW / 2, y: y - cardH / 2, w: cardW, h: cardH }, "roundRect", design, takeZ()));
+    const text = placePrimary(ctx, els, block, { x: x - cardW / 2 + 0.2, y: y - cardH / 2 + 0.12, w: cardW - 0.4, h: cardH - 0.24 }, takeZ);
+    if (text.kind === "text") text.valign = "middle";
+  });
+  return els;
+}
+
 function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const { slide, design, box, comp } = ctx;
   const els: SceneElement[] = [];
@@ -1230,6 +1291,16 @@ function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
   const bottom = box.bottom - (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation" ? 0.6 : 0);
   const gap = 0.4;
   if (!slide.blocks.length) return els;
+  if (slide.layoutHint?.arrangement === "radial") {
+    const radial = radialHierarchy(ctx, y, bottom, takeZ);
+    if (radial) {
+      els.push(...radial);
+      if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+        els.push(...takeawayEls(ctx, bottom, box.bottom, takeZ()));
+      }
+      return els;
+    }
+  }
   // Conservative tiers from authored order only: first block is the
   // parent tier, the rest share the child tier. No invented edges.
   const parentH = Math.max(1.0, (bottom - y) * 0.32);
@@ -1243,7 +1314,7 @@ function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
     const cols = Math.min(children.length, 3);
     const rows = Math.ceil(children.length / cols);
     const cw = (box.w - gap * (cols - 1)) / cols;
-    const heights = distribute(Math.max(0.6, bottom - y) - gap * rows, children.map(() => 1), 0.6);
+    const heights = distribute(Math.max(0.6, bottom - y) - gap * (rows - 1), Array.from({ length: rows }, () => 1), 0.6);
     let ri = 0;
     children.forEach((block, i) => {
       if (i % cols === 0 && i > 0) {
