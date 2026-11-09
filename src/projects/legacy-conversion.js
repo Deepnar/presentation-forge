@@ -189,6 +189,21 @@ rule("feature-grid", ["items"], (s, c) => {
     c.add("text", { text: item.body ?? "", label: item.title, ...(String(item.icon ?? "").trim() ? { icon: String(item.icon).trim() } : {}) });
   });
 });
+// A framework is a concept and its parts: the concept sits at the centre of
+// a ring of its elements, as the legacy layout drew it.
+rule("framework", ["concept", "elements"], (s, c) => {
+  c.slide.relationship = "hierarchy";
+  c.slide.layoutHint = { arrangement: "radial" };
+  c.keys(s.concept, ["title", "body"], `${c.path}.concept`);
+  c.add("text", { text: s.concept.body ?? "", label: s.concept.title, emphasis: "primary" });
+  s.elements.forEach((element, i) => { c.keys(element, ["title", "body"], `${c.path}.elements[${i}]`); c.text(element.body ?? "", element.title); });
+});
+rule("icon-list", ["items"], (s, c) => {
+  s.items.forEach((item, i) => {
+    c.keys(item, ["icon", "text"], `${c.path}.items[${i}]`);
+    c.add("text", { text: item.text, ...(String(item.icon ?? "").trim() ? { icon: String(item.icon).trim() } : {}) });
+  });
+});
 rule("grid-items", ["items"], (s, c) => {
   s.items.forEach((item, i) => { c.keys(item, ["label", "value"], `${c.path}.items[${i}]`); c.text(item.value, item.label); });
 });
