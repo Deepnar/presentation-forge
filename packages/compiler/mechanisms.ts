@@ -1185,7 +1185,13 @@ function sequenceScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   } else {
     const n = Math.max(steps.length, 1);
     const cw = (box.w - gap * (n - 1)) / n;
-    const heights = distribute(Math.max(0.8, bottom - y) - (rest.length ? 1.2 : 0), steps.map(() => 1), 0.8);
+    // The steps share one row: every card is as tall as the step that needs
+    // the most room (badge band plus measured text), never taller than the row.
+    const rowH = Math.max(0.8, Math.max(0.8, bottom - y) - (rest.length ? 1.2 : 0));
+    const demand = Math.max(...steps.map((b) => textDemand(design, b, cw - 0.4))) + 0.8 + 0.2;
+    const heights = steps.map(() => Math.min(rowH, Math.max(1.6, demand)));
+    // A row shorter than its space sits in the middle of it, not at the top.
+    if (!rest.length) y += (rowH - heights[0]) / 2;
     steps.forEach((block, i) => {
       const h = heights[i];
       const x = box.x + i * (cw + gap);
@@ -1280,6 +1286,62 @@ function radialHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: 
   return els;
 }
 
+// Every block a full-width band, top block first — a stack of layers. Each
+// band carries an accent edge, its label on the left, its text in the middle
+// and its items as pills on the right, as the legacy layered layout drew it.
+function layeredHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: () => number): SceneElement[] {
+  const { slide, design, box } = ctx;
+  const els: SceneElement[] = [];
+  const n = slide.blocks.length;
+  const gap = 0.09;
+  const bandH = Math.max(0.35, (bottom - top - gap * (n - 1)) / n);
+  const labelW = Math.min(3.2, box.w * 0.28);
+  const { fit: pillStyle } = resolveRunStyle(design, "caption", {});
+  const pillW = (t: string) => Math.min(2.3, measure(t, pillStyle) + 0.4);
+  const pillH = Math.min(0.32, bandH * 0.7);
+  // Pills share one strip width across bands so their left edges align and
+  // every body gets the same room.
+  const strip = Math.min(
+    Math.max(0, ...slide.blocks.map((b) => (b.items ?? []).reduce((w, t) => w + pillW(t) + 0.1, 0))),
+    Math.max(0, box.w - labelW - 0.3 - 1.8),
+  );
+  slide.blocks.forEach((block, i) => {
+    const ly = top + i * (bandH + gap);
+    els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id, { x: box.x, y: ly, w: box.w, h: bandH }, "roundRect", design, takeZ()));
+    els.push(shapeEl(`${slide.id}:${block.id}:rail`, block.id, { x: box.x, y: ly, w: 0.06, h: bandH }, "rect", design.palette.accent.hex, takeZ()));
+    if (block.label) {
+      els.push({ ...textEl(`${slide.id}:${block.id}:label`, block.id,
+        { x: box.x + 0.24, y: ly, w: labelW - 0.24, h: bandH },
+        [{ runs: [{ text: block.label, role: "subhead", bold: true, color: ink(design) }], align: "left" as const }],
+        takeZ(), fitOf(ctx)), valign: "middle" as const });
+    }
+    const bodyX = box.x + labelW + 0.3;
+    const bodyW = Math.max(0.5, box.w - labelW - 0.3 - strip - 0.2);
+    if (block.text) {
+      const body = placePrimary(ctx, els, { ...block, label: undefined, items: undefined }, { x: bodyX, y: ly, w: bodyW, h: bandH }, takeZ);
+      if (body.kind === "text") body.valign = "middle";
+    }
+    const scale = Math.min(1, strip / Math.max(1e-9, (block.items ?? []).reduce((w, t) => w + pillW(t) + 0.1, 0)));
+    let px = box.x + box.w - 0.18;
+    [...(block.items ?? [])].reverse().forEach((item, k) => {
+      const index = (block.items?.length ?? 0) - 1 - k;
+      const w = pillW(item) * scale;
+      px -= w;
+      const pill = { x: px, y: ly + (bandH - pillH) / 2, w, h: pillH };
+      els.push({
+        id: `${slide.id}:${block.id}:pill-${index}`, kind: "shape", ...pill, z: takeZ(),
+        provenance: "compiler", semanticRef: block.id,
+        shape: { form: "roundRect", fill: design.palette.surface.hex, stroke: design.palette.rule.hex, strokeWidth: 1 },
+      });
+      els.push({ ...textEl(`${slide.id}:${block.id}:pill-${index}-text`, block.id, pill,
+        [{ runs: [{ text: item, role: "caption", color: ink(design) }], align: "center" as const }],
+        takeZ(), { ...fitOf(ctx), policy: "one-line" }), valign: "middle" as const });
+      px -= 0.1;
+    });
+  });
+  return els;
+}
+
 function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const { slide, design, box, comp } = ctx;
   const els: SceneElement[] = [];
@@ -1291,6 +1353,13 @@ function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
   const bottom = box.bottom - (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation" ? 0.6 : 0);
   const gap = 0.4;
   if (!slide.blocks.length) return els;
+  if (slide.layoutHint?.arrangement === "layers") {
+    els.push(...layeredHierarchy(ctx, y, bottom, takeZ));
+    if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+      els.push(...takeawayEls(ctx, bottom, box.bottom, takeZ()));
+    }
+    return els;
+  }
   if (slide.layoutHint?.arrangement === "radial") {
     const radial = radialHierarchy(ctx, y, bottom, takeZ);
     if (radial) {

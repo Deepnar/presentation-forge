@@ -62,7 +62,7 @@
             "emphasis": { "type": "string", "maxLength": 120 },
             "mediaSide": { "enum": ["left", "right"] },
             "flowDirection": { "enum": ["across", "down"], "description": "Whether a sequence reads left to right or top to bottom. Absent means across." },
-            "arrangement": { "enum": ["tiers", "radial"], "description": "How a hierarchy is drawn: the first block above the rest (tiers), or at the centre with the rest around it (radial). Absent means tiers." }
+            "arrangement": { "enum": ["tiers", "radial", "layers"], "description": "How a hierarchy is drawn: the first block above the rest (tiers), at the centre with the rest around it (radial), or every block as a full-width band stacked in authored order, top first (layers). Absent means tiers." }
           }
         },
         "sourceRefs": { "type": "array", "items": { "type": "string" } },

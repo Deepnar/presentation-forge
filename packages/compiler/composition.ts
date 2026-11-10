@@ -354,9 +354,10 @@ export function planDeckComposition(intent: DeckIntent, design: DesignSystem): P
   applyRhythm(slides, intent.slides);
   for (let i = 0; i < slides.length; i++) {
     // Ambiguous multi-block hierarchy carries no branching topology in
-    // Layer A: render tiers, but record the capability boundary. A radial
-    // arrangement states its topology: every part hangs off the centre.
-    if (slides[i].family === "hierarchy" && intent.slides[i].blocks.length > 2 && intent.slides[i].layoutHint?.arrangement !== "radial") {
+    // Layer A: render tiers, but record the capability boundary. Radial and
+    // layered arrangements state their topology: parts hang off the centre,
+    // or each layer sits on the one below.
+    if (slides[i].family === "hierarchy" && intent.slides[i].blocks.length > 2 && intent.slides[i].layoutHint?.arrangement !== "radial" && intent.slides[i].layoutHint?.arrangement !== "layers") {
       findings.push({
         layer: "L2",
         code: "hierarchy-topology-unspecified",

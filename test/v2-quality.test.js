@@ -129,6 +129,19 @@ describe("v2 quality baseline", () => {
           assert.ok(carrier && inside(carrier, el), `${scene.id}/${el.id}: carrier contained in frame`);
           continue;
         }
+        if (scene.recipeId === "sequence" && /:(frame|link|badge|content)$/.test(el.id)) {
+          // Flow cards size to their content in one row and the row centres
+          // in its space: x and width hold, height and y follow the content,
+          // and each card's badge, text and connector move with it.
+          assert.equal(el.x, prev.x, `${scene.id}/${el.id}: never moves horizontally`);
+          assert.equal(el.w, prev.w, `${scene.id}/${el.id}: never changes width`);
+          assert.ok(el.h > 0 && el.y >= regionTop - 1e-9, `${scene.id}/${el.id}: stays below the title`);
+          if (/:(badge|content)$/.test(el.id)) {
+            const card = scene.elements.find((e) => e.id === el.id.replace(/:(badge|content)$/, ":frame"));
+            assert.ok(card && inside(el, card), `${scene.id}/${el.id}: stays inside its card`);
+          }
+          continue;
+        }
         if (scene.recipeId === "comparison" && el.semanticRef !== undefined && supportRefs.has(el.semanticRef)) {
           // Support follows the sides: same x and width, inside the
           // content region below the title.

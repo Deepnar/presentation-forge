@@ -54,9 +54,9 @@ export interface SlideIntent {
      */
     flowDirection?: "across" | "down";
     /**
-     * How a hierarchy is drawn: the first block above the rest (tiers), or at the centre with the rest around it (radial). Absent means tiers.
+     * How a hierarchy is drawn: the first block above the rest (tiers), at the centre with the rest around it (radial), or every block as a full-width band stacked in authored order, top first (layers). Absent means tiers.
      */
-    arrangement?: "tiers" | "radial";
+    arrangement?: "tiers" | "radial" | "layers";
   };
   sourceRefs?: string[];
   speakerNotes?: string;
