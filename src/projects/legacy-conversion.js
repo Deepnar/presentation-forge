@@ -198,6 +198,16 @@ rule("framework", ["concept", "elements"], (s, c) => {
   c.add("text", { text: s.concept.body ?? "", label: s.concept.title, emphasis: "primary" });
   s.elements.forEach((element, i) => { c.keys(element, ["title", "body"], `${c.path}.elements[${i}]`); c.text(element.body ?? "", element.title); });
 });
+// Layers stack top to bottom in authored order, each a band with its label,
+// a short description and its components as pills.
+rule("layered-architecture", ["layers"], (s, c) => {
+  c.slide.relationship = "hierarchy";
+  c.slide.layoutHint = { arrangement: "layers" };
+  s.layers.forEach((layer, i) => {
+    c.keys(layer, ["label", "body", "items"], `${c.path}.layers[${i}]`);
+    c.add("text", { text: layer.body ?? "", label: layer.label, ...(layer.items?.length ? { items: layer.items } : {}) });
+  });
+});
 rule("icon-list", ["items"], (s, c) => {
   s.items.forEach((item, i) => {
     c.keys(item, ["icon", "text"], `${c.path}.items[${i}]`);
