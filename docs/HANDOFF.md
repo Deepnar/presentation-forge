@@ -1,4 +1,4 @@
-# Handoff — 2026-11-09
+# Handoff — 2026-11-10
 
 Branch `v2`, pushed to `origin/v2`. Work follows the **Finish line** at the top
 of [ROADMAP.md](ROADMAP.md#finish-line); the gated plan/review/evidence protocol
@@ -43,23 +43,22 @@ now share height between rows instead of cards.
 a ring with spokes, falling back to tiers if the ring would touch. `icon-list`
 converts to icon-headed cards. Tiered hierarchy children share height by row.
 
+2026-11-10: `layered-architecture` converts to a layered hierarchy
+(`layoutHint.arrangement: "layers"`): full-width bands with accent edge, label,
+text and aligned component pills. Across flows now size cards to their content
+and centre a short row (they had each card at 1/n of the height).
+
 ## Next
 
-7 of the 18 decks in `decks/` now convert. Still refused, most common first:
-`diagram` (5), `layered-architecture` (4), `roadmap` (4), `matrix` (3),
-`branching-flow`, `journey`, `venn`, `dependencies`; one deck whose intent
-exceeds a cap; three `cites` without a usable URL; six slides missing a
-`headline` (structural — the old renderer refuses them too). Not seen in real
-decks but still refused: `progress-bars`, `sparklines`, `funnel`, `pyramid`,
-`hierarchy`, `freeform`. Then **F1e** (import on generation completion + land
-in the editor).
+7 of the 18 decks in `decks/` convert. `npm run import-coverage` lists what
+still refuses and in how many decks: `diagram` (5 decks), `roadmap` (4),
+`matrix` (3), then single-deck `branching-flow`, `journey`, `venn`,
+`dependencies`; one list over the intent's 8-item cap; three `cites` without a
+URL; six slides missing a `headline` (structural — the old renderer refuses
+them too). Never seen in real decks but still refused: `progress-bars`,
+`sparklines`, `funnel`, `pyramid`, `hierarchy`, `freeform`. Then **F1e**
+(import on generation completion + land in the editor).
 
-Known layout bug to fix while in there: the across `sequence` layout divides
-its height by step count, so long flows get short cards (the same bug card
-grids and tiered hierarchies had).
-
-To see what still refuses on the real decks in `decks/`, convert each one with
-`convertGeneratedDeck` and group the refusal `details` by slide type and field.
 
 ## Machine etiquette
 
