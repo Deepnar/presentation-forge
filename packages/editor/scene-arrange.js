@@ -148,3 +148,39 @@ export function copyElements(elements, newId, ox = 0, oy = 0) {
 // and right from the originals on the same slide, further for each repeat,
 // so a pasted copy is never hidden exactly under what it copied.
 export const PASTE_STEP = 0.25;
+
+// Where each box goes to line up along one side or centre of `frame` —
+// the slide for a single element, the selection's own box for several
+// (PowerPoint's "align selected" and "align to slide").
+export function alignMoves(items, how, frame) {
+  return items.map((b) => {
+    let { x, y } = b;
+    if (how === "left") x = frame.x;
+    else if (how === "center") x = frame.x + (frame.w - b.w) / 2;
+    else if (how === "right") x = frame.x + frame.w - b.w;
+    else if (how === "top") y = frame.y;
+    else if (how === "middle") y = frame.y + (frame.h - b.h) / 2;
+    else if (how === "bottom") y = frame.y + frame.h - b.h;
+    else throw new Error(`unknown alignment ${how}`);
+    return { id: b.id, x: Math.round(x * 1000) / 1000, y: Math.round(y * 1000) / 1000 };
+  });
+}
+
+// Equal gaps between three or more boxes along one axis: the outermost
+// two stay where they are and the rest are spaced between them, in the
+// order they already sit.
+export function distributeMoves(items, axis) {
+  if (items.length < 3) return items.map((b) => ({ id: b.id, x: b.x, y: b.y }));
+  const pos = axis === "x" ? "x" : "y", size = axis === "x" ? "w" : "h";
+  const sorted = [...items].sort((a, b) => a[pos] - b[pos] || a.id.localeCompare(b.id));
+  const first = sorted[0], last = sorted[sorted.length - 1];
+  const span = last[pos] + last[size] - first[pos];
+  const gap = (span - sorted.reduce((n, b) => n + b[size], 0)) / (sorted.length - 1);
+  let at = first[pos];
+  const moved = new Map();
+  for (const b of sorted) {
+    moved.set(b.id, Math.round(at * 1000) / 1000);
+    at += b[size] + gap;
+  }
+  return items.map((b) => ({ id: b.id, x: pos === "x" ? moved.get(b.id) : b.x, y: pos === "y" ? moved.get(b.id) : b.y }));
+}

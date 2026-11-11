@@ -10,7 +10,7 @@
 // Selection ownership stays with the viewer at all times; the
 // adapter reads it, never stores its own copy.
 import { SCENE_W, SCENE_H, isSystemChrome } from "../model/scene-constants.ts";
-import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements } from "./scene-arrange.js";
+import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements, alignMoves, distributeMoves } from "./scene-arrange.js";
 import {
   isEditableText,
   describeStructure,
@@ -656,6 +656,34 @@ export function attachEditor(viewer, doc, opts = {}) {
     const copied = copySelected();
     if (!copied.ok || copied.noop) return copied;
     return deleteSelected();
+  }
+
+  // One element lines up with the slide; several line up with each other.
+  // Distribution needs three, so there is a middle to space.
+  async function arrangeSelected(kind, how) {
+    const blocked = busy();
+    if (blocked) return blocked;
+    const { snap, els } = selectedTopLevel();
+    const movable = els.filter((e) => !e.locked && e.hidden !== true);
+    if (movable.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    const slide = doc.snapshot().scenes.find((sc) => sc.id === snap.slideId);
+    const items = movable.map((e) => ({ id: e.id, x: e.x ?? 0, y: e.y ?? 0, w: e.w ?? 0, h: e.h ?? 0 }));
+    let moves;
+    try {
+      moves = kind === "distribute"
+        ? distributeMoves(items, how)
+        : alignMoves(items, how, items.length === 1 ? { x: 0, y: 0, w: slide?.width ?? SCENE_W, h: slide?.height ?? SCENE_H } : unionBox(items));
+    } catch (err) {
+      return report({ ok: false, code: "bad-envelope", message: String(err?.message ?? err) });
+    }
+    const ops = moves
+      .filter((m) => { const b = items.find((i) => i.id === m.id); return Math.abs(b.x - m.x) > 1e-9 || Math.abs(b.y - m.y) > 1e-9; })
+      .map((m) => ({ slideId: snap.slideId, op: { type: "element.move", id: m.id, x: m.x, y: m.y } }));
+    if (ops.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    const result = await submitOps(ops, doc.snapshot().revision);
+    if (!result.ok) return report(result);
+    sync();
+    return result;
   }
 
   function selectAll() {
@@ -2057,6 +2085,8 @@ export function attachEditor(viewer, doc, opts = {}) {
     canPaste: () => clipboard !== null,
     duplicateSelected: () => track(duplicateSelected()),
     selectAll: () => selectAll(),
+    alignSelected: (how) => track(arrangeSelected("align", how)),
+    distributeSelected: (axis) => track(arrangeSelected("distribute", axis)),
     deleteSelected: () => deleteSelected(),
     undo: () => undo(),
     redo: () => redo(),

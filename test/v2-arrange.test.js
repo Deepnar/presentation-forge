@@ -234,3 +234,31 @@ describe("selection box", () => {
     assert.deepEqual(await sweep(r, [560, 48], [720, 240], { shift: true }), ["a", "c"]);
   });
 });
+
+describe("align and distribute", () => {
+  it("one element aligns to the slide, several to their own box, in one undo", async () => {
+    const r = await rig([slide("s", [box("a", 1, 1, 2, 1), box("b", 4, 2, 1, 1)])]);
+    r.viewer.api.select("a");
+    await r.editor.alignSelected("center");
+    assert.equal(el(r, "a").x, Math.round((13.333 / 2 - 1) * 1000) / 1000, "centred on the slide");
+    r.viewer.api.selectMany(["a", "b"]);
+    await r.editor.alignSelected("top");
+    assert.deepEqual([el(r, "a").y, el(r, "b").y], [1, 1]);
+    await r.editor.alignSelected("right");
+    assert.equal(el(r, "a").x + 2, el(r, "b").x + 1, "right edges meet");
+    const depth = r.doc.status().historyLength;
+    await r.doc.undo();
+    assert.equal(r.doc.status().historyLength, depth - 1);
+  });
+
+  it("distribution spaces the middle boxes evenly and leaves the ends", async () => {
+    const r = await rig([slide("s", [box("a", 1, 1, 1, 1), box("b", 2.5, 1, 2, 1), box("c", 9, 1, 1, 1)])]);
+    r.viewer.api.selectMany(["a", "b", "c"]);
+    await r.editor.distributeSelected("x");
+    assert.equal(el(r, "a").x, 1);
+    assert.equal(el(r, "c").x, 9);
+    // span 1..10 = 9in, boxes 4in, two gaps of 2.5in.
+    assert.equal(el(r, "b").x, 4.5);
+    assert.deepEqual(r.errors, []);
+  });
+});

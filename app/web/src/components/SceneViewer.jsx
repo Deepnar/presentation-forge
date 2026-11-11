@@ -21,6 +21,7 @@ import { createLiveDeckLoader } from "../lib/liveDeck.js";
 import { apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import { useNarrow } from "../lib/viewport.js";
 import SlideNotes from "./SlideNotes.jsx";
+import StageMenu from "./StageMenu.jsx";
 
 // Restores focus to the opener when a dialog closes. Dialogs trap
 // nothing; they only borrow focus, and the opener (often a toolbar
@@ -1014,6 +1015,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const docRef = useRef(null);
   const adapterRef = useRef(null);
   const [editOn, setEditOn] = useState(false);
+  const [stageMenu, setStageMenu] = useState(null);
   const imageInputRef = useRef(null);
   const [imageBusy, setImageBusy] = useState(false);
   // The picture goes to the project's asset store first; the slide then
@@ -1979,6 +1981,40 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const scrollRef = useRef(null);
   const viewerRef = useRef(null);
   const [snap, setSnap] = useState(null);
+  // Right-click on the slide: the pressed element joins the selection the
+  // way PowerPoint does (a fresh pick unless it is already selected), and
+  // empty canvas clears it, so the menu acts on what it was opened over.
+  const openStageMenu = useCallback((e) => {
+    const api = viewerRef.current?.api;
+    if (!editOn || !api || !adapterRef.current || adapterRef.current.hasPendingEdit?.()) return;
+    e.preventDefault();
+    const id = api.resolveNode(e.target);
+    if (id === null) api.clearSelection();
+    else if (!api.snapshot().selectedIds.includes(id)) api.select(id);
+    setStageMenu({ x: e.clientX, y: e.clientY, count: api.snapshot().selectedIds.length });
+  }, [editOn]);
+  const closeStageMenu = useCallback(() => {
+    setStageMenu(null);
+    mountRef.current?.focus({ preventScroll: true });
+  }, []);
+  const stageAction = useCallback(async (type, arg) => {
+    const a = adapterRef.current, api = viewerRef.current?.api;
+    if (!a || !api) return;
+    const simple = { cut: "cutSelected", copy: "copySelected", paste: "paste", duplicate: "duplicateSelected", delete: "deleteSelected", selectAll: "selectAll" };
+    if (simple[type]) return a[simple[type]]();
+    if (type === "align") return a.alignSelected(arg);
+    if (type === "distribute") return a.distributeSelected(arg);
+    if (type === "front" || type === "back") {
+      // One at a time in their current stacking order, so several selected
+      // elements keep their order among themselves at the new end.
+      const { slideIndex, selectedIds } = api.snapshot();
+      const order = () => (docRef.current?.snapshot().scenes[slideIndex]?.elements ?? []).map((el) => el.id);
+      const ids = order().filter((id) => selectedIds.includes(id));
+      for (const id of type === "front" ? ids : ids.reverse()) {
+        await a.reorderElement(id, type === "front" ? order().length - 1 : 0);
+      }
+    }
+  }, []);
   const [mountError, setMountError] = useState(null);
   // Font readiness gates the entire mount: the viewer (stage +
   // filmstrip) renders only after scene faces resolve, so neither
@@ -2529,6 +2565,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         )}
         <div
           ref={scrollRef}
+          onContextMenu={openStageMenu}
           data-scroll-container
           style={{ flex: 1, overflow: "auto", display: "flex", alignItems: "flex-start", justifyContent: "flex-start", padding: 24 }}
         >
@@ -2552,6 +2589,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
             />
           </div>
         </div>
+        {stageMenu && (
+          <StageMenu at={stageMenu} count={stageMenu.count} canPaste={!!adapterRef.current?.canPaste?.()} onAction={stageAction} onClose={closeStageMenu} />
+        )}
         <SlideNotes
           scene={(editedScenes ?? shownScenes)[snap?.slideIndex ?? -1] ?? null}
           editable={editOn && !textState.editing}
