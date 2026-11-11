@@ -356,6 +356,22 @@ export function defaultShapeElement(slide, form = "rect", opts = {}) {
   };
 }
 
+// A picture the author inserts: its own aspect, at most 6in x 4in, cascaded
+// like shapes so repeated inserts never stack exactly.
+export function defaultImageElement(slide, { src, width, height, alt = "", id, box } = {}) {
+  if (typeof src !== "string" || !src) throw new Error("scene-text: an image needs a source");
+  const ratio = width > 0 && height > 0 ? width / height : 4 / 3;
+  const w = Math.min(6, 4 * ratio), h = w / ratio;
+  const at = box ?? cascadeBox({ x: (SCENE_W - w) / 2, y: (SCENE_H - h) / 2, w, h }, cascadeIndex(slide));
+  return {
+    id: id ?? mintHumanId(),
+    kind: "image",
+    ...at,
+    provenance: "human",
+    image: { src, alt, fit: "contain" },
+  };
+}
+
 // Honest density visibility for tables WITHOUT a layout engine:
 // reuse the compiler's own lineCount heuristic against the
 // element's resolved column widths and row heights. Advisory only

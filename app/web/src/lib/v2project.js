@@ -108,6 +108,17 @@ export async function apiCopy(id, { title, scenes, theme }, fetchFn = fetch) {
   return body.project;
 }
 
+// Store a picture in the project's asset store; the reply carries the
+// asset reference a scene uses and the picture's pixel size.
+export async function apiUploadAsset(id, file, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/assets`, {
+    method: "POST", headers: { "Content-Type": file.type || "application/octet-stream", ...authHeaders() }, body: file,
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok || !body.asset) throw Object.assign(new Error(body.error ?? `HTTP ${res.status}`), { status: res.status, code: body.code });
+  return body.asset;
+}
+
 export async function apiLoad(id, fetchFn = fetch) {
   const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, { headers: { ...authHeaders() } });
   const body = await res.json().catch(() => null);

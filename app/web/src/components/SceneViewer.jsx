@@ -18,7 +18,7 @@ import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
-import { apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
+import { apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import { useNarrow } from "../lib/viewport.js";
 import SlideNotes from "./SlideNotes.jsx";
 
@@ -1014,6 +1014,25 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const docRef = useRef(null);
   const adapterRef = useRef(null);
   const [editOn, setEditOn] = useState(false);
+  const imageInputRef = useRef(null);
+  const [imageBusy, setImageBusy] = useState(false);
+  // The picture goes to the project's asset store first; the slide then
+  // gets an image element pointing at it, as one undoable edit.
+  async function insertPickedImage(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    const id = projectRef.current?.id;
+    if (!file || !id) return;
+    setImageBusy(true);
+    try {
+      const asset = await apiUploadAsset(id, file);
+      await adapterRef.current?.addImageElement({ src: asset.src, width: asset.width, height: asset.height, alt: file.name.replace(/\.[^.]+$/, "") });
+    } catch (err) {
+      setEditStatus((s) => ({ ...s, error: `picture not added: ${err.message}` }));
+    } finally {
+      setImageBusy(false);
+    }
+  }
   const [editedScenes, setEditedScenes] = useState(null);
   const [editStatus, setEditStatus] = useState({ rev: 0, error: null, preparing: false });
   // V2-6A durable projects: the bound project (id/title/durable
@@ -2385,6 +2404,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
               <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rectangle"} onClick={() => adapterRef.current?.addShapeElement("rect")} className={shellBtn}>+ Rect</button>
               <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rounded rectangle"} onClick={() => adapterRef.current?.addShapeElement("roundRect")} className={shellBtn}>+ Round</button>
               <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add an ellipse"} onClick={() => adapterRef.current?.addShapeElement("ellipse")} className={shellBtn}>+ Ellipse</button>
+              <input ref={imageInputRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onChange={insertPickedImage} />
+              <button type="button" disabled={textState.editing || !project?.id || imageBusy} title={!project?.id ? "Save the project first: pictures are stored with it" : textState.editing ? "Commit or cancel the text edit first" : "Insert a picture from your computer"} onClick={() => imageInputRef.current?.click()} className={shellBtn}>{imageBusy ? "Uploading…" : "+ Image"}</button>
             </>
           )}
           {editOn && textState.editing && (
