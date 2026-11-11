@@ -262,3 +262,34 @@ describe("align and distribute", () => {
     assert.deepEqual(r.errors, []);
   });
 });
+
+describe("shrink text to fit", () => {
+  const text = (h) => slide("s", [{
+    id: "t", kind: "text", x: 1, y: 1, w: 5, h, z: 0, provenance: "human",
+    paragraphs: [
+      { runs: [{ text: "A heading", size: 28, color: "111111" }], align: "left" },
+      { runs: [{ text: "Body text that runs on for a while so that it wraps over several lines in a five inch box. ".repeat(3), size: 18, color: "111111" }], align: "left" },
+    ],
+  }]);
+
+  it("scales every paragraph by one factor until the text seats, in one undo", async () => {
+    const r = await rig([text(1.6)]);
+    r.viewer.api.select("t");
+    const result = await r.editor.shrinkTextToFit();
+    assert.equal(result.ok, true);
+    const [h, b] = el(r, "t").paragraphs.map((p) => p.runs[0].size);
+    assert.ok(h < 28 && b < 18, `both shrank (${h}, ${b})`);
+    assert.ok(h > b, "the heading stays larger than the body");
+    const { overflowEstimate } = await import("../packages/editor/scene-text.js");
+    assert.equal(overflowEstimate(el(r, "t")).fits, true);
+    await r.doc.undo();
+    assert.deepEqual(el(r, "t").paragraphs.map((p) => p.runs[0].size), [28, 18]);
+  });
+
+  it("stops at the readable floor rather than going smaller", async () => {
+    const r = await rig([text(0.3)]);
+    r.viewer.api.select("t");
+    await r.editor.shrinkTextToFit();
+    assert.ok(el(r, "t").paragraphs.every((p) => p.runs[0].size >= 9));
+  });
+});

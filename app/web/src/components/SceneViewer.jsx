@@ -13,7 +13,7 @@ import { ProjectExportProvider,useProjectExports } from "./ProjectExports.jsx";
 // mutated here — selection is an id, geometry comes from the DOM.
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createViewer } from "../../../../packages/editor/scene-dom.js";
-import { flattenLayers, elementLabel, applyCollapse } from "../../../../packages/editor/scene-text.js";
+import { flattenLayers, elementLabel, applyCollapse, overflowEstimate } from "../../../../packages/editor/scene-text.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
@@ -1158,7 +1158,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       const adapter = attachEditor(targetViewer, doc, {
         root: mountRef.current,
         onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
-        onNotice: (n) => setTextState((t) => ({ ...t, overflow: n.message })),
+        onNotice: (n) => setTextState((t) => ({ ...t, overflow: n.message, overflowId: n.elementId ?? null })),
         onSync: (scenes) => {
           setTextState((t) => (t.overflow ? { ...t, overflow: null } : t));
           setEditedScenes(scenes);
@@ -1414,7 +1414,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     const adapter = attachEditor(targetViewer, fresh, {
       root: mountRef.current,
       onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
-      onNotice: (n) => setTextState((t) => ({ ...t, overflow: n.message })),
+      onNotice: (n) => setTextState((t) => ({ ...t, overflow: n.message, overflowId: n.elementId ?? null })),
       onSync: (scenes) => {
         setTextState((t) => (t.overflow ? { ...t, overflow: null } : t));
         setEditedScenes(scenes);
@@ -1993,7 +1993,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     const id = api.resolveNode(e.target);
     if (id === null) api.clearSelection();
     else if (!api.snapshot().selectedIds.includes(id)) api.select(id);
-    setStageMenu({ x: e.clientX, y: e.clientY, count: api.snapshot().selectedIds.length });
+    const { selectedIds, slideIndex } = api.snapshot();
+    const only = selectedIds.length === 1 ? (docRef.current?.snapshot().scenes[slideIndex]?.elements ?? []).find((el) => el.id === selectedIds[0]) : null;
+    setStageMenu({ x: e.clientX, y: e.clientY, count: selectedIds.length, overflowing: overflowEstimate(only)?.fits === false });
   }, [editOn]);
   const closeStageMenu = useCallback(() => {
     setStageMenu(null);
@@ -2005,6 +2007,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     const simple = { cut: "cutSelected", copy: "copySelected", paste: "paste", duplicate: "duplicateSelected", delete: "deleteSelected", selectAll: "selectAll" };
     if (simple[type]) return a[simple[type]]();
     if (type === "align") return a.alignSelected(arg);
+    if (type === "shrink") return a.shrinkTextToFit();
     if (type === "distribute") return a.distributeSelected(arg);
     if (type === "front" || type === "back") {
       // One at a time in their current stacking order, so several selected
@@ -2520,7 +2523,10 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         )}
         {textState.overflow && (
           <div role="status" data-text-overflow className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px] text-amber">
-            {textState.overflow}
+            {textState.overflow}{" "}
+            {!textState.editing && (textState.overflowId ?? textState.elementId) && (
+              <button type="button" data-shrink-to-fit onClick={() => adapterRef.current?.shrinkTextToFit(textState.overflowId ?? textState.elementId)} className={shellBtn}>Shrink text to fit</button>
+            )}
           </div>
         )}
         {textState.editing && (
@@ -2596,7 +2602,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           </div>
         </div>
         {stageMenu && (
-          <StageMenu at={stageMenu} count={stageMenu.count} canPaste={!!adapterRef.current?.canPaste?.()} onAction={stageAction} onClose={closeStageMenu} />
+          <StageMenu at={stageMenu} count={stageMenu.count} overflowing={stageMenu.overflowing} canPaste={!!adapterRef.current?.canPaste?.()} onAction={stageAction} onClose={closeStageMenu} />
         )}
         <SlideNotes
           scene={(editedScenes ?? shownScenes)[snap?.slideIndex ?? -1] ?? null}

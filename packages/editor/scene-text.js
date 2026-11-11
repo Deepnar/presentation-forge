@@ -429,7 +429,9 @@ export function tableOverflowEstimate(el) {
 export function measureText(el, w = el?.w, paragraphs = el?.paragraphs) {
   if (!el || el.kind !== "text" || !Array.isArray(paragraphs) || !w) return null;
   let lines = 0;
-  let size = 12;
+  // The largest run sets the line pitch; 12pt only stands in when no run
+  // says, so small text is not measured as if it were 12pt.
+  let size = 0;
   let line = 1.35;
   for (const p of paragraphs) {
     let best = null;
@@ -437,7 +439,7 @@ export function measureText(el, w = el?.w, paragraphs = el?.paragraphs) {
       if (!best || (r.size ?? 0) > (best.size ?? 0)) best = r;
     }
     if (!best) continue;
-    size = Math.max(size, best.size ?? size);
+    size = Math.max(size, best.size ?? 12);
     line = best.line ?? line;
     const style = {
       family: best.family || undefined,
@@ -450,7 +452,7 @@ export function measureText(el, w = el?.w, paragraphs = el?.paragraphs) {
       lines += Math.max(1, lineCount(segment, Math.max(0.1, w), style));
     }
   }
-  const lineH = (size / 72) * line;
+  const lineH = ((size || 12) / 72) * line;
   return { lines, lineH, height: lines * lineH };
 }
 

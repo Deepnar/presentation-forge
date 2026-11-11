@@ -24,7 +24,7 @@ function Glyph({ name }) {
   );
 }
 
-export default function StageMenu({ at, count, canPaste, onAction, onClose }) {
+export default function StageMenu({ at, count, overflowing, canPaste, onAction, onClose }) {
   const ref = useRef(null);
   useEffect(() => {
     const away = (e) => { if (!ref.current?.contains(e.target)) onClose(); };
@@ -71,6 +71,7 @@ export default function StageMenu({ at, count, canPaste, onAction, onClose }) {
           {item("Paste", "paste", `${MOD}V`, !canPaste)}
           {item("Duplicate", "duplicate", `${MOD}D`)}
           {item("Delete", "delete", "Del")}
+          {overflowing && <>{rule}{item("Shrink text to fit", "shrink")}</>}
           {rule}
           {item("Bring to front", "front")}
           {item("Send to back", "back")}

@@ -45,6 +45,7 @@ export const NUDGE_STEP = 0.05; // inches per arrow press
 export const NUDGE_LARGE_STEP = 0.25; // inches with Shift held
 export const DRAG_THRESHOLD_PX = 4; // client px before a press becomes a drag
 export const MIN_RESIZE_IN = 0.1; // floor for resized extents, in scene inches
+export const SHRINK_FLOOR_PT = 9; // shrink-to-fit never sets text smaller than this
 // Resize-handle vocabulary: eight anchors with per-handle cursors.
 // Only the full set is ever rendered — every handle below has a
 // correct implementation through element.setGeometry (§4).
@@ -684,6 +685,43 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (!result.ok) return report(result);
     sync();
     return result;
+  }
+
+  // PowerPoint's "shrink text on overflow", on request: every paragraph
+  // scaled by one factor (so a heading stays larger than its body), the
+  // largest factor that seats the text, never below the readable floor.
+  async function shrinkTextToFit(id = null) {
+    const blocked = busy();
+    if (blocked) return blocked;
+    const snap = api.snapshot();
+    const target = id ?? (snap.selectedIds.length === 1 ? snap.selectedIds[0] : null);
+    const el = target ? findIn(doc.snapshot().scenes, snap.slideId, target) : null;
+    if (!el || el.kind !== "text") return report({ ok: false, code: "op-rejected", message: "Select a text box to shrink its text." });
+    if (el.locked) return report({ ok: false, code: "locked", message: "This text is locked." });
+    if (overflowEstimate(el)?.fits !== false) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    const paras = el.paragraphs ?? [];
+    if (paras.some((p) => (p.runs ?? []).length !== 1)) {
+      return report({ ok: false, code: "op-rejected", message: "This text mixes formatting inside a paragraph, so it can't be shrunk evenly." });
+    }
+    const sizes = paras.map((p) => p.runs[0].size ?? 12);
+    const at = (k) => sizes.map((z) => Math.max(SHRINK_FLOOR_PT, Math.floor(z * k * 2) / 2));
+    const seated = (next) => (measureText(el, el.w, paras.map((p, i) => ({ ...p, runs: [{ ...p.runs[0], size: next[i] }] })))?.height ?? 0) <= el.h + 1e-6;
+    let next = at(SHRINK_FLOOR_PT / Math.max(...sizes));
+    for (let k = 0.98; k > 0; k -= 0.02) {
+      const tried = at(k);
+      if (seated(tried)) { next = tried; break; }
+      if (tried.every((z) => z === SHRINK_FLOOR_PT)) break;
+    }
+    const ops = next
+      .map((size, i) => ({ size, i }))
+      .filter(({ size, i }) => size !== sizes[i])
+      .map(({ size, i }) => ({ slideId: snap.slideId, op: { type: "element.setTextStyle", id: el.id, paragraphIndex: i, style: { size } } }));
+    if (ops.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    const result = await submitOps(ops, doc.snapshot().revision);
+    if (!result.ok) return report(result);
+    sync();
+    noticeOverflow(snap.slideId, el.id);
+    return { ...result, sizes: next };
   }
 
   function selectAll() {
@@ -2086,6 +2124,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     duplicateSelected: () => track(duplicateSelected()),
     selectAll: () => selectAll(),
     alignSelected: (how) => track(arrangeSelected("align", how)),
+    shrinkTextToFit: (id = null) => track(shrinkTextToFit(id)),
     distributeSelected: (axis) => track(arrangeSelected("distribute", axis)),
     deleteSelected: () => deleteSelected(),
     undo: () => undo(),
