@@ -1489,13 +1489,44 @@ function graphHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: (
   const nodeW = Math.min(2.4, Math.max(1.2, layerSpaceX - 0.35 - chipGapX));
   const nodeH = Math.max(0.6, Math.min(1.2, layerSpaceY - 0.25 - chipGapY));
   const centres = new Map<string, { x: number; y: number }>();
+  // Along-the-layer positions: the first layer spreads evenly; every later
+  // node sits at the mean of its sources, so a child lands under its parent,
+  // then neighbours are pushed apart to a node's width and the layer is
+  // pulled back inside the slide.
+  const alongPos = new Map<string, number>();
+  const nodeAlong = vertical ? nodeW : nodeH, spacing = nodeAlong + (vertical ? 0.3 : 0.2);
   layers.forEach((layer, li) => {
     const per = along / layer.length;
-    layer.forEach((id, ni) => {
-      const a = per * (ni + 0.5);
-      const c = across * (li + 0.5) / (maxDepth + 1);
-      centres.set(id, vertical ? { x: box.x + a, y: top + c } : { x: box.x + c, y: top + a });
+    const want = layer.map((id, ni) => {
+      const sources = links.filter((l) => l.to === id && alongPos.has(l.from)).map((l) => alongPos.get(l.from)!);
+      return { id, at: li && sources.length ? sources.reduce((n, v) => n + v, 0) / sources.length : per * (ni + 0.5) };
     });
+    // Nodes that would touch merge into a run centred on the mean of where
+    // its members want to be, so siblings spread evenly about their parent.
+    const runs: { members: typeof want; centre: number }[] = [];
+    const first = (r: { members: typeof want; centre: number }) => r.centre - ((r.members.length - 1) * spacing) / 2;
+    for (const w of want) {
+      runs.push({ members: [w], centre: w.at });
+      while (runs.length > 1) {
+        const last = runs[runs.length - 1], prev = runs[runs.length - 2];
+        if (first(last) >= first(prev) + prev.members.length * spacing - 1e-9) break;
+        const members = [...prev.members, ...last.members];
+        runs.splice(runs.length - 2, 2, { members, centre: members.reduce((n, m) => n + m.at, 0) / members.length });
+      }
+    }
+    const placed = runs.flatMap((r) => r.members.map((m, i) => ({ id: m.id, at: first(r) + i * spacing })));
+    // Then the layer as a whole is pulled back inside the slide.
+    const shift = placed.length
+      ? Math.max(nodeAlong / 2 - placed[0].at, Math.min(0, along - nodeAlong / 2 - placed[placed.length - 1].at))
+      : 0;
+    for (const p of placed) alongPos.set(p.id, p.at + shift);
+  });
+  layers.forEach((layer, li) => {
+    const c = across * (li + 0.5) / (maxDepth + 1);
+    for (const id of layer) {
+      const a = alongPos.get(id)!;
+      centres.set(id, vertical ? { x: box.x + a, y: top + c } : { x: box.x + c, y: top + a });
+    }
   });
   const frames = [...centres.values()].map((c) => ({ x: c.x - nodeW / 2, y: c.y - nodeH / 2, w: nodeW, h: nodeH }));
   const { lines, labels } = connectionEls({ ...ctx, slide: { ...slide, connections: links } }, centres, { w: nodeW / 2, h: nodeH / 2 }, takeZ, frames);
