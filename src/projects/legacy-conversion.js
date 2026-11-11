@@ -51,7 +51,7 @@ function rule(types, fields, convert) {
 }
 rule("title section chapter", [], (s, c) => {
   c.slide.rhetoricalRole = s.type === "title" ? "opening" : "transition";
-  c.text(s.type === "title" ? c.deck.subtitle : undefined);
+  c.text(s.type === "title" ? (s.standfirst?.trim() || c.deck.subtitle) : undefined);
   if (!c.blocks.length) c.text(s.headline ?? c.deck.title);
 });
 rule("closing", ["body", "cta"], (s, c) => {
@@ -574,18 +574,24 @@ export async function convertGeneratedDeck(deck, { identity = null } = {}) {
       const refs = unlinked.map(t => `Source: ${t}`).join("\n");
       slide.speakerNotes = slide.speakerNotes ? `${slide.speakerNotes}\n\n${refs}` : refs;
     }
-    if (source.section !== undefined) {
+    // The cover drew neither a section label nor a context line: its
+    // standfirst was the subtitle (the deck subtitle stood in otherwise).
+    const cover = source.type === "title";
+    if (cover && source.section !== undefined) dropped.push({ path: `${path}.section`, reason: "the cover never drew a section label" });
+    if (!cover && source.section !== undefined) {
       if (!Number.isInteger(source.section) || source.section < 0 || typeof deck.sections?.[source.section] !== "string") refuse(`${path}.section`, "section index does not resolve to an authored label");
       else contextText(deck.sections[source.section], `Section ${String(source.section + 1).padStart(2, "0")}`);
     }
-    contextText(source.standfirst, "Context");
+    if (!cover) contextText(source.standfirst, "Context");
     rule.convert(source, { deck, path, slide, blocks: slide.blocks, add, text, keys, refuse, drop: (at, reason) => dropped.push({ path: at, reason }) });
     if (source.type !== "title" && index === 0) contextText(deck.subtitle, "Deck context");
     if (source.type === "title" && identity) {
       const credits = titleCredits(identity);
       if (credits.length) add("text", { text: credits.join("\n"), emphasis: "context" });
     }
-    if (source.speaker_note) add("callout", { label: "Audience note", text: source.speaker_note });
+    // The on-slide note bar frames the slide like a standfirst; as context it
+    // never becomes a layer, quadrant or lane of an arranged slide.
+    if (source.speaker_note) add("callout", { label: "Audience note", text: source.speaker_note, emphasis: "context" });
     if (!slide.blocks.length) text(source.headline ?? deck.title);
     return slide;
   });
