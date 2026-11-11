@@ -62,7 +62,7 @@
             "emphasis": { "type": "string", "maxLength": 120 },
             "mediaSide": { "enum": ["left", "right"] },
             "flowDirection": { "enum": ["across", "down"], "description": "Whether a sequence reads left to right or top to bottom. Absent means across." },
-            "arrangement": { "enum": ["tiers", "radial", "layers", "funnel", "pyramid", "graph", "quadrants", "lanes"], "description": "How blocks are arranged. Hierarchies: the first block above the rest (tiers), at the centre with the rest around it (radial), every block a full-width band stacked top first (layers) or bands narrowing downward (funnel) or widening downward (pyramid), or a node graph along its connections (graph). Card grids: four blocks as a 2x2 between the slide's axes (quadrants), or one row per block group in first-seen order (lanes). Absent means the family's default." }
+            "arrangement": { "enum": ["tiers", "radial", "layers", "funnel", "pyramid", "graph", "quadrants", "lanes", "venn"], "description": "How blocks are arranged. Hierarchies: the first block above the rest (tiers), at the centre with the rest around it (radial), every block a full-width band stacked top first (layers) or bands narrowing downward (funnel) or widening downward (pyramid), or a node graph along its connections (graph). Card grids: four blocks as a 2x2 between the slide's axes (quadrants), one row per block group in first-seen order (lanes), or two to four overlapping sets (venn). Absent means the family's default." }
           }
         },
         "sourceRefs": { "type": "array", "items": { "type": "string" } },

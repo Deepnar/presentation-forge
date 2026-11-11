@@ -777,6 +777,61 @@ function laneGrid(ctx: MechanismCtx, top: number, bottom: number, takeZ: () => n
   return els;
 }
 
+// Two to four sets as translucent overlapping circles, each named above or
+// below its circle with its members listed inside — the legacy geometry.
+const VENN_UNIT: Record<number, { x: number; y: number }[]> = {
+  2: [{ x: -0.28, y: 0 }, { x: 0.28, y: 0 }],
+  3: [{ x: 0, y: -0.255 }, { x: -0.391, y: 0.17 }, { x: 0.391, y: 0.17 }],
+  4: [{ x: -0.32, y: -0.272 }, { x: 0.32, y: -0.272 }, { x: -0.32, y: 0.272 }, { x: 0.32, y: 0.272 }],
+};
+function vennSets(ctx: MechanismCtx, top: number, bottom: number, takeZ: () => number): SceneElement[] {
+  const { slide, design, box } = ctx;
+  const els: SceneElement[] = [];
+  const unit = VENN_UNIT[slide.blocks.length];
+  const labelH = 0.42;
+  const above = unit.map((u) => u.y <= 0);
+  const bands = (above.some(Boolean) ? labelH : 0) + (above.some((a) => !a) ? labelH : 0);
+  const spanUp = Math.max(...unit.map((u) => -u.y + 0.5)), spanDown = Math.max(...unit.map((u) => u.y + 0.5));
+  const d = Math.max(1.0, Math.min(3.2, box.w / 3.4, (bottom - top - bands) / (spanUp + spanDown)));
+  const cx = box.x + box.w / 2;
+  const cy = top + (above.some(Boolean) ? labelH : 0) + spanUp * d;
+  const centres = unit.map((u) => ({ x: cx + u.x * d, y: cy + u.y * d }));
+  const fills = [design.palette.accent.hex, design.palette.accentAlt.hex, design.palette.inkMuted.hex, design.palette.rule.hex];
+  // Circles first so every label and list draws above every circle.
+  slide.blocks.forEach((block, i) => {
+    const c = centres[i];
+    els.push({
+      id: `${slide.id}:${block.id}:frame`, kind: "shape", x: c.x - d / 2, y: c.y - d / 2, w: d, h: d, z: takeZ(),
+      provenance: "compiler", semanticRef: block.id,
+      shape: { form: "ellipse", fill: fills[i % fills.length], fillAlpha: 0.38 },
+    });
+  });
+  slide.blocks.forEach((block, i) => {
+    const c = centres[i];
+    // A circle's text keeps clear of its nearest neighbour on the same row.
+    const row = centres.filter((o, j) => j !== i && Math.abs(o.y - c.y) < 0.2);
+    const room = row.length ? Math.max(0.9, Math.min(2.4, ...row.map((o) => Math.abs(o.x - c.x) - 0.12))) : 2.4;
+    if (block.label) {
+      els.push({ ...textEl(`${slide.id}:${block.id}:label`, block.id,
+        { x: c.x - room / 2, y: above[i] ? c.y - d / 2 - labelH : c.y + d / 2 + 0.07, w: room, h: 0.35 },
+        [{ runs: [{ text: block.label, role: "caption", bold: true, color: ink(design) }], align: "center" as const }],
+        takeZ(), { ...fitOf(ctx), policy: "one-line" }), valign: "middle" as const });
+    }
+    const items = block.items ?? (block.text ? [block.text] : []);
+    if (items.length) {
+      const h = Math.min(d * 0.7, items.length * 0.32);
+      // Members sit toward the circle's own side, out of the shared middle.
+      const ix = c.x + (c.x - cx) * 0.45, iy = c.y + (c.y - cy) * 0.45;
+      const w = Math.min(room, d * 0.6);
+      els.push({ ...textEl(`${slide.id}:${block.id}:content`, block.id,
+        { x: ix - w / 2, y: iy - h / 2, w, h },
+        items.map((t) => ({ runs: [{ text: t, role: "caption", color: ink(design) }], align: "center" as const })),
+        takeZ(), fitOf(ctx)), valign: "middle" as const });
+    }
+  });
+  return els;
+}
+
 function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const { slide, design, box, comp } = ctx;
   const els: SceneElement[] = [];
@@ -788,6 +843,7 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const bottom = box.bottom - (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation" ? 0.6 : 0);
   const arranged = slide.layoutHint?.arrangement === "quadrants" && slide.blocks.length === 4 ? quadrantGrid(ctx, y, bottom, takeZ)
     : slide.layoutHint?.arrangement === "lanes" ? laneGrid(ctx, y, bottom, takeZ)
+    : slide.layoutHint?.arrangement === "venn" && slide.blocks.length >= 2 && slide.blocks.length <= 4 ? vennSets(ctx, y, bottom, takeZ)
     : null;
   if (arranged) {
     els.push(...arranged);
