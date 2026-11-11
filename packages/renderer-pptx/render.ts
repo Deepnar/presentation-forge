@@ -321,7 +321,7 @@ function addTableElement(slide: PptxSlide, el: SceneElement): void {
       valign: "top" as const,
       ...(isHeader && layout.headerFill ? { fill: { color: layout.headerFill } } : {}),
     };
-    return row.map((cell) => ({ text: cell, options: style }));
+    return row.map((cell, ci) => ({ text: cell, options: { ...style, align: table?.columnAlign?.[ci] ?? "left" } }));
   });
   slide.addTable(body, {
     x: el.x, y: el.y, w: el.w, h: el.h,
@@ -330,6 +330,16 @@ function addTableElement(slide: PptxSlide, el: SceneElement): void {
     border: { pt: 0.5, color: layout.gridColor ?? "D8D8D2" },
     ...(layout.padding !== undefined ? { margin: layout.padding } : {}),
   });
+  // An emphasised row carries an accent bar at its left edge, as in the SVG.
+  if (table?.emphasisRows?.length && layout.emphasisColor && layout.rowHeights?.length) {
+    let y = el.y;
+    layout.rowHeights.forEach((h, ri) => {
+      if (table.emphasisRows!.includes(ri)) {
+        slide.addShape("rect", { x: el.x, y: y + 0.02, w: 0.06, h: Math.max(0.01, h - 0.04), fill: { color: layout.emphasisColor }, line: { type: "none" } });
+      }
+      y += h;
+    });
+  }
 }
 
 function addLineElement(slide: PptxSlide, el: SceneElement): void {

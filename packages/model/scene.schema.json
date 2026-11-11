@@ -362,6 +362,8 @@
                   "items": { "type": "array", "items": { "type": "string" } }
                 },
                 "header": { "type": "boolean" },
+                "columnAlign": { "type": "array", "description": "Authored text alignment per column; absent columns align left.", "items": { "enum": ["left", "center", "right"] } },
+                "emphasisRows": { "type": "array", "description": "Indexes into rows that the author marked for emphasis, drawn with an accent bar at the row's left edge.", "items": { "type": "integer", "minimum": 0 } },
                 "layout": {
                   "type": "object",
                   "description": "Compiler-resolved table presentation: row geometry, header treatment, cell typography, padding, grid. Renderers project it verbatim and never recompute it.",
@@ -384,7 +386,8 @@
                     "bodySize": { "type": "number", "exclusiveMinimum": 0 },
                     "fontFamily": { "type": "string" },
                     "padding": { "type": "number", "minimum": 0 },
-                    "gridColor": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
+                    "gridColor": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" },
+                    "emphasisColor": { "type": "string", "pattern": "^[0-9A-Fa-f]{6}$" }
                   }
                 }
               }

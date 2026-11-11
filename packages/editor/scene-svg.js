@@ -243,12 +243,19 @@ function elementSvg(el, opts = {}) {
         const out = row.map((cell, ci) => {
           const cw = widths[ci] - 2 * padPx;
           const lines = wrapCell(String(cell ?? ""), Math.max(8, cw), style);
+          const align = el.table?.columnAlign?.[ci] ?? "left";
+          const tx = align === "right" ? xs[ci] + widths[ci] - padPx : align === "center" ? xs[ci] + widths[ci] / 2 : xs[ci] + padPx;
+          const anchor = align === "right" ? ' text-anchor="end"' : align === "center" ? ' text-anchor="middle"' : "";
           const texts = lines.map((ln, li) =>
-            `<text x="${(xs[ci] + padPx).toFixed(1)}" y="${(cy + padPx + size * (li + 1)).toFixed(1)}" font-size="${size.toFixed(1)}" fill="#${color}"${family}${weight}>${esc(ln)}</text>`).join("");
+            `<text x="${tx.toFixed(1)}" y="${(cy + padPx + size * (li + 1)).toFixed(1)}"${anchor} font-size="${size.toFixed(1)}" fill="#${color}"${family}${weight}>${esc(ln)}</text>`).join("");
           return `<rect x="${xs[ci].toFixed(1)}" y="${cy.toFixed(1)}" width="${widths[ci].toFixed(1)}" height="${(rh * 96).toFixed(1)}"${fill} stroke="${grid}"/>${texts}`;
         }).join("");
+        // An emphasised row carries an accent bar at its left edge.
+        const bar = el.table?.emphasisRows?.includes(ri) && layout.emphasisColor
+          ? `<rect x="${x.toFixed(1)}" y="${(cy + 2).toFixed(1)}" width="${(0.06 * 96).toFixed(1)}" height="${Math.max(1, rh * 96 - 4).toFixed(1)}" fill="#${layout.emphasisColor}"/>`
+          : "";
         cy += rh * 96;
-        return out;
+        return out + bar;
       }).join("");
       return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}>${cells}</g>`;
     }

@@ -167,6 +167,14 @@ export interface SceneElement {
     rows: string[][];
     header?: boolean;
     /**
+     * Authored text alignment per column; absent columns align left.
+     */
+    columnAlign?: ("left" | "center" | "right")[];
+    /**
+     * Indexes into rows that the author marked for emphasis, drawn with an accent bar at the row's left edge.
+     */
+    emphasisRows?: number[];
+    /**
      * Compiler-resolved table presentation: row geometry, header treatment, cell typography, padding, grid. Renderers project it verbatim and never recompute it.
      */
     layout?: {
@@ -184,6 +192,7 @@ export interface SceneElement {
       fontFamily?: string;
       padding?: number;
       gridColor?: string;
+      emphasisColor?: string;
     };
   };
   group?: {

@@ -362,7 +362,13 @@ function renderBlockPrimary(
       };
     }
     case "table": {
-      return tableElement(id, block.id, region, block.rows ?? [], block.header === true, z, design, { slideId, sink: ctx.sink });
+      const table = tableElement(id, block.id, region, block.rows ?? [], block.header === true, z, design, { slideId, sink: ctx.sink });
+      if (block.columnAlign?.length) table.table!.columnAlign = [...block.columnAlign];
+      if (block.emphasisRows?.length) {
+        table.table!.emphasisRows = [...block.emphasisRows];
+        table.table!.layout!.emphasisColor = design.palette.accent.hex;
+      }
+      return table;
     }
     default: {
       const { paras, policy } = blockParas(block, design);

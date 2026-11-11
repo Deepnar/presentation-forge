@@ -129,6 +129,8 @@
         "fit": { "enum": ["cover", "contain"], "description": "Whether the image may be cropped to fill its region (cover) or must show whole (contain)." },
         "icon": { "type": "string", "minLength": 1, "maxLength": 16, "description": "A short emoji or symbol that heads the block, drawn as text." },
         "group": { "type": "string", "minLength": 1, "maxLength": 60, "description": "The named group (a roadmap phase, a lane) this block belongs to." },
+        "columnAlign": { "type": "array", "maxItems": 12, "items": { "enum": ["left", "center", "right"] }, "description": "A table's text alignment per column, as authored." },
+        "emphasisRows": { "type": "array", "maxItems": 40, "items": { "type": "integer", "minimum": 0 }, "description": "Table rows (indexes into rows, header included) the author marked for emphasis." },
         "caption": { "type": "string", "maxLength": 300 },
         "chartKind": { "enum": ["bar", "hbar", "line", "pie", "doughnut", "area"] },
         "categories": { "type": "array", "items": { "type": "string", "maxLength": 60 } },

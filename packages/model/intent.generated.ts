@@ -118,6 +118,18 @@ export interface ContentBlock {
    * The named group (a roadmap phase, a lane) this block belongs to.
    */
   group?: string;
+  /**
+   * A table's text alignment per column, as authored.
+   *
+   * @maxItems 12
+   */
+  columnAlign?: ("left" | "center" | "right")[];
+  /**
+   * Table rows (indexes into rows, header included) the author marked for emphasis.
+   *
+   * @maxItems 40
+   */
+  emphasisRows?: number[];
   caption?: string;
   chartKind?: "bar" | "hbar" | "line" | "pie" | "doughnut" | "area";
   categories?: string[];
