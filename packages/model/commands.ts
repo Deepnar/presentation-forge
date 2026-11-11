@@ -453,7 +453,10 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       return { type: "element.updateText", id: cmd.id, ...prev };
     }
     case "element.add": {
-      const el: SceneElement = { id: cmd.element.id ?? humanId(), provenance: "human", z: scene.elements.length, ...cmd.element };
+      // A new element lands on top: compiled slides rank in steps of ten, so
+      // the element count alone would slide it under the compiled content.
+      const top = scene.elements.reduce((m, e) => Math.max(m, e.z ?? 0), -1) + 1;
+      const el: SceneElement = { id: cmd.element.id ?? humanId(), provenance: "human", z: top, ...cmd.element };
       // Explicit index restores exact position on undo-delete; the
       // default appends. Out-of-range indices clamp to the end.
       const at = cmd.index === undefined ? scene.elements.length : Math.max(0, Math.min(cmd.index, scene.elements.length));

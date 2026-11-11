@@ -596,7 +596,7 @@ describe("v2-5d native insertion", () => {
     assert.equal(el.provenance, "human");
     assert.equal(el.paragraphs[0].runs[0].text, "inserted line");
     assert.equal(scene.elements[scene.elements.length - 1].id, result.id, "predictable draw order: appended");
-    assert.equal(el.z, before, "z follows append order");
+    assert.ok(scene.elements.every((e) => e === el || e.z < el.z), "z is above every existing element, whatever their spacing");
     assert.deepEqual(r.viewer.api.snapshot().selectedIds, [result.id], "immediately selectable");
     const verdict = await validateScene(scene);
     assert.equal(verdict.ok, true);
@@ -743,5 +743,18 @@ describe("v2-5d native export", () => {
     assert.match(xml, /line one/);
     assert.match(xml, /line two/);
     assert.match(xml, /<a:br\/>|<a:p>/, "paragraph break structure present");
+  });
+});
+
+describe("insertions land on top of compiled content", () => {
+  it("a new element outranks compiler layers spaced ten apart", async () => {
+    const { createDocument } = await import("../packages/model/engine.ts");
+    const { blankSlide } = await import("../packages/editor/scene-text.js");
+    const scene = blankSlide();
+    scene.elements.push({ id: "card", kind: "shape", x: 1, y: 1, w: 3, h: 2, z: 40, provenance: "compiler", shape: { form: "rect", fill: "FFFFFF" } });
+    const doc = await createDocument([scene]);
+    const result = await doc.apply({ id: "e-top", slideId: scene.id, op: { type: "element.add", element: { id: "h-000000000001", kind: "shape", x: 2, y: 2, w: 1, h: 1, shape: { form: "rect", fill: "000000" } } }, baseRevision: 0, actor: "human" });
+    assert.equal(result.ok, true);
+    assert.equal(doc.snapshot().scenes[0].elements.find((e) => e.id === "h-000000000001").z, 41);
   });
 });
