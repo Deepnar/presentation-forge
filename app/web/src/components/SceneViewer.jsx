@@ -1023,12 +1023,17 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   async function insertPickedImage(event) {
     const file = event.target.files?.[0];
     event.target.value = "";
+    await insertImageFile(file);
+  }
+  // One path for the picker, a paste and a drop: upload to the project,
+  // then place — at `center` (scene inches) when it was dropped.
+  async function insertImageFile(file, center = null) {
     const id = projectRef.current?.id;
-    if (!file || !id) return;
+    if (!file || !id || !/^image\//.test(file.type ?? "")) return;
     setImageBusy(true);
     try {
       const asset = await apiUploadAsset(id, file);
-      await adapterRef.current?.addImageElement({ src: asset.src, width: asset.width, height: asset.height, alt: file.name.replace(/\.[^.]+$/, "") });
+      await adapterRef.current?.addImageElement({ src: asset.src, width: asset.width, height: asset.height, alt: (file.name ?? "picture").replace(/\.[^.]+$/, ""), ...(center ? { center } : {}) });
     } catch (err) {
       setEditStatus((s) => ({ ...s, error: `picture not added: ${err.message}` }));
     } finally {
@@ -1159,6 +1164,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         root: mountRef.current,
         onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
         onNotice: (n) => setTextState((t) => ({ ...t, overflow: n.message, overflowId: n.elementId ?? null })),
+        onPasteFiles: (files) => { for (const f of files) insertImageFile(f); },
         onSync: (scenes) => {
           setTextState((t) => (t.overflow ? { ...t, overflow: null } : t));
           setEditedScenes(scenes);
@@ -1415,6 +1421,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       root: mountRef.current,
       onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
       onNotice: (n) => setTextState((t) => ({ ...t, overflow: n.message, overflowId: n.elementId ?? null })),
+        onPasteFiles: (files) => { for (const f of files) insertImageFile(f); },
       onSync: (scenes) => {
         setTextState((t) => (t.overflow ? { ...t, overflow: null } : t));
         setEditedScenes(scenes);
@@ -2578,6 +2585,15 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         <div
           ref={scrollRef}
           onContextMenu={openStageMenu}
+          onDragOver={(e) => { if (editOn && [...(e.dataTransfer?.items ?? [])].some((i) => i.kind === "file")) e.preventDefault(); }}
+          onDrop={(e) => {
+            const files = [...(e.dataTransfer?.files ?? [])].filter((f) => /^image\//.test(f.type));
+            if (!editOn || files.length === 0) return;
+            e.preventDefault();
+            const rect = mountRef.current?.querySelector("svg")?.getBoundingClientRect();
+            const center = rect && rect.width > 0 ? { x: ((e.clientX - rect.left) / rect.width) * 13.333, y: ((e.clientY - rect.top) / rect.height) * 7.5 } : null;
+            for (const f of files) insertImageFile(f, center);
+          }}
           data-scroll-container
           style={{ flex: 1, overflow: "auto", display: "flex", alignItems: "flex-start", justifyContent: "flex-start", padding: 24 }}
         >

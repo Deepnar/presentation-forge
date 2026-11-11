@@ -136,7 +136,8 @@ Decisions taken with this list, so nobody re-litigates them:
        distribute, shrink to fit;
      - autosave keeps retrying through a lost connection (backoff, and at
        once on `online`) and says "Offline · will save when reconnected".
-     Left: paste or drop an image file onto the slide; group / ungroup
+     Paste or drop an image file onto the slide (code and unit tests done,
+     not yet checked in a browser). Left: group / ungroup
      (Ctrl+G); a rotation handle (the schema has `rotation`, nothing sets
      it); equal-spacing guides; arrow-key nudge through the same snapping.
 6. **[ ] F5 — Whole-site UI/UX redesign** (after the core items above). See

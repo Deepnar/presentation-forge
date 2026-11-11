@@ -83,8 +83,9 @@ done; editing behaviour that feels broken counts as core.
 - **F4b** the editor behaves like a slide editor — most of it landed
   2026-11-11 (text boxes fit their text, snapping and guides, Shift
   constraints, clipboard keys, drag-to-select, a right-click menu with
-  align/distribute, shrink to fit, offline autosave). Left: paste/drop an
-  image file, group/ungroup, rotation — listed in the roadmap entry. New
+  align/distribute, shrink to fit, offline autosave). Paste/drop of image
+  files landed after (not yet clicked through in the browser — check a real
+  screenshot paste and a file drop first). Left: group/ungroup, rotation. New
   editor gestures live in `packages/editor/scene-arrange.js` (pure) and
   `scene-edit.js` (wiring); `test/v2-arrange.test.js` covers them.
 - **F1g / F1h** (fit warnings in the editor; re-import a changed deck).

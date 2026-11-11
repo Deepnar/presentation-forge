@@ -358,11 +358,18 @@ export function defaultShapeElement(slide, form = "rect", opts = {}) {
 
 // A picture the author inserts: its own aspect, at most 6in x 4in, cascaded
 // like shapes so repeated inserts never stack exactly.
-export function defaultImageElement(slide, { src, width, height, alt = "", id, box } = {}) {
+// `center`, in scene inches, places the picture where it was dropped —
+// kept wholly on the slide; otherwise it cascades from the middle.
+export function defaultImageElement(slide, { src, width, height, alt = "", id, box, center } = {}) {
   if (typeof src !== "string" || !src) throw new Error("scene-text: an image needs a source");
   const ratio = width > 0 && height > 0 ? width / height : 4 / 3;
   const w = Math.min(6, 4 * ratio), h = w / ratio;
-  const at = box ?? cascadeBox({ x: (SCENE_W - w) / 2, y: (SCENE_H - h) / 2, w, h }, cascadeIndex(slide));
+  const W = slide?.width ?? SCENE_W, H = slide?.height ?? SCENE_H;
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), Math.max(lo, hi));
+  const r3 = (n) => Math.round(n * 1000) / 1000;
+  const at = box ?? (center
+    ? { x: r3(clamp(center.x - w / 2, 0, W - w)), y: r3(clamp(center.y - h / 2, 0, H - h)), w: r3(w), h: r3(h) }
+    : cascadeBox({ x: (SCENE_W - w) / 2, y: (SCENE_H - h) / 2, w, h }, cascadeIndex(slide)));
   return {
     id: id ?? mintHumanId(),
     kind: "image",

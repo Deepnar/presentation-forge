@@ -38,6 +38,12 @@ function key(root, k, extra = {}) {
   Object.assign(ev, { key: k, ...extra });
   root.dispatchEvent(ev);
 }
+function paste(r, files = [], text = "") {
+  const ev = new r.root.ownerDocument.defaultView.Event("paste", { bubbles: true, cancelable: true });
+  ev.clipboardData = { files, getData: () => text };
+  r.root.dispatchEvent(ev);
+  return ev;
+}
 const node = (r, id) => r.root.querySelector(`[data-el="${id}"]`);
 const el = (r, id, slideIndex = 0) => r.doc.snapshot().scenes[slideIndex].elements.find((e) => e.id === id);
 
@@ -158,9 +164,9 @@ describe("clipboard and duplicate", () => {
     const r = await rig([slide("s", [box("a", 1, 1, 2, 1)])]);
     r.viewer.api.select("a");
     key(r.root, "c", { ctrlKey: true });
-    key(r.root, "v", { ctrlKey: true });
+    paste(r);
     await r.editor.pending();
-    key(r.root, "v", { ctrlKey: true });
+    paste(r);
     await r.editor.pending();
     const els = r.doc.snapshot().scenes[0].elements;
     assert.equal(els.length, 3);
@@ -176,7 +182,7 @@ describe("clipboard and duplicate", () => {
     r.viewer.api.select("a");
     key(r.root, "c", { metaKey: true });
     r.viewer.api.goTo(1);
-    key(r.root, "v", { metaKey: true });
+    paste(r);
     await r.editor.pending();
     const [copy] = r.doc.snapshot().scenes[1].elements;
     assert.deepEqual([copy.x, copy.y, copy.w, copy.h], [1, 1, 2, 1]);
@@ -196,10 +202,32 @@ describe("clipboard and duplicate", () => {
     key(r.root, "x", { ctrlKey: true });
     await r.editor.pending();
     assert.equal(el(r, "a"), undefined, "cut removes it");
-    key(r.root, "v", { ctrlKey: true });
+    paste(r);
     await r.editor.pending();
     assert.equal(r.doc.snapshot().scenes[0].elements.length, 5, "and paste brings a copy back");
     assert.deepEqual(r.errors, []);
+  });
+
+  it("an image file on the system clipboard is handed to the shell, unless our copy is newer", async () => {
+    const { parseHTML: ph } = await import("linkedom");
+    const scenes = [slide("s", [box("a", 1, 1, 2, 1)])];
+    const { document } = ph("<!doctype html><html><body></body></html>");
+    const root = document.createElement("div");
+    document.body.appendChild(root);
+    const viewer = createViewer(root, scenes);
+    const doc = await createDocument(structuredClone(scenes));
+    const got = [];
+    const editor = attachEditor(viewer, doc, { root, onPasteFiles: (f) => got.push(f) });
+    const r = { root, viewer, doc, editor };
+    const png = { type: "image/png", name: "shot.png" };
+    assert.equal(paste(r, [png]).defaultPrevented, true);
+    assert.equal(got.length, 1, "the screenshot goes to the shell to upload");
+    viewer.api.select("a");
+    key(root, "c", { ctrlKey: true });
+    paste(r, [png], "presentation-forge/elements");
+    await editor.pending();
+    assert.equal(got.length, 1, "our marker on the clipboard means our copy is the newer one");
+    assert.equal(doc.snapshot().scenes[0].elements.length, 2, "so the element copy is pasted");
   });
 
   it("with nothing selected, copy leaves the browser's own behaviour alone", async () => {

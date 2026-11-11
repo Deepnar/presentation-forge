@@ -551,10 +551,15 @@ export function createViewer(rootEl, scenes, opts = {}) {
       // The clipboard keys a slide editor answers to. Copy, cut and
       // duplicate need a selection; with none they fall through, so the
       // browser's own behaviour is untouched.
-      const clip = { c: "copy", x: "cut", d: "duplicate", v: "paste", a: "selectAll" }[mod && !ev.altKey ? k.toLowerCase() : ""];
-      if (clip && (state.selectedIds.length > 0 || clip === "paste" || clip === "selectAll")) {
+      // Copy and cut act here but let the browser's own copy event follow,
+      // which the editor answers by putting its marker on the system
+      // clipboard — so a later paste knows our copy is newer than any
+      // screenshot there. Paste is answered from the paste event itself,
+      // where the clipboard's files can be read.
+      const clip = { c: "copy", x: "cut", d: "duplicate", a: "selectAll" }[mod && !ev.altKey ? k.toLowerCase() : ""];
+      if (clip && (state.selectedIds.length > 0 || clip === "selectAll")) {
         editAction({ type: clip });
-        ev.preventDefault();
+        if (clip === "duplicate" || clip === "selectAll") ev.preventDefault();
         return;
       }
     }

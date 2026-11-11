@@ -169,6 +169,9 @@ export function attachEditor(viewer, doc, opts = {}) {
   // Advice, not failure: the edit went through and something about the
   // result is worth saying (text longer than a box that cannot grow).
   const onNotice = typeof opts.onNotice === "function" ? opts.onNotice : null;
+  // Image files pasted onto the slide: uploading belongs to the shell
+  // (it knows the project), placing them to addImageElement.
+  const onPasteFiles = typeof opts.onPasteFiles === "function" ? opts.onPasteFiles : null;
   const notice = (n) => { if (onNotice) onNotice(n); };
   const slideHeight = (slideId) => doc.snapshot().scenes.find((sc) => sc.id === slideId)?.height ?? SCENE_H;
   // The ops that commit a text change and, when the text no longer fits,
@@ -2064,6 +2067,32 @@ export function attachEditor(viewer, doc, opts = {}) {
     return null;
   }
 
+  const CLIP_MARKER = "presentation-forge/elements";
+  const fromField = (ev) => ev.target?.closest?.("input, textarea, select, [contenteditable='true'], [contenteditable='']");
+
+  // The system copy that follows Ctrl+C on the slide carries only our
+  // marker, replacing whatever image was there, so the next paste is ours.
+  function onClipboardCopy(ev) {
+    if (textSession || fromField(ev) || !clipboard || !ev.clipboardData) return;
+    ev.clipboardData.setData("text/plain", CLIP_MARKER);
+    ev.preventDefault();
+  }
+
+  function onPaste(ev) {
+    if (textSession || fromField(ev)) return;
+    const data = ev.clipboardData;
+    const files = [...(data?.files ?? [])].filter((f) => /^image\//.test(f.type ?? ""));
+    if (files.length > 0 && onPasteFiles && data?.getData?.("text/plain") !== CLIP_MARKER) {
+      ev.preventDefault();
+      onPasteFiles(files);
+      return;
+    }
+    if (clipboard) {
+      ev.preventDefault();
+      track(pasteClipboard());
+    }
+  }
+
   function onDblClick(ev) {
     if (textSession || drag) return;
     let id = api.resolveNode(ev.target);
@@ -2096,6 +2125,9 @@ export function attachEditor(viewer, doc, opts = {}) {
   root.addEventListener("pointercancel", onPointerCancel);
   root.addEventListener("keydown", onKeyDown);
   root.addEventListener("dblclick", onDblClick);
+  root.addEventListener("copy", onClipboardCopy);
+  root.addEventListener("cut", onClipboardCopy);
+  root.addEventListener("paste", onPaste);
   root.addEventListener("focusout", onFocusOut);
   // Resize handles live in their own layer beside the selection
   // overlay layer: pointer-transparent except the handles
@@ -2184,6 +2216,9 @@ export function attachEditor(viewer, doc, opts = {}) {
       root.removeEventListener("pointercancel", onPointerCancel);
       root.removeEventListener("keydown", onKeyDown);
       root.removeEventListener("dblclick", onDblClick);
+      root.removeEventListener("copy", onClipboardCopy);
+      root.removeEventListener("cut", onClipboardCopy);
+      root.removeEventListener("paste", onPaste);
       root.removeEventListener("focusout", onFocusOut);
       api.setEditable(false);
       api.onEditAction(null);
