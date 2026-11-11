@@ -18,6 +18,15 @@
         "dev:mail"
       ],
       "port": 5173
+    },
+    {
+      "name": "forge-sandbox",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "S=${FORGE_SANDBOX:-$PWD/out/sandbox}; mkdir -p $S/config $S/decks && FORGE_CONFIG_DIR=$S/config FORGE_DB_PATH=$S/forge.db FORGE_DECKS_DIR=$S/decks FORGE_API_PORT=5374 npx concurrently -n api,web \"node app/server/index.js\" \"vite --config app/web/vite.config.js --port 5373 --strictPort\""
+      ],
+      "port": 5373
     }
   ]
 }

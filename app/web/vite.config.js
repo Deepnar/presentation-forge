@@ -28,7 +28,7 @@ export default defineConfig({
     // The API runs as a separate process so the CLI and the UI share one
     // implementation; proxying keeps the browser on a single origin.
     proxy: {
-      "/api": { target: "http://localhost:5174", changeOrigin: true },
+      "/api": { target: `http://localhost:${process.env.FORGE_API_PORT || 5174}`, changeOrigin: true },
     },
     // The V2 scene viewer imports the shared renderer from
     // packages/editor (outside the web root): monorepo packages must
