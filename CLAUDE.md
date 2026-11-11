@@ -365,9 +365,11 @@ the reasoning; `test/tenancy.test.js` is the executable contract.
 - **The account reaches the model client through `src/account.js`**
   (AsyncLocalStorage), not through parameters. No account (CLI, tests) means the
   install-wide configuration, which is the old behaviour.
-- **Media routes authenticate.** `/preview/*`, `/download/*` and `/assets/*`
-  accept an httpOnly session cookie because `<img>` cannot send a bearer header —
-  they are not public, and ownership is still enforced. Every state-changing
+- **Media routes authenticate.** `/preview/*`, `/download/*`, `/assets/*` and
+  the project image route `/api/v2/assets/:hash` accept an httpOnly session
+  cookie (path `/api`) because `<img>` cannot send a bearer header — they are
+  not public, and ownership is still enforced. The v2 project routes honour the
+  cookie for GET/HEAD only. Every state-changing
   route reads the bearer header only and ignores the cookie; keep it that way or
   the cookie becomes a CSRF vector.
 

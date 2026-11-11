@@ -55,22 +55,32 @@ arrangement with authored links). `matrix` converts to card-grid
 `group` per phase, time labels as `axes.x.ticks`). Import refuses if an axis
 label, lane name or link label is not drawn.
 
+Later on 2026-11-11 (a long session): every slide type converts, and every
+finished deck on disk imports (`npm run import-coverage -- --import`); over-long
+text imports with `fitWarnings`. Context lines (section, standfirst, on-slide
+note) no longer choose a slide's layout. Finished generations create their
+editor project in `finalizeDeck` and the chat opens it. The editor can insert
+pictures. The session cookie now covers `/api` and v2 project routes accept it
+for reads only. **F1 is done** apart from F1g (show fit warnings, dense
+content) and F1h (re-import a changed deck keeping edits).
+
+## Checking the app in a browser
+
+Use the `forge-sandbox` launch (`.claude/launch.json`): API 5374 / UI 5373
+against `out/sandbox` — its own config, database and decks, so nothing touches
+the real install. Create the owner account through `POST /api/auth/register`
+and keep the generated credentials in `out/sandbox/credentials.txt`
+(gitignored). Copy a deck into `out/sandbox/decks/<slug>` with `meta.owner`
+set to that account and import it with
+`POST /api/decks/<slug>/v2-project {"requestId":"browser-editor-v1"}`.
+
 ## Next
 
-10 of the 18 decks in `decks/` convert (`npm run import-coverage`). Left:
-- `branching-flow`, `journey`, `venn`, `dependencies` (one deck each); never
-  seen in real decks but still refused: `progress-bars`, `sparklines`,
-  `funnel`, `pyramid`, `hierarchy`, `freeform`.
-- Two intent caps real content exceeds: a list over 8 items, a block label
-  over 120 characters — raise the caps (the compiler fits text) rather than
-  refuse.
-- Three `cites` with no URL — keep them as speaker-note references instead of
-  refusing.
-- Six slides missing a `headline`: structural, the old renderer refuses them
-  too; leave refused.
-
-Then **F1e** (import on generation completion + land in the editor). The owner
-declined merging `v2` into `main` for now (roadmap M1); do not merge unasked.
+**F4 editor completeness**: pictures are in; still to do — insert chart,
+table, line and icon; change the project's theme with recompilation that
+keeps human edits; present mode with speaker notes. Then **F5** (editor UI
+redesign), then F2/F3 (Assistant on every provider, creation tools — real-model
+checks need a working model: the gateway returned HTTP 500 on chat).
 
 ## Machine etiquette
 
