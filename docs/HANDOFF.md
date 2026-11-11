@@ -69,8 +69,8 @@ label, lane name or link label is not drawn.
 - Six slides missing a `headline`: structural, the old renderer refuses them
   too; leave refused.
 
-Then **F1e** (import on generation completion + land in the editor). A merge
-of `v2` into `main` is proposed right after F1 — see the roadmap.
+Then **F1e** (import on generation completion + land in the editor). The owner
+declined merging `v2` into `main` for now (roadmap M1); do not merge unasked.
 
 ## Machine etiquette
 

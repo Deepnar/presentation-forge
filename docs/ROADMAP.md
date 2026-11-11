@@ -65,8 +65,8 @@ Decisions taken with this list, so nobody re-litigates them:
    - **[x] F1f** Claim citations (`cites`) become owner-private project
      sources and slide citations, created with the project in one transaction.
    - **F1e** Import on completion and the UI handoff described above.
-   **[ ] M1 — Merge `v2` into `main` (proposed 2026-11-11, awaiting the
-   owner's yes).** Everything on `v2` is additive: the legacy generator, deck
+   **[ ] M1 — Merge `v2` into `main` (proposed 2026-11-11; the owner said
+   not now — revisit when asked, not automatically after F1).** Everything on `v2` is additive: the legacy generator, deck
    page and report flow are untouched, and the editor sits behind Open in
    editor. Merging once F1 is done stops the branch drifting further from
    `main` and lets F2 onward land as ordinary small PRs. Before merging: one
