@@ -650,17 +650,21 @@ function takeawayEls(ctx: MechanismCtx, titleBelow: number, contentBottom: numbe
 function dividerScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const { slide, design, box, comp } = ctx;
   const els: SceneElement[] = [];
-  const titleY = comp.variantKey === "divider/opening" ? box.y + 1.4
+  // A long title gets the height its lines need (up to twice the usual)
+  // and rises by part of the extra, so what follows never sits on it.
+  const titleParas = [{ runs: [{ text: slide.title ?? "", role: "display", bold: true, color: ink(design) }], align: "center" as const }];
+  const titleH = Math.min(2.8, Math.max(1.4, nominalContentHeight(design, titleParas as RoleParagraph[], box.w) + 0.1));
+  const titleY = Math.max(box.y, (comp.variantKey === "divider/opening" ? box.y + 1.4
     : comp.variantKey === "divider/transition" ? box.y + 0.8
-    : box.y + 0.4;
+    : box.y + 0.4) - (titleH - 1.4) * 0.6);
   els.push(textEl(
     `${slide.id}:title:heading`, undefined,
-    { x: box.x, y: titleY, w: box.w, h: 1.4 },
-    [{ runs: [{ text: slide.title ?? "", role: "display", bold: true, color: ink(design) }], align: "center" as const }],
+    { x: box.x, y: titleY, w: box.w, h: titleH },
+    titleParas,
     takeZ(),
     fitOf(ctx),
   ));
-  let y = titleY + 1.6;
+  let y = titleY + titleH + 0.2;
   const bottom = box.bottom - takeawayReserve(ctx);
   if (slide.takeaway && comp.takeawayTreatment !== "none") {
     els.push(...takeawayEls(ctx, y, bottom, takeZ()));
