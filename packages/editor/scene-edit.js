@@ -195,6 +195,7 @@ export function attachEditor(viewer, doc, opts = {}) {
   const onTextEdit = typeof opts.onTextEdit === "function" ? opts.onTextEdit : null;
   const api = viewer.api;
   let drag = null;
+  let marquee = null;
   // Fast double-click on an unselected element selects on the first
   // press — which reveals the inspector and shifts the stage — so the
   // second press can land on the background beside the target. The
@@ -373,7 +374,12 @@ export function attachEditor(viewer, doc, opts = {}) {
       }
     }
     const id = api.resolveNode(ev.target);
-    if (id === null) return;
+    if (id === null) {
+      // A press on empty canvas starts a selection box, as in every slide
+      // editor; a plain click there still clears the selection.
+      marquee = { pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY, additive: !!ev.shiftKey, base: api.snapshot().selectedIds, moved: false };
+      return;
+    }
     const snap = api.snapshot();
     if (ev.shiftKey) api.toggle(id);
     else if (!snap.selectedIds.includes(id)) api.select(id);
@@ -400,7 +406,55 @@ export function attachEditor(viewer, doc, opts = {}) {
     ev.preventDefault();
   }
 
+  // The selection box in SVG px (the overlay's units) from two client
+  // points, through the slide's own rendered rect.
+  function marqueeRect(m, clientX, clientY) {
+    const svg = root.querySelector("svg");
+    const rect = svg?.getBoundingClientRect?.();
+    const scales = svgScales(root);
+    if (!rect || !scales) return null;
+    const ax = (m.startX - rect.left) / scales.kx, ay = (m.startY - rect.top) / scales.ky;
+    const bx = (clientX - rect.left) / scales.kx, by = (clientY - rect.top) / scales.ky;
+    return { x: Math.min(ax, bx), y: Math.min(ay, by), w: Math.abs(bx - ax), h: Math.abs(by - ay) };
+  }
+
+  function drawMarquee(r) {
+    ensureHandleLayer();
+    let box = handleLayer?.querySelector("[data-marquee]");
+    if (!r) { box?.remove(); return; }
+    if (!box) {
+      box = root.ownerDocument.createElement("div");
+      box.setAttribute("data-marquee", "");
+      box.setAttribute("data-snap-guide", "marquee");
+      Object.assign(box.style, { position: "absolute", pointerEvents: "none", border: "1px solid #3b82f6", background: "rgba(59,130,246,0.12)", boxSizing: "border-box" });
+      handleLayer.appendChild(box);
+    }
+    const k = svgScales(root)?.kx ?? 1;
+    Object.assign(box.style, { left: `${r.x.toFixed(1)}px`, top: `${r.y.toFixed(1)}px`, width: `${r.w.toFixed(1)}px`, height: `${r.h.toFixed(1)}px`, borderWidth: `${(1 / k).toFixed(2)}px` });
+  }
+
+  // Every unit wholly inside the box — PowerPoint's rule, which keeps a
+  // full-slide panel behind the content from joining every sweep.
+  function unitsInside(r) {
+    return api.selectableIds().filter((id) => {
+      const b = api.bounds(id);
+      return b && b.x >= r.x - 0.5 && b.y >= r.y - 0.5 && b.x + b.w <= r.x + r.w + 0.5 && b.y + b.h <= r.y + r.h + 0.5;
+    });
+  }
+
   async function onPointerUp(ev) {
+    if (marquee) {
+      if (ev.pointerId !== undefined && ev.pointerId !== marquee.pointerId) return null;
+      const m = marquee;
+      marquee = null;
+      drawMarquee(null);
+      if (!m.moved) return null;
+      const r = marqueeRect(m, ev.clientX, ev.clientY);
+      const inside = r ? unitsInside(r) : [];
+      api.selectMany(m.additive ? [...new Set([...m.base, ...inside])] : inside);
+      api.suppressNextClick();
+      return { ok: true, revision: doc.snapshot().revision, selected: api.snapshot().selectedIds.length };
+    }
     if (resize) {
       if (ev.pointerId !== undefined && ev.pointerId !== resize.pointerId) return null;
       return commitResize(ev);
@@ -434,6 +488,16 @@ export function attachEditor(viewer, doc, opts = {}) {
   }
 
   function onPointerMove(ev) {
+    if (marquee) {
+      if (ev.pointerId !== undefined && ev.pointerId !== marquee.pointerId) return;
+      if (!marquee.moved && Math.hypot(ev.clientX - marquee.startX, ev.clientY - marquee.startY) < DRAG_THRESHOLD_PX) return;
+      if (!marquee.moved) {
+        marquee.moved = true;
+        try { root.setPointerCapture?.(ev.pointerId); } catch { /* linkedom and some browsers lack capture */ }
+      }
+      drawMarquee(marqueeRect(marquee, ev.clientX, ev.clientY));
+      return;
+    }
     if (resize) {
       if (ev.pointerId !== undefined && ev.pointerId !== resize.pointerId) return;
       previewResizeTo(ev.clientX, ev.clientY, ev);
@@ -445,6 +509,11 @@ export function attachEditor(viewer, doc, opts = {}) {
   }
 
   function onPointerCancel(ev) {
+    if (marquee) {
+      marquee = null;
+      drawMarquee(null);
+      return;
+    }
     if (resize) {
       if (ev.pointerId !== undefined && ev.pointerId !== resize.pointerId) return;
       cancelResize();
@@ -458,6 +527,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     // scene-dom's own listener (registered first) already cleared
     // selection on Escape; here only the drag preview is cancelled.
     if (ev.key === "Escape" && drag) clearPreview();
+    if (ev.key === "Escape" && marquee) { marquee = null; drawMarquee(null); }
     // Escape abandons a resize gesture with no history entry (the
     // selection clear above stands — documented §4 behavior).
     if (ev.key === "Escape" && resize) cancelResize();

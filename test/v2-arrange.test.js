@@ -210,3 +210,27 @@ describe("clipboard and duplicate", () => {
     assert.equal(ev.defaultPrevented, false);
   });
 });
+
+describe("selection box", () => {
+  const sweep = async (r, from, to, extra = {}) => {
+    const bg = r.root.querySelector("svg");
+    ptr(r.root, "pointerdown", bg, { x: from[0], y: from[1], ...extra });
+    ptr(r.root, "pointermove", bg, { x: to[0], y: to[1], ...extra });
+    ptr(r.root, "pointerup", bg, { x: to[0], y: to[1], ...extra });
+    await r.editor.pending();
+    return [...r.viewer.api.snapshot().selectedIds].sort();
+  };
+
+  it("dragging on empty canvas selects every unit wholly inside the box", async () => {
+    const r = await rig([slide("s", [box("a", 1, 1, 1, 1), box("b", 3, 1, 1, 1), box("c", 6, 1, 1, 1)])]);
+    // 0.5in..4.5in across, 0.5in..2.5in down: a and b inside, c outside.
+    assert.deepEqual(await sweep(r, [48, 48], [432, 240]), ["a", "b"]);
+    assert.equal(r.root.querySelector("[data-marquee]"), null, "the box goes on release");
+  });
+
+  it("a unit the box only touches stays out, and Shift adds to the selection", async () => {
+    const r = await rig([slide("s", [box("a", 1, 1, 1, 1), box("b", 3, 1, 1, 1), box("c", 6, 1, 1, 1)])]);
+    assert.deepEqual(await sweep(r, [48, 48], [336, 240]), ["a"], "b is only half inside");
+    assert.deepEqual(await sweep(r, [560, 48], [720, 240], { shift: true }), ["a", "c"]);
+  });
+});
