@@ -16,6 +16,9 @@
 // plot box), so no clip paths are needed and none are emitted.
 import { measure } from "../core/fit.ts";
 
+// measure() answers in inches; chart geometry here is in SVG pixels.
+const PX_PER_IN = 96;
+
 function esc(s) {
   return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
@@ -152,7 +155,7 @@ function cartesianFrame(box, cats, series, style, transpose) {
   if (!transpose) {
     const meas = { family: style.family || undefined, size: style.sizePt, weight: 400 };
     const { ticks, step } = niceTicks(lo, hi, 5);
-    const tickW = ticks.reduce((m, v) => Math.max(m, measure(fmtTick(step, v), meas)), 0);
+    const tickW = ticks.reduce((m, v) => Math.max(m, measure(fmtTick(step, v), meas)), 0) * PX_PER_IN;
     const axisW = tickW + 10;
     const catStrip = catsSafe.length ? fs * 1.25 + 6 : 0;
     const plot = {
@@ -162,7 +165,7 @@ function cartesianFrame(box, cats, series, style, transpose) {
     return { lo, hi, ticks, step, entries, legendStrip, plot, catStrip, axisW };
   }
   const meas = { family: style.family || undefined, size: style.sizePt, weight: 400 };
-  const labelCol = catsSafe.reduce((m, c) => Math.max(m, measure(c, meas)), 0) + 12;
+  const labelCol = catsSafe.reduce((m, c) => Math.max(m, measure(c, meas)), 0) * PX_PER_IN + 12;
   const { ticks, step } = niceTicks(lo, hi, 5);
   const tickStrip = fs * 1.25 + 6;
   const plot = {
