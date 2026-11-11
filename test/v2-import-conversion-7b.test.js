@@ -155,6 +155,21 @@ test("long lists and long block labels stay within the intent's caps", async () 
   assert.equal((await validateDeckIntent(intent)).ok, true);
 });
 
+test("a chart whose values do not line up with its categories keeps every value as a table", async () => {
+  const { intent, dropped } = await convertGeneratedDeck(deck([{ type: "chart", headline: "Mismatch", chart: { kind: "bar", categories: ["0", "500"], series: [{ name: "Loss", values: [1, 2, 3] }], unit: "%" } }]));
+  const blocks = intent.slides[0].blocks;
+  assert.ok(!blocks.some(b => b.kind === "chart"));
+  assert.deepEqual(blocks.find(b => b.kind === "table").rows, [["", "0", "500", ""], ["Loss", "1", "2", "3"]]);
+  assert.ok(blocks.some(b => b.text === "Unit: %"));
+  assert.deepEqual(dropped.map(d => d.path), ["slides[0].chart"]);
+});
+
+test("a slide without a headline converts untitled, and before/after images the layout never drew are dropped", async () => {
+  const { intent, dropped } = await convertGeneratedDeck(deck([{ type: "before-after", before: { title: "Old", body: "A" }, after: { title: "New", body: "B" }, before_image: "", after_image: "" }]));
+  assert.equal(intent.slides[0].title, undefined);
+  assert.deepEqual(dropped.map(d => d.path), ["slides[0].before_image", "slides[0].after_image"]);
+});
+
 test("drawn fields a type never declared still convert when they are text", async () => {
   const { intent, dropped } = await convertGeneratedDeck(deck([
     { type: "quote", quote: "Evidence", attribution: "A", source: "Journal of Cells" },
@@ -185,9 +200,8 @@ test("strict validation refuses invalid lengths, empty decks and excessive slide
   }
 });
 
-test("chart cardinality, inconsistent table rows and invalid section references refuse rather than repair", async () => {
+test("inconsistent table rows and invalid section references refuse rather than repair", async () => {
   for (const source of [
-    deck([{ type: "chart", headline: "Data", chart: { kind: "bar", categories: ["A", "B"], series: [{ name: "X", values: [1] }] } }]),
     deck([{ type: "table", headline: "Data", columns: ["A", "B"], rows: [["Missing"]] }]),
     deck([{ ...bullets, section: 1 }], { sections: ["Only section"] }),
   ]) await assert.rejects(convertGeneratedDeck(source), error => ["invalid-source", "unsupported-content"].includes(error.code));

@@ -84,7 +84,11 @@ const comparison = (s, c) => {
   if (s.verdict) c.add("callout", { text: s.verdict });
 };
 rule("compare", ["left", "right", "verdict"], comparison);
-rule("before-after", ["before", "after"], comparison);
+// The before/after layout never drew its image fields.
+rule("before-after", ["before", "after", "before_image", "after_image"], (s, c) => {
+  for (const key of ["before_image", "after_image"]) if (s[key] !== undefined) c.drop(`${c.path}.${key}`, "the before/after layout never drew images");
+  comparison(s, c);
+});
 rule("vs", ["left", "right", "left_body", "right_body"], comparison);
 rule("pros-cons", ["pros", "cons"], (s, c) => {
   c.slide.relationship = "comparison";
@@ -160,11 +164,16 @@ rule("chart", ["chart", "aside"], (s, c) => {
   const chart = s.chart;
   c.keys(chart, ["kind", "categories", "series", "unit"], `${c.path}.chart`);
   if (!["bar", "hbar", "line", "pie", "doughnut", "area"].includes(chart.kind)) c.refuse(`${c.path}.chart.kind`, `chart kind ${chart.kind} has no faithful accepted primitive`);
-  chart.series.forEach((series, i) => {
-    c.keys(series, ["name", "values"], `${c.path}.chart.series[${i}]`);
-    if (series.values.length !== chart.categories.length) c.refuse(`${c.path}.chart.series[${i}].values`, "chart cardinality must match categories exactly");
-  });
-  c.add("chart", { chartKind: chart.kind, categories: chart.categories, series: chart.series, ...(chart.unit !== undefined ? { unit: chart.unit } : {}) });
+  chart.series.forEach((series, i) => c.keys(series, ["name", "values"], `${c.path}.chart.series[${i}]`));
+  // Values that do not line up with the categories cannot be charted
+  // honestly; every value is kept, as authored, in an editable table.
+  if (chart.series.some(series => series.values.length !== chart.categories.length)) {
+    const width = Math.max(chart.categories.length, ...chart.series.map(series => series.values.length));
+    const pad = cells => [...cells, ...Array(width - cells.length).fill("")];
+    c.add("table", { header: true, rows: [["", ...pad(chart.categories.map(String))], ...chart.series.map(series => [series.name, ...pad(series.values.map(String))])] });
+    c.drop(`${c.path}.chart`, "series values do not match the categories, so the values are kept as a table instead of a chart");
+    if (chart.unit !== undefined) c.text(`Unit: ${chart.unit}`);
+  } else c.add("chart", { chartKind: chart.kind, categories: chart.categories, series: chart.series, ...(chart.unit !== undefined ? { unit: chart.unit } : {}) });
   if (s.aside?.length) c.add("list", { items: s.aside });
 });
 rule("flow", ["steps", "direction"], (s, c) => {
@@ -518,7 +527,12 @@ export async function convertGeneratedDeck(deck, { identity = null } = {}) {
   // Same rule the renderer applies (loadDeck): length caps move as the fitter
   // learns what fits, so an older deck over today's caps is still a deck. The
   // compiler fits its text; only structural damage refuses.
-  if (validation.structural.length) throw importError("invalid-source", "source deck is invalid", validation.structural);
+  // A slide the generator left without a headline is still content: it
+  // converts untitled for the owner to name in the editor. Any other
+  // structural damage refuses.
+  const untitled = message => /^slide \d+ \(type: [^)]+\): missing required field "headline"$/.test(message);
+  const structural = validation.structural.filter(message => !untitled(message));
+  if (structural.length) throw importError("invalid-source", "source deck is invalid", structural);
   if (!deck.title.trim() || deck.slides.length > 60) throw importError("invalid-source", "source needs a title and 1..60 slides");
   if (placeholderSlides(deck).length) throw importError("invalid-source", "source contains incomplete placeholder slides");
   const details = [], dropped = [], cites = [];
