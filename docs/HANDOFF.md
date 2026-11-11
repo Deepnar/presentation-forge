@@ -1,4 +1,4 @@
-# Handoff — 2026-11-10
+# Handoff — 2026-11-11
 
 Branch `v2`, pushed to `origin/v2`. Work follows the **Finish line** at the top
 of [ROADMAP.md](ROADMAP.md#finish-line); the gated plan/review/evidence protocol
@@ -48,17 +48,29 @@ converts to icon-headed cards. Tiered hierarchy children share height by row.
 text and aligned component pills. Across flows now size cards to their content
 and centre a short row (they had each card at 1/n of the height).
 
+2026-11-11: `diagram` converts to a graph hierarchy (slide `connections`,
+`layoutHint.arrangement: "graph"`; radial diagrams use the radial
+arrangement with authored links). `matrix` converts to card-grid
+`quadrants` between slide `axes`; `roadmap` to card-grid `lanes` (block
+`group` per phase, time labels as `axes.x.ticks`). Import refuses if an axis
+label, lane name or link label is not drawn.
+
 ## Next
 
-7 of the 18 decks in `decks/` convert. `npm run import-coverage` lists what
-still refuses and in how many decks: `diagram` (5 decks), `roadmap` (4),
-`matrix` (3), then single-deck `branching-flow`, `journey`, `venn`,
-`dependencies`; one list over the intent's 8-item cap; three `cites` without a
-URL; six slides missing a `headline` (structural — the old renderer refuses
-them too). Never seen in real decks but still refused: `progress-bars`,
-`sparklines`, `funnel`, `pyramid`, `hierarchy`, `freeform`. Then **F1e**
-(import on generation completion + land in the editor).
+10 of the 18 decks in `decks/` convert (`npm run import-coverage`). Left:
+- `branching-flow`, `journey`, `venn`, `dependencies` (one deck each); never
+  seen in real decks but still refused: `progress-bars`, `sparklines`,
+  `funnel`, `pyramid`, `hierarchy`, `freeform`.
+- Two intent caps real content exceeds: a list over 8 items, a block label
+  over 120 characters — raise the caps (the compiler fits text) rather than
+  refuse.
+- Three `cites` with no URL — keep them as speaker-note references instead of
+  refusing.
+- Six slides missing a `headline`: structural, the old renderer refuses them
+  too; leave refused.
 
+Then **F1e** (import on generation completion + land in the editor). A merge
+of `v2` into `main` is proposed right after F1 — see the roadmap.
 
 ## Machine etiquette
 
