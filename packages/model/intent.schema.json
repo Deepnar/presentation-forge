@@ -121,8 +121,8 @@
           "enum": ["text", "list", "stat", "image", "chart", "table", "quote", "callout"]
         },
         "text": { "type": "string", "maxLength": 2000 },
-        "items": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 300 } },
-        "label": { "type": "string", "maxLength": 120 },
+        "items": { "type": "array", "maxItems": 16, "items": { "type": "string", "maxLength": 300 } },
+        "label": { "type": "string", "maxLength": 240 },
         "value": { "type": "string", "maxLength": 120 },
         "src": { "type": "string", "maxLength": 500 },
         "alt": { "type": "string", "maxLength": 300 },

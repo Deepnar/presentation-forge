@@ -141,6 +141,20 @@ test("claim citations convert to cite records for the importer to retain", async
   await assert.rejects(convertGeneratedDeck(deck([{ ...bullets, cites: [{ title: "No address" }] }])), error => error.code === "invalid-source" || error.code === "unsupported-content");
 });
 
+test("a cite without a URL keeps its title in the notes, and an empty one is dropped", async () => {
+  const { intent, cites, dropped } = await convertGeneratedDeck(deck([{ ...bullets, notes: "Open strong.", cites: [
+    { url: "", title: "Early information shapes judgments", accessed: "" }, { url: "", title: "", accessed: "" },
+  ] }]));
+  assert.deepEqual(cites, []);
+  assert.equal(intent.slides[0].speakerNotes, "Open strong.\n\nSource: Early information shapes judgments");
+  assert.deepEqual(dropped.map(d => d.path), ["slides[0].cites[1]"]);
+});
+
+test("long lists and long block labels stay within the intent's caps", async () => {
+  const { intent } = await convertGeneratedDeck(deck([{ type: "references", headline: "Reading", items: Array.from({ length: 12 }, (_, i) => `Reference ${i + 1}`) }]));
+  assert.equal((await validateDeckIntent(intent)).ok, true);
+});
+
 test("drawn fields a type never declared still convert when they are text", async () => {
   const { intent, dropped } = await convertGeneratedDeck(deck([
     { type: "quote", quote: "Evidence", attribution: "A", source: "Journal of Cells" },

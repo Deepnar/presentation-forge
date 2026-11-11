@@ -424,10 +424,20 @@ export async function convertGeneratedDeck(deck, { identity = null } = {}) {
       if (typeof source.notes !== "string" || source.notes.length > 20000) refuse(`${path}.notes`, "speaker notes must be text of at most 20000 characters");
       else if (source.notes.trim()) slide.speakerNotes = source.notes;
     }
+    // A cite with a URL becomes a retained source. One with only a title is
+    // still a reference the presenter can name, so it joins the speaker notes;
+    // an empty one was never a reference at all.
+    const unlinked = [];
     (source.cites ?? []).forEach((cite, i) => {
-      if (!cite || typeof cite.url !== "string" || !cite.url.trim()) refuse(`${path}.cites[${i}]`, "a citation needs a URL");
-      else cites.push({ slide: index, url: cite.url.trim(), title: String(cite.title ?? "").trim(), accessed: cite.accessed ?? null });
+      const url = typeof cite?.url === "string" ? cite.url.trim() : "", title = String(cite?.title ?? "").trim();
+      if (url) cites.push({ slide: index, url, title, accessed: cite.accessed ?? null });
+      else if (title) unlinked.push(title);
+      else dropped.push({ path: `${path}.cites[${i}]`, reason: "empty citation with neither URL nor title" });
     });
+    if (unlinked.length) {
+      const refs = unlinked.map(t => `Source: ${t}`).join("\n");
+      slide.speakerNotes = slide.speakerNotes ? `${slide.speakerNotes}\n\n${refs}` : refs;
+    }
     if (source.section !== undefined) {
       if (!Number.isInteger(source.section) || source.section < 0 || typeof deck.sections?.[source.section] !== "string") refuse(`${path}.section`, "section index does not resolve to an authored label");
       else contextText(deck.sections[source.section], `Section ${String(source.section + 1).padStart(2, "0")}`);

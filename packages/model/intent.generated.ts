@@ -99,7 +99,7 @@ export interface ContentBlock {
   kind: "text" | "list" | "stat" | "image" | "chart" | "table" | "quote" | "callout";
   text?: string;
   /**
-   * @maxItems 8
+   * @maxItems 16
    */
   items?: string[];
   label?: string;
