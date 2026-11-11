@@ -163,8 +163,10 @@ function blockParas(block: ContentBlock, design: DesignSystem): { paras: Para[];
       };
     default: {
       const paras: Para[] = [];
-      if (block.label) paras.push({ runs: [{ text: block.label, role: "body", size: bodySize, bold: true, color: inkColor }], align: "left" as const });
-      const body = block.text ?? (block.items ?? []).join("\n");
+      // Outside a card that draws it as a heading, an icon leads the block.
+      const lead = block.icon ? `${block.icon} ` : "";
+      if (block.label) paras.push({ runs: [{ text: lead + block.label, role: "body", size: bodySize, bold: true, color: inkColor }], align: "left" as const });
+      const body = (block.label ? "" : lead) + (block.text ?? (block.items ?? []).join("\n"));
       if (body) paras.push({ runs: [{ text: body, role: "body", size: bodySize, color: inkColor }], align: "left" as const });
       if (!paras.length) paras.push({ runs: [{ text: "", role: "body", size: bodySize, color: inkColor }], align: "left" as const });
       return { paras, policy: "wrap" };
@@ -486,6 +488,9 @@ interface MechanismCtx {
   // title box, applied BEFORE fitting. Zero when no primary crest
   // earns reservation. Divider/full-bleed titles are untouched.
   topRightReserve: number;
+  // Height reserved under the title for the slide's context lines (a
+  // section name, a standfirst), drawn once by compilePlannedSlide.
+  contextH?: number;
 }
 
 // Places one block's primary carrier plus its semantic treatments in a
@@ -587,7 +592,22 @@ function titleBox(ctx: MechanismCtx, rs: { role: string; size: number }, z: numb
     z,
     { design, slideId: slide.id, sink: ctx.sink },
   );
-  return { el, below: box.y + h + 0.15 };
+  return { el, below: box.y + h + 0.15 + (ctx.contextH ?? 0) };
+}
+
+const isContext = (b: ContentBlock): boolean => b.kind === "callout" && b.emphasis === "context";
+const CONTEXT_LINE = 0.32;
+
+// Context callouts frame the slide rather than carry it: one muted line
+// each, directly under the title, ahead of whatever the family draws.
+function contextLines(ctx: MechanismCtx, blocks: ContentBlock[], top: number, takeZ: () => number): SceneElement[] {
+  return blocks.map((block, i) => textEl(`${ctx.slide.id}:${block.id}:context`, block.id,
+    { x: ctx.box.x, y: top + i * CONTEXT_LINE, w: ctx.box.w, h: CONTEXT_LINE },
+    [{ runs: [
+      ...(block.label ? [{ text: `${block.label} · `, role: "caption", bold: true, color: ctx.design.palette.inkMuted.hex }] : []),
+      { text: block.text ?? "", role: "caption", color: ctx.design.palette.inkMuted.hex },
+    ], align: "left" as const }],
+    takeZ(), { ...fitOf(ctx), policy: "one-line" }));
 }
 
 function headlineSize(ctx: MechanismCtx): { role: string; size: number } {
@@ -866,12 +886,13 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const iconH = 0.5;
   const placeCard = (block: ContentBlock, region: Box) => {
     if (!block.icon) return placePrimary(ctx, els, block, region, takeZ);
+    const iconless = { ...block, icon: undefined };
     els.push(textEl(`${slide.id}:${block.id}:icon`, block.id,
       { x: region.x, y: region.y, w: region.w, h: Math.min(iconH, region.h / 2) },
       [{ runs: [{ text: block.icon, role: "heading", color: ink(design) }], align: "left" as const }],
       takeZ(), { ...fitOf(ctx), policy: "one-line" }));
     const below = Math.min(iconH, region.h / 2);
-    return placePrimary(ctx, els, block, { ...region, y: region.y + below, h: Math.max(0.2, region.h - below) }, takeZ);
+    return placePrimary(ctx, els, iconless, { ...region, y: region.y + below, h: Math.max(0.2, region.h - below) }, takeZ);
   };
   const primaryHeights = distribute(Math.max(0.4, bottom - y) - gap * primaries.length, primaries.map(() => 1.6), 0.8);
   primaries.forEach((block, pi) => {
@@ -1886,7 +1907,14 @@ export function compilePlannedSlide(
 ): SlideScene {
   const grounded = designForSurface(design, comp, backgrounds);
   const box = contentBox(grounded);
-  const ctx: MechanismCtx = { slide, comp, design: grounded, box, sink, topRightReserve: chrome?.topRightReserve ?? 0 };
+  const context = comp.family === "divider" ? [] : slide.blocks.filter(isContext);
+  const carriers = slide.blocks.filter((b) => !context.includes(b));
+  const framed = context.length > 0 && carriers.length > 0;
+  const ctx: MechanismCtx = {
+    slide: framed ? { ...slide, blocks: carriers as SlideIntent["blocks"] } : slide,
+    comp, design: grounded, box, sink, topRightReserve: chrome?.topRightReserve ?? 0,
+    ...(framed ? { contextH: context.length * CONTEXT_LINE } : {}),
+  };
   let z = 0;
   const takeZ = (): number => (z += 10);
   let elements: SceneElement[];
@@ -1904,6 +1932,10 @@ export function compilePlannedSlide(
     case "framed-prose": elements = framedProseScene({ ...ctx }, takeZ); break;
     case "escape": elements = escapeScene({ ...ctx }, takeZ); break;
     default: elements = escapeScene({ ...ctx }, takeZ); break;
+  }
+  if (framed) {
+    const title = elements.find((e) => e.id === `${slide.id}:title:heading`);
+    elements.push(...contextLines(ctx, context, title ? title.y + title.h + 0.1 : box.y, takeZ));
   }
   void takeZ;
   if (chrome) {

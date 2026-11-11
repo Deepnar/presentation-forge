@@ -143,7 +143,23 @@ interface FamilyPick {
   finding?: QualityFinding;
 }
 
+// An arrangement names the family that draws it.
+const ARRANGED_FAMILY: Record<string, CompositionFamily> = {
+  radial: "hierarchy", layers: "hierarchy", funnel: "hierarchy", pyramid: "hierarchy", graph: "hierarchy",
+  quadrants: "card-grid", lanes: "card-grid", venn: "card-grid",
+};
+
+// Context callouts (a section name, a standfirst) frame a slide; they are
+// not what it carries, so they never decide its family.
 function pickFamily(slide: SlideIntent): FamilyPick {
+  const arranged = slide.layoutHint?.arrangement === undefined || slide.layoutHint.arrangement === "tiers"
+    ? undefined : ARRANGED_FAMILY[slide.layoutHint.arrangement];
+  if (arranged) return { family: arranged, basis: "legacy-override" };
+  const carriers = slide.blocks.filter((b) => !(b.kind === "callout" && b.emphasis === "context"));
+  return pickCarrierFamily(carriers.length ? { ...slide, blocks: carriers as SlideIntent["blocks"] } : slide);
+}
+
+function pickCarrierFamily(slide: SlideIntent): FamilyPick {
   const kinds = new Set(slide.blocks.map((b) => b.kind));
   const texts = slide.blocks.filter((b) => b.kind === "text");
   const chartBlock = slide.blocks.find((b) => b.kind === "chart");
