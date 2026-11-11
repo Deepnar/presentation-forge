@@ -411,22 +411,27 @@ rule("kpi-dashboard", ["kpis"], (s, c) => {
     c.add("stat", { value: item.value, label: [item.label, ...(item.trend !== undefined ? [`Trend: ${item.trend}`] : []), ...(item.change !== undefined ? [`Change: ${item.change}`] : [])].join("\n") });
   });
 });
+// The legacy table drew one cell per column: a short row padded with empty
+// cells, cells past the last column were never drawn, and a missing row
+// label was blank. Alignment and highlighted rows carry over as authored.
 rule("data-table", ["columns", "rows", "row_labels"], (s, c) => {
-  s.columns.forEach((column, i) => {
-    c.keys(column, ["label", "align"], `${c.path}.columns[${i}]`);
-    if (column.align && column.align !== "left") c.refuse(`${c.path}.columns[${i}].align`, "authored cell alignment is not represented in accepted semantic tables");
-  });
+  s.columns.forEach((column, i) => c.keys(column, ["label", "align"], `${c.path}.columns[${i}]`));
   const labeled = s.row_labels?.length > 0;
-  if (labeled && s.row_labels.length !== s.rows.length) c.refuse(`${c.path}.row_labels`, "row labels must match rows exactly");
+  if (labeled && s.row_labels.length > s.rows.length) c.drop(`${c.path}.row_labels`, "labels past the last row were never drawn");
   const rows = [[...(labeled ? [""] : []), ...s.columns.map(column => column.label)]];
+  const emphasisRows = [];
   s.rows.forEach((row, i) => {
     c.keys(row, ["text", "highlight"], `${c.path}.rows[${i}]`);
-    if (row.highlight) c.refuse(`${c.path}.rows[${i}].highlight`, "authored row emphasis is not represented in accepted semantic tables");
     const cells = Array.isArray(row.text) ? row.text : [row.text];
-    if (cells.length !== s.columns.length) c.refuse(`${c.path}.rows[${i}].text`, "table rows must match columns exactly");
-    rows.push([...(labeled ? [s.row_labels[i]] : []), ...cells]);
+    if (cells.length > s.columns.length) c.drop(`${c.path}.rows[${i}].text`, "cells past the last column were never drawn");
+    const drawn = s.columns.map((_, ci) => cells[ci] ?? "");
+    rows.push([...(labeled ? [s.row_labels[i] ?? ""] : []), ...drawn]);
+    if (row.highlight) emphasisRows.push(rows.length - 1);
   });
-  c.add("table", { rows, header: true });
+  const columnAlign = [...(labeled ? ["left"] : []), ...s.columns.map(column => column.align ?? "left")];
+  c.add("table", { rows, header: true,
+    ...(columnAlign.some(a => a !== "left") ? { columnAlign } : {}),
+    ...(emphasisRows.length ? { emphasisRows } : {}) });
 });
 rule("metric-comparison", ["left", "right", "delta", "body"], (s, c) => {
   for (const side of ["left", "right"]) { c.keys(s[side], ["value", "label"], `${c.path}.${side}`); c.add("stat", s[side]); }
