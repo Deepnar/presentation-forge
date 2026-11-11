@@ -18,6 +18,7 @@ import {
   defaultTextElement,
   defaultShapeElement, defaultImageElement,
   overflowEstimate,
+  measureText,
   tableOverflowEstimate,
   blankSlide,
   mintHumanId,
@@ -111,7 +112,12 @@ export function clientToSvgDelta(dxClient, dyClient, scales) {
 // extent; edge handles move one axis. Extents clamp at MIN_RESIZE_IN
 // holding the opposite edge, so a west drag past the east edge parks
 // at the floor instead of inverting or NaN-ing.
-export function resizeGeometry(origin, handle, dxIn, dyIn) {
+// `floor(w)`, when given, is the least height the element's content
+// needs at width w: a text box stops at its text the way PowerPoint and
+// Canva boxes do, rather than accepting a box its text spills out of.
+// `slideH` caps that floor at the slide edge so a box never grows off
+// the slide to seat text that cannot fit anyway.
+export function resizeGeometry(origin, handle, dxIn, dyIn, { floor, slideH } = {}) {
   for (const v of [origin.x, origin.y, origin.w, origin.h, dxIn, dyIn]) {
     if (!Number.isFinite(v)) throw new Error("scene-edit: non-finite resize geometry");
   }
@@ -137,6 +143,16 @@ export function resizeGeometry(origin, handle, dxIn, dyIn) {
     if (handle.includes("n")) y = origin.y + origin.h - MIN_RESIZE_IN;
     h = MIN_RESIZE_IN;
   }
+  if (floor) {
+    const room = handle.includes("n") ? origin.y + origin.h : (slideH ?? Infinity) - y;
+    // Rounded up, so the committed box holds the text after the
+    // three-decimal rounding below rather than falling a hair short.
+    const least = Math.min(Math.ceil(floor(w) * 1000 - 1e-6) / 1000, Math.max(room, MIN_RESIZE_IN));
+    if (Number.isFinite(least) && h < least) {
+      h = least;
+      if (handle.includes("n")) y = origin.y + origin.h - least;
+    }
+  }
   if (![x, y, w, h].every(Number.isFinite)) {
     throw new Error("scene-edit: non-finite resize geometry");
   }
@@ -147,6 +163,32 @@ export function attachEditor(viewer, doc, opts = {}) {
   const root = opts.root ?? null;
   if (!viewer?.api || !doc || !root) throw new Error("scene-edit: viewer, engine document, and root required");
   const onError = typeof opts.onError === "function" ? opts.onError : null;
+  // Advice, not failure: the edit went through and something about the
+  // result is worth saying (text longer than a box that cannot grow).
+  const onNotice = typeof opts.onNotice === "function" ? opts.onNotice : null;
+  const notice = (n) => { if (onNotice) onNotice(n); };
+  const slideHeight = (slideId) => doc.snapshot().scenes.find((sc) => sc.id === slideId)?.height ?? SCENE_H;
+  // The ops that commit a text change and, when the text no longer fits,
+  // grow its box down to seat it (never past the slide's bottom edge) —
+  // one batch, so one undo takes back both.
+  function withGrowToFit(slideId, el, paragraphs, op) {
+    const ops = [{ slideId, op }];
+    if (el.kind !== "text") return ops;
+    const need = Math.ceil((measureText(el, el.w, paragraphs)?.height ?? 0) * 1000 - 1e-6) / 1000;
+    const h = Math.min(need, r3(slideHeight(slideId) - el.y));
+    if (h > el.h + 1e-6) ops.push({ slideId, op: { type: "element.setGeometry", id: el.id, x: el.x, y: el.y, w: el.w, h } });
+    return ops;
+  }
+  function submitOps(ops, baseRevision) {
+    if (ops.length === 1) return doc.apply({ id: newEditId(), slideId: ops[0].slideId, op: ops[0].op, baseRevision, actor: "human" });
+    return doc.applyBatch({ id: newEditId(), baseRevision, actor: "human", ops });
+  }
+  function noticeOverflow(slideId, id) {
+    const fresh = findIn(doc.snapshot().scenes, slideId, id);
+    const overflow = fresh?.kind === "text" ? overflowEstimate(fresh) : null;
+    if (overflow && !overflow.fits) notice({ code: "overflow", elementId: id, message: overflow.message });
+    return overflow;
+  }
   const onSync = typeof opts.onSync === "function" ? opts.onSync : null;
   const onTextEdit = typeof opts.onTextEdit === "function" ? opts.onTextEdit : null;
   const api = viewer.api;
@@ -646,23 +688,16 @@ export function attachEditor(viewer, doc, opts = {}) {
       notifyText({ committed: false, noop: true });
       return track(Promise.resolve({ ok: true, revision: rev, noop: true }));
     }
-    const result = await doc.apply({
-      id: newEditId(),
-      slideId: s.slideId,
-      op: { type: "element.updateText", id: s.elementId, paragraphs: next },
-      baseRevision: opts.force ? cur.revision : s.baseRevision,
-      actor: "human",
-    });
+    const result = await submitOps(
+      withGrowToFit(s.slideId, el, next, { type: "element.updateText", id: s.elementId, paragraphs: next }),
+      opts.force ? cur.revision : s.baseRevision,
+    );
     if (result.ok) {
       closeTextarea(s);
       textSession = null;
       sync();
-      const fresh = findIn(doc.snapshot().scenes, s.slideId, s.elementId);
-      const overflow = fresh ? overflowEstimate(fresh) : null;
-      notifyText({ committed: true, overflow: overflow?.message ?? null });
-      if (overflow && !overflow.fits && onError) {
-        onError({ ok: false, code: "op-rejected", message: `overflow: ${overflow.message}` });
-      }
+      const overflow = noticeOverflow(s.slideId, s.elementId);
+      notifyText({ committed: true, overflow: overflow?.fits === false ? overflow.message : null });
       return track(result);
     }
     // Failure preserves the draft and the open session: the user can
@@ -987,6 +1022,9 @@ export function attachEditor(viewer, doc, opts = {}) {
       id,
       handle,
       origin: { x: target.el.x, y: target.el.y, w: target.el.w, h: target.el.h },
+      limits: target.el.kind === "text"
+        ? { floor: (w) => measureText(target.el, w)?.height ?? 0, slideH: slideHeight(target.snap.slideId) }
+        : {},
       moved: false,
     };
     return { ok: true, revision: doc.snapshot().revision, resizing: true };
@@ -1001,7 +1039,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     }
     resize.moved = true;
     const { dx, dy } = clientToSvgDelta(clientX - resize.startX, clientY - resize.startY, scales);
-    const geom = resizeGeometry(resize.origin, resize.handle, dx / IN, dy / IN);
+    const geom = resizeGeometry(resize.origin, resize.handle, dx / IN, dy / IN, resize.limits);
     drawResizePreview(geom);
     return geom;
   }
@@ -1026,7 +1064,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     let geom;
     try {
       const { dx, dy } = clientToSvgDelta(ev.clientX - s.startX, ev.clientY - s.startY, scales);
-      geom = resizeGeometry(s.origin, s.handle, dx / IN, dy / IN);
+      geom = resizeGeometry(s.origin, s.handle, dx / IN, dy / IN, s.limits);
     } catch (err) {
       return track(Promise.resolve(report({ ok: false, code: "op-rejected", message: String(err?.message ?? err) })));
     }
@@ -1039,13 +1077,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     });
     if (result.ok) {
       sync();
-      const fresh = findIn(doc.snapshot().scenes, s.slideId, s.id);
-      if (fresh?.kind === "text") {
-        const overflow = overflowEstimate(fresh);
-        if (overflow && !overflow.fits && onError) {
-          onError({ ok: false, code: "op-rejected", message: `overflow: ${overflow.message}` });
-        }
-      }
+      noticeOverflow(s.slideId, s.id);
       return track({ ...result, geometry: geom });
     }
     return track(report(result));
@@ -1210,23 +1242,16 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (same) return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
     const op = { type: "element.setTextStyle", id, style };
     if (paragraphIndex !== undefined && paragraphIndex !== null) op.paragraphIndex = paragraphIndex;
+    // The size a restyle leaves the runs at decides whether the box must
+    // grow, so measure the paragraphs as they will be, not as they are.
+    const styled = paras.map((p, i) => (idxs.includes(i)
+      ? { ...p, runs: p.runs.map((r) => ({ ...r, ...(style.size != null ? { size: style.size } : {}), ...(style.bold != null ? { weight: style.bold ? 700 : 400 } : {}) })) }
+      : p));
     return track((async () => {
-      const result = await doc.apply({
-        id: newEditId(),
-        slideId: snap.slideId,
-        op,
-        baseRevision: doc.snapshot().revision,
-        actor: "human",
-      });
+      const result = await submitOps(withGrowToFit(snap.slideId, el, styled, op), doc.snapshot().revision);
       if (result.ok) {
         sync();
-        const fresh = findIn(doc.snapshot().scenes, snap.slideId, id);
-        if (fresh?.kind === "text") {
-          const overflow = overflowEstimate(fresh);
-          if (overflow && !overflow.fits && onError) {
-            onError({ ok: false, code: "op-rejected", message: `overflow: ${overflow.message}` });
-          }
-        }
+        noticeOverflow(snap.slideId, id);
       }
       return report(result);
     })());

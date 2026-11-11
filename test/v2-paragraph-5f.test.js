@@ -18,6 +18,7 @@ import {
   describeStructure,
   paragraphsToDraft,
   buildUpdatedParagraphs,
+  overflowEstimate,
 } from "../packages/editor/scene-text.js";
 import { compileDeck, recompileSlide } from "../packages/compiler/compile.js";
 import { sampleDeckIntent, warmDesign } from "./v2-fixture.js";
@@ -337,7 +338,7 @@ describe("v2-5f multi-paragraph editing", () => {
     r.editor.cancelTextEdit();
   });
 
-  it("overflow recalculates for longer multi text", async () => {
+  it("longer multi text grows its box to fit", async () => {
     const scenes = [{
       id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
       elements: [{
@@ -355,9 +356,10 @@ describe("v2-5f multi-paragraph editing", () => {
     const result = await r.editor.commitTextEdit();
     assert.equal(result.ok, true, "overflow still commits whole");
     const el = r.doc.snapshot().scenes[0].elements.find((e) => e.id === "s:t");
-    assert.equal(el.h, 0.8, "geometry unchanged");
+    assert.ok(el.h > 0.8, "the box grew to hold the new paragraph");
+    assert.equal(overflowEstimate(el).fits, true, "every paragraph fits, measured together");
     assert.equal(el.paragraphs.length, 3, "paragraphs intact, never flattened");
-    assert.ok(r.errors.some((e) => /overflow/.test(e.message)), "warning surfaced");
+    assert.deepEqual(r.errors, [], "nothing reported as failed");
   });
 
   it("edited multi text survives regeneration; moved-only refreshes", async () => {

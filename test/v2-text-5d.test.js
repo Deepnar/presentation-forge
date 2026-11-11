@@ -40,16 +40,18 @@ async function rig(scenes, opts = {}) {
   const viewer = createViewer(root, scenes);
   const doc = await createDocument(structuredClone(scenes));
   const errors = [];
+  const notices = [];
   const synced = [];
   const textEvents = [];
   const editor = attachEditor(viewer, doc, {
     root,
     onError: (r) => errors.push(r),
+    onNotice: (n) => notices.push(n),
     onSync: (s) => synced.push(s.length),
     onTextEdit: (e) => textEvents.push(e),
   });
   if (opts.slide !== undefined) viewer.api.goTo(opts.slide);
-  return { document, root, viewer, doc, editor, errors, synced, textEvents };
+  return { document, root, viewer, doc, editor, errors, notices, synced, textEvents };
 }
 
 async function fixtureRig() {
@@ -185,7 +187,7 @@ describe("v2-5d text model helpers", () => {
     assert.equal(ok.message, null);
     const long = overflowEstimate(el, [{ runs: [{ text: "word ".repeat(60), size: 18, color: "111111" }], align: "left" }]);
     assert.equal(long.fits, false);
-    assert.match(long.message, /lines/);
+    assert.match(long.message, /longer than its box/);
     assert.equal(el.h, 0.4, "geometry untouched by the estimate");
   });
 });
@@ -525,23 +527,45 @@ describe("v2-5d inline text editing", () => {
     assert.equal(fresh.contentCustomized, undefined, "move alone sets no content ownership");
   });
 
-  it("overflow commits with geometry unchanged and a warning", async () => {
-    const scenes = [{
-      id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
-      elements: [{
-        id: "s:t", kind: "text", x: 1, y: 1, w: 2, h: 0.4, z: 0, provenance: "compiler", semanticRef: "body", fitPolicy: "wrap",
-        paragraphs: [{ runs: [{ text: "short", role: "body", size: 18, color: "111111" }], align: "left" }],
-      }],
-    }];
-    const r = await rig(scenes);
+  // Typing past a box's end grows the box to hold the text, as a slide
+  // editor does, and one undo takes back the words and the growth together.
+  const short = () => [{
+    id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
+    elements: [{
+      id: "s:t", kind: "text", x: 1, y: 1, w: 2, h: 0.4, z: 0, provenance: "compiler", semanticRef: "body", fitPolicy: "wrap",
+      paragraphs: [{ runs: [{ text: "short", role: "body", size: 18, color: "111111" }], align: "left" }],
+    }],
+  }];
+
+  it("text that outgrows its box grows the box, undone in one step", async () => {
+    const r = await rig(short());
     r.viewer.api.select("s:t");
     r.editor.beginTextEdit("s:t");
-    typeInto(r, "s:t", "word ".repeat(60));
+    typeInto(r, "s:t", "word ".repeat(12));
     const result = await r.editor.commitTextEdit();
-    assert.equal(result.ok, true, "overflow still commits — never truncated");
+    assert.equal(result.ok, true);
     const el = r.doc.snapshot().scenes[0].elements.find((e) => e.id === "s:t");
-    assert.equal(el.h, 0.4, "geometry unchanged without user authorization");
-    assert.ok(r.errors.some((e) => /overflow/.test(e.message)), "overflow warning surfaced");
+    assert.ok(el.h > 0.4, "the box grew");
+    assert.equal(el.y, 1, "downward, from where it was");
+    assert.equal(overflowEstimate(el).fits, true, "the text fits the grown box");
+    assert.deepEqual(r.errors, [], "nothing reported as failed");
+    await r.doc.undo();
+    const back = r.doc.snapshot().scenes[0].elements.find((e) => e.id === "s:t");
+    assert.equal(back.h, 0.4);
+    assert.equal(back.paragraphs[0].runs[0].text, "short");
+  });
+
+  it("text too long for the room left on the slide commits whole, with a notice", async () => {
+    const r = await rig(short());
+    r.viewer.api.select("s:t");
+    r.editor.beginTextEdit("s:t");
+    typeInto(r, "s:t", "word ".repeat(200));
+    const result = await r.editor.commitTextEdit();
+    assert.equal(result.ok, true, "never truncated");
+    const el = r.doc.snapshot().scenes[0].elements.find((e) => e.id === "s:t");
+    assert.ok(Math.abs(el.y + el.h - 7.5) < 0.002, "grown to the slide's bottom edge, no further");
+    assert.deepEqual(r.errors, [], "not an error");
+    assert.ok(r.notices.some((n) => n.code === "overflow"), "a plain notice");
     assert.ok(r.textEvents.some((e) => e.overflow), "overflow reported on the edit event");
   });
 

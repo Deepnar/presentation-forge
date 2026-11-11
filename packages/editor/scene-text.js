@@ -421,14 +421,13 @@ export function tableOverflowEstimate(el) {
     message: messages.length === 0 ? null : messages[0] + (messages.length > 1 ? ` (+${messages.length - 1} more)` : ""),
   };
 }
-// Honest overflow visibility WITHOUT a new layout planner: reuse the
-// compiler's own lineCount heuristic against the element's box to
-// estimate whether committed paragraphs still fit. Advisory only —
-// geometry is never changed, fonts never shrunk, text never
-// truncated. A schema-valid scene that fails here is still committed;
-// the caller surfaces the message.
-export function overflowEstimate(el, paragraphs = el?.paragraphs) {
-  if (!el || el.kind !== "text" || !Array.isArray(paragraphs) || !el.w || !el.h) return null;
+// The lines a text element's paragraphs take at width `w`, by the
+// compiler's own lineCount heuristic, and the height those lines need.
+// The resize clamp, the grow-to-fit after an edit and the overflow
+// estimate all read this one measure, so the box the editor allows is
+// the box the estimate calls fitting.
+export function measureText(el, w = el?.w, paragraphs = el?.paragraphs) {
+  if (!el || el.kind !== "text" || !Array.isArray(paragraphs) || !w) return null;
   let lines = 0;
   let size = 12;
   let line = 1.35;
@@ -448,16 +447,27 @@ export function overflowEstimate(el, paragraphs = el?.paragraphs) {
       ...(best.transform ? { transform: best.transform } : {}),
     };
     for (const segment of (p.runs ?? []).map((r) => r.text ?? "").join("").split("\n")) {
-      lines += Math.max(1, lineCount(segment, Math.max(0.1, el.w), style));
+      lines += Math.max(1, lineCount(segment, Math.max(0.1, w), style));
     }
   }
-  if (lines === 0) return { lines: 0, capacity: 0, fits: true, message: null };
-  const capacity = Math.max(1, Math.floor(el.h / ((size / 72) * line)));
-  const fits = lines <= capacity;
+  const lineH = (size / 72) * line;
+  return { lines, lineH, height: lines * lineH };
+}
+
+// Whether committed paragraphs still fit their box. Advisory: text is
+// never truncated and fonts never shrunk here; the editor uses it to
+// say so plainly when a box cannot grow any further.
+export function overflowEstimate(el, paragraphs = el?.paragraphs) {
+  if (!el || el.kind !== "text" || !el.h) return null;
+  const m = measureText(el, el.w, paragraphs);
+  if (!m) return null;
+  if (m.lines === 0) return { lines: 0, capacity: 0, fits: true, message: null };
+  const capacity = Math.max(1, Math.floor(el.h / m.lineH + 1e-6));
+  const fits = m.lines <= capacity;
   return {
-    lines,
+    lines: m.lines,
     capacity,
     fits,
-    message: fits ? null : `text needs ~${lines} lines in a box seating ~${capacity} — shorten the text (geometry unchanged)`,
+    message: fits ? null : "The text is longer than its box. Make the box bigger or the text smaller.",
   };
 }

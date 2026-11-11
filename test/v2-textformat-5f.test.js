@@ -362,3 +362,26 @@ describe("v2-5f text format export", () => {
     assert.match(await zip2.files["ppt/slides/slide1.xml"].async("string"), /ABCDEF/);
   });
 });
+
+describe("a bigger size grows the box", () => {
+  it("raising the size grows the box to the text, and one undo takes both back", async () => {
+    const r = await rig([{
+      id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
+      elements: [{
+        id: "s:t", kind: "text", x: 1, y: 1, w: 4, h: 0.5, z: 0, provenance: "compiler", semanticRef: "body", fitPolicy: "wrap",
+        paragraphs: [{ runs: [{ text: "A sentence long enough to wrap once it is set large", role: "body", size: 14, color: "111111" }], align: "left" }],
+      }],
+    }]);
+    r.viewer.api.select("s:t");
+    const result = await r.editor.setTextStyle("s:t", null, { size: 32 });
+    assert.equal(result.ok, true);
+    const el = r.doc.snapshot().scenes[0].elements[0];
+    assert.equal(el.paragraphs[0].runs[0].size, 32);
+    assert.ok(el.h > 0.5, "the box grew");
+    assert.deepEqual(r.errors, []);
+    await r.doc.undo();
+    const back = r.doc.snapshot().scenes[0].elements[0];
+    assert.equal(back.h, 0.5);
+    assert.equal(back.paragraphs[0].runs[0].size, 14);
+  });
+});

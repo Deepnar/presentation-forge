@@ -17,7 +17,7 @@ import {
   MIN_RESIZE_IN,
 } from "../packages/editor/scene-edit.js";
 import { resizeGeometry } from "../packages/editor/scene-edit.js";
-import { cascadeBox, cascadeIndex } from "../packages/editor/scene-text.js";
+import { cascadeBox, cascadeIndex, measureText, overflowEstimate } from "../packages/editor/scene-text.js";
 import { compileDeck } from "../packages/compiler/compile.js";
 import { sampleDeckIntent, warmDesign } from "./v2-fixture.js";
 
@@ -33,13 +33,15 @@ async function rig(scenes) {
   const viewer = createViewer(root, scenes);
   const doc = await createDocument(structuredClone(scenes));
   const errors = [];
+  const notices = [];
   const synced = [];
   const editor = attachEditor(viewer, doc, {
     root,
     onError: (r) => errors.push(r),
+    onNotice: (n) => notices.push(n),
     onSync: (s) => synced.push(s.length),
   });
-  return { document, root, viewer, doc, editor, errors, synced };
+  return { document, root, viewer, doc, editor, errors, notices, synced };
 }
 
 async function fixtureRig() {
@@ -354,26 +356,62 @@ describe("v2-5e resize handles", () => {
     assert.equal(after.contentCustomized, undefined, "resize sets no content ownership");
   });
 
-  it("shrinking text warns overflow without touching content", async () => {
-    const scenes = [{
-      id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
-      elements: [{
-        id: "s:t", kind: "text", x: 1, y: 1, w: 6, h: 2, z: 0, provenance: "compiler", semanticRef: "body", fitPolicy: "wrap",
-        paragraphs: [{ runs: [{ text: "word ".repeat(40), role: "body", size: 18, color: "111111" }], align: "left" }],
-      }],
-    }];
-    const r = await rig(scenes);
+  // A text box stops at its text, the way PowerPoint and Canva boxes do,
+  // instead of committing a box the text spills out of and calling that
+  // a failed edit.
+  const wordy = (h) => [{
+    id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
+    elements: [{
+      id: "s:t", kind: "text", x: 1, y: 1, w: 6, h, z: 0, provenance: "compiler", semanticRef: "body", fitPolicy: "wrap",
+      paragraphs: [{ runs: [{ text: "word ".repeat(40), role: "body", size: 18, color: "111111" }], align: "left" }],
+    }],
+  }];
+
+  it("a text box cannot be dragged shorter than its text", async () => {
+    const r = await rig(wordy(3));
     stubLayout(r.root);
     r.viewer.api.select("s:t");
-    // Shrink width hard via the west handle: 4 inches narrower.
+    const need = measureText(r.doc.snapshot().scenes[0].elements[0], 6).height;
+    ptr(r.root, "pointerdown", handleFor(r.root, "s:t", "n"), { x: 300, y: 300 });
+    ptr(r.root, "pointermove", handleFor(r.root, "s:t", "n"), { x: 300, y: 300 + 96 * 2.8 });
+    ptr(r.root, "pointerup", handleFor(r.root, "s:t", "n"), { x: 300, y: 300 + 96 * 2.8 });
+    await r.editor.pending();
+    const after = r.doc.snapshot().scenes[0].elements[0];
+    assert.ok(Math.abs(after.h - need) < 0.002, `stopped at the text (${after.h} vs ${need})`);
+    assert.ok(Math.abs(after.y + after.h - 4) < 0.002, "the bottom edge stays where it was");
+    assert.equal(after.paragraphs[0].runs[0].text, "word ".repeat(40), "content intact");
+    assert.deepEqual(r.errors, [], "nothing reported as failed");
+    assert.deepEqual(r.notices, [], "and nothing left over to warn about");
+  });
+
+  it("narrowing a text box grows it downward to keep the text inside", async () => {
+    const r = await rig(wordy(2));
+    stubLayout(r.root);
+    r.viewer.api.select("s:t");
     ptr(r.root, "pointerdown", handleFor(r.root, "s:t", "w"), { x: 300, y: 300 });
     ptr(r.root, "pointermove", handleFor(r.root, "s:t", "w"), { x: 300 + 384, y: 300 });
     ptr(r.root, "pointerup", handleFor(r.root, "s:t", "w"), { x: 300 + 384, y: 300 });
     await r.editor.pending();
-    const after = r.doc.snapshot().scenes[0].elements.find((e) => e.id === "s:t");
-    assert.equal(after.w, 2, "geometry committed as dragged");
-    assert.equal(after.paragraphs[0].runs[0].text, "word ".repeat(40), "content intact");
-    assert.ok(r.errors.some((e) => /overflow/.test(e.message)), "honest overflow warning");
+    const after = r.doc.snapshot().scenes[0].elements[0];
+    assert.equal(after.w, 2, "width committed as dragged");
+    assert.equal(after.y, 1, "top edge kept");
+    assert.equal(overflowEstimate(after).fits, true, "the text still fits");
+    assert.deepEqual(r.errors, []);
+  });
+
+  it("a box that would run off the slide stops at the edge and says so, not as a failure", async () => {
+    const r = await rig(wordy(2));
+    stubLayout(r.root);
+    r.viewer.api.select("s:t");
+    // 5.6in narrower leaves 0.4in: 40 words cannot fit above the slide's bottom.
+    ptr(r.root, "pointerdown", handleFor(r.root, "s:t", "w"), { x: 300, y: 300 });
+    ptr(r.root, "pointermove", handleFor(r.root, "s:t", "w"), { x: 300 + 96 * 5.6, y: 300 });
+    ptr(r.root, "pointerup", handleFor(r.root, "s:t", "w"), { x: 300 + 96 * 5.6, y: 300 });
+    await r.editor.pending();
+    const after = r.doc.snapshot().scenes[0].elements[0];
+    assert.ok(Math.abs(after.y + after.h - 7.5) < 0.002, "grown to the slide's bottom edge, no further");
+    assert.deepEqual(r.errors, [], "not an error");
+    assert.ok(r.notices.some((n) => n.code === "overflow" && /longer than its box/.test(n.message)), "a plain notice");
   });
 
   it("handle presses never drag, clear, or edit", async () => {

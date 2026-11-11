@@ -1156,7 +1156,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       const adapter = attachEditor(targetViewer, doc, {
         root: mountRef.current,
         onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
+        onNotice: (n) => setTextState((t) => ({ ...t, overflow: n.message })),
         onSync: (scenes) => {
+          setTextState((t) => (t.overflow ? { ...t, overflow: null } : t));
           setEditedScenes(scenes);
           setEditStatus({ rev: doc.snapshot().revision, error: null, preparing: false });
           markDirtyFromEngine();
@@ -1408,7 +1410,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     const adapter = attachEditor(targetViewer, fresh, {
       root: mountRef.current,
       onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
+      onNotice: (n) => setTextState((t) => ({ ...t, overflow: n.message })),
       onSync: (scenes) => {
+        setTextState((t) => (t.overflow ? { ...t, overflow: null } : t));
         setEditedScenes(scenes);
         setEditStatus({ rev: fresh.snapshot().revision, error: null, preparing: false });
         markDirtyFromEngine();
@@ -2435,7 +2439,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         </div>
         {editStatus.error && (
           <div role="alert" data-edit-error className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px] text-danger">
-            Edit failed: {editStatus.error}
+            {editStatus.error.replace(/^[a-z-]+: /, "")}
           </div>
         )}
         {project?.recoverable && !projectsOpen && (
