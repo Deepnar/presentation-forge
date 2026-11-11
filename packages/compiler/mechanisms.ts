@@ -686,6 +686,97 @@ function proseListScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
   return els;
 }
 
+// A muted caption line on an axis or lane: one line, never wrapped.
+function axisText(ctx: MechanismCtx, id: string, box: Box, text: string, align: "left" | "center" | "right", takeZ: () => number): SceneElement {
+  return { ...textEl(id, undefined, box,
+    [{ runs: [{ text, role: "caption", color: ctx.design.palette.inkMuted.hex }], align }],
+    takeZ(), { ...fitOf(ctx), policy: "one-line" }), valign: "middle" as const };
+}
+
+// Four blocks as a 2x2 between two axes, first block top-left, then
+// top-right, bottom-left, bottom-right. The x axis reads along the bottom,
+// the y axis down a left gutter (scenes draw no rotated text).
+function quadrantGrid(ctx: MechanismCtx, top: number, bottom: number, takeZ: () => number): SceneElement[] {
+  const { slide, design, box } = ctx;
+  const els: SceneElement[] = [];
+  const axes = slide.axes ?? {};
+  const gutter = axes.y ? 1.5 : 0, footer = axes.x ? 0.4 : 0;
+  const gx = box.x + gutter, gw = box.w - gutter, gh = bottom - top - footer;
+  const cx = gx + gw / 2, cy = top + gh / 2, inset = 0.12;
+  els.push(shapeEl(`${slide.id}:axis-x:rule`, undefined, { x: gx, y: cy - 0.015, w: gw, h: 0.03 }, "rect", design.palette.rule.hex, takeZ()));
+  els.push(shapeEl(`${slide.id}:axis-y:rule`, undefined, { x: cx - 0.015, y: top, w: 0.03, h: gh }, "rect", design.palette.rule.hex, takeZ()));
+  const cellW = gw / 2 - inset * 2, cellH = gh / 2 - inset * 2;
+  slide.blocks.forEach((block, i) => {
+    const cell = { x: (i % 2 ? cx : gx) + inset, y: (i < 2 ? top : cy) + inset, w: cellW, h: cellH };
+    els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id, cell, "roundRect", design, takeZ()));
+    placePrimary(ctx, els, block, { x: cell.x + 0.2, y: cell.y + 0.12, w: cell.w - 0.4, h: cell.h - 0.24 }, takeZ);
+  });
+  if (axes.x) {
+    const row = { y: bottom - footer + 0.05, h: 0.3 };
+    if (axes.x.low) els.push(axisText(ctx, `${slide.id}:axis-x:low`, { x: gx, ...row, w: gw / 3 }, axes.x.low, "left", takeZ));
+    if (axes.x.label) els.push(axisText(ctx, `${slide.id}:axis-x:label`, { x: gx + gw / 3, ...row, w: gw / 3 }, axes.x.label, "center", takeZ));
+    if (axes.x.high) els.push(axisText(ctx, `${slide.id}:axis-x:high`, { x: gx + (2 * gw) / 3, ...row, w: gw / 3 }, axes.x.high, "right", takeZ));
+  }
+  if (axes.y) {
+    const col = { x: box.x, w: gutter - 0.15 };
+    if (axes.y.high) els.push(axisText(ctx, `${slide.id}:axis-y:high`, { ...col, y: top, h: 0.3 }, axes.y.high, "right", takeZ));
+    if (axes.y.label) els.push(axisText(ctx, `${slide.id}:axis-y:label`, { ...col, y: cy - 0.15, h: 0.3 }, axes.y.label, "right", takeZ));
+    if (axes.y.low) els.push(axisText(ctx, `${slide.id}:axis-y:low`, { ...col, y: top + gh - 0.3, h: 0.3 }, axes.y.low, "right", takeZ));
+  }
+  return els;
+}
+
+// One row per block group, in the order groups first appear: the group's
+// name on the left, its blocks as cards across the row, and the x axis's
+// ticks (a roadmap's time periods) as a header above the rows.
+function laneGrid(ctx: MechanismCtx, top: number, bottom: number, takeZ: () => number): SceneElement[] {
+  const { slide, design, box } = ctx;
+  const els: SceneElement[] = [];
+  const lanes: { name: string; blocks: ContentBlock[] }[] = [];
+  for (const block of slide.blocks) {
+    const name = block.group ?? "";
+    let lane = lanes.find((l) => l.name === name);
+    if (!lane) lanes.push(lane = { name, blocks: [] });
+    lane.blocks.push(block);
+  }
+  const ticks = slide.axes?.x?.ticks ?? [];
+  const headH = ticks.length ? 0.36 : 0;
+  const labelW = Math.min(2.0, box.w * 0.17);
+  const areaX = box.x + labelW + 0.3, areaW = box.w - labelW - 0.3;
+  if (ticks.length) {
+    const tw = areaW / ticks.length;
+    ticks.forEach((tick, i) => els.push(axisText(ctx, `${slide.id}:axis-x:tick-${i}`, { x: areaX + i * tw, y: top, w: tw, h: 0.3 }, tick, "center", takeZ)));
+  }
+  const rowsTop = top + headH;
+  const rowH = (bottom - rowsTop) / Math.max(1, lanes.length);
+  lanes.forEach((lane, li) => {
+    const ry = rowsTop + li * rowH;
+    const owner = lane.blocks[0].id;
+    if (lane.name) {
+      els.push({ ...textEl(`${slide.id}:lane-${li}:label`, owner, { x: box.x, y: ry, w: labelW, h: rowH - 0.1 },
+        [{ runs: [{ text: lane.name, role: "subhead", bold: true, color: ink(design) }], align: "left" as const }],
+        takeZ(), fitOf(ctx)), valign: "middle" as const });
+    }
+    const cards = lane.blocks.filter((b) => b.text || b.label);
+    const slot = areaW / Math.max(1, cards.length);
+    const cardW = Math.max(1.2, Math.min(3.4, slot - 0.18));
+    cards.forEach((block, ci) => {
+      const x = areaX + (ci + 0.5) * slot - cardW / 2;
+      const frame = { x, y: ry + 0.05, w: cardW, h: rowH - 0.15 };
+      els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id, frame, "roundRect", design, takeZ()));
+      const text = placePrimary(ctx, els, block, { x: x + 0.12, y: frame.y + 0.06, w: cardW - 0.24, h: frame.h - 0.12 }, takeZ);
+      if (text.kind === "text") {
+        text.valign = "middle";
+        for (const p of text.paragraphs ?? []) p.align = "center";
+      }
+    });
+    if (li < lanes.length - 1) {
+      els.push(shapeEl(`${slide.id}:lane-${li}:rule`, owner, { x: box.x, y: ry + rowH - 0.0075, w: box.w, h: 0.015 }, "rect", design.palette.rule.hex, takeZ()));
+    }
+  });
+  return els;
+}
+
 function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const { slide, design, box, comp } = ctx;
   const els: SceneElement[] = [];
@@ -695,6 +786,16 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   let y = hasHeadlineTakeaway ? below + 0.7 : below;
   if (hasHeadlineTakeaway) els.push(...takeawayEls(ctx, below, box.bottom, takeZ()));
   const bottom = box.bottom - (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation" ? 0.6 : 0);
+  const arranged = slide.layoutHint?.arrangement === "quadrants" && slide.blocks.length === 4 ? quadrantGrid(ctx, y, bottom, takeZ)
+    : slide.layoutHint?.arrangement === "lanes" ? laneGrid(ctx, y, bottom, takeZ)
+    : null;
+  if (arranged) {
+    els.push(...arranged);
+    if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+      els.push(...takeawayEls(ctx, bottom, box.bottom, takeZ()));
+    }
+    return els;
+  }
   const primaries = slide.blocks.filter((b) => comp.emphasisTargets.includes(b.id));
   const rest = slide.blocks.filter((b) => !comp.emphasisTargets.includes(b.id));
   const gap = 0.3;

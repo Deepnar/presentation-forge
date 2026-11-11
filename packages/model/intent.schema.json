@@ -62,11 +62,38 @@
             "emphasis": { "type": "string", "maxLength": 120 },
             "mediaSide": { "enum": ["left", "right"] },
             "flowDirection": { "enum": ["across", "down"], "description": "Whether a sequence reads left to right or top to bottom. Absent means across." },
-            "arrangement": { "enum": ["tiers", "radial", "layers", "graph"], "description": "How a hierarchy is drawn: the first block above the rest (tiers), at the centre with the rest around it (radial), every block as a full-width band stacked in authored order, top first (layers), or as a node graph laid out along its connections (graph). Absent means tiers." }
+            "arrangement": { "enum": ["tiers", "radial", "layers", "graph", "quadrants", "lanes"], "description": "How blocks are arranged. Hierarchies: the first block above the rest (tiers), at the centre with the rest around it (radial), every block a full-width band stacked top first (layers), or a node graph along its connections (graph). Card grids: four blocks as a 2x2 between the slide's axes (quadrants), or one row per block group in first-seen order (lanes). Absent means the family's default." }
           }
         },
         "sourceRefs": { "type": "array", "items": { "type": "string" } },
         "speakerNotes": { "type": "string", "maxLength": 20000 },
+        "axes": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "The dimensions a slide's blocks are placed along: what each axis measures, its low and high ends, and any tick labels (a roadmap's time periods).",
+          "properties": {
+            "x": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "label": { "type": "string", "maxLength": 60 },
+                "low": { "type": "string", "maxLength": 40 },
+                "high": { "type": "string", "maxLength": 40 },
+                "ticks": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 40 } }
+              }
+            },
+            "y": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "label": { "type": "string", "maxLength": 60 },
+                "low": { "type": "string", "maxLength": 40 },
+                "high": { "type": "string", "maxLength": 40 },
+                "ticks": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 40 } }
+              }
+            }
+          }
+        },
         "connections": {
           "type": "array",
           "maxItems": 30,
@@ -101,6 +128,7 @@
         "alt": { "type": "string", "maxLength": 300 },
         "fit": { "enum": ["cover", "contain"], "description": "Whether the image may be cropped to fill its region (cover) or must show whole (contain)." },
         "icon": { "type": "string", "minLength": 1, "maxLength": 16, "description": "A short emoji or symbol that heads the block, drawn as text." },
+        "group": { "type": "string", "minLength": 1, "maxLength": 60, "description": "The named group (a roadmap phase, a lane) this block belongs to." },
         "caption": { "type": "string", "maxLength": 300 },
         "chartKind": { "enum": ["bar", "hbar", "line", "pie", "doughnut", "area"] },
         "categories": { "type": "array", "items": { "type": "string", "maxLength": 60 } },

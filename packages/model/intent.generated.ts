@@ -54,12 +54,35 @@ export interface SlideIntent {
      */
     flowDirection?: "across" | "down";
     /**
-     * How a hierarchy is drawn: the first block above the rest (tiers), at the centre with the rest around it (radial), every block as a full-width band stacked in authored order, top first (layers), or as a node graph laid out along its connections (graph). Absent means tiers.
+     * How blocks are arranged. Hierarchies: the first block above the rest (tiers), at the centre with the rest around it (radial), every block a full-width band stacked top first (layers), or a node graph along its connections (graph). Card grids: four blocks as a 2x2 between the slide's axes (quadrants), or one row per block group in first-seen order (lanes). Absent means the family's default.
      */
-    arrangement?: "tiers" | "radial" | "layers" | "graph";
+    arrangement?: "tiers" | "radial" | "layers" | "graph" | "quadrants" | "lanes";
   };
   sourceRefs?: string[];
   speakerNotes?: string;
+  /**
+   * The dimensions a slide's blocks are placed along: what each axis measures, its low and high ends, and any tick labels (a roadmap's time periods).
+   */
+  axes?: {
+    x?: {
+      label?: string;
+      low?: string;
+      high?: string;
+      /**
+       * @maxItems 12
+       */
+      ticks?: string[];
+    };
+    y?: {
+      label?: string;
+      low?: string;
+      high?: string;
+      /**
+       * @maxItems 12
+       */
+      ticks?: string[];
+    };
+  };
   /**
    * Directed links between blocks on this slide, by block id — the edges of a diagram.
    *
@@ -91,6 +114,10 @@ export interface ContentBlock {
    * A short emoji or symbol that heads the block, drawn as text.
    */
   icon?: string;
+  /**
+   * The named group (a roadmap phase, a lane) this block belongs to.
+   */
+  group?: string;
   caption?: string;
   chartKind?: "bar" | "hbar" | "line" | "pie" | "doughnut" | "area";
   categories?: string[];
