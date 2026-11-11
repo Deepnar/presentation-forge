@@ -1059,6 +1059,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [rightTab, setRightTab] = useState("inspector");
   const [rightOpen, setRightOpen] = useState(true);
   const [presenting, setPresenting] = useState(null); // slide index or null
+  const [presentNotes, setPresentNotes] = useState(false);
   const [pendingLeave, setPendingLeave] = useState(null); // { label, run } or null
   const [titleDraft, setTitleDraft] = useState(null); // null = not renaming
   const [titleError, setTitleError] = useState(null);
@@ -2683,14 +2684,21 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
             else if (e.key === "ArrowLeft" || e.key === "PageUp") setPresenting((i) => Math.max(0, (i ?? 0) - 1));
             else if (e.key === "Home") setPresenting(0);
             else if (e.key === "End") setPresenting(shownScenes.length - 1);
+            else if (e.key === "n" || e.key === "N") setPresentNotes((v) => !v);
           }}
           className="fixed inset-0 z-[80] flex flex-col items-center justify-center gap-3 bg-black/90 p-6"
         >
           <div data-present-slide className="w-[min(1100px,92vw)] overflow-hidden rounded bg-white" dangerouslySetInnerHTML={{ __html: sceneToSvg(shownScenes[presenting], { wrapText: true }) }} />
+          {presentNotes && (
+            <div data-present-notes aria-label="Speaker notes" className="max-h-[22vh] w-[min(1100px,92vw)] overflow-y-auto whitespace-pre-wrap rounded border border-white/20 bg-white/5 px-4 py-3 text-[15px] leading-relaxed text-white/90">
+              {shownScenes[presenting].notes || <span className="text-white/50">No notes for this slide.</span>}
+            </div>
+          )}
           <div className="flex items-center gap-2 text-[13px] text-white">
             <button type="button" aria-label="Previous slide" onClick={() => setPresenting((i) => Math.max(0, (i ?? 0) - 1))} className="rounded-md border border-white/30 px-2 py-1">← Prev</button>
             <span aria-live="polite" data-present-count>{presenting + 1} / {shownScenes.length}</span>
             <button type="button" aria-label="Next slide" onClick={() => setPresenting((i) => Math.min(shownScenes.length - 1, (i ?? 0) + 1))} className="rounded-md border border-white/30 px-2 py-1">Next →</button>
+            <button type="button" aria-pressed={presentNotes} onClick={() => setPresentNotes((v) => !v)} className="rounded-md border border-white/30 px-2 py-1">{presentNotes ? "Hide notes" : "Notes"} (N)</button>
             <button type="button" aria-label="Exit presentation" onClick={() => setPresenting(null)} className="rounded-md border border-white/30 px-2 py-1">Exit (Esc)</button>
           </div>
         </div>
