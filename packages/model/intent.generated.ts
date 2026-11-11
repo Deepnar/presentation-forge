@@ -54,9 +54,9 @@ export interface SlideIntent {
      */
     flowDirection?: "across" | "down";
     /**
-     * How blocks are arranged. Hierarchies: the first block above the rest (tiers), at the centre with the rest around it (radial), every block a full-width band stacked top first (layers), or a node graph along its connections (graph). Card grids: four blocks as a 2x2 between the slide's axes (quadrants), or one row per block group in first-seen order (lanes). Absent means the family's default.
+     * How blocks are arranged. Hierarchies: the first block above the rest (tiers), at the centre with the rest around it (radial), every block a full-width band stacked top first (layers) or bands narrowing downward (funnel) or widening downward (pyramid), or a node graph along its connections (graph). Card grids: four blocks as a 2x2 between the slide's axes (quadrants), or one row per block group in first-seen order (lanes). Absent means the family's default.
      */
-    arrangement?: "tiers" | "radial" | "layers" | "graph" | "quadrants" | "lanes";
+    arrangement?: "tiers" | "radial" | "layers" | "funnel" | "pyramid" | "graph" | "quadrants" | "lanes";
   };
   sourceRefs?: string[];
   speakerNotes?: string;

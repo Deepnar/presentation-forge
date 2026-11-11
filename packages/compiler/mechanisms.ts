@@ -1555,24 +1555,31 @@ function graphHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: (
 // Every block a full-width band, top block first — a stack of layers. Each
 // band carries an accent edge, its label on the left, its text in the middle
 // and its items as pills on the right, as the legacy layered layout drew it.
-function layeredHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: () => number): SceneElement[] {
-  const { slide, design, box } = ctx;
+// A funnel narrows each band toward the bottom and a pyramid widens it, both
+// centred, from the full width down to 40% of it.
+function layeredHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: () => number, shape: "layers" | "funnel" | "pyramid" = "layers"): SceneElement[] {
+  const { slide, design } = ctx;
   const els: SceneElement[] = [];
   const n = slide.blocks.length;
   const gap = 0.09;
   const bandH = Math.max(0.35, (bottom - top - gap * (n - 1)) / n);
-  const labelW = Math.min(3.2, box.w * 0.28);
+  const widthAt = (i: number) => {
+    if (shape === "layers" || n < 2) return ctx.box.w;
+    const t = i / (n - 1);
+    return ctx.box.w * (shape === "funnel" ? 1 - 0.6 * t : 0.4 + 0.6 * t);
+  };
   const { fit: pillStyle } = resolveRunStyle(design, "caption", {});
   const pillW = (t: string) => Math.min(2.3, measure(t, pillStyle) + 0.4);
   const pillH = Math.min(0.32, bandH * 0.7);
   // Pills share one strip width across bands so their left edges align and
   // every body gets the same room.
-  const strip = Math.min(
-    Math.max(0, ...slide.blocks.map((b) => (b.items ?? []).reduce((w, t) => w + pillW(t) + 0.1, 0))),
-    Math.max(0, box.w - labelW - 0.3 - 1.8),
-  );
+  const demand = Math.max(0, ...slide.blocks.map((b) => (b.items ?? []).reduce((w, t) => w + pillW(t) + 0.1, 0)));
   slide.blocks.forEach((block, i) => {
     const ly = top + i * (bandH + gap);
+    const bw = widthAt(i);
+    const box = { ...ctx.box, x: ctx.box.x + (ctx.box.w - bw) / 2, w: bw };
+    const labelW = Math.min(3.2, Math.max(1.9, box.w * 0.28));
+    const strip = Math.min(demand, Math.max(0, box.w - labelW - 0.3 - 1.8));
     els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id, { x: box.x, y: ly, w: box.w, h: bandH }, "roundRect", design, takeZ()));
     els.push(shapeEl(`${slide.id}:${block.id}:rail`, block.id, { x: box.x, y: ly, w: 0.06, h: bandH }, "rect", design.palette.accent.hex, takeZ()));
     if (block.label) {
@@ -1626,8 +1633,9 @@ function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
     }
     return els;
   }
-  if (slide.layoutHint?.arrangement === "layers") {
-    els.push(...layeredHierarchy(ctx, y, bottom, takeZ));
+  const banded = slide.layoutHint?.arrangement;
+  if (banded === "layers" || banded === "funnel" || banded === "pyramid") {
+    els.push(...layeredHierarchy(ctx, y, bottom, takeZ, banded));
     if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
       els.push(...takeawayEls(ctx, bottom, box.bottom, takeZ()));
     }
