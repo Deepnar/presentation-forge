@@ -423,3 +423,37 @@ describe("v2-6a reopened editing, undo policy, and native export", () => {
     await store.deleteProject({ owner: null, id: created.id });
   });
 });
+
+describe("autosave through a lost connection", () => {
+  it("keeps retrying an unreachable save, backing off, until it lands", async () => {
+    const { createAutosave } = await import("../app/web/src/lib/v2project.js");
+    let calls = 0;
+    const seen = [];
+    const lane = createAutosave({
+      delayMs: 5,
+      backoffMs: [10, 20],
+      saveNow: async () => {
+        calls += 1;
+        return calls < 4 ? { ok: false, code: "unavailable", retryable: true } : { ok: true };
+      },
+      onState: (e) => seen.push(e),
+    });
+    lane.schedule();
+    await new Promise((r) => setTimeout(r, 150));
+    assert.equal(calls, 4, "three unreachable attempts, then the one that lands");
+    assert.deepEqual(seen.map((e) => e.inMs), [10, 20, 20], "backs off and holds at the last step");
+    await new Promise((r) => setTimeout(r, 60));
+    assert.equal(calls, 4, "nothing more once saved");
+    lane.dispose();
+  });
+
+  it("a save refused for any other reason is not retried in a loop", async () => {
+    const { createAutosave } = await import("../app/web/src/lib/v2project.js");
+    let calls = 0;
+    const lane = createAutosave({ delayMs: 5, backoffMs: [10], saveNow: async () => { calls += 1; return { ok: false, code: "stale-revision" }; } });
+    lane.schedule();
+    await new Promise((r) => setTimeout(r, 80));
+    assert.equal(calls, 1);
+    lane.dispose();
+  });
+});

@@ -1285,6 +1285,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         } else if (err?.status === 503 || /unavailable|network|fetch|failed/i.test(err?.message ?? "")) {
           setSaveState("unavailable");
           setSaveError(err.message);
+          // The autosave lane keeps retrying this until the server answers.
+          return { ok: false, code: "unavailable", message: err.message, retryable: true };
         } else {
           setSaveState("error");
           setSaveError(err.message);
@@ -2103,7 +2105,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     dirty: "Read-only · unsaved changes",
     stale: "Read-only · conflict — newer saved version",
     error: "Read-only · save failed",
-    unavailable: "Read-only · storage unavailable — edits not saved",
+    unavailable: "Read-only · offline",
   }[saveState] ?? "Read-only";
 
   if (DECKS.length === 0) {
@@ -2205,7 +2207,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           <>
             <button type="button" aria-label="Save project" title={project ? `Save ${project.title} (rev ${project.revision})` : "Save as a new project"} disabled={copyBusy || saveState === "saving"} onClick={() => (project && !project.recoverable ? saveNow() : saveAsNewProject())} className={shellBtn}>Save</button>
             <span role="status" aria-live="polite" data-copy-busy={copyBusy ? 'true' : 'false'} data-copy-notice={copyBusy ? 'Copying…' : copyNotice ?? undefined} data-save-state={saveState} data-project-state={JSON.stringify(project ?? null)} title={copyBusy ? 'Copying…' : copyNotice ?? saveError ?? project?.title ?? "no project"} className="max-w-[320px] truncate flex-none rounded-full border border-line px-2 py-0.5 text-[12px] text-fg-muted">
-              {(copyBusy ? 'Copying…' : copyNotice) ?? (saveState === "saving" ? "Saving…" : saveState === "saved" ? `Saved${project ? ` · rev ${project.revision}` : ""}` : saveState === "dirty" ? "Unsaved changes" : saveState === "stale" ? "Conflict — newer saved version" : saveState === "error" ? "Save failed" : saveState === "unavailable" ? "Storage unavailable — edits not saved" : project?.title ?? "No project")}
+              {(copyBusy ? 'Copying…' : copyNotice) ?? (saveState === "saving" ? "Saving…" : saveState === "saved" ? `Saved${project ? ` · rev ${project.revision}` : ""}` : saveState === "dirty" ? "Unsaved changes" : saveState === "stale" ? "Conflict — newer saved version" : saveState === "error" ? "Couldn't save" : saveState === "unavailable" ? "Offline · will save when reconnected" : project?.title ?? "No project")}
             </span>
             <button type="button" aria-label="Undo" disabled={!editOn || textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Undo"} onClick={() => adapterRef.current?.undo()} className={shellBtn}>↩ Undo</button>
             <button type="button" aria-label="Redo" disabled={!editOn || textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Redo"} onClick={() => adapterRef.current?.redo()} className={shellBtn}>↪ Redo</button>
@@ -2487,14 +2489,18 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
         )}
         {(saveState === "stale" || saveState === "error" || saveState === "unavailable") && saveError && (
           <div role="alert" data-save-error className="flex-none border-b border-line bg-raised px-3 py-1.5 text-[12px] text-amber">
-            {saveState === "stale" ? `Save conflict: ${saveError} Your edits are intact — reload the newer version or save as a new project.` : `Save failed: ${saveError} Your edits are intact.`}{" "}
+            {saveState === "stale"
+              ? "This project was saved somewhere else since you opened it. Your edits are still here — load the newer version or keep yours as a new project."
+              : saveState === "unavailable"
+                ? "Can't reach the server. Your edits are kept on this page and save automatically when it's back."
+                : "Couldn't save. Your edits are still here."}{" "}
             {saveState === "stale" && (
               <>
                 <button type="button" onClick={() => openProject(project.id)} className={shellBtn}>Load newer version</button>{" "}
                 <button type="button" disabled={copyBusy} onClick={saveAsNewProject} className={shellBtn}>Save as new project</button>{" "}
               </>
             )}
-            <button type="button" onClick={() => saveNow()} className={shellBtn}>Retry save</button>
+            <button type="button" onClick={() => saveNow()} className={shellBtn}>Retry now</button>
           </div>
         )}
         {pendingSwitchId && (

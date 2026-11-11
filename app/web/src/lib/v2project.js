@@ -263,12 +263,36 @@ export function writeLastProject(id, storage = null) {
 // transient failure, and reports persistent failure without losing
 // edits. The caller supplies authoritative snapshots; drafts
 // (open text sessions, unapplied chart/table grids) never enter here.
-export function createAutosave({ delayMs = AUTOSAVE_DELAY_MS, saveNow, onState }) {
+// Waits before each reconnect attempt, then every 30 s until it lands.
+export const RECONNECT_BACKOFF_MS = [2000, 4000, 8000, 15000, 30000];
+
+export function createAutosave({ delayMs = AUTOSAVE_DELAY_MS, saveNow, onState, backoffMs = RECONNECT_BACKOFF_MS }) {
   let timer = null;
+  let retryTimer = null;
+  let attempt = 0;
   let running = false;
   let queued = false;
   let failures = 0;
   let disposed = false;
+
+  // A save that could not reach the server is not a failure to report
+  // and forget: the edits are still on the page, so keep trying — backing
+  // off, and at once when the browser says the network is back.
+  function retryLater() {
+    if (disposed) return;
+    const wait = backoffMs[Math.min(attempt, backoffMs.length - 1)];
+    attempt += 1;
+    if (retryTimer) clearTimeout(retryTimer);
+    retryTimer = setTimeout(() => { retryTimer = null; run(); }, wait);
+    onState?.({ type: "autosave-waiting", inMs: wait, attempt });
+  }
+  const onOnline = () => {
+    if (disposed || !retryTimer) return;
+    clearTimeout(retryTimer);
+    retryTimer = null;
+    run();
+  };
+  globalThis.addEventListener?.("online", onOnline);
 
   async function run() {
     if (disposed || running) {
@@ -277,8 +301,9 @@ export function createAutosave({ delayMs = AUTOSAVE_DELAY_MS, saveNow, onState }
     }
     running = true;
     try {
-      await saveNow();
-      failures = 0;
+      const result = await saveNow();
+      if (result && result.ok === false && result.retryable) retryLater();
+      else { failures = 0; attempt = 0; }
     } catch (err) {
       failures += 1;
       // One retry for a transient failure; a second consecutive
@@ -316,13 +341,16 @@ export function createAutosave({ delayMs = AUTOSAVE_DELAY_MS, saveNow, onState }
 
   function cancel() {
     if (timer) clearTimeout(timer);
+    if (retryTimer) clearTimeout(retryTimer);
     timer = null;
+    retryTimer = null;
     queued = false;
   }
 
   function dispose() {
     disposed = true;
     cancel();
+    globalThis.removeEventListener?.("online", onOnline);
   }
 
   return { schedule, cancel, dispose };
