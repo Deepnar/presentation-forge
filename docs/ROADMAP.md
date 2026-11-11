@@ -190,6 +190,16 @@ dark. Text that explains the UI is cut, not shrunk: if a control needs a
 sentence, the control is wrong. Waits for the core items (see the finish
 line's decisions).
 
+Widened again 2026-11-11: the pass **includes the landing page and the
+site's whole aesthetic**. The owner: it is modern, "but still it for some
+reason feels old and like bad in a certain way I can't point out — it
+feels cluttered". So before any component work, run a design pass with
+**the Claude Design tooling** (the design skill / DesignSync): name what
+reads as dated and cluttered (density, type scale, colour, borders and
+boxes, spacing rhythm, motion), set one visual direction for landing page,
+workspace and editor together, and build from that direction rather than
+restyling page by page.
+
 Raised 2026-11-01 after reviewing the editor screenshots. Same behaviour,
 better surface. Today the toolbar is a row of words ("← Prev  Next →  −  100%
 +  Fit  Done  + Text  + Rect  + Round  + Ellipse") and the inspector speaks the
