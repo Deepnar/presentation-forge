@@ -1,4 +1,5 @@
 import { mkdir, readFile, writeFile, readdir, access, copyFile, cp, rm } from "node:fs/promises";
+import { importForEditor } from "../projects/import-generated.js";
 import path from "node:path";
 import { randomInt } from "node:crypto";
 import YAML from "yaml";
@@ -819,8 +820,14 @@ export async function finalizeDeck({
 
   await rm(path.join(dir, RUN_FILE), { force: true });
 
+  // A finished deck opens in the editor: its project is made (or reopened)
+  // here, after the run file is gone, so every surface lands on one project.
+  onProgress?.({ status: "opening editor" });
+  const editor = await importForEditor({ slug, owner: meta.owner ?? null, mode: meta.mode });
+
   return {
     slug,
+    editor,
     deck: tr.grounded.deck,
     plan,
     slides: recut?.slides ?? criticReport?.slides ?? p.pages.map((f) => path.basename(f)),

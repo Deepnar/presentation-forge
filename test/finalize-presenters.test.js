@@ -98,3 +98,16 @@ test("finalizeDeck assigns presenters to a deck that reached finalize presenter-
     await rm(dir, { recursive: true, force: true });
   }
 });
+
+test("a finished deck opens in the editor: its project exists and a second finish reopens it", async () => {
+  await makeDeck("finalize-editor");
+  const first = await finalizeDeck({ slug: "finalize-editor", model: "mock", chat: fakeChat });
+  assert.ok(first.editor?.projectId, JSON.stringify(first.editor));
+  const { getProject } = await import("../src/projects/store.js");
+  const meta = YAML.parse(await readFile(path.join(scratch, "finalize-editor", "meta.yaml"), "utf8"));
+  const { doc } = await getProject({ owner: meta.owner ?? null, id: first.editor.projectId });
+  assert.equal(doc.scenes.length, first.deck.slides.length);
+  const again = await finalizeDeck({ slug: "finalize-editor", model: "mock", chat: fakeChat });
+  assert.equal(again.editor.projectId, first.editor.projectId, JSON.stringify(again.editor));
+  assert.equal(again.editor.reused, true);
+});

@@ -1,4 +1,6 @@
-export const EDITOR_IMPORT_REQUEST_ID = "browser-editor-v1";
+import { EDITOR_IMPORT_REQUEST_ID } from "../../../../packages/projects/editor-import.js";
+
+export { EDITOR_IMPORT_REQUEST_ID };
 
 export function handoffError(error) {
   let message;

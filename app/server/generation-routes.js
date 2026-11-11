@@ -358,6 +358,10 @@ function startDeckRun({ slug, kind, plan, theme, model, reservation = null, user
       problems: r.problems,
       skipped: r.skipped,
       stats: r.stats,
+      // The deck's editor project, or why it has none; the UI opens it.
+      ...(r.editor ? { editor: r.editor.projectId
+        ? { projectId: r.editor.projectId, fitWarnings: r.editor.fitWarnings.length }
+        : { error: r.editor.error, code: r.editor.code } } : {}),
     };
     run.finished = true;
     broadcast("result", run.result);

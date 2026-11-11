@@ -17,6 +17,15 @@ import {
   resumeGeneration,
 } from "./pipeline.js";
 
+function writeEditor(editor) {
+  if (!editor) return;
+  if (editor.projectId) {
+    process.stdout.write(`editor project ${editor.projectId}${editor.reused ? " (reopened)" : ""}`);
+    if (editor.fitWarnings.length) process.stdout.write(` — ${editor.fitWarnings.length} text box(es) overflow at the readable floor`);
+    process.stdout.write("\n");
+  } else process.stdout.write(`  ! no editor project: ${editor.error}\n`);
+}
+
 const USAGE = `Usage:
   node src/ai/pipeline.js new "<brief>" [--theme <name>] [--sources <url> ...]
                         [--research] [--papers] [--upload <file.md|docx|pdf|txt>]
@@ -160,6 +169,7 @@ export async function runCli(argv = process.argv.slice(2)) {
       process.stdout.write("\n");
       for (const s of r.skipped) process.stdout.write(`  skipped [${s.index}] ${s.type}: ${s.reason}\n`);
       for (const p of r.problems ?? []) process.stdout.write(`  ! ${p}\n`);
+      writeEditor(r.editor);
       if (r.critic) {
         process.stdout.write("critic:\n");
         for (const rd of r.critic.rounds) {
@@ -187,6 +197,7 @@ export async function runCli(argv = process.argv.slice(2)) {
         }
       }
       for (const p of r.problems ?? []) process.stdout.write(`  ! ${p}\n`);
+      writeEditor(r.editor);
     } else if (cmd === "chat") {
       if (!opts.slug || !opts.instruction) { console.error(USAGE); process.exit(2); }
       const r = await runChatTurn({

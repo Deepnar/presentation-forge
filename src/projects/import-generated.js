@@ -1,5 +1,6 @@
 import { performance } from "node:perf_hooks";
 import { readFile } from "node:fs/promises";
+import { EDITOR_IMPORT_REQUEST_ID } from "../../packages/projects/editor-import.js";
 import { readImportSource, importChrome, importBrand } from "./import-source.js";
 import { convertGeneratedDeck, importError } from "./legacy-conversion.js";
 import { projectStore } from "./backend.js";
@@ -176,4 +177,21 @@ export async function importGeneratedProject(args) {
   });
   const fitWarnings = compiled.fitDiagnostics.map(f => ({ slideId: f.slideId, elementId: f.elementId, message: f.message }));
   return { project: result.doc, reused: result.reused, sourceDigest: source.digest, diagnostics: analysis.findings, dropped, fitWarnings, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
+}
+
+// Open a just-finished generated deck in the editor: the same import the
+// Open in editor button makes, so either path reaches one project. Never
+// throws — a deck that cannot become a project is still a finished deck, and
+// the reason travels with the result for the UI to show.
+export async function importForEditor({ slug, owner = null, mode = "light" }) {
+  if (process.env.FORGE_V2_PROJECTS === "0") return { error: "project storage is disabled on this host", code: "projects-disabled" };
+  try {
+    const result = await importGeneratedProject({
+      slug, requestId: EDITOR_IMPORT_REQUEST_ID, mode: mode === "dark" ? "dark" : "light",
+      principal: owner ? { email: owner, verified: true } : null, localOperator: !owner,
+    });
+    return { projectId: result.project.id, reused: result.reused, fitWarnings: result.fitWarnings ?? [], dropped: result.dropped ?? [] };
+  } catch (error) {
+    return { error: error.message, code: error.code ?? "import-failed", details: (error.details ?? []).slice(0, 20) };
+  }
 }
