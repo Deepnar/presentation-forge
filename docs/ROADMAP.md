@@ -121,15 +121,24 @@ Decisions taken with this list, so nobody re-litigates them:
    - **[~] F4b The editor behaves like a slide editor** (owner, 2026-11-11:
      "the editing things feel broken"). An edit that went through is never
      reported as a failure, and a gesture does what PowerPoint, Google Slides
-     and Canva users expect. Done 2026-11-11: a text box stops at its text
-     when resized, grows to hold what is typed or a larger size (one undo),
-     and text that cannot fit even at the slide's edge is a plain notice.
-     Left — audit every gesture against those editors and fix what differs:
-     snapping and alignment guides, Shift to keep proportions, copy / paste /
-     duplicate, multi-select arrange and align, keyboard shortcuts, double
-     click into text, Esc, a "shrink text to fit" choice for a box that
-     cannot grow, and save states that do not read as lost work when the
-     server is briefly unreachable ("Storage unavailable — edits not saved").
+     and Canva users expect. Done 2026-11-11:
+     - a text box stops at its text when resized, grows to hold what is
+       typed or a larger size (one undo); text that cannot fit even at the
+       slide's edge is a plain notice with **Shrink text to fit** (one
+       factor for every paragraph, 9pt floor);
+     - snapping with pink guides to the slide's and other elements' edges
+       and centres while moving and resizing (Alt turns it off); Shift
+       keeps a drag on one axis and a corner in proportion; pictures keep
+       their proportions by default;
+     - Ctrl/Cmd+C, X, V, D, A; copies are human-owned with fresh ids;
+     - drag on empty canvas to select (wholly-inside rule, Shift adds);
+     - a right-click menu: clipboard, delete, front/back, align (glyphs),
+       distribute, shrink to fit;
+     - autosave keeps retrying through a lost connection (backoff, and at
+       once on `online`) and says "Offline · will save when reconnected".
+     Left: paste or drop an image file onto the slide; group / ungroup
+     (Ctrl+G); a rotation handle (the schema has `rotation`, nothing sets
+     it); equal-spacing guides; arrow-key nudge through the same snapping.
 6. **[ ] F5 — Whole-site UI/UX redesign** (after the core items above). See
    [the entry](#editor-ui-redesign). *Done when:* every page reads at a glance
    with little text — the editor as a slide editor (icon toolbar with

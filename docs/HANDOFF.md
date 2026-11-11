@@ -80,10 +80,13 @@ The owner set the order on 2026-11-11: **core before the front end** (see the
 roadmap's finish-line decisions). No visual redesign until the core items are
 done; editing behaviour that feels broken counts as core.
 
-- **F4b** the editor behaves like a slide editor. Text boxes now stop at
-  their text and grow to fit (done). Next: audit every gesture against
-  PowerPoint / Google Slides / Canva and fix what differs — the list is in
-  the roadmap entry.
+- **F4b** the editor behaves like a slide editor — most of it landed
+  2026-11-11 (text boxes fit their text, snapping and guides, Shift
+  constraints, clipboard keys, drag-to-select, a right-click menu with
+  align/distribute, shrink to fit, offline autosave). Left: paste/drop an
+  image file, group/ungroup, rotation — listed in the roadmap entry. New
+  editor gestures live in `packages/editor/scene-arrange.js` (pure) and
+  `scene-edit.js` (wiring); `test/v2-arrange.test.js` covers them.
 - **F1g / F1h** (fit warnings in the editor; re-import a changed deck).
 - **F3** starts with persisting `DeckIntent` in projects; theme change follows.
 - **F2** the Assistant on every provider; then F7, F8, F9.
@@ -93,6 +96,10 @@ done; editing behaviour that feels broken counts as core.
 - Verifying generate → editor end to end needs a working model (the TCET
   gateway returned HTTP 500 on chat; local inference is off-limits while the
   owner's other work runs).
+
+Testing note: the linkedom harness stubs the slide's on-screen size on the
+`<svg>`, and every commit redraws it, so a second gesture in one test needs
+the stub again (or a fresh rig) — it is not an editor bug.
 
 The sandbox's slide 1 carries a "Test picture" rectangle from a picture-insert
 check; it is sandbox data, not part of any real deck.
