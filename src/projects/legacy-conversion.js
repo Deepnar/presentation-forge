@@ -355,6 +355,22 @@ rule("journey", ["stages"], (s, c) => {
     c.add("chart", { chartKind: "line", categories: s.stages.map(st => st.label), series: [{ name: c.slide.title ?? "Value", values: s.stages.map(st => st.value) }] });
   }
 });
+// Stages narrow from the first down, each with its value as a pill.
+rule("funnel", ["stages"], (s, c) => {
+  c.slide.relationship = "hierarchy";
+  c.slide.layoutHint = { arrangement: "funnel" };
+  s.stages.forEach((stage, i) => {
+    c.keys(stage, ["label", "value", "body"], `${c.path}.stages[${i}]`);
+    c.add("text", { text: stage.body ?? "", label: stage.label, ...(stage.value ? { items: [stage.value] } : {}) });
+  });
+});
+// The legacy pyramid drew its first level on top and widest, narrowing
+// downward; the converted slide keeps that shape and order.
+rule("pyramid", ["levels"], (s, c) => {
+  c.slide.relationship = "hierarchy";
+  c.slide.layoutHint = { arrangement: "funnel" };
+  s.levels.forEach((level, i) => { c.keys(level, ["label", "body"], `${c.path}.levels[${i}]`); c.text(level.body ?? "", level.label); });
+});
 rule("icon-list", ["items"], (s, c) => {
   s.items.forEach((item, i) => {
     c.keys(item, ["icon", "text"], `${c.path}.items[${i}]`);

@@ -62,3 +62,26 @@ test("an across flow's cards fit their content in one centred row", async () => 
   const above = frames[0].y - (title.y + title.h), below = scene.height - (frames[0].y + frames[0].h);
   assert.ok(above > 0.3 && below > 0.3, "a short row is not pinned under the title");
 });
+
+test("a funnel narrows band by band, centred, keeping each stage's value", async () => {
+  const stages = ["Made", "Screened", "Packed", "In service"].map((label, i) => ({ label, value: String(1000 - i * 100), body: "Detail" }));
+  const { intent } = await convertGeneratedDeck({ title: "F", slides: [{ type: "funnel", headline: "Yield", stages }] });
+  assert.deepEqual(intent.slides[0].layoutHint, { arrangement: "funnel" });
+  const [scene] = compileDeck(intent, await warmDesign());
+  const bands = intent.slides[0].blocks.map(b => scene.elements.find(e => e.id === `${scene.id}:${b.id}:frame`));
+  for (let i = 1; i < bands.length; i++) {
+    assert.ok(bands[i].w < bands[i - 1].w, "each band narrower than the one above");
+    assert.ok(Math.abs(bands[i].x + bands[i].w / 2 - (bands[0].x + bands[0].w / 2)) < 1e-6, "centred");
+  }
+  intent.slides[0].blocks.forEach((block, i) => {
+    const mine = scene.elements.filter(e => e.semanticRef === block.id && e !== bands[i]);
+    assert.ok(mine.every(e => inside(e, bands[i])), `${block.label} stays in its band`);
+    assert.ok(mine.some(e => textOf(e) === stages[i].value), `${block.label} keeps its value`);
+  });
+});
+
+test("a legacy pyramid keeps its top-widest shape and level order", async () => {
+  const { intent } = await convertGeneratedDeck({ title: "P", slides: [{ type: "pyramid", headline: "Needs", levels: [{ label: "Base" }, { label: "Middle" }, { label: "Top" }] }] });
+  assert.deepEqual(intent.slides[0].layoutHint, { arrangement: "funnel" });
+  assert.deepEqual(intent.slides[0].blocks.map(b => b.label), ["Base", "Middle", "Top"]);
+});
