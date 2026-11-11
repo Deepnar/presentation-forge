@@ -73,7 +73,14 @@ Decisions taken with this list, so nobody re-litigates them:
      reference cards. Found by rendering a real 21-slide deck.
    - **[x] F1f** Claim citations (`cites`) become owner-private project
      sources and slide citations, created with the project in one transaction.
-   - **F1e** Import on completion and the UI handoff described above.
+   - **[x] F1e** Import on completion (2026-11-11): `finalizeDeck` creates or
+     reopens the editor project under the Open in editor request id; the chat
+     opens it when the run finishes in view; the CLI prints it. Not yet: a
+     deck regenerated after its content changed reports the project as stale
+     instead of updating it with human edits kept — see F1h.
+   - **[ ] F1h** Re-import a changed deck into its existing project,
+     recompiling managed slides and keeping customized, detached and
+     human-added content (the recompile primitives already preserve it).
    **[ ] M1 — Merge `v2` into `main` (proposed 2026-11-11; the owner said
    not now — revisit when asked, not automatically after F1).** Everything on `v2` is additive: the legacy generator, deck
    page and report flow are untouched, and the editor sits behind Open in
