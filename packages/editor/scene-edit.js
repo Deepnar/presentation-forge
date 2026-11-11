@@ -31,6 +31,7 @@ import {
   buildLayoutScene,
   getLayoutTemplate,
   collectSceneIds,
+  buildInsertElement,
 } from "./layout-templates.js";
 
 // Documented keybinding contract (see the viewer toolbar hint and
@@ -747,6 +748,28 @@ export function attachEditor(viewer, doc, opts = {}) {
         return track({ ...result, id: element.id });
       }
       return track(report(result));
+    } catch (err) {
+      return track(report({ ok: false, code: "bad-envelope", message: String(err?.message ?? err) }));
+    }
+  }
+
+  // Chart, table or rule, styled from the slide it lands on.
+  async function addPresetElement(kind, opts = {}) {
+    if (textSession) {
+      return report({ ok: false, code: "op-rejected", message: "commit or cancel the open text edit first" });
+    }
+    try {
+      const slideId = opts.slideId ?? api.snapshot().slideId;
+      const slide = doc.snapshot().scenes.find((x) => x.id === slideId);
+      if (!slide) return report({ ok: false, code: "unknown-slide", message: `unknown slide ${slideId}` });
+      const { z: _templateZ, ...element } = buildInsertElement(kind, slide, { newId: mintHumanId, index: cascadeIndex(slide) });
+      const result = await doc.apply({
+        id: newEditId(), slideId, op: { type: "element.add", element }, baseRevision: doc.snapshot().revision, actor: "human",
+      });
+      if (!result.ok) return track(report(result));
+      sync();
+      api.select(element.id);
+      return track({ ...result, id: element.id });
     } catch (err) {
       return track(report({ ok: false, code: "bad-envelope", message: String(err?.message ?? err) }));
     }
@@ -1798,6 +1821,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     addTextElement: (opts = {}) => addTextElement(opts),
     addShapeElement: (form = "rect", opts = {}) => addShapeElement(form, opts),
     addImageElement: (image, opts = {}) => addImageElement(image, opts),
+    addPresetElement: (kind, opts = {}) => addPresetElement(kind, opts),
     beginResize: (handle, id) => beginResize(handle, id, { pointerId: undefined, clientX: 0, clientY: 0 }),
     previewResize: (clientX, clientY) => previewResizeTo(clientX, clientY),
     commitResizeNow: (clientX, clientY) => commitResize({ clientX, clientY, pointerId: resize?.pointerId }),

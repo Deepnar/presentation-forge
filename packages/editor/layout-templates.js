@@ -596,6 +596,28 @@ const builders = {
   },
 };
 
+// A single chart, table or rule the author inserts onto an existing slide,
+// styled from that slide the way a new layout slide is. Placed centrally and
+// cascaded by `index` so repeated inserts never stack exactly.
+export function buildInsertElement(kind, sibling, { newId, index = 0 } = {}) {
+  const ctx = layoutContextFromSibling(sibling);
+  const step = 0.4 * (Math.max(0, Math.floor(index)) % 6);
+  const at = (w, h) => ({ x: Math.min(SCENE_W - w, (SCENE_W - w) / 2 + step), y: Math.min(SCENE_H - h, (SCENE_H - h) / 2 + step), w, h });
+  const id = () => newId();
+  switch (kind) {
+    case "chart":
+      return chartEl(id, "chart", at(6, 3.5), "bar", ["First", "Second", "Third"], [{ name: "Series 1", values: [3, 5, 4] }], chartLabelsFor(ctx));
+    case "table":
+      return tableEl(id, "table", at(6, 1.8), [["Column 1", "Column 2", "Column 3"], ["", "", ""], ["", "", ""]], ctx);
+    case "line": {
+      const box = at(4, 0.02);
+      return lineEl(id, "line", box.x, box.y, box.x + box.w, box.y, ctx.style.accent);
+    }
+    default:
+      throw new Error(`layout-templates: nothing to insert for ${kind}`);
+  }
+}
+
 export const LAYOUT_CATEGORIES = [
   { id: "essentials", name: "Essentials", blurb: "Openers, structure, and closers" },
   { id: "comparison", name: "Comparison", blurb: "Options weighed side by side" },
