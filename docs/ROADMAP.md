@@ -58,10 +58,19 @@ Decisions taken with this list, so nobody re-litigates them:
    - **[x] F1c** Academic identity and brand marks: team, guide and
      subject/year as editable title-slide text; banner and crest as locked
      chrome assets; presenter fallback; undeclared fields dropped and reported.
-   - **F1d** The remaining refused types (diagram, matrix, funnel, pyramid,
-     venn, hierarchy, roadmap, journey, …) get compiler compositions and
-     conversions; `freeform` converts its raster as a locked image. Flow
-     direction is done (numbered rail for top-to-bottom).
+   - **[x] F1d** Every slide type converts (2026-11-11): graphs for diagram,
+     dependencies, hierarchy and branching-flow; radial frameworks; layered,
+     funnel and pyramid bands; quadrants, lanes and venn; charts for progress
+     bars, sparklines and journeys; icon cards; faithful data tables. Context
+     lines (section, standfirst, on-slide note) no longer pick a slide's
+     layout and draw under the title. Text that cannot fit at the readable
+     floor imports with `fitWarnings` instead of refusing; plates are stored
+     once as assets. `npm run import-coverage -- --import`: every finished
+     deck on disk imports.
+   - **[ ] F1g** Show `fitWarnings` in the editor (which slides overflow, a
+     jump to each), and give dense content a better answer than overflow:
+     a graph with many nodes per layer (legacy hid node bodies), long
+     reference cards. Found by rendering a real 21-slide deck.
    - **[x] F1f** Claim citations (`cites`) become owner-private project
      sources and slide citations, created with the project in one transaction.
    - **F1e** Import on completion and the UI handoff described above.
