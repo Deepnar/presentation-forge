@@ -33,6 +33,13 @@ Decisions taken with this list, so nobody re-litigates them:
   key or local Ollama — not only on an operator-enabled Auto host.
 - **The editor is where a deck lives.** The legacy deck page stays reachable
   until F11 removes it, but every finished generation lands in the editor.
+- **Core before the front end** (owner, 2026-11-11). The pipeline, the
+  project model and the editor's behaviour are finished before any visual
+  redesign starts: F1g, F1h, F2, F3, F4 (with F4b), F7, F8 and F9 come first.
+  F5 then redesigns the whole site in one pass, together with F6 and F10
+  (which are surfaces), and removes what F11 would remove instead of
+  redesigning it. An editing behaviour that feels broken is core, not
+  front end, and is fixed when found.
 
 1. **[x] F0 — Process reset.** Protocol machinery, review records and committed
    test evidence removed; browser suites write to `out/evidence/`.
@@ -111,9 +118,23 @@ Decisions taken with this list, so nobody re-litigates them:
    semantic intent, which it does not today (imports discard it after
    compiling, and no runtime path calls `recompileSlide`). *Done when:* a deck
    can be finished in the editor without returning to the legacy deck page.
-6. **[ ] F5 — Editor UI redesign.** See
-   [the entry](#editor-ui-redesign). *Done when:* the editor reads as a slide
-   editor at a glance: icon toolbar with tooltips, no internal vocabulary.
+   - **[~] F4b The editor behaves like a slide editor** (owner, 2026-11-11:
+     "the editing things feel broken"). An edit that went through is never
+     reported as a failure, and a gesture does what PowerPoint, Google Slides
+     and Canva users expect. Done 2026-11-11: a text box stops at its text
+     when resized, grows to hold what is typed or a larger size (one undo),
+     and text that cannot fit even at the slide's edge is a plain notice.
+     Left — audit every gesture against those editors and fix what differs:
+     snapping and alignment guides, Shift to keep proportions, copy / paste /
+     duplicate, multi-select arrange and align, keyboard shortcuts, double
+     click into text, Esc, a "shrink text to fit" choice for a box that
+     cannot grow, and save states that do not read as lost work when the
+     server is briefly unreachable ("Storage unavailable — edits not saved").
+6. **[ ] F5 — Whole-site UI/UX redesign** (after the core items above). See
+   [the entry](#editor-ui-redesign). *Done when:* every page reads at a glance
+   with little text — the editor as a slide editor (icon toolbar with
+   tooltips, no internal vocabulary), and the workspace, chat, settings and
+   admin pages to the same standard, each checked by looking at it.
 7. **[ ] F6 — Create from the workspace.** "New presentation" offers prompt,
    upload-as-source and blank; the prompt path runs the briefing and generation
    and lands in the editor (F1). *Done when:* a new user never needs the chat
@@ -146,6 +167,19 @@ host — stay in [`BLOCKED.md`](BLOCKED.md) §2.
 <a id="editor-ui-redesign"></a>
 
 ### [ ] Editor UI redesign — look like a slide editor, not a form
+
+Widened 2026-11-11 by the owner to the **whole site**: "there is just too
+much text everywhere in the entire site, small text everywhere,
+unnecessary"; the inspector and the layers panel could not be understood;
+"see how other people's websites do it" and make it all better, good
+looking and intuitive, done "in a checking way". So the pass starts by
+studying how Canva, Google Slides, PowerPoint for the web, Pitch and Gamma
+lay out the same surfaces (toolbar, inspector, layers, slide rail, project
+list, settings), writes down what to copy for each, and checks every page
+by screenshot before and after — at desktop and narrow widths, light and
+dark. Text that explains the UI is cut, not shrunk: if a control needs a
+sentence, the control is wrong. Waits for the core items (see the finish
+line's decisions).
 
 Raised 2026-11-01 after reviewing the editor screenshots. Same behaviour,
 better surface. Today the toolbar is a row of words ("← Prev  Next →  −  100%

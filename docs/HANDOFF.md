@@ -76,15 +76,26 @@ set to that account and import it with
 
 ## Next
 
-- **F4 leftovers**: insert icon. Theme change waits on F3's stored intent.
-- **F5 editor UI redesign** (icons, grouped toolbar, contextual bar, plain
-  inspector; split `SceneViewer.jsx`). The editor now has 14 toolbar buttons
-  in a row; this is the next visible win.
+The owner set the order on 2026-11-11: **core before the front end** (see the
+roadmap's finish-line decisions). No visual redesign until the core items are
+done; editing behaviour that feels broken counts as core.
+
+- **F4b** the editor behaves like a slide editor. Text boxes now stop at
+  their text and grow to fit (done). Next: audit every gesture against
+  PowerPoint / Google Slides / Canva and fix what differs — the list is in
+  the roadmap entry.
 - **F1g / F1h** (fit warnings in the editor; re-import a changed deck).
-- **F3** starts with persisting `DeckIntent` in projects.
+- **F3** starts with persisting `DeckIntent` in projects; theme change follows.
+- **F2** the Assistant on every provider; then F7, F8, F9.
+- **F5** is now the whole-site UI/UX redesign, after the above, starting from
+  a study of how Canva, Google Slides, PowerPoint web, Pitch and Gamma lay out
+  the same surfaces, and checked page by page by screenshot.
 - Verifying generate → editor end to end needs a working model (the TCET
   gateway returned HTTP 500 on chat; local inference is off-limits while the
   owner's other work runs).
+
+The sandbox's slide 1 carries a "Test picture" rectangle from a picture-insert
+check; it is sandbox data, not part of any real deck.
 
 ## Machine etiquette
 
