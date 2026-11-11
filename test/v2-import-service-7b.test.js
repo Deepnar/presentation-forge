@@ -121,7 +121,7 @@ test("incomplete, checkpointed and shorter-than-plan sources refuse before writi
 
 test("unrepresentable content refuses atomically", async () => {
   const before = (await store.listProjects({ owner: principal.email })).projects.length;
-  const args = await source({ deck: { ...sourceDeck, slides: [...sourceDeck.slides, { type: "venn", headline: "Sets", sets: [{ label: "A", items: ["One"] }, { label: "B", items: ["Two"] }] }] } });
+  const args = await source({ deck: { ...sourceDeck, slides: [...sourceDeck.slides, { type: "roadmap", headline: "Phases", phases: [{ label: "Same", items: [{ title: "One" }] }, { label: "Same", items: [{ title: "Two" }] }, { label: "Other", items: [{ title: "Three" }] }] }] } });
   await assert.rejects(importGeneratedProject(args), { code: "unsupported-content" });
   assert.equal((await store.listProjects({ owner: principal.email })).projects.length, before);
 });

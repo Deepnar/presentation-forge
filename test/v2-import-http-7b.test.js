@@ -100,10 +100,10 @@ test("owner spoofing, missing request identity and unknown options are refused",
 test("pending or unsupported generation reports an actionable refusal without a saved project", async () => {
   const pending = await fixture.source({ meta: { status: "writing" } });
   assert.equal((await fixture.create(pending.slug)).status, 409);
-  const venn = await fixture.source({ deck: { ...IMPORT_DECK, slides: [...IMPORT_DECK.slides, { type: "venn", headline: "Sets", sets: [{ label: "A", items: ["One"] }, { label: "B", items: ["Two"] }] }] } });
+  const venn = await fixture.source({ deck: { ...IMPORT_DECK, slides: [...IMPORT_DECK.slides, { type: "roadmap", headline: "Phases", phases: [{ label: "Same", items: [{ title: "One" }] }, { label: "Same", items: [{ title: "Two" }] }, { label: "Other", items: [{ title: "Three" }] }] }] } });
   const response = await fixture.create(venn.slug); assert.equal(response.status, 422);
   const result = await response.json(); assert.equal(result.code, "unsupported-content");
-  assert.ok(result.errors.some(error => error.path.includes("venn")));
+  assert.ok(result.errors.some(error => error.path.includes("phases[1].label")));
 });
 
 test("legacy project metadata endpoint keeps its original response contract", async () => {

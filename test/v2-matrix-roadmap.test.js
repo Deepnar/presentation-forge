@@ -70,3 +70,19 @@ test("a roadmap whose phases share a label refuses rather than merging lanes", a
   await assert.rejects(convertGeneratedDeck({ title: "M", slides: [{ ...roadmap, phases: [roadmap.phases[0], roadmap.phases[0], roadmap.phases[2]] }] }),
     e => e.code === "unsupported-content" && e.details.some(d => d.path.endsWith("phases[1].label")));
 });
+
+for (const n of [2, 3, 4]) test(`a ${n}-set venn draws overlapping translucent circles with every name and member`, async () => {
+  const sets = ["Presence", "Warmth", "Competence", "Clarity"].slice(0, n).map((label, i) => ({ label, items: [`Member ${i}a`, `Member ${i}b`] }));
+  const { intent, scene } = await compiled({ type: "venn", headline: "Overlap", sets });
+  assert.deepEqual(intent.slides[0].layoutHint, { arrangement: "venn" });
+  const circles = intent.slides[0].blocks.map(b => scene.elements.find(e => e.id === `${scene.id}:${b.id}:frame`));
+  assert.ok(circles.every(c => c.shape.form === "ellipse" && c.shape.fillAlpha < 1 && c.w === c.h));
+  const centre = c => ({ x: c.x + c.w / 2, y: c.y + c.h / 2 });
+  for (let i = 1; i < n; i++) {
+    const a = centre(circles[0]), b = centre(circles[i]);
+    assert.ok(Math.hypot(a.x - b.x, a.y - b.y) < circles[0].w, "the sets overlap");
+  }
+  const text = scene.elements.map(textOf).join("\n");
+  for (const set of sets) for (const value of [set.label, ...set.items]) assert.ok(text.includes(value), value);
+  assert.ok(scene.elements.every(e => e.x >= 0 && e.y >= 0 && e.x + e.w <= scene.width + 1e-9 && e.y + e.h <= scene.height + 1e-9));
+});

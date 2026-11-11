@@ -371,6 +371,13 @@ rule("pyramid", ["levels"], (s, c) => {
   c.slide.layoutHint = { arrangement: "funnel" };
   s.levels.forEach((level, i) => { c.keys(level, ["label", "body"], `${c.path}.levels[${i}]`); c.text(level.body ?? "", level.label); });
 });
+rule("venn", ["sets"], (s, c) => {
+  c.slide.layoutHint = { arrangement: "venn" };
+  s.sets.forEach((set, i) => {
+    c.keys(set, ["label", "items"], `${c.path}.sets[${i}]`);
+    c.add("text", { text: "", label: set.label, ...(set.items?.length ? { items: set.items } : {}) });
+  });
+});
 rule("icon-list", ["items"], (s, c) => {
   s.items.forEach((item, i) => {
     c.keys(item, ["icon", "text"], `${c.path}.items[${i}]`);
