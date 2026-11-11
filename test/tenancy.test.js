@@ -75,12 +75,14 @@ test("cookieToken reads only its own cookie out of the header", () => {
   assert.equal(auth.cookieToken("forge_session=a%2Fb"), "a/b");
 });
 
-test("the session cookie is httpOnly, scoped to the deck routes, and TLS-gated", () => {
+test("the session cookie is httpOnly, scoped to the API, and TLS-gated", () => {
   const c = auth.sessionCookie("tok", { secure: true });
   assert.match(c, /^forge_session=tok;/);
   assert.match(c, /HttpOnly/);
   assert.match(c, /SameSite=Lax/);
-  assert.match(c, /Path=\/api\/decks/);
+  // /api, not /api/decks: project images under /api/v2/assets load through
+  // <img> too. Writes never accept the cookie (see the v2 project routes).
+  assert.match(c, /Path=\/api;/);
   assert.match(c, /Secure/);
   // Plain HTTP (local dev) must not set Secure or the cookie is never stored.
   assert.doesNotMatch(auth.sessionCookie("tok", { secure: false }), /Secure/);

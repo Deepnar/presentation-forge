@@ -121,3 +121,26 @@ test("misconfigured PostgreSQL is an honest 503 and never a SQLite fallback", as
     assert.equal((await response.json()).code, "store-misconfigured");
   } finally { await unavailable.stop(); }
 });
+
+test("a session cookie reads project images but never writes a project", async () => {
+  const { slug } = await fixture.source();
+  const { project } = await fixture.create(slug).then(r => r.json());
+  const sharp = (await import("sharp")).default;
+  const png = await sharp({ create: { width: 20, height: 10, channels: 3, background: "#336699" } }).png().toBuffer();
+  const upload = await fetch(`${fixture.base}/api/v2/projects/${project.id}/assets`, { method: "POST", headers: { "Content-Type": "image/png", Authorization: `Bearer ${fixture.token}` }, body: png });
+  assert.equal(upload.status, 200);
+  const { asset } = await upload.json();
+  assert.match(asset.src, /^asset:[0-9a-f]{64}$/);
+  const cookie = `forge_session=${encodeURIComponent(fixture.token)}`;
+  const image = await fetch(`${fixture.base}/api/v2/assets/${asset.hash}`, { headers: { Cookie: cookie } });
+  assert.equal(image.status, 200, "<img> loads with the cookie alone");
+  assert.equal(image.headers.get("content-type"), "image/png");
+  assert.equal((await fetch(`${fixture.base}/api/v2/assets/${asset.hash}`, { headers: { Cookie: `forge_session=${encodeURIComponent(fixture.otherToken)}` } })).status, 404, "another account cannot read it");
+  const write = await fetch(`${fixture.base}/api/v2/projects/${project.id}`, { method: "PUT", headers: { "Content-Type": "application/json", Cookie: cookie },
+    body: JSON.stringify({ baseRevision: project.revision, title: "Renamed by cookie", scenes: project.scenes }) });
+  assert.ok([401, 404].includes(write.status), `a cookie-only write is refused (got ${write.status})`);
+  const after = await fixture.request(`/api/v2/projects/${project.id}`, { token: fixture.token }).then(r => r.json());
+  assert.notEqual(after.project.title, "Renamed by cookie");
+  const svgUpload = await fetch(`${fixture.base}/api/v2/projects/${project.id}/assets`, { method: "POST", headers: { "Content-Type": "image/svg+xml", Authorization: `Bearer ${fixture.token}` }, body: "<svg xmlns='http://www.w3.org/2000/svg'><script>alert(1)</script></svg>" });
+  assert.ok([415].includes(svgUpload.status), "only decodable rasters are stored");
+});

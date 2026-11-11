@@ -619,7 +619,9 @@ export function cookieToken(header, name = SESSION_COOKIE) {
 export function sessionCookie(token, { secure = false } = {}) {
   const attrs = [
     `${SESSION_COOKIE}=${encodeURIComponent(token)}`,
-    "Path=/api/decks",
+    // Media under /api/decks and /api/v2/assets load through <img>, which
+    // cannot send the bearer header; state-changing routes ignore the cookie.
+    "Path=/api",
     "HttpOnly",
     "SameSite=Lax",
     `Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}`,
@@ -629,7 +631,7 @@ export function sessionCookie(token, { secure = false } = {}) {
 }
 
 export function clearedSessionCookie({ secure = false } = {}) {
-  const attrs = [`${SESSION_COOKIE}=`, "Path=/api/decks", "HttpOnly", "SameSite=Lax", "Max-Age=0"];
+  const attrs = [`${SESSION_COOKIE}=`, "Path=/api", "HttpOnly", "SameSite=Lax", "Max-Age=0"];
   if (secure) attrs.push("Secure");
   return attrs.join("; ");
 }

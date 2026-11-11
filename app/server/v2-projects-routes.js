@@ -36,14 +36,18 @@ export async function resolveProjectOwner(req) {
 }
 
 async function projectOwner(req) {
+  // The session cookie authenticates reads only (images and previews load
+  // through <img>); a write must carry the bearer header, so a cookie can
+  // never make a cross-site request change a project.
+  const allowCookie = req.method === "GET" || req.method === "HEAD";
   if (!isHosted()) {
     try {
-      const user = await resolveUser(req, { allowCookie: true });
+      const user = await resolveUser(req, { allowCookie });
       if (user) return { owner: user.email, admin: isAdmin(user) };
     } catch { /* anonymous local use */ }
     return { owner: null, admin: false };
   }
-  const user = await resolveUser(req, { allowCookie: true });
+  const user = await resolveUser(req, { allowCookie });
   if (!user) return { denied: true };
   return { owner: user.email, admin: isAdmin(user) };
 }
