@@ -208,6 +208,28 @@ rule("layered-architecture", ["layers"], (s, c) => {
     c.add("text", { text: layer.body ?? "", label: layer.label, ...(layer.items?.length ? { items: layer.items } : {}) });
   });
 });
+// A diagram is nodes and the links between them. Node ids are the deck's own
+// labels for linking; links become slide connections between the blocks the
+// nodes turned into. A link naming a node that does not exist was never drawn.
+rule("diagram", ["nodes", "edges", "layout"], (s, c) => {
+  c.slide.relationship = "hierarchy";
+  c.slide.layoutHint = s.layout === "radial" ? { arrangement: "radial" }
+    : { arrangement: "graph", ...(s.layout === "horizontal" ? { flowDirection: "across" } : {}) };
+  const blockOf = new Map();
+  s.nodes.forEach((node, i) => {
+    c.keys(node, ["id", "label", "body"], `${c.path}.nodes[${i}]`);
+    c.text(node.body ?? "", node.label);
+    blockOf.set(node.id, c.blocks[c.blocks.length - 1].id);
+  });
+  const connections = [];
+  (s.edges ?? []).forEach((edge, i) => {
+    c.keys(edge, ["from", "to", "label"], `${c.path}.edges[${i}]`);
+    const from = blockOf.get(edge.from), to = blockOf.get(edge.to);
+    if (!from || !to || from === to) { c.drop(`${c.path}.edges[${i}]`, "the link names a node the diagram does not have"); return; }
+    connections.push({ from, to, ...(edge.label ? { label: edge.label } : {}) });
+  });
+  if (connections.length) c.slide.connections = connections;
+});
 rule("icon-list", ["items"], (s, c) => {
   s.items.forEach((item, i) => {
     c.keys(item, ["icon", "text"], `${c.path}.items[${i}]`);
