@@ -261,6 +261,68 @@ rule("roadmap", ["phases", "time_labels"], (s, c) => {
     });
   });
 });
+// Graph-shaped types: every node is a block, every link a connection, and
+// the graph arrangement lays them out in layers along their links.
+const graphSlide = (c, flowDirection = null) => {
+  c.slide.relationship = "hierarchy";
+  c.slide.layoutHint = { arrangement: "graph", ...(flowDirection ? { flowDirection } : {}) };
+};
+const lastBlock = c => c.blocks[c.blocks.length - 1].id;
+const connect = (c, from, to, label) => (c.slide.connections ??= []).push({ from, to, ...(label ? { label } : {}) });
+
+rule("dependencies", ["nodes"], (s, c) => {
+  graphSlide(c);
+  const ids = s.nodes.map((node, i) => {
+    c.keys(node, ["title", "body", "depends_on"], `${c.path}.nodes[${i}]`);
+    c.text(node.body ?? "", node.title);
+    return lastBlock(c);
+  });
+  s.nodes.forEach((node, i) => (node.depends_on ?? []).forEach((d, j) => {
+    if (!Number.isInteger(d) || d < 0 || d >= ids.length || d === i) c.drop(`${c.path}.nodes[${i}].depends_on[${j}]`, "the dependency names no other node, so it was never drawn");
+    else connect(c, ids[d], ids[i]);
+  }));
+});
+
+// A tree: the root, then each child below its parent, to three levels.
+rule("hierarchy", ["root", "children"], (s, c) => {
+  graphSlide(c);
+  c.keys(s.root, ["label"], `${c.path}.root`);
+  c.text("", s.root.label);
+  const walk = (parent, children, path) => (children ?? []).forEach((child, i) => {
+    c.keys(child, ["label", "children"], `${path}[${i}]`);
+    c.text("", child.label);
+    const id = lastBlock(c);
+    connect(c, parent, id);
+    walk(id, child.children, `${path}[${i}].children`);
+  });
+  walk(lastBlock(c), s.children, `${c.path}.children`);
+});
+
+// Lead-in steps, the decision, then one chain of steps per branch, the
+// branch's label riding on the link out of the decision.
+rule("branching-flow", ["steps", "decision", "branches"], (s, c) => {
+  graphSlide(c);
+  let previous = null;
+  (s.steps ?? []).forEach((step, i) => {
+    c.keys(step, ["title"], `${c.path}.steps[${i}]`);
+    c.text("", step.title);
+    if (previous) connect(c, previous, lastBlock(c));
+    previous = lastBlock(c);
+  });
+  c.text("", s.decision ?? "Decision");
+  const decision = lastBlock(c);
+  if (previous) connect(c, previous, decision);
+  s.branches.forEach((branch, b) => {
+    c.keys(branch, ["label", "steps"], `${c.path}.branches[${b}]`);
+    let from = decision, label = branch.label;
+    branch.steps.forEach((step, i) => {
+      c.keys(step, ["title"], `${c.path}.branches[${b}].steps[${i}]`);
+      c.text("", step.title);
+      connect(c, from, lastBlock(c), label);
+      from = lastBlock(c); label = undefined;
+    });
+  });
+});
 rule("icon-list", ["items"], (s, c) => {
   s.items.forEach((item, i) => {
     c.keys(item, ["icon", "text"], `${c.path}.items[${i}]`);

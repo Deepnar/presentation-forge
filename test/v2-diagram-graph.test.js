@@ -85,3 +85,35 @@ test("a radial diagram draws its authored links instead of plain spokes", async 
   assert.equal(scene.elements.filter(e => /:link-\d+$/.test(e.id)).length, edges.length);
   assert.equal(scene.elements.filter(e => e.id.endsWith(":link")).length, 0, "no default spokes");
 });
+
+test("a child sits under its parent and siblings spread about it", async () => {
+  const { intent, scene } = await compiled({ type: "hierarchy", headline: "Team", root: { label: "Lead" },
+    children: [{ label: "Cells", children: [{ label: "Chemistry" }, { label: "Testing" }] }, { label: "Packs" }, { label: "Software" }] });
+  const byLabel = Object.fromEntries(intent.slides[0].blocks.map(b => [b.label, scene.elements.find(e => e.id === `${scene.id}:${b.id}:frame`)]));
+  const mid = f => f.x + f.w / 2;
+  assert.ok(Math.abs(mid(byLabel.Lead) - mid(byLabel.Packs)) < 1e-6, "the middle child is under the root");
+  assert.ok(Math.abs((mid(byLabel.Chemistry) + mid(byLabel.Testing)) / 2 - mid(byLabel.Cells)) < 1e-6, "siblings centre on their parent");
+  assert.equal(intent.slides[0].connections.length, 5);
+});
+
+test("dependencies link each prerequisite to what needs it, dropping links to nothing", async () => {
+  const { intent, dropped } = await convertGeneratedDeck({ title: "D", slides: [{ type: "dependencies", headline: "Order of work", nodes: [
+    { title: "Cell spec" }, { title: "Pack design", depends_on: [0] }, { title: "Pilot line", depends_on: [0, 1, 7] },
+  ] }] });
+  const ids = intent.slides[0].blocks.map(b => b.id);
+  assert.deepEqual(intent.slides[0].connections, [{ from: ids[0], to: ids[1] }, { from: ids[0], to: ids[2] }, { from: ids[1], to: ids[2] }]);
+  assert.deepEqual(dropped.map(d => d.path), ["slides[0].nodes[2].depends_on[2]"]);
+});
+
+test("a branching flow chains its lead-in to the decision and each branch out of it, labelled", async () => {
+  const { intent, scene } = await compiled({ type: "branching-flow", headline: "Screening", steps: [{ title: "Screen cell" }], decision: "Pass?",
+    branches: [{ label: "Yes", steps: [{ title: "Build pack" }, { title: "Ship" }] }, { label: "No", steps: [{ title: "Second life" }] }] });
+  const id = Object.fromEntries(intent.slides[0].blocks.map(b => [b.label, b.id]));
+  assert.deepEqual(intent.slides[0].connections, [
+    { from: id["Screen cell"], to: id["Pass?"] },
+    { from: id["Pass?"], to: id["Build pack"], label: "Yes" }, { from: id["Build pack"], to: id.Ship },
+    { from: id["Pass?"], to: id["Second life"], label: "No" },
+  ]);
+  const frame = l => scene.elements.find(e => e.id === `${scene.id}:${id[l]}:frame`);
+  assert.equal(frame("Ship").x, frame("Build pack").x, "a branch's steps line up under each other");
+});
