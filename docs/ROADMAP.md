@@ -65,6 +65,14 @@ Decisions taken with this list, so nobody re-litigates them:
    - **[x] F1f** Claim citations (`cites`) become owner-private project
      sources and slide citations, created with the project in one transaction.
    - **F1e** Import on completion and the UI handoff described above.
+   **[ ] M1 — Merge `v2` into `main` (proposed 2026-11-11, awaiting the
+   owner's yes).** Everything on `v2` is additive: the legacy generator, deck
+   page and report flow are untouched, and the editor sits behind Open in
+   editor. Merging once F1 is done stops the branch drifting further from
+   `main` and lets F2 onward land as ordinary small PRs. Before merging: one
+   full test-suite run in a quiet window the owner picks, a Docker image build,
+   and a click-through of generate → editor → export and the legacy deck page.
+
 3. **[ ] F2 — The Assistant works for every account.** Run turns in-process on
    the account's resolved provider (Auto / BYOK / local), on by default whenever
    a provider is usable, with progress shown in the panel and errors stated
