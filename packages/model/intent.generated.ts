@@ -54,12 +54,22 @@ export interface SlideIntent {
      */
     flowDirection?: "across" | "down";
     /**
-     * How a hierarchy is drawn: the first block above the rest (tiers), at the centre with the rest around it (radial), or every block as a full-width band stacked in authored order, top first (layers). Absent means tiers.
+     * How a hierarchy is drawn: the first block above the rest (tiers), at the centre with the rest around it (radial), every block as a full-width band stacked in authored order, top first (layers), or as a node graph laid out along its connections (graph). Absent means tiers.
      */
-    arrangement?: "tiers" | "radial" | "layers";
+    arrangement?: "tiers" | "radial" | "layers" | "graph";
   };
   sourceRefs?: string[];
   speakerNotes?: string;
+  /**
+   * Directed links between blocks on this slide, by block id — the edges of a diagram.
+   *
+   * @maxItems 30
+   */
+  connections?: {
+    from: string;
+    to: string;
+    label?: string;
+  }[];
 }
 export interface ContentBlock {
   id: string;

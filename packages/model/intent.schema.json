@@ -62,11 +62,26 @@
             "emphasis": { "type": "string", "maxLength": 120 },
             "mediaSide": { "enum": ["left", "right"] },
             "flowDirection": { "enum": ["across", "down"], "description": "Whether a sequence reads left to right or top to bottom. Absent means across." },
-            "arrangement": { "enum": ["tiers", "radial", "layers"], "description": "How a hierarchy is drawn: the first block above the rest (tiers), at the centre with the rest around it (radial), or every block as a full-width band stacked in authored order, top first (layers). Absent means tiers." }
+            "arrangement": { "enum": ["tiers", "radial", "layers", "graph"], "description": "How a hierarchy is drawn: the first block above the rest (tiers), at the centre with the rest around it (radial), every block as a full-width band stacked in authored order, top first (layers), or as a node graph laid out along its connections (graph). Absent means tiers." }
           }
         },
         "sourceRefs": { "type": "array", "items": { "type": "string" } },
-        "speakerNotes": { "type": "string", "maxLength": 20000 }
+        "speakerNotes": { "type": "string", "maxLength": 20000 },
+        "connections": {
+          "type": "array",
+          "maxItems": 30,
+          "description": "Directed links between blocks on this slide, by block id — the edges of a diagram.",
+          "items": {
+            "type": "object",
+            "required": ["from", "to"],
+            "additionalProperties": false,
+            "properties": {
+              "from": { "type": "string", "minLength": 1 },
+              "to": { "type": "string", "minLength": 1 },
+              "label": { "type": "string", "maxLength": 60 }
+            }
+          }
+        }
       }
     },
     "contentBlock": {

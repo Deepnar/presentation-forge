@@ -357,7 +357,7 @@ export function planDeckComposition(intent: DeckIntent, design: DesignSystem): P
     // Layer A: render tiers, but record the capability boundary. Radial and
     // layered arrangements state their topology: parts hang off the centre,
     // or each layer sits on the one below.
-    if (slides[i].family === "hierarchy" && intent.slides[i].blocks.length > 2 && intent.slides[i].layoutHint?.arrangement !== "radial" && intent.slides[i].layoutHint?.arrangement !== "layers") {
+    if (slides[i].family === "hierarchy" && intent.slides[i].blocks.length > 2 && intent.slides[i].layoutHint?.arrangement !== "radial" && intent.slides[i].layoutHint?.arrangement !== "layers" && intent.slides[i].layoutHint?.arrangement !== "graph") {
       findings.push({
         layer: "L2",
         code: "hierarchy-topology-unspecified",

@@ -1258,8 +1258,13 @@ function radialHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: 
   for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (overlaps(cards[i], cards[j], 0.1)) return null;
 
   const els: SceneElement[] = [];
-  // Spokes first, so the hub and cards draw over their ends.
-  parts.forEach((block, i) => {
+  // Authored connections replace the default spokes; either way the lines
+  // draw first, so the hub and cards sit over their ends.
+  const centreOf = new Map([[hub.id, { x: cx, y: cy }], ...parts.map((b, i) => [b.id, centres[i]] as [string, { x: number; y: number }])]);
+  const nodeBoxes = [{ x: cx - hubW / 2, y: cy - hubH / 2, w: hubW, h: hubH }, ...centres.map((c) => ({ x: c.x - cardW / 2, y: c.y - cardH / 2, w: cardW, h: cardH }))];
+  const authored = slide.connections?.length ? connectionEls(ctx, centreOf, { w: cardW / 2, h: cardH / 2 }, takeZ, nodeBoxes) : null;
+  if (authored) els.push(...authored.lines);
+  if (!authored) parts.forEach((block, i) => {
     els.push({
       id: `${slide.id}:${block.id}:link`, kind: "line",
       x: cx, y: cy, w: 0.01, h: 0.01, z: takeZ(),
@@ -1283,6 +1288,128 @@ function radialHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: 
     const text = placePrimary(ctx, els, block, { x: x - cardW / 2 + 0.2, y: y - cardH / 2 + 0.12, w: cardW - 0.4, h: cardH - 0.24 }, takeZ);
     if (text.kind === "text") text.valign = "middle";
   });
+  for (const label of authored?.labels ?? []) els.push(...label());
+  return els;
+}
+
+// Connection lines, drawn before the nodes so each line appears to start
+// and end at a node's edge, plus a label chip at the midpoint of the visible
+// part of the line. `half` is a node's half-size, for clipping that midpoint.
+function connectionEls(ctx: MechanismCtx, centres: Map<string, { x: number; y: number }>, half: { w: number; h: number }, takeZ: () => number, nodes: Box[] = []): { lines: SceneElement[]; labels: (() => SceneElement[])[] } {
+  const { slide, design } = ctx;
+  const lines: SceneElement[] = [], labels: (() => SceneElement[])[] = [];
+  // Chips already placed are obstacles for later ones, so two labels near
+  // the same gap never stack.
+  const obstacles: Box[] = [...nodes];
+  const clip = (p: { x: number; y: number }, q: { x: number; y: number }) => {
+    const dx = q.x - p.x, dy = q.y - p.y;
+    let t = 1;
+    if (dx !== 0) t = Math.min(t, half.w / Math.abs(dx));
+    if (dy !== 0) t = Math.min(t, half.h / Math.abs(dy));
+    return { x: p.x + dx * t, y: p.y + dy * t };
+  };
+  (slide.connections ?? []).forEach((link, i) => {
+    const a = centres.get(link.from), b = centres.get(link.to);
+    if (!a || !b || link.from === link.to) return;
+    lines.push({
+      id: `${slide.id}:link-${i}`, kind: "line", x: a.x, y: a.y, w: 0.01, h: 0.01, z: takeZ(),
+      provenance: "compiler", semanticRef: link.from,
+      line: { x2: b.x, y2: b.y, stroke: design.palette.rule.hex, strokeWidth: 1.25 },
+    });
+    const text = link.label;
+    if (text) {
+      const s = clip(a, b), e = clip(b, a);
+      const { fit } = resolveRunStyle(design, "caption", {});
+      const w = Math.min(1.8, measure(text, fit) + 0.25), h = 0.3;
+      // The midpoint first; when a node sits on it (a link across the hub),
+      // the first point along the line where the chip clears every node.
+      const at = (t: number) => ({ x: s.x + (e.x - s.x) * t, y: s.y + (e.y - s.y) * t });
+      const covered = (p: { x: number; y: number }) => obstacles.reduce((sum, n) =>
+        sum + Math.max(0, Math.min(p.x + w / 2, n.x + n.w) - Math.max(p.x - w / 2, n.x))
+          * Math.max(0, Math.min(p.y + h / 2, n.y + n.h) - Math.max(p.y - h / 2, n.y)), 0);
+      // When no point is wholly clear, the one a node covers least.
+      const candidates = [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8, 0.12, 0.88, 0.06, 0.94].map(at);
+      const mid = candidates.find((p) => covered(p) === 0)
+        ?? candidates.reduce((best, p) => covered(p) < covered(best) ? p : best);
+      obstacles.push({ x: mid.x - w / 2, y: mid.y - h / 2, w, h });
+      labels.push(() => [
+        shapeEl(`${slide.id}:link-${i}:chip`, link.from, { x: mid.x - w / 2, y: mid.y - h / 2, w, h }, "rect", design.palette.bg.hex, takeZ()),
+        { ...textEl(`${slide.id}:link-${i}:label`, link.from, { x: mid.x - w / 2, y: mid.y - h / 2, w, h },
+          [{ runs: [{ text, role: "caption", color: design.palette.inkMuted.hex }], align: "center" as const }],
+          takeZ(), { ...fitOf(ctx), policy: "one-line" }), valign: "middle" as const },
+      ]);
+    }
+  });
+  return { lines, labels };
+}
+
+// A node graph laid out along its connections, as the legacy diagram did:
+// each node's depth is its longest chain of incoming links, depths become
+// layers, and nodes within a layer are ordered by the mean position of their
+// sources so links cross as little as possible. Layers run top to bottom
+// unless the slide reads across or the layers would be too thin.
+function graphHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: () => number): SceneElement[] {
+  const { slide, design, box } = ctx;
+  const els: SceneElement[] = [];
+  const ids = slide.blocks.map((b) => b.id);
+  const known = new Set(ids);
+  const links = (slide.connections ?? []).filter((l) => known.has(l.from) && known.has(l.to) && l.from !== l.to);
+  const depth = new Map(ids.map((id) => [id, 0]));
+  for (let pass = 0; pass < ids.length; pass++) {
+    for (const l of links) depth.set(l.to, Math.max(depth.get(l.to)!, depth.get(l.from)! + 1));
+  }
+  const maxDepth = Math.max(0, ...depth.values());
+  const layers: string[][] = Array.from({ length: maxDepth + 1 }, () => []);
+  for (const id of ids) layers[depth.get(id)!].push(id);
+  const areaH = bottom - top;
+  const vertical = slide.layoutHint?.flowDirection !== "across" && areaH / (maxDepth + 1) >= 0.85;
+  const across = vertical ? areaH : box.w;
+  const along = vertical ? box.w : areaH;
+  const position = (id: string) => layers[depth.get(id)!].indexOf(id);
+  const barycenter = (id: string) => {
+    const sources = links.filter((l) => l.to === id).map((l) => l.from);
+    return sources.length ? sources.reduce((n, s) => n + position(s), 0) / sources.length : position(id);
+  };
+  for (let pass = 0; pass < 3; pass++) {
+    for (const layer of layers) {
+      const keys = new Map(layer.map((id) => [id, barycenter(id)]));
+      layer.sort((a, b) => keys.get(a)! - keys.get(b)!);
+    }
+  }
+  const widest = Math.max(...layers.map((l) => l.length));
+  const layerSpaceX = vertical ? along / widest : across / (maxDepth + 1);
+  const layerSpaceY = vertical ? across / (maxDepth + 1) : along / widest;
+  // Labelled links need their chip to fit in the gap between layers, so
+  // nodes give up that much along the direction the layers run.
+  const { fit: chipStyle } = resolveRunStyle(design, "caption", {});
+  const labelled = links.filter((l) => l.label);
+  const chipGapX = !vertical && labelled.length ? Math.max(...labelled.map((l) => Math.min(1.8, measure(l.label!, chipStyle) + 0.25))) + 0.1 : 0;
+  const chipGapY = vertical && labelled.length ? 0.4 : 0;
+  const nodeW = Math.min(2.4, Math.max(1.2, layerSpaceX - 0.35 - chipGapX));
+  const nodeH = Math.max(0.6, Math.min(1.2, layerSpaceY - 0.25 - chipGapY));
+  const centres = new Map<string, { x: number; y: number }>();
+  layers.forEach((layer, li) => {
+    const per = along / layer.length;
+    layer.forEach((id, ni) => {
+      const a = per * (ni + 0.5);
+      const c = across * (li + 0.5) / (maxDepth + 1);
+      centres.set(id, vertical ? { x: box.x + a, y: top + c } : { x: box.x + c, y: top + a });
+    });
+  });
+  const frames = [...centres.values()].map((c) => ({ x: c.x - nodeW / 2, y: c.y - nodeH / 2, w: nodeW, h: nodeH }));
+  const { lines, labels } = connectionEls({ ...ctx, slide: { ...slide, connections: links } }, centres, { w: nodeW / 2, h: nodeH / 2 }, takeZ, frames);
+  els.push(...lines);
+  for (const block of slide.blocks) {
+    const c = centres.get(block.id)!;
+    const frame = { x: c.x - nodeW / 2, y: c.y - nodeH / 2, w: nodeW, h: nodeH };
+    els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id, frame, "roundRect", design, takeZ()));
+    const text = placePrimary(ctx, els, block, { x: frame.x + 0.1, y: frame.y + 0.06, w: nodeW - 0.2, h: nodeH - 0.12 }, takeZ);
+    if (text.kind === "text") {
+      text.valign = "middle";
+      for (const p of text.paragraphs ?? []) p.align = "center";
+    }
+  }
+  for (const label of labels) els.push(...label());
   return els;
 }
 
@@ -1353,6 +1480,13 @@ function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
   const bottom = box.bottom - (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation" ? 0.6 : 0);
   const gap = 0.4;
   if (!slide.blocks.length) return els;
+  if (slide.layoutHint?.arrangement === "graph") {
+    els.push(...graphHierarchy(ctx, y, bottom, takeZ));
+    if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
+      els.push(...takeawayEls(ctx, bottom, box.bottom, takeZ()));
+    }
+    return els;
+  }
   if (slide.layoutHint?.arrangement === "layers") {
     els.push(...layeredHierarchy(ctx, y, bottom, takeZ));
     if (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation") {
