@@ -50,11 +50,14 @@ async function fixtureRig() {
   return { design, scenes, ...(await rig(scenes)) };
 }
 
-function ptr(root, type, target, { x = 0, y = 0, shift = false, button = 0, id = 7 } = {}) {
+// `alt` holds Alt, which turns snapping off: the tests that measure the
+// pixel-to-inch conversion must not have a guide pull the box.
+function ptr(root, type, target, { x = 0, y = 0, shift = false, alt = false, button = 0, id = 7 } = {}) {
   const ev = new root.ownerDocument.defaultView.Event(type, { bubbles: true, cancelable: true });
   ev.clientX = x;
   ev.clientY = y;
   ev.shiftKey = shift;
+  ev.altKey = alt;
   ev.button = button;
   ev.pointerId = id;
   target.dispatchEvent(ev);
@@ -245,8 +248,8 @@ describe("v2-5e resize handles", () => {
     const origin = { ...r.doc.snapshot().scenes[0].elements.find((e) => e.id === id) };
     click(r.root, nodeFor(r.root, id));
     ptr(r.root, "pointerdown", handleFor(r.root, id, "se"), { x: 300, y: 300 });
-    ptr(r.root, "pointermove", handleFor(r.root, id, "se"), { x: 300 + 96, y: 300 + 96 });
-    ptr(r.root, "pointerup", handleFor(r.root, id, "se"), { x: 300 + 96, y: 300 + 96 });
+    ptr(r.root, "pointermove", handleFor(r.root, id, "se"), { x: 300 + 96, y: 300 + 96, alt: true });
+    ptr(r.root, "pointerup", handleFor(r.root, id, "se"), { x: 300 + 96, y: 300 + 96, alt: true });
     await r.editor.pending();
     const after = r.doc.snapshot().scenes[0].elements.find((e) => e.id === id);
     // kx = 2 (96 client px = 48 svg px = 0.5in), ky = 0.5 (96 px = 2in).

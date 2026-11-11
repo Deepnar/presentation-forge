@@ -39,11 +39,14 @@ async function fixtureRig() {
   return { scenes, ...(await rig(scenes)) };
 }
 
-function ptr(root, type, target, { x = 0, y = 0, shift = false, button = 0, id = 7 } = {}) {
+// `alt` holds Alt, which turns snapping off: the tests that measure the
+// pixel-to-inch conversion must not have a guide pull the box.
+function ptr(root, type, target, { x = 0, y = 0, shift = false, alt = false, button = 0, id = 7 } = {}) {
   const ev = new root.ownerDocument.defaultView.Event(type, { bubbles: true, cancelable: true });
   ev.clientX = x;
   ev.clientY = y;
   ev.shiftKey = shift;
+  ev.altKey = alt;
   ev.button = button;
   ev.pointerId = id;
   target.dispatchEvent(ev);
@@ -359,8 +362,8 @@ describe("v2-5c editor adapter", () => {
       const origin = r.doc.snapshot().scenes[0].elements.find((e) => e.id === id);
       click(r.root, nodeFor(r.root, id));
       ptr(r.root, "pointerdown", nodeFor(r.root, id), { x: 200, y: 200 });
-      ptr(r.root, "pointermove", nodeFor(r.root, id), { x: 300, y: 260 });
-      ptr(r.root, "pointerup", nodeFor(r.root, id), { x: 300, y: 260 });
+      ptr(r.root, "pointermove", nodeFor(r.root, id), { x: 300, y: 260, alt: true });
+      ptr(r.root, "pointerup", nodeFor(r.root, id), { x: 300, y: 260, alt: true });
       await r.editor.pending();
       const moved = r.doc.snapshot().scenes[0].elements.find((e) => e.id === id);
       assert.equal(moved.x, Math.round((origin.x + 100 / k / 96) * 1000) / 1000, `x at ${k}x`);

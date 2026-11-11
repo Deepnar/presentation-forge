@@ -10,6 +10,7 @@
 // Selection ownership stays with the viewer at all times; the
 // adapter reads it, never stores its own copy.
 import { SCENE_W, SCENE_H, isSystemChrome } from "../model/scene-constants.ts";
+import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements } from "./scene-arrange.js";
 import {
   isEditableText,
   describeStructure,
@@ -117,7 +118,7 @@ export function clientToSvgDelta(dxClient, dyClient, scales) {
 // Canva boxes do, rather than accepting a box its text spills out of.
 // `slideH` caps that floor at the slide edge so a box never grows off
 // the slide to seat text that cannot fit anyway.
-export function resizeGeometry(origin, handle, dxIn, dyIn, { floor, slideH } = {}) {
+export function resizeGeometry(origin, handle, dxIn, dyIn, { floor, slideH, aspect } = {}) {
   for (const v of [origin.x, origin.y, origin.w, origin.h, dxIn, dyIn]) {
     if (!Number.isFinite(v)) throw new Error("scene-edit: non-finite resize geometry");
   }
@@ -143,6 +144,7 @@ export function resizeGeometry(origin, handle, dxIn, dyIn, { floor, slideH } = {
     if (handle.includes("n")) y = origin.y + origin.h - MIN_RESIZE_IN;
     h = MIN_RESIZE_IN;
   }
+  if (aspect) ({ x, y, w, h } = keepAspect(origin, handle, { x, y, w, h }));
   if (floor) {
     const room = handle.includes("n") ? origin.y + origin.h : (slideH ?? Infinity) - y;
     // Rounded up, so the committed box holds the text after the
@@ -273,22 +275,68 @@ export function attachEditor(viewer, doc, opts = {}) {
 
   function clearPreview() {
     if (!drag) return;
+    drawGuides([]);
     for (const node of drag.nodes) node.removeAttribute("transform");
     drag = null;
     api.reposition();
   }
 
-  function previewTo(clientX, clientY) {
+  // Inches a guide catches from, for the stage as it is drawn now.
+  const snapReach = (scales) => SNAP_PX / (scales.kx * IN);
+
+  // The move a drag means, in scene inches: Shift keeps it on one axis,
+  // and edges and centres snap to the slide and its neighbours unless Alt
+  // is held — the PowerPoint and Canva conventions. Preview and commit
+  // both read this, so the box lands where its preview showed it.
+  function dragDelta(d, clientX, clientY, mods, scales) {
+    const raw = clientToSvgDelta(clientX - d.startX, clientY - d.startY, scales);
+    let dx = raw.dx / IN, dy = raw.dy / IN;
+    if (mods.shiftKey) ({ dx, dy } = constrainAxis(dx, dy));
+    if (mods.altKey || !d.box) return { dx, dy, guides: [] };
+    const snapped = snapMove(d.box, dx, dy, d.targets, snapReach(scales));
+    if (mods.shiftKey) {
+      if (dy === 0) snapped.dy = 0;
+      if (dx === 0) snapped.dx = 0;
+      snapped.guides = snapped.guides.filter((g) => (g.axis === "x" ? dx !== 0 : dy !== 0));
+    }
+    return snapped;
+  }
+
+  function drawGuides(guides) {
+    ensureHandleLayer();
+    if (!handleLayer) return;
+    for (const old of handleLayer.querySelectorAll("[data-snap-guide]")) old.remove();
+    const docEl = root.ownerDocument;
+    // The layer is drawn at the stage's zoom, so a hairline is one
+    // screen pixel divided by it — otherwise a fitted slide thins it away.
+    const k = svgScales(root)?.kx ?? 1;
+    const t = `${(1 / k).toFixed(2)}px`;
+    const slide = doc.snapshot().scenes.find((sc) => sc.id === api.snapshot().slideId);
+    const W = (slide?.width ?? SCENE_W) * IN, H = (slide?.height ?? SCENE_H) * IN;
+    for (const g of guides) {
+      const line = docEl.createElement("div");
+      line.setAttribute("data-snap-guide", g.axis);
+      line.style.position = "absolute";
+      line.style.pointerEvents = "none";
+      line.style.background = "#e0409a";
+      if (g.axis === "x") Object.assign(line.style, { left: `${(g.at * IN - 0.5 / k).toFixed(1)}px`, top: "0px", width: t, height: `${H}px` });
+      else Object.assign(line.style, { top: `${(g.at * IN - 0.5 / k).toFixed(1)}px`, left: "0px", height: t, width: `${W}px` });
+      handleLayer.appendChild(line);
+    }
+  }
+
+  function previewTo(clientX, clientY, mods = {}) {
     if (!drag) return;
     const scales = svgScales(root);
     if (!scales) return;
-    const { dx, dy } = clientToSvgDelta(clientX - drag.startX, clientY - drag.startY, scales);
     if (!drag.moved && Math.hypot(clientX - drag.startX, clientY - drag.startY) < DRAG_THRESHOLD_PX) return;
     drag.moved = true;
+    const { dx, dy, guides } = dragDelta(drag, clientX, clientY, mods, scales);
     for (const node of drag.nodes) {
-      node.setAttribute("transform", `translate(${dx.toFixed(1)} ${dy.toFixed(1)})`);
+      node.setAttribute("transform", `translate(${(dx * IN).toFixed(1)} ${(dy * IN).toFixed(1)})`);
     }
     api.reposition();
+    drawGuides(guides);
   }
 
   function onPointerDown(ev) {
@@ -341,9 +389,12 @@ export function attachEditor(viewer, doc, opts = {}) {
       const node = root.querySelector(`[data-el="${o.id}"]`);
       if (node) nodes.push(node);
     }
+    const docScene = doc.snapshot().scenes.find((sc) => sc.id === slideId);
+    const selected = api.snapshot().selectedIds.map((sid) => findIn(doc.snapshot().scenes, slideId, sid)).filter(Boolean);
     drag = {
       pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY,
       slideId, origins, nodes, moved: false,
+      box: unionBox(selected), targets: snapTargets(docScene, selected.map((e) => e.id)),
       collapseTo: !ev.shiftKey && snap.selectedIds.includes(id) && snap.selectedIds.length > 1 ? id : null,
     };
     ev.preventDefault();
@@ -369,13 +420,14 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (!scales) return report({ ok: false, code: "op-rejected", message: "no layout to project the drag through" });
     // Release coordinates decide the commit (not the last move
     // event), through the same conversion as the preview.
-    const { dx, dy } = clientToSvgDelta(ev.clientX - d.startX, ev.clientY - d.startY, scales);
+    drawGuides([]);
+    const { dx, dy } = dragDelta(d, ev.clientX, ev.clientY, ev, scales);
     const ops = d.origins.map((o) => ({
       slideId: d.slideId,
       op: {
         type: "element.move", id: o.id,
-        x: r3(o.x + dx / IN),
-        y: r3(o.y + dy / IN),
+        x: r3(o.x + dx),
+        y: r3(o.y + dy),
       },
     }));
     return track(submitMoveLike(ops, doc.snapshot().revision));
@@ -384,12 +436,12 @@ export function attachEditor(viewer, doc, opts = {}) {
   function onPointerMove(ev) {
     if (resize) {
       if (ev.pointerId !== undefined && ev.pointerId !== resize.pointerId) return;
-      previewResizeTo(ev.clientX, ev.clientY);
+      previewResizeTo(ev.clientX, ev.clientY, ev);
       return;
     }
     if (!drag) return;
     if (ev.pointerId !== undefined && ev.pointerId !== drag.pointerId) return;
-    previewTo(ev.clientX, ev.clientY);
+    previewTo(ev.clientX, ev.clientY, ev);
   }
 
   function onPointerCancel(ev) {
@@ -465,6 +517,81 @@ export function attachEditor(viewer, doc, opts = {}) {
     }
     const ops = snap.selectedIds.map((id) => ({ slideId: snap.slideId, op: { type: "element.delete", id } }));
     return track(submitMoveLike(ops, doc.snapshot().revision));
+  }
+
+  // ——— Clipboard, duplicate, select all ———
+  //
+  // The clipboard lives with this editor: copies keep `asset:` image
+  // references that only this project's store can resolve, so they are
+  // never offered to another project. Locked institutional chrome is not
+  // copyable — it belongs to the slide, not to the person.
+  let clipboard = null;
+  const pasteCount = new Map();
+
+  function selectedTopLevel() {
+    const snap = api.snapshot();
+    const slide = doc.snapshot().scenes.find((sc) => sc.id === snap.slideId);
+    const ids = new Set(snap.selectedIds);
+    return { snap, els: (slide?.elements ?? []).filter((e) => ids.has(e.id) && !isSystemChrome(e)) };
+  }
+
+  function busy() {
+    if (textSession) return report({ ok: false, code: "op-rejected", message: "finish the open text edit first (commit or cancel)" });
+    if (resize || drag) return report({ ok: false, code: "op-rejected", message: "finish the current gesture first" });
+    return null;
+  }
+
+  function copySelected() {
+    const blocked = busy();
+    if (blocked) return blocked;
+    const { snap, els } = selectedTopLevel();
+    if (els.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    clipboard = { slideId: snap.slideId, elements: structuredClone(els) };
+    pasteCount.clear();
+    return { ok: true, revision: doc.snapshot().revision, copied: els.length };
+  }
+
+  async function addCopies(slideId, elements, offset) {
+    const copies = copyElements(elements, mintHumanId, offset, offset);
+    const ops = copies.map((element) => ({ slideId, op: { type: "element.add", element } }));
+    const result = await submitOps(ops, doc.snapshot().revision);
+    if (!result.ok) return report(result);
+    sync();
+    api.selectMany(copies.map((c) => c.id));
+    return { ...result, ids: copies.map((c) => c.id) };
+  }
+
+  async function pasteClipboard() {
+    const blocked = busy();
+    if (blocked) return blocked;
+    if (!clipboard) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    const slideId = api.snapshot().slideId;
+    // Pasted onto the slide it came from, each copy steps down and right
+    // of the last; onto another slide, the first lands in place.
+    const n = (pasteCount.get(slideId) ?? 0) + 1;
+    pasteCount.set(slideId, n);
+    const offset = PASTE_STEP * (slideId === clipboard.slideId ? n : n - 1);
+    return addCopies(slideId, clipboard.elements, offset);
+  }
+
+  async function duplicateSelected() {
+    const blocked = busy();
+    if (blocked) return blocked;
+    const { snap, els } = selectedTopLevel();
+    if (els.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    return addCopies(snap.slideId, els, PASTE_STEP);
+  }
+
+  async function cutSelected() {
+    const copied = copySelected();
+    if (!copied.ok || copied.noop) return copied;
+    return deleteSelected();
+  }
+
+  function selectAll() {
+    if (textSession) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    api.selectMany(api.selectableIds());
+    return { ok: true, revision: doc.snapshot().revision, selected: api.snapshot().selectedIds.length };
   }
 
   // ——— V2-5D inline text editing ———
@@ -944,8 +1071,12 @@ export function attachEditor(viewer, doc, opts = {}) {
 
   function reconcileHandles() {
     ensureHandleLayer();
+    // Guides belong to the gesture, not the selection: a viewer change
+    // mid-drag rebuilds the handles and leaves the guides standing.
     if (handleLayer) {
-      while (handleLayer.firstChild) handleLayer.removeChild(handleLayer.firstChild);
+      for (const child of [...handleLayer.children]) {
+        if (!child.hasAttribute?.("data-snap-guide")) handleLayer.removeChild(child);
+      }
     }
     const target = canShowHandles();
     if (!target || !handleLayer) return;
@@ -997,6 +1128,7 @@ export function attachEditor(viewer, doc, opts = {}) {
 
   function clearResizePreview() {
     handleLayer?.querySelector("[data-resize-preview]")?.remove();
+    drawGuides([]);
   }
 
   function beginResize(handle, id, ev) {
@@ -1022,6 +1154,8 @@ export function attachEditor(viewer, doc, opts = {}) {
       id,
       handle,
       origin: { x: target.el.x, y: target.el.y, w: target.el.w, h: target.el.h },
+      kind: target.el.kind,
+      targets: snapTargets(doc.snapshot().scenes.find((sc) => sc.id === target.snap.slideId), [id]),
       limits: target.el.kind === "text"
         ? { floor: (w) => measureText(target.el, w)?.height ?? 0, slideH: slideHeight(target.snap.slideId) }
         : {},
@@ -1030,7 +1164,19 @@ export function attachEditor(viewer, doc, opts = {}) {
     return { ok: true, revision: doc.snapshot().revision, resizing: true };
   }
 
-  function previewResizeTo(clientX, clientY) {
+  // The box a resize means: moving edges snap like a move does (Alt off),
+  // and a corner keeps proportions with Shift — or always for a picture,
+  // which PowerPoint and Canva never stretch unless asked.
+  function resizeTo(s, clientX, clientY, mods, scales) {
+    let { dx, dy } = clientToSvgDelta(clientX - s.startX, clientY - s.startY, scales);
+    dx /= IN; dy /= IN;
+    let guides = [];
+    const aspect = s.handle.length === 2 && (s.kind === "image" ? !mods.shiftKey : !!mods.shiftKey);
+    if (!mods.altKey && !aspect) ({ dx, dy, guides } = snapResize(s.origin, s.handle, dx, dy, s.targets, snapReach(scales)));
+    return { geom: resizeGeometry(s.origin, s.handle, dx, dy, { ...s.limits, aspect }), guides };
+  }
+
+  function previewResizeTo(clientX, clientY, mods = {}) {
     if (!resize) return null;
     const scales = svgScales(root);
     if (!scales) return null;
@@ -1038,9 +1184,9 @@ export function attachEditor(viewer, doc, opts = {}) {
       return null;
     }
     resize.moved = true;
-    const { dx, dy } = clientToSvgDelta(clientX - resize.startX, clientY - resize.startY, scales);
-    const geom = resizeGeometry(resize.origin, resize.handle, dx / IN, dy / IN, resize.limits);
+    const { geom, guides } = resizeTo(resize, clientX, clientY, mods, scales);
     drawResizePreview(geom);
+    drawGuides(guides);
     return geom;
   }
 
@@ -1063,8 +1209,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (!scales) return report({ ok: false, code: "op-rejected", message: "no layout to project the resize through" });
     let geom;
     try {
-      const { dx, dy } = clientToSvgDelta(ev.clientX - s.startX, ev.clientY - s.startY, scales);
-      geom = resizeGeometry(s.origin, s.handle, dx / IN, dy / IN, s.limits);
+      geom = resizeTo(s, ev.clientX, ev.clientY, ev, scales).geom;
     } catch (err) {
       return track(Promise.resolve(report({ ok: false, code: "op-rejected", message: String(err?.message ?? err) })));
     }
@@ -1765,6 +1910,11 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (resize && (action.type === "nudge" || action.type === "delete" || action.type === "undo" || action.type === "redo")) {
       return track(report({ ok: false, code: "op-rejected", message: "finish resizing first" }));
     }
+    if (action.type === "copy") return copySelected();
+    if (action.type === "cut") return track(cutSelected());
+    if (action.type === "paste") return track(pasteClipboard());
+    if (action.type === "duplicate") return track(duplicateSelected());
+    if (action.type === "selectAll") return selectAll();
     if (action.type === "nudge") return track(nudgeSelected(action.key, !!action.shift));
     if (action.type === "delete") return track(deleteSelected());
     if (action.type === "undo") {
@@ -1831,6 +1981,12 @@ export function attachEditor(viewer, doc, opts = {}) {
 
   return {
     nudgeSelected: (key, shift = false) => nudgeSelected(key, shift),
+    copySelected: () => copySelected(),
+    cutSelected: () => track(cutSelected()),
+    paste: () => track(pasteClipboard()),
+    canPaste: () => clipboard !== null,
+    duplicateSelected: () => track(duplicateSelected()),
+    selectAll: () => selectAll(),
     deleteSelected: () => deleteSelected(),
     undo: () => undo(),
     redo: () => redo(),

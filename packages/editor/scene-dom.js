@@ -548,6 +548,15 @@ export function createViewer(rootEl, scenes, opts = {}) {
         ev.preventDefault();
         return;
       }
+      // The clipboard keys a slide editor answers to. Copy, cut and
+      // duplicate need a selection; with none they fall through, so the
+      // browser's own behaviour is untouched.
+      const clip = { c: "copy", x: "cut", d: "duplicate", v: "paste", a: "selectAll" }[mod && !ev.altKey ? k.toLowerCase() : ""];
+      if (clip && (state.selectedIds.length > 0 || clip === "paste" || clip === "selectAll")) {
+        editAction({ type: clip });
+        ev.preventDefault();
+        return;
+      }
     }
     if (k === "ArrowRight") api.next();
     else if (k === "ArrowLeft") api.prev();
