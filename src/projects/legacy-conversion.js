@@ -230,6 +230,37 @@ rule("diagram", ["nodes", "edges", "layout"], (s, c) => {
   });
   if (connections.length) c.slide.connections = connections;
 });
+const axisOf = (axis, path, c) => {
+  if (!axis) return undefined;
+  c.keys(axis, ["label", "low", "high"], path);
+  return Object.fromEntries(["label", "low", "high"].filter(k => axis[k]).map(k => [k, axis[k]]));
+};
+// A 2x2: quadrants in reading order between two labelled axes.
+rule("matrix", ["axes", "quadrants"], (s, c) => {
+  c.slide.layoutHint = { arrangement: "quadrants" };
+  c.keys(s.axes, ["x", "y"], `${c.path}.axes`);
+  const x = axisOf(s.axes.x, `${c.path}.axes.x`, c), y = axisOf(s.axes.y, `${c.path}.axes.y`, c);
+  c.slide.axes = { ...(x ? { x } : {}), ...(y ? { y } : {}) };
+  s.quadrants.forEach((q, i) => { c.keys(q, ["title", "body"], `${c.path}.quadrants[${i}]`); c.text(q.body ?? "", q.title); });
+});
+// Phases are lanes; each phase's items are its cards; time labels head the
+// lanes as ticks along the x axis.
+rule("roadmap", ["phases", "time_labels"], (s, c) => {
+  c.slide.layoutHint = { arrangement: "lanes" };
+  if (s.time_labels?.length) c.slide.axes = { x: { ticks: s.time_labels } };
+  const seen = new Set();
+  s.phases.forEach((phase, i) => {
+    c.keys(phase, ["label", "items"], `${c.path}.phases[${i}]`);
+    if (seen.has(phase.label)) { c.refuse(`${c.path}.phases[${i}].label`, "two phases share a label, so their lanes cannot be told apart"); return; }
+    seen.add(phase.label);
+    const items = phase.items ?? [];
+    if (!items.length) c.add("text", { text: "", group: phase.label });
+    items.forEach((item, j) => {
+      c.keys(item, ["title", "body"], `${c.path}.phases[${i}].items[${j}]`);
+      c.add("text", { text: item.body ?? "", label: item.title, group: phase.label });
+    });
+  });
+});
 rule("icon-list", ["items"], (s, c) => {
   s.items.forEach((item, i) => {
     c.keys(item, ["icon", "text"], `${c.path}.items[${i}]`);

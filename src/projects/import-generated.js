@@ -83,6 +83,15 @@ function assertContent(intent, scenes) {
     if (source.title && !scene.elements.some(e => (e.paragraphs ?? []).some(p => p.runs.map(r => r.text).join("").includes(source.title)))) {
       details.push({ path: `${source.id}.title`, reason: "compiler omitted or changed the slide title" });
     }
+    // Slide-level carriers — axes, lane names, link labels — must each reach
+    // the page as text, like any block's content.
+    const sceneText = scene.elements.map(e => (e.paragraphs ?? []).map(p => p.runs.map(r => r.text).join("")).join("\n")).join("\n");
+    const slideValues = [
+      ...Object.values(source.axes ?? {}).flatMap(a => [a.label, a.low, a.high, ...(a.ticks ?? [])]),
+      ...source.blocks.map(b => b.group),
+      ...(source.connections ?? []).map(l => l.label),
+    ].filter(Boolean);
+    for (const value of slideValues) if (!sceneText.includes(value)) details.push({ path: source.id, reason: `compiler omitted "${value.slice(0, 40)}"` });
     for (const block of source.blocks) {
       const elements = scene.elements.filter(e => e.semanticRef === block.id);
       const text = elements.flatMap(e => e.paragraphs?.map(p => p.runs.map(r => r.text).join("")) ?? []).join("\n");
