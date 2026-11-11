@@ -323,6 +323,38 @@ rule("branching-flow", ["steps", "decision", "branches"], (s, c) => {
     });
   });
 });
+// Progress toward 100%: a native horizontal bar chart, with targets as a
+// second series when the deck set any.
+rule("progress-bars", ["bars"], (s, c) => {
+  s.bars.forEach((bar, i) => c.keys(bar, ["label", "value", "target"], `${c.path}.bars[${i}]`));
+  const series = [{ name: "Progress", values: s.bars.map(b => b.value) }];
+  if (s.bars.some(b => typeof b.target === "number")) {
+    if (!s.bars.every(b => typeof b.target === "number")) c.refuse(`${c.path}.bars`, "targets are set on some bars but not others, so no target series can be drawn honestly");
+    else series.push({ name: "Target", values: s.bars.map(b => b.target) });
+  }
+  c.add("chart", { chartKind: "hbar", categories: s.bars.map(b => b.label), series, unit: "%" });
+});
+// Small multiples: one line per item, captioned with its label and current value.
+rule("sparklines", ["items"], (s, c) => {
+  s.items.forEach((item, i) => {
+    c.keys(item, ["label", "values", "value"], `${c.path}.items[${i}]`);
+    c.add("chart", { chartKind: "line", categories: item.values.map((_, k) => String(k + 1)),
+      series: [{ name: item.label, values: item.values }], caption: [item.label, item.value].filter(Boolean).join(" — ") });
+  });
+});
+// Stages read left to right; sentiment is each stage's outcome, and real
+// values (on every stage, or none) become a line chart under the stages.
+rule("journey", ["stages"], (s, c) => {
+  c.slide.relationship = "sequence";
+  const outcome = { positive: "favorable", negative: "unfavorable", neutral: "neutral" };
+  s.stages.forEach((stage, i) => {
+    c.keys(stage, ["label", "body", "sentiment", "value"], `${c.path}.stages[${i}]`);
+    c.add("text", { text: stage.body ?? "", label: stage.label, ...(outcome[stage.sentiment] ? { outcome: outcome[stage.sentiment] } : {}) });
+  });
+  if (s.stages.every(st => typeof st.value === "number")) {
+    c.add("chart", { chartKind: "line", categories: s.stages.map(st => st.label), series: [{ name: c.slide.title ?? "Value", values: s.stages.map(st => st.value) }] });
+  }
+});
 rule("icon-list", ["items"], (s, c) => {
   s.items.forEach((item, i) => {
     c.keys(item, ["icon", "text"], `${c.path}.items[${i}]`);
