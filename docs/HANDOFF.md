@@ -76,11 +76,15 @@ set to that account and import it with
 
 ## Next
 
-**F4 editor completeness**: pictures are in; still to do — insert chart,
-table, line and icon; change the project's theme with recompilation that
-keeps human edits; present mode with speaker notes. Then **F5** (editor UI
-redesign), then F2/F3 (Assistant on every provider, creation tools — real-model
-checks need a working model: the gateway returned HTTP 500 on chat).
+- **F4 leftovers**: insert icon. Theme change waits on F3's stored intent.
+- **F5 editor UI redesign** (icons, grouped toolbar, contextual bar, plain
+  inspector; split `SceneViewer.jsx`). The editor now has 14 toolbar buttons
+  in a row; this is the next visible win.
+- **F1g / F1h** (fit warnings in the editor; re-import a changed deck).
+- **F3** starts with persisting `DeckIntent` in projects.
+- Verifying generate → editor end to end needs a working model (the TCET
+  gateway returned HTTP 500 on chat; local inference is off-limits while the
+  owner's other work runs).
 
 ## Machine etiquette
 
