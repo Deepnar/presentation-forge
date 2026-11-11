@@ -79,6 +79,15 @@ export default function ChatView({
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const chatRef = useRef(chat);
+  // A finished generation lands in its editor project, but only while the
+  // person is still on this chat: a run that finishes in the background must
+  // not pull them away from wherever they went. Open in editor covers that.
+  function openFinished(r, chatId) {
+    const id = r?.editor?.projectId;
+    if (!id || chatRef.current?.id !== chatId) return;
+    if (!location.hash.startsWith("#/chat")) return;
+    onOpenProject?.(id);
+  }
 
   useEffect(() => {
     try { localStorage.setItem("forge.panelOpen", panelOpen ? "1" : "0"); } catch {}
@@ -387,8 +396,10 @@ export default function ChatView({
               deckThumbs: (r.thumbs ?? []).slice(0, 8),
               error: undefined,
               updatedAt: new Date().toISOString(),
+              ...(r.editor?.projectId ? { editorProjectId: r.editor.projectId } : {}),
             });
             onDeckChanged?.();
+            openFinished(r, chat.id);
           },
         },
       );
@@ -497,8 +508,10 @@ export default function ChatView({
             deckThumbs: (r.thumbs ?? []).slice(0, 8),
             error: undefined,
             updatedAt: new Date().toISOString(),
+            ...(r.editor?.projectId ? { editorProjectId: r.editor.projectId } : {}),
           });
           onDeckChanged?.();
+          openFinished(r, chat.id);
         },
       },
     );
@@ -536,8 +549,10 @@ export default function ChatView({
             deckThumbs: (r.thumbs ?? []).slice(0, 8),
             error: undefined,
             updatedAt: new Date().toISOString(),
+            ...(r.editor?.projectId ? { editorProjectId: r.editor.projectId } : {}),
           });
           onDeckChanged?.();
+          openFinished(r, chat.id);
         },
       },
       );

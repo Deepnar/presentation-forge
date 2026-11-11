@@ -19,6 +19,7 @@ export function normalizeChat(raw) {
   else delete c.error;
   if (typeof c.model === "string" && c.model.trim()) c.model = c.model;
   else delete c.model;
+  if (typeof c.editorProjectId !== "string" || !c.editorProjectId) delete c.editorProjectId;
   if (Array.isArray(c.deckThumbs)) c.deckThumbs = c.deckThumbs;
   else if (c.deckThumbs != null) delete c.deckThumbs;
 

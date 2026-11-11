@@ -40,3 +40,10 @@ test("image supply defaults to off, and a chat written before it existed reads a
     assert.equal(normalizeChat({ briefing: { imageSupply: junk } }).briefing.imageSupply, "none", `${junk} is not opt-in`);
   }
 });
+
+test("a chat keeps the editor project its generation opened, and nothing else under that name", async () => {
+  const { normalizeChat } = await import("../app/web/src/lib/chats.js");
+  assert.equal(normalizeChat({ editorProjectId: "p_123" }).editorProjectId, "p_123");
+  assert.equal("editorProjectId" in normalizeChat({ editorProjectId: 42 }), false);
+  assert.equal("editorProjectId" in normalizeChat({ editorProjectId: "" }), false);
+});
