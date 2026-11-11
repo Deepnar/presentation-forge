@@ -62,11 +62,10 @@ test("cites become retained sources and current slide citations", async () => {
   assert.ok(view.citations.every(c => c.target === "present" && c.content === "current" && c.source === "retained"), JSON.stringify(view.citations));
 });
 
-test("a cite that cannot be a web source refuses the import with its slide", async () => {
-  await assert.rejects(importDeck([bullets("Evidence", [{ url: "ftp://example.test/file" }])]),
-    e => e.code === "unsupported-content" && e.details.some(d => d.path === "slides[0].cites"));
-  await assert.rejects(importDeck([bullets("Evidence", [{ url: "https://user:pw@example.test/" }])]),
-    e => e.code === "unsupported-content");
+test("a cite that cannot be a web source goes to the slide's notes instead", async () => {
+  const { project } = await importDeck([bullets("Evidence", [{ url: "doi:10.1000/182", title: "Handbook" }, { url: "https://user:pw@example.test/" }])]);
+  assert.equal(project.scenes[0].citations, undefined);
+  assert.equal(project.scenes[0].notes, "Source: Handbook — doi:10.1000/182\n\nSource: https://user:pw@example.test/");
 });
 
 test("plain project creation still refuses citations without their sources", async () => {

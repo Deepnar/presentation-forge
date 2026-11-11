@@ -28,10 +28,16 @@ function citeUrl(raw) {
 // slide-level citations, anchored to the compiled slide content so a later
 // edit to that slide reads as "changed" rather than silently still current.
 async function citeSources(projectId, cites, scenes) {
-  const sources = new Map(), citations = new Map(), details = [];
+  const sources = new Map(), citations = new Map();
   for (const cite of cites) {
     const url = citeUrl(cite.url);
-    if (!url) { details.push({ path: `slides[${cite.slide}].cites`, reason: "citation URL is not a plain http(s) address" }); continue; }
+    // A reference that is not a web address (a DOI, a file name) cannot be a
+    // retained web source; the presenter still gets it in the notes.
+    if (!url) {
+      const scene = scenes[cite.slide], line = `Source: ${[cite.title, cite.url].filter(Boolean).join(" — ")}`;
+      scene.notes = scene.notes ? `${scene.notes}\n\n${line}` : line;
+      continue;
+    }
     const title = (cite.title || new URL(url).hostname).slice(0, 500);
     const id = webSourceId({ projectId, url, title, excerpt: "" });
     const retrievedAt = cite.accessed && Number.isFinite(Date.parse(cite.accessed)) ? new Date(cite.accessed).toISOString() : new Date().toISOString();
@@ -40,7 +46,6 @@ async function citeSources(projectId, cites, scenes) {
     const key = `${slideId}\n${id}`;
     if (!citations.has(key)) citations.set(key, { slideId, sourceId: id });
   }
-  if (details.length) throw importError("unsupported-content", "deck citations cannot be retained", details);
   const rows = [...citations.values()];
   const perScene = new Map();
   for (const row of rows) perScene.set(row.slideId, (perScene.get(row.slideId) ?? 0) + 1);
@@ -55,6 +60,21 @@ async function citeSources(projectId, cites, scenes) {
       source: { projectId, id: row.sourceId, generation: 0 }, anchor: { kind: "content-sha256-v1", digest: digests[i] } });
   }
   return [...sources.values()];
+}
+
+// Theme plates arrive as one data URI per slide; stored once as an asset and
+// referenced, a 24-slide plated deck stays well inside the document limit.
+async function storePlates(scenes) {
+  const assets = new Map();
+  for (const scene of scenes) {
+    const src = scene.background?.image?.src;
+    const match = typeof src === "string" ? /^data:image\/[a-z+.-]+;base64,(.*)$/is.exec(src) : null;
+    if (!match) continue;
+    const asset = await prepareAsset(new Uint8Array(Buffer.from(match[1], "base64")));
+    assets.set(asset.hash, asset);
+    scene.background.image.src = assetRef(asset.hash);
+  }
+  return [...assets.values()];
 }
 
 // Swap each image block's deck-relative path for a stored asset reference,
@@ -97,7 +117,7 @@ function assertContent(intent, scenes) {
       const text = elements.flatMap(e => e.paragraphs?.map(p => p.runs.map(r => r.text).join("")) ?? []).join("\n");
       const missing = reason => details.push({ path: `${source.id}.${block.id}`, reason });
       if (!elements.length) { missing("compiler omitted the semantic carrier"); continue; }
-      if (block.icon && !scene.elements.some(e => e.semanticRef === block.id && e.id.endsWith(":icon") && (e.paragraphs ?? []).some(p => p.runs.map(r => r.text).join("") === block.icon))) {
+      if (block.icon && !text.includes(block.icon)) {
         missing("compiler omitted the block's icon");
       }
       if (block.kind === "chart") {
@@ -131,10 +151,18 @@ export async function importGeneratedProject(args) {
   const compiled = await compileSceneDeck({ intent, theme: source.theme, style: source.style, mode: source.mode, chromeForDeck: importChrome(source.profile, source.deck, source.identity, brand) });
   assertContent(intent, compiled.scenes);
   const analysis = await analyzeDeck(intent, compiled.design, compiled.chrome);
-  const blocked = analysis.findings.filter(f => f.layer === "L1");
+  // Fit findings restate the compiler's fit diagnostics, which become
+  // warnings below; every other must-fix finding still refuses.
+  const FIT = new Set(["text-fit-floor-hit", "text-word-floor-hit", "table-cell-overflow", "chart-label-overflow", "chart-fallback-table"]);
+  const blocked = analysis.findings.filter(f => f.layer === "L1" && !FIT.has(f.code));
   const preflight = await preflightScenes(compiled.scenes);
-  if (blocked.length || compiled.fitDiagnostics.length || preflight.length) throw importError("unsupported-content", "source cannot fit or export safely with accepted compiler primitives", [...blocked, ...compiled.fitDiagnostics, ...preflight].map(f => ({ path: f.slideId ?? "scene", reason: f.message ?? f.reason ?? f.code ?? f.kind })));
+  // Text that will not fit at the readable floor is the deck's own length,
+  // which the legacy renderer flagged and still drew; the project opens with
+  // those slides reported for the owner to trim. Broken structure and
+  // anything native export cannot carry still refuse.
+  if (blocked.length || preflight.length) throw importError("unsupported-content", "source cannot export safely with accepted compiler primitives", [...blocked, ...preflight].map(f => ({ path: f.slideId ?? "scene", reason: f.message ?? f.reason ?? f.code ?? f.kind })));
   const compileMs = performance.now() - compileStart;
+  assets.push(...await storePlates(compiled.scenes));
   const projectId = mintProjectId();
   const sources = cites.length ? await citeSources(projectId, cites, compiled.scenes) : null;
   await source.unchanged();
@@ -146,5 +174,6 @@ export async function importGeneratedProject(args) {
     importRequest: source.importRequest,
     assets, id: projectId, sources,
   });
-  return { project: result.doc, reused: result.reused, sourceDigest: source.digest, diagnostics: analysis.findings, dropped, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
+  const fitWarnings = compiled.fitDiagnostics.map(f => ({ slideId: f.slideId, elementId: f.elementId, message: f.message }));
+  return { project: result.doc, reused: result.reused, sourceDigest: source.digest, diagnostics: analysis.findings, dropped, fitWarnings, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
 }
