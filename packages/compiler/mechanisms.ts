@@ -1170,23 +1170,30 @@ function chartScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const chartH = rest.length
     ? Math.max(1.5, (bottom - y) * (comp.densityClass === "sparse" ? 0.7 : 0.6))
     : Math.max(1.5, bottom - y);
+  // Three or more charts with nothing beside them are small multiples: a
+  // two-column grid, so each keeps a readable height.
+  const grid = charts.length >= 3 && !rest.length;
+  const cols = grid ? 2 : 1, rowsN = Math.ceil(charts.length / cols);
+  const cellW = grid ? (box.w - 0.4) / 2 : box.w;
   charts.forEach((block, i) => {
-    const h = charts.length > 1 ? Math.max(1.0, (chartH - 0.3 * (charts.length - 1)) / charts.length) : chartH;
-    const cy = y + (charts.length > 1 ? i * (h + 0.3) : 0);
+    const h = grid ? (chartH - 0.3 * (rowsN - 1)) / rowsN
+      : charts.length > 1 ? Math.max(1.0, (chartH - 0.3 * (charts.length - 1)) / charts.length) : chartH;
+    const cy = y + (grid ? Math.floor(i / cols) * (h + 0.3) : charts.length > 1 ? i * (h + 0.3) : 0);
+    const cx = box.x + (grid ? (i % cols) * (cellW + 0.4) : 0);
     const capH = (block.unit !== undefined ? 0.3 : 0) + (block.caption ? 0.4 : 0);
-    const chartRegion = { x: box.x, y: cy, w: box.w, h: Math.max(0.4, h - capH) };
+    const chartRegion = { x: cx, y: cy, w: cellW, h: Math.max(0.4, h - capH) };
     placePrimary(ctx, els, block, chartRegion, takeZ);
     let ty = cy + Math.max(0.4, h - capH);
     if (block.unit !== undefined) {
       els.push(textEl(`${slide.id}:${block.id}:unit`, block.id,
-        { x: box.x, y: ty, w: box.w, h: 0.3 },
+        { x: cx, y: ty, w: cellW, h: 0.3 },
         [{ runs: [{ text: `Unit: ${block.unit}`, role: "caption", color: design.palette.inkMuted.hex }], align: "left" as const }],
         takeZ(), fitOf(ctx)));
       ty += 0.3;
     }
     if (block.caption) {
       els.push(textEl(`${slide.id}:${block.id}:caption`, block.id,
-        { x: box.x, y: ty, w: box.w, h: 0.4 },
+        { x: cx, y: ty, w: cellW, h: 0.4 },
         [{ runs: [{ text: block.caption, role: "caption", color: design.palette.inkMuted.hex }], align: "center" as const }],
         takeZ(), fitOf(ctx)));
     }
