@@ -870,7 +870,10 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   const hasHeadlineTakeaway = slide.takeaway !== undefined && comp.takeawayTreatment === "headline";
   let y = hasHeadlineTakeaway ? below + 0.7 : below;
   if (hasHeadlineTakeaway) els.push(...takeawayEls(ctx, below, box.bottom, takeZ()));
-  const bottom = box.bottom - (comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation" ? 0.6 : 0);
+  // A verdict is 0.8in tall, so it needs that and a gap above it — the
+  // comparison family's 0.9; the grid fills to `bottom` exactly.
+  const bottom = box.bottom - (comp.takeawayTreatment === "verdict" && slide.takeaway ? 0.9
+    : comp.takeawayTreatment === "verdict" || comp.takeawayTreatment === "annotation" ? 0.6 : 0);
   const arranged = slide.layoutHint?.arrangement === "quadrants" && slide.blocks.length === 4 ? quadrantGrid(ctx, y, bottom, takeZ)
     : slide.layoutHint?.arrangement === "lanes" ? laneGrid(ctx, y, bottom, takeZ)
     : slide.layoutHint?.arrangement === "venn" && slide.blocks.length >= 2 && slide.blocks.length <= 4 ? vennSets(ctx, y, bottom, takeZ)
