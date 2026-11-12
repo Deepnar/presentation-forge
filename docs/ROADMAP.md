@@ -124,9 +124,12 @@ Decisions taken with this list, so nobody re-litigates them:
    edits kept (`src/projects/retheme.js`, the editor's Theme picker). The
    Assistant can propose a new slide (`add_slide`): content only, compiled
    by the host into an `insert_slide` plan step, applied on approval, its
-   intent kept for later theme changes. Next: regenerate an existing slide
-   (replace its content, carrying the person's edits), change a slide's
-   layout family, and rewrite across the deck; then a real-model check. Semantic proposals
+   intent kept for later theme changes. It can also rewrite an existing slide
+   (`rewrite_slide` → `replace_slide`): same id and place, the person's
+   additions, locks and still-matching moves carried across. The done-when
+   is met in code (proven with a fake model end to end). Left: change a
+   slide's layout family, several slides in one proposal (parallel tool
+   calls are off, so one slide per turn), and the real-model check. Semantic proposals
    for add slide(s), regenerate a slide, change a slide's composition and
    rewrite across the deck, compiled deterministically, preserving human edits,
    tombstones and detached slides (§12 "Canonical semantic creation and
