@@ -129,7 +129,9 @@ Decisions taken with this list, so nobody re-litigates them:
    tombstones and detached slides (§12 "Canonical semantic creation and
    regeneration tools"). *Done when:* "add a slide comparing X and Y after
    slide 4" produces an approved, compiled, editable slide.
-5. **[~] F4 — Editor completeness.** Done 2026-11-11: speaker notes panel,
+5. **[x] F4 — Editor completeness.** Finished 2026-11-12 with icon insert;
+   F4b's small leftovers (rotated selection frame, lines in groups) are listed
+   there. Done 2026-11-11: speaker notes panel,
    insert picture (asset upload), chart, table and rule (styled from the
    slide), present mode with notes (N); added elements now land on top of
    compiled content. Theme change done 2026-11-12 (under F3). Left: insert
