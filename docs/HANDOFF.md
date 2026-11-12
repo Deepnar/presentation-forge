@@ -122,6 +122,17 @@ the stub again (or a fresh rig) — it is not an editor bug.
 The sandbox's slide 1 carries a "Test picture" rectangle from a picture-insert
 check; it is sandbox data, not part of any real deck.
 
+## The owner's notes of 2026-11-12 (in the roadmap)
+
+- Editor scope: a small, deliberate set of editing features, each working
+  without glitches, rather than everything PowerPoint has. First: the
+  glitchy drag of a vertical text box on a recently opened project (F4b).
+- A way to make and save a slide layout of your own (F4c).
+- Inspector, layers, and grouped insert tools (Shapes / Text / Media /
+  Charts popovers) in the F5 pass.
+- Slides that fit but do not get their message across — a new content
+  quality entry beside "Measuring content quality".
+
 ## Machine etiquette
 
 The owner runs other GPU/CPU work here (opencode with many headless Chrome

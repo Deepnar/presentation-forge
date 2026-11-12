@@ -146,6 +146,22 @@ Decisions taken with this list, so nobody re-litigates them:
    semantic intent, which it does not today (imports discard it after
    compiling, and no runtime path calls `recompileSlide`). *Done when:* a deck
    can be finished in the editor without returning to the legacy deck page.
+   - **Editor scope — the owner's rule (2026-11-12).** The editor is not
+     meant to match PowerPoint or Canva feature for feature. It should carry
+     a deliberately small set of editing features, chosen so people can
+     still do a lot within it — and because the set is small and is where
+     the attention goes, every one of them must work without glitches.
+     Before adding an editing feature, ask whether it belongs in that set;
+     before calling one done, use it on real imported and generated decks.
+     Open defect from the owner: on one of the last-opened projects a text
+     box that ran vertically (tall and narrow, or rotated) moved glitchily
+     when dragged — reproduce on that project, find the cause (rotation vs
+     the upright selection frame and handles, or snapping on a tall box),
+     and fix it before adding anything new.
+   - **[ ] F4c Make a slide of your own layout.** The editor offers blank
+     slides and the layout gallery but no way to make a new slide type of
+     your own — arrange a slide, then save it as a layout to reuse in the
+     project (and later across projects).
    - **[~] F4b The editor behaves like a slide editor** (owner, 2026-11-11:
      "the editing things feel broken"). An edit that went through is never
      reported as a failure, and a gesture does what PowerPoint, Google Slides
@@ -230,6 +246,14 @@ by screenshot before and after — at desktop and narrow widths, light and
 dark. Text that explains the UI is cut, not shrunk: if a control needs a
 sentence, the control is wrong. Waits for the core items (see the finish
 line's decisions).
+
+Added 2026-11-12 by the owner: the **inspector and the layers panel** are
+the parts most in need of this pass — they must read plainly at a glance.
+And insert tools grow into groups: rectangle, rounded rectangle and oval are
+separate buttons today, which is fine for now, but as the small set of
+fundamental features grows they belong in their own popover or section the
+way Canva and PowerPoint group shapes (Shapes, Text, Media, Charts), not as a
+longer row of words.
 
 Widened again 2026-11-11: the pass **includes the landing page and the
 site's whole aesthetic**. The owner: it is modern, "but still it for some
@@ -6172,6 +6196,20 @@ rather than estimated.
 
 What is NOT in doubt is the trigger: a surface nobody drives is a surface
 nobody has tested, whatever the suite says.
+
+### [ ] Slides that look right but do not say anything
+
+Raised by the owner 2026-11-12. The slide types fit almost always now; the
+rarer and worse failure is a slide that fits and looks sensible at a glance
+but, read carefully or presented aloud, does not get its message across —
+labels without the claim they support, a diagram whose arrows do not say
+why, a stat without what it means. Fit checks cannot see this. Needs: a
+per-slide "what is this slide saying" check (the slide's takeaway must be
+recoverable from what is drawn, not only from the notes), run on generated
+decks, and a way for the composition to refuse a type that drops the point
+(e.g. a crowded graph folded to labels only is legible but may no longer
+argue anything — then it should become a different type, not just fit).
+Belongs with content quality below and is judged against the gateway model.
 
 ### [ ] Measuring content quality
 
