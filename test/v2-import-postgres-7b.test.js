@@ -72,11 +72,13 @@ if (!reachable) {
     assert.equal(replay.project.revision, 1); assert.equal(replay.timings.compileMs, undefined);
   });
 
-  test("changed sources, deleted targets and owner mismatches refuse without overwrites", async () => {
+  test("changed sources update in place; deleted targets and owner mismatches refuse", async () => {
     const args = await source(); const first = await importer(args);
     await assert.rejects(importer({ ...args, principal: { email: "other@example.test" }, localOperator: false }), { code: "not-found" });
     await writeFile(path.join(args.dir, "deck.yaml"), YAML.stringify({ ...IMPORT_DECK, title: "Changed" }));
-    await assert.rejects(importer(args), { code: "import-source-changed" });
+    const updated = await importer(args);
+    assert.equal(updated.updated, true); assert.equal(updated.project.id, first.project.id);
+    assert.equal((await importer(args)).reused, true);
     const next = await importer({ ...args, requestId: "request-two" });
     assert.notEqual(next.project.id, first.project.id);
     await store.deleteProject({ owner: null, id: next.project.id });

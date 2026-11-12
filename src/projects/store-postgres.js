@@ -408,6 +408,19 @@ export async function lookupImportedProject({ owner = null, importRequest }) {
   } catch (err) { throw storageUnavailable(err); }
 }
 
+// Point an import request at the deck version its project now holds, after
+// a re-import updated the project in place. Only the request's own project.
+export async function relinkImport({ owner = null, importRequest, projectId }) {
+  const request = validateImportRequest(importRequest, owner);
+  if (!request) throw Object.assign(new Error("import identity required"), { code: "invalid-document" });
+  try {
+    const p = await pool();
+    await ensureSchemaPool(p);
+    const result = await p.query("UPDATE v2_project_imports SET source_digest=$1 WHERE request_key=$2 AND project_id=$3", [request.digest, request.key, projectId]);
+    return { relinked: result.rowCount === 1 };
+  } catch (err) { throw storageUnavailable(err); }
+}
+
 export async function getProject({ owner = null, id, admin = false }) {
   if (!validProjectId(id)) {
     const err = new Error(`invalid project id ${id}`);

@@ -285,6 +285,16 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
   const fresh = planned
     ? compilePlannedSlide(intent, planned, design, sink, slideChromePlan, backgrounds)
     : compileSlide(intent, design, undefined, sink);
+  return carryEdits(fresh, prev, design, intent.id ?? prev.id, sink);
+}
+
+// What a person did to `prev` carried onto `fresh`, a new compile of the
+// same slide: geometry, wording, styling, data, locks, order, tombstones,
+// notes and everything they added. Shared by recompileSlide and by a deck
+// re-import, which compiles the whole deck first and then carries each
+// slide's edits across. Detached slides never reach here — their scene is
+// the person's outright.
+export function carryEdits(fresh, prev, design, slideKey = prev.id, sink = []) {
   if (Object.hasOwn(prev, "citations")) fresh.citations = structuredClone(prev.citations);
   // Notes a human wrote outrank the intent's; untouched notes follow it.
   if (prev.notesEdited) {
@@ -325,7 +335,7 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
       // geometry, never the discarded fresh box: shrink-only from the
       // current sizes, so a larger human box keeps readable text and a
       // smaller box (or longer text) shrinks further or diagnoses.
-      if (el.kind === "text") refitTextEl(design, el, intent.id ?? prev.id, sink);
+      if (el.kind === "text") refitTextEl(design, el, slideKey, sink);
     }
     // Content ownership is orthogonal to geometry: a rewritten
     // element keeps its human paragraphs while geometry follows the
@@ -337,7 +347,7 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
       el.paragraphs = structuredClone(p.paragraphs);
       el.contentCustomized = true;
       el.provenance = "human";
-      refitTextEl(design, el, intent.id ?? prev.id, sink);
+      refitTextEl(design, el, slideKey, sink);
     }
     // Appearance ownership is orthogonal to geometry and text, same
     // contract as content: a restyled shape keeps its human fill and
@@ -451,7 +461,10 @@ export function recompileSlide(intent, prev, design, planned = null, sink = [], 
   const orphans = prev.elements.filter(
     (e) => !freshIds.has(e.id) && e.provenance !== "compiler" && !e.semanticRef,
   );
-  fresh.elements.push(...orphans.map((e) => ({ ...e, z: fresh.elements.length })));
+  // On top, as the person put them: compiled layers rank in steps of ten,
+  // so the element count would slide them under the compiled content.
+  const top = fresh.elements.reduce((m, e) => Math.max(m, e.z ?? 0), -1) + 1;
+  fresh.elements.push(...orphans.map((e, i) => ({ ...e, z: top + i })));
   // The tombstone list carries forward so suppression survives
   // ordinary managed/customized recompilation; detached slides
   // returned untouched above keep theirs as-is. Human orphans

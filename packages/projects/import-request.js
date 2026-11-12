@@ -20,7 +20,9 @@ export function validateImportRequest(request, owner) {
 }
 
 export async function replayImportedProject(link, request, row, owner) {
-  if (link.source_digest !== request.digest) throw importFailure("import-source-changed", "source changed; use an explicit new import request");
+  // The project the request already made travels with the refusal, so a
+  // caller that means to update it (a regenerated deck) can.
+  if (link.source_digest !== request.digest) throw Object.assign(importFailure("import-source-changed", "source changed; use an explicit new import request"), { projectId: link.project_id });
   if (!row) throw importFailure("import-target-deleted", "the imported project was deleted; use an explicit new import request");
   if ((row.owner ?? null) !== (owner ?? null)) throw importFailure("not-found", "no such project");
   let doc;

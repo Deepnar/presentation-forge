@@ -71,13 +71,17 @@ test("simultaneous requests return one project and baseline; retries retain late
   assert.equal(retried.timings.compileMs, undefined);
 });
 
-test("a changed source conflicts until an explicit new request is used", async () => {
+test("a regenerated source updates the same project, as a new revision", async () => {
   const args = await source(); const original = await importGeneratedProject(args);
-  await writeFile(path.join(args.dir, "deck.yaml"), YAML.stringify({ ...sourceDeck, title: "New source title" }));
-  await assert.rejects(importGeneratedProject(args), { code: "import-source-changed" });
+  await writeFile(path.join(args.dir, "deck.yaml"), YAML.stringify({ ...sourceDeck, slides: [...sourceDeck.slides.slice(0, 2), { ...sourceDeck.slides[2], rows: [["A", "2.5"], ["B", "25"]] }] }));
+  const updated = await importGeneratedProject(args);
+  assert.equal(updated.updated, true);
+  assert.equal(updated.project.id, original.project.id, "the same project, not a second one");
+  assert.equal(updated.project.revision, original.project.revision + 1);
+  const replay = await importGeneratedProject(args);
+  assert.equal(replay.reused, true, "the request now points at the new deck");
   const next = await importGeneratedProject({ ...args, requestId: "request-two" });
-  assert.notEqual(next.project.id, original.project.id);
-  assert.equal((await store.getProject({ owner: principal.email, id: original.project.id })).doc.title, sourceDeck.title);
+  assert.notEqual(next.project.id, original.project.id, "an explicit new request still makes a new project");
 });
 
 test("deleted imports cannot silently resurrect on retry", async () => {
@@ -171,8 +175,10 @@ test("presenter remains locked furniture; chrome policy changes conflict and sup
   const operator = path.join(process.env.FORGE_CONFIG_DIR, "identity.yaml");
   await writeFile(operator, YAML.stringify({ chrome: { slide_numbers: false } }));
   try {
-    await assert.rejects(importGeneratedProject(args), { code: "import-source-changed" });
-    const next = await importGeneratedProject({ ...args, requestId: "request-two" });
+    // A changed chrome policy reaches the existing project on its next open.
+    const next = await importGeneratedProject(args);
+    assert.equal(next.updated, true);
+    assert.equal(next.project.id, original.project.id);
     assert.ok(!next.project.scenes.some(scene => scene.elements.some(e => e.id.endsWith(":chrome:slide-number"))));
     assert.ok(next.project.scenes[1].elements.some(e => e.id.endsWith(":chrome:presenter")));
   } finally { await rm(operator, { force: true }); }
@@ -220,4 +226,54 @@ test("separate CLI processes share durable retry identity across restart", async
   assert.equal(parsed[0].project.id, parsed[1].project.id);
   assert.equal(parsed.filter(r => !r.reused).length, 1);
   assert.equal(JSON.parse((await run()).stdout).reused, true);
+});
+
+test("a regenerated deck keeps what the person did: moves, wording, additions and slides they made their own", async () => {
+  const { createDocument } = await import("../packages/model/engine.ts");
+  const args = await source(); const original = await importGeneratedProject(args);
+  const doc = await createDocument(structuredClone(original.project.scenes));
+  const [, chartSlide, tableSlide] = original.project.scenes;
+  const chart = chartSlide.elements.find(e => e.kind === "chart");
+  const heading = chartSlide.elements.find(e => e.id.endsWith(":title:heading"));
+  const apply = (slideId, op) => doc.apply({ id: `e-${Math.random()}`, slideId, op, baseRevision: doc.snapshot().revision, actor: "human" });
+  await apply(chartSlide.id, { type: "element.move", id: chart.id, x: chart.x + 1, y: chart.y });
+  await apply(chartSlide.id, { type: "element.updateText", id: heading.id, paragraphs: [{ runs: [{ ...heading.paragraphs[0].runs[0], text: "My own heading" }] }] });
+  await apply(tableSlide.id, { type: "element.add", element: { id: "h-000000000abc", kind: "text", x: 1, y: 6, w: 3, h: 0.5, z: 0, provenance: "human", paragraphs: [{ runs: [{ text: "A note I added", size: 14, color: "111111" }] }] } });
+  const edited = await store.saveProject({ owner: principal.email, id: original.project.id, baseRevision: original.project.revision, title: original.project.title, scenes: doc.snapshot().scenes, theme: original.project.theme, origin: original.project.origin });
+  assert.equal(edited.status, "saved");
+
+  // Regenerated: the chart's values and the table's rows changed, and a slide was added.
+  const regenerated = structuredClone(sourceDeck);
+  regenerated.slides[1].chart.series[0].values = [2, 20];
+  regenerated.slides[2].rows = [["A", "2.5"], ["B", "25"]];
+  regenerated.slides.push({ type: "bullets", headline: "What is next", bullets: ["One", "Two", "Three", "Four"] });
+  await writeFile(path.join(args.dir, "deck.yaml"), YAML.stringify(regenerated));
+  const { project, updated } = await importGeneratedProject(args);
+  assert.equal(updated, true);
+  assert.equal(project.id, original.project.id);
+  assert.equal(project.scenes.length, 4, "the new slide arrived");
+  const [, c, t] = project.scenes;
+  const movedChart = c.elements.find(e => e.kind === "chart");
+  assert.equal(movedChart.x, chart.x + 1, "the move is kept");
+  assert.deepEqual(movedChart.chart.series[0].values, [2, 20], "the chart takes the new data — the person never edited it");
+  assert.equal(c.elements.find(e => e.id === heading.id).paragraphs[0].runs[0].text, "My own heading", "their wording is kept");
+  assert.ok(t.elements.some(e => e.id === "h-000000000abc"), "what they added is kept");
+  assert.deepEqual(t.elements.find(e => e.kind === "table").table.rows.slice(1), [["A", "2.5"], ["B", "25"]], "the table takes the new rows");
+  const history = await store.listRevisions({ owner: principal.email, id: project.id });
+  assert.ok(history.revisions.some(r => /regenerated deck/.test(r.summary ?? "")), "the update is its own revision in History");
+});
+
+test("a slide the regeneration dropped stays when the person touched it, and goes when they did not", async () => {
+  const args = await source(); const original = await importGeneratedProject(args);
+  const scenes = structuredClone(original.project.scenes);
+  scenes[2].notes = "My notes"; scenes[2].notesEdited = true;
+  await store.saveProject({ owner: principal.email, id: original.project.id, baseRevision: 0, title: original.project.title, scenes, theme: original.project.theme, origin: original.project.origin });
+  await writeFile(path.join(args.dir, "deck.yaml"), YAML.stringify({ ...sourceDeck, slides: [sourceDeck.slides[0]] }));
+  const { project } = await importGeneratedProject(args);
+  assert.deepEqual(project.scenes.map(s => s.id), [original.project.scenes[0].id, original.project.scenes[2].id], "the chart slide went; the one with their notes stayed");
+});
+
+test("a different theme or appearance still refuses instead of re-theming the project", async () => {
+  const args = await source(); await importGeneratedProject(args);
+  await assert.rejects(importGeneratedProject({ ...args, mode: "dark" }), { code: "import-source-changed" });
 });

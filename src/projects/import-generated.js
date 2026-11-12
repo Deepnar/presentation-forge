@@ -5,6 +5,7 @@ import { readImportSource, importChrome, importBrand } from "./import-source.js"
 import { convertGeneratedDeck, importError } from "./legacy-conversion.js";
 import { projectStore } from "./backend.js";
 import { compileSceneDeck } from "../v2-compile.js";
+import { carryEdits } from "../../packages/compiler/compile.js";
 import { analyzeDeck } from "../../packages/compiler/quality.ts";
 import { preflightScenes } from "../../packages/renderer-pptx/render.ts";
 import { prepareAsset, assetRef } from "./assets.js";
@@ -145,7 +146,15 @@ export async function importGeneratedProject(args) {
   const start = performance.now();
   const source = await readImportSource(args);
   const store = await projectStore();
-  const replay = await store.lookupImportedProject({ owner: source.owner, importRequest: source.importRequest });
+  // A deck regenerated since its project was made updates that project,
+  // keeping what the person did there, instead of refusing as changed.
+  let replay = null, updating = null;
+  try {
+    replay = await store.lookupImportedProject({ owner: source.owner, importRequest: source.importRequest });
+  } catch (error) {
+    if (error.code !== "import-source-changed" || !error.projectId) throw error;
+    updating = error.projectId;
+  }
   if (replay) return { project: replay.doc, reused: true, sourceDigest: source.digest, timings: { totalMs: performance.now() - start }, diagnostics: [] };
   const { intent, dropped, cites } = await convertGeneratedDeck(source.deck, { identity: source.identity });
   const brand = await importBrand(source.identity, readFile);
@@ -166,6 +175,7 @@ export async function importGeneratedProject(args) {
   if (blocked.length || preflight.length) throw importError("unsupported-content", "source cannot export safely with accepted compiler primitives", [...blocked, ...preflight].map(f => ({ path: f.slideId ?? "scene", reason: f.message ?? f.reason ?? f.code ?? f.kind })));
   const compileMs = performance.now() - compileStart;
   assets.push(...await storePlates(compiled.scenes));
+  if (updating) return updateImportedProject({ store, source, compiled, assets, projectId: updating, analysis, dropped, start, compileMs });
   const projectId = mintProjectId();
   const sources = cites.length ? await citeSources(projectId, cites, compiled.scenes) : null;
   await source.unchanged();
@@ -181,6 +191,54 @@ export async function importGeneratedProject(args) {
   return { project: result.doc, reused: result.reused, sourceDigest: source.digest, diagnostics: analysis.findings, dropped, fitWarnings, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
 }
 
+// A slide a person has touched: a layout they changed, anything they added,
+// or notes they wrote. Kept when a regeneration no longer has it.
+const touched = (scene) => scene.layoutState !== "managed" || scene.notesEdited === true || scene.elements.some((e) => e.provenance === "human");
+
+// Carry a person's work onto a regenerated deck. Each slide the new deck
+// still has is recompiled with their edits carried across (carryEdits —
+// the same rules as any recompile); a detached slide is theirs outright and
+// kept as it is; a slide the new deck dropped stays if they touched it, in
+// its old place; new slides arrive as compiled. Saved as one new revision,
+// so History can take it back, and the import request is pointed at the
+// new deck so the next open replays instead of updating again.
+// Not yet: claim citations a regenerated deck adds are not added as
+// project sources; the slides it keeps keep their existing citations.
+async function updateImportedProject({ store, source, compiled, assets, projectId, analysis, dropped, start, compileMs }) {
+  const { doc: current } = await store.getProject({ owner: source.owner, id: projectId });
+  if (!current) throw importError("import-target-deleted", "the imported project was deleted; use an explicit new import request");
+  // A different theme or appearance is not a regenerated deck: re-theming a
+  // project stays an explicit act, not a side effect of opening it again.
+  if (current.theme?.name !== source.theme || current.theme?.variant !== source.mode) {
+    throw Object.assign(importError("import-source-changed", "source changed; use an explicit new import request"), { projectId });
+  }
+  const prevById = new Map(current.scenes.map((s) => [s.id, s]));
+  const scenes = compiled.scenes.map((fresh) => {
+    const prev = prevById.get(fresh.id);
+    if (!prev) return fresh;
+    if (prev.layoutState === "detached") return prev;
+    return carryEdits(fresh, structuredClone(prev), compiled.design, fresh.id, []);
+  });
+  const freshIds = new Set(compiled.scenes.map((s) => s.id));
+  current.scenes.forEach((prev, i) => {
+    if (freshIds.has(prev.id) || !touched(prev)) return;
+    const before = current.scenes.slice(0, i).reverse().find((s) => scenes.some((m) => m.id === s.id));
+    scenes.splice(before ? scenes.findIndex((m) => m.id === before.id) + 1 : 0, 0, prev);
+  });
+  for (const asset of assets) await store.putProjectAsset({ owner: source.owner, id: projectId, asset });
+  await source.unchanged();
+  const persistStart = performance.now();
+  const saved = await store.saveProject({
+    owner: source.owner, id: projectId, baseRevision: current.revision, title: current.title, scenes,
+    theme: current.theme, origin: current.origin,
+    provenance: { actor: "agent", summary: "Updated from the regenerated deck, keeping your edits" },
+  });
+  if (saved.status === "stale") throw importError("import-busy", "the project changed while it was being updated; try again");
+  await store.relinkImport({ owner: source.owner, importRequest: source.importRequest, projectId });
+  const fitWarnings = compiled.fitDiagnostics.map(f => ({ slideId: f.slideId, elementId: f.elementId, message: f.message }));
+  return { project: saved.doc, reused: false, updated: true, sourceDigest: source.digest, diagnostics: analysis.findings, dropped, fitWarnings, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
+}
+
 // Open a just-finished generated deck in the editor: the same import the
 // Open in editor button makes, so either path reaches one project. Never
 // throws — a deck that cannot become a project is still a finished deck, and
@@ -192,7 +250,7 @@ export async function importForEditor({ slug, owner = null, mode = "light" }) {
       slug, requestId: EDITOR_IMPORT_REQUEST_ID, mode: mode === "dark" ? "dark" : "light",
       principal: owner ? { email: owner, verified: true } : null, localOperator: !owner,
     });
-    return { projectId: result.project.id, reused: result.reused, fitWarnings: result.fitWarnings ?? [], dropped: result.dropped ?? [] };
+    return { projectId: result.project.id, reused: result.reused, updated: result.updated === true, fitWarnings: result.fitWarnings ?? [], dropped: result.dropped ?? [] };
   } catch (error) {
     return { error: error.message, code: error.code ?? "import-failed", details: (error.details ?? []).slice(0, 20) };
   }

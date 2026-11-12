@@ -235,16 +235,25 @@ test("unsupported content refuses visibly with keyboard focus and usable origina
   } finally { await page.close(); }
 });
 
-test("changed and deleted imports refuse without replacing or resurrecting their projects", async () => {
-  for (const deleted of [false, true]) {
+test("a changed deck opens its same project; a deleted one refuses without resurrecting it", async () => {
+  {
+    // F1h: a regenerated deck updates the project it already made.
     const { slug, folder } = await fixture.source(); const { project } = await fixture.create(slug, { requestId: EDITOR_IMPORT_REQUEST_ID }).then(r => r.json());
-    if (deleted) assert.equal((await fixture.request(`/api/v2/projects/${project.id}`, { token: fixture.token, method: "DELETE" })).status, 200);
-    else await writeFile(path.join(folder, "deck.yaml"), YAML.stringify({ ...IMPORT_DECK, title: "Changed original" }));
+    await writeFile(path.join(folder, "deck.yaml"), YAML.stringify({ ...IMPORT_DECK, title: "Changed original" }));
+    const count = (await list()).length; const page = await openSource(slug, { deckPage: true });
+    try {
+      await click(page, BUTTON); await wait(page, `location.hash.includes(${JSON.stringify(project.id)})`);
+      assert.equal((await list()).length, count, "no second project");
+    } finally { await page.close(); }
+  }
+  {
+    const { slug } = await fixture.source(); const { project } = await fixture.create(slug, { requestId: EDITOR_IMPORT_REQUEST_ID }).then(r => r.json());
+    assert.equal((await fixture.request(`/api/v2/projects/${project.id}`, { token: fixture.token, method: "DELETE" })).status, 200);
     const count = (await list()).length; const page = await openSource(slug, { deckPage: true });
     try {
       await click(page, BUTTON); await wait(page, "document.querySelector('[data-editor-handoff] [role=alert]')");
-      assert.equal(await page.evaluate("window.__handoffRequests[0].status"), deleted ? 410 : 409);
-      assert.equal((await list()).length, count); assert.ok(await page.evaluate(`document.querySelector('[data-editor-handoff]').textContent.includes(${JSON.stringify(deleted ? "deleted" : "changed")})`));
+      assert.equal(await page.evaluate("window.__handoffRequests[0].status"), 410);
+      assert.equal((await list()).length, count); assert.ok(await page.evaluate("document.querySelector('[data-editor-handoff]').textContent.includes('deleted')"));
     } finally { await page.close(); }
   }
 });
