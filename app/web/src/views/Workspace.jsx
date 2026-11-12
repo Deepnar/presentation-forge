@@ -9,7 +9,7 @@ import { validateScene } from "../../../../packages/model/scene.ts";
 import { ensureDeckFonts } from "../fonts.js";
 import ProjectExportButton from "../components/ProjectExportButton.jsx";
 import { ProjectExportProvider,useProjectExports } from "../components/ProjectExports.jsx";
-import { apiList, apiCreate, apiRename, apiRemove, apiCover, projectSessionKey } from "../lib/v2project.js";
+import { apiList, apiCreate, apiRename, apiRemove, apiCover, apiImportPptx, projectSessionKey } from "../lib/v2project.js";
 import { buildBlankScenes, buildLayoutScenes, layoutTemplateList, defaultProjectTitle } from "../lib/v2create.js";
 import { relative } from "../lib/time.js";
 import { Button, Panel, Empty, Spinner, Field, ConfirmModal } from "../components/ui.jsx";
@@ -35,6 +35,20 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, onOpe
   const searchInput = useRef(null);
   const [confirmGenerated, setConfirmGenerated] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
+  // A PowerPoint import: busy, refused, or done with notes to read first.
+  const [pptx, setPptx] = useState({ busy: false, error: null, done: null });
+  const pptxInput = useRef(null);
+  async function importPptx(file) {
+    if (!file) return;
+    setPptx({ busy: true, error: null, done: null });
+    try {
+      const out = await apiImportPptx(file);
+      if (out.warnings.length) { setPptx({ busy: false, error: null, done: out }); refresh(); }
+      else { setPptx({ busy: false, error: null, done: null }); onOpen(out.project.id); }
+    } catch (err) {
+      setPptx({ busy: false, error: err.message, done: null });
+    }
+  }
   const [creating, setCreating] = useState(null); // null | "chooser" | "layout"
   const [busy, setBusy] = useState(null); // creation/rename/delete in flight
   const [notice, setNotice] = useState(null);
@@ -179,10 +193,28 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, onOpe
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={refresh} title="Reload the project list">Refresh</Button>
+            <input ref={pptxInput} type="file" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" hidden
+              onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; importPptx(f); }} />
+            <Button variant="outline" size="sm" data-import-pptx disabled={pptx.busy} onClick={() => pptxInput.current?.click()} title="Open a .pptx file as an editable presentation">
+              {pptx.busy ? "Importing…" : "Import PowerPoint"}
+            </Button>
             <Button variant="primary" size="sm" data-workspace-create onClick={() => setCreating("chooser")}>Create presentation</Button>
           </div>
         </div>
 
+        {(pptx.error || pptx.done) && (
+          <div role={pptx.error ? "alert" : "status"} data-pptx-result className="mb-4 rounded-card border border-line bg-panel px-4 py-3 text-[14px]">
+            {pptx.error ? <span className="text-danger">{pptx.error}</span> : (
+              <>
+                <div className="mb-1">“{pptx.done.project.title}” is ready. A few things came in differently:</div>
+                <ul className="mb-2 list-disc pl-5 text-fg-muted">
+                  {[...new Set(pptx.done.warnings.map((w) => w.message))].slice(0, 6).map((m) => <li key={m}>{m}</li>)}
+                </ul>
+                <Button size="sm" variant="primary" onClick={() => { const id = pptx.done.project.id; setPptx({ busy: false, error: null, done: null }); onOpen(id); }}>Open it</Button>
+              </>
+            )}
+          </div>
+        )}
         <div className="mb-5 flex flex-wrap items-end gap-3">
           <label className="min-w-48 flex-1 text-xs text-fg-muted">Search projects
             <input ref={searchInput} data-catalog-search type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Title, theme or generated content"

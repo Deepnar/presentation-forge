@@ -154,6 +154,18 @@ export async function apiSave(id, { baseRevision, title, scenes, theme, origin }
   return body.project;
 }
 
+// A PowerPoint file in, a new project out: { project, warnings }.
+export async function apiImportPptx(file, fetchFn = fetch) {
+  const res = await fetchFn("/api/v2/projects/import-pptx", {
+    method: "POST",
+    headers: { "Content-Type": "application/octet-stream", "X-File-Name": encodeURIComponent(file.name ?? "presentation.pptx"), ...authHeaders() },
+    body: file,
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok || !body?.ok) throw Object.assign(new Error(body?.error ?? `import failed (HTTP ${res.status})`), { code: body?.code ?? "import-failed" });
+  return { project: body.project, warnings: body.warnings ?? [] };
+}
+
 // Restyle a saved project in another theme or appearance, server-side,
 // keeping the person's edits. The caller saves first and reloads after.
 export async function apiChangeTheme(id, { theme, mode, baseRevision }, fetchFn = fetch) {

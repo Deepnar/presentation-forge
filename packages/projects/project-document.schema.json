@@ -40,7 +40,8 @@
       "properties": {
         "kind": { "enum": ["blank", "live-compile", "layout-gallery", "mixed", "import"] },
         "intentId": { "type": "string", "maxLength": 200 },
-        "sourceDeck": { "type": "string", "maxLength": 200 }
+        "sourceDeck": { "type": "string", "maxLength": 200 },
+        "file": { "type": "string", "maxLength": 200, "description": "The uploaded file an import came from (a .pptx)." }
       }
     },
     "scenes": {

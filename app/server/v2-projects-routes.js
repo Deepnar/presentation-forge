@@ -97,6 +97,27 @@ async function projectWriter(req) {
 }
 
 export function registerV2ProjectRoutes(app) {
+  // A PowerPoint file in, a new editable project out (F8). Bearer only; the
+  // name rides in X-File-Name so the body stays the raw file.
+  app.post("/api/v2/projects/import-pptx",
+    express.raw({ type: () => true, limit: 61 * 1024 * 1024 }),
+    wrap(async (req, res) => {
+      if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+      const who = await projectWriter(req);
+      if (who.denied) return fail(res, 401, "log in to use saved projects");
+      let filename = "presentation.pptx";
+      try { filename = decodeURIComponent(String(req.get("X-File-Name") ?? filename)).slice(0, 200) || filename; } catch { /* keep the default */ }
+      try {
+        const { importPptxProject } = await import("../../src/projects/pptx-import.js");
+        const out = await importPptxProject({ owner: who.owner, bytes: Buffer.isBuffer(req.body) ? new Uint8Array(req.body) : new Uint8Array(), filename });
+        res.status(201).json({ ok: true, project: out.project, warnings: out.warnings });
+      } catch (err) {
+        if (err?.code === "pptx-invalid") return res.status(422).json({ ok: false, error: err.message, code: err.code });
+        if (err?.code === "pptx-too-large" || err?.code === "asset-quota") return res.status(413).json({ ok: false, error: err.message, code: err.code });
+        mapStoreError(res, err);
+      }
+    }));
+
   app.post("/api/v2/projects/:id/assets",
     express.raw({ type: () => true, limit: ASSET_LIMITS.bytes + 1024 }),
     wrap(async (req, res) => {
