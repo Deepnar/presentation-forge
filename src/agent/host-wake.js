@@ -1,5 +1,6 @@
 import { createHostWake } from '../../packages/agent/host-wake.ts';
 import { createAutoHostPolicy, autoHostEnabled } from './auto-host-policy.js';
+import { createAccountHostPolicy } from './account-host-policy.js';
 import { createAutoHostPickup } from './host-pickup.js';
 import { projectStore } from '../projects/backend.js';
 import { assertHostAccount, openAutoTargetWork } from './target-work.js';
@@ -7,8 +8,13 @@ import { targetWakeResult } from '../../packages/agent/turn-target.ts';
 import { withoutAccount } from '../account.js';
 import { withoutMeter } from '../usage.js';
 
-export const hostWakeEnabled = () => autoHostEnabled() && process.env.FORGE_AGENT_WAKE_ENABLED === '1';
-export function createAutoHostWake({ enabled = hostWakeEnabled, policy = createAutoHostPolicy(),
+// The Assistant runs for every account on its own provider (F2), unless the
+// operator turns it off (FORGE_AGENT_WAKE_ENABLED=0) or turns on the
+// dedicated Auto host — an explicitly configured gateway, agent-host.json —
+// which then serves every turn as before.
+export const hostWakeEnabled = () => process.env.FORGE_AGENT_WAKE_ENABLED !== '0' && process.env.FORGE_V2_PROJECTS !== '0';
+export const defaultHostPolicy = () => (autoHostEnabled() ? createAutoHostPolicy() : createAccountHostPolicy());
+export function createAutoHostWake({ enabled = hostWakeEnabled, policy = defaultHostPolicy(),
   backend = projectStore, accountCheck = assertHostAccount, now } = {}) {
   const core = createHostWake({ enabled, async open(identity, signal) {
     if (identity.target) {

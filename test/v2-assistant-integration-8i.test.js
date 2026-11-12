@@ -34,14 +34,16 @@ check('production availability rejects anonymous cookie-only foreign and query a
 });
 check('operator availability shares the projection and refuses execution overrides', async t => {
   const e = await wakeScenario(t);
-  async function cli(extra = []) {
+  async function cli(extra = [], env = {}) {
     const child = spawn(process.execPath, ['src/agent/turn-cli.js', 'availability', '--owner', e.owner, '--project', e.doc.id, ...extra], {
-      env: { ...process.env, ...e.env, FORGE_HOSTED: '1', FORGE_AGENT_HOST_ENABLED: '0' }, stdio: ['ignore', 'pipe', 'pipe'] });
+      env: { ...process.env, ...e.env, FORGE_HOSTED: '1', FORGE_AGENT_HOST_ENABLED: '0', ...env }, stdio: ['ignore', 'pipe', 'pipe'] });
     let stdout = '', stderr = ''; child.stdout.on('data', b => { stdout += b; }); child.stderr.on('data', b => { stderr += b; });
     const timer = setTimeout(() => child.kill('SIGKILL'), 5000);
     const result = await new Promise((resolve, reject) => { child.once('error', reject); child.once('close', (code, signal) => { clearTimeout(timer); resolve({ code, signal }); }); });
     assert.equal(result.signal, null); return { ...result, stdout, stderr };
   }
-  const good = await cli(); assert.equal(good.code, 0); assert.deepEqual(JSON.parse(good.stdout), { ok: true, version: 1, enabled: false });
+  // F2: on for every account on its own provider unless the operator turns it off.
+  const good = await cli(); assert.equal(good.code, 0); assert.deepEqual(JSON.parse(good.stdout), { ok: true, version: 1, enabled: true });
+  const off = await cli([], { FORGE_AGENT_WAKE_ENABLED: '0' }); assert.equal(off.code, 0); assert.deepEqual(JSON.parse(off.stdout), { ok: true, version: 1, enabled: false });
   const bad = await cli(['--provider', '/PRIVATE']); assert.equal(bad.code, 1); assert.equal(bad.stderr.includes('PRIVATE'), false); assert.equal(e.seen.length, 0);
 });

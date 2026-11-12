@@ -17,12 +17,38 @@ const messages = {
   'scope-limit': 'The scope is too large. Select at most 32 objects, with at most 256 editable targets.',
   'invalid-scope': 'The selected slide or objects changed. Review the scope and try again.',
   'invalid-message': 'Enter a message of at most 16,000 characters.',
-  'host-disabled': 'Assistant processing is disabled on this host. The message may already be saved.',
+  'host-disabled': 'The Assistant is turned off on this server. Your message is saved.',
   'host-busy': 'The host is busy. Retry processing this saved request later.',
   'wake-cooldown': 'Processing is cooling down. Retry this saved request shortly.',
   'wake-capacity': 'Host capacity is full. Retry this saved request later.',
 };
-function status(turn) { return turn.state === 'approved' ? `Approved · ${turn.run?.status ?? 'pending'}${turn.run?.code ? ` · ${turn.run.code}` : ''}` : turn.state.replaceAll('-', ' '); }
+// What a turn is doing, and why one stopped, in words a person can act on —
+// never the internal code alone.
+const STATES = {
+  submitted: 'Sent', preparing: 'Working on it…', 'awaiting-decision': 'Proposal ready', complete: 'Done',
+  refused: "Couldn't do this", 'needs-user-action': 'Needs you', cancelled: 'Cancelled', expired: 'Expired',
+  rejected: 'Rejected',
+};
+const RUNS = { pending: 'Applying…', queued: 'Applying…', running: 'Applying…', succeeded: 'Applied', failed: "Couldn't apply" };
+const REASONS = {
+  'host-misconfigured': 'No AI connection is set up for this account. Add one in Settings, or install a local model.',
+  'host-disabled': 'The Assistant is turned off on this server.',
+  'provider-unavailable': "The AI service didn't answer. Try again in a moment.",
+  timeout: 'The AI took too long. Try again, or ask about less at once.',
+  'rate-limited': 'This account has used its AI allowance for now.',
+  unauthorized: 'The AI key was refused. Check it in Settings.',
+  'context-too-large': 'That is too much to send at once. Select fewer slides or objects.',
+  'invalid-response': "The AI's answer couldn't be used. Try asking another way.",
+  truncated: "The AI's answer was cut off. Try asking for less at once.",
+  'response-too-large': "The AI's answer was too long to use. Try asking for less at once.",
+  'owner-ineligible': 'Confirm your email address to use the Assistant.',
+  'stale-project': 'The presentation changed since this was proposed. Send the request again.',
+};
+export function turnStatus(turn) {
+  const state = turn.state === 'approved' ? (RUNS[turn.run?.status ?? 'pending'] ?? 'Applying…') : STATES[turn.state] ?? turn.state.replaceAll('-', ' ');
+  const code = turn.state === 'approved' ? turn.run?.code : turn.code;
+  return { state, reason: code ? REASONS[code] ?? `Stopped (${code}).` : null };
+}
 function ProposedContent({ edit }) {
   if (edit.kind === 'text') return <p className="whitespace-pre-wrap">{edit.text}</p>;
   const rows = edit.kind === 'chart' ? (edit.categories ?? []).map((category, index) =>
@@ -109,7 +135,8 @@ export default function AssistantPanel({ projectId, active: shown, writable, blo
         {turns.map(turn => <article key={turn.id} data-assistant-turn={turn.id} className="mb-3 border-b border-line pb-2 last:mb-0 last:border-0">
           <strong>You</strong><p className="whitespace-pre-wrap">{turn.request}</p>
           {turn.reply && <><strong className="mt-2 block">Assistant</strong><p className="whitespace-pre-wrap">{turn.reply}</p></>}
-          <p className="mt-1 text-fg-muted" data-turn-status={turn.state}>{status(turn)}{turn.code ? ` · ${turn.code}` : ''}</p>
+          <p className="mt-1 text-fg-muted" data-turn-status={turn.state} data-turn-code={turn.code ?? turn.run?.code ?? undefined}>{turnStatus(turn).state}</p>
+          {turnStatus(turn).reason && <p className="mt-0.5 text-amber" data-turn-reason>{turnStatus(turn).reason}</p>}
           {turn.proposal && <details open={turn.state === 'awaiting-decision'} className="mt-2">
             <summary>Proposed changes</summary>
             <ul className="mt-1 space-y-2">{(turn.proposal.edits ?? []).map((edit, index) => <li key={index}>

@@ -53,20 +53,20 @@ async function configuration() {
     return parseAutoHostConfiguration(host, models);
   } catch { return fail('host-misconfigured'); }
 }
-function lookupAccount(owner) {
+export function lookupAccount(owner) {
   const row = getDb().prepare('SELECT id,email,verified_at FROM users WHERE email=? COLLATE BINARY').get(owner);
   if (!row || verificationRequired() && !row.verified_at) return null;
   return { id: row.id, email: row.email };
 }
-function accountOf(value, owner) {
+export function accountOf(value, owner) {
   const row = cloneJson(value, 2048);
   if (!row || !Number.isSafeInteger(row.id) || row.id < 1 || row.email !== owner) return fail('owner-ineligible');
   return Object.freeze({ id: row.id, email: row.email });
 }
-function reserve(account, estimate) {
+export function reserve(account, estimate) {
   return reserveAuto({ userId: account.id, provider: AUTO_PROVIDER, upcomingSlides: 0, upcomingTokens: estimate });
 }
-function settle(account, reservation, estimate, actual) {
+export function settle(account, reservation, estimate, actual) {
   const db = getDb();
   db.exec('BEGIN IMMEDIATE');
   try {
@@ -76,7 +76,7 @@ function settle(account, reservation, estimate, actual) {
     db.exec('COMMIT');
   } catch (error) { db.exec('ROLLBACK'); throw error; }
 }
-function exchangeOptions(options) {
+export function exchangeOptions(options) {
   if (options === undefined) return { input: {}, signal: undefined };
   if (!options || typeof options !== 'object' || Array.isArray(options) || ![Object.prototype, null].includes(Object.getPrototypeOf(options))) throw new Error();
   const input = {}; let signal;
