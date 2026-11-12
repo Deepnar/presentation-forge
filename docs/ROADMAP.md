@@ -184,7 +184,16 @@ Decisions taken with this list, so nobody re-litigates them:
    `.docx` report and the speaker script from a project, list them with its
    exports, sharing its sources. *Done when:* deck, report and script coexist
    and cross-derive in one project.
-9. **[ ] F8 — File intelligence and PPTX import** (§12 V2-9). Uploaded PDF, DOCX,
+9. **[~] F8 — File intelligence and PPTX import** (§12 V2-9). Done
+   2026-11-12: PPTX → editable project ("Import PowerPoint",
+   `src/projects/pptx-import.js`): text, shapes, pictures, lines, tables,
+   charts, groups, grounds and notes, warnings for the rest; round-trips the
+   product's own export and imports all 18 legacy decks. Known: the editor's
+   text measure flags some imported boxes as overflowing that PowerPoint
+   fitted (6 on one 17-slide deck) — compare against LibreOffice before
+   trusting those marks on imports. Left: PDF / DOCX / Markdown / CSV as
+   project sources with roles, a PPTX as a visual reference, and the
+   model-driven "use this as truth" flow. Original entry: Uploaded PDF, DOCX,
    PPTX, Markdown and CSV become project sources with roles; PPTX imports to an
    editable scene with explicit fallbacks. *Done when:* "use this report as
    truth and this PPTX as reference" makes a deck.

@@ -93,7 +93,10 @@ done; editing behaviour that feels broken counts as core.
   Assistant can propose a new slide (`add_slide` → host-compiled
   `insert_slide` plan step, `src/projects/slide-compile.js`) or rewrite one
   (`rewrite_slide` → `replace_slide`). Left: layout-family changes, several
-  slides per proposal, and a real-model check. Then F7, F8, F9.
+  slides per proposal, and a real-model check.
+- **F8** started: "Import PowerPoint" on the Projects page makes an editable
+  project from a .pptx (`src/projects/pptx-import.js`). Next: other files as
+  project sources (PDF, DOCX, Markdown, CSV) with roles. Then F7, F9.
 - **F2** landed 2026-11-12 (account provider policy, on by default, plain
   turn messages). Unverified against a real model — needs the gateway up or
   local inference allowed. Then F3's semantic proposals, F4's icon insert,
