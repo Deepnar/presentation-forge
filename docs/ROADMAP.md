@@ -110,10 +110,13 @@ Decisions taken with this list, so nobody re-litigates them:
    a provider is usable, with progress shown in the panel and errors stated
    plainly. Keep proposal → approve → apply. *Done when:* a local install with
    only Ollama can ask the Assistant to rewrite a slide and apply it.
-4. **[ ] F3 — The Assistant can create and restructure.** First: keep each
-   project's `DeckIntent` (and per-slide intent) beside its scenes, written by
-   import and every semantic edit, so slides can be regenerated and the whole
-   project recompiled in another theme with human edits kept. Semantic proposals
+4. **[~] F3 — The Assistant can create and restructure.** Done 2026-11-12:
+   each project keeps its `DeckIntent` and a chrome recipe server-side
+   (`v2_project_intents`, written by import and regenerated-deck updates), and
+   a project can be recompiled in another theme or appearance with human
+   edits kept (`src/projects/retheme.js`, the editor's Theme picker). Next:
+   write the intent on every semantic edit, so a slide the Assistant adds or
+   regenerates has structure too. Semantic proposals
    for add slide(s), regenerate a slide, change a slide's composition and
    rewrite across the deck, compiled deterministically, preserving human edits,
    tombstones and detached slides (§12 "Canonical semantic creation and
@@ -122,7 +125,8 @@ Decisions taken with this list, so nobody re-litigates them:
 5. **[~] F4 — Editor completeness.** Done 2026-11-11: speaker notes panel,
    insert picture (asset upload), chart, table and rule (styled from the
    slide), present mode with notes (N); added elements now land on top of
-   compiled content. Left: insert icon; **theme change** moves to F3, because
+   compiled content. Theme change done 2026-11-12 (under F3). Left: insert
+   icon. Theme change had moved to F3 because
    recompiling a project in another theme needs the project to keep its
    semantic intent, which it does not today (imports discard it after
    compiling, and no runtime path calls `recompileSlide`). *Done when:* a deck

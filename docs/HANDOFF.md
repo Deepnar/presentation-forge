@@ -88,7 +88,11 @@ done; editing behaviour that feels broken counts as core.
 - **F1** is complete: F1g (overflow marks, dense-content layouts) and F1h
   (regenerated decks update their project keeping edits) landed 2026-11-12.
   Check the stale browser handoff cases noted under M1 in a quiet window.
-- **F3** starts with persisting `DeckIntent` in projects; theme change follows.
+- **F3** started 2026-11-12: projects keep their DeckIntent and a chrome
+  recipe server-side (`v2_project_intents`); `changeProjectTheme` restyles a
+  project keeping edits (Theme picker in the slide panel). Projects imported
+  before that have no stored intent and say so. Next: semantic proposals
+  (add / regenerate a slide) that write the intent too — these need F2.
 - **F2** the Assistant on every provider; then F7, F8, F9.
 - **F5** is now the whole-site UI/UX redesign, after the above, starting from
   a study of how Canva, Google Slides, PowerPoint web, Pitch and Gamma lay out
