@@ -136,10 +136,13 @@ Decisions taken with this list, so nobody re-litigates them:
        distribute, shrink to fit;
      - autosave keeps retrying through a lost connection (backoff, and at
        once on `online`) and says "Offline · will save when reconnected".
-     Paste or drop an image file onto the slide (code and unit tests done,
-     not yet checked in a browser). Left: group / ungroup
-     (Ctrl+G); a rotation handle (the schema has `rotation`, nothing sets
-     it); equal-spacing guides; arrow-key nudge through the same snapping.
+     Done 2026-11-12: paste a screenshot or drop an image file onto the
+     slide (the newer of our copy and the system clipboard wins); Ctrl+G /
+     Ctrl+Shift+G group and ungroup; a rotate knob (15° with Shift, settles
+     on right angles); lines now move instead of stretching. Left, small:
+     the selection frame and resize handles stay upright on a rotated
+     element; lines cannot join a group (their far end is a slide point);
+     equal-spacing guides; arrow-key nudges do not snap.
 6. **[ ] F5 — Whole-site UI/UX redesign** (after the core items above). See
    [the entry](#editor-ui-redesign). *Done when:* every page reads at a glance
    with little text — the editor as a slide editor (icon toolbar with

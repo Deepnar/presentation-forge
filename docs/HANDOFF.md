@@ -1,4 +1,4 @@
-# Handoff — 2026-11-11
+# Handoff — 2026-11-12
 
 Branch `v2`, pushed to `origin/v2`. Work follows the **Finish line** at the top
 of [ROADMAP.md](ROADMAP.md#finish-line); the gated plan/review/evidence protocol
@@ -80,14 +80,11 @@ The owner set the order on 2026-11-11: **core before the front end** (see the
 roadmap's finish-line decisions). No visual redesign until the core items are
 done; editing behaviour that feels broken counts as core.
 
-- **F4b** the editor behaves like a slide editor — most of it landed
-  2026-11-11 (text boxes fit their text, snapping and guides, Shift
-  constraints, clipboard keys, drag-to-select, a right-click menu with
-  align/distribute, shrink to fit, offline autosave). Paste/drop of image
-  files landed after (not yet clicked through in the browser — check a real
-  screenshot paste and a file drop first). Left: group/ungroup, rotation. New
-  editor gestures live in `packages/editor/scene-arrange.js` (pure) and
-  `scene-edit.js` (wiring); `test/v2-arrange.test.js` covers them.
+- **F4b** the editor behaves like a slide editor — done apart from small
+  leftovers (rotated selection frame, lines in groups, equal-spacing
+  guides; see the roadmap entry). Gestures live in
+  `packages/editor/scene-arrange.js` (pure) and `scene-edit.js` (wiring);
+  `test/v2-arrange.test.js` covers them. **Next is F1g / F1h.**
 - **F1g / F1h** (fit warnings in the editor; re-import a changed deck).
 - **F3** starts with persisting `DeckIntent` in projects; theme change follows.
 - **F2** the Assistant on every provider; then F7, F8, F9.

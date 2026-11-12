@@ -123,6 +123,13 @@ one place that should know this.
 `hex()` from `src/theme.js` rather than stripping inline — it also drops the
 alpha channel from `#RRGGBBAA` tokens, which OOXML cannot express as a fill.
 
+**pptxgenjs's rotation key is `rotate`, not `rotation`.** The scene and
+theme decor call the field `rotation`; passing that name through to
+`addShape`/`addText`/`addImage` is accepted without complaint and does
+nothing. Rotated background decor shipped upright in every export until
+2026-11-12. Map the name at the call, and check the written XML for
+`rot="..."` rather than trusting that the option was taken.
+
 **Single-series charts must not vary colour per bar.** `varyColors` defaults on
 and encodes a distinction that does not exist, while pulling low-contrast
 palette entries (`rule`, `ink_muted`) onto the plot where they vanish. Only pie
