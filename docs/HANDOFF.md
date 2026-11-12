@@ -85,7 +85,9 @@ done; editing behaviour that feels broken counts as core.
   guides; see the roadmap entry). Gestures live in
   `packages/editor/scene-arrange.js` (pure) and `scene-edit.js` (wiring);
   `test/v2-arrange.test.js` covers them. **Next is F1g / F1h.**
-- **F1g / F1h** (fit warnings in the editor; re-import a changed deck).
+- **F1** is complete: F1g (overflow marks, dense-content layouts) and F1h
+  (regenerated decks update their project keeping edits) landed 2026-11-12.
+  Check the stale browser handoff cases noted under M1 in a quiet window.
 - **F3** starts with persisting `DeckIntent` in projects; theme change follows.
 - **F2** the Assistant on every provider; then F7, F8, F9.
 - **F5** is now the whole-site UI/UX redesign, after the above, starting from
