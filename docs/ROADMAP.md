@@ -74,10 +74,13 @@ Decisions taken with this list, so nobody re-litigates them:
      floor imports with `fitWarnings` instead of refusing; plates are stored
      once as assets. `npm run import-coverage -- --import`: every finished
      deck on disk imports.
-   - **[ ] F1g** Show `fitWarnings` in the editor (which slides overflow, a
-     jump to each), and give dense content a better answer than overflow:
-     a graph with many nodes per layer (legacy hid node bodies), long
-     reference cards. Found by rendering a real 21-slide deck.
+   - **[x] F1g** (2026-11-12) The editor marks overflowing slides live (an
+     amber triangle per thumbnail, a pill by the counter that jumps to the
+     next and selects its first box), and dense content gets a layout
+     instead of overflow: crowded graphs and sequences fold bodies into the
+     notes, long context lines take two lines, card grids, stat tiles and
+     tiers size by what they hold, and the shared measure counts hard line
+     breaks. Overflow warnings across every deck on disk: 113 → 24.
    - **[x] F1f** Claim citations (`cites`) become owner-private project
      sources and slide citations, created with the project in one transaction.
    - **[x] F1e** Import on completion (2026-11-11): `finalizeDeck` creates or
@@ -85,9 +88,11 @@ Decisions taken with this list, so nobody re-litigates them:
      opens it when the run finishes in view; the CLI prints it. Not yet: a
      deck regenerated after its content changed reports the project as stale
      instead of updating it with human edits kept — see F1h.
-   - **[ ] F1h** Re-import a changed deck into its existing project,
-     recompiling managed slides and keeping customized, detached and
-     human-added content (the recompile primitives already preserve it).
+   - **[x] F1h** (2026-11-12) A regenerated deck updates its existing
+     project as one revision, carrying the person's edits (`carryEdits`),
+     keeping detached slides and touched slides the new deck dropped. A
+     changed theme or appearance still refuses. Not yet: new cites are not
+     added as project sources.
    **[ ] M1 — Merge `v2` into `main` (proposed 2026-11-11; the owner said
    not now — revisit when asked, not automatically after F1).** Everything on `v2` is additive: the legacy generator, deck
    page and report flow are untouched, and the editor sits behind Open in
@@ -95,6 +100,10 @@ Decisions taken with this list, so nobody re-litigates them:
    `main` and lets F2 onward land as ordinary small PRs. Before merging: one
    full test-suite run in a quiet window the owner picks, a Docker image build,
    and a click-through of generate → editor → export and the legacy deck page.
+   Known before that run (2026-11-12): `test/v2-handoff-chrome-7b.test.js` has
+   two stale cases — "unsupported content refuses visibly" uses a slide with
+   speaker notes, which F1a made supported, and the long "completed chat …
+   exports" flow failed and has not been looked at since the editor changes.
 
 3. **[ ] F2 — The Assistant works for every account.** Run turns in-process on
    the account's resolved provider (Auto / BYOK / local), on by default whenever
