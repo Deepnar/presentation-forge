@@ -105,7 +105,14 @@ Decisions taken with this list, so nobody re-litigates them:
    speaker notes, which F1a made supported, and the long "completed chat …
    exports" flow failed and has not been looked at since the editor changes.
 
-3. **[ ] F2 — The Assistant works for every account.** Run turns in-process on
+3. **[~] F2 — The Assistant works for every account.** Done 2026-11-12 apart
+   from a real-model check: `createAccountHostPolicy` resolves an `assistant`
+   role per account (Auto / BYOK / local Ollama on `/v1`), on by default
+   (`FORGE_AGENT_WAKE_ENABLED=0` turns it off), gateway calls metered as
+   before, and the panel states progress and failures in words. Proven with
+   a fake OpenAI-compatible server end to end; still to do — ask a real
+   local model to rewrite a slide and apply it, when local inference is
+   allowed. Original entry: Run turns in-process on
    the account's resolved provider (Auto / BYOK / local), on by default whenever
    a provider is usable, with progress shown in the panel and errors stated
    plainly. Keep proposal → approve → apply. *Done when:* a local install with

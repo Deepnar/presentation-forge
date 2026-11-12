@@ -93,7 +93,10 @@ done; editing behaviour that feels broken counts as core.
   project keeping edits (Theme picker in the slide panel). Projects imported
   before that have no stored intent and say so. Next: semantic proposals
   (add / regenerate a slide) that write the intent too — these need F2.
-- **F2** the Assistant on every provider; then F7, F8, F9.
+- **F2** landed 2026-11-12 (account provider policy, on by default, plain
+  turn messages). Unverified against a real model — needs the gateway up or
+  local inference allowed. Then F3's semantic proposals, F4's icon insert,
+  F7, F8, F9.
 - **F5** is now the whole-site UI/UX redesign, after the above, starting from
   a study of how Canva, Google Slides, PowerPoint web, Pitch and Gamma lay out
   the same surfaces, and checked page by page by screenshot.
