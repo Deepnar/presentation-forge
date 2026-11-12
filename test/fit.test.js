@@ -130,3 +130,12 @@ test("a theme at or above the role floor still reports the role floor", () => {
   const [msg] = drainFloorEvents();
   assert.match(msg, /floor 14pt/, msg);
 });
+
+test("a hard line break starts a new line in the measure", async () => {
+  const { lineCount } = await import("../packages/core/fit.ts");
+  const style = { family: "Inter", size: 12, weight: 400 };
+  assert.equal(lineCount("Label\nDetail", 10, style), 2);
+  assert.equal(lineCount("Label Detail", 10, style), 1);
+  assert.equal(lineCount("One\n\nThree", 10, style), 3, "a blank line still takes a line");
+  assert.equal(lineCount("", 10, style), 0);
+});

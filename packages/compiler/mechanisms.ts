@@ -1174,7 +1174,14 @@ function metricScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     // Primary stats claim double width shares; tone never changes shares.
     const shares = stats.map((b) => (comp.emphasisTargets.includes(b.id) ? 2 : 1));
     const total = shares.reduce((a, b) => a + b, 0);
-    const tileH = Math.max(1.2, (bottom - y - (rest.length ? 1.4 : 0)) * 0.55);
+    // Tiles take 55% of the room, or what their tallest stat needs (value,
+    // label and its line of detail) when that is more, up to all of it.
+    const room = bottom - y - (rest.length ? 1.4 : 0);
+    const widths = shares.map((sh) => ((box.w - gap * (stats.length - 1)) * sh) / total);
+    // 0.4in of padding plus a line of slack: the value's tall line and the
+    // label's short ones sit less tightly than the estimate assumes.
+    const need = Math.max(...stats.map((b, i) => textDemand(design, b, widths[i] - 0.6))) + 0.65;
+    const tileH = Math.max(1.2, Math.min(room, Math.max(room * 0.55, need)));
     let x = box.x;
     stats.forEach((block, i) => {
       const w = ((box.w - gap * (stats.length - 1)) * shares[i]) / total;
@@ -1837,18 +1844,24 @@ function hierarchyScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] 
   }
   // Conservative tiers from authored order only: first block is the
   // parent tier, the rest share the child tier. No invented edges.
-  const parentH = Math.max(1.0, (bottom - y) * 0.32);
+  // The parent tier is as tall as its text (within a third of the room,
+  // never under 0.8in), so the children keep the rest.
   const parent = slide.blocks[0];
+  const tierRoom = bottom - y;
+  const parentH = Math.min(Math.max(0.8, textDemand(design, parent, box.w - 0.6) + 0.3), Math.max(1.0, tierRoom * 0.32));
   els.push(cardEl(`${slide.id}:${parent.id}:frame`, parent.id,
     { x: box.x, y, w: box.w, h: parentH }, "roundRect", design, takeZ()));
   placePrimary(ctx, els, parent, { x: box.x + 0.3, y: y + 0.15, w: box.w - 0.6, h: Math.max(0.2, parentH - 0.3) }, takeZ);
   y += parentH + gap;
   const children = slide.blocks.slice(1);
   if (children.length) {
-    const cols = Math.min(children.length, 3);
+    // Up to four children share one row; more go three to a row. Rows share
+    // the height by what they hold.
+    const cols = children.length <= 4 ? children.length : 3;
     const rows = Math.ceil(children.length / cols);
     const cw = (box.w - gap * (cols - 1)) / cols;
-    const heights = distribute(Math.max(0.6, bottom - y) - gap * (rows - 1), Array.from({ length: rows }, () => 1), 0.6);
+    const rowNeed = Array.from({ length: rows }, (_, ri) => Math.max(...children.slice(ri * cols, ri * cols + cols).map((b) => textDemand(design, b, cw - 0.5) + 0.3)));
+    const heights = distribute(Math.max(0.6, bottom - y) - gap * (rows - 1), rowNeed, 0.6);
     let ri = 0;
     children.forEach((block, i) => {
       if (i % cols === 0 && i > 0) {

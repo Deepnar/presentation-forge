@@ -187,6 +187,15 @@ export function measure(
 }
 
 export function lineCount(text: string, width: number, style: FitStyle): number {
+  // A hard break starts a line in every projection, so each segment wraps
+  // on its own; splitting on all whitespace counted "a\nb" as one line
+  // and under-measured every label-plus-detail tile.
+  const segments = String(text).split("\n");
+  if (segments.length > 1) return segments.reduce((n, seg) => n + Math.max(1, wrappedLines(seg, width, style)), 0);
+  return wrappedLines(text, width, style);
+}
+
+function wrappedLines(text: string, width: number, style: FitStyle): number {
   const words = String(text).split(/\s+/).filter(Boolean);
   if (!words.length) return 0;
 
