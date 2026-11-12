@@ -121,9 +121,12 @@ Decisions taken with this list, so nobody re-litigates them:
    each project keeps its `DeckIntent` and a chrome recipe server-side
    (`v2_project_intents`, written by import and regenerated-deck updates), and
    a project can be recompiled in another theme or appearance with human
-   edits kept (`src/projects/retheme.js`, the editor's Theme picker). Next:
-   write the intent on every semantic edit, so a slide the Assistant adds or
-   regenerates has structure too. Semantic proposals
+   edits kept (`src/projects/retheme.js`, the editor's Theme picker). The
+   Assistant can propose a new slide (`add_slide`): content only, compiled
+   by the host into an `insert_slide` plan step, applied on approval, its
+   intent kept for later theme changes. Next: regenerate an existing slide
+   (replace its content, carrying the person's edits), change a slide's
+   layout family, and rewrite across the deck; then a real-model check. Semantic proposals
    for add slide(s), regenerate a slide, change a slide's composition and
    rewrite across the deck, compiled deterministically, preserving human edits,
    tombstones and detached slides (§12 "Canonical semantic creation and

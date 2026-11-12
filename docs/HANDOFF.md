@@ -88,11 +88,11 @@ done; editing behaviour that feels broken counts as core.
 - **F1** is complete: F1g (overflow marks, dense-content layouts) and F1h
   (regenerated decks update their project keeping edits) landed 2026-11-12.
   Check the stale browser handoff cases noted under M1 in a quiet window.
-- **F3** started 2026-11-12: projects keep their DeckIntent and a chrome
-  recipe server-side (`v2_project_intents`); `changeProjectTheme` restyles a
-  project keeping edits (Theme picker in the slide panel). Projects imported
-  before that have no stored intent and say so. Next: semantic proposals
-  (add / regenerate a slide) that write the intent too — these need F2.
+- **F3** in progress: projects keep their DeckIntent and chrome recipe
+  (`v2_project_intents`); theme change keeps edits (Theme picker); the
+  Assistant can propose a new slide (`add_slide` → host-compiled
+  `insert_slide` plan step, `src/projects/slide-compile.js`). Next:
+  regenerate a slide, change its layout, rewrite across the deck.
 - **F2** landed 2026-11-12 (account provider policy, on by default, plain
   turn messages). Unverified against a real model — needs the gateway up or
   local inference allowed. Then F3's semantic proposals, F4's icon insert,
