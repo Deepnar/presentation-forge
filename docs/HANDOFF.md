@@ -95,8 +95,15 @@ done; editing behaviour that feels broken counts as core.
   (`rewrite_slide` → `replace_slide`). Left: layout-family changes, several
   slides per proposal, and a real-model check.
 - **F8** started: "Import PowerPoint" on the Projects page makes an editable
-  project from a .pptx (`src/projects/pptx-import.js`). Next: other files as
-  project sources (PDF, DOCX, Markdown, CSV) with roles. Then F7, F9.
+  project from a .pptx (`src/projects/pptx-import.js`). It also imported the
+  real PowerPoint-made `reference/GPU Architectures - NVIDIA vs AMD.pptx`
+  (6 slides, valid, no warnings); a side-by-side against its PDF was started
+  and stopped unfinished — run it first next session. Next, planned but not
+  started: uploaded files as project sources with roles — a
+  `v2_project_files` table (both stores), text extraction (PDF via
+  pdftotext, DOCX via its XML, PPTX via the importer, Markdown/text/CSV as
+  UTF-8), upload/list/role/delete routes, then a get_file Assistant tool.
+  Then F7, F9.
 - **F2** landed 2026-11-12 (account provider policy, on by default, plain
   turn messages). Unverified against a real model — needs the gateway up or
   local inference allowed. Then F3's semantic proposals, F4's icon insert,
