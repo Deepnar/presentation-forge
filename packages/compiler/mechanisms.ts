@@ -583,11 +583,11 @@ function caveatEl(
 
 function titleBox(ctx: MechanismCtx, rs: { role: string; size: number }, z: number): { el: SceneElement; below: number } {
   const { slide, design, box } = ctx;
-  const h = 1.0;
   // The heading narrows for the crest reservation with a positive
   // minimum; the fitter measures this narrower box, never the full
   // width. Crest-side geometry, not a redesign.
   const w = Math.max(1.0, box.w - ctx.topRightReserve);
+  const h = 1.0;
   const el = textEl(
     `${slide.id}:title:heading`,
     undefined,
@@ -1428,34 +1428,65 @@ function sequenceScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
     });
   } else {
     const n = Math.max(steps.length, 1);
-    const cw = (box.w - gap * (n - 1)) / n;
-    // The steps share one row: every card is as tall as the step that needs
-    // the most room (badge band plus measured text), never taller than the row.
-    const rowH = Math.max(0.8, Math.max(0.8, bottom - y) - (rest.length ? 1.2 : 0));
-    const demand = Math.max(...steps.map((b) => textDemand(design, b, cw - 0.4))) + 0.8 + 0.2;
-    const heights = steps.map(() => Math.min(rowH, Math.max(1.6, demand)));
-    // A row shorter than its space sits in the middle of it, not at the top.
-    if (!rest.length) y += (rowH - heights[0]) / 2;
+    const space = Math.max(0.8, Math.max(0.8, bottom - y) - (rest.length ? 1.2 : 0));
+    // Steps run in one row while they fit; when the tallest step would not
+    // fit its narrow column (seven agenda items in seven columns), they wrap
+    // into rows of wider cards — two, or three — the first that seats every
+    // step, else whichever overflows least.
+    // Each arrangement is tried by fitting its steps at the readable floor
+    // into a scratch sink: the first where every step seats wins, else the
+    // one with the fewest steps that cannot.
+    const shapeFor = (rows: number) => {
+      const per = Math.ceil(n / rows);
+      const cw = (box.w - gap * (per - 1)) / per;
+      const demand = Math.max(...steps.map((b) => textDemand(design, b, cw - 0.4))) + 0.8 + 0.2;
+      const rowH = (space - gap * (rows - 1)) / rows;
+      const ch = Math.min(rowH, Math.max(1.6, demand));
+      const probe: FitDiagnostic[] = [];
+      for (const b of steps) placePrimary({ ...ctx, sink: probe }, [], b, { x: 0, y: 0, w: cw - 0.4, h: Math.max(0.2, ch - 0.8) }, () => 0);
+      return { rows, per, cw, demand, rowH, misses: new Set(probe.map((d) => d.elementId)).size };
+    };
+    const rowsTried = [1, 2, 3].filter((r) => r === 1 || (n >= 2 * r - 1 && r <= Math.ceil(n / 2)));
+    let shapes = rowsTried.map((r) => shapeFor(r));
+    // When no arrangement seats the step bodies, the steps keep their
+    // titles and the bodies go to the speaker notes — an agenda reads as
+    // its titles — rather than every step overflowing its card.
+    if (shapes.every((sh) => sh.misses > 0) && steps.every((b) => b.label && b.text)) {
+      for (const b of steps) ctx.folded?.push(`${b.label}: ${b.text}`);
+      steps.splice(0, steps.length, ...steps.map((b) => ({ ...b, text: undefined })));
+      shapes = rowsTried.map((r) => shapeFor(r));
+    }
+    const shape = shapes.find((sh) => sh.misses === 0) ?? shapes.reduce((a, b) => (b.misses < a.misses ? b : a));
+    const { per, cw, rows } = shape;
+    // Every card is as tall as the step that needs the most room (badge band
+    // plus measured text), never taller than its row.
+    const h = Math.min(shape.rowH, Math.max(1.6, shape.demand));
+    const blockH = rows * h + (rows - 1) * gap;
+    // The steps sit in the middle of their space, not at the top.
+    if (!rest.length) y += (space - blockH) / 2;
     steps.forEach((block, i) => {
-      const h = heights[i];
-      const x = box.x + i * (cw + gap);
+      const r = Math.floor(i / per), c = i % per;
+      // A short last row is centred under the full ones.
+      const inRow = r === rows - 1 ? n - per * (rows - 1) : per;
+      const x = box.x + (box.w - (inRow * cw + (inRow - 1) * gap)) / 2 + c * (cw + gap);
+      const cy = y + r * (h + gap);
       els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id,
-        { x, y, w: cw, h }, "roundRect", design, takeZ()));
+        { x, y: cy, w: cw, h }, "roundRect", design, takeZ()));
       els.push(textEl(`${slide.id}:${block.id}:badge`, block.id,
-        { x: x + 0.2, y: y + 0.15, w: 0.4, h: 0.4 },
+        { x: x + 0.2, y: cy + 0.15, w: 0.4, h: 0.4 },
         [{ runs: [{ text: String(i + 1), role: "subhead", bold: true, color: design.palette.accent.hex }], align: "left" as const }],
         takeZ(), { ...fitOf(ctx), policy: "one-line" }));
-      placePrimary(ctx, els, block, { x: x + 0.2, y: y + 0.6, w: cw - 0.4, h: Math.max(0.2, h - 0.8) }, takeZ);
-      if (comp.variantKey === "sequence/cause-effect" && i < steps.length - 1) {
+      placePrimary(ctx, els, block, { x: x + 0.2, y: cy + 0.6, w: cw - 0.4, h: Math.max(0.2, h - 0.8) }, takeZ);
+      if (comp.variantKey === "sequence/cause-effect" && i < steps.length - 1 && c < inRow - 1) {
         els.push({
           id: `${slide.id}:${block.id}:link`, kind: "line",
-          x: x + cw, y: y + h / 2, w: 0.01, h: 0.01, z: takeZ(),
+          x: x + cw, y: cy + h / 2, w: 0.01, h: 0.01, z: takeZ(),
           provenance: "compiler", semanticRef: block.id,
-          line: { x2: x + cw + gap, y2: y + h / 2, stroke: design.palette.accent.hex, strokeWidth: 2 },
+          line: { x2: x + cw + gap, y2: cy + h / 2, stroke: design.palette.accent.hex, strokeWidth: 2 },
         });
       }
     });
-    y += heights[heights.length - 1] + gap;
+    y += blockH + gap;
     const restHeights = distribute(Math.max(0.4, bottom - y) - 0.1 * rest.length, rest.map(() => 1), 0.3);
     rest.forEach((block, i) => {
       const h = restHeights[i];

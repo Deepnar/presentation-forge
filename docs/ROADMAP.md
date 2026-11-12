@@ -204,6 +204,13 @@ boxes, spacing rhythm, motion), set one visual direction for landing page,
 workspace and editor together, and build from that direction rather than
 restyling page by page.
 
+Slide design questions for the same pass (found 2026-11-12 fitting real
+decks): the title box is a fixed 1.0in, so a one-line title leaves half an
+inch empty above the content on every slide — sizing it to the title frees
+that room but moves every slide's content and was deliberately left to this
+pass; and the page transition fades the landing page's particle field over
+the editor.
+
 Raised 2026-11-01 after reviewing the editor screenshots. Same behaviour,
 better surface. Today the toolbar is a row of words ("← Prev  Next →  −  100%
 +  Fit  Done  + Text  + Rect  + Round  + Ellipse") and the inspector speaks the

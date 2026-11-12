@@ -78,3 +78,24 @@ test("a context line too long for one line gets two, and the content starts belo
   const frames = scenes[0].elements.filter((e) => e.id.endsWith(":frame"));
   assert.ok(frames.every((f) => f.y >= line.y + line.h - 1e-9), "cards start below it");
 });
+
+test("an agenda too long to seat its descriptions shows its titles, with the descriptions in the notes", async () => {
+  const desc = "A description long enough that seven of them cannot all sit on one slide at a readable size, in any arrangement";
+  const items = ["One", "Two", "Three", "Four", "Five", "Six", "Seven"].map((title) => ({ title: `Stop ${title}`, desc }));
+  const { intent } = await convertGeneratedDeck({ title: "A", slides: [{ type: "agenda", headline: "Seven stops", items }] });
+  const { compileDeckDetailed } = await import("../packages/compiler/compile.js");
+  const { scenes, fitDiagnostics } = compileDeckDetailed(intent, await warmDesign());
+  const text = scenes[0].elements.flatMap((e) => (e.paragraphs ?? []).map((p) => p.runs.map((r) => r.text).join(""))).join("\n");
+  for (const it of items) assert.ok(text.includes(it.title), `${it.title} is on the slide`);
+  assert.ok(!text.includes(desc), "no description is drawn half-fitted");
+  assert.equal((scenes[0].notes.match(/A description long enough/g) ?? []).length, 7, "every description is in the notes");
+  assert.deepEqual(fitDiagnostics.filter((d) => d.slideId === scenes[0].id && !/:context$/.test(d.elementId)), []);
+});
+
+test("an agenda whose descriptions fit keeps them on the slide", async () => {
+  const items = ["One", "Two", "Three"].map((title) => ({ title: `Stop ${title}`, desc: "Short note" }));
+  const { intent } = await convertGeneratedDeck({ title: "A", slides: [{ type: "agenda", headline: "Three stops", items }] });
+  const [scene] = compileDeck(intent, await warmDesign());
+  assert.ok(JSON.stringify(scene.elements).includes("Short note"));
+  assert.equal(scene.notes ?? "", "");
+});
