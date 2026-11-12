@@ -420,3 +420,17 @@ describe("rotation", () => {
     assert.match(xml, /rot="1800000"/);
   });
 });
+
+describe("which boxes overflow on a slide", () => {
+  it("lists editable text and tables that do not fit, inside groups too, and nothing hidden or locked", async () => {
+    const { sceneOverflow } = await import("../packages/editor/scene-text.js");
+    const long = (id, extra = {}) => ({ id, kind: "text", x: 1, y: 1, w: 1, h: 0.3, z: 0, provenance: "human", paragraphs: [{ runs: [{ text: "word ".repeat(40), size: 14, color: "111111" }] }], ...extra });
+    const fine = { id: "ok", kind: "text", x: 1, y: 3, w: 4, h: 1, z: 0, provenance: "human", paragraphs: [{ runs: [{ text: "Short", size: 14, color: "111111" }] }] };
+    const scene = slide("s", [
+      long("a"), fine, long("hidden", { hidden: true }), long("locked", { locked: true }),
+      { id: "g", kind: "group", x: 5, y: 1, w: 2, h: 2, z: 1, provenance: "human", group: { children: [long("inner")] } },
+    ]);
+    assert.deepEqual(sceneOverflow(scene), ["a", "inner"]);
+    assert.deepEqual(sceneOverflow(slide("t", [fine])), []);
+  });
+});

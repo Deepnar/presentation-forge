@@ -480,3 +480,22 @@ export function overflowEstimate(el, paragraphs = el?.paragraphs) {
     message: fits ? null : "The text is longer than its box. Make the box bigger or the text smaller.",
   };
 }
+
+// The editable elements on a slide whose content does not fit their box —
+// text by overflowEstimate, tables by tableOverflowEstimate — walking into
+// groups, skipping hidden and locked ones (nothing the person can fix).
+// Live over the current scene, so a fix clears its own warning.
+export function sceneOverflow(scene) {
+  const out = [];
+  const walk = (els, hidden = false, locked = false) => {
+    for (const el of els ?? []) {
+      const h = hidden || el.hidden === true, l = locked || el.locked === true;
+      if (el.kind === "group") { walk(el.group?.children, h, l); continue; }
+      if (h || l) continue;
+      const est = el.kind === "text" ? overflowEstimate(el) : el.kind === "table" ? tableOverflowEstimate(el) : null;
+      if (est && est.fits === false) out.push(el.id);
+    }
+  };
+  walk(scene?.elements);
+  return out;
+}

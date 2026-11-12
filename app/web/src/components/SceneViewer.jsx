@@ -13,7 +13,7 @@ import { ProjectExportProvider,useProjectExports } from "./ProjectExports.jsx";
 // mutated here — selection is an id, geometry comes from the DOM.
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createViewer } from "../../../../packages/editor/scene-dom.js";
-import { flattenLayers, elementLabel, applyCollapse, overflowEstimate } from "../../../../packages/editor/scene-text.js";
+import { flattenLayers, elementLabel, applyCollapse, overflowEstimate, sceneOverflow } from "../../../../packages/editor/scene-text.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
@@ -50,9 +50,23 @@ import decision from "../scenes/decision-warm-humanist-plain.json";
 
 const DECKS = [mechPlain, mechChromed, sourceOfTruth, decision];
 
-function Thumb({ scene, displayLabel, active, selected, onPick, onMenu, onDragStart, onDragOver, onDrop, onDragEnd, onMoveKey, menu }) {
+// The rail's mark for a slide with text that does not fit: a small amber
+// triangle on the thumbnail, its count in the tooltip — a glance, not a
+// sentence.
+function OverflowMark({ count }) {
+  const label = `Text doesn't fit in ${count} ${count === 1 ? "box" : "boxes"}`;
+  return (
+    <span data-overflow-mark={count} title={label} aria-label={label} role="img"
+      style={{ position: "absolute", top: 4, right: 4, zIndex: 1, display: "grid", placeItems: "center", width: 18, height: 18, borderRadius: 9, background: "var(--color-panel)", boxShadow: "0 1px 2px rgba(0,0,0,0.35)", pointerEvents: "auto" }}>
+      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M8 1.5 15 14H1z" fill="#d97706" /><path d="M8 6v4" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" /><circle cx="8" cy="12" r="0.9" fill="#fff" /></svg>
+    </span>
+  );
+}
+
+function Thumb({ scene, displayLabel, active, selected, overflow = 0, onPick, onMenu, onDragStart, onDragOver, onDrop, onDragEnd, onMoveKey, menu }) {
   return (
     <div style={{ position: "relative" }}>
+      {overflow > 0 && <OverflowMark count={overflow} />}
       <button
         type="button"
         draggable={onDragStart ? true : undefined}
@@ -2140,6 +2154,24 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const slideH = 7.5 * 96;
   // Filmstrip follows engine edits while editing; fixtures otherwise.
   const shownScenes = editedScenes ?? deck.scenes;
+  // Live, from the scenes as they are now: an edit that makes the text fit
+  // takes its slide's mark away, one that overflows adds it.
+  const overflowBySlide = useMemo(() => new Map(shownScenes.map((sc) => [sc.id, sceneOverflow(sc)]).filter(([, ids]) => ids.length > 0)), [shownScenes]);
+  // The next slide after this one with text that does not fit, wrapping,
+  // with its first such box selected so Shrink text to fit is one click.
+  const jumpToOverflow = useCallback(() => {
+    const api = viewerRef.current?.api;
+    if (!api || overflowBySlide.size === 0) return;
+    const at = api.snapshot().slideIndex ?? 0;
+    const order = shownScenes.map((sc, i) => [sc, i]);
+    const next = [...order.slice(at + 1), ...order.slice(0, at + 1)].find(([sc]) => overflowBySlide.has(sc.id));
+    if (!next) return;
+    api.goTo(next[1]);
+    const [first] = overflowBySlide.get(next[0].id);
+    // After the stage settles on the new slide: selecting in the same tick
+    // is undone by the re-render the slide change triggers.
+    setTimeout(() => { const v = viewerRef.current?.api; if (v?.snapshot().slideIndex === next[1]) v.select(first); }, 120);
+  }, [overflowBySlide, shownScenes]);
   // Effective filmstrip selection: tracked ids filtered to the live
   // deck, falling back to the active slide. No separate slide
   // collection anywhere — ids resolve against shownScenes.
@@ -2292,8 +2324,17 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           clearDropMarker();
         }}
       >
-        <div className="mb-2 text-[12px] text-fg-faint">
-          {(snap?.slideIndex ?? 0) + 1} / {snap?.slideCount ?? deck.scenes.length}
+        <div className="mb-2 flex items-center justify-between text-[12px] text-fg-faint">
+          <span>{(snap?.slideIndex ?? 0) + 1} / {snap?.slideCount ?? deck.scenes.length}</span>
+          {editOn && overflowBySlide.size > 0 && (
+            <button type="button" data-overflow-next onClick={jumpToOverflow}
+              title={`${overflowBySlide.size} ${overflowBySlide.size === 1 ? "slide has" : "slides have"} text that doesn't fit — go to the next`}
+              aria-label={`${overflowBySlide.size} ${overflowBySlide.size === 1 ? "slide has" : "slides have"} text that doesn't fit. Go to the next one.`}
+              className="flex items-center gap-1 rounded-full border border-line px-1.5 py-0.5 text-[12px] text-amber hover:bg-raised">
+              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M8 1.5 15 14H1z" fill="currentColor" /><path d="M8 6v4" stroke="var(--color-panel)" strokeWidth="1.6" strokeLinecap="round" /><circle cx="8" cy="12" r="0.9" fill="var(--color-panel)" /></svg>
+              {overflowBySlide.size}
+            </button>
+          )}
         </div>
         {editOn && (
           <div role="tablist" aria-label="Sidebar" className="mb-2 flex gap-1">
@@ -2383,6 +2424,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
               scene={s}
               displayLabel={embedded ? `Slide ${i + 1}` : undefined}
               active={i === snap?.slideIndex}
+              overflow={editOn ? (overflowBySlide.get(s.id)?.length ?? 0) : 0}
               selected={editOn && effSlideSel.includes(s.id)}
               onPick={(e) => thumbPick(e, s.id, i)}
               onMenu={editOn ? () => { setMenuFor((m) => (m === s.id ? null : s.id)); setConfirmDelete(null); } : undefined}
