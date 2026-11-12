@@ -434,3 +434,23 @@ describe("which boxes overflow on a slide", () => {
     assert.deepEqual(sceneOverflow(slide("t", [fine])), []);
   });
 });
+
+describe("insert an icon", () => {
+  it("adds one glyph, centred in a square box on top, in the slide's ink, selected and undoable", async () => {
+    const ink = { id: "t", kind: "text", x: 1, y: 1, w: 3, h: 1, z: 30, provenance: "compiler", paragraphs: [{ runs: [{ text: "Ink", size: 14, color: "223344" }] }] };
+    const r = await rig([slide("s", [ink])]);
+    const result = await r.editor.addIconElement("💡");
+    assert.equal(result.ok, true);
+    const icon = el(r, result.id);
+    assert.equal(icon.paragraphs[0].runs[0].text, "💡");
+    assert.equal(icon.paragraphs[0].runs[0].color, "223344");
+    assert.equal(icon.w, icon.h);
+    assert.equal(icon.valign, "middle");
+    assert.ok(icon.z > 30, "on top of compiled content");
+    assert.deepEqual(r.viewer.api.snapshot().selectedIds, [result.id]);
+    assert.ok((await validateScene(r.doc.snapshot().scenes[0])).ok ?? true);
+    await r.editor.undo();
+    assert.equal(el(r, result.id), undefined);
+    assert.equal((await r.editor.addIconElement("not one glyph")).ok, false);
+  });
+});

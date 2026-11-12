@@ -23,6 +23,7 @@ import { useNarrow } from "../lib/viewport.js";
 import SlideNotes from "./SlideNotes.jsx";
 import StageMenu from "./StageMenu.jsx";
 import ThemePicker from "./ThemePicker.jsx";
+import IconPicker from "./IconPicker.jsx";
 
 // Restores focus to the opener when a dialog closes. Dialogs trap
 // nothing; they only borrow focus, and the opener (often a toolbar
@@ -1031,6 +1032,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const adapterRef = useRef(null);
   const [editOn, setEditOn] = useState(false);
   const [stageMenu, setStageMenu] = useState(null);
+  const [iconsOpen, setIconsOpen] = useState(false);
   const imageInputRef = useRef(null);
   const [imageBusy, setImageBusy] = useState(false);
   // The picture goes to the project's asset store first; the slide then
@@ -2531,6 +2533,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
               <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a horizontal rule"} onClick={() => adapterRef.current?.addPresetElement("line")} className={shellBtn}>+ Line</button>
               <input ref={imageInputRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden onChange={insertPickedImage} />
               <button type="button" disabled={textState.editing || !project?.id || imageBusy} title={!project?.id ? "Save the project first: pictures are stored with it" : textState.editing ? "Commit or cancel the text edit first" : "Insert a picture from your computer"} onClick={() => imageInputRef.current?.click()} className={shellBtn}>{imageBusy ? "Uploading…" : "+ Image"}</button>
+              <button type="button" disabled={textState.editing} aria-expanded={Boolean(iconsOpen)} title={textState.editing ? "Commit or cancel the text edit first" : "Insert an icon"} onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); setIconsOpen((v) => (v ? false : { left: r.left, bottom: r.bottom })); }} className={shellBtn}>+ Icon</button>
+              {iconsOpen && <IconPicker at={iconsOpen} onPick={(g) => adapterRef.current?.addIconElement(g)} onClose={() => setIconsOpen(false)} />}
             </>
           )}
           {editOn && textState.editing && (

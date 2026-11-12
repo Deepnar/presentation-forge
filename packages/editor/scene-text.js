@@ -358,6 +358,23 @@ export function defaultShapeElement(slide, form = "rect", opts = {}) {
 
 // A picture the author inserts: its own aspect, at most 6in x 4in, cascaded
 // like shapes so repeated inserts never stack exactly.
+// An icon is a glyph in a square text box, centred both ways — the same
+// emoji icons generated feature cards carry, so an inserted one matches
+// them and exports as editable text. Ink follows the slide's own text.
+export function defaultIconElement(slide, glyph, { id, center } = {}) {
+  const g = String(glyph ?? "").trim();
+  if (!g || [...g].length > 4) throw new Error("scene-text: an icon is one glyph");
+  const size = 0.9;
+  const ink = (slide?.elements ?? []).flatMap((e) => e.paragraphs ?? []).flatMap((p) => p.runs ?? []).find((r) => r.color)?.color ?? "111111";
+  const at = center
+    ? { x: Math.round((center.x - size / 2) * 1000) / 1000, y: Math.round((center.y - size / 2) * 1000) / 1000, w: size, h: size }
+    : cascadeBox({ x: (SCENE_W - size) / 2, y: (SCENE_H - size) / 2, w: size, h: size }, cascadeIndex(slide));
+  return {
+    id: id ?? mintHumanId(), kind: "text", ...at, provenance: "human", valign: "middle",
+    paragraphs: [{ runs: [{ text: g, size: 40, color: ink }], align: "center" }],
+  };
+}
+
 // `center`, in scene inches, places the picture where it was dropped —
 // kept wholly on the slide; otherwise it cascades from the middle.
 export function defaultImageElement(slide, { src, width, height, alt = "", id, box, center } = {}) {
