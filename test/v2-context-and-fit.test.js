@@ -63,3 +63,18 @@ test("text too long for its box imports with a warning instead of refusing the d
   assert.ok(result.fitWarnings.length > 0);
   assert.ok(result.fitWarnings.every(w => w.slideId && w.message));
 });
+
+test("a context line too long for one line gets two, and the content starts below it", async () => {
+  const long = "A standfirst that runs on well past the width of the slide, so that at the caption size it cannot sit on a single line without shrinking below the floor";
+  const { intent } = await convertGeneratedDeck({ title: "Long", slides: [{ type: "feature-grid", headline: "What changes", standfirst: long,
+    items: ["Faster", "Safer", "Lighter", "Denser"].map((title) => ({ icon: "•", title, body: "Short reason" })) }] });
+  const fit = [];
+  const { compileDeckDetailed } = await import("../packages/compiler/compile.js");
+  const { scenes, fitDiagnostics } = compileDeckDetailed(intent, await warmDesign());
+  fit.push(...fitDiagnostics.filter((d) => /:context$/.test(d.elementId)));
+  const [line] = scenes[0].elements.filter((e) => e.id.endsWith(":context"));
+  assert.ok(line.h > 0.5, `two lines tall (${line.h})`);
+  assert.deepEqual(fit, [], "and no floor warning for it");
+  const frames = scenes[0].elements.filter((e) => e.id.endsWith(":frame"));
+  assert.ok(frames.every((f) => f.y >= line.y + line.h - 1e-9), "cards start below it");
+});

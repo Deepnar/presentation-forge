@@ -491,6 +491,10 @@ interface MechanismCtx {
   // Height reserved under the title for the slide's context lines (a
   // section name, a standfirst), drawn once by compilePlannedSlide.
   contextH?: number;
+  // Text a mechanism could not seat on the slide at a readable size and
+  // moved to the speaker notes instead of overflowing; compilePlannedSlide
+  // appends it to the slide's notes.
+  folded?: string[];
 }
 
 // Places one block's primary carrier plus its semantic treatments in a
@@ -600,14 +604,42 @@ const CONTEXT_LINE = 0.32;
 
 // Context callouts frame the slide rather than carry it: one muted line
 // each, directly under the title, ahead of whatever the family draws.
+// A context line longer than the slide is wide takes two lines rather
+// than shrinking below the caption floor; longer still, the fitter says so.
+const CONTEXT_TWO_LINES = 0.56;
+
+function contextParas(design: DesignSystem, block: ContentBlock): RoleParagraph[] {
+  return [{ runs: [
+    ...(block.label ? [{ text: `${block.label} · `, role: "caption", bold: true, color: design.palette.inkMuted.hex }] : []),
+    { text: block.text ?? "", role: "caption", color: design.palette.inkMuted.hex },
+  ], align: "left" as const }] as RoleParagraph[];
+}
+
+// The height each context line needs under the title: one line, or two
+// when its text runs past the content width.
+export function contextHeights(design: DesignSystem, blocks: ContentBlock[], width: number, slideId = "context"): number[] {
+  // Asked of the fitter itself, so the choice of one line or two can never
+  // disagree with what fitting that line then does.
+  return blocks.map((block) => {
+    const probe: FitDiagnostic[] = [];
+    textEl("probe:context", block.id, { x: 0, y: 0, w: width, h: CONTEXT_LINE }, contextParas(design, block) as never, 0,
+      { design, slideId, sink: probe, policy: "one-line" });
+    return probe.length > 0 ? CONTEXT_TWO_LINES : CONTEXT_LINE;
+  });
+}
+
 function contextLines(ctx: MechanismCtx, blocks: ContentBlock[], top: number, takeZ: () => number): SceneElement[] {
-  return blocks.map((block, i) => textEl(`${ctx.slide.id}:${block.id}:context`, block.id,
-    { x: ctx.box.x, y: top + i * CONTEXT_LINE, w: ctx.box.w, h: CONTEXT_LINE },
-    [{ runs: [
-      ...(block.label ? [{ text: `${block.label} · `, role: "caption", bold: true, color: ctx.design.palette.inkMuted.hex }] : []),
-      { text: block.text ?? "", role: "caption", color: ctx.design.palette.inkMuted.hex },
-    ], align: "left" as const }],
-    takeZ(), { ...fitOf(ctx), policy: "one-line" }));
+  const heights = contextHeights(ctx.design, blocks, ctx.box.w);
+  let y = top;
+  return blocks.map((block, i) => {
+    const h = heights[i];
+    const el = textEl(`${ctx.slide.id}:${block.id}:context`, block.id,
+      { x: ctx.box.x, y, w: ctx.box.w, h },
+      contextParas(ctx.design, block) as never,
+      takeZ(), { ...fitOf(ctx), policy: h > CONTEXT_LINE ? "wrap" : "one-line" });
+    y += h;
+    return el;
+  });
 }
 
 function headlineSize(ctx: MechanismCtx): { role: string; size: number } {
@@ -911,12 +943,26 @@ function cardGridScene(ctx: MechanismCtx, takeZ: () => number): SceneElement[] {
   });
   if (rest.length) {
     const dense = comp.densityClass === "dense";
-    const cols = rest.length <= 2 ? rest.length : dense ? 3 : 2;
-    const rows = Math.ceil(rest.length / cols);
-    const cw = (box.w - gap * (cols - 1)) / cols;
-    // One height per row: the grid shares the space between its rows, not
-    // between its cards, or a two-row grid of four leaves half the room empty.
-    const heights = distribute(Math.max(0.4, bottom - y) - gap * (rows - 1), Array.from({ length: rows }, () => 1), 0.6);
+    // Columns by what the cards hold: each candidate is tried against the
+    // tallest card it would make, the first that seats every card wins,
+    // else the one that overflows least. Four cards are always two by two —
+    // three and an orphan wastes the row the orphan sits in.
+    const n = rest.length;
+    const candidates = n <= 2 ? [n] : n === 4 ? [2] : dense ? [3, 2] : [2, 3];
+    const room = Math.max(0.4, bottom - y);
+    const cardText = (block: ContentBlock, w: number) => textDemand(design, block, w - 0.5) + 0.3 + (block.icon ? iconH : 0);
+    const shapeFor = (c: number) => {
+      const r = Math.ceil(n / c), w = (box.w - gap * (c - 1)) / c;
+      const rowNeed = Array.from({ length: r }, (_, ri) => Math.max(...rest.slice(ri * c, ri * c + c).map((b) => cardText(b, w))));
+      const need = rowNeed.reduce((t, h) => t + h, 0) + gap * (r - 1);
+      return { c, r, w, rowNeed, over: need / room };
+    };
+    const shapes = candidates.map(shapeFor);
+    const shape = shapes.find((sh) => sh.over <= 1) ?? shapes.reduce((a, b) => (b.over < a.over ? b : a));
+    const cols = shape.c, rows = shape.r, cw = shape.w;
+    // One height per row, shared by what each row holds — a row of long
+    // references gets more of the slide than a row of short ones.
+    const heights = distribute(room - gap * (rows - 1), shape.rowNeed, 0.6);
     let ri = 0;
     rest.forEach((block, i) => {
       if (i % cols === 0 && i > 0) {
@@ -1628,11 +1674,28 @@ function graphHierarchy(ctx: MechanismCtx, top: number, bottom: number, takeZ: (
   const frames = [...centres.values()].map((c) => ({ x: c.x - nodeW / 2, y: c.y - nodeH / 2, w: nodeW, h: nodeH }));
   const { lines, labels } = connectionEls({ ...ctx, slide: { ...slide, connections: links } }, centres, { w: nodeW / 2, h: nodeH / 2 }, takeZ, frames);
   els.push(...lines);
+  // A crowded graph cannot seat every node's body at a readable size. When
+  // any node's cannot, every labelled node shows its label alone — one
+  // look across the diagram — and the bodies move to the speaker notes, as
+  // the legacy renderer hid bodies in crowded diagrams. Never text spilling
+  // out of its box over its neighbours.
+  const inner = { w: nodeW - 0.2, h: nodeH - 0.12 };
+  const fold = slide.blocks.some((block) => {
+    if (!block.label || !block.text) return false;
+    const probe: FitDiagnostic[] = [];
+    placePrimary({ ...ctx, sink: probe }, [], block, { x: box.x, y: top, ...inner }, () => 0);
+    return probe.length > 0;
+  });
   for (const block of slide.blocks) {
     const c = centres.get(block.id)!;
     const frame = { x: c.x - nodeW / 2, y: c.y - nodeH / 2, w: nodeW, h: nodeH };
     els.push(cardEl(`${slide.id}:${block.id}:frame`, block.id, frame, "roundRect", design, takeZ()));
-    const text = placePrimary(ctx, els, block, { x: frame.x + 0.1, y: frame.y + 0.06, w: nodeW - 0.2, h: nodeH - 0.12 }, takeZ);
+    let shown = block;
+    if (fold && block.label && block.text) {
+      shown = { ...block, text: undefined };
+      ctx.folded?.push(`${block.label}: ${block.text}`);
+    }
+    const text = placePrimary(ctx, els, shown, { x: frame.x + 0.1, y: frame.y + 0.06, ...inner }, takeZ);
     if (text.kind === "text") {
       text.valign = "middle";
       for (const p of text.paragraphs ?? []) p.align = "center";
@@ -1920,7 +1983,8 @@ export function compilePlannedSlide(
   const ctx: MechanismCtx = {
     slide: framed ? { ...slide, blocks: carriers as SlideIntent["blocks"] } : slide,
     comp, design: grounded, box, sink, topRightReserve: chrome?.topRightReserve ?? 0,
-    ...(framed ? { contextH: context.length * CONTEXT_LINE } : {}),
+    ...(framed ? { contextH: contextHeights(grounded, context, box.w).reduce((n, h) => n + h, 0) } : {}),
+    folded: [],
   };
   let z = 0;
   const takeZ = (): number => (z += 10);
@@ -1959,8 +2023,15 @@ export function compilePlannedSlide(
     elements: clampScene(elements),
     layoutState: "managed",
     recipeId: comp.family,
-    ...(slide.speakerNotes ? { notes: slide.speakerNotes } : {}),
+    ...(notesWith(slide.speakerNotes, ctx.folded ?? []) ? { notes: notesWith(slide.speakerNotes, ctx.folded ?? []) } : {}),
   };
+}
+
+// The slide's own notes, then what the layout moved off the slide.
+function notesWith(notes: string | undefined, folded: string[]): string | undefined {
+  if (!folded.length) return notes;
+  const moved = `On the slide as labels only:\n${folded.map((f) => `- ${f}`).join("\n")}`;
+  return notes ? `${notes}\n\n${moved}` : moved;
 }
 
 // Last-resort canvas clamp: representative fixtures never trigger it

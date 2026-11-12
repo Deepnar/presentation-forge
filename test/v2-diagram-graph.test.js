@@ -117,3 +117,33 @@ test("a branching flow chains its lead-in to the decision and each branch out of
   const frame = l => scene.elements.find(e => e.id === `${scene.id}:${id[l]}:frame`);
   assert.equal(frame("Ship").x, frame("Build pack").x, "a branch's steps line up under each other");
 });
+
+// A crowded graph: four layers of long-bodied nodes, with labelled links
+// taking the room between them — the shape of a real generated deck's
+// slide 13 that overflowed in eight boxes.
+const crowded = {
+  type: "diagram", headline: "One-sided PGAS", layout: "horizontal",
+  nodes: ["Node 0", "Node 1", "GASNet-EX", "PGAS Model", "MPI+OpenMP", "Put/Get", "DiOMP Result", "LLVM"].map((label, i) => ({
+    id: `n${i}`, label, body: "A body long enough that it cannot sit inside a narrow node box at a readable size",
+  })),
+  edges: [["n7", "n0", "compiles"], ["n0", "n5", "initiates"], ["n5", "n1", "remote put"], ["n2", "n5", "transport"], ["n3", "n2", "model"], ["n4", "n6", "baseline vs"], ["n5", "n6", "wins"]]
+    .map(([from, to, label]) => ({ from, to, label })),
+};
+
+test("a crowded graph shows labels only and moves every body to the notes", async () => {
+  const { intent } = await convertGeneratedDeck({ title: "T", slides: [crowded] });
+  const [scene] = compileDeck(intent, await warmDesign());
+  const text = scene.elements.flatMap((e) => (e.paragraphs ?? []).map((p) => p.runs.map((r) => r.text).join(""))).join("\n");
+  for (const n of crowded.nodes) {
+    assert.ok(text.includes(n.label), `${n.label} stays on the slide`);
+    assert.ok(scene.notes.includes(`${n.label}: ${n.body}`), `${n.label}'s body is in the notes`);
+  }
+  assert.ok(!text.includes(crowded.nodes[0].body), "no body is drawn half-fitted");
+  assert.match(scene.notes, /On the slide as labels only:/);
+});
+
+test("a graph whose bodies fit keeps them on the slide and adds nothing to the notes", async () => {
+  const { intent } = await convertGeneratedDeck({ title: "T", slides: [diagram("horizontal")] });
+  const [scene] = compileDeck(intent, await warmDesign());
+  assert.equal(scene.notes ?? "", "");
+});

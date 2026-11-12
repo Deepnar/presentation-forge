@@ -132,7 +132,9 @@ function assertContent(intent, scenes) {
         if (!elements.some(e => e.kind === "image" && e.image?.src === block.src)) missing("compiler omitted the image");
         if (block.caption && !block.caption.split("\n").every(line => text.includes(line))) missing("compiler omitted the image caption");
       } else {
-        for (const value of [block.text, block.label, block.value, ...(block.items ?? [])]) if (value && !text.includes(value)) missing("compiler omitted or changed authored text");
+        // Text the layout moved to the speaker notes (a crowded graph's node
+        // bodies) is preserved there, still the slide's own.
+        for (const value of [block.text, block.label, block.value, ...(block.items ?? [])]) if (value && !text.includes(value) && !(scene.notes ?? "").includes(value)) missing("compiler omitted or changed authored text");
       }
     }
   }
