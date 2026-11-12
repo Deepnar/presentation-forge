@@ -166,6 +166,19 @@ export interface RunPlan {
             ];
           };
         }
+      | {
+          tool: "insert_slide";
+          /**
+           * Host-only plan step: a slide the compiler already laid out. Never offered to a model.
+           */
+          args: {
+            baseRevision: number;
+            index: number;
+            scene: {
+              [k: string]: unknown;
+            };
+          };
+        }
     ),
     ...(
       | {
@@ -301,6 +314,19 @@ export interface RunPlan {
                   }
               )[]
             ];
+          };
+        }
+      | {
+          tool: "insert_slide";
+          /**
+           * Host-only plan step: a slide the compiler already laid out. Never offered to a model.
+           */
+          args: {
+            baseRevision: number;
+            index: number;
+            scene: {
+              [k: string]: unknown;
+            };
           };
         }
     )[]

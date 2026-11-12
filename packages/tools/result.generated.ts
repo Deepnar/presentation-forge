@@ -98,6 +98,30 @@ export type ToolResult =
         warnings: ("invalid-results" | "partial-results" | "results-truncated")[];
       };
       tool: "web_search";
+    }
+  | {
+      ok: true;
+      revision: number;
+      changed: boolean;
+      preserved: ("geometry" | "styling" | "untargeted-content" | "tombstones")[];
+      warnings: string[];
+      data: {
+        slideId: string;
+        position: number;
+      };
+      tool: "add_slide";
+    }
+  | {
+      ok: true;
+      revision: number;
+      changed: boolean;
+      preserved: ("geometry" | "styling" | "untargeted-content" | "tombstones")[];
+      warnings: string[];
+      data: {
+        slideId: string;
+        position: number;
+      };
+      tool: "insert_slide";
     };
 export type ElementProjection =
   | {

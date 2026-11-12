@@ -19,7 +19,7 @@ export function parseReceipt(input: unknown): RunReceipt {
     (receipt.ok && receipt.code !== null) ||
     (!receipt.ok && (receipt.changed || receipt.code === null)) ||
     (receipt.changed &&
-      (receipt.tool !== "edit_content" || receipt.engineRevision !== 1))
+      ((receipt.tool !== "edit_content" && receipt.tool !== "insert_slide") || receipt.engineRevision !== 1))
   )
     invalidRun();
   return receipt;

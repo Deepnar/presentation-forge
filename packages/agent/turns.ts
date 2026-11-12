@@ -1,7 +1,7 @@
 import type { Binding, RuntimeBackend, RuntimeTransaction } from './runtime.ts';
 import { checkBinding, queueRun, inspectRun, cancelRun } from './run-transaction.ts';
 import { parsePlan, planDigest, invalidRun, type RunPlan } from './run-state.ts';
-import { createProviderRunner } from './provider-run.ts';
+import { createProviderRunner, type ProviderRunHost } from './provider-run.ts';
 import { providerProfile, type ModelProvider, type ProviderExchange } from './provider.ts';
 import { cloneJson } from '../tools/json.ts';
 import { TURN_LIMITS as L, bytes, characters, parseTurnSubmission, identityDigest, type TurnRecord, type TurnAttempt } from './turn-state.ts';
@@ -213,8 +213,12 @@ export function createTurnService(backend: RuntimeBackend) {
         tx.beforeCommit(()=>guard(tx,t));return true;
       });
       const timer=setInterval(()=>{void renew().catch(()=>{});},10000);
+      const compile=(backend as unknown as {compileSlide?:ProviderRunHost['compileSlide']}).compileSlide;
       const runner=createProviderRunner(backend,provider,{
         planDeadlineAt:claimed.meta.planDeadline,
+        // The trusted store module may lay out added slides (it owns the
+        // project's theme and chrome); without it add_slide is refused.
+        ...(typeof compile==='function'?{compileSlide:(b,input)=>compile(b,input)}:{}),
         reserve: async event=>{
           const reserved=await transaction(binding,async(tx,s,now)=>{
             const t=s.turns.find(t=>t.meta.id===turnId);

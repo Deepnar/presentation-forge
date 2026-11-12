@@ -142,6 +142,10 @@ export default function AssistantPanel({ projectId, active: shown, writable, blo
             <ul className="mt-1 space-y-2">{(turn.proposal.edits ?? []).map((edit, index) => <li key={index}>
               <span className="font-semibold">{bridge.describe(edit)}</span>
               <ProposedContent edit={edit} />
+            </li>)}
+            {(turn.proposal.slides ?? []).map((added, index) => <li key={`slide-${index}`} data-proposed-slide={added.position}>
+              <span className="font-semibold">New slide {added.position}</span>
+              <p>{added.title}</p>
             </li>)}</ul>
             {turn.state === 'awaiting-decision' && <div className="mt-2">
               <p className="mb-1 text-[11.5px] text-fg-muted">Loading saved AI changes clears session undo. Restore earlier content through Version history.</p>

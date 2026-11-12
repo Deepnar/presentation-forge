@@ -7,6 +7,21 @@ export type TurnBody = { input: TurnSubmission; reply: string | null };
 export type StoredTurn = { meta: TurnRecord; body: TurnBody };
 export type StoredProposal = { meta: TurnProposal; plan: RunPlan | null };
 export type State = { header: TurnHeader; turns: StoredTurn[]; proposals: StoredProposal[]; attempts: TurnAttempt[] };
+// A proposal's plan: at most one edit_content step, first, then the slides it
+// adds (insert_slide) — at least one step, and the edit count matching.
+export function planShapeOk(plan: RunPlan, editCount: number): boolean {
+  const steps = plan.steps;
+  if (!steps.length) return false;
+  const edit = steps[0].tool === 'edit_content' ? steps[0] : null;
+  if (steps.slice(edit ? 1 : 0).some(step => step.tool !== 'insert_slide')) return false;
+  return (edit && edit.tool === 'edit_content' ? edit.args.edits.length : 0) === editCount;
+}
+// What an added slide is called: its title text, as the compiler drew it.
+export function slideTitle(scene: unknown): string {
+  const els = (scene as { elements?: { id?: string; paragraphs?: { runs?: { text?: string }[] }[] }[] })?.elements ?? [];
+  const title = els.find(e => typeof e.id === 'string' && e.id.endsWith(':title:heading'));
+  return (title?.paragraphs ?? []).map(p => (p.runs ?? []).map(r => r.text ?? '').join('')).join(' ').slice(0, 120);
+}
 export const unresolved = (a: TurnAttempt) => a.state === 'reserved' || a.state === 'dispatched';
 export const activeTurn = (t: TurnRecord) => ['submitted','preparing','awaiting-decision'].includes(t.state);
 export const refuse = (code: string) => ({ ok: false as const, code });
@@ -101,8 +116,7 @@ export async function loadState(tx: RuntimeTransaction, binding: Binding): Promi
     const canonical=plan ?? (meta.runId ? (await loadRun(tx,binding,meta.runId)).plan : null);
     if(canonical && (await planDigest(canonical)!==meta.digest || canonical.requestId!==t.meta.id ||
       canonical.projectRevision!==meta.projectRevision || canonical.deadlineAt!==t.meta.planDeadline ||
-      canonical.steps.length!==1 || canonical.steps[0].tool!=='edit_content' ||
-      canonical.steps[0].args.edits.length!==meta.editCount))invalidRun();
+      !planShapeOk(canonical,meta.editCount)))invalidRun();
     s.proposals.push({meta,plan});
   }
   if (s.turns.some(t=>t.meta.proposalId && !s.proposals.some(p=>p.meta.id===t.meta.proposalId))) invalidRun();
@@ -180,5 +194,6 @@ export async function turnView(tx: RuntimeTransaction, binding: Binding, s: Stat
   const run=t.meta.runId ? await inspectRun(tx,binding,t.meta.runId) : null;
   return { id:t.meta.id, revision:t.meta.revision, projectRevision:t.meta.projectRevision, state:t.meta.state,
     code:t.meta.code, request:t.body.input.request, reply:t.body.reply, createdAt:t.meta.createdAt, updatedAt:t.meta.updatedAt,
-    proposal:p ? {...p.meta, edits:p.plan?.steps.flatMap(step=>step.tool==='edit_content'?step.args.edits:[]) ?? []} : null, run };
+    proposal:p ? {...p.meta, edits:p.plan?.steps.flatMap(step=>step.tool==='edit_content'?step.args.edits:[]) ?? [],
+      slides:p.plan?.steps.flatMap(step=>step.tool==='insert_slide'?[{position:step.args.index+1,title:slideTitle(step.args.scene)}]:[]) ?? []} : null, run };
 }

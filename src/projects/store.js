@@ -957,3 +957,6 @@ export function withCitationTransaction(binding, job) {
     dialect: 'sqlite', doc: tx.doc, query: tx.query, saveScenes: tx.saveScenes,
   })));
 }
+
+// The trusted compile the Assistant's add_slide uses (see slide-compile.js).
+export { compileSlide } from "./slide-compile.js";

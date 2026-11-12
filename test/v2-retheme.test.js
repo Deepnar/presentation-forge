@@ -94,3 +94,17 @@ test("dark appearance, a stale revision, and a project without a stored intent",
   await assert.rejects(changeProjectTheme({ owner, id: bare.doc.id, theme: "warm-humanist", mode: "dark", baseRevision: 0 }), { code: "no-intent" });
   await assert.rejects(changeProjectTheme({ owner: "someone@else.test", id: project.id, theme: "warm-humanist", baseRevision: 1 }), { code: "not-found" });
 });
+
+test("a slide the Assistant added restyles with the rest", async () => {
+  const project = await imported();
+  const { compileSlide } = await import("../src/projects/slide-compile.js");
+  const added = await compileSlide({ owner, id: project.id }, { slide: { title: "Added", blocks: [{ kind: "list", items: ["One", "Two", "Three"] }] }, index: 1, total: 5 });
+  assert.ok(added?.id);
+  const scenes = [project.scenes[0], added, ...project.scenes.slice(1)];
+  const saved = await save(project, scenes);
+  const result = await changeProjectTheme({ owner, id: project.id, theme: "editorial-magazine", mode: "light", baseRevision: saved.doc.revision });
+  const after = result.doc.scenes.find((s) => s.id === added.id);
+  assert.equal(after.layoutState, "managed", "recompiled, not kept as a hand-made slide");
+  assert.notDeepEqual(after.background, added.background);
+  assert.ok(JSON.stringify(after.elements).includes("Three"));
+});

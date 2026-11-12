@@ -149,4 +149,62 @@ export type ToolRequest =
         language?: string;
         timeRange?: "day" | "month" | "year";
       };
+    }
+  | {
+      tool: "add_slide";
+      /**
+       * Propose a new slide, written as content only: the compiler lays it out in the project's theme. It is added only after the person approves.
+       */
+      args: {
+        baseRevision: number;
+        /**
+         * The slide it follows; null puts it first.
+         */
+        afterSlideId: string | null;
+        slide: {
+          title: string;
+          purpose?: string;
+          /**
+           * @minItems 1
+           * @maxItems 8
+           */
+          blocks: [
+            {
+              kind: "text" | "list" | "stat" | "quote";
+              label?: string;
+              text?: string;
+              value?: string;
+              /**
+               * @minItems 1
+               * @maxItems 8
+               */
+              items?: [string, ...string[]];
+            },
+            ...{
+              kind: "text" | "list" | "stat" | "quote";
+              label?: string;
+              text?: string;
+              value?: string;
+              /**
+               * @minItems 1
+               * @maxItems 8
+               */
+              items?: [string, ...string[]];
+            }[]
+          ];
+        };
+      };
+    }
+  | {
+      tool: "insert_slide";
+      /**
+       * Host-only plan step: a slide the compiler already laid out. Never offered to a model.
+       */
+      args: {
+        baseRevision: number;
+        index: number;
+        scene: {
+          [k: string]: unknown;
+        };
+      };
     };

@@ -460,6 +460,136 @@
         "tool"
       ],
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed": {
+          "type": "boolean"
+        },
+        "preserved": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "geometry",
+              "styling",
+              "untargeted-content",
+              "tombstones"
+            ]
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "slideId",
+            "position"
+          ],
+          "properties": {
+            "slideId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "tool": {
+          "const": "add_slide"
+        }
+      },
+      "required": [
+        "ok",
+        "revision",
+        "changed",
+        "preserved",
+        "warnings",
+        "data",
+        "tool"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed": {
+          "type": "boolean"
+        },
+        "preserved": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "geometry",
+              "styling",
+              "untargeted-content",
+              "tombstones"
+            ]
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "slideId",
+            "position"
+          ],
+          "properties": {
+            "slideId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "tool": {
+          "const": "insert_slide"
+        }
+      },
+      "required": [
+        "ok",
+        "revision",
+        "changed",
+        "preserved",
+        "warnings",
+        "data",
+        "tool"
+      ],
+      "additionalProperties": false
     }
   ],
   "definitions": {

@@ -982,3 +982,6 @@ export function withCitationReadTransaction(binding, job) {
 export function withCitationTransaction(binding, job) {
   return withProjectDomainTransaction(binding, job, true, true);
 }
+
+// The trusted compile the Assistant's add_slide uses (see slide-compile.js).
+export { compileSlide } from "./slide-compile.js";

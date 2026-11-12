@@ -1,4 +1,4 @@
-import { cloneJson } from '../tools/json.ts';
+import { cloneJson, type Json } from '../tools/json.ts';
 import { createDocument } from '../tools/executor.ts';
 import { createToolSession, validatedToolRequest, type ToolResult } from '../tools/session.ts';
 import type { ToolRequest } from '../tools/request.generated.ts';
@@ -73,7 +73,10 @@ export type EditProposal = {
   ok: true; outcome: 'edit-proposal'; proposalId: string; projectRevision: number;
   editCount: number; expiresAt: number; summary: Summary;
   edits: Extract<ToolRequest, { tool: 'edit_content' }>['args']['edits'];
+  // Slides the proposal adds: where each lands and what it says.
+  slides: { position: number; title: string }[];
 };
+type AddSlide = Extract<ToolRequest, { tool: 'add_slide' }>['args'];
 export type TurnResult = TurnFailure | EditProposal | {
   ok: true; outcome: 'text' | 'refusal' | 'read-results'; projectRevision: number;
   summary: Summary; results: ToolResult[];
@@ -99,6 +102,10 @@ export type ProviderRunHost = {
   dispatch(attemptId: string): Promise<void>;
   receipt(attemptId: string, usage: ProviderExchange['usage']): Promise<void>;
   proposal(plan: ReturnType<typeof parsePlan>): Promise<void>;
+  // Trusted server compile for add_slide: the semantic slide laid out in
+  // the project's theme and chrome, or null when it cannot be. Optional —
+  // without it add_slide is refused.
+  compileSlide?(binding: Binding, input: { slide: AddSlide['slide']; index: number; total: number }): Promise<Json | null>;
 };
 // Only the trusted host factory supplies this bridge; model/request JSON cannot
 // carry persistence callbacks or convert copied proposal DTOs into capabilities.
@@ -220,24 +227,57 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
           const { providerId, family, model, text, usage } = response;
           const summary = { providerId, family, model, text, usage };
           const edits = response.calls.filter(c => c.request.tool === 'edit_content');
-          if (edits.length && edits.length !== response.calls.length) return fail('invalid-response');
-          if (edits.length) {
-            const batch = validatedToolRequest({ tool: 'edit_content', args: { baseRevision: context.revision,
-              edits: edits.flatMap(c => c.request.tool === 'edit_content' ? c.request.args.edits : []) } });
-            if (!batch || batch.tool !== 'edit_content') return fail('invalid-response');
-            const preflight = await session.execute(batch, crypto.randomUUID());
-            if (signal?.aborted) return fail('cancelled');
-            if (!preflight.ok) return fail('tool-refused');
+          const adds = response.calls.filter(c => c.request.tool === 'add_slide');
+          if ((edits.length || adds.length) && edits.length + adds.length !== response.calls.length) return fail('invalid-response');
+          if (edits.length || adds.length) {
+            const steps: unknown[] = [];
+            let batch: ReturnType<typeof validatedToolRequest> = null;
+            if (edits.length) {
+              batch = validatedToolRequest({ tool: 'edit_content', args: { baseRevision: context.revision,
+                edits: edits.flatMap(c => c.request.tool === 'edit_content' ? c.request.args.edits : []) } });
+              if (!batch || batch.tool !== 'edit_content') return fail('invalid-response');
+              const preflight = await session.execute(batch, crypto.randomUUID());
+              if (signal?.aborted) return fail('cancelled');
+              if (!preflight.ok) return fail('tool-refused');
+              steps.push(batch);
+            }
+            // Each added slide is compiled here, by the trusted host, into a
+            // laid-out scene: the plan carries the compiler's layout, never
+            // the model's. Positions follow the slides as they will stand.
+            const slides: { position: number; title: string }[] = [];
+            if (adds.length) {
+              if (!host?.compileSlide) return fail('tool-refused');
+              const order = initial.scenes.map(sc => sc.id);
+              for (const call of adds) {
+                if (call.request.tool !== 'add_slide') return fail('invalid-response');
+                const args = call.request.args;
+                if (args.baseRevision !== context.revision) return fail('tool-refused');
+                if (args.afterSlideId !== null && !request.scope.readableSlides.includes(args.afterSlideId) && !order.slice(initial.scenes.length).includes(args.afterSlideId)) return fail('tool-refused');
+                const index = args.afterSlideId === null ? 0 : order.indexOf(args.afterSlideId) + 1;
+                if (args.afterSlideId !== null && index === 0) return fail('tool-refused');
+                let scene: Json | null;
+                try { scene = await host.compileSlide(trusted, { slide: structuredClone(args.slide), index, total: initial.scenes.length + adds.length }); }
+                catch { return fail('tool-refused'); }
+                if (signal?.aborted) return fail('cancelled');
+                const id = (scene as { id?: unknown } | null)?.id;
+                if (!scene || typeof id !== 'string' || order.includes(id)) return fail('tool-refused');
+                const step = validatedToolRequest({ tool: 'insert_slide', args: { baseRevision: context.revision, index, scene } }, 65536);
+                if (!step) return fail('result-too-large');
+                order.splice(index, 0, id);
+                steps.push(step);
+                slides.push({ position: index + 1, title: args.slide.title });
+              }
+            }
             let plan: ReturnType<typeof parsePlan>;
             try {
               plan = parsePlan({ requestId: request.requestId, projectRevision: request.projectRevision,
-                scope: request.scope, steps: [batch], maxSteps: 8, maxFailures: 1, deadlineAt: host?.planDeadlineAt ?? request.deadlineAt });
+                scope: request.scope, steps, maxSteps: 8, maxFailures: 1, deadlineAt: host?.planDeadlineAt ?? request.deadlineAt });
             } catch { return fail('invalid-response'); }
             await snapshot(trusted, request, signal);
             if (signal?.aborted) return fail('cancelled');
             const proposal: EditProposal = publish({ ok: true, outcome: 'edit-proposal', proposalId: crypto.randomUUID(),
-              projectRevision: request.projectRevision, editCount: batch.args.edits.length, expiresAt: request.deadlineAt,
-              edits: structuredClone(batch.args.edits), summary });
+              projectRevision: request.projectRevision, editCount: batch?.tool === 'edit_content' ? batch.args.edits.length : 0, expiresAt: request.deadlineAt,
+              edits: batch?.tool === 'edit_content' ? structuredClone(batch.args.edits) : [], slides, summary });
             if (JSON.stringify(proposal).length > 65536) return fail('result-too-large');
             await host?.proposal(freeze(structuredClone(plan)));
             proposals.set(proposal, { binding: trusted, plan });

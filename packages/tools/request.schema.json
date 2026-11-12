@@ -318,6 +318,154 @@
         "args"
       ],
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "add_slide"
+        },
+        "args": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "baseRevision",
+            "afterSlideId",
+            "slide"
+          ],
+          "description": "Propose a new slide, written as content only: the compiler lays it out in the project's theme. It is added only after the person approves.",
+          "properties": {
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "afterSlideId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "The slide it follows; null puts it first."
+            },
+            "slide": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "title",
+                "blocks"
+              ],
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "purpose": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                },
+                "blocks": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "kind"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "text",
+                          "list",
+                          "stat",
+                          "quote"
+                        ]
+                      },
+                      "label": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1200
+                      },
+                      "value": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                      },
+                      "items": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 8,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 300
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "tool",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "insert_slide"
+        },
+        "args": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "baseRevision",
+            "index",
+            "scene"
+          ],
+          "description": "Host-only plan step: a slide the compiler already laid out. Never offered to a model.",
+          "properties": {
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "index": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "scene": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "required": [
+        "tool",
+        "args"
+      ],
+      "additionalProperties": false
     }
   ]
 }
