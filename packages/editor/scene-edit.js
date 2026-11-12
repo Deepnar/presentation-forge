@@ -46,6 +46,7 @@ export const NUDGE_LARGE_STEP = 0.25; // inches with Shift held
 export const DRAG_THRESHOLD_PX = 4; // client px before a press becomes a drag
 export const MIN_RESIZE_IN = 0.1; // floor for resized extents, in scene inches
 export const SHRINK_FLOOR_PT = 9; // shrink-to-fit never sets text smaller than this
+const ROTATABLE_KINDS = new Set(["text", "shape", "image"]);
 // Resize-handle vocabulary: eight anchors with per-handle cursors.
 // Only the full set is ever rendered — every handle below has a
 // correct implementation through element.setGeometry (§4).
@@ -352,6 +353,12 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (ev.button !== undefined && ev.button !== 0) return;
     // Resize handles own their press: starting a move here would
     // drag the whole element instead of reshaping it.
+    const knob = ev.target?.closest?.("[data-rotate-handle]");
+    if (knob) {
+      ev.preventDefault();
+      beginRotate(knob.getAttribute("data-handle-for"), ev);
+      return;
+    }
     const handleNode = ev.target?.closest?.("[data-resize-handle]");
     if (handleNode) {
       if (resize) return;
@@ -447,6 +454,10 @@ export function attachEditor(viewer, doc, opts = {}) {
   }
 
   async function onPointerUp(ev) {
+    if (rotating) {
+      if (ev.pointerId !== undefined && ev.pointerId !== rotating.pointerId) return null;
+      return track(commitRotate(ev));
+    }
     if (marquee) {
       if (ev.pointerId !== undefined && ev.pointerId !== marquee.pointerId) return null;
       const m = marquee;
@@ -492,6 +503,11 @@ export function attachEditor(viewer, doc, opts = {}) {
   }
 
   function onPointerMove(ev) {
+    if (rotating) {
+      if (ev.pointerId !== undefined && ev.pointerId !== rotating.pointerId) return;
+      previewRotate(ev.clientX, ev.clientY, ev);
+      return;
+    }
     if (marquee) {
       if (ev.pointerId !== undefined && ev.pointerId !== marquee.pointerId) return;
       if (!marquee.moved && Math.hypot(ev.clientX - marquee.startX, ev.clientY - marquee.startY) < DRAG_THRESHOLD_PX) return;
@@ -513,6 +529,7 @@ export function attachEditor(viewer, doc, opts = {}) {
   }
 
   function onPointerCancel(ev) {
+    if (rotating) { cancelRotate(); return; }
     if (marquee) {
       marquee = null;
       drawMarquee(null);
@@ -532,6 +549,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     // selection on Escape; here only the drag preview is cancelled.
     if (ev.key === "Escape" && drag) clearPreview();
     if (ev.key === "Escape" && marquee) { marquee = null; drawMarquee(null); }
+    if (ev.key === "Escape" && rotating) cancelRotate();
     // Escape abandons a resize gesture with no history entry (the
     // selection clear above stands — documented §4 behavior).
     if (ev.key === "Escape" && resize) cancelResize();
@@ -1290,6 +1308,91 @@ export function attachEditor(viewer, doc, opts = {}) {
       node.style.pointerEvents = "auto";
       handleLayer.appendChild(node);
     }
+    // The rotate handle: a round knob above the top edge, on a stem, as in
+    // PowerPoint and Canva.
+    const el = findIn(doc.snapshot().scenes, target.slideId, target.id);
+    if (el && ROTATABLE_KINDS.has(el.kind)) {
+      const k = svgScales(root)?.kx ?? 1;
+      const lift = 28 / k;
+      const cx = rect.x + rect.w / 2;
+      const stem = docEl.createElement("div");
+      stem.setAttribute("data-rotate-stem", "");
+      Object.assign(stem.style, { position: "absolute", left: `${(cx - 0.5 / k).toFixed(1)}px`, top: `${(rect.y - lift).toFixed(1)}px`, width: `${(1 / k).toFixed(2)}px`, height: `${lift.toFixed(1)}px`, background: "#e0705a", pointerEvents: "none" });
+      handleLayer.appendChild(stem);
+      const knob = docEl.createElement("div");
+      knob.setAttribute("data-rotate-handle", "");
+      knob.setAttribute("data-handle-for", target.id);
+      knob.setAttribute("role", "presentation");
+      knob.setAttribute("title", "Rotate (Shift: 15° steps)");
+      Object.assign(knob.style, { position: "absolute", left: `${cx.toFixed(1)}px`, top: `${(rect.y - lift).toFixed(1)}px`, width: "14px", height: "14px", transform: "translate(-50%, -50%)", boxSizing: "border-box", background: "#ffffff", border: "2px solid #e0705a", borderRadius: "50%", boxShadow: "0 1px 3px rgba(0,0,0,0.45)", cursor: "grab", pointerEvents: "auto" });
+      handleLayer.appendChild(knob);
+    }
+  }
+
+  // ——— Rotation ———
+  //
+  // The angle is the pointer's bearing from the element's centre, with
+  // 0° straight up. Shift steps by 15°; otherwise it settles on a right
+  // angle within 4°, so "upright" is easy to get back to.
+  let rotating = null;
+  function rotationAt(s, clientX, clientY, mods) {
+    const raw = (Math.atan2(clientY - s.cy, clientX - s.cx) * 180) / Math.PI + 90;
+    let a = ((raw % 360) + 360) % 360;
+    if (mods.shiftKey) a = Math.round(a / 15) * 15;
+    else {
+      const right = Math.round(a / 90) * 90;
+      if (Math.abs(a - right) <= 4) a = right;
+    }
+    a = Math.round(a * 10) / 10;
+    return a > 180 ? a - 360 : a;
+  }
+
+  function beginRotate(id, ev) {
+    const blocked = busy();
+    if (blocked) return blocked;
+    const snap = api.snapshot();
+    const el = findIn(doc.snapshot().scenes, snap.slideId, id);
+    const rect = root.querySelector("svg")?.getBoundingClientRect?.();
+    const scales = svgScales(root);
+    if (!el || !rect || !scales) return report({ ok: false, code: "op-rejected", message: "no layout to rotate through" });
+    try { root.setPointerCapture?.(ev.pointerId); } catch { /* linkedom and some browsers lack capture */ }
+    api.suppressNextClick();
+    rotating = {
+      id, slideId: snap.slideId, pointerId: ev.pointerId, from: el.rotation ?? 0,
+      cx: rect.left + (el.x + el.w / 2) * IN * scales.kx,
+      cy: rect.top + (el.y + el.h / 2) * IN * scales.ky,
+      pivot: `${((el.x + el.w / 2) * IN).toFixed(1)} ${((el.y + el.h / 2) * IN).toFixed(1)}`,
+      moved: false, angle: el.rotation ?? 0,
+    };
+    return { ok: true, revision: doc.snapshot().revision, rotating: true };
+  }
+
+  function previewRotate(clientX, clientY, mods) {
+    const s = rotating;
+    if (!s) return;
+    s.moved = true;
+    s.angle = rotationAt(s, clientX, clientY, mods);
+    root.querySelector(`[data-el="${s.id}"]`)?.setAttribute("transform", `rotate(${s.angle - s.from} ${s.pivot})`);
+  }
+
+  async function commitRotate(ev) {
+    const s = rotating;
+    rotating = null;
+    root.querySelector(`[data-el="${s.id}"]`)?.removeAttribute("transform");
+    if (!s.moved) { api.reposition(); return { ok: true, revision: doc.snapshot().revision, noop: true }; }
+    const rotation = rotationAt(s, ev.clientX, ev.clientY, ev);
+    if (rotation === s.from) { api.reposition(); return { ok: true, revision: doc.snapshot().revision, noop: true }; }
+    const result = await doc.apply({ id: newEditId(), slideId: s.slideId, op: { type: "element.setRotation", id: s.id, rotation }, baseRevision: doc.snapshot().revision, actor: "human" });
+    if (!result.ok) return report(result);
+    sync();
+    return { ...result, rotation };
+  }
+
+  function cancelRotate() {
+    if (!rotating) return;
+    root.querySelector(`[data-el="${rotating.id}"]`)?.removeAttribute("transform");
+    rotating = null;
+    api.reposition();
   }
 
   function drawResizePreview(geom) {

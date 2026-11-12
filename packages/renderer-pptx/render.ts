@@ -6,8 +6,8 @@
 // never plans chrome itself. In-memory only: no output path, no
 // filesystem write. The Node-only file adapter lives in node.ts.
 //
-// Scene fields without a PPTX projection yet (element rotation,
-// locked/provenance as metadata) are preserved in the scene for
+// Scene fields without a PPTX projection yet (locked/provenance as
+// metadata) are preserved in the scene for
 // editor/seed use; V2-5 extends fidelity when those gain real
 // compiler/editor consumers. Image src stays the current
 // path/URL-style asset seam (see node.ts and the V2-2D report).
@@ -179,6 +179,7 @@ function addTextElement(slide: PptxSlide, el: SceneElement): void {
   slide.addText(runs, {
     x: el.x, y: el.y, w: el.w, h: el.h,
     valign: el.valign ?? "top", margin: 0.05,
+    ...(el.rotation ? { rotate: el.rotation } : {}),
     ...(el.opacity !== undefined && el.opacity < 1
       ? { transparency: Math.round((1 - el.opacity) * 100) }
       : {}),
@@ -198,6 +199,7 @@ function addShapeElement(slide: PptxSlide, el: SceneElement): void {
     : undefined;
   slide.addShape(form, {
     x: el.x, y: el.y, w: el.w, h: el.h,
+    ...(el.rotation ? { rotate: el.rotation } : {}),
     fill: {
       color: el.shape?.fill ?? "FFFFFF",
       ...(fillT !== undefined ? { transparency: fillT } : {}),
@@ -226,7 +228,8 @@ function addDecorShape(slide: PptxSlide, d: BackgroundDecor): void {
     x: d.x, y: d.y, w: d.w, h: d.h,
     fill: { color: d.fill, ...(t !== undefined ? { transparency: t } : {}) },
     line: { type: "none" },
-    ...(d.rotation ? { rotation: d.rotation } : {}),
+    // PptxGenJS's key is `rotate`; `rotation` was dropped without a word.
+    ...(d.rotation ? { rotate: d.rotation } : {}),
   });
 }
 
@@ -242,7 +245,7 @@ function addImageElement(slide: PptxSlide, el: SceneElement): void {
   // resolved. Data URIs ride the PptxGenJS data path; everything else
   // rides the path as before. Nothing is fetched, probed, or read
   // here beyond what PptxGenJS itself embeds.
-  const at = { x: el.x, y: el.y, w: el.w, h: el.h, sizing: { type: el.image.fit === "contain" ? "contain" : "cover", w: el.w, h: el.h } };
+  const at = { x: el.x, y: el.y, w: el.w, h: el.h, ...(el.rotation ? { rotate: el.rotation } : {}), sizing: { type: el.image.fit === "contain" ? "contain" : "cover", w: el.w, h: el.h } };
   if (/^data:/i.test(el.image.src)) {
     // PptxGenJS crops from the w/h it is given, so they carry the image's
     // own aspect while sizing carries the box.

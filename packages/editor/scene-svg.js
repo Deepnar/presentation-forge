@@ -142,7 +142,17 @@ function refAttr(el) {
   return el.semanticRef !== undefined ? ` data-semantic-ref="${esc(el.semanticRef)}"` : "";
 }
 
+// Rotation turns the drawn element about its centre; the scene box (and
+// so hit-testing and the selection frame) stays the upright one.
 function elementSvg(el, opts = {}) {
+  if (el.hidden === true) return "";
+  const body = elementBodySvg(el, opts);
+  if (!el.rotation || !body) return body;
+  const cx = (el.x + el.w / 2) * IN, cy = (el.y + el.h / 2) * IN;
+  return `<g transform="rotate(${el.rotation} ${cx.toFixed(1)} ${cy.toFixed(1)})">${body}</g>`;
+}
+
+function elementBodySvg(el, opts = {}) {
   // Hidden elements are preserved in the scene and omitted from
   // every projection path — top level and group children alike.
   if (el.hidden === true) return "";

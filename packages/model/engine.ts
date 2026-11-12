@@ -127,7 +127,7 @@ interface EngineState {
 
 export const MAX_HISTORY = 200;
 
-const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.setChartData", "element.setTableData", "element.reorder", "element.setLocked", "element.setVisibility", "element.updateText", "element.add", "element.delete"]);
+const ELEMENT_TYPES = new Set(["element.move", "element.resize", "element.setGeometry", "element.setStyle", "element.setTextStyle", "element.setChartData", "element.setTableData", "element.reorder", "element.setLocked", "element.setRotation", "element.setVisibility", "element.updateText", "element.add", "element.delete"]);
 const SLIDE_TYPES = new Set(["slide.insert", "slide.delete", "slide.duplicate", "slide.reorder", "slide.setLayoutState", "slide.setNotes"]);
 const MAX_NOTES = 20000;
 
@@ -189,6 +189,9 @@ function checkOp(placed: unknown): string | null {
       if (!idStr(op.id) || !Number.isInteger(op.toIndex) || (op.toIndex as number) < 0) {
         return "element.reorder needs id and a non-negative toIndex";
       }
+      return null;
+    case "element.setRotation":
+      if (!idStr(op.id) || !num(op.rotation)) return "element.setRotation needs id and a finite rotation";
       return null;
     case "element.setLocked":
       if (!idStr(op.id) || typeof op.locked !== "boolean") {
@@ -489,6 +492,10 @@ function isEffectiveOp(scenes: SlideScene[], placed: PlacedOp): boolean {
         const from = slide.elements.findIndex((e) => e.id === (op as { id: string }).id);
         if (from < 0) return true;
         return from !== Math.max(0, Math.min(toIndex, slide.elements.length - 1));
+      }
+      case "element.setRotation": {
+        const { rotation } = op as { rotation: number };
+        return (el.rotation ?? 0) !== rotation;
       }
       case "element.setLocked": {
         const { locked } = op as { locked: boolean };

@@ -374,3 +374,49 @@ describe("group and ungroup", () => {
     assert.deepEqual([el(r, "l").y, el(r, "l").line.y2], [5, 5]);
   });
 });
+
+describe("rotation", () => {
+  it("the knob turns a box about its centre; it settles on right angles and Shift steps by 15°", async () => {
+    const r = await rig([slide("s", [box("a", 1, 1, 2, 1)])]);
+    r.viewer.api.select("a");
+    const knob = () => r.root.querySelector('[data-rotate-handle][data-handle-for="a"]');
+    assert.ok(knob(), "a selected box shows the knob");
+    // Centre (192, 144) px; due right of it is 90°, 2° off still lands on 90.
+    ptr(r.root, "pointerdown", knob(), { x: 192, y: 100 });
+    ptr(r.root, "pointermove", knob(), { x: 400, y: 137 });
+    ptr(r.root, "pointerup", knob(), { x: 400, y: 137 });
+    await r.editor.pending();
+    assert.equal(el(r, "a").rotation, 90);
+    assert.deepEqual([el(r, "a").x, el(r, "a").y, el(r, "a").w, el(r, "a").h], [1, 1, 2, 1], "the box itself is unchanged");
+    assert.match(r.root.querySelector("svg").outerHTML, /rotate\(90 192\.0 144\.0\)/);
+    // The commit redrew the slide, which drops the harness's size stub.
+    r.root.querySelector("svg").getBoundingClientRect = () => ({ left: 0, top: 0, width: 1280, height: 720, right: 1280, bottom: 720 });
+    r.viewer.api.select("a");
+    ptr(r.root, "pointerdown", knob(), { x: 192, y: 100 });
+    ptr(r.root, "pointermove", knob(), { x: 300, y: 50, shift: true });
+    ptr(r.root, "pointerup", knob(), { x: 300, y: 50, shift: true });
+    await r.editor.pending();
+    assert.notEqual(el(r, "a").rotation, 90, "the second turn landed");
+    assert.equal(el(r, "a").rotation % 15, 0, `stepped (${el(r, "a").rotation})`);
+    await r.editor.undo();
+    assert.equal(el(r, "a").rotation, 90, "one undo per turn");
+  });
+
+  it("upright is absence, angles normalise, and lines, charts and tables do not rotate", async () => {
+    const { createDocument: create } = await import("../packages/model/engine.ts");
+    const doc = await create([slide("s", [box("a", 1, 1, 2, 1)])]);
+    const turn = (rotation, id = "a") => doc.apply({ id: `e${Math.random()}`, slideId: "s", op: { type: "element.setRotation", id, rotation }, baseRevision: doc.snapshot().revision, actor: "human" });
+    await turn(270);
+    assert.equal(doc.snapshot().scenes[0].elements[0].rotation, -90);
+    await turn(360);
+    assert.equal("rotation" in doc.snapshot().scenes[0].elements[0], false);
+  });
+
+  it("the native export carries the rotation", async () => {
+    const { renderPptx } = await import("../packages/renderer-pptx/render.ts");
+    const JSZip = (await import("jszip")).default;
+    const bytes = await renderPptx([slide("s", [box("a", 1, 1, 2, 1, { rotation: 30 })])]);
+    const xml = await (await JSZip.loadAsync(bytes)).files["ppt/slides/slide1.xml"].async("string");
+    assert.match(xml, /rot="1800000"/);
+  });
+});

@@ -117,6 +117,8 @@ export type ElementReorderInverse = { type: "element.reorder"; id: string; toInd
 // compiler provenance + no semantic ref) is rejected at the
 // adapter — the engine enforces kind/lock-unknown checks only.
 export type ElementSetLocked = { type: "element.setLocked"; id: string; locked: boolean };
+// Degrees clockwise about the element's centre; 0 removes the key.
+export type ElementSetRotation = { type: "element.setRotation"; id: string; rotation: number };
 // Visibility toggle. Hidden elements stay in the scene verbatim
 // and vanish from both projections (omitted, never rasterized).
 export type ElementSetVisibility = { type: "element.setVisibility"; id: string; hidden: boolean };
@@ -128,7 +130,7 @@ export type ElementUpdateTextInverse = { type: "element.updateText"; id: string;
 export type SceneElementInput = Partial<SceneElement> & Pick<SceneElement, "kind" | "x" | "y" | "w" | "h">;
 export type ElementAdd = { type: "element.add"; element: SceneElementInput; index?: number };
 export type ElementDelete = { type: "element.delete"; id: string };
-export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementSetTextStyle | ElementSetTextStyleInverse | ElementSetChartData | ElementSetChartDataInverse | ElementSetTableData | ElementSetTableDataInverse | ElementReorder | ElementReorderInverse | ElementSetLocked | ElementSetVisibility | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
+export type DeckCommand = ElementMove | ElementResize | ElementSetGeometry | ElementSetStyle | ElementSetTextStyle | ElementSetTextStyleInverse | ElementSetChartData | ElementSetChartDataInverse | ElementSetTableData | ElementSetTableDataInverse | ElementReorder | ElementReorderInverse | ElementSetLocked | ElementSetRotation | ElementSetVisibility | ElementUpdateText | ElementUpdateTextInverse | ElementAdd | ElementDelete;
 
 // Detached is NOT read-only: the scene is authoritative against compiler
 // reflow, but the user owns it more strongly, so manual commands still
@@ -499,6 +501,23 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       });
       markCustomized(scene, removed);
       return { type: "element.reorder", id: cmd.id, toIndex: i };
+    }
+    case "element.setRotation": {
+      const el = findElement(scene, cmd.id);
+      if (!el) throw new Error(`unknown element ${cmd.id}`);
+      if (el.kind !== "text" && el.kind !== "shape" && el.kind !== "image") {
+        throw new Error(`element ${cmd.id} (${el.kind}) does not rotate`);
+      }
+      assertEditable(el);
+      const prev = el.rotation ?? 0;
+      // Normalised to (-180, 180] so undo and comparisons stay exact;
+      // upright is absence, like every other default in the scene.
+      let r = Math.round((((cmd.rotation % 360) + 540) % 360 - 180) * 10) / 10;
+      if (r === -180) r = 180;
+      if (r === 0) delete el.rotation;
+      else el.rotation = r;
+      markCustomized(scene, el);
+      return { type: "element.setRotation", id: cmd.id, rotation: prev };
     }
     case "element.setLocked": {
       const el = findElement(scene, cmd.id);
