@@ -321,3 +321,56 @@ describe("shrink text to fit", () => {
     assert.ok(el(r, "t").paragraphs.every((p) => p.runs[0].size >= 9));
   });
 });
+
+describe("group and ungroup", () => {
+  it("Ctrl+G groups, the group moves as one, Ctrl+Shift+G puts the members back", async () => {
+    const r = await rig([slide("s", [box("a", 1, 1, 2, 1, { z: 0 }), box("b", 4, 3, 1, 1, { z: 1 }), box("c", 8, 1, 1, 1, { z: 2 })])]);
+    r.viewer.api.selectMany(["a", "b"]);
+    key(r.root, "g", { ctrlKey: true });
+    await r.editor.pending();
+    const els = r.doc.snapshot().scenes[0].elements;
+    const g = els.find((e) => e.kind === "group");
+    assert.ok(g, "a group exists");
+    assert.deepEqual([g.x, g.y, g.w, g.h], [1, 1, 4, 3]);
+    assert.deepEqual(g.group.children.map((c) => [c.id, c.x, c.y]), [["a", 0, 0], ["b", 3, 2]]);
+    assert.equal(g.z, 1, "sits where the topmost member sat, still under c");
+    assert.deepEqual(r.viewer.api.snapshot().selectedIds, [g.id]);
+    assert.equal(validateScene(r.doc.snapshot().scenes[0]).ok ?? true, true);
+    key(r.root, "ArrowRight", { shiftKey: true });
+    await r.editor.pending();
+    key(r.root, "g", { ctrlKey: true, shiftKey: true });
+    await r.editor.pending();
+    const back = r.doc.snapshot().scenes[0].elements;
+    assert.equal(back.some((e) => e.kind === "group"), false);
+    assert.ok(el(r, "a").x > 1 && el(r, "b").x > 4, "members moved with the group");
+    assert.equal(el(r, "b").x - el(r, "a").x, 3, "and kept their spacing");
+    assert.deepEqual([...r.viewer.api.snapshot().selectedIds].sort(), ["a", "b"]);
+    assert.deepEqual(r.errors, []);
+  });
+
+  it("grouping is one undo, and lines are refused plainly", async () => {
+    const line = { id: "l", kind: "line", x: 1, y: 5, w: 3, h: 0.01, z: 3, provenance: "human", line: { x2: 4, y2: 5, stroke: "333333", strokeWidth: 2 } };
+    const r = await rig([slide("s", [box("a", 1, 1, 2, 1), box("b", 4, 3, 1, 1), line])]);
+    r.viewer.api.selectMany(["a", "b"]);
+    await r.editor.groupSelected();
+    await r.editor.undo();
+    assert.deepEqual(r.doc.snapshot().scenes[0].elements.map((e) => e.id), ["a", "b", "l"]);
+    r.viewer.api.selectMany(["a", "l"]);
+    const refused = await r.editor.groupSelected();
+    assert.equal(refused.ok, false);
+    assert.match(refused.message, /Lines can't be grouped/);
+  });
+
+  it("moving a line carries its far end, so it moves instead of stretching", async () => {
+    const line = { id: "l", kind: "line", x: 1, y: 5, w: 3, h: 0.01, z: 0, provenance: "human", line: { x2: 4, y2: 5, stroke: "333333", strokeWidth: 2 } };
+    const r = await rig([slide("s", [line])]);
+    r.viewer.api.select("l");
+    key(r.root, "ArrowDown", { shiftKey: true });
+    await r.editor.pending();
+    const moved = el(r, "l");
+    assert.equal(moved.line.x2 - moved.x, 3, "same length");
+    assert.equal(moved.line.y2, moved.y, "still level");
+    await r.doc.undo();
+    assert.deepEqual([el(r, "l").y, el(r, "l").line.y2], [5, 5]);
+  });
+});

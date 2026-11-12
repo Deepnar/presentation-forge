@@ -184,3 +184,39 @@ export function distributeMoves(items, axis) {
   }
   return items.map((b) => ({ id: b.id, x: pos === "x" ? moved.get(b.id) : b.x, y: pos === "y" ? moved.get(b.id) : b.y }));
 }
+
+// Ownership a grouped element sheds: the group is the person's, so its
+// members stop claiming compiled slots (regeneration tombstones the
+// originals when they leave the top level).
+const GROUP_SHEDS = ["semanticRef", "customized", "contentCustomized", "styleCustomized", "formatCustomized", "dataCustomized", "tableCustomized"];
+
+// A group of `elements`: its box is their union, its members keep their
+// ids and stacking order with coordinates made relative to it, and it
+// sits where the topmost member sat.
+export function groupElements(elements, id) {
+  const box = unionBox(elements);
+  const r3 = (n) => Math.round(n * 1000) / 1000;
+  const ordered = [...elements].sort((a, b) => (a.z ?? 0) - (b.z ?? 0));
+  const children = ordered.map((el, i) => {
+    const c = structuredClone(el);
+    for (const k of GROUP_SHEDS) delete c[k];
+    c.provenance = "human";
+    c.x = r3((el.x ?? 0) - box.x);
+    c.y = r3((el.y ?? 0) - box.y);
+    c.z = i;
+    return c;
+  });
+  return {
+    id, kind: "group", provenance: "human",
+    x: r3(box.x), y: r3(box.y), w: r3(box.w), h: r3(box.h),
+    z: Math.max(...elements.map((e) => e.z ?? 0)),
+    group: { children },
+  };
+}
+
+// A group's members back on the slide at their slide positions, in their
+// order, at the group's place in the stack.
+export function ungroupElement(group) {
+  const r3 = (n) => Math.round(n * 1000) / 1000;
+  return (group.group?.children ?? []).map((c) => ({ ...structuredClone(c), x: r3(group.x + c.x), y: r3(group.y + c.y), z: group.z ?? 0 }));
+}

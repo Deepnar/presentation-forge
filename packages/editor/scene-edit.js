@@ -10,7 +10,7 @@
 // Selection ownership stays with the viewer at all times; the
 // adapter reads it, never stores its own copy.
 import { SCENE_W, SCENE_H, isSystemChrome } from "../model/scene-constants.ts";
-import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements, alignMoves, distributeMoves } from "./scene-arrange.js";
+import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements, alignMoves, distributeMoves, groupElements, ungroupElement } from "./scene-arrange.js";
 import {
   isEditableText,
   describeStructure,
@@ -664,6 +664,53 @@ export function attachEditor(viewer, doc, opts = {}) {
 
   // One element lines up with the slide; several line up with each other.
   // Distribution needs three, so there is a middle to space.
+  // Ctrl+G: two or more top-level elements become one group, moved and
+  // selected as one; one undo takes it apart again.
+  async function groupSelected() {
+    const blocked = busy();
+    if (blocked) return blocked;
+    const { snap, els } = selectedTopLevel();
+    if (els.length < 2) return report({ ok: false, code: "op-rejected", message: "Select two or more items to group them." });
+    if (els.some((e) => e.locked)) return report({ ok: false, code: "locked", message: "Unlock the items before grouping them." });
+    if (els.some((e) => e.kind === "line" || (e.kind === "group" && JSON.stringify(e.group).includes('"kind":"line"')))) {
+      return report({ ok: false, code: "op-rejected", message: "Lines can't be grouped yet." });
+    }
+    const group = groupElements(els, mintHumanId());
+    const ops = [
+      ...els.map((e) => ({ slideId: snap.slideId, op: { type: "element.delete", id: e.id } })),
+      { slideId: snap.slideId, op: { type: "element.add", element: group } },
+    ];
+    const result = await submitOps(ops, doc.snapshot().revision);
+    if (!result.ok) return report(result);
+    sync();
+    api.select(group.id);
+    return { ...result, id: group.id };
+  }
+
+  // Ctrl+Shift+G: each selected group's members return to the slide,
+  // where they were, selected.
+  async function ungroupSelected() {
+    const blocked = busy();
+    if (blocked) return blocked;
+    const { snap, els } = selectedTopLevel();
+    const groups = els.filter((e) => e.kind === "group" && !e.locked);
+    if (groups.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    const freed = [];
+    const ops = [];
+    for (const g of groups) {
+      ops.push({ slideId: snap.slideId, op: { type: "element.delete", id: g.id } });
+      for (const element of ungroupElement(g)) {
+        freed.push(element.id);
+        ops.push({ slideId: snap.slideId, op: { type: "element.add", element } });
+      }
+    }
+    const result = await submitOps(ops, doc.snapshot().revision);
+    if (!result.ok) return report(result);
+    sync();
+    api.selectMany(freed);
+    return result;
+  }
+
   async function arrangeSelected(kind, how) {
     const blocked = busy();
     if (blocked) return blocked;
@@ -2054,6 +2101,8 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (action.type === "paste") return track(pasteClipboard());
     if (action.type === "duplicate") return track(duplicateSelected());
     if (action.type === "selectAll") return selectAll();
+    if (action.type === "group") return track(groupSelected());
+    if (action.type === "ungroup") return track(ungroupSelected());
     if (action.type === "nudge") return track(nudgeSelected(action.key, !!action.shift));
     if (action.type === "delete") return track(deleteSelected());
     if (action.type === "undo") {
@@ -2156,6 +2205,8 @@ export function attachEditor(viewer, doc, opts = {}) {
     duplicateSelected: () => track(duplicateSelected()),
     selectAll: () => selectAll(),
     alignSelected: (how) => track(arrangeSelected("align", how)),
+    groupSelected: () => track(groupSelected()),
+    ungroupSelected: () => track(ungroupSelected()),
     shrinkTextToFit: (id = null) => track(shrinkTextToFit(id)),
     distributeSelected: (axis) => track(arrangeSelected("distribute", axis)),
     deleteSelected: () => deleteSelected(),

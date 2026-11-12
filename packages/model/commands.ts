@@ -269,6 +269,15 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       if (!el) throw new Error(`unknown element ${cmd.id}`);
       assertEditable(el);
       const prev = { x: el.x, y: el.y };
+      // A line's far end is a slide point, not an offset: moving the line
+      // carries it by the same delta, or the line would stretch instead.
+      // The inverse move carries it back by the same rule.
+      if (el.kind === "line" && el.line) {
+        const dx = cmd.x - el.x, dy = cmd.y - el.y;
+        const r = (n: number) => Math.round(n * 1000) / 1000;
+        if (typeof el.line.x2 === "number") el.line.x2 = r(el.line.x2 + dx);
+        if (typeof el.line.y2 === "number") el.line.y2 = r(el.line.y2 + dy);
+      }
       el.x = cmd.x;
       el.y = cmd.y;
       markCustomized(scene, el);

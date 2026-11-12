@@ -2002,7 +2002,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     else if (!api.snapshot().selectedIds.includes(id)) api.select(id);
     const { selectedIds, slideIndex } = api.snapshot();
     const only = selectedIds.length === 1 ? (docRef.current?.snapshot().scenes[slideIndex]?.elements ?? []).find((el) => el.id === selectedIds[0]) : null;
-    setStageMenu({ x: e.clientX, y: e.clientY, count: selectedIds.length, overflowing: overflowEstimate(only)?.fits === false });
+    const elements = docRef.current?.snapshot().scenes[slideIndex]?.elements ?? [];
+    setStageMenu({ x: e.clientX, y: e.clientY, count: selectedIds.length, overflowing: overflowEstimate(only)?.fits === false, grouped: elements.some((el) => el.kind === "group" && selectedIds.includes(el.id)) });
   }, [editOn]);
   const closeStageMenu = useCallback(() => {
     setStageMenu(null);
@@ -2015,6 +2016,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     if (simple[type]) return a[simple[type]]();
     if (type === "align") return a.alignSelected(arg);
     if (type === "shrink") return a.shrinkTextToFit();
+    if (type === "group") return a.groupSelected();
+    if (type === "ungroup") return a.ungroupSelected();
     if (type === "distribute") return a.distributeSelected(arg);
     if (type === "front" || type === "back") {
       // One at a time in their current stacking order, so several selected
@@ -2618,7 +2621,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           </div>
         </div>
         {stageMenu && (
-          <StageMenu at={stageMenu} count={stageMenu.count} overflowing={stageMenu.overflowing} canPaste={!!adapterRef.current?.canPaste?.()} onAction={stageAction} onClose={closeStageMenu} />
+          <StageMenu at={stageMenu} count={stageMenu.count} overflowing={stageMenu.overflowing} grouped={stageMenu.grouped} canPaste={!!adapterRef.current?.canPaste?.()} onAction={stageAction} onClose={closeStageMenu} />
         )}
         <SlideNotes
           scene={(editedScenes ?? shownScenes)[snap?.slideIndex ?? -1] ?? null}

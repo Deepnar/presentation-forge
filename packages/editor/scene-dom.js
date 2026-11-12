@@ -556,6 +556,11 @@ export function createViewer(rootEl, scenes, opts = {}) {
       // clipboard — so a later paste knows our copy is newer than any
       // screenshot there. Paste is answered from the paste event itself,
       // where the clipboard's files can be read.
+      if (mod && !ev.altKey && k.toLowerCase() === "g" && state.selectedIds.length > 0) {
+        editAction({ type: ev.shiftKey ? "ungroup" : "group" });
+        ev.preventDefault();
+        return;
+      }
       const clip = { c: "copy", x: "cut", d: "duplicate", a: "selectAll" }[mod && !ev.altKey ? k.toLowerCase() : ""];
       if (clip && (state.selectedIds.length > 0 || clip === "selectAll")) {
         editAction({ type: clip });
