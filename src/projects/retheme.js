@@ -23,8 +23,9 @@ export async function changeProjectTheme({ owner = null, admin = false, id, them
   if (!stored?.deck) throw refuse("no-intent", "This project was saved before projects kept their structure, so it can't be restyled. Open it again from its deck to add it.");
   const byId = new Map(stored.deck.slides.map((slide, i) => [slide.id, { slide, chrome: stored.chrome?.slides?.[i] }]));
   // Slides the Assistant added keep their intent beside the deck's.
+  // A rewritten slide's newer intent replaces the deck's for that id.
   for (const [slideId, slide] of Object.entries(stored.added ?? {})) {
-    if (!byId.has(slideId)) byId.set(slideId, { slide, chrome: { surface: "content", suppressPresenter: false, presenterText: stored.chrome?.fallback } });
+    byId.set(slideId, { slide, chrome: byId.get(slideId)?.chrome ?? { surface: "content", suppressPresenter: false, presenterText: stored.chrome?.fallback } });
   }
   const kept = doc.scenes.filter((s) => byId.has(s.id));
   if (!kept.length) throw refuse("no-intent", "None of this project's slides came from its deck, so there is nothing to restyle.");

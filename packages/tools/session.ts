@@ -24,7 +24,7 @@ export function validatedToolResult(input: unknown, maxChars = 65536): ToolResul
   } catch { return null; }
 }
 
-export const CONTENT_TOOLS = ['get_project', 'get_slide', 'get_selected_elements', 'edit_content', 'add_slide'] as const;
+export const CONTENT_TOOLS = ['get_project', 'get_slide', 'get_selected_elements', 'edit_content', 'add_slide', 'rewrite_slide'] as const;
 export const SCENE_READS = ['get_project', 'get_slide', 'get_selected_elements'] as const;
 export function semanticToolCatalog(): { name: string; inputSchema: Json }[] {
   return schema.oneOf.map((branch: { properties: { tool: { const: string }; args: unknown } }) => ({ name: branch.properties.tool.const, inputSchema: cloneJson(branch.properties.args) }));
@@ -127,7 +127,7 @@ export function createToolSession(binding: ToolBinding): ToolSession {
       // Writing tools only in edit mode; insert_slide is a host plan step and
       // never offered (it is not in CONTENT_TOOLS), so no model can supply a
       // laid-out scene.
-      return semanticToolCatalog().filter(t => (CONTENT_TOOLS as readonly string[]).includes(t.name) && ((t.name !== 'edit_content' && t.name !== 'add_slide') || (mode === 'edit' && editable.size > 0)));
+      return semanticToolCatalog().filter(t => (CONTENT_TOOLS as readonly string[]).includes(t.name) && (!['edit_content', 'add_slide', 'rewrite_slide'].includes(t.name) || (mode === 'edit' && editable.size > 0)));
     },
     async execute(input: unknown, callId?: string): Promise<ToolResult> {
       if (!authorized) return failure('forbidden');
@@ -137,7 +137,7 @@ export function createToolSession(binding: ToolBinding): ToolSession {
       if (request.tool === 'web_search') return failure('forbidden');
       // add_slide is semantic: the host compiles it into an insert_slide plan
       // step before anything runs, so it never executes here.
-      if (request.tool === 'add_slide') return failure('forbidden');
+      if (request.tool === 'add_slide' || request.tool === 'rewrite_slide') return failure('forbidden');
       try {
         const { scenes, revision } = document.snapshot();
         let result: ToolSuccess;
@@ -155,6 +155,17 @@ export function createToolSession(binding: ToolBinding): ToolSession {
           const rows = selection.map(t => ({ target: t, found: locate(scenes, t) }));
           if (rows.some(r => !r.found)) return failure('unknown-element');
           result = ok('get_selected_elements', revision, { elements: rows.map(r => ({ slideId: r.target.slideId, element: projectElement(r.found!.element, r.found!.protected, mode === 'edit' && editable.has(keyOf(r.target)) && !r.found!.protected) })) });
+        } else if (request.tool === 'replace_slide') {
+          if (mode !== 'edit' || editable.size === 0 || !validId(callId)) return failure('not-editable');
+          if (request.args.baseRevision !== revision) return failure('stale-revision');
+          const scene = request.args.scene as unknown as SlideScene, at = scenes.findIndex(s => s.id === request.args.slideId);
+          if (at < 0 || !readable.has(request.args.slideId)) return failure('unknown-slide');
+          if (scene?.id !== request.args.slideId || scenes[at].layoutState === 'detached') return failure('invalid-edit');
+          // One envelope: undo restores the slide exactly as it was.
+          const applied = await document.applyBatch({ id: callId, actor: 'agent', agentId, baseRevision: request.args.baseRevision,
+            ops: [{ slideId: null, op: { type: 'slide.delete', id: scene.id } }, { slideId: null, op: { type: 'slide.insert', scene, index: at } }] } as never);
+          if (!applied.ok) return failure(applied.code === 'stale-revision' || applied.code === 'duplicate-id' ? applied.code : 'engine-refused');
+          return ok('replace_slide', applied.revision, { slideId: scene.id, position: at + 1 }, !applied.noop);
         } else if (request.tool === 'insert_slide') {
           if (mode !== 'edit' || editable.size === 0 || !validId(callId)) return failure('not-editable');
           if (request.args.baseRevision !== revision) return failure('stale-revision');

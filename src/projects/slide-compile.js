@@ -7,13 +7,20 @@ import { projectStore } from "./backend.js";
 import { compileSceneDeck } from "../v2-compile.js";
 import { chromeFromRecipe } from "./import-source.js";
 import { storePlates } from "./import-generated.js";
+import { carryEdits } from "../../packages/compiler/compile.js";
 
-export async function compileSlide(binding, { slide, index, total }) {
+// `replaces` names an existing slide to regenerate: same id and place, and
+// what the person moved, locked or added carried across — but not their old
+// wording, which the rewrite they asked for replaces. Their own (detached)
+// slides are never regenerated.
+export async function compileSlide(binding, { slide, index, total, replaces = null }) {
   const store = await projectStore();
   const { doc } = await store.getProject({ owner: binding.owner ?? null, id: binding.id });
   if (!doc) return null;
+  const prev = replaces ? doc.scenes.find((s) => s.id === replaces) : null;
+  if (replaces && (!prev || prev.layoutState === "detached")) return null;
   const { intent: stored } = await store.getProjectIntent({ owner: binding.owner ?? null, id: binding.id });
-  const id = `a-${randomBytes(6).toString("hex")}`;
+  const id = replaces ?? `a-${randomBytes(6).toString("hex")}`;
   const intent = {
     id: stored?.deck?.id ?? doc.id, title: stored?.deck?.title ?? doc.title,
     slides: [{
@@ -32,7 +39,12 @@ export async function compileSlide(binding, { slide, index, total }) {
     intent, theme: doc.theme?.name ?? "warm-humanist", style: stored?.style ?? null,
     mode: doc.theme?.variant === "dark" ? "dark" : "light", chromeForDeck,
   });
-  const [scene] = compiled.scenes;
+  let [scene] = compiled.scenes;
+  if (prev) {
+    const kept = structuredClone(prev);
+    for (const el of kept.elements) for (const k of ["contentCustomized", "formatCustomized", "dataCustomized", "tableCustomized"]) delete el[k];
+    scene = carryEdits(scene, kept, compiled.design, id, []);
+  }
   // Kept under the new slide's id, so a later theme change recompiles it
   // like any imported slide. A rejected proposal leaves an entry whose slide
   // never appears, which nothing reads.

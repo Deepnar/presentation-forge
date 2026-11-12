@@ -14,7 +14,8 @@
         "get_slide",
         "get_selected_elements",
         "edit_content",
-        "insert_slide"
+        "insert_slide",
+        "replace_slide"
       ]
     },
     "ok": {

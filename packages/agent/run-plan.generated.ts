@@ -179,6 +179,19 @@ export interface RunPlan {
             };
           };
         }
+      | {
+          tool: "replace_slide";
+          /**
+           * Host-only plan step: a slide's replacement, already laid out. Never offered to a model.
+           */
+          args: {
+            baseRevision: number;
+            scene: {
+              [k: string]: unknown;
+            };
+            slideId: string;
+          };
+        }
     ),
     ...(
       | {
@@ -327,6 +340,19 @@ export interface RunPlan {
             scene: {
               [k: string]: unknown;
             };
+          };
+        }
+      | {
+          tool: "replace_slide";
+          /**
+           * Host-only plan step: a slide's replacement, already laid out. Never offered to a model.
+           */
+          args: {
+            baseRevision: number;
+            scene: {
+              [k: string]: unknown;
+            };
+            slideId: string;
           };
         }
     )[]

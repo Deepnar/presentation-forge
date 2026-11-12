@@ -3,7 +3,7 @@
 
 export interface RunReceipt {
   step: number;
-  tool: "get_project" | "get_slide" | "get_selected_elements" | "edit_content" | "insert_slide";
+  tool: "get_project" | "get_slide" | "get_selected_elements" | "edit_content" | "insert_slide" | "replace_slide";
   ok: boolean;
   code:
     | null

@@ -466,6 +466,147 @@
         "args"
       ],
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "rewrite_slide"
+        },
+        "args": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "baseRevision",
+            "slideId",
+            "slide"
+          ],
+          "description": "Propose new content for an existing slide: the compiler lays it out again in the project's theme, keeping what the person moved, locked or added. It changes only after the person approves.",
+          "properties": {
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "slide": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "title",
+                "blocks"
+              ],
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "purpose": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                },
+                "blocks": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "kind"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "text",
+                          "list",
+                          "stat",
+                          "quote"
+                        ]
+                      },
+                      "label": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                      },
+                      "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1200
+                      },
+                      "value": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                      },
+                      "items": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 8,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 300
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "slideId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "description": "The slide to rewrite."
+            }
+          }
+        }
+      },
+      "required": [
+        "tool",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "replace_slide"
+        },
+        "args": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "baseRevision",
+            "slideId",
+            "scene"
+          ],
+          "description": "Host-only plan step: a slide's replacement, already laid out. Never offered to a model.",
+          "properties": {
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "scene": {
+              "type": "object"
+            },
+            "slideId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        }
+      },
+      "required": [
+        "tool",
+        "args"
+      ],
+      "additionalProperties": false
     }
   ]
 }

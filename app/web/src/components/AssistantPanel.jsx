@@ -144,7 +144,7 @@ export default function AssistantPanel({ projectId, active: shown, writable, blo
               <ProposedContent edit={edit} />
             </li>)}
             {(turn.proposal.slides ?? []).map((added, index) => <li key={`slide-${index}`} data-proposed-slide={added.position}>
-              <span className="font-semibold">New slide {added.position}</span>
+              <span className="font-semibold">{added.replaces ? "Rewritten slide" : `New slide ${added.position}`}</span>
               <p>{added.title}</p>
             </li>)}</ul>
             {turn.state === 'awaiting-decision' && <div className="mt-2">

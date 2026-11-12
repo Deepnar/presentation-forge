@@ -207,4 +207,62 @@ export type ToolRequest =
           [k: string]: unknown;
         };
       };
+    }
+  | {
+      tool: "rewrite_slide";
+      /**
+       * Propose new content for an existing slide: the compiler lays it out again in the project's theme, keeping what the person moved, locked or added. It changes only after the person approves.
+       */
+      args: {
+        baseRevision: number;
+        slide: {
+          title: string;
+          purpose?: string;
+          /**
+           * @minItems 1
+           * @maxItems 8
+           */
+          blocks: [
+            {
+              kind: "text" | "list" | "stat" | "quote";
+              label?: string;
+              text?: string;
+              value?: string;
+              /**
+               * @minItems 1
+               * @maxItems 8
+               */
+              items?: [string, ...string[]];
+            },
+            ...{
+              kind: "text" | "list" | "stat" | "quote";
+              label?: string;
+              text?: string;
+              value?: string;
+              /**
+               * @minItems 1
+               * @maxItems 8
+               */
+              items?: [string, ...string[]];
+            }[]
+          ];
+        };
+        /**
+         * The slide to rewrite.
+         */
+        slideId: string;
+      };
+    }
+  | {
+      tool: "replace_slide";
+      /**
+       * Host-only plan step: a slide's replacement, already laid out. Never offered to a model.
+       */
+      args: {
+        baseRevision: number;
+        scene: {
+          [k: string]: unknown;
+        };
+        slideId: string;
+      };
     };

@@ -122,6 +122,30 @@ export type ToolResult =
         position: number;
       };
       tool: "insert_slide";
+    }
+  | {
+      ok: true;
+      revision: number;
+      changed: boolean;
+      preserved: ("geometry" | "styling" | "untargeted-content" | "tombstones")[];
+      warnings: string[];
+      data: {
+        slideId: string;
+        position: number;
+      };
+      tool: "rewrite_slide";
+    }
+  | {
+      ok: true;
+      revision: number;
+      changed: boolean;
+      preserved: ("geometry" | "styling" | "untargeted-content" | "tombstones")[];
+      warnings: string[];
+      data: {
+        slideId: string;
+        position: number;
+      };
+      tool: "replace_slide";
     };
 export type ElementProjection =
   | {

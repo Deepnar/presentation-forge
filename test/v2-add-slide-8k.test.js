@@ -34,7 +34,7 @@ check('a proposed slide is compiled by the host, shown, and inserted only on app
   assert.equal(prepared.results[0].turnState, 'awaiting-decision');
   assert.deepEqual((await e.store.getProject(e.binding)).doc.scenes, e.doc.scenes, 'nothing changes before approval');
   const state = await e.service.read(e.binding);
-  assert.deepEqual(state.turns[0].proposal.slides, [{ position: 2, title: 'Next steps' }]);
+  assert.deepEqual(state.turns[0].proposal.slides, [{ position: 2, title: 'Next steps', replaces: false }]);
   assert.equal((await e.service.decide(e.binding, decision(state, state.turns[0]))).ok, true);
   const executed = await e.run();
   assert.equal(executed.results[0].runStatus, 'succeeded', JSON.stringify(executed));
@@ -60,4 +60,35 @@ check('the model is offered add_slide but never insert_slide', async t => {
   assert.ok(CONTENT_TOOLS.includes('add_slide'));
   assert.equal(CONTENT_TOOLS.includes('insert_slide'), false);
   assert.ok(semanticToolCatalog().some(tool => tool.name === 'insert_slide'), 'insert_slide exists for plans');
+});
+
+check('a rewrite replaces a slide in place, keeping what the person added, on approval', async t => {
+  let e;
+  e = await hostScenario(t, { handler: (req, res) => respond([{ tool: 'rewrite_slide', args: { baseRevision: 0, slideId: e.doc.scenes[0].id,
+    slide: { title: 'A sharper title', blocks: [{ kind: 'text', text: 'One clear point.' }] } } }])(req, res) });
+  // The person added a note of their own to that slide first.
+  const { createDocument } = await import('../packages/model/engine.ts');
+  const doc = await createDocument(structuredClone(e.doc.scenes));
+  const target = { id: 'h-0000000000aa', kind: 'text', x: 9, y: 6, w: 3, h: 0.5, z: 0, provenance: 'human', paragraphs: [{ runs: [{ text: 'My own note', size: 14, color: '111111' }] }] };
+  await doc.apply({ id: 'add-1', slideId: e.doc.scenes[0].id, op: { type: 'element.add', element: target }, baseRevision: 0, actor: 'human' });
+  const moved = await e.store.saveProject({ owner: e.owner, id: e.doc.id, baseRevision: 0, title: e.doc.title, scenes: doc.snapshot().scenes });
+  assert.equal(moved.status, 'saved');
+  e.doc = moved.doc;
+  await e.submit();
+  const policy = createAccountHostPolicy({ resolve: async () => ({ backend: { type: 'openai-compatible', baseURL: e.baseURL, apiKey: 'k', providerId: 'openai', billingOwner: 'user' }, model: 'm' }) });
+  const run = () => createAutoHostPickup(e.store, policy).pickup({ owner: e.owner }, pickupInput());
+  const prepared = await run();
+  assert.equal(prepared.results[0].turnState, 'awaiting-decision', JSON.stringify(prepared));
+  const state = await e.service.read(e.binding);
+  assert.deepEqual(state.turns[0].proposal.slides.map(s => s.replaces), [true]);
+  assert.equal((await e.service.decide(e.binding, decision(state, state.turns[0]))).ok, true);
+  assert.equal((await run()).results[0].runStatus, 'succeeded');
+  const after = (await e.store.getProject(e.binding)).doc;
+  assert.equal(after.scenes.length, e.doc.scenes.length, 'replaced, not added');
+  assert.equal(after.scenes[0].id, e.doc.scenes[0].id, 'same slide, same place');
+  assert.ok(JSON.stringify(after.scenes[0].elements).includes('One clear point.'));
+  assert.ok((await validateScene(after.scenes[0])).ok);
+  const kept = after.scenes[0].elements.find(el => el.id === target.id);
+  assert.ok(kept, 'their note is still on the slide');
+  assert.deepEqual([kept.x, kept.y], [9, 6], 'where they put it');
 });

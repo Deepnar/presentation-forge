@@ -74,7 +74,7 @@ export type EditProposal = {
   editCount: number; expiresAt: number; summary: Summary;
   edits: Extract<ToolRequest, { tool: 'edit_content' }>['args']['edits'];
   // Slides the proposal adds: where each lands and what it says.
-  slides: { position: number; title: string }[];
+  slides: { position: number; title: string; replaces: boolean }[];
 };
 type AddSlide = Extract<ToolRequest, { tool: 'add_slide' }>['args'];
 export type TurnResult = TurnFailure | EditProposal | {
@@ -105,7 +105,7 @@ export type ProviderRunHost = {
   // Trusted server compile for add_slide: the semantic slide laid out in
   // the project's theme and chrome, or null when it cannot be. Optional —
   // without it add_slide is refused.
-  compileSlide?(binding: Binding, input: { slide: AddSlide['slide']; index: number; total: number }): Promise<Json | null>;
+  compileSlide?(binding: Binding, input: { slide: AddSlide['slide']; index: number; total: number; replaces?: string }): Promise<Json | null>;
 };
 // Only the trusted host factory supplies this bridge; model/request JSON cannot
 // carry persistence callbacks or convert copied proposal DTOs into capabilities.
@@ -227,7 +227,7 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
           const { providerId, family, model, text, usage } = response;
           const summary = { providerId, family, model, text, usage };
           const edits = response.calls.filter(c => c.request.tool === 'edit_content');
-          const adds = response.calls.filter(c => c.request.tool === 'add_slide');
+          const adds = response.calls.filter(c => c.request.tool === 'add_slide' || c.request.tool === 'rewrite_slide');
           if ((edits.length || adds.length) && edits.length + adds.length !== response.calls.length) return fail('invalid-response');
           if (edits.length || adds.length) {
             const steps: unknown[] = [];
@@ -244,11 +244,29 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
             // Each added slide is compiled here, by the trusted host, into a
             // laid-out scene: the plan carries the compiler's layout, never
             // the model's. Positions follow the slides as they will stand.
-            const slides: { position: number; title: string }[] = [];
+            const slides: { position: number; title: string; replaces: boolean }[] = [];
             if (adds.length) {
               if (!host?.compileSlide) return fail('tool-refused');
               const order = initial.scenes.map(sc => sc.id);
               for (const call of adds) {
+                if (call.request.tool === 'rewrite_slide') {
+                  // A rewrite keeps the slide's id and place; the host carries
+                  // what the person moved, locked or added onto the new layout.
+                  const args = call.request.args;
+                  if (args.baseRevision !== context.revision || !request.scope.readableSlides.includes(args.slideId)) return fail('tool-refused');
+                  const at = order.indexOf(args.slideId);
+                  if (at < 0) return fail('tool-refused');
+                  let scene: Json | null;
+                  try { scene = await host.compileSlide(trusted, { slide: structuredClone(args.slide), index: at, total: order.length, replaces: args.slideId }); }
+                  catch { return fail('tool-refused'); }
+                  if (signal?.aborted) return fail('cancelled');
+                  if (!scene || (scene as { id?: unknown }).id !== args.slideId) return fail('tool-refused');
+                  const step = validatedToolRequest({ tool: 'replace_slide', args: { baseRevision: context.revision, slideId: args.slideId, scene } }, 65536);
+                  if (!step) return fail('result-too-large');
+                  steps.push(step);
+                  slides.push({ position: at + 1, title: args.slide.title, replaces: true });
+                  continue;
+                }
                 if (call.request.tool !== 'add_slide') return fail('invalid-response');
                 const args = call.request.args;
                 if (args.baseRevision !== context.revision) return fail('tool-refused');
@@ -265,7 +283,7 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
                 if (!step) return fail('result-too-large');
                 order.splice(index, 0, id);
                 steps.push(step);
-                slides.push({ position: index + 1, title: args.slide.title });
+                slides.push({ position: index + 1, title: args.slide.title, replaces: false });
               }
             }
             let plan: ReturnType<typeof parsePlan>;

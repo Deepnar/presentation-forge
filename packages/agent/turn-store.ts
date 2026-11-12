@@ -13,7 +13,7 @@ export function planShapeOk(plan: RunPlan, editCount: number): boolean {
   const steps = plan.steps;
   if (!steps.length) return false;
   const edit = steps[0].tool === 'edit_content' ? steps[0] : null;
-  if (steps.slice(edit ? 1 : 0).some(step => step.tool !== 'insert_slide')) return false;
+  if (steps.slice(edit ? 1 : 0).some(step => step.tool !== 'insert_slide' && step.tool !== 'replace_slide')) return false;
   return (edit && edit.tool === 'edit_content' ? edit.args.edits.length : 0) === editCount;
 }
 // What an added slide is called: its title text, as the compiler drew it.
@@ -195,5 +195,6 @@ export async function turnView(tx: RuntimeTransaction, binding: Binding, s: Stat
   return { id:t.meta.id, revision:t.meta.revision, projectRevision:t.meta.projectRevision, state:t.meta.state,
     code:t.meta.code, request:t.body.input.request, reply:t.body.reply, createdAt:t.meta.createdAt, updatedAt:t.meta.updatedAt,
     proposal:p ? {...p.meta, edits:p.plan?.steps.flatMap(step=>step.tool==='edit_content'?step.args.edits:[]) ?? [],
-      slides:p.plan?.steps.flatMap(step=>step.tool==='insert_slide'?[{position:step.args.index+1,title:slideTitle(step.args.scene)}]:[]) ?? []} : null, run };
+      slides:p.plan?.steps.flatMap(step=>step.tool==='insert_slide'?[{position:step.args.index+1,title:slideTitle(step.args.scene),replaces:false}]
+        :step.tool==='replace_slide'?[{position:0,title:slideTitle(step.args.scene),replaces:true}]:[]) ?? []} : null, run };
 }

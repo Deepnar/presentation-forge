@@ -11,7 +11,7 @@ test("persisted semantic plan schemas retain the canonical tool contract", async
   const tool = await read("../packages/tools/request.schema.json");
   // Plans carry reads, content edits and host-compiled slide inserts — never
   // the model-facing add_slide or web_search.
-  tool.oneOf = tool.oneOf.filter(b => ['get_project','get_slide','get_selected_elements','edit_content','insert_slide'].includes(b.properties.tool.const));
+  tool.oneOf = tool.oneOf.filter(b => ['get_project','get_slide','get_selected_elements','edit_content','insert_slide','replace_slide'].includes(b.properties.tool.const));
   delete tool.$schema;
   delete tool.title;
   const plan = await read("../packages/agent/run-plan.schema.json"),
