@@ -256,6 +256,33 @@ export function registerV2ProjectRoutes(app) {
     }
   }));
 
+  // Restyle a project in another theme or appearance, keeping the person's
+  // edits — the work is src/projects/retheme.js; this only carries it.
+  // Bearer only, like every state-changing route.
+  app.post("/api/v2/projects/:id/theme", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    const { theme, mode = "light", baseRevision } = req.body ?? {};
+    if (typeof theme !== "string" || !theme) return res.status(422).json({ ok: false, error: "theme is required", code: "invalid-document" });
+    if (!Number.isInteger(baseRevision) || baseRevision < 0) {
+      return res.status(422).json({ ok: false, error: "baseRevision must be a non-negative integer", code: "invalid-document" });
+    }
+    try {
+      const { changeProjectTheme } = await import("../../src/projects/retheme.js");
+      const out = await changeProjectTheme({ owner: who.owner, admin: who.admin, id: req.params.id, theme, mode, baseRevision });
+      if (out.status === "stale") {
+        return res.status(409).json({ ok: false, error: `stale project revision: based on ${out.actual}, stored is ${out.expected}`, code: "stale-revision", expectedRevision: out.expected, actualRevision: out.actual });
+      }
+      ok(res, { project: out.doc, ...(out.status === "noop" ? { noop: true } : {}) });
+    } catch (err) {
+      if (err?.code === "no-intent") return res.status(409).json({ ok: false, error: err.message, code: "no-intent" });
+      if (err?.code === "bad-theme" || err?.code === "bad-mode" || err?.code === "bad-style") return res.status(422).json({ ok: false, error: err.message, code: err.code });
+      mapStoreError(res, err);
+    }
+  }));
+
   app.delete("/api/v2/projects/:id", wrap(async (req, res) => {
     if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
     if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");

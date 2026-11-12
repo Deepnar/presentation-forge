@@ -154,6 +154,21 @@ export async function apiSave(id, { baseRevision, title, scenes, theme, origin }
   return body.project;
 }
 
+// Restyle a saved project in another theme or appearance, server-side,
+// keeping the person's edits. The caller saves first and reloads after.
+export async function apiChangeTheme(id, { theme, mode, baseRevision }, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/theme`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ theme, mode, baseRevision }),
+  });
+  const body = await res.json().catch(() => null);
+  if (!res.ok || !body?.ok) {
+    throw Object.assign(new Error(body?.error ?? `theme change failed (HTTP ${res.status})`), { code: body?.code ?? "theme-failed" });
+  }
+  return body.project;
+}
+
 export async function apiRename(id, { title, baseRevision }, fetchFn = fetch) {
   const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}`, {
     method: "PATCH",

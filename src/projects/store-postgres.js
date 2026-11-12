@@ -22,6 +22,7 @@
 // server-side (env only); nothing here logs URLs, payloads, or
 // slide contents.
 import { assetSchema } from "./asset-schema.js";
+import { intentSchema } from "./intent-schema.js";
 import { seedSources, SEED_SOURCE_SQL, seedSourceBytes } from "./source-seed.js";
 import { ASSET_LIMITS } from "./assets.js";
 import {
@@ -154,7 +155,7 @@ const PROJECT_DDL = `
 `;
 
 async function ensureSchema(clientOrPool) {
-  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres") + assetSchema("postgres"));
+  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres") + assetSchema("postgres") + intentSchema("postgres"));
 }
 
 // Schema is idempotent DDL and must never run inside a write
@@ -405,6 +406,31 @@ export async function lookupImportedProject({ owner = null, importRequest }) {
     if (!link) return null;
     const row = (await p.query("SELECT * FROM v2_projects WHERE id=$1", [link.project_id])).rows[0];
     return await replayImportedProject(link, request, row, owner);
+  } catch (err) { throw storageUnavailable(err); }
+}
+
+// The DeckIntent a project compiles from — owner-checked like the project.
+export async function getProjectIntent({ owner = null, admin = false, id }) {
+  if (!validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
+  try {
+    const p = await pool();
+    await ensureSchemaPool(p);
+    const row = (await p.query("SELECT p.owner AS owner, i.intent AS intent FROM v2_projects p LEFT JOIN v2_project_intents i ON i.project_id=p.id WHERE p.id=$1", [id])).rows[0];
+    if (!row || !canAccessProject(row, { owner, admin }) || !row.intent) return { intent: null };
+    return { intent: JSON.parse(row.intent) };
+  } catch (err) { throw storageUnavailable(err); }
+}
+
+export async function putProjectIntent({ owner = null, admin = false, id, intent }) {
+  if (!validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
+  try {
+    const p = await pool();
+    await ensureSchemaPool(p);
+    const row = (await p.query("SELECT owner FROM v2_projects WHERE id=$1", [id])).rows[0];
+    if (!row || !canAccessProject(row, { owner, admin })) return { stored: false };
+    await p.query("INSERT INTO v2_project_intents (project_id,intent,updated_at) VALUES ($1,$2,$3) ON CONFLICT (project_id) DO UPDATE SET intent=EXCLUDED.intent, updated_at=EXCLUDED.updated_at",
+      [id, JSON.stringify(intent), new Date().toISOString()]);
+    return { stored: true };
   } catch (err) { throw storageUnavailable(err); }
 }
 

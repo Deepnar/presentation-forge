@@ -51,14 +51,40 @@ export async function importBrand(identity, readFile) {
 }
 
 export function importChrome(profile, source, identity, brand = {}) {
+  return chromeFromRecipe(chromeRecipe(profile, source, identity, brand));
+}
+
+// Everything an imported deck's chrome depends on that is not the theme —
+// the identity profile, the brand marks, and per slide its surface and
+// presenter — as plain data, so a project can rebuild its chrome later in
+// another theme without the source deck. Slide ids follow the converter's
+// positional ids, which is what the intent carries.
+export function chromeRecipe(profile, source, identity, brand = {}) {
   const fallback = presenterFallback(identity);
+  return {
+    profile: structuredClone(profile ?? {}),
+    banner: brand.banner ?? null, selectedCrest: brand.selectedCrest ?? null, primaryCrestRatio: brand.primaryCrestRatio ?? null,
+    fallback,
+    slides: source.slides.map((slide) => ({
+      surface: slide.type === "title" ? "title" : "content",
+      suppressPresenter: DIVIDER_TYPES.has(slide.type) || REFERENCE_TYPES.has(slide.type),
+      presenterText: String(slide.presenter ?? "").trim() || fallback,
+    })),
+  };
+}
+
+// Chrome for a compile, from a recipe: the theme-dependent parts (contrast
+// against the slide's ground, muted ink, caption family) come from the
+// design being compiled. A slide the recipe does not know is content with
+// the fallback presenter.
+export function chromeFromRecipe(recipe) {
   return (intent, design, { backgrounds, plan }) => ({ slides: intent.slides.map((slide, index) => {
-    const type = source.slides[index].type;
+    const known = recipe.slides[index] ?? { surface: "content", suppressPresenter: false, presenterText: recipe.fallback };
     return {
-      slideId: slide.id, surface: type === "title" ? "title" : "content", ...profile,
-      banner: brand.banner ?? null, selectedCrest: brand.selectedCrest ?? null, primaryCrestRatio: brand.primaryCrestRatio ?? null,
-      suppressPresenter: DIVIDER_TYPES.has(type) || REFERENCE_TYPES.has(type),
-      presenterText: String(source.slides[index].presenter ?? "").trim() || fallback,
+      slideId: slide.id, surface: known.surface, ...recipe.profile,
+      banner: recipe.banner, selectedCrest: recipe.selectedCrest, primaryCrestRatio: recipe.primaryCrestRatio,
+      suppressPresenter: known.suppressPresenter,
+      presenterText: known.presenterText,
       index: index + 1, total: intent.slides.length,
       background: contrastBackground(backgrounds, surfaceForPlan(plan.slides[index]), design),
       mutedInk: design.palette.inkMuted.hex, captionFamily: design.roles.caption?.family,

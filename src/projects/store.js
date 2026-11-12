@@ -29,6 +29,7 @@
 // multi-host deployments. Hosted mode still requires a session (see the
 // routes); the store itself enforces owner scoping but not HTTP auth.
 import { assetSchema } from "./asset-schema.js";
+import { intentSchema } from "./intent-schema.js";
 import { seedSources, SEED_SOURCE_SQL, seedSourceBytes } from "./source-seed.js";
 import { ASSET_LIMITS } from "./assets.js";
 import { getDb, closeDb } from "../db.js";
@@ -81,6 +82,7 @@ function ensureSchema() {
   `);
   db.exec(sourceSchema("sqlite"));
   db.exec(assetSchema("sqlite"));
+  db.exec(intentSchema("sqlite"));
   ensureHistorySchema(db);
   return db;
 }
@@ -260,6 +262,29 @@ export async function lookupImportedProject({ owner = null, importRequest }) {
     if (!link) return null;
     const row = db.prepare("SELECT * FROM v2_projects WHERE id=?").get(link.project_id);
     return await replayImportedProject(link, request, row, owner);
+  } catch (error) { throw storageFailure(error); }
+}
+
+// The DeckIntent a project compiles from — owner-checked like the project.
+export async function getProjectIntent({ owner = null, admin = false, id }) {
+  if (!validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
+  try {
+    const db = ensureSchema();
+    const row = db.prepare("SELECT p.owner AS owner, i.intent AS intent FROM v2_projects p LEFT JOIN v2_project_intents i ON i.project_id=p.id WHERE p.id=?").get(id);
+    if (!row || !canAccessProject(row, { owner, admin }) || !row.intent) return { intent: null };
+    return { intent: JSON.parse(row.intent) };
+  } catch (error) { throw storageFailure(error); }
+}
+
+export async function putProjectIntent({ owner = null, admin = false, id, intent }) {
+  if (!validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
+  try {
+    const db = ensureSchema();
+    const row = db.prepare("SELECT owner FROM v2_projects WHERE id=?").get(id);
+    if (!row || !canAccessProject(row, { owner, admin })) return { stored: false };
+    db.prepare("INSERT INTO v2_project_intents (project_id,intent,updated_at) VALUES (?,?,?) ON CONFLICT(project_id) DO UPDATE SET intent=excluded.intent, updated_at=excluded.updated_at")
+      .run(id, JSON.stringify(intent), new Date().toISOString());
+    return { stored: true };
   } catch (error) { throw storageFailure(error); }
 }
 

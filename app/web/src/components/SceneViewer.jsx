@@ -18,10 +18,11 @@ import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
-import { apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
+import { apiChangeTheme, apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import { useNarrow } from "../lib/viewport.js";
 import SlideNotes from "./SlideNotes.jsx";
 import StageMenu from "./StageMenu.jsx";
+import ThemePicker from "./ThemePicker.jsx";
 
 // Restores focus to the opener when a dialog closes. Dialogs trap
 // nothing; they only borrow focus, and the opener (often a toolbar
@@ -1460,7 +1461,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     docRef.current = fresh;
     adapterRef.current = adapter;
     setEditedScenes(structuredClone(loaded.scenes));
-    projectRef.current = { id: loaded.id, title: loaded.title, revision: loaded.revision, updatedAt: loaded.updatedAt };
+    projectRef.current = { id: loaded.id, title: loaded.title, revision: loaded.revision, updatedAt: loaded.updatedAt, ...(loaded.theme ? { theme: loaded.theme } : {}) };
     setProject(projectRef.current);
     savedEngineRevRef.current = 0;
     setSaveState("saved");
@@ -1499,6 +1500,29 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   // (save-and-switch, discard-and-switch, cancel) — never silent loss.
   // In embedded workspace mode a different id navigates (the router
   // remounts one editor per project) instead of swapping in place.
+  // Save what is on the page, restyle on the server, reload the result —
+  // one new revision the person can take back from History.
+  const [themeState, setThemeState] = useState({ busy: false, error: null });
+  async function applyTheme(name, mode) {
+    const proj = projectRef.current;
+    if (!proj || proj.recoverable) return;
+    setThemeState({ busy: true, error: null });
+    try {
+      if (adapterRef.current?.hasPendingEdit?.()) {
+        const r = await adapterRef.current.commitPendingEdit();
+        if (!r.ok) throw new Error("Finish the text you are editing first.");
+      }
+      const saved = await saveNow();
+      if (saved && saved.ok === false) throw new Error(saved.message ?? "Couldn't save your latest edits first.");
+      const current = projectRef.current;
+      await apiChangeTheme(current.id, { theme: name, mode, baseRevision: current.revision });
+      await attachLoadedProject(await apiLoad(current.id));
+      setThemeState({ busy: false, error: null });
+    } catch (err) {
+      setThemeState({ busy: false, error: err.message });
+    }
+  }
+
   async function openProject(id) {
     if (copyingRef.current) copyingRef.current.invalidated = true;
     if (adapterRef.current?.hasPendingEdit?.()) {
@@ -2782,6 +2806,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                   <div><span className="text-fg-faint">Layout </span>{currentSlide.layoutState === "detached" ? "Manual slide" : currentSlide.layoutState === "customized" ? "Custom slide" : "Managed by AI layout"}</div>
                   <div><span className="text-fg-faint">Objects </span>{slideProps.elements}{slideProps.hidden > 0 ? ` (${slideProps.hidden} hidden)` : ""}{slideProps.locked > 0 ? ` (${slideProps.locked} locked)` : ""}</div>
                   {!editOn && <div className="text-fg-faint">Read-only — press Edit in the toolbar to change this slide.</div>}
+                  {editOn && project && !project.recoverable && (
+                    <ThemePicker current={project.theme} busy={themeState.busy} error={themeState.error} onApply={applyTheme} />
+                  )}
                 </div>
               )}
             </div>

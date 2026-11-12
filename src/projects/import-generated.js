@@ -1,7 +1,7 @@
 import { performance } from "node:perf_hooks";
 import { readFile } from "node:fs/promises";
 import { EDITOR_IMPORT_REQUEST_ID } from "../../packages/projects/editor-import.js";
-import { readImportSource, importChrome, importBrand } from "./import-source.js";
+import { readImportSource, chromeRecipe, chromeFromRecipe, importBrand } from "./import-source.js";
 import { convertGeneratedDeck, importError } from "./legacy-conversion.js";
 import { projectStore } from "./backend.js";
 import { compileSceneDeck } from "../v2-compile.js";
@@ -66,7 +66,7 @@ async function citeSources(projectId, cites, scenes) {
 
 // Theme plates arrive as one data URI per slide; stored once as an asset and
 // referenced, a 24-slide plated deck stays well inside the document limit.
-async function storePlates(scenes) {
+export async function storePlates(scenes) {
   const assets = new Map();
   for (const scene of scenes) {
     const src = scene.background?.image?.src;
@@ -160,7 +160,8 @@ export async function importGeneratedProject(args) {
   const brand = await importBrand(source.identity, readFile);
   const assets = [...await resolveImages(intent, source), ...brand.assets];
   const compileStart = performance.now();
-  const compiled = await compileSceneDeck({ intent, theme: source.theme, style: source.style, mode: source.mode, chromeForDeck: importChrome(source.profile, source.deck, source.identity, brand) });
+  const chrome = chromeRecipe(source.profile, source.deck, source.identity, brand);
+  const compiled = await compileSceneDeck({ intent, theme: source.theme, style: source.style, mode: source.mode, chromeForDeck: chromeFromRecipe(chrome) });
   assertContent(intent, compiled.scenes);
   const analysis = await analyzeDeck(intent, compiled.design, compiled.chrome);
   // Fit findings restate the compiler's fit diagnostics, which become
@@ -175,7 +176,7 @@ export async function importGeneratedProject(args) {
   if (blocked.length || preflight.length) throw importError("unsupported-content", "source cannot export safely with accepted compiler primitives", [...blocked, ...preflight].map(f => ({ path: f.slideId ?? "scene", reason: f.message ?? f.reason ?? f.code ?? f.kind })));
   const compileMs = performance.now() - compileStart;
   assets.push(...await storePlates(compiled.scenes));
-  if (updating) return updateImportedProject({ store, source, compiled, assets, projectId: updating, analysis, dropped, start, compileMs });
+  if (updating) return updateImportedProject({ store, source, compiled, chrome, assets, projectId: updating, analysis, dropped, start, compileMs });
   const projectId = mintProjectId();
   const sources = cites.length ? await citeSources(projectId, cites, compiled.scenes) : null;
   await source.unchanged();
@@ -187,6 +188,7 @@ export async function importGeneratedProject(args) {
     importRequest: source.importRequest,
     assets, id: projectId, sources,
   });
+  if (!result.reused) await store.putProjectIntent({ owner: source.owner, id: result.doc.id, intent: { deck: compiled.intent, chrome, style: source.style ?? null } });
   const fitWarnings = compiled.fitDiagnostics.map(f => ({ slideId: f.slideId, elementId: f.elementId, message: f.message }));
   return { project: result.doc, reused: result.reused, sourceDigest: source.digest, diagnostics: analysis.findings, dropped, fitWarnings, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
 }
@@ -204,7 +206,7 @@ const touched = (scene) => scene.layoutState !== "managed" || scene.notesEdited 
 // new deck so the next open replays instead of updating again.
 // Not yet: claim citations a regenerated deck adds are not added as
 // project sources; the slides it keeps keep their existing citations.
-async function updateImportedProject({ store, source, compiled, assets, projectId, analysis, dropped, start, compileMs }) {
+async function updateImportedProject({ store, source, compiled, chrome, assets, projectId, analysis, dropped, start, compileMs }) {
   const { doc: current } = await store.getProject({ owner: source.owner, id: projectId });
   if (!current) throw importError("import-target-deleted", "the imported project was deleted; use an explicit new import request");
   // A different theme or appearance is not a regenerated deck: re-theming a
@@ -235,6 +237,7 @@ async function updateImportedProject({ store, source, compiled, assets, projectI
   });
   if (saved.status === "stale") throw importError("import-busy", "the project changed while it was being updated; try again");
   await store.relinkImport({ owner: source.owner, importRequest: source.importRequest, projectId });
+  await store.putProjectIntent({ owner: source.owner, id: projectId, intent: { deck: compiled.intent, chrome, style: source.style ?? null } });
   const fitWarnings = compiled.fitDiagnostics.map(f => ({ slideId: f.slideId, elementId: f.elementId, message: f.message }));
   return { project: saved.doc, reused: false, updated: true, sourceDigest: source.digest, diagnostics: analysis.findings, dropped, fitWarnings, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
 }
