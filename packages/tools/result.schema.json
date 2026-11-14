@@ -720,6 +720,203 @@
         "tool"
       ],
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed": {
+          "type": "boolean"
+        },
+        "preserved": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "geometry",
+              "styling",
+              "untargeted-content",
+              "tombstones"
+            ]
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "files"
+          ],
+          "properties": {
+            "files": {
+              "type": "array",
+              "maxItems": 50,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "fileId",
+                  "name",
+                  "kind",
+                  "role",
+                  "chars"
+                ],
+                "properties": {
+                  "fileId": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "kind": {
+                    "type": "string",
+                    "maxLength": 16
+                  },
+                  "role": {
+                    "enum": [
+                      "source",
+                      "source-of-truth",
+                      "visual-reference",
+                      "template",
+                      "brand",
+                      "dataset",
+                      "asset",
+                      "unknown"
+                    ]
+                  },
+                  "chars": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tool": {
+          "const": "list_files"
+        }
+      },
+      "required": [
+        "ok",
+        "revision",
+        "changed",
+        "preserved",
+        "warnings",
+        "data",
+        "tool"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changed": {
+          "type": "boolean"
+        },
+        "preserved": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "geometry",
+              "styling",
+              "untargeted-content",
+              "tombstones"
+            ]
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fileId",
+            "name",
+            "role",
+            "text",
+            "offset",
+            "nextOffset"
+          ],
+          "properties": {
+            "fileId": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "role": {
+              "enum": [
+                "source",
+                "source-of-truth",
+                "visual-reference",
+                "template",
+                "brand",
+                "dataset",
+                "asset",
+                "unknown"
+              ]
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 20000
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "nextOffset": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "tool": {
+          "const": "read_file"
+        }
+      },
+      "required": [
+        "ok",
+        "revision",
+        "changed",
+        "preserved",
+        "warnings",
+        "data",
+        "tool"
+      ],
+      "additionalProperties": false
     }
   ],
   "definitions": {

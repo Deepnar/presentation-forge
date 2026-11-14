@@ -92,3 +92,34 @@ check('a rewrite replaces a slide in place, keeping what the person added, on ap
   assert.ok(kept, 'their note is still on the slide');
   assert.deepEqual([kept.x, kept.y], [9, 6], 'where they put it');
 });
+
+test('Project files: the Assistant can list and read them, a page at a time, only when the host grants it', async () => {
+  const { createToolSession } = await import('../packages/tools/session.ts');
+  const { createDocument } = await import('../packages/model/engine.ts');
+  const { blankSlide } = await import('../packages/editor/scene-text.js');
+  const scene = blankSlide();
+  const base = { document: await createDocument([scene]), projectId: 'p1', ownerId: 'o', actorId: 'o', agentId: 'a', mode: 'inspect', readableSlides: [scene.id], editableTargets: [], selection: [] };
+  const text = 'x'.repeat(30000);
+  const files = {
+    list: async () => [{ id: 'file_1', name: 'Report.docx', kind: 'docx', role: 'source-of-truth', chars: text.length }],
+    read: async (fileId, offset, limit) => fileId === 'file_1' ? { id: 'file_1', name: 'Report.docx', role: 'source-of-truth', text: text.slice(offset, offset + limit), offset, nextOffset: offset + limit < text.length ? offset + limit : null } : null,
+  };
+  const without = createToolSession(base);
+  assert.equal(without.catalog().some(t => t.name === 'list_files'), false, 'not offered without a grant');
+  assert.equal((await without.execute({ tool: 'list_files', args: {} })).code, 'forbidden');
+  const withFiles = createToolSession({ ...base, files });
+  assert.ok(withFiles.catalog().some(t => t.name === 'read_file'));
+  const listed = await withFiles.execute({ tool: 'list_files', args: {} });
+  assert.deepEqual(listed.data.files, [{ fileId: 'file_1', name: 'Report.docx', kind: 'docx', role: 'source-of-truth', chars: 30000 }]);
+  const page = await withFiles.execute({ tool: 'read_file', args: { fileId: 'file_1' } });
+  assert.equal(page.ok, true);
+  assert.ok(page.data.text.length <= 16000 && page.data.nextOffset === page.data.text.length, 'a page that fits the result budget, and where to go next');
+  assert.equal((await withFiles.execute({ tool: 'read_file', args: { fileId: 'nope' } })).ok, false);
+});
+
+check('a turn offers the project\'s file tools to the model', async t => {
+  const e = await scenario(t, next);
+  await e.run();
+  const names = e.seen[0].body.tools.map(x => x.function.name);
+  assert.ok(names.includes('list_files') && names.includes('read_file'), names.join(','));
+});

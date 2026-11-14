@@ -16,7 +16,7 @@ check('canonical search is a strict subset of standalone F and base sessions ref
   for (const key of ['projectId','owner','baseURL','apiKey','x','fontFamily','queryDisclosure']) assert.equal(validatedToolRequest(searchCall('x', { [key]: 'private' })), null);
   const { tools } = await contentRig(); assert.deepEqual(tools.catalog().map(t => t.name), ['get_project','get_slide','get_selected_elements','edit_content','add_slide','rewrite_slide']);
   assert.equal((await tools.execute(searchCall())).code, 'forbidden');
-  assert.equal(semanticToolCatalog().length, 9);
+  assert.equal(semanticToolCatalog().length, 11);
 });
 check('queued plans receipts and initial-read contracts still exclude network tools', async () => {
   const e = rig(), plan = { requestId: 'p', projectRevision: 0, scope: e.input.scope, steps: [searchCall()], maxSteps: 1, maxFailures: 1, deadlineAt: e.input.deadlineAt };

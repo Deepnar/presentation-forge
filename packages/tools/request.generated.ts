@@ -265,4 +265,22 @@ export type ToolRequest =
         };
         slideId: string;
       };
+    }
+  | {
+      tool: "list_files";
+      /**
+       * The files the person added to this project, with the role each plays (source-of-truth outranks other sources).
+       */
+      args: {};
+    }
+  | {
+      tool: "read_file";
+      /**
+       * A page of a project file's text.
+       */
+      args: {
+        fileId: string;
+        offset?: number;
+        limit?: number;
+      };
     };

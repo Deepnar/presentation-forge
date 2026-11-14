@@ -24,7 +24,7 @@ export function validatedToolResult(input: unknown, maxChars = 65536): ToolResul
   } catch { return null; }
 }
 
-export const CONTENT_TOOLS = ['get_project', 'get_slide', 'get_selected_elements', 'edit_content', 'add_slide', 'rewrite_slide'] as const;
+export const CONTENT_TOOLS = ['get_project', 'get_slide', 'get_selected_elements', 'edit_content', 'add_slide', 'rewrite_slide', 'list_files', 'read_file'] as const;
 export const SCENE_READS = ['get_project', 'get_slide', 'get_selected_elements'] as const;
 export function semanticToolCatalog(): { name: string; inputSchema: Json }[] {
   return schema.oneOf.map((branch: { properties: { tool: { const: string }; args: unknown } }) => ({ name: branch.properties.tool.const, inputSchema: cloneJson(branch.properties.args) }));
@@ -61,6 +61,12 @@ export interface ToolBinding {
   editableTargets: Target[];
   selection: Target[];
   limits?: { maxCalls?: number; inputChars?: number; outputChars?: number };
+  // Trusted read access to the project's files, supplied by the host for the
+  // owner only; without it the file tools are not offered.
+  files?: {
+    list(): Promise<{ id: string; name: string; kind: string; role: string; chars: number }[]>;
+    read(fileId: string, offset: number, limit: number): Promise<{ id: string; name: string; role: string; text: string; offset: number; nextOffset: number | null } | null>;
+  };
 }
 export interface ToolSession {
   execute(request: unknown, callId?: string): Promise<ToolResult>;
@@ -127,7 +133,7 @@ export function createToolSession(binding: ToolBinding): ToolSession {
       // Writing tools only in edit mode; insert_slide is a host plan step and
       // never offered (it is not in CONTENT_TOOLS), so no model can supply a
       // laid-out scene.
-      return semanticToolCatalog().filter(t => (CONTENT_TOOLS as readonly string[]).includes(t.name) && (!['edit_content', 'add_slide', 'rewrite_slide'].includes(t.name) || (mode === 'edit' && editable.size > 0)));
+      return semanticToolCatalog().filter(t => (CONTENT_TOOLS as readonly string[]).includes(t.name) && (!['edit_content', 'add_slide', 'rewrite_slide'].includes(t.name) || (mode === 'edit' && editable.size > 0)) && (!['list_files', 'read_file'].includes(t.name) || !!binding.files));
     },
     async execute(input: unknown, callId?: string): Promise<ToolResult> {
       if (!authorized) return failure('forbidden');
@@ -155,6 +161,18 @@ export function createToolSession(binding: ToolBinding): ToolSession {
           const rows = selection.map(t => ({ target: t, found: locate(scenes, t) }));
           if (rows.some(r => !r.found)) return failure('unknown-element');
           result = ok('get_selected_elements', revision, { elements: rows.map(r => ({ slideId: r.target.slideId, element: projectElement(r.found!.element, r.found!.protected, mode === 'edit' && editable.has(keyOf(r.target)) && !r.found!.protected) })) });
+        } else if (request.tool === 'list_files' || request.tool === 'read_file') {
+          if (!binding.files) return failure('forbidden');
+          if (request.tool === 'list_files') {
+            const files = (await binding.files.list()).slice(0, 50).map(f => ({ fileId: f.id, name: f.name, kind: f.kind, role: f.role as never, chars: f.chars }));
+            result = ok('list_files', revision, { files });
+          } else {
+            // A page sized to fit the result budget with its envelope.
+            const limit = Math.min(request.args.limit ?? 12000, Math.max(512, outputChars - 1600));
+            const file = await binding.files.read(request.args.fileId, request.args.offset ?? 0, limit);
+            if (!file) return failure('unknown-element');
+            result = ok('read_file', revision, { fileId: file.id, name: file.name, role: file.role as never, text: file.text, offset: file.offset, nextOffset: file.nextOffset });
+          }
         } else if (request.tool === 'replace_slide') {
           if (mode !== 'edit' || editable.size === 0 || !validId(callId)) return failure('not-editable');
           if (request.args.baseRevision !== revision) return failure('stale-revision');

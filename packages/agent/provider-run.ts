@@ -140,8 +140,15 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
         if (signal?.aborted) return fail('cancelled');
         const document = await createDocument(initial.scenes), identity = trusted.owner ?? 'local';
         if (signal?.aborted) return fail('cancelled');
+        // The project's files, read for this owner through the trusted store
+        // when it offers them.
+        const store = backend as unknown as { listProjectFiles?: Function; readProjectFile?: Function };
+        const files = typeof store.listProjectFiles === 'function' && typeof store.readProjectFile === 'function' ? {
+          list: async () => (await store.listProjectFiles!({ owner: trusted.owner ?? null, id: trusted.id })).files ?? [],
+          read: async (fileId: string, offset: number, limit: number) => (await store.readProjectFile!({ owner: trusted.owner ?? null, id: trusted.id, fileId, offset, limit })).file,
+        } : undefined;
         const session = createToolSession({ document, projectId: trusted.id, ownerId: identity,
-          actorId: identity, agentId: request.requestId, ...request.scope,
+          actorId: identity, agentId: request.requestId, ...request.scope, ...(files ? { files } : {}),
           ...(loop ? { limits: { maxCalls: request.reads.length + loop.limits.maxToolCalls + 1 } } : {}) });
         const context = await composeInstructions({ session, request: request.request, reads: request.reads,
           maxChars: request.contextChars });

@@ -146,6 +146,44 @@ export type ToolResult =
         position: number;
       };
       tool: "replace_slide";
+    }
+  | {
+      ok: true;
+      revision: number;
+      changed: boolean;
+      preserved: ("geometry" | "styling" | "untargeted-content" | "tombstones")[];
+      warnings: string[];
+      data: {
+        /**
+         * @maxItems 50
+         */
+        files: {
+          fileId: string;
+          name: string;
+          kind: string;
+          role:
+            "source" | "source-of-truth" | "visual-reference" | "template" | "brand" | "dataset" | "asset" | "unknown";
+          chars: number;
+        }[];
+      };
+      tool: "list_files";
+    }
+  | {
+      ok: true;
+      revision: number;
+      changed: boolean;
+      preserved: ("geometry" | "styling" | "untargeted-content" | "tombstones")[];
+      warnings: string[];
+      data: {
+        fileId: string;
+        name: string;
+        role:
+          "source" | "source-of-truth" | "visual-reference" | "template" | "brand" | "dataset" | "asset" | "unknown";
+        text: string;
+        offset: number;
+        nextOffset: number | null;
+      };
+      tool: "read_file";
     };
 export type ElementProjection =
   | {

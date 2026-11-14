@@ -607,6 +607,64 @@
         "args"
       ],
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "list_files"
+        },
+        "args": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false,
+          "description": "The files the person added to this project, with the role each plays (source-of-truth outranks other sources)."
+        }
+      },
+      "required": [
+        "tool",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "read_file"
+        },
+        "args": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fileId"
+          ],
+          "description": "A page of a project file's text.",
+          "properties": {
+            "fileId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20000
+            }
+          }
+        }
+      },
+      "required": [
+        "tool",
+        "args"
+      ],
+      "additionalProperties": false
     }
   ]
 }
