@@ -153,6 +153,10 @@ Decisions taken with this list, so nobody re-litigates them:
      the attention goes, every one of them must work without glitches.
      Before adding an editing feature, ask whether it belongs in that set;
      before calling one done, use it on real imported and generated decks.
+     In the set (owner, 2026-11-14): **Delete / Backspace removes the
+     selected object.** It was wired, but a text box only became selected
+     when the click landed on a letter's stroke, so it seemed not to work;
+     fixed the same day (text boxes and lines are now selectable anywhere).
      Fixed 2026-11-14 (owner's defect): a vertical text box on an imported
      deck moved glitchily — rotated elements previewed their drag in their
      own turned frame, and their frame, handles and snapping used the
@@ -245,6 +249,18 @@ by screenshot before and after — at desktop and narrow widths, light and
 dark. Text that explains the UI is cut, not shrunk: if a control needs a
 sentence, the control is wrong. Waits for the core items (see the finish
 line's decisions).
+
+**How the pass starts (owner, 2026-11-14).** Before designing anything,
+study the tools people already find natural — Canva, Excalidraw,
+PowerPoint (desktop and web), Gamma, Google Slides, Pitch, Figma and similar
+— properly, not at a glance: how each lays out the canvas, toolbar,
+insert menus, inspector, layers, slide rail, menus and keyboard use, and
+what makes them feel accessible and natural. Write down what to take from
+each. Then make Presentation Forge as good, as accessible and as natural
+to use, adopting the features closely related to what it already does —
+not all of their features (the editor-scope rule under F4b still holds).
+Done in tandem with the Claude Design skill, as already agreed for the
+landing page and the site's look.
 
 Added 2026-11-12 by the owner: the **inspector and the layers panel** are
 the parts most in need of this pass — they must read plainly at a glance.

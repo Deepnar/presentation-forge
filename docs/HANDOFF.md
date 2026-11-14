@@ -132,6 +132,12 @@ check; it is sandbox data, not part of any real deck.
   Charts popovers) in the F5 pass.
 - Slides that fit but do not get their message across — a new content
   quality entry beside "Measuring content quality".
+- (2026-11-14) Delete removes the selected object — in the editor's small
+  set; it works now that text boxes are clickable anywhere.
+- (2026-11-14) F5 starts with a real study of Canva, Excalidraw,
+  PowerPoint, Gamma, Google Slides, Pitch, Figma: take what makes them
+  natural and accessible, adopt closely related features only, with the
+  Claude Design skill.
 
 ## Machine etiquette
 
