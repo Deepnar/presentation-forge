@@ -247,30 +247,32 @@ export async function renderReport({ reportFile, donor, out, toc = true, identit
   const merged = identity ?? (await loadIdentity(deckDir));
   const donorPath = await resolveDonor(donor, await donorDirForDeck(deckDir));
   const outFile = path.resolve(out ?? path.join(deckDir, "out", "report.docx"));
+  const imageCredits = (await readCredits(deckDir)).filter(isCitable);
+  const { bytes, sections, pages, problems } = await renderReportBytes({ report, identity: merged, donorPath, imageCredits, toc, signal });
+  await mkdir(path.dirname(outFile), { recursive: true });
+  await writeFile(outFile, bytes);
+  return { outFile, sections, pages, problems };
+}
 
+// The .docx for a report held in memory — a project's report, which has no
+// deck directory. Same donor surgery and two-pass TOC as renderReport.
+export async function renderReportBytes({ report, identity = {}, donorPath, imageCredits = [], toc = true, signal } = {}) {
   const present = presentSections(report);
   if (!present.length) throw new Error("report has no section content — nothing to render");
-
-  const imageCredits = (await readCredits(deckDir)).filter(isCitable);
   if (imageCredits.length) present.push(IMAGE_CREDITS);
-
   const donorBytes = new Uint8Array(await readFile(donorPath));
-  const cover = coverContext(merged);
+  const cover = coverContext(identity);
   const normalized = normalizeCredits(imageCredits);
   const tocPages = toc
-    ? await locateSectionPages(donorPath, report, merged, present, { signal, imageCredits })
+    ? await locateSectionPages(donorPath, report, identity, present, { signal, imageCredits })
     : {};
-
   const bytes = await renderDocx(report, donorBytes, {
     cover, tocPages, includeToc: toc, imageCredits: normalized,
   });
-  await mkdir(path.dirname(outFile), { recursive: true });
-  await writeFile(outFile, bytes);
-
   const problems = toc
     ? present.filter((s) => tocPages[s] == null).map((s) => `TOC page for "${s}" not found in the PDF pass`)
     : [];
-  return { outFile, sections: present, pages: tocPages, problems };
+  return { bytes, sections: present, pages: tocPages, problems };
 }
 
 function parseArgs(argv) {

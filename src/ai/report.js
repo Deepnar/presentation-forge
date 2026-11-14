@@ -501,15 +501,19 @@ export async function generateReport({
   chat = chatJSON,
   requirePlan = true,
   structure = null,
+  // A project supplies its own { meta, plan, research, identity } instead of
+  // a deck directory, and keeps the result itself (persist: false).
+  inputs = null,
+  persist = true,
 }) {
   if (!REPORT_DEPTHS.includes(depth)) {
     throw new Error(`report depth must be one of ${REPORT_DEPTHS.join(", ")}, got "${depth}"`);
   }
 
-  const deckDir = path.resolve(dir ?? path.join(DECKS, slug ?? ""));
-  const { meta, plan, research, identity } = await resolveReportInputs(deckDir, { requirePlan, model });
+  const deckDir = inputs ? null : path.resolve(dir ?? path.join(DECKS, slug ?? ""));
+  const { meta, plan, research, identity } = inputs ?? await resolveReportInputs(deckDir, { requirePlan, model });
 
-  const reportStructure = structure ?? (await reportStructureForDeck(deckDir));
+  const reportStructure = structure ?? (deckDir ? await reportStructureForDeck(deckDir) : REPORT_SECTIONS);
 
   onProgress?.({ status: "report_planning" });
   const planned = await planReport({
@@ -558,6 +562,7 @@ export async function generateReport({
     throw new Error(`Generated report failed validation:\n  - ${errors.join("\n  - ")}`);
   }
 
+  if (!persist || !deckDir) return { report: assembled, reportFile: null, sections: assembled.order, skipped, depth };
   const reportFile = path.join(deckDir, "report.yaml");
   await writeFile(reportFile, YAML.stringify(assembled), "utf8");
 

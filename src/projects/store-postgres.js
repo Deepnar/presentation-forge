@@ -23,7 +23,7 @@
 // slide contents.
 import { assetSchema } from "./asset-schema.js";
 import { intentSchema } from "./intent-schema.js";
-import { fileSchema, FILE_ROLES, FILE_LIMITS, layoutSchema, LAYOUT_LIMITS } from "./file-schema.js";
+import { fileSchema, FILE_ROLES, FILE_LIMITS, layoutSchema, LAYOUT_LIMITS, documentSchema, DOCUMENT_KINDS, DOCUMENT_LIMITS } from "./file-schema.js";
 import { seedSources, SEED_SOURCE_SQL, seedSourceBytes } from "./source-seed.js";
 import { ASSET_LIMITS } from "./assets.js";
 import {
@@ -156,7 +156,7 @@ const PROJECT_DDL = `
 `;
 
 async function ensureSchema(clientOrPool) {
-  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres") + assetSchema("postgres") + intentSchema("postgres") + fileSchema("postgres") + layoutSchema());
+  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres") + assetSchema("postgres") + intentSchema("postgres") + fileSchema("postgres") + layoutSchema() + documentSchema());
 }
 
 // Schema is idempotent DDL and must never run inside a write
@@ -470,6 +470,43 @@ export async function deleteProjectLayout({ owner = null, admin = false, id, lay
     const p = await filePool();
     if (!(await ownedRowPg(p, id, owner, admin))) return { removed: false };
     return { removed: (await p.query("DELETE FROM v2_project_layouts WHERE project_id=$1 AND id=$2", [id, layoutId])).rowCount === 1 };
+  } catch (err) { throw storageUnavailable(err); }
+}
+// A project's written documents — newest first, owner-checked like it.
+const docRow = (r, withBody) => ({ id: r.id, kind: r.kind, title: r.title, basisRevision: Number(r.basis_revision), createdAt: r.created_at, ...(withBody ? { body: JSON.parse(r.body) } : {}) });
+export async function listProjectDocuments({ owner = null, admin = false, id }) {
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { documents: null };
+    return { documents: (await p.query("SELECT id,kind,title,basis_revision,created_at FROM v2_project_documents WHERE project_id=$1 ORDER BY created_at DESC, id DESC", [id])).rows.map((r) => docRow(r, false)) };
+  } catch (err) { throw storageUnavailable(err); }
+}
+export async function getProjectDocument({ owner = null, admin = false, id, documentId }) {
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { document: null };
+    const r = (await p.query("SELECT * FROM v2_project_documents WHERE project_id=$1 AND id=$2", [id, documentId])).rows[0];
+    return { document: r ? docRow(r, true) : null };
+  } catch (err) { throw storageUnavailable(err); }
+}
+export async function putProjectDocument({ owner = null, admin = false, id, document }) {
+  if (!DOCUMENT_KINDS.includes(document?.kind)) throw Object.assign(new Error("unknown document kind"), { code: "invalid-document" });
+  const body = JSON.stringify(document.body);
+  if (body.length > DOCUMENT_LIMITS.bodyChars) throw Object.assign(new Error("the document is too large to keep"), { code: "invalid-document" });
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { stored: false };
+    const n = Number((await p.query("SELECT COUNT(*) AS n FROM v2_project_documents WHERE project_id=$1", [id])).rows[0].n);
+    if (n >= DOCUMENT_LIMITS.perProject) await p.query("DELETE FROM v2_project_documents WHERE project_id=$1 AND id IN (SELECT id FROM v2_project_documents WHERE project_id=$1 ORDER BY created_at, id LIMIT $2)", [id, n - DOCUMENT_LIMITS.perProject + 1]);
+    await p.query("INSERT INTO v2_project_documents (project_id,id,kind,title,body,basis_revision,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7)", [id, document.id, document.kind, String(document.title).slice(0, DOCUMENT_LIMITS.titleChars), body, document.basisRevision, new Date().toISOString()]);
+    return { stored: true };
+  } catch (err) { throw storageUnavailable(err); }
+}
+export async function deleteProjectDocument({ owner = null, admin = false, id, documentId }) {
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { removed: false };
+    return { removed: (await p.query("DELETE FROM v2_project_documents WHERE project_id=$1 AND id=$2", [id, documentId])).rowCount === 1 };
   } catch (err) { throw storageUnavailable(err); }
 }
 export async function setProjectFileRole({ owner = null, admin = false, id, fileId, role }) {

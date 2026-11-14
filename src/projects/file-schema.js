@@ -41,3 +41,24 @@ export function layoutSchema() {
     );
   `;
 }
+
+// Written documents a project produced (F7): the report as its structured
+// spec, rendered to .docx on download so the donor and fonts in force then
+// are the ones used. Several kept, newest first, so a regeneration never
+// silently replaces the one the person already read.
+export const DOCUMENT_KINDS = Object.freeze(["report"]);
+export const DOCUMENT_LIMITS = Object.freeze({ perProject: 20, bodyChars: 600000, titleChars: 200 });
+export function documentSchema() {
+  return `
+    CREATE TABLE IF NOT EXISTS v2_project_documents (
+      project_id TEXT NOT NULL REFERENCES v2_projects(id) ON DELETE CASCADE,
+      id TEXT NOT NULL,
+      kind TEXT NOT NULL,
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      basis_revision INTEGER NOT NULL,
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (project_id, id)
+    );
+  `;
+}

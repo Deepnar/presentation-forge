@@ -30,7 +30,7 @@
 // routes); the store itself enforces owner scoping but not HTTP auth.
 import { assetSchema } from "./asset-schema.js";
 import { intentSchema } from "./intent-schema.js";
-import { fileSchema, FILE_ROLES, FILE_LIMITS, layoutSchema, LAYOUT_LIMITS } from "./file-schema.js";
+import { fileSchema, FILE_ROLES, FILE_LIMITS, layoutSchema, LAYOUT_LIMITS, documentSchema, DOCUMENT_KINDS, DOCUMENT_LIMITS } from "./file-schema.js";
 import { seedSources, SEED_SOURCE_SQL, seedSourceBytes } from "./source-seed.js";
 import { ASSET_LIMITS } from "./assets.js";
 import { getDb, closeDb } from "../db.js";
@@ -86,6 +86,7 @@ function ensureSchema() {
   db.exec(intentSchema("sqlite"));
   db.exec(fileSchema("sqlite"));
   db.exec(layoutSchema());
+  db.exec(documentSchema());
   ensureHistorySchema(db);
   return db;
 }
@@ -330,6 +331,45 @@ export async function deleteProjectLayout({ owner = null, admin = false, id, lay
     const db = ensureSchema();
     if (!ownedRow(db, id, owner, admin)) return { removed: false };
     return { removed: db.prepare("DELETE FROM v2_project_layouts WHERE project_id=? AND id=?").run(id, layoutId).changes === 1 };
+  } catch (error) { throw storageFailure(error); }
+}
+// A project's written documents — newest first, owner-checked like it.
+const docRow = (r, withBody) => ({ id: r.id, kind: r.kind, title: r.title, basisRevision: Number(r.basis_revision), createdAt: r.created_at, ...(withBody ? { body: JSON.parse(r.body) } : {}) });
+export async function listProjectDocuments({ owner = null, admin = false, id }) {
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { documents: null };
+    return { documents: db.prepare("SELECT id,kind,title,basis_revision,created_at FROM v2_project_documents WHERE project_id=? ORDER BY created_at DESC, id DESC").all(id).map((r) => docRow(r, false)) };
+  } catch (error) { throw storageFailure(error); }
+}
+export async function getProjectDocument({ owner = null, admin = false, id, documentId }) {
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { document: null };
+    const r = db.prepare("SELECT * FROM v2_project_documents WHERE project_id=? AND id=?").get(id, documentId);
+    return { document: r ? docRow(r, true) : null };
+  } catch (error) { throw storageFailure(error); }
+}
+export async function putProjectDocument({ owner = null, admin = false, id, document }) {
+  if (!DOCUMENT_KINDS.includes(document?.kind)) throw Object.assign(new Error("unknown document kind"), { code: "invalid-document" });
+  const body = JSON.stringify(document.body);
+  if (body.length > DOCUMENT_LIMITS.bodyChars) throw Object.assign(new Error("the document is too large to keep"), { code: "invalid-document" });
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { stored: false };
+    // The oldest goes when the project is at its limit: documents are
+    // regenerated, not curated, and the newest are the ones read.
+    const n = db.prepare("SELECT COUNT(*) AS n FROM v2_project_documents WHERE project_id=?").get(id).n;
+    if (n >= DOCUMENT_LIMITS.perProject) db.prepare("DELETE FROM v2_project_documents WHERE project_id=? AND id IN (SELECT id FROM v2_project_documents WHERE project_id=? ORDER BY created_at, id LIMIT ?)").run(id, id, n - DOCUMENT_LIMITS.perProject + 1);
+    db.prepare("INSERT INTO v2_project_documents (project_id,id,kind,title,body,basis_revision,created_at) VALUES (?,?,?,?,?,?,?)").run(id, document.id, document.kind, String(document.title).slice(0, DOCUMENT_LIMITS.titleChars), body, document.basisRevision, new Date().toISOString());
+    return { stored: true };
+  } catch (error) { throw storageFailure(error); }
+}
+export async function deleteProjectDocument({ owner = null, admin = false, id, documentId }) {
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { removed: false };
+    return { removed: db.prepare("DELETE FROM v2_project_documents WHERE project_id=? AND id=?").run(id, documentId).changes === 1 };
   } catch (error) { throw storageFailure(error); }
 }
 export async function setProjectFileRole({ owner = null, admin = false, id, fileId, role }) {
