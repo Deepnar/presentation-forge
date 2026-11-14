@@ -1232,6 +1232,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       if (viewerRef.current !== targetViewer) return;
       const adapter = attachEditor(targetViewer, doc, {
         root: mountRef.current,
+        surface: scrollRef.current,
         onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
         onNotice: (n) => setTextState((t) => ({ ...t, overflow: n.message, overflowId: n.elementId ?? null })),
         onPasteFiles: (files) => { for (const f of files) insertImageFile(f); },
@@ -1489,6 +1490,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     } catch { /* teardown only */ }
     const adapter = attachEditor(targetViewer, fresh, {
       root: mountRef.current,
+      surface: scrollRef.current,
       onError: (r) => setEditStatus((s) => ({ ...s, error: `${r.code}: ${r.message}` })),
       onNotice: (n) => setTextState((t) => ({ ...t, overflow: n.message, overflowId: n.elementId ?? null })),
         onPasteFiles: (files) => { for (const f of files) insertImageFile(f); },

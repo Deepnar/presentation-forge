@@ -17,15 +17,18 @@ const box = (id, x, y, w, h, extra = {}) => ({
 
 async function rig(scenes) {
   const { document } = parseHTML("<!doctype html><html><body></body></html>");
+  // The stage around the slide, as the app has it.
+  const surface = document.createElement("div");
   const root = document.createElement("div");
-  document.body.appendChild(root);
+  surface.appendChild(root);
+  document.body.appendChild(surface);
   const viewer = createViewer(root, scenes);
   const doc = await createDocument(structuredClone(scenes));
   const errors = [];
-  const editor = attachEditor(viewer, doc, { root, onError: (r) => errors.push(r) });
+  const editor = attachEditor(viewer, doc, { root, surface, onError: (r) => errors.push(r) });
   // 1280x720 client px for the 13.333x7.5in slide: 96 px per inch.
   root.querySelector("svg").getBoundingClientRect = () => ({ left: 0, top: 0, width: 1280, height: 720, right: 1280, bottom: 720 });
-  return { root, viewer, doc, editor, errors };
+  return { root, surface, viewer, doc, editor, errors };
 }
 
 function ptr(root, type, target, { x, y, shift = false, alt = false }) {
@@ -260,6 +263,34 @@ describe("selection box", () => {
     const r = await rig([slide("s", [box("a", 1, 1, 1, 1), box("b", 3, 1, 1, 1), box("c", 6, 1, 1, 1)])]);
     assert.deepEqual(await sweep(r, [48, 48], [336, 240]), ["a"], "b is only half inside");
     assert.deepEqual(await sweep(r, [560, 48], [720, 240], { shift: true }), ["a", "c"]);
+  });
+
+  it("what the box will select is outlined while dragging", async () => {
+    const r = await rig([slide("s", [box("a", 1, 1, 1, 1), box("b", 3, 1, 1, 1)])]);
+    const bg = r.root.querySelector("svg");
+    ptr(r.root, "pointerdown", bg, { x: 48, y: 48 });
+    ptr(r.root, "pointermove", bg, { x: 240, y: 240 });
+    assert.deepEqual([...r.root.querySelectorAll("[data-marquee-hit]")].map((n) => n.getAttribute("data-marquee-hit")), ["a"]);
+    ptr(r.root, "pointermove", bg, { x: 432, y: 240 });
+    assert.deepEqual([...r.root.querySelectorAll("[data-marquee-hit]")].map((n) => n.getAttribute("data-marquee-hit")).sort(), ["a", "b"]);
+    ptr(r.root, "pointerup", bg, { x: 432, y: 240 });
+    await r.editor.pending();
+    assert.equal(r.root.querySelectorAll("[data-marquee-hit]").length, 0, "outlines go on release");
+  });
+
+  it("a sweep can start in the margin around the slide, and a click there clears", async () => {
+    const r = await rig([slide("s", [box("a", 1, 1, 1, 1), box("b", 3, 1, 1, 1)])]);
+    const bg = r.root.querySelector("svg");
+    ptr(r.root, "pointerdown", r.surface, { x: -40, y: -40 });
+    ptr(r.root, "pointermove", bg, { x: 240, y: 240 });
+    assert.ok(r.root.querySelector("[data-marquee]"), "the box is drawn");
+    ptr(r.root, "pointerup", bg, { x: 240, y: 240 });
+    await r.editor.pending();
+    assert.deepEqual([...r.viewer.api.snapshot().selectedIds], ["a"]);
+    ptr(r.root, "pointerdown", r.surface, { x: -40, y: -40 });
+    ptr(r.root, "pointerup", bg, { x: -40, y: -40 });
+    await r.editor.pending();
+    assert.deepEqual([...r.viewer.api.snapshot().selectedIds], [], "a plain click in the margin clears");
   });
 });
 

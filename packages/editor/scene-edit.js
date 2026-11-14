@@ -173,6 +173,9 @@ export function attachEditor(viewer, doc, opts = {}) {
   // Image files pasted onto the slide: uploading belongs to the shell
   // (it knows the project), placing them to addImageElement.
   const onPasteFiles = typeof opts.onPasteFiles === "function" ? opts.onPasteFiles : null;
+  // The stage around the slide: a selection box can start in its margin,
+  // as in PowerPoint and Google Slides, where a sweep usually begins.
+  const surface = opts.surface ?? null;
   const notice = (n) => { if (onNotice) onNotice(n); };
   const slideHeight = (slideId) => doc.snapshot().scenes.find((sc) => sc.id === slideId)?.height ?? SCENE_H;
   // The ops that commit a text change and, when the text no longer fits,
@@ -437,19 +440,43 @@ export function attachEditor(viewer, doc, opts = {}) {
     return { x: Math.min(ax, bx), y: Math.min(ay, by), w: Math.abs(bx - ax), h: Math.abs(by - ay) };
   }
 
+  // The box, and an outline on every unit it will select, so the result is
+  // visible before release. A white ring outside a blue edge reads on a
+  // light slide, a dark slide and the stage alike.
   function drawMarquee(r) {
     ensureHandleLayer();
     let box = handleLayer?.querySelector("[data-marquee]");
+    for (const hit of [...(handleLayer?.querySelectorAll("[data-marquee-hit]") ?? [])]) hit.remove();
     if (!r) { box?.remove(); return; }
+    const k = svgScales(root)?.kx ?? 1;
+    const px = (n) => `${(n / k).toFixed(2)}px`;
     if (!box) {
       box = root.ownerDocument.createElement("div");
       box.setAttribute("data-marquee", "");
       box.setAttribute("data-snap-guide", "marquee");
-      Object.assign(box.style, { position: "absolute", pointerEvents: "none", border: "1px solid #3b82f6", background: "rgba(59,130,246,0.12)", boxSizing: "border-box" });
+      Object.assign(box.style, { position: "absolute", pointerEvents: "none", borderStyle: "solid", borderColor: "#2563eb", background: "rgba(37,99,235,0.14)", boxSizing: "border-box" });
       handleLayer.appendChild(box);
     }
-    const k = svgScales(root)?.kx ?? 1;
-    Object.assign(box.style, { left: `${r.x.toFixed(1)}px`, top: `${r.y.toFixed(1)}px`, width: `${r.w.toFixed(1)}px`, height: `${r.h.toFixed(1)}px`, borderWidth: `${(1 / k).toFixed(2)}px` });
+    Object.assign(box.style, { left: `${r.x.toFixed(1)}px`, top: `${r.y.toFixed(1)}px`, width: `${r.w.toFixed(1)}px`, height: `${r.h.toFixed(1)}px`, borderWidth: px(1.5), boxShadow: `0 0 0 ${px(1)} rgba(255,255,255,0.9)` });
+    for (const id of unitsInside(r)) {
+      const b = api.bounds(id);
+      if (!b) continue;
+      const hit = root.ownerDocument.createElement("div");
+      hit.setAttribute("data-marquee-hit", id);
+      Object.assign(hit.style, { position: "absolute", pointerEvents: "none", boxSizing: "border-box", left: `${b.x.toFixed(1)}px`, top: `${b.y.toFixed(1)}px`, width: `${b.w.toFixed(1)}px`, height: `${b.h.toFixed(1)}px`, border: `${px(1.5)} solid #2563eb`, boxShadow: `0 0 0 ${px(1)} rgba(255,255,255,0.9)` });
+      handleLayer.appendChild(hit);
+    }
+  }
+
+  // A press in the stage's margin starts the same box a press on empty
+  // canvas does; the root captures the pointer so the gesture runs through
+  // the root's own move and up handlers.
+  function onSurfaceDown(ev) {
+    if (ev.button !== 0 || root.contains(ev.target) || textSession || drag || resize || rotating || marquee) return;
+    if (ev.target?.closest?.("input, textarea, select, button, a, [contenteditable='true'], [data-text-edit]")) return;
+    marquee = { pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY, additive: !!ev.shiftKey, base: api.snapshot().selectedIds, moved: false, fromSurface: true };
+    try { root.setPointerCapture?.(ev.pointerId); } catch { /* the root's listeners still see moves over the slide */ }
+    ev.preventDefault();
   }
 
   // Every unit wholly inside the box — PowerPoint's rule, which keeps a
@@ -471,7 +498,11 @@ export function attachEditor(viewer, doc, opts = {}) {
       const m = marquee;
       marquee = null;
       drawMarquee(null);
-      if (!m.moved) return null;
+      if (!m.moved) {
+        // A plain click in the margin clears, as a click on empty canvas does.
+        if (m.fromSurface && !m.additive) api.selectMany([]);
+        return null;
+      }
       const r = marqueeRect(m, ev.clientX, ev.clientY);
       const inside = r ? unitsInside(r) : [];
       api.selectMany(m.additive ? [...new Set([...m.base, ...inside])] : inside);
@@ -2356,6 +2387,7 @@ export function attachEditor(viewer, doc, opts = {}) {
   }
 
   root.addEventListener("pointerdown", onPointerDown);
+  surface?.addEventListener("pointerdown", onSurfaceDown);
   root.addEventListener("pointermove", onPointerMove);
   root.addEventListener("pointerup", onPointerUp);
   root.addEventListener("pointercancel", onPointerCancel);
@@ -2452,6 +2484,7 @@ export function attachEditor(viewer, doc, opts = {}) {
       } catch { /* teardown only */ }
       handleLayer = null;
       root.removeEventListener("pointerdown", onPointerDown);
+      surface?.removeEventListener("pointerdown", onSurfaceDown);
       root.removeEventListener("pointermove", onPointerMove);
       root.removeEventListener("pointerup", onPointerUp);
       root.removeEventListener("pointercancel", onPointerCancel);
