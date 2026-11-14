@@ -161,10 +161,12 @@ Decisions taken with this list, so nobody re-litigates them:
      deck moved glitchily — rotated elements previewed their drag in their
      own turned frame, and their frame, handles and snapping used the
      unturned box. All four now follow the rotation.
-   - **[ ] F4c Make a slide of your own layout.** The editor offers blank
-     slides and the layout gallery but no way to make a new slide type of
-     your own — arrange a slide, then save it as a layout to reuse in the
-     project (and later across projects).
+   - **[x] F4c Make a slide of your own layout.** Done 2026-11-14: a
+     slide's menu has **Save as layout** (named after its largest text; the
+     theme's locked marks stay out), and **+ Slide ▾ → Your layouts** inserts
+     it after the current slide as a detached, human-owned slide with fresh
+     ids, removable with ×. Kept per project (`v2_project_layouts`, 40 per
+     project). Left: layouts shared across a person's projects.
    - **[~] F4b The editor behaves like a slide editor** (owner, 2026-11-11:
      "the editing things feel broken"). An edit that went through is never
      reported as a failure, and a gesture does what PowerPoint, Google Slides
@@ -265,6 +267,12 @@ to use, adopting the features closely related to what it already does —
 not all of their features (the editor-scope rule under F4b still holds).
 Done in tandem with the Claude Design skill, as already agreed for the
 landing page and the site's look.
+
+Found 2026-11-14 by the owner: **the add-slide menu could not be found.**
+It is the small "+ Slide ▾" at the top of the slide rail, under the
+Slides/Layers tabs, and only in edit mode. Adding a slide is the most common
+thing after typing; it needs the prominence Google Slides and PowerPoint
+give it (a clear New slide control, and a "+" after the last thumbnail).
 
 Added 2026-11-12 by the owner: the **inspector and the layers panel** are
 the parts most in need of this pass — they must read plainly at a glance.
