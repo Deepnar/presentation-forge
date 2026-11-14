@@ -16,10 +16,11 @@ import { createViewer } from "../../../../packages/editor/scene-dom.js";
 import { flattenLayers, elementLabel, applyCollapse, overflowEstimate, sceneOverflow } from "../../../../packages/editor/scene-text.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
 import { layoutFromSlide } from "../../../../packages/editor/scene-arrange.js";
+import { chartFromText } from "../../../../packages/editor/chart-table.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
-import { apiListLayouts, apiSaveLayout, apiRemoveLayout, apiChangeTheme, apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
+import { apiListFiles, apiReadFile, apiListLayouts, apiSaveLayout, apiRemoveLayout, apiChangeTheme, apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import { useNarrow } from "../lib/viewport.js";
 import SlideNotes from "./SlideNotes.jsx";
 import StageMenu from "./StageMenu.jsx";
@@ -320,7 +321,10 @@ function TextFormatRow({ index, paragraph, onCommit }) {
 // element+revision (see key at the call site), so undo/redo and
 // reselection refresh the grid. Switching selection discards an
 // unapplied draft — stated policy: only Apply writes.
-function ChartDataPanel({ element, onCommit, diagnostics = true, onDraftChange }) {
+// Data can also come in whole: cells pasted from a spreadsheet, or one of
+// the project's CSV files (packages/editor/chart-table.js reads both). It
+// lands in the draft like typed cells, so Apply still decides.
+function ChartDataPanel({ element, onCommit, diagnostics = true, onDraftChange, projectId = null }) {
   const chart = element.chart ?? {};
   const seed = () => ({
     kind: chart.chartKind ?? "bar",
@@ -329,6 +333,38 @@ function ChartDataPanel({ element, onCommit, diagnostics = true, onDraftChange }
   });
   const [draft, setDraft] = useState(seed);
   const [error, setError] = useState(null);
+  const [filled, setFilled] = useState(null);
+  const [dataFiles, setDataFiles] = useState([]);
+  useEffect(() => {
+    if (!projectId) return undefined;
+    let live = true;
+    apiListFiles(projectId).then((files) => { if (live) setDataFiles((files ?? []).filter((f) => f.kind === "csv")); }).catch(() => {});
+    return () => { live = false; };
+  }, [projectId]);
+  function fillFrom(text, from) {
+    const out = chartFromText(text);
+    if (out.error) { setError(`${from}: ${out.error}`); setFilled(null); return; }
+    const kind = (draft.kind === "pie" || draft.kind === "doughnut") && out.series.length > 1 ? "bar" : draft.kind;
+    setDraft({ kind, categories: out.categories, series: out.series.map((s) => ({ name: s.name, values: s.values.map(String) })) });
+    setError(null);
+    setFilled(`Filled from ${from} · ${out.series.length} series × ${out.categories.length} categories${out.notes.length ? ` · ${out.notes.join("; ")}` : ""} — Apply to use it`);
+  }
+  function onPaste(e) {
+    const text = e.clipboardData?.getData("text/plain") ?? "";
+    if (!/[\t\n]/.test(text.trim())) return;
+    e.preventDefault();
+    fillFrom(text, "pasted cells");
+  }
+  async function fillFromFile(fileId) {
+    const file = dataFiles.find((f) => f.id === fileId);
+    if (!file) return;
+    try {
+      const read = await apiReadFile(projectId, fileId);
+      // A file longer than one page ends mid-row; the tail is dropped.
+      const text = read.nextOffset != null ? read.text.slice(0, read.text.lastIndexOf("\n")) : read.text;
+      fillFrom(text, file.name);
+    } catch (err) { setError(`${file.name}: ${err.message}`); }
+  }
   const dirty = JSON.stringify(draft) !== JSON.stringify(seed());
   useLayoutEffect(() => { onDraftChange?.(element.id, dirty); return () => onDraftChange?.(element.id, false); }, [element.id, dirty, onDraftChange]);
   function setCell(si, ci, value) {
@@ -377,6 +413,7 @@ function ChartDataPanel({ element, onCommit, diagnostics = true, onDraftChange }
   function cancel() {
     setDraft(seed());
     setError(null);
+    setFilled(null);
   }
   const commitOnEnter = (e) => {
     if (e.key === "Enter") apply();
@@ -404,8 +441,15 @@ function ChartDataPanel({ element, onCommit, diagnostics = true, onDraftChange }
         <button type="button" disabled={draft.series.length <= 1} onClick={() => setDraft((d) => ({ ...d, series: d.series.slice(0, -1) }))}>− Series</button>
         <button type="button" onClick={apply}>Apply</button>
         <button type="button" onClick={cancel}>Cancel</button>
+        {dataFiles.length > 0 && (
+          <select aria-label="Fill from a data file" data-chart-from-file value="" onChange={(e) => fillFromFile(e.target.value)}>
+            <option value="">Fill from file…</option>
+            {dataFiles.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+          </select>
+        )}
       </div>
-      <table style={{ borderCollapse: "collapse", alignSelf: "flex-start" }}>
+      {filled && <span data-chart-filled style={{ opacity: 0.8 }}>{filled}</span>}
+      <table onPaste={onPaste} title="Paste cells from a spreadsheet to fill the chart" style={{ borderCollapse: "collapse", alignSelf: "flex-start" }}>
         <thead>
           <tr>
             <th style={{ textAlign: "left", padding: "2px 6px", opacity: 0.7 }}>Category</th>
@@ -2846,6 +2890,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                   element={chartTarget}
                   diagnostics={!embedded}
                   onDraftChange={reportGridDraft}
+                  projectId={editOn && project?.id && !project.recoverable ? project.id : null}
                   onCommit={(payload) => adapterRef.current?.setChartData(chartTarget.id, payload)}
                 />
               )}
