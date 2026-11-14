@@ -145,6 +145,18 @@ export type ToolResult =
         slideId: string;
         position: number;
       };
+      tool: "change_layout";
+    }
+  | {
+      ok: true;
+      revision: number;
+      changed: boolean;
+      preserved: ("geometry" | "styling" | "untargeted-content" | "tombstones")[];
+      warnings: string[];
+      data: {
+        slideId: string;
+        position: number;
+      };
       tool: "replace_slide";
     }
   | {

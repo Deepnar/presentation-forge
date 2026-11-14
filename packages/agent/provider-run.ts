@@ -105,8 +105,18 @@ export type ProviderRunHost = {
   // Trusted server compile for add_slide: the semantic slide laid out in
   // the project's theme and chrome, or null when it cannot be. Optional —
   // without it add_slide is refused.
-  compileSlide?(binding: Binding, input: { slide: AddSlide['slide']; index: number; total: number; replaces?: string }): Promise<Json | null>;
+  // With `layout` and no slide (change_layout) it is the slide's own
+  // content laid out another way.
+  compileSlide?(binding: Binding, input: { slide?: AddSlide['slide']; layout?: string; index: number; total: number; replaces?: string }): Promise<Json | null>;
 };
+
+// A slide's title as the plan names it: its heading, else its first text.
+function slideTitle(scene: { elements?: { id: string; kind: string; paragraphs?: { runs: { text: string }[] }[] }[] }): string {
+  const texts = (scene.elements ?? []).filter(e => e.kind === 'text');
+  const el = texts.find(e => e.id.endsWith(':title:heading')) ?? texts[0];
+  const text = (el?.paragraphs ?? []).map(p => p.runs.map(r => r.text).join('')).join(' ').trim();
+  return text.slice(0, 120) || 'Untitled slide';
+}
 // Only the trusted host factory supplies this bridge; model/request JSON cannot
 // carry persistence callbacks or convert copied proposal DTOs into capabilities.
 export function createProviderRunner(backend: RuntimeBackend, provider: ModelProvider, host?: ProviderRunHost) {
@@ -234,7 +244,7 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
           const { providerId, family, model, text, usage } = response;
           const summary = { providerId, family, model, text, usage };
           const edits = response.calls.filter(c => c.request.tool === 'edit_content');
-          const adds = response.calls.filter(c => c.request.tool === 'add_slide' || c.request.tool === 'rewrite_slide');
+          const adds = response.calls.filter(c => c.request.tool === 'add_slide' || c.request.tool === 'rewrite_slide' || c.request.tool === 'change_layout');
           if ((edits.length || adds.length) && edits.length + adds.length !== response.calls.length) return fail('invalid-response');
           if (edits.length || adds.length) {
             const steps: unknown[] = [];
@@ -256,6 +266,24 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
               if (!host?.compileSlide) return fail('tool-refused');
               const order = initial.scenes.map(sc => sc.id);
               for (const call of adds) {
+                if (call.request.tool === 'change_layout') {
+                  // The slide's own content, laid out another way by the
+                  // compiler; a layout its content does not fit is refused.
+                  const args = call.request.args;
+                  if (args.baseRevision !== context.revision || !request.scope.readableSlides.includes(args.slideId)) return fail('tool-refused');
+                  const at = order.indexOf(args.slideId);
+                  if (at < 0) return fail('tool-refused');
+                  let scene: Json | null;
+                  try { scene = await host.compileSlide(trusted, { layout: args.layout, index: at, total: order.length, replaces: args.slideId }); }
+                  catch { return fail('tool-refused'); }
+                  if (signal?.aborted) return fail('cancelled');
+                  if (!scene || (scene as { id?: unknown }).id !== args.slideId) return fail('tool-refused');
+                  const step = validatedToolRequest({ tool: 'replace_slide', args: { baseRevision: context.revision, slideId: args.slideId, scene } }, 65536);
+                  if (!step) return fail('result-too-large');
+                  steps.push(step);
+                  slides.push({ position: at + 1, title: slideTitle(initial.scenes[at] as never), replaces: true });
+                  continue;
+                }
                 if (call.request.tool === 'rewrite_slide') {
                   // A rewrite keeps the slide's id and place; the host carries
                   // what the person moved, locked or added onto the new layout.

@@ -124,7 +124,7 @@ export function prepareExchange(profile: ProviderProfile, input: unknown, option
         !context.messages[0].content.startsWith(CORE_POLICY) ||
         !Array.isArray(context.tools) || context.tools.length < 1 || context.tools.length > 10 ||
         new Set(context.tools.map(t => t.name)).size !== context.tools.length ||
-        context.tools.some(t => !['get_project', 'get_slide', 'get_selected_elements', 'edit_content', 'add_slide', 'rewrite_slide', 'list_files', 'read_file', 'web_search'].includes(t.name) || !t.inputSchema || typeof t.inputSchema !== 'object')) return providerFailure('invalid-request');
+        context.tools.some(t => !['get_project', 'get_slide', 'get_selected_elements', 'edit_content', 'add_slide', 'rewrite_slide', 'change_layout', 'list_files', 'read_file', 'web_search'].includes(t.name) || !t.inputSchema || typeof t.inputSchema !== 'object')) return providerFailure('invalid-request');
     if ([...(opts.requires ?? []), 'toolCalling' as const].some(f => !profile.capabilities[f])) return providerFailure('unsupported-capability');
     const outputTokens = opts.maxOutputTokens ?? profile.capabilities.maxOutputTokens;
     if (!integer(outputTokens, 1, profile.capabilities.maxOutputTokens)) return providerFailure('invalid-request');

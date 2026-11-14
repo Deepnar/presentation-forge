@@ -123,3 +123,16 @@ check('a turn offers the project\'s file tools to the model', async t => {
   const names = e.seen[0].body.tools.map(x => x.function.name);
   assert.ok(names.includes('list_files') && names.includes('read_file'), names.join(','));
 });
+
+check('a layout change the project cannot lay out is refused, nothing proposed', async t => {
+  let e;
+  // These slides were not compiled from a stored intent, so no layout applies.
+  e = await hostScenario(t, { handler: (req, res) => respond([{ tool: 'change_layout', args: { baseRevision: 0, slideId: e.doc.scenes[0].id, layout: 'hub' } }])(req, res) });
+  await e.submit();
+  const policy = createAccountHostPolicy({ resolve: async () => ({ backend: { type: 'openai-compatible', baseURL: e.baseURL, apiKey: 'k', providerId: 'openai', billingOwner: 'user' }, model: 'm' }) });
+  await createAutoHostPickup(e.store, policy).pickup({ owner: e.owner }, pickupInput());
+  const state = await e.service.read(e.binding);
+  assert.notEqual(state.turns[0].state, 'awaiting-decision');
+  assert.deepEqual((await e.store.getProject(e.binding)).doc.scenes, e.doc.scenes);
+  assert.ok(e.seen[0].body.tools.some(x => x.function.name === 'change_layout'), 'offered to the model');
+});

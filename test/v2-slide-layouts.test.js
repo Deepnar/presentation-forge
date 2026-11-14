@@ -108,3 +108,21 @@ test("title and table slides have no other layouts, and other people's projects 
   await assert.rejects(slideLayoutOptions({ owner: "someone@else.test", id: project.id, slideId: project.scenes[1].id }), { code: "not-found" });
   await assert.rejects(slideLayoutOptions({ owner, id: project.id, slideId: "nope" }), { code: "not-found" });
 });
+
+test("the Assistant's change_layout lays a stored slide out by name, and its names are the picker's", async () => {
+  const { compileSlide } = await import("../src/projects/slide-compile.js");
+  const { VARIANTS } = await import("../src/projects/slide-layouts.js");
+  const { readFile } = await import("node:fs/promises");
+  const request = JSON.parse(await readFile(new URL("../packages/tools/request.schema.json", import.meta.url)));
+  const branch = request.oneOf.find((b) => b.properties.tool.const === "change_layout");
+  assert.deepEqual(branch.properties.args.properties.layout.enum, VARIANTS.map((v) => v.key));
+  const project = await imported();
+  const cards = project.scenes[1];
+  const hub = await compileSlide({ owner, id: project.id }, { layout: "hub", replaces: cards.id, index: 1, total: 3 });
+  assert.equal(hub.id, cards.id);
+  assert.deepEqual(hub.layoutChoice, { relationship: "hierarchy", arrangement: "radial" });
+  assert.ok((await validateScene(hub)).ok);
+  assert.equal(await compileSlide({ owner, id: project.id }, { layout: "hub", replaces: project.scenes[0].id, index: 0, total: 3 }), null, "a title slide has one layout");
+  assert.equal(await compileSlide({ owner, id: project.id }, { layout: "nope", replaces: cards.id, index: 1, total: 3 }), null);
+  assert.equal(await compileSlide({ owner, id: project.id }, { layout: "quadrants", replaces: cards.id, index: 1, total: 3 }), null, "three parts are not quadrants: the compiler would draw its own card grid");
+});

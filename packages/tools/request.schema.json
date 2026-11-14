@@ -574,6 +574,59 @@
       "type": "object",
       "properties": {
         "tool": {
+          "const": "change_layout"
+        },
+        "args": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "baseRevision",
+            "slideId",
+            "layout"
+          ],
+          "description": "Propose laying an existing slide out another way, keeping its content: auto is the compiler's own choice; cards, compare (side by side), steps, steps-down, cycle, tiers, hub, bands, funnel, pyramid, quadrants (four parts), venn (two to four overlapping parts). The compiler draws it in the project's theme and refuses a layout the content does not fit. It changes only after the person approves.",
+          "properties": {
+            "baseRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "slideId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "description": "The slide to lay out again."
+            },
+            "layout": {
+              "enum": [
+                "auto",
+                "cards",
+                "compare",
+                "steps",
+                "steps-down",
+                "cycle",
+                "tiers",
+                "hub",
+                "bands",
+                "funnel",
+                "pyramid",
+                "quadrants",
+                "venn"
+              ]
+            }
+          }
+        }
+      },
+      "required": [
+        "tool",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "tool": {
           "const": "replace_slide"
         },
         "args": {

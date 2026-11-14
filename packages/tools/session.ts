@@ -24,7 +24,7 @@ export function validatedToolResult(input: unknown, maxChars = 65536): ToolResul
   } catch { return null; }
 }
 
-export const CONTENT_TOOLS = ['get_project', 'get_slide', 'get_selected_elements', 'edit_content', 'add_slide', 'rewrite_slide', 'list_files', 'read_file'] as const;
+export const CONTENT_TOOLS = ['get_project', 'get_slide', 'get_selected_elements', 'edit_content', 'add_slide', 'rewrite_slide', 'change_layout', 'list_files', 'read_file'] as const;
 export const SCENE_READS = ['get_project', 'get_slide', 'get_selected_elements'] as const;
 export function semanticToolCatalog(): { name: string; inputSchema: Json }[] {
   return schema.oneOf.map((branch: { properties: { tool: { const: string }; args: unknown } }) => ({ name: branch.properties.tool.const, inputSchema: cloneJson(branch.properties.args) }));
@@ -133,7 +133,7 @@ export function createToolSession(binding: ToolBinding): ToolSession {
       // Writing tools only in edit mode; insert_slide is a host plan step and
       // never offered (it is not in CONTENT_TOOLS), so no model can supply a
       // laid-out scene.
-      return semanticToolCatalog().filter(t => (CONTENT_TOOLS as readonly string[]).includes(t.name) && (!['edit_content', 'add_slide', 'rewrite_slide'].includes(t.name) || (mode === 'edit' && editable.size > 0)) && (!['list_files', 'read_file'].includes(t.name) || !!binding.files));
+      return semanticToolCatalog().filter(t => (CONTENT_TOOLS as readonly string[]).includes(t.name) && (!['edit_content', 'add_slide', 'rewrite_slide', 'change_layout'].includes(t.name) || (mode === 'edit' && editable.size > 0)) && (!['list_files', 'read_file'].includes(t.name) || !!binding.files));
     },
     async execute(input: unknown, callId?: string): Promise<ToolResult> {
       if (!authorized) return failure('forbidden');
@@ -143,7 +143,7 @@ export function createToolSession(binding: ToolBinding): ToolSession {
       if (request.tool === 'web_search') return failure('forbidden');
       // add_slide is semantic: the host compiles it into an insert_slide plan
       // step before anything runs, so it never executes here.
-      if (request.tool === 'add_slide' || request.tool === 'rewrite_slide') return failure('forbidden');
+      if (request.tool === 'add_slide' || request.tool === 'rewrite_slide' || request.tool === 'change_layout') return failure('forbidden');
       try {
         const { scenes, revision } = document.snapshot();
         let result: ToolSuccess;

@@ -4,8 +4,7 @@
 // theme's ground is stored as a project asset, so the scene stays small.
 import { randomBytes } from "node:crypto";
 import { projectStore } from "./backend.js";
-import { compileSceneDeck } from "../v2-compile.js";
-import { chromeFromRecipe } from "./import-source.js";
+import { compileInPlace, slideInLayout } from "./slide-layouts.js";
 import { storePlates } from "./import-generated.js";
 import { carryEdits } from "../../packages/compiler/compile.js";
 
@@ -13,7 +12,13 @@ import { carryEdits } from "../../packages/compiler/compile.js";
 // what the person moved, locked or added carried across — but not their old
 // wording, which the rewrite they asked for replaces. Their own (detached)
 // slides are never regenerated.
-export async function compileSlide(binding, { slide, index, total, replaces = null }) {
+export async function compileSlide(binding, { slide, index, total, replaces = null, layout = null }) {
+  // change_layout: the slide's own content, laid out another way.
+  if (layout !== null) {
+    if (!replaces) return null;
+    const out = await slideInLayout({ owner: binding.owner ?? null, id: binding.id, slideId: replaces, layout, index, total });
+    return out.scene ?? null;
+  }
   const store = await projectStore();
   const { doc } = await store.getProject({ owner: binding.owner ?? null, id: binding.id });
   if (!doc) return null;
@@ -21,24 +26,14 @@ export async function compileSlide(binding, { slide, index, total, replaces = nu
   if (replaces && (!prev || prev.layoutState === "detached")) return null;
   const { intent: stored } = await store.getProjectIntent({ owner: binding.owner ?? null, id: binding.id });
   const id = replaces ?? `a-${randomBytes(6).toString("hex")}`;
-  const intent = {
-    id: stored?.deck?.id ?? doc.id, title: stored?.deck?.title ?? doc.title,
-    slides: [{
-      id, purpose: slide.purpose ?? slide.title, title: slide.title,
-      blocks: slide.blocks.map((b, i) => ({ id: `${id}-b${i + 1}`, ...b })),
-    }],
+  const intentSlide = {
+    id, purpose: slide.purpose ?? slide.title, title: slide.title,
+    blocks: slide.blocks.map((b, i) => ({ id: `${id}-b${i + 1}`, ...b })),
   };
   // The chrome a content slide of this deck carries, numbered where the
   // slide will land.
-  const recipe = stored?.chrome ? { ...stored.chrome, slides: [{ surface: "content", suppressPresenter: false, presenterText: stored.chrome.fallback }] } : null;
-  const chromeForDeck = recipe ? (i, design, ctx) => {
-    const built = chromeFromRecipe(recipe)(i, design, ctx);
-    return { slides: built.slides.map((s) => ({ ...s, index: index + 1, total })) };
-  } : null;
-  const compiled = await compileSceneDeck({
-    intent, theme: doc.theme?.name ?? "warm-humanist", style: stored?.style ?? null,
-    mode: doc.theme?.variant === "dark" ? "dark" : "light", chromeForDeck,
-  });
+  const chrome = { surface: "content", suppressPresenter: false, presenterText: stored?.chrome?.fallback };
+  const compiled = await compileInPlace({ doc, stored, slide: intentSlide, chrome, index, total });
   let [scene] = compiled.scenes;
   if (prev) {
     const kept = structuredClone(prev);

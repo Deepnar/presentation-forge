@@ -254,6 +254,33 @@ export type ToolRequest =
       };
     }
   | {
+      tool: "change_layout";
+      /**
+       * Propose laying an existing slide out another way, keeping its content: auto is the compiler's own choice; cards, compare (side by side), steps, steps-down, cycle, tiers, hub, bands, funnel, pyramid, quadrants (four parts), venn (two to four overlapping parts). The compiler draws it in the project's theme and refuses a layout the content does not fit. It changes only after the person approves.
+       */
+      args: {
+        baseRevision: number;
+        /**
+         * The slide to lay out again.
+         */
+        slideId: string;
+        layout:
+          | "auto"
+          | "cards"
+          | "compare"
+          | "steps"
+          | "steps-down"
+          | "cycle"
+          | "tiers"
+          | "hub"
+          | "bands"
+          | "funnel"
+          | "pyramid"
+          | "quadrants"
+          | "venn";
+      };
+    }
+  | {
       tool: "replace_slide";
       /**
        * Host-only plan step: a slide's replacement, already laid out. Never offered to a model.
