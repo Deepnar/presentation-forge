@@ -20,12 +20,13 @@ import { chartFromText } from "../../../../packages/editor/chart-table.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
-import { apiListFiles, apiReadFile, apiListLayouts, apiSaveLayout, apiRemoveLayout, apiChangeTheme, apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
+import { apiListFiles, apiReadFile, apiSlideLayouts, apiListLayouts, apiSaveLayout, apiRemoveLayout, apiChangeTheme, apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import { useNarrow } from "../lib/viewport.js";
 import SlideNotes from "./SlideNotes.jsx";
 import StageMenu from "./StageMenu.jsx";
 import ThemePicker from "./ThemePicker.jsx";
 import IconPicker from "./IconPicker.jsx";
+import LayoutPicker from "./LayoutPicker.jsx";
 import ProjectFiles from "./ProjectFiles.jsx";
 
 // Restores focus to the opener when a dialog closes. Dialogs trap
@@ -1083,6 +1084,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [editOn, setEditOn] = useState(false);
   const [stageMenu, setStageMenu] = useState(null);
   const [iconsOpen, setIconsOpen] = useState(false);
+  // { at, slideId, load, basis } while the slide-layout picker is open.
+  const [layoutPick, setLayoutPick] = useState(null);
   const imageInputRef = useRef(null);
   const [imageBusy, setImageBusy] = useState(false);
   // The picture goes to the project's asset store first; the slide then
@@ -2622,6 +2625,19 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           </button>
           {editOn && (
             <>
+              <button type="button" data-layout-button disabled={textState.editing || !project?.id || project.recoverable || shownScenes[snap?.slideIndex ?? 0]?.layoutState === "detached"} aria-expanded={Boolean(layoutPick)}
+                title={shownScenes[snap?.slideIndex ?? 0]?.layoutState === "detached" ? "Your own slide: it keeps the layout you gave it" : "Lay this slide out another way"}
+                onClick={(e) => {
+                  if (layoutPick) { setLayoutPick(null); return; }
+                  const r = e.currentTarget.getBoundingClientRect();
+                  const index = snap?.slideIndex ?? 0, scene = shownScenes[index];
+                  if (!scene) return;
+                  const basis = JSON.stringify(scene), total = shownScenes.length, projectId = project.id;
+                  setLayoutPick({ at: { left: r.left, bottom: r.bottom }, basis, load: () => apiSlideLayouts(projectId, scene.id, { scene, index, total }) });
+                }} className={shellBtn}>Layout ▾</button>
+              {layoutPick && <LayoutPicker at={layoutPick.at} load={layoutPick.load}
+                onPick={async (o) => { const out = await adapterRef.current?.replaceSlideLayout(o.scene, layoutPick.basis); if (out && !out.ok) setLayoutNotice(out.message ?? "That layout could not be applied."); }}
+                onClose={() => setLayoutPick(null)} />}
               <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add an editable text box at the slide center"} onClick={() => adapterRef.current?.addTextElement()} className={shellBtn}>+ Text</button>
               <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rectangle"} onClick={() => adapterRef.current?.addShapeElement("rect")} className={shellBtn}>+ Rect</button>
               <button type="button" disabled={textState.editing} title={textState.editing ? "Commit or cancel the text edit first" : "Add a rounded rectangle"} onClick={() => adapterRef.current?.addShapeElement("roundRect")} className={shellBtn}>+ Round</button>

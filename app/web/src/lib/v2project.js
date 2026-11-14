@@ -170,6 +170,8 @@ export const apiSetFileRole = (id, fileId, role, fetchFn = fetch) => filesCall(`
 export const apiRemoveFile = (id, fileId, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/files/${encodeURIComponent(fileId)}`, { method: "DELETE" }, fetchFn);
 
 // Slide layouts saved in a project (F4c).
+export const apiSlideLayouts = (id, slideId, { scene, index, total }, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/slides/${encodeURIComponent(slideId)}/layouts`, {
+  method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scene, index, total }) }, fetchFn);
 export const apiListLayouts = (id, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/layouts`, {}, fetchFn).then((b) => b.layouts);
 export const apiSaveLayout = (id, name, scene, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/layouts`, {
   method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, scene }) }, fetchFn).then((b) => b.layout);

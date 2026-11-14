@@ -30,6 +30,14 @@ export interface SlideScene {
   citations?: CitationRecord[];
   recipeId?: string;
   /**
+   * The arrangement a person picked for a compiled slide. A recompile (a theme change) applies it to the slide's intent; absent means the compiler's own pick.
+   */
+  layoutChoice?: {
+    relationship?: "comparison" | "sequence" | "cause-effect" | "cycle" | "hierarchy" | "part-whole";
+    arrangement?: "tiers" | "radial" | "layers" | "funnel" | "pyramid" | "graph" | "quadrants" | "lanes" | "venn";
+    flowDirection?: "across" | "down";
+  };
+  /**
    * Speaker notes for the presenter. Never drawn on the slide; exported as native PowerPoint notes.
    */
   notes?: string;

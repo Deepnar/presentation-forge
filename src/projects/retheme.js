@@ -11,6 +11,7 @@ import { compileSceneDeck } from "../v2-compile.js";
 import { carryEdits } from "../../packages/compiler/compile.js";
 import { chromeFromRecipe } from "./import-source.js";
 import { storePlates } from "./import-generated.js";
+import { withLayoutChoice } from "../../packages/compiler/layout-choice.js";
 
 const refuse = (code, message) => Object.assign(new Error(message), { code });
 
@@ -29,7 +30,8 @@ export async function changeProjectTheme({ owner = null, admin = false, id, them
   }
   const kept = doc.scenes.filter((s) => byId.has(s.id));
   if (!kept.length) throw refuse("no-intent", "None of this project's slides came from its deck, so there is nothing to restyle.");
-  const intent = { ...stored.deck, slides: kept.map((s) => byId.get(s.id).slide) };
+  // A layout the person picked in the editor is part of the slide.
+  const intent = { ...stored.deck, slides: kept.map((s) => withLayoutChoice(byId.get(s.id).slide, s.layoutChoice)) };
   const recipe = stored.chrome ? { ...stored.chrome, slides: kept.map((s) => byId.get(s.id).chrome) } : null;
   const compiled = await compileSceneDeck({ intent, theme, style: stored.style ?? null, mode, chromeForDeck: recipe ? chromeFromRecipe(recipe) : null });
   const freshById = new Map(compiled.scenes.map((s) => [s.id, s]));
@@ -38,7 +40,9 @@ export async function changeProjectTheme({ owner = null, admin = false, id, them
     const fresh = freshById.get(prev.id);
     if (prev.layoutState === "detached") return prev;
     if (!fresh) return { ...prev, background: structuredClone(ground) };
-    return carryEdits(fresh, structuredClone(prev), compiled.design, prev.id, []);
+    const out = carryEdits(fresh, structuredClone(prev), compiled.design, prev.id, []);
+    if (prev.layoutChoice) out.layoutChoice = structuredClone(prev.layoutChoice);
+    return out;
   });
   for (const asset of await storePlates(scenes)) await store.putProjectAsset({ owner, admin, id, asset });
   const label = `${theme}${mode === "dark" ? " (dark)" : ""}`;

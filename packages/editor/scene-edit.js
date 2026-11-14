@@ -1965,6 +1965,30 @@ export function attachEditor(viewer, doc, opts = {}) {
     return track({ ...result, id: scene.id });
   }
 
+  // A compiled slide laid out another way (the server's layout options):
+  // one envelope, so a single undo restores the slide exactly. `basis` is
+  // the slide the options were computed from; if it changed since, the
+  // options are stale and nothing is applied.
+  async function replaceSlideLayout(scene, basis) {
+    if (resize) return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    const gated = await gateTextForSlides();
+    if (!gated.ok) return track(gated);
+    const cur = doc.snapshot();
+    const at = cur.scenes.findIndex((s) => s.id === scene?.id);
+    if (at < 0) return track(report({ ok: false, code: "op-rejected", message: "that slide is gone" }));
+    if (basis !== undefined && JSON.stringify(cur.scenes[at]) !== basis) {
+      return track(report({ ok: false, code: "stale", message: "the slide changed — open the layouts again" }));
+    }
+    const result = await doc.applyBatch({ id: newEditId(), baseRevision: cur.revision, actor: "human", ops: [
+      { slideId: null, op: { type: "slide.delete", id: scene.id } },
+      { slideId: null, op: { type: "slide.insert", scene: structuredClone(scene), index: at } },
+    ] });
+    if (!result.ok) return track(report(result));
+    sync();
+    api.goTo?.(at);
+    return track(result);
+  }
+
   async function insertLayoutSlide(templateId, index = null) {
     if (resize) {
       return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
@@ -2389,6 +2413,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     addImageElement: (image, opts = {}) => addImageElement(image, opts),
     addIconElement: (glyph, opts = {}) => addIconElement(glyph, opts),
     insertSavedLayout: (layout, index = null) => insertSavedLayout(layout, index),
+    replaceSlideLayout: (scene, basis) => replaceSlideLayout(scene, basis),
     addPresetElement: (kind, opts = {}) => addPresetElement(kind, opts),
     beginResize: (handle, id) => beginResize(handle, id, { pointerId: undefined, clientX: 0, clientY: 0 }),
     previewResize: (clientX, clientY) => previewResizeTo(clientX, clientY),

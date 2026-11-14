@@ -401,6 +401,29 @@ export function registerV2ProjectRoutes(app) {
     }
   }));
 
+  // Other layouts for one compiled slide, from the slide as the editor has
+  // it now — src/projects/slide-layouts.js; nothing is written.
+  app.post("/api/v2/projects/:id/slides/:slideId/layouts", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    const { scene = null, index = null, total = null } = req.body ?? {};
+    if (scene !== null) {
+      const { validateScene } = await import("../../packages/model/scene.ts");
+      if (!(await validateScene(scene)).ok) return res.status(422).json({ ok: false, error: "the slide is not a valid scene", code: "invalid-document" });
+    }
+    try {
+      const { slideLayoutOptions } = await import("../../src/projects/slide-layouts.js");
+      const out = await slideLayoutOptions({ owner: who.owner, admin: who.admin, id: req.params.id, slideId: String(req.params.slideId), scene, index, total });
+      ok(res, out);
+    } catch (err) {
+      if (err?.code === "not-found") return fail(res, 404, err.message);
+      if (err?.code === "invalid-document") return res.status(422).json({ ok: false, error: err.message, code: err.code });
+      mapStoreError(res, err);
+    }
+  }));
+
   // Restyle a project in another theme or appearance, keeping the person's
   // edits — the work is src/projects/retheme.js; this only carries it.
   // Bearer only, like every state-changing route.

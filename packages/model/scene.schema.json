@@ -40,6 +40,16 @@
         },
     "citations": { "type": "array", "maxItems": 128, "items": { "$ref": "#/definitions/citationRecord" } },
     "recipeId": { "type": "string" },
+    "layoutChoice": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The arrangement a person picked for a compiled slide. A recompile (a theme change) applies it to the slide's intent; absent means the compiler's own pick.",
+      "properties": {
+        "relationship": { "enum": ["comparison", "sequence", "cause-effect", "cycle", "hierarchy", "part-whole"] },
+        "arrangement": { "enum": ["tiers", "radial", "layers", "funnel", "pyramid", "graph", "quadrants", "lanes", "venn"] },
+        "flowDirection": { "enum": ["across", "down"] }
+      }
+    },
     "notes": {
       "type": "string",
       "maxLength": 20000,
