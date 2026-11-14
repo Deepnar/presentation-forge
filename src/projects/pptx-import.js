@@ -132,6 +132,15 @@ function paragraphs(txBody, { scale, theme, fallbackSize, placeholderType }) {
       });
     }
     if (!runs.length) continue;
+    // Line spacing as the file sets it — a percentage, or exact points —
+    // carried as each run's line multiple.
+    const lnSpc = kid(pPr, "a:lnSpc");
+    const pct = num(kid(lnSpc, "a:spcPct")?.getAttribute("val"), 0) / 100000;
+    const pts = num(kid(lnSpc, "a:spcPts")?.getAttribute("val"), 0) / 100;
+    for (const r of runs) {
+      const line = pct ? pct * 1.2 : pts ? pts * scale / r.size : 0;
+      if (line > 0.5 && line < 4) r.line = r3(line);
+    }
     const algn = pPr?.getAttribute("algn");
     const bullet = kid(pPr, "a:buNone") ? false : (kid(pPr, "a:buChar") || kid(pPr, "a:buAutoNum")) ? true : placeholderType === "body";
     out.push({ runs, ...(algn === "ctr" ? { align: "center" } : algn === "r" ? { align: "right" } : {}), ...(bullet ? { bullet: true } : {}) });
