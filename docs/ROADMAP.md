@@ -210,9 +210,13 @@ Decisions taken with this list, so nobody re-litigates them:
    product's own export and imports all 18 legacy decks. Known: the editor's
    text measure flags some imported boxes as overflowing that PowerPoint
    fitted (6 on one 17-slide deck) — compare against LibreOffice before
-   trusting those marks on imports. Left: PDF / DOCX / Markdown / CSV as
-   project sources with roles, a PPTX as a visual reference, and the
-   model-driven "use this as truth" flow. Original entry: Uploaded PDF, DOCX,
+   trusting those marks on imports. Files as project material (2026-11-14):
+   PDF / Word / PowerPoint / Markdown / text / CSV added from the editor's
+   Files section, kept as text with a role, and read by the Assistant
+   (`list_files`, `read_file`; source-of-truth outranks the rest). Left: a
+   PPTX's look (theme) taken as a visual reference, CSV/data straight into
+   charts, and the real-model check of "use this report as truth and this
+   PPTX as reference, make a 12-slide deck". Original entry: Uploaded PDF, DOCX,
    PPTX, Markdown and CSV become project sources with roles; PPTX imports to an
    editable scene with explicit fallbacks. *Done when:* "use this report as
    truth and this PPTX as reference" makes a deck.
