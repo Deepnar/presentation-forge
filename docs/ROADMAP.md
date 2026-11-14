@@ -215,7 +215,14 @@ Decisions taken with this list, so nobody re-litigates them:
    upload-as-source and blank; the prompt path runs the briefing and generation
    and lands in the editor (F1). *Done when:* a new user never needs the chat
    page to make a deck.
-8. **[ ] F7 — Reports and notes in the project** (§12 V2-10). Generate the
+8. **[~] F7 — Reports and notes in the project** (§12 V2-10). Started
+   2026-11-14: a project writes its report from its own slides, speaker
+   notes and files (source-of-truth first), keeps it
+   (`v2_project_documents`) and renders it to .docx on the account's donor
+   (`src/projects/report.js`, `app/server/v2-documents-routes.js`). Left:
+   the editor's Report section (generate, list, download), the speaker
+   script written into each slide's notes, deck-from-report inside a
+   project, and the real-model read of what it writes. Generate the
    `.docx` report and the speaker script from a project, list them with its
    exports, sharing its sources. *Done when:* deck, report and script coexist
    and cross-derive in one project.

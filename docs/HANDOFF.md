@@ -98,11 +98,15 @@ Landed 2026-11-14 (all pushed, each with tests and checked in the sandbox):
   (`src/projects/slide-layouts.js`, `packages/compiler/layout-choice.js`).
   Left: several slides per proposal, the real-model check.
 
-Next, in order: **F7** (report and speaker script inside a project — the
-legacy `generateReport`/`generateScript` read a deck directory; they need
-their inputs (brief, research, slide text, identity) passed in, so a
-project can supply them from its scenes, notes, files and sources; the
-script can land in each slide's notes), then **F9** (hosted lifecycle —
+Also 2026-11-14: drag-to-select starts in the stage margin and outlines
+what it will take; PRODUCTION.md §0 maps hosted (BYOK, provided model
+"coming"), plugins (one MCP endpoint for ChatGPT, Claude, Gemini CLI,
+local clients) and self-hosting. **F7 started**: the project report
+backend (`src/projects/report.js`, generate/list/download/remove routes).
+
+Next, in order: **F7** rest — the editor's Report section, the speaker
+script into slide notes (`generateScript` still reads a deck directory;
+give it inputs like `generateReport` got), deck-from-report — then **F9** (hosted lifecycle —
 V2 state is already all in the database, so the work is the Postgres
 default for hosted, the decks directory's lifetime, the container and
 DEPLOY.md), then **F5** (the redesign, starting with the study of Canva,
