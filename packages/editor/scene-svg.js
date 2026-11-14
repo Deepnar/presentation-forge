@@ -131,7 +131,11 @@ function textSvg(el, opts = {}) {
     return s;
   });
   const opacity = el.opacity !== undefined && el.opacity < 1 ? ` opacity="${el.opacity}"` : "";
-  return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}${opacity}>${lines.join("")}</g>`;
+  // Text catches the pointer only on its letters' strokes; an invisible box
+  // over the whole text box makes it selectable anywhere inside, as a slide
+  // editor's text box is.
+  const hit = `<rect data-hit x="${(el.x * IN).toFixed(1)}" y="${(el.y * IN).toFixed(1)}" width="${Math.max(0, el.w * IN).toFixed(1)}" height="${Math.max(0, el.h * IN).toFixed(1)}" fill="none" pointer-events="all"/>`;
+  return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}${opacity}>${hit}${lines.join("")}</g>`;
 }
 
 function lockedAttr(el) {
@@ -192,7 +196,12 @@ function elementBodySvg(el, opts = {}) {
       return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}><rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="#D8D8D2"/><text x="${(x + w / 2).toFixed(1)}" y="${(y + h / 2).toFixed(1)}" text-anchor="middle" font-size="16" fill="#5C5C59">${esc(el.image?.alt || "[image]")}</text></g>`;
     }
     case "line":
-      return `<line data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)} x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${((el.line?.x2 ?? el.x) * IN).toFixed(1)}" y2="${((el.line?.y2 ?? el.y) * IN).toFixed(1)}" stroke="#${el.line?.stroke ?? "888888"}" stroke-width="${el.line?.strokeWidth ?? 1.5}"/>`;
+    {
+      // A thin line is hard to hit; an invisible wide stroke along it takes
+      // the pointer, the visible one stays as drawn.
+      const x2 = ((el.line?.x2 ?? el.x) * IN).toFixed(1), y2 = ((el.line?.y2 ?? el.y) * IN).toFixed(1);
+      return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}><line data-hit x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${x2}" y2="${y2}" stroke="transparent" stroke-width="12" pointer-events="stroke"/><line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${x2}" y2="${y2}" stroke="#${el.line?.stroke ?? "888888"}" stroke-width="${el.line?.strokeWidth ?? 1.5}"/></g>`;
+    }
     case "chart": {
       // Per-kind deterministic geometry lives in scene-chart.js
       // (all six scene kinds, shared with the viewer); this branch
