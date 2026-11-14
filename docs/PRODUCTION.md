@@ -39,6 +39,92 @@ money is involved, a set of journeys nobody has ever run, and a defect list.
 
 ---
 
+## 0. Every way it ships, and what each still needs
+
+Written 2026-11-14 at the owner's request. Three shapes, one codebase: the
+**hosted website**, **plugins** inside other assistants, and **self-hosting**.
+The work items themselves are in the roadmap (linked); this is the map.
+
+### 0.1 The hosted website
+
+**Who supplies the model.** Two modes, and only one is built:
+
+| Mode | State | What the user sees |
+|---|---|---|
+| **Bring your own key** | the launch path | Connects OpenAI, OpenRouter, Anthropic, Gemini or any OpenAI-compatible endpoint once ([F10](ROADMAP.md#finish-line)); every deck is billed to their key. |
+| **We provide the model** | **coming — not built** | A visible "Forge model — coming soon" choice beside BYOK, with no checkout, no plan and no price. Payments, credits, metering-for-billing and the legal side (§2) stay unbuilt until the owner decides it is time; it will take a long while to settle. |
+
+BYOK today: OpenAI and OpenCode Go are configured; OpenRouter is a commented
+template; Anthropic and Gemini have OpenAI-compatible endpoints but no tested
+preset. Per-account keys, resolution and limits exist (`resolveProviderKey`,
+`src/limits.js`).
+
+**Work before strangers can use it** (the rest of this document, in order):
+
+1. The finish line's core items: F7 reports in the project, F9 hosted
+   lifecycle (Postgres default, the decks directory's lifetime, the V2
+   container), then F5/F6/F10 as one front-end pass.
+2. One AI connection with tested Anthropic, Gemini and OpenRouter presets,
+   and the "coming soon" provided-model card (F10).
+3. Operator items that no code removes: SMTP, a domain and TLS, a host
+   (`BLOCKED.md` §2).
+4. A scripted browser pass over the main journeys before release (§1.4),
+   and the journeys nobody has run (§3) driven once on a real key.
+5. Abuse and cost controls for an open signup on someone else's key:
+   per-account limits already bind; add upload size/rate caps per account
+   and an export rate limit (exports render server-side).
+
+### 0.2 Plugins — ChatGPT, Claude, Gemini and local clients
+
+**One MCP server serves all of them.** Checked 2026-11-14: ChatGPT apps are
+built on MCP (OpenAI's Apps SDK) and are added by the URL of a public `/mcp`
+endpoint, with a directory listing after OpenAI review and identity
+verification; Claude takes the same remote MCP server as a custom connector
+(any user, by URL) or, after Anthropic's review, from its Connectors
+Directory — it wants OAuth 2.0, tool safety annotations, a privacy policy,
+documentation and an icon; Gemini CLI extensions are a manifest that points
+at an MCP server. Whether the consumer Gemini app takes third-party MCP
+servers could not be confirmed — re-check when the work starts.
+
+The point of this route: **the host's model writes the content and ours
+does not run**, so a plugin user costs the operator compile, render and
+storage only — no model bill, no BYOK key. That makes it the cheapest
+public surface there is. Work ([F12](ROADMAP.md#finish-line)):
+
+- an MCP endpoint on the API (`/mcp`, streamable HTTP) exposing the same
+  tools the Assistant uses plus create/import/export, as an adapter over
+  `packages/tools` — never a second agent;
+- OAuth 2.1 on the account system (authorization server metadata, dynamic
+  client registration, consent screen), since both directories require it
+  for private data;
+- exports delivered as short-lived signed download links;
+- for ChatGPT, optionally an inline widget showing slide thumbnails;
+- per-host listing material: privacy policy, docs page, icon, review.
+
+### 0.3 Self-hosting — every combination
+
+Self-hosting needs no domain and no operator money. The axes are
+independent; this is what each value needs and how far it is proven.
+
+| Axis | Values | State |
+|---|---|---|
+| Install | Docker bundle (app + SearXNG + optional Caddy) · bare Node for development | Docker bundle released for V1 (`v0.1.0`); **the V2 image is F9 work** (V2 routes, editor build, Postgres option) |
+| Model | BYOK cloud key · local Ollama · any local OpenAI-compatible server (vLLM, LM Studio, llama.cpp) · mixed per role | All four wired; Ollama is the tested local path; a local OpenAI-compatible server works but has no tested preset; the gateway's own model under vLLM is abandoned on a 24 GB laptop (§5) |
+| Storage | SQLite on a volume · PostgreSQL | Both pass the same contract suite; SQLite is the single-box default |
+| Users | just me (registration off) · a small group | A group needs SMTP for verification and resets; without it accounts verify on creation |
+| Network | localhost · LAN · public with domain + TLS | Caddy profile exists; public needs the operator items |
+| Research | SearXNG sidecar · none (your own files only) | Both work; with none, research is uploads and project files |
+| Plugins | Claude Desktop / Claude Code / Gemini CLI / Cursor to a local MCP · ChatGPT | Local clients can reach `localhost` (stdio or HTTP); **ChatGPT needs a public HTTPS URL**, so a self-hoster wanting it needs a tunnel or a domain |
+
+Every combination of those runs the same code; what is *untested* is
+recorded in the roadmap under F9 so a self-hoster is told before they find
+out. The combinations worth testing as named profiles: **solo laptop**
+(Docker, Ollama, SQLite, localhost, no SearXNG), **lab server** (Docker,
+BYOK or LAN model server, Postgres, LAN, SMTP), and **public self-host**
+(Docker, BYOK, Postgres, Caddy + domain, SMTP).
+
+---
+
 ## 1. The four things that block an operator-hosted public launch
 
 ### 1.1 A model you can serve — the only real blocker

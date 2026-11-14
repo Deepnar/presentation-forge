@@ -200,7 +200,12 @@ Decisions taken with this list, so nobody re-litigates them:
      on right angles); lines now move instead of stretching. Done
      2026-11-14: a rotated element's frame, handles, drag and resize follow
      its rotation. Left, small: lines cannot join a group (their far end
-     is a slide point); equal-spacing guides.
+     is a slide point); equal-spacing guides. Owner, 2026-11-14:
+     drag-to-select felt buggy and its box was hard to see in dark mode —
+     fixed the same day: a sweep can start in the stage's margin (it could
+     only start on empty slide, which dense slides barely have), a click
+     there clears, what the box will select is outlined while dragging,
+     and the box has a white outer ring so it reads on any ground.
 6. **[ ] F5 — Whole-site UI/UX redesign** (after the core items above). See
    [the entry](#editor-ui-redesign). *Done when:* every page reads at a glance
    with little text — the editor as a slide editor (icon toolbar with
@@ -238,14 +243,35 @@ Decisions taken with this list, so nobody re-litigates them:
     expiry and regenerate-on-demand, idempotent cleanup, the container image
     and `docs/DEPLOY.md` updated for V2. *Done when:* a fresh container plus
     Postgres runs prompt → editor → export with no local-only path.
+    Added 2026-11-14: three named self-host profiles are tested and written
+    up in `DEPLOY.md` — **solo laptop** (Docker, Ollama, SQLite, localhost),
+    **lab server** (BYOK or a LAN model server, Postgres, SMTP) and **public
+    self-host** (BYOK, Postgres, Caddy + domain, SMTP); every other
+    combination is listed as untested rather than discovered by the user
+    ([PRODUCTION.md §0.3](PRODUCTION.md)).
 11. **[ ] F10 — One AI connection** (§12 V2-12). One place to connect a provider;
     model plumbing only under Advanced. *Done when:* a non-technical user
-    connects once and never sees a model name.
+    connects once and never sees a model name. Added 2026-11-14 (owner):
+    the hosted site is **bring your own key** — tested presets for OpenAI,
+    Anthropic, Gemini, OpenRouter and any OpenAI-compatible endpoint — and
+    shows **"Forge model — coming soon"** beside it as a visible, inert
+    choice. Payments, plans and credits are not built; the provided model
+    will take a long time to settle and stays a "coming" card until the
+    owner decides otherwise ([PRODUCTION.md §0.1](PRODUCTION.md)).
 12. **[ ] F11 — Remove legacy surfaces** (§12 V2-13). Briefing wizard leftovers,
     the old form editor and deck page, duplicate routes and pipeline code, once
     F1–F10 cover them; old decks still open through the import path.
-13. **[ ] F12 — ChatGPT plugin** (§12 V2-11). Thin MCP adapter over the same
-    tools.
+13. **[ ] F12 — Plugins: ChatGPT, Claude, Gemini, local clients** (§12
+    V2-11, widened 2026-11-14 by the owner). One remote MCP endpoint
+    (`/mcp`) over the same tools serves every host: ChatGPT apps are MCP
+    servers (Apps SDK), Claude takes it as a custom connector or from its
+    directory, Gemini CLI as an extension manifest, and Claude Desktop /
+    Claude Code / Cursor locally. Needs OAuth 2.1 on the account system,
+    tool safety annotations, signed export links, and each directory's
+    listing material and review. The host's model writes the content, so a
+    plugin user costs no model spend. Whether the consumer Gemini app takes
+    third-party MCP is unconfirmed — re-check at the start. See
+    [PRODUCTION.md §0.2](PRODUCTION.md).
 
 Operator items that no code removes — a provider key, SMTP, a domain and a
 host — stay in [`BLOCKED.md`](BLOCKED.md) §2.
@@ -284,6 +310,14 @@ It is the small "+ Slide ▾" at the top of the slide rail, under the
 Slides/Layers tabs, and only in edit mode. Adding a slide is the most common
 thing after typing; it needs the prominence Google Slides and PowerPoint
 give it (a clear New slide control, and a "+" after the last thumbnail).
+
+Found 2026-11-14 by the owner: **light and dark mode differ in quality,
+each way round.** The landing page's moving spots read as stars in dark
+mode and look wrong in light mode; parts of the editor look right in light
+and wrong in dark — the drag-to-select rectangle's colour in particular.
+The pass checks every page and editor state in both modes by screenshot,
+and designs each effect for both (or drops it from the mode it does not
+suit) rather than inverting one.
 
 Added 2026-11-12 by the owner: the **inspector and the layers panel** are
 the parts most in need of this pass — they must read plainly at a glance.
