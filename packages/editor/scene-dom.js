@@ -218,6 +218,19 @@ export function createViewer(rootEl, scenes, opts = {}) {
     return walk(scene.elements, 0, 0);
   }
 
+  function rotationOf(id) {
+    const scene = frozen[state.slideIndex];
+    const walk = (els) => {
+      for (const el of els ?? []) {
+        if (el.id === id) return el.rotation ?? 0;
+        const found = walk(el.group?.children);
+        if (found !== null) return found;
+      }
+      return null;
+    };
+    return (scene ? walk(scene.elements) : null) ?? 0;
+  }
+
   // Measured rect in SVG px via client rects, so nested transforms
   // and zoom need no special cases. Null without layout (linkedom)
   // or for unknown ids; callers fall back to sceneRect.
@@ -243,7 +256,10 @@ export function createViewer(rootEl, scenes, opts = {}) {
     if (!overlayLayer) return;
     while (overlayLayer.firstChild) overlayLayer.removeChild(overlayLayer.firstChild);
     for (const id of state.selectedIds) {
-      const rect = measuredRect(id) ?? sceneRect(id);
+      // A turned element is framed by its own box at its own angle — the
+      // measured rect would be the upright box around its glyphs.
+      const deg = rotationOf(id);
+      const rect = deg ? sceneRect(id) : measuredRect(id) ?? sceneRect(id);
       if (!rect) continue;
       const box = doc.createElement("div");
       box.setAttribute("data-overlay", id);
@@ -252,6 +268,7 @@ export function createViewer(rootEl, scenes, opts = {}) {
       box.style.top = `${rect.y.toFixed(1)}px`;
       box.style.width = `${Math.max(0, rect.w).toFixed(1)}px`;
       box.style.height = `${Math.max(0, rect.h).toFixed(1)}px`;
+      if (deg) box.style.transform = `rotate(${deg}deg)`;
       box.style.boxSizing = "border-box";
       box.style.border = `2px solid ${SELECT_ACCENT}`;
       box.style.borderRadius = "2px";

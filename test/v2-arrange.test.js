@@ -454,3 +454,57 @@ describe("insert an icon", () => {
     assert.equal((await r.editor.addIconElement("not one glyph")).ok, false);
   });
 });
+
+describe("rotated elements", () => {
+  const turned = (deg) => slide("s", [{ id: "v", kind: "text", x: 3, y: 3, w: 2, h: 0.4, z: 0, provenance: "human", rotation: deg,
+    paragraphs: [{ runs: [{ text: "Vertical", size: 14, color: "111111" }] }] }]);
+
+  it("a drag moves a turned element the way the pointer went, in preview and on release", async () => {
+    const r = await rig([turned(270)]);
+    r.viewer.api.select("v");
+    const n = node(r, "v");
+    ptr(r.root, "pointerdown", n, { x: 384, y: 307 });
+    ptr(r.root, "pointermove", n, { x: 384 + 96, y: 307, alt: true });
+    // Rotated -270° (= 90°): a screen move right is a move "up" in its frame.
+    const t = n.getAttribute("transform");
+    const [tx, ty] = t.match(/-?[\d.]+/g).map(Number);
+    assert.ok(Math.abs(tx) < 0.5 && Math.abs(Math.abs(ty) - 96) < 0.5, `preview translate in its own frame: ${t}`);
+    ptr(r.root, "pointerup", n, { x: 384 + 96, y: 307, alt: true });
+    await r.editor.pending();
+    assert.deepEqual([el(r, "v").x, el(r, "v").y], [4, 3], "lands where it was dragged");
+  });
+
+  it("the frame and handles sit on the turned box", async () => {
+    const r = await rig([turned(90)]);
+    r.viewer.api.select("v");
+    const overlay = r.root.querySelector('[data-overlay="v"]');
+    assert.equal(overlay.style.transform, "rotate(90deg)");
+    // Box centre (4, 3.2)in = (384, 307.2)px; the east handle of a 2in-wide
+    // box turned 90° sits 1in below the centre, not beside it.
+    const east = r.root.querySelector('[data-handle-for="v"][data-resize-handle="e"]');
+    assert.ok(Math.abs(parseFloat(east.style.left) - 384) < 1 && Math.abs(parseFloat(east.style.top) - 403.2) < 1, `${east.style.left}, ${east.style.top}`);
+  });
+
+  it("resizing a turned box works along its own axes and keeps the far edge in place", async () => {
+    const { rotatedResize, toWorld } = await import("../packages/editor/scene-arrange.js");
+    const origin = { x: 3, y: 3, w: 2, h: 0.4 };
+    // Its east edge grows 1in in its own frame; turned 90°, that edge is at
+    // the bottom on screen, so the west (top) edge must not move.
+    const g = rotatedResize(origin, { x: 3, y: 3, w: 3, h: 0.4 }, 90);
+    const topBefore = { x: origin.x + origin.w / 2 + toWorld(-origin.w / 2, 0, 90).dx, y: origin.y + origin.h / 2 + toWorld(-origin.w / 2, 0, 90).dy };
+    const topAfter = { x: g.x + g.w / 2 + toWorld(-g.w / 2, 0, 90).dx, y: g.y + g.h / 2 + toWorld(-g.w / 2, 0, 90).dy };
+    assert.ok(Math.abs(topBefore.x - topAfter.x) < 1e-3 && Math.abs(topBefore.y - topAfter.y) < 1e-3, JSON.stringify({ topBefore, topAfter }));
+    assert.equal(g.w, 3);
+  });
+
+  it("snapping and alignment use the box a turned element shows", async () => {
+    const { visualBox } = await import("../packages/editor/scene-arrange.js");
+    const v = visualBox({ x: 3, y: 3, w: 2, h: 0.4, rotation: 90 });
+    assert.ok(Math.abs(v.w - 0.4) < 1e-9 && Math.abs(v.h - 2) < 1e-9);
+    const r = await rig([turned(90)]);
+    r.viewer.api.select("v");
+    await r.editor.alignSelected("left");
+    const after = el(r, "v");
+    assert.ok(Math.abs(visualBox(after).x) < 1e-3, "its visible left edge is on the slide's edge");
+  });
+});

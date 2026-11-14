@@ -10,7 +10,7 @@
 // Selection ownership stays with the viewer at all times; the
 // adapter reads it, never stores its own copy.
 import { SCENE_W, SCENE_H, isSystemChrome } from "../model/scene-constants.ts";
-import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements, alignMoves, distributeMoves, groupElements, ungroupElement } from "./scene-arrange.js";
+import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements, alignMoves, distributeMoves, groupElements, ungroupElement, visualBox, toLocal, toWorld, rotatedResize } from "./scene-arrange.js";
 import {
   isEditableText,
   describeStructure,
@@ -339,7 +339,11 @@ export function attachEditor(viewer, doc, opts = {}) {
     drag.moved = true;
     const { dx, dy, guides } = dragDelta(drag, clientX, clientY, mods, scales);
     for (const node of drag.nodes) {
-      node.setAttribute("transform", `translate(${(dx * IN).toFixed(1)} ${(dy * IN).toFixed(1)})`);
+      // A rotated element is drawn inside its rotation, so a screen-space
+      // move has to be expressed in its own frame or it slides sideways.
+      const deg = drag.rotations.get(node) ?? 0;
+      const t = deg ? toLocal(dx, dy, deg) : { dx, dy };
+      node.setAttribute("transform", `translate(${(t.dx * IN).toFixed(1)} ${(t.dy * IN).toFixed(1)})`);
     }
     api.reposition();
     drawGuides(guides);
@@ -402,15 +406,19 @@ export function attachEditor(viewer, doc, opts = {}) {
       root.setPointerCapture?.(ev.pointerId);
     } catch { /* linkedom and some browsers lack capture */ }
     const nodes = [];
+    const rotations = new Map();
     for (const o of origins) {
       const node = root.querySelector(`[data-el="${o.id}"]`);
-      if (node) nodes.push(node);
+      if (!node) continue;
+      nodes.push(node);
+      const deg = findIn(doc.snapshot().scenes, slideId, o.id)?.rotation;
+      if (deg) rotations.set(node, deg);
     }
     const docScene = doc.snapshot().scenes.find((sc) => sc.id === slideId);
     const selected = api.snapshot().selectedIds.map((sid) => findIn(doc.snapshot().scenes, slideId, sid)).filter(Boolean);
     drag = {
       pointerId: ev.pointerId, startX: ev.clientX, startY: ev.clientY,
-      slideId, origins, nodes, moved: false,
+      slideId, origins, nodes, rotations, moved: false,
       box: unionBox(selected), targets: snapTargets(docScene, selected.map((e) => e.id)),
       collapseTo: !ev.shiftKey && snap.selectedIds.includes(id) && snap.selectedIds.length > 1 ? id : null,
     };
@@ -736,7 +744,10 @@ export function attachEditor(viewer, doc, opts = {}) {
     const movable = els.filter((e) => !e.locked && e.hidden !== true);
     if (movable.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
     const slide = doc.snapshot().scenes.find((sc) => sc.id === snap.slideId);
-    const items = movable.map((e) => ({ id: e.id, x: e.x ?? 0, y: e.y ?? 0, w: e.w ?? 0, h: e.h ?? 0 }));
+    // Lined up by what is seen: a turned element by the box around it, then
+    // moved by the same amount.
+    const items = movable.map((e) => ({ id: e.id, ...visualBox(e) }));
+    const offset = new Map(movable.map((e) => { const v = visualBox(e); return [e.id, { dx: (e.x ?? 0) - v.x, dy: (e.y ?? 0) - v.y }]; }));
     let moves;
     try {
       moves = kind === "distribute"
@@ -747,7 +758,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     }
     const ops = moves
       .filter((m) => { const b = items.find((i) => i.id === m.id); return Math.abs(b.x - m.x) > 1e-9 || Math.abs(b.y - m.y) > 1e-9; })
-      .map((m) => ({ slideId: snap.slideId, op: { type: "element.move", id: m.id, x: m.x, y: m.y } }));
+      .map((m) => ({ slideId: snap.slideId, op: { type: "element.move", id: m.id, x: Math.round((m.x + offset.get(m.id).dx) * 1000) / 1000, y: Math.round((m.y + offset.get(m.id).dy) * 1000) / 1000 } }));
     if (ops.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
     const result = await submitOps(ops, doc.snapshot().revision);
     if (!result.ok) return report(result);
@@ -1308,8 +1319,13 @@ export function attachEditor(viewer, doc, opts = {}) {
     const rect = handleRect(target.id);
     if (!rect) return;
     const docEl = root.ownerDocument;
+    const el = findIn(doc.snapshot().scenes, target.slideId, target.id);
+    // Handles sit on the element as drawn: around its centre at its angle.
+    const deg = el?.rotation ?? 0;
+    const cxr = rect.x + rect.w / 2, cyr = rect.y + rect.h / 2;
+    const turn = (px, py) => { if (!deg) return [px, py]; const v = toWorld(px - cxr, py - cyr, deg); return [cxr + v.dx, cyr + v.dy]; };
     for (const handle of RESIZE_HANDLES) {
-      const [ax, ay] = anchorOf(rect, handle);
+      const [ax, ay] = turn(...anchorOf(rect, handle));
       const node = docEl.createElement("div");
       node.setAttribute("data-resize-handle", handle);
       node.setAttribute("data-handle-for", target.id);
@@ -1330,22 +1346,22 @@ export function attachEditor(viewer, doc, opts = {}) {
       handleLayer.appendChild(node);
     }
     // The rotate handle: a round knob above the top edge, on a stem, as in
-    // PowerPoint and Canva.
-    const el = findIn(doc.snapshot().scenes, target.slideId, target.id);
+    // PowerPoint and Canva — above the edge as it is turned.
     if (el && ROTATABLE_KINDS.has(el.kind)) {
       const k = svgScales(root)?.kx ?? 1;
       const lift = 28 / k;
-      const cx = rect.x + rect.w / 2;
+      const [kx, ky] = turn(cxr, rect.y - lift);
       const stem = docEl.createElement("div");
       stem.setAttribute("data-rotate-stem", "");
-      Object.assign(stem.style, { position: "absolute", left: `${(cx - 0.5 / k).toFixed(1)}px`, top: `${(rect.y - lift).toFixed(1)}px`, width: `${(1 / k).toFixed(2)}px`, height: `${lift.toFixed(1)}px`, background: "#e0705a", pointerEvents: "none" });
+      Object.assign(stem.style, { position: "absolute", left: `${(cxr - 0.5 / k).toFixed(1)}px`, top: `${(rect.y - lift).toFixed(1)}px`, width: `${(1 / k).toFixed(2)}px`, height: `${lift.toFixed(1)}px`, background: "#e0705a", pointerEvents: "none",
+        ...(deg ? { transformOrigin: `${(0.5 / k).toFixed(2)}px ${(lift + rect.h / 2).toFixed(1)}px`, transform: `rotate(${deg}deg)` } : {}) });
       handleLayer.appendChild(stem);
       const knob = docEl.createElement("div");
       knob.setAttribute("data-rotate-handle", "");
       knob.setAttribute("data-handle-for", target.id);
       knob.setAttribute("role", "presentation");
       knob.setAttribute("title", "Rotate (Shift: 15° steps)");
-      Object.assign(knob.style, { position: "absolute", left: `${cx.toFixed(1)}px`, top: `${(rect.y - lift).toFixed(1)}px`, width: "14px", height: "14px", transform: "translate(-50%, -50%)", boxSizing: "border-box", background: "#ffffff", border: "2px solid #e0705a", borderRadius: "50%", boxShadow: "0 1px 3px rgba(0,0,0,0.45)", cursor: "grab", pointerEvents: "auto" });
+      Object.assign(knob.style, { position: "absolute", left: `${kx.toFixed(1)}px`, top: `${ky.toFixed(1)}px`, width: "14px", height: "14px", transform: "translate(-50%, -50%)", boxSizing: "border-box", background: "#ffffff", border: "2px solid #e0705a", borderRadius: "50%", boxShadow: "0 1px 3px rgba(0,0,0,0.45)", cursor: "grab", pointerEvents: "auto" });
       handleLayer.appendChild(knob);
     }
   }
@@ -1434,6 +1450,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     preview.style.top = `${(geom.y * IN).toFixed(1)}px`;
     preview.style.width = `${Math.max(1, geom.w * IN).toFixed(1)}px`;
     preview.style.height = `${Math.max(1, geom.h * IN).toFixed(1)}px`;
+    preview.style.transform = resize?.rotation ? `rotate(${resize.rotation}deg)` : "";
   }
 
   function clearResizePreview() {
@@ -1465,6 +1482,7 @@ export function attachEditor(viewer, doc, opts = {}) {
       handle,
       origin: { x: target.el.x, y: target.el.y, w: target.el.w, h: target.el.h },
       kind: target.el.kind,
+      rotation: target.el.rotation ?? 0,
       targets: snapTargets(doc.snapshot().scenes.find((sc) => sc.id === target.snap.slideId), [id]),
       limits: target.el.kind === "text"
         ? { floor: (w) => measureText(target.el, w)?.height ?? 0, slideH: slideHeight(target.snap.slideId) }
@@ -1482,6 +1500,13 @@ export function attachEditor(viewer, doc, opts = {}) {
     dx /= IN; dy /= IN;
     let guides = [];
     const aspect = s.handle.length === 2 && (s.kind === "image" ? !mods.shiftKey : !!mods.shiftKey);
+    if (s.rotation) {
+      // A turned box resizes along its own axes; guides stay off, since its
+      // edges are not the slide's.
+      const local = toLocal(dx, dy, s.rotation);
+      const inFrame = resizeGeometry(s.origin, s.handle, local.dx, local.dy, { ...s.limits, aspect });
+      return { geom: rotatedResize(s.origin, inFrame, s.rotation), guides };
+    }
     if (!mods.altKey && !aspect) ({ dx, dy, guides } = snapResize(s.origin, s.handle, dx, dy, s.targets, snapReach(scales)));
     return { geom: resizeGeometry(s.origin, s.handle, dx, dy, { ...s.limits, aspect }), guides };
   }

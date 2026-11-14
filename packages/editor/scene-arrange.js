@@ -8,7 +8,36 @@
 // and Canva both sit around this; much wider and boxes jump while placing.
 export const SNAP_PX = 6;
 
-const boxOf = (el) => ({ x: el.x ?? 0, y: el.y ?? 0, w: el.w ?? 0, h: el.h ?? 0 });
+// The box an element occupies on screen: its own box, or for a rotated one
+// the upright box around it — what a person lines it up by.
+export function visualBox(el) {
+  const x = el.x ?? 0, y = el.y ?? 0, w = el.w ?? 0, h = el.h ?? 0;
+  const deg = el.rotation ?? 0;
+  if (!deg) return { x, y, w, h };
+  const t = (deg * Math.PI) / 180, c = Math.abs(Math.cos(t)), s = Math.abs(Math.sin(t));
+  const W = w * c + h * s, H = w * s + h * c;
+  return { x: x + w / 2 - W / 2, y: y + h / 2 - H / 2, w: W, h: H };
+}
+const boxOf = visualBox;
+
+// A client-space vector expressed in a rotated element's own frame, and back.
+export function toLocal(dx, dy, deg) {
+  const t = (-(deg ?? 0) * Math.PI) / 180;
+  return { dx: dx * Math.cos(t) - dy * Math.sin(t), dy: dx * Math.sin(t) + dy * Math.cos(t) };
+}
+export const toWorld = (dx, dy, deg) => toLocal(dx, dy, -(deg ?? 0));
+
+// A resize of a rotated element, done in its own frame: the handle's edge
+// moves along the element's axes and the opposite edge stays where it is on
+// screen. `geomLocal` is the unrotated-frame result of resizeGeometry.
+export function rotatedResize(origin, geomLocal, deg) {
+  const dcx = geomLocal.x + geomLocal.w / 2 - (origin.x + origin.w / 2);
+  const dcy = geomLocal.y + geomLocal.h / 2 - (origin.y + origin.h / 2);
+  const shift = toWorld(dcx, dcy, deg);
+  const cx = origin.x + origin.w / 2 + shift.dx, cy = origin.y + origin.h / 2 + shift.dy;
+  const r = (n) => Math.round(n * 1000) / 1000;
+  return { x: r(cx - geomLocal.w / 2), y: r(cy - geomLocal.h / 2), w: geomLocal.w, h: geomLocal.h };
+}
 
 // The union box of a set of elements, in scene inches.
 export function unionBox(elements) {
