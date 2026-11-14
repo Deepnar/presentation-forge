@@ -153,11 +153,10 @@ Decisions taken with this list, so nobody re-litigates them:
      the attention goes, every one of them must work without glitches.
      Before adding an editing feature, ask whether it belongs in that set;
      before calling one done, use it on real imported and generated decks.
-     Open defect from the owner: on one of the last-opened projects a text
-     box that ran vertically (tall and narrow, or rotated) moved glitchily
-     when dragged — reproduce on that project, find the cause (rotation vs
-     the upright selection frame and handles, or snapping on a tall box),
-     and fix it before adding anything new.
+     Fixed 2026-11-14 (owner's defect): a vertical text box on an imported
+     deck moved glitchily — rotated elements previewed their drag in their
+     own turned frame, and their frame, handles and snapping used the
+     unturned box. All four now follow the rotation.
    - **[ ] F4c Make a slide of your own layout.** The editor offers blank
      slides and the layout gallery but no way to make a new slide type of
      your own — arrange a slide, then save it as a layout to reuse in the
