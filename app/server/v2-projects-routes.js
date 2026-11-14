@@ -196,6 +196,52 @@ export function registerV2ProjectRoutes(app) {
     } catch (err) { fileError(res, err); }
   }));
 
+  // Slide layouts a person saved in the project (F4c).
+  app.get("/api/v2/projects/:id/layouts", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    try {
+      const out = await (await projectStore()).listProjectLayouts({ owner: who.owner, admin: who.admin, id: req.params.id });
+      if (!out.layouts) return fail(res, 404, "no such project");
+      ok(res, { layouts: out.layouts });
+    } catch (err) { mapStoreError(res, err); }
+  }));
+  app.post("/api/v2/projects/:id/layouts", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectWriter(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    const { name, scene } = req.body ?? {};
+    const { LAYOUT_LIMITS } = await import("../../src/projects/file-schema.js");
+    if (typeof name !== "string" || !name.trim() || name.length > LAYOUT_LIMITS.nameChars) return res.status(422).json({ ok: false, error: "give the layout a name", code: "invalid-document" });
+    try {
+      if (JSON.stringify(scene ?? null).length > LAYOUT_LIMITS.sceneChars) return res.status(413).json({ ok: false, error: "this slide is too large to save as a layout", code: "layout-too-large" });
+      const { validateScene } = await import("../../packages/model/scene.ts");
+      if (!(await validateScene(scene)).ok) return res.status(422).json({ ok: false, error: "this slide cannot be saved as a layout", code: "invalid-document" });
+      const { randomBytes } = await import("node:crypto");
+      const layout = { id: `layout_${randomBytes(8).toString("hex")}`, name: name.trim(), scene };
+      const out = await (await projectStore()).putProjectLayout({ owner: who.owner, admin: who.admin, id: req.params.id, layout });
+      if (!out.stored) return fail(res, 404, "no such project");
+      res.status(201).json({ ok: true, layout });
+    } catch (err) {
+      if (err?.code === "layout-quota") return res.status(413).json({ ok: false, error: err.message, code: err.code });
+      mapStoreError(res, err);
+    }
+  }));
+  app.delete("/api/v2/projects/:id/layouts/:layoutId", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectWriter(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    try {
+      const out = await (await projectStore()).deleteProjectLayout({ owner: who.owner, admin: who.admin, id: req.params.id, layoutId: String(req.params.layoutId) });
+      if (!out.removed) return fail(res, 404, "no such layout");
+      ok(res, {});
+    } catch (err) { mapStoreError(res, err); }
+  }));
+
   app.post("/api/v2/projects/:id/assets",
     express.raw({ type: () => true, limit: ASSET_LIMITS.bytes + 1024 }),
     wrap(async (req, res) => {

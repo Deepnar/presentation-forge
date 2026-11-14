@@ -10,7 +10,7 @@
 // Selection ownership stays with the viewer at all times; the
 // adapter reads it, never stores its own copy.
 import { SCENE_W, SCENE_H, isSystemChrome } from "../model/scene-constants.ts";
-import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements, alignMoves, distributeMoves, groupElements, ungroupElement, visualBox, toLocal, toWorld, rotatedResize } from "./scene-arrange.js";
+import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements, alignMoves, distributeMoves, groupElements, ungroupElement, visualBox, toLocal, toWorld, rotatedResize, slideFromLayout } from "./scene-arrange.js";
 import {
   isEditableText,
   describeStructure,
@@ -1951,6 +1951,20 @@ export function attachEditor(viewer, doc, opts = {}) {
   // and slide.insert guards slide ids only, so each attempt rebuilds
   // and checks the new scene against the live deck domain before
   // submitting — repeated uses of one template can never collide.
+  // A layout the person saved, inserted after the current slide.
+  async function insertSavedLayout(layout, index = null) {
+    if (resize) return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
+    const gated = await gateTextForSlides();
+    if (!gated.ok) return track(gated);
+    const at = index ?? api.snapshot().slideIndex + 1;
+    const scene = slideFromLayout(layout, { slideId: mintSlideId(), newId: () => mintHumanId() });
+    const result = await doc.apply({ id: newEditId(), slideId: null, op: { type: "slide.insert", scene, index: Math.max(0, at) }, baseRevision: doc.snapshot().revision, actor: "human" });
+    if (!result.ok) return track(report(result));
+    sync();
+    api.goTo?.(Math.min(Math.max(0, at), doc.snapshot().scenes.length - 1));
+    return track({ ...result, id: scene.id });
+  }
+
   async function insertLayoutSlide(templateId, index = null) {
     if (resize) {
       return report({ ok: false, code: "op-rejected", message: "finish resizing first" });
@@ -2374,6 +2388,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     addShapeElement: (form = "rect", opts = {}) => addShapeElement(form, opts),
     addImageElement: (image, opts = {}) => addImageElement(image, opts),
     addIconElement: (glyph, opts = {}) => addIconElement(glyph, opts),
+    insertSavedLayout: (layout, index = null) => insertSavedLayout(layout, index),
     addPresetElement: (kind, opts = {}) => addPresetElement(kind, opts),
     beginResize: (handle, id) => beginResize(handle, id, { pointerId: undefined, clientX: 0, clientY: 0 }),
     previewResize: (clientX, clientY) => previewResizeTo(clientX, clientY),

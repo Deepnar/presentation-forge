@@ -15,10 +15,11 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { createViewer } from "../../../../packages/editor/scene-dom.js";
 import { flattenLayers, elementLabel, applyCollapse, overflowEstimate, sceneOverflow } from "../../../../packages/editor/scene-text.js";
 import { sceneToSvg } from "../../../../packages/editor/scene-svg.js";
+import { layoutFromSlide } from "../../../../packages/editor/scene-arrange.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
-import { apiChangeTheme, apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
+import { apiListLayouts, apiSaveLayout, apiRemoveLayout, apiChangeTheme, apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import { useNarrow } from "../lib/viewport.js";
 import SlideNotes from "./SlideNotes.jsx";
 import StageMenu from "./StageMenu.jsx";
@@ -118,7 +119,7 @@ function Thumb({ scene, displayLabel, active, selected, overflow = 0, onPick, on
 // Compact contextual slide menu: duplicate, two-step delete, and
 // detach with its consequence stated. No native dialogs (untestable
 // headless); the inline confirm is the confirmation policy.
-function SlideMenu({ scene, isLast, confirming, onDuplicate, onDelete, onConfirmDelete, onCancelDelete, onDetach, onClose }) {
+function SlideMenu({ scene, isLast, confirming, onDuplicate, onSaveLayout, onDelete, onConfirmDelete, onCancelDelete, onDetach, onClose }) {
   const state = isLast ? "Only slide" : scene.layoutState === "detached" ? "Manual slide" : "Slide menu";
   return (
     <div
@@ -128,6 +129,7 @@ function SlideMenu({ scene, isLast, confirming, onDuplicate, onDelete, onConfirm
     >
       <span className="text-fg-faint">{state}</span>
       <button type="button" onClick={onDuplicate} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Duplicate slide</button>
+      {onSaveLayout && <button type="button" data-save-layout onClick={onSaveLayout} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Save as layout</button>}
       {confirming ? (
         <>
           <span>{isLast ? "This is the only slide — it cannot be deleted." : "Delete this slide? Undo restores it."}</span>
@@ -881,6 +883,9 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [confirmBulk, setConfirmBulk] = useState(false);
   const [chooserOpen, setChooserOpen] = useState(false);
+  // Layouts the person saved in this project, offered in "+ Slide".
+  const [savedLayouts, setSavedLayouts] = useState([]);
+  const [layoutNotice, setLayoutNotice] = useState(null);
   const [galleryOpen, setGalleryOpen] = useState(false);
   // Drag state lives in refs, never in render state: re-rendering
   // mid-gesture replaces the drag-source node and Chrome cancels
@@ -1524,6 +1529,29 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
     } catch (err) {
       setThemeState({ busy: false, error: err.message });
     }
+  }
+
+  async function loadLayouts() {
+    const id = projectRef.current?.id;
+    if (!id) { setSavedLayouts([]); return; }
+    try { setSavedLayouts(await apiListLayouts(id)); } catch { setSavedLayouts([]); }
+  }
+  // Named after the slide's title, or numbered.
+  async function saveAsLayout(scene) {
+    const id = projectRef.current?.id;
+    if (!id) return;
+    // The largest text on the slide is its title; a small label above it is not.
+    const texts = scene.elements.filter((e) => e.kind === "text" && !e.locked)
+      .map((e) => ({ text: (e.paragraphs ?? [])[0]?.runs?.map((r) => r.text).join("") ?? "", size: Math.max(0, ...(e.paragraphs ?? []).flatMap((p) => p.runs.map((r) => r.size ?? 0))) }))
+      .filter((t) => t.text.trim());
+    const title = texts.sort((a, b) => b.size - a.size)[0]?.text ?? "";
+    const name = (title.trim().slice(0, 60) || `Layout ${savedLayouts.length + 1}`);
+    try {
+      await apiSaveLayout(id, name, layoutFromSlide(scene));
+      setLayoutNotice(`Saved “${name}” — add it from + Slide.`);
+      setMenuFor(null);
+      await loadLayouts();
+    } catch (err) { setLayoutNotice(err.message); }
   }
 
   async function openProject(id) {
@@ -2406,7 +2434,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           <div className="relative mb-2">
             <button
               type="button"
-              onClick={() => { setChooserOpen((v) => !v); setMenuFor(null); }}
+              onClick={() => { setChooserOpen((v) => !v); setMenuFor(null); loadLayouts(); }}
               title="Add a slide: blank, layout, or duplicate"
               aria-expanded={chooserOpen ? "true" : "false"}
               data-new-slide
@@ -2424,8 +2452,32 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                 <button type="button" data-new-slide-layout onClick={() => { setChooserOpen(false); setGalleryOpen(true); }} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Choose layout…</button>
                 <span className="text-[11px] text-fg-faint">Insert an editable skeleton from the gallery</span>
                 <button type="button" data-new-slide-duplicate onClick={doDuplicateActive} className="rounded-md px-2 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">Duplicate current slide</button>
+                {savedLayouts.length > 0 && (
+                  <div data-saved-layouts className="mt-1 flex flex-col gap-1 border-t border-line pt-1.5">
+                    <span className="text-[11px] text-fg-faint">Your layouts</span>
+                    {savedLayouts.map((l) => (
+                      <div key={l.id} className="flex items-center gap-1.5">
+                        <button type="button" data-saved-layout={l.id} title={`Add a slide like “${l.name}”`}
+                          onClick={async () => { setChooserOpen(false); await adapterRef.current?.insertSavedLayout(l.scene); }}
+                          className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-1 py-1 text-left text-fg-muted transition hover:bg-hover hover:text-fg">
+                          <span aria-hidden="true" className="block w-14 flex-none overflow-hidden rounded border border-line bg-white [&>svg]:h-auto [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: sceneToSvg(l.scene) }} />
+                          <span className="truncate">{l.name}</span>
+                        </button>
+                        <button type="button" aria-label={`Remove layout ${l.name}`} title="Remove this layout"
+                          onClick={async () => { try { await apiRemoveLayout(projectRef.current.id, l.id); } finally { loadLayouts(); } }}
+                          className="flex-none rounded px-1 text-fg-faint hover:bg-hover hover:text-fg">×</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
+          </div>
+        )}
+        {layoutNotice && (
+          <div role="status" data-layout-notice className="mb-2 flex items-start justify-between gap-1 rounded-md border border-line px-2 py-1 text-[12px] text-fg-muted">
+            <span>{layoutNotice}</span>
+            <button type="button" aria-label="Dismiss" onClick={() => setLayoutNotice(null)} className="flex-none px-1 hover:text-fg">×</button>
           </div>
         )}
         {editOn && effSlideSel.length > 1 && (
@@ -2488,6 +2540,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                   isLast={shownScenes.length <= 1}
                   confirming={confirmDelete === s.id}
                   onDuplicate={() => doDuplicateSlides([s.id])}
+                  onSaveLayout={project?.id && !project.recoverable ? () => saveAsLayout(s) : undefined}
                   onDelete={() => setConfirmDelete(s.id)}
                   onConfirmDelete={() => doDeleteSlides([s.id])}
                   onCancelDelete={() => setConfirmDelete(null)}

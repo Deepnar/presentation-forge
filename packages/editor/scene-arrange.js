@@ -249,3 +249,21 @@ export function ungroupElement(group) {
   const r3 = (n) => Math.round(n * 1000) / 1000;
   return (group.group?.children ?? []).map((c) => ({ ...structuredClone(c), x: r3(group.x + c.x), y: r3(group.y + c.y), z: group.z ?? 0 }));
 }
+
+// A slide made into a reusable layout: its arrangement and wording as the
+// person left them, without what belongs to that one slide — institutional
+// chrome (crest, number), notes, citations, compiled ownership.
+export function layoutFromSlide(scene) {
+  const keep = (scene.elements ?? []).filter((e) => !(e.locked === true && e.provenance === "compiler" && e.semanticRef === undefined));
+  return {
+    id: scene.id, width: scene.width, height: scene.height, background: structuredClone(scene.background),
+    elements: copyElements(keep, ((n) => () => `h-${String(++n).padStart(12, "0")}`)(0)).map((e, i) => ({ ...e, z: i * 10 })),
+    layoutState: "detached",
+  };
+}
+
+// A new slide from a saved layout: fresh ids all the way down, the
+// person's own.
+export function slideFromLayout(layout, { slideId, newId }) {
+  return { ...structuredClone(layout), id: slideId, elements: copyElements(layout.elements, newId).map((e, i) => ({ ...e, z: i * 10 })), layoutState: "detached" };
+}

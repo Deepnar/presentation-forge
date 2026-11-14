@@ -30,7 +30,7 @@
 // routes); the store itself enforces owner scoping but not HTTP auth.
 import { assetSchema } from "./asset-schema.js";
 import { intentSchema } from "./intent-schema.js";
-import { fileSchema, FILE_ROLES, FILE_LIMITS } from "./file-schema.js";
+import { fileSchema, FILE_ROLES, FILE_LIMITS, layoutSchema, LAYOUT_LIMITS } from "./file-schema.js";
 import { seedSources, SEED_SOURCE_SQL, seedSourceBytes } from "./source-seed.js";
 import { ASSET_LIMITS } from "./assets.js";
 import { getDb, closeDb } from "../db.js";
@@ -85,6 +85,7 @@ function ensureSchema() {
   db.exec(assetSchema("sqlite"));
   db.exec(intentSchema("sqlite"));
   db.exec(fileSchema("sqlite"));
+  db.exec(layoutSchema());
   ensureHistorySchema(db);
   return db;
 }
@@ -306,6 +307,29 @@ export async function readProjectFile({ owner = null, admin = false, id, fileId,
     const r = db.prepare(`SELECT ${FILE_COLUMNS},text FROM v2_project_files WHERE project_id=? AND id=?`).get(id, fileId);
     if (!r) return { file: null };
     return { file: { ...fileRow(r), text: r.text.slice(offset, offset + limit), offset, nextOffset: offset + limit < r.text.length ? offset + limit : null } };
+  } catch (error) { throw storageFailure(error); }
+}
+export async function listProjectLayouts({ owner = null, admin = false, id }) {
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { layouts: null };
+    return { layouts: db.prepare("SELECT id,name,scene,created_at FROM v2_project_layouts WHERE project_id=? ORDER BY created_at, id").all(id).map((r) => ({ id: r.id, name: r.name, scene: JSON.parse(r.scene), createdAt: r.created_at })) };
+  } catch (error) { throw storageFailure(error); }
+}
+export async function putProjectLayout({ owner = null, admin = false, id, layout }) {
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { stored: false };
+    if (db.prepare("SELECT COUNT(*) AS n FROM v2_project_layouts WHERE project_id=?").get(id).n >= LAYOUT_LIMITS.perProject) throw Object.assign(new Error(`a project holds at most ${LAYOUT_LIMITS.perProject} saved layouts`), { code: "layout-quota" });
+    db.prepare("INSERT INTO v2_project_layouts (project_id,id,name,scene,created_at) VALUES (?,?,?,?,?)").run(id, layout.id, layout.name, JSON.stringify(layout.scene), new Date().toISOString());
+    return { stored: true };
+  } catch (error) { if (error?.code === "layout-quota") throw error; throw storageFailure(error); }
+}
+export async function deleteProjectLayout({ owner = null, admin = false, id, layoutId }) {
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { removed: false };
+    return { removed: db.prepare("DELETE FROM v2_project_layouts WHERE project_id=? AND id=?").run(id, layoutId).changes === 1 };
   } catch (error) { throw storageFailure(error); }
 }
 export async function setProjectFileRole({ owner = null, admin = false, id, fileId, role }) {

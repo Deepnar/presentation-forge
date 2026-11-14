@@ -23,7 +23,7 @@
 // slide contents.
 import { assetSchema } from "./asset-schema.js";
 import { intentSchema } from "./intent-schema.js";
-import { fileSchema, FILE_ROLES, FILE_LIMITS } from "./file-schema.js";
+import { fileSchema, FILE_ROLES, FILE_LIMITS, layoutSchema, LAYOUT_LIMITS } from "./file-schema.js";
 import { seedSources, SEED_SOURCE_SQL, seedSourceBytes } from "./source-seed.js";
 import { ASSET_LIMITS } from "./assets.js";
 import {
@@ -156,7 +156,7 @@ const PROJECT_DDL = `
 `;
 
 async function ensureSchema(clientOrPool) {
-  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres") + assetSchema("postgres") + intentSchema("postgres") + fileSchema("postgres"));
+  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres") + assetSchema("postgres") + intentSchema("postgres") + fileSchema("postgres") + layoutSchema());
 }
 
 // Schema is idempotent DDL and must never run inside a write
@@ -447,6 +447,29 @@ export async function readProjectFile({ owner = null, admin = false, id, fileId,
     const r = (await p.query(`SELECT ${FILE_COLUMNS},text FROM v2_project_files WHERE project_id=$1 AND id=$2`, [id, fileId])).rows[0];
     if (!r) return { file: null };
     return { file: { ...fileRow(r), text: r.text.slice(offset, offset + limit), offset, nextOffset: offset + limit < r.text.length ? offset + limit : null } };
+  } catch (err) { throw storageUnavailable(err); }
+}
+export async function listProjectLayouts({ owner = null, admin = false, id }) {
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { layouts: null };
+    return { layouts: (await p.query("SELECT id,name,scene,created_at FROM v2_project_layouts WHERE project_id=$1 ORDER BY created_at, id", [id])).rows.map((r) => ({ id: r.id, name: r.name, scene: JSON.parse(r.scene), createdAt: r.created_at })) };
+  } catch (err) { throw storageUnavailable(err); }
+}
+export async function putProjectLayout({ owner = null, admin = false, id, layout }) {
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { stored: false };
+    if (Number((await p.query("SELECT COUNT(*) AS n FROM v2_project_layouts WHERE project_id=$1", [id])).rows[0].n) >= LAYOUT_LIMITS.perProject) throw Object.assign(new Error(`a project holds at most ${LAYOUT_LIMITS.perProject} saved layouts`), { code: "layout-quota" });
+    await p.query("INSERT INTO v2_project_layouts (project_id,id,name,scene,created_at) VALUES ($1,$2,$3,$4,$5)", [id, layout.id, layout.name, JSON.stringify(layout.scene), new Date().toISOString()]);
+    return { stored: true };
+  } catch (err) { if (err?.code === "layout-quota") throw err; throw storageUnavailable(err); }
+}
+export async function deleteProjectLayout({ owner = null, admin = false, id, layoutId }) {
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { removed: false };
+    return { removed: (await p.query("DELETE FROM v2_project_layouts WHERE project_id=$1 AND id=$2", [id, layoutId])).rowCount === 1 };
   } catch (err) { throw storageUnavailable(err); }
 }
 export async function setProjectFileRole({ owner = null, admin = false, id, fileId, role }) {

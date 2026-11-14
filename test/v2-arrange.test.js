@@ -508,3 +508,39 @@ describe("rotated elements", () => {
     assert.ok(Math.abs(visualBox(after).x) < 1e-3, "its visible left edge is on the slide's edge");
   });
 });
+
+describe("saved layouts", () => {
+  it("a slide saved as a layout drops its chrome and ownership; each use gets fresh ids", async () => {
+    const { layoutFromSlide, slideFromLayout } = await import("../packages/editor/scene-arrange.js");
+    const crest = box("crest", 12, 0.2, 1, 1, { provenance: "compiler", locked: true });
+    const title = { id: "s:title:heading", kind: "text", x: 1, y: 1, w: 8, h: 1, z: 10, provenance: "compiler", semanticRef: "title", customized: true,
+      paragraphs: [{ runs: [{ text: "Quarterly review", size: 32, color: "111111" }] }] };
+    const scene = { ...slide("s", [title, box("panel", 1, 3, 4, 2), crest]), notes: "private", citations: [] };
+    const layout = layoutFromSlide(scene);
+    assert.deepEqual(layout.elements.map((e) => e.kind), ["text", "shape"], "chrome left behind");
+    assert.equal(layout.notes, undefined);
+    assert.equal(layout.citations, undefined);
+    assert.ok(layout.elements.every((e) => e.provenance === "human" && e.semanticRef === undefined && e.customized === undefined));
+    assert.ok((await validateScene(layout)).ok);
+    let n = 0;
+    const a = slideFromLayout(layout, { slideId: "s-a", newId: () => `h-${String(++n).padStart(12, "0")}` });
+    const b = slideFromLayout(layout, { slideId: "s-b", newId: () => `h-${String(++n).padStart(12, "0")}` });
+    assert.equal(a.id, "s-a");
+    assert.notDeepEqual(a.elements.map((e) => e.id), b.elements.map((e) => e.id), "each use is its own");
+    assert.equal(a.elements[0].paragraphs[0].runs[0].text, "Quarterly review");
+    assert.ok((await validateScene(a)).ok);
+  });
+
+  it("inserting a saved layout adds a slide after the current one, undoable", async () => {
+    const { layoutFromSlide } = await import("../packages/editor/scene-arrange.js");
+    const r = await rig([slide("s", [box("a", 1, 1, 2, 1)]), slide("t", [])]);
+    const result = await r.editor.insertSavedLayout(layoutFromSlide(r.doc.snapshot().scenes[0]));
+    assert.equal(result.ok, true);
+    const ids = r.doc.snapshot().scenes.map((s) => s.id);
+    assert.equal(ids.length, 3);
+    assert.equal(ids[1], result.id, "right after the current slide");
+    assert.equal(r.doc.snapshot().scenes[1].elements.length, 1);
+    await r.editor.undo();
+    assert.equal(r.doc.snapshot().scenes.length, 2);
+  });
+});

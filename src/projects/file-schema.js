@@ -24,3 +24,20 @@ export function fileSchema(dialect) {
     );
   `;
 }
+
+// Slide layouts a person saved in a project to reuse (F4c): a cleaned scene
+// and a name. Project-scoped, because a layout's pictures are the
+// project's own assets.
+export const LAYOUT_LIMITS = Object.freeze({ perProject: 40, nameChars: 80, sceneChars: 200000 });
+export function layoutSchema() {
+  return `
+    CREATE TABLE IF NOT EXISTS v2_project_layouts (
+      project_id TEXT NOT NULL REFERENCES v2_projects(id) ON DELETE CASCADE,
+      id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      scene TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (project_id, id)
+    );
+  `;
+}

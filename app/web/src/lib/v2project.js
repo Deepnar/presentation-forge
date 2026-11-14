@@ -168,6 +168,12 @@ export const apiSetFileRole = (id, fileId, role, fetchFn = fetch) => filesCall(`
   method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role }) }, fetchFn).then((b) => b.file);
 export const apiRemoveFile = (id, fileId, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/files/${encodeURIComponent(fileId)}`, { method: "DELETE" }, fetchFn);
 
+// Slide layouts saved in a project (F4c).
+export const apiListLayouts = (id, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/layouts`, {}, fetchFn).then((b) => b.layouts);
+export const apiSaveLayout = (id, name, scene, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/layouts`, {
+  method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, scene }) }, fetchFn).then((b) => b.layout);
+export const apiRemoveLayout = (id, layoutId, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/layouts/${encodeURIComponent(layoutId)}`, { method: "DELETE" }, fetchFn);
+
 // A PowerPoint file in, a new project out: { project, warnings }.
 export async function apiImportPptx(file, fetchFn = fetch) {
   const res = await fetchFn("/api/v2/projects/import-pptx", {
