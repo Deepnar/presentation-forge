@@ -127,9 +127,18 @@ Decisions taken with this list, so nobody re-litigates them:
    intent kept for later theme changes. It can also rewrite an existing slide
    (`rewrite_slide` → `replace_slide`): same id and place, the person's
    additions, locks and still-matching moves carried across. The done-when
-   is met in code (proven with a fake model end to end). Left: change a
-   slide's layout family, several slides in one proposal (parallel tool
-   calls are off, so one slide per turn), and the real-model check. Semantic proposals
+   is met in code (proven with a fake model end to end). A slide's layout
+   family changes (2026-11-14): **Layout ▾** in the editor's toolbar shows
+   the slide's other arrangements as thumbnails (cards, side by side,
+   steps, tiers, hub, bands, funnel, pyramid, quadrants, overlap), each its
+   stored intent compiled again with the person's wording, styling and
+   additions carried; only layouts that fit are offered, picking one is
+   one undo, and the choice rides on the scene (`layoutChoice`) so a theme
+   change keeps it. The Assistant has the same as `change_layout`
+   (`src/projects/slide-layouts.js`). Rewriting a slide's content or
+   regenerating the deck lays it out afresh. Left: several slides in one
+   proposal (parallel tool calls are off, so one slide per turn), and the
+   real-model check. Semantic proposals
    for add slide(s), regenerate a slide, change a slide's composition and
    rewrite across the deck, compiled deterministically, preserving human edits,
    tombstones and detached slides (§12 "Canonical semantic creation and
@@ -188,10 +197,10 @@ Decisions taken with this list, so nobody re-litigates them:
      Done 2026-11-12: paste a screenshot or drop an image file onto the
      slide (the newer of our copy and the system clipboard wins); Ctrl+G /
      Ctrl+Shift+G group and ungroup; a rotate knob (15° with Shift, settles
-     on right angles); lines now move instead of stretching. Left, small:
-     the selection frame and resize handles stay upright on a rotated
-     element; lines cannot join a group (their far end is a slide point);
-     equal-spacing guides; arrow-key nudges do not snap.
+     on right angles); lines now move instead of stretching. Done
+     2026-11-14: a rotated element's frame, handles, drag and resize follow
+     its rotation. Left, small: lines cannot join a group (their far end
+     is a slide point); equal-spacing guides.
 6. **[ ] F5 — Whole-site UI/UX redesign** (after the core items above). See
    [the entry](#editor-ui-redesign). *Done when:* every page reads at a glance
    with little text — the editor as a slide editor (icon toolbar with
@@ -215,9 +224,11 @@ Decisions taken with this list, so nobody re-litigates them:
    trusting those marks on imports. Files as project material (2026-11-14):
    PDF / Word / PowerPoint / Markdown / text / CSV added from the editor's
    Files section, kept as text with a role, and read by the Assistant
-   (`list_files`, `read_file`; source-of-truth outranks the rest). Left: a
-   PPTX's look (theme) taken as a visual reference, CSV/data straight into
-   charts, and the real-model check of "use this report as truth and this
+   (`list_files`, `read_file`; source-of-truth outranks the rest). Data
+   into charts (2026-11-14): a chart's data panel fills from a project CSV
+   or cells pasted from a spreadsheet (`packages/editor/chart-table.js`),
+   naming any cell it cannot read. Left: a
+   PPTX's look (theme) taken as a visual reference, and the real-model check of "use this report as truth and this
    PPTX as reference, make a 12-slide deck". Original entry: Uploaded PDF, DOCX,
    PPTX, Markdown and CSV become project sources with roles; PPTX imports to an
    editable scene with explicit fallbacks. *Done when:* "use this report as

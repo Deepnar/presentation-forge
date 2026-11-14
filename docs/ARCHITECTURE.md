@@ -1517,6 +1517,20 @@ weak generic streaks to truthful alternatives. Free-text fields never
 reach the planner (proven by test). The six-recipe scene compiler does
 not consume the plan yet — that wiring is V2-3D.
 
+### A person's layout choice
+
+A slide's family can be chosen after the fact, in the editor (Layout ▾)
+or by the Assistant (`change_layout`), but only as a change to the
+slide's *intent* — a relationship, an arrangement, a flow direction
+(`packages/compiler/layout-choice.js`) — never as coordinates. The
+choice is kept on the scene as `layoutChoice`, not in the stored intent,
+so undo, History and autosave treat it like any other edit, and a theme
+change (`src/projects/retheme.js`) applies it before compiling. Changing
+layout drops moves the person made to compiler-owned elements in the old
+arrangement and carries everything else (`src/projects/slide-layouts.js`).
+Rewriting a slide's content or regenerating the deck compiles from the
+new intent and does not carry the choice.
+
 ## V2 composition mechanisms (V2-3D)
 
 `DeckCompositionPlan` is now consumed by canonical compilation:

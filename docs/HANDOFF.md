@@ -1,4 +1,4 @@
-# Handoff — 2026-11-12
+# Handoff — 2026-11-14
 
 Branch `v2`, pushed to `origin/v2`. Work follows the **Finish line** at the top
 of [ROADMAP.md](ROADMAP.md#finish-line); the gated plan/review/evidence protocol
@@ -80,37 +80,40 @@ The owner set the order on 2026-11-11: **core before the front end** (see the
 roadmap's finish-line decisions). No visual redesign until the core items are
 done; editing behaviour that feels broken counts as core.
 
-- **F4b** the editor behaves like a slide editor — done apart from small
-  leftovers (rotated selection frame, lines in groups, equal-spacing
-  guides; see the roadmap entry). Gestures live in
-  `packages/editor/scene-arrange.js` (pure) and `scene-edit.js` (wiring);
-  `test/v2-arrange.test.js` covers them. **Next is F1g / F1h.**
-- **F1** is complete: F1g (overflow marks, dense-content layouts) and F1h
-  (regenerated decks update their project keeping edits) landed 2026-11-12.
-  Check the stale browser handoff cases noted under M1 in a quiet window.
-- **F3** in progress: projects keep their DeckIntent and chrome recipe
-  (`v2_project_intents`); theme change keeps edits (Theme picker); the
-  Assistant can propose a new slide (`add_slide` → host-compiled
-  `insert_slide` plan step, `src/projects/slide-compile.js`) or rewrite one
-  (`rewrite_slide` → `replace_slide`). Left: layout-family changes, several
-  slides per proposal, and a real-model check.
-- **F8**: "Import PowerPoint" makes an editable project from a .pptx
-  (`src/projects/pptx-import.js`, checked on the owner's real GPU deck);
-  files (PDF, Word, PowerPoint, Markdown, text, CSV) are project material
-  with roles (`file-extract.js`, `v2_project_files`, the editor's Files
-  section) that the Assistant reads (`list_files`, `read_file`). Left: a
-  PPTX's look as a visual reference, data files straight into charts, and a
-  real-model check. Then F7, F9.
-- **F2** landed 2026-11-12 (account provider policy, on by default, plain
-  turn messages). Unverified against a real model — needs the gateway up or
-  local inference allowed. Then F3's semantic proposals, F4's icon insert,
-  F7, F8, F9.
-- **F5** is now the whole-site UI/UX redesign, after the above, starting from
-  a study of how Canva, Google Slides, PowerPoint web, Pitch and Gamma lay out
-  the same surfaces, and checked page by page by screenshot.
-- Verifying generate → editor end to end needs a working model (the TCET
-  gateway returned HTTP 500 on chat; local inference is off-limits while the
-  owner's other work runs).
+Landed 2026-11-14 (all pushed, each with tests and checked in the sandbox):
+
+- **F4b** rotated elements drag, resize and snap in their own frame; text
+  boxes and lines are selectable anywhere (Delete works). Left, small:
+  lines in groups, equal-spacing guides.
+- **F4c** Save as layout (slide menu) → **+ Slide ▾ → Your layouts**
+  (`v2_project_layouts`, `layoutFromSlide`/`slideFromLayout`).
+- **F8** files as project material the Assistant reads; a chart's data
+  panel fills from a project CSV or pasted spreadsheet cells
+  (`packages/editor/chart-table.js`). Left: a PPTX's look as a visual
+  reference, the real-model check.
+- **F3** **Layout ▾** in the toolbar: a compiled slide's other
+  arrangements as thumbnails, applied as one undo; the Assistant's
+  `change_layout` does the same through an approved `replace_slide`. The
+  choice is kept on the scene (`layoutChoice`) and survives theme changes
+  (`src/projects/slide-layouts.js`, `packages/compiler/layout-choice.js`).
+  Left: several slides per proposal, the real-model check.
+
+Next, in order: **F7** (report and speaker script inside a project — the
+legacy `generateReport`/`generateScript` read a deck directory; they need
+their inputs (brief, research, slide text, identity) passed in, so a
+project can supply them from its scenes, notes, files and sources; the
+script can land in each slide's notes), then **F9** (hosted lifecycle —
+V2 state is already all in the database, so the work is the Postgres
+default for hosted, the decks directory's lifetime, the container and
+DEPLOY.md), then **F5** (the redesign, starting with the study of Canva,
+Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
+Claude Design skill; the add-slide menu's discoverability is recorded
+there). Everything content-quality is blocked on a model: the gateway is
+down and local inference is off-limits while the owner's other work runs.
+
+Sandbox projects for checking: `p-304801890f356c9f861dac99` (imported
+PPTX, all slides detached) and `p-33ddd3f460e2f54f4087a3b1` (generated,
+has a stored intent — use it for Layout ▾).
 
 Testing note: the linkedom harness stubs the slide's on-screen size on the
 `<svg>`, and every commit redraws it, so a second gesture in one test needs
