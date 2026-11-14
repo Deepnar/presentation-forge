@@ -23,6 +23,7 @@
 // slide contents.
 import { assetSchema } from "./asset-schema.js";
 import { intentSchema } from "./intent-schema.js";
+import { fileSchema, FILE_ROLES, FILE_LIMITS } from "./file-schema.js";
 import { seedSources, SEED_SOURCE_SQL, seedSourceBytes } from "./source-seed.js";
 import { ASSET_LIMITS } from "./assets.js";
 import {
@@ -155,7 +156,7 @@ const PROJECT_DDL = `
 `;
 
 async function ensureSchema(clientOrPool) {
-  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres") + assetSchema("postgres") + intentSchema("postgres"));
+  await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres") + assetSchema("postgres") + intentSchema("postgres") + fileSchema("postgres"));
 }
 
 // Schema is idempotent DDL and must never run inside a write
@@ -406,6 +407,63 @@ export async function lookupImportedProject({ owner = null, importRequest }) {
     if (!link) return null;
     const row = (await p.query("SELECT * FROM v2_projects WHERE id=$1", [link.project_id])).rows[0];
     return await replayImportedProject(link, request, row, owner);
+  } catch (err) { throw storageUnavailable(err); }
+}
+
+
+// ——— Project files (F8): text and role, owner-checked like the project ———
+const FILE_COLUMNS = "id,name,kind,role,size,chars,created_at";
+const fileRow = (r) => ({ id: r.id, name: r.name, kind: r.kind, role: r.role, size: Number(r.size), chars: Number(r.chars), createdAt: r.created_at });
+
+async function ownedRowPg(p, id, owner, admin) {
+  if (!validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
+  const row = (await p.query("SELECT owner FROM v2_projects WHERE id=$1", [id])).rows[0];
+  return row && canAccessProject(row, { owner, admin });
+}
+async function filePool() { const p = await pool(); await ensureSchemaPool(p); return p; }
+export async function putProjectFile({ owner = null, admin = false, id, file }) {
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { stored: false };
+    const n = Number((await p.query("SELECT COUNT(*) AS n FROM v2_project_files WHERE project_id=$1", [id])).rows[0].n);
+    if (n >= FILE_LIMITS.perProject) throw Object.assign(new Error(`a project holds at most ${FILE_LIMITS.perProject} files`), { code: "file-quota" });
+    await p.query("INSERT INTO v2_project_files (project_id,id,name,kind,role,size,chars,text,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
+      [id, file.id, file.name, file.kind, file.role, file.size, file.text.length, file.text, new Date().toISOString()]);
+    const r = (await p.query(`SELECT ${FILE_COLUMNS} FROM v2_project_files WHERE project_id=$1 AND id=$2`, [id, file.id])).rows[0];
+    return { stored: true, file: fileRow(r) };
+  } catch (err) { if (err?.code === "file-quota") throw err; throw storageUnavailable(err); }
+}
+export async function listProjectFiles({ owner = null, admin = false, id }) {
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { files: null };
+    return { files: (await p.query(`SELECT ${FILE_COLUMNS} FROM v2_project_files WHERE project_id=$1 ORDER BY created_at, id`, [id])).rows.map(fileRow) };
+  } catch (err) { throw storageUnavailable(err); }
+}
+export async function readProjectFile({ owner = null, admin = false, id, fileId, offset = 0, limit = 20000 }) {
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { file: null };
+    const r = (await p.query(`SELECT ${FILE_COLUMNS},text FROM v2_project_files WHERE project_id=$1 AND id=$2`, [id, fileId])).rows[0];
+    if (!r) return { file: null };
+    return { file: { ...fileRow(r), text: r.text.slice(offset, offset + limit), offset, nextOffset: offset + limit < r.text.length ? offset + limit : null } };
+  } catch (err) { throw storageUnavailable(err); }
+}
+export async function setProjectFileRole({ owner = null, admin = false, id, fileId, role }) {
+  if (!FILE_ROLES.includes(role)) throw Object.assign(new Error("unknown file role"), { code: "invalid-document" });
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { file: null };
+    await p.query("UPDATE v2_project_files SET role=$1 WHERE project_id=$2 AND id=$3", [role, id, fileId]);
+    const r = (await p.query(`SELECT ${FILE_COLUMNS} FROM v2_project_files WHERE project_id=$1 AND id=$2`, [id, fileId])).rows[0];
+    return { file: r ? fileRow(r) : null };
+  } catch (err) { throw storageUnavailable(err); }
+}
+export async function deleteProjectFile({ owner = null, admin = false, id, fileId }) {
+  try {
+    const p = await filePool();
+    if (!(await ownedRowPg(p, id, owner, admin))) return { removed: false };
+    return { removed: (await p.query("DELETE FROM v2_project_files WHERE project_id=$1 AND id=$2", [id, fileId])).rowCount === 1 };
   } catch (err) { throw storageUnavailable(err); }
 }
 

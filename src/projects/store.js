@@ -30,6 +30,7 @@
 // routes); the store itself enforces owner scoping but not HTTP auth.
 import { assetSchema } from "./asset-schema.js";
 import { intentSchema } from "./intent-schema.js";
+import { fileSchema, FILE_ROLES, FILE_LIMITS } from "./file-schema.js";
 import { seedSources, SEED_SOURCE_SQL, seedSourceBytes } from "./source-seed.js";
 import { ASSET_LIMITS } from "./assets.js";
 import { getDb, closeDb } from "../db.js";
@@ -83,6 +84,7 @@ function ensureSchema() {
   db.exec(sourceSchema("sqlite"));
   db.exec(assetSchema("sqlite"));
   db.exec(intentSchema("sqlite"));
+  db.exec(fileSchema("sqlite"));
   ensureHistorySchema(db);
   return db;
 }
@@ -262,6 +264,64 @@ export async function lookupImportedProject({ owner = null, importRequest }) {
     if (!link) return null;
     const row = db.prepare("SELECT * FROM v2_projects WHERE id=?").get(link.project_id);
     return await replayImportedProject(link, request, row, owner);
+  } catch (error) { throw storageFailure(error); }
+}
+
+
+// ——— Project files (F8): text and role, owner-checked like the project ———
+const FILE_COLUMNS = "id,name,kind,role,size,chars,created_at";
+const fileRow = (r) => ({ id: r.id, name: r.name, kind: r.kind, role: r.role, size: Number(r.size), chars: Number(r.chars), createdAt: r.created_at });
+
+function ownedRow(db, id, owner, admin) {
+  if (!validProjectId(id)) throw Object.assign(new Error(`invalid project id ${id}`), { code: "invalid-id" });
+  const row = db.prepare("SELECT owner FROM v2_projects WHERE id=?").get(id);
+  return row && canAccessProject(row, { owner, admin });
+}
+export async function putProjectFile({ owner = null, admin = false, id, file }) {
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { stored: false };
+    const count = db.prepare("SELECT COUNT(*) AS n FROM v2_project_files WHERE project_id=?").get(id).n;
+    if (count >= FILE_LIMITS.perProject) throw Object.assign(new Error(`a project holds at most ${FILE_LIMITS.perProject} files`), { code: "file-quota" });
+    db.prepare("INSERT INTO v2_project_files (project_id,id,name,kind,role,size,chars,text,created_at) VALUES (?,?,?,?,?,?,?,?,?)")
+      .run(id, file.id, file.name, file.kind, file.role, file.size, file.text.length, file.text, new Date().toISOString());
+    return { stored: true, file: listOne(db, id, file.id) };
+  } catch (error) { throw storageFailure(error); }
+}
+function listOne(db, id, fileId) {
+  const r = db.prepare(`SELECT ${FILE_COLUMNS} FROM v2_project_files WHERE project_id=? AND id=?`).get(id, fileId);
+  return r ? fileRow(r) : null;
+}
+export async function listProjectFiles({ owner = null, admin = false, id }) {
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { files: null };
+    return { files: db.prepare(`SELECT ${FILE_COLUMNS} FROM v2_project_files WHERE project_id=? ORDER BY created_at, id`).all(id).map(fileRow) };
+  } catch (error) { throw storageFailure(error); }
+}
+export async function readProjectFile({ owner = null, admin = false, id, fileId, offset = 0, limit = 20000 }) {
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { file: null };
+    const r = db.prepare(`SELECT ${FILE_COLUMNS},text FROM v2_project_files WHERE project_id=? AND id=?`).get(id, fileId);
+    if (!r) return { file: null };
+    return { file: { ...fileRow(r), text: r.text.slice(offset, offset + limit), offset, nextOffset: offset + limit < r.text.length ? offset + limit : null } };
+  } catch (error) { throw storageFailure(error); }
+}
+export async function setProjectFileRole({ owner = null, admin = false, id, fileId, role }) {
+  if (!FILE_ROLES.includes(role)) throw Object.assign(new Error("unknown file role"), { code: "invalid-document" });
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { file: null };
+    db.prepare("UPDATE v2_project_files SET role=? WHERE project_id=? AND id=?").run(role, id, fileId);
+    return { file: listOne(db, id, fileId) };
+  } catch (error) { throw storageFailure(error); }
+}
+export async function deleteProjectFile({ owner = null, admin = false, id, fileId }) {
+  try {
+    const db = ensureSchema();
+    if (!ownedRow(db, id, owner, admin)) return { removed: false };
+    return { removed: db.prepare("DELETE FROM v2_project_files WHERE project_id=? AND id=?").run(id, fileId).changes === 1 };
   } catch (error) { throw storageFailure(error); }
 }
 

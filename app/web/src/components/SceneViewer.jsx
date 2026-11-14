@@ -24,6 +24,7 @@ import SlideNotes from "./SlideNotes.jsx";
 import StageMenu from "./StageMenu.jsx";
 import ThemePicker from "./ThemePicker.jsx";
 import IconPicker from "./IconPicker.jsx";
+import ProjectFiles from "./ProjectFiles.jsx";
 
 // Restores focus to the opener when a dialog closes. Dialogs trap
 // nothing; they only borrow focus, and the opener (often a toolbar
@@ -2813,6 +2814,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                   {editOn && project && !project.recoverable && (
                     <ThemePicker current={project.theme} busy={themeState.busy} error={themeState.error} onApply={applyTheme} />
                   )}
+                  {editOn && project?.id && !project.recoverable && <ProjectFiles projectId={project.id} />}
                 </div>
               )}
             </div>

@@ -154,6 +154,20 @@ export async function apiSave(id, { baseRevision, title, scenes, theme, origin }
   return body.project;
 }
 
+// Project files (F8): add, list, change role, remove.
+async function filesCall(url, init, fetchFn) {
+  const res = await fetchFn(url, { ...init, headers: { ...(init?.headers ?? {}), ...authHeaders() } });
+  const body = await res.json().catch(() => null);
+  if (!res.ok || !body?.ok) throw Object.assign(new Error(body?.error ?? `request failed (HTTP ${res.status})`), { code: body?.code ?? "files-failed" });
+  return body;
+}
+export const apiListFiles = (id, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/files`, {}, fetchFn).then((b) => b.files);
+export const apiAddFile = (id, file, role = "source", fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/files`, {
+  method: "POST", headers: { "Content-Type": "application/octet-stream", "X-File-Name": encodeURIComponent(file.name ?? "file"), "X-File-Role": role }, body: file }, fetchFn);
+export const apiSetFileRole = (id, fileId, role, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/files/${encodeURIComponent(fileId)}`, {
+  method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role }) }, fetchFn).then((b) => b.file);
+export const apiRemoveFile = (id, fileId, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/files/${encodeURIComponent(fileId)}`, { method: "DELETE" }, fetchFn);
+
 // A PowerPoint file in, a new project out: { project, warnings }.
 export async function apiImportPptx(file, fetchFn = fetch) {
   const res = await fetchFn("/api/v2/projects/import-pptx", {

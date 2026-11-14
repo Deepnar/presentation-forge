@@ -118,6 +118,84 @@ export function registerV2ProjectRoutes(app) {
       }
     }));
 
+  // Files a person adds as material (F8): the text read out of them and a
+  // role. Writes take the bearer only; reads also honour the cookie.
+  const fileError = (res, err) => {
+    if (["file-invalid", "file-unsupported", "file-unreadable", "file-empty"].includes(err?.code)) return res.status(422).json({ ok: false, error: err.message, code: err.code });
+    if (err?.code === "file-too-large" || err?.code === "file-quota") return res.status(413).json({ ok: false, error: err.message, code: err.code });
+    return mapStoreError(res, err);
+  };
+  app.post("/api/v2/projects/:id/files",
+    express.raw({ type: () => true, limit: 41 * 1024 * 1024 }),
+    wrap(async (req, res) => {
+      if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+      if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+      const who = await projectWriter(req);
+      if (who.denied) return fail(res, 401, "log in to use saved projects");
+      let name = "file";
+      try { name = decodeURIComponent(String(req.get("X-File-Name") ?? name)).slice(0, 200) || name; } catch { /* keep the default */ }
+      const role = String(req.get("X-File-Role") ?? "source");
+      try {
+        const { FILE_ROLES } = await import("../../src/projects/file-schema.js");
+        if (!FILE_ROLES.includes(role)) return res.status(422).json({ ok: false, error: "unknown file role", code: "invalid-document" });
+        const { extractFile } = await import("../../src/projects/file-extract.js");
+        const file = await extractFile(Buffer.isBuffer(req.body) ? new Uint8Array(req.body) : new Uint8Array(), name);
+        const { putProjectFile } = await projectStore();
+        const out = await putProjectFile({ owner: who.owner, admin: who.admin, id: req.params.id, file: { ...file, role } });
+        if (!out.stored) return fail(res, 404, "no such project");
+        res.status(201).json({ ok: true, file: out.file, truncated: file.truncated });
+      } catch (err) { fileError(res, err); }
+    }));
+  app.get("/api/v2/projects/:id/files", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    try {
+      const { listProjectFiles } = await projectStore();
+      const out = await listProjectFiles({ owner: who.owner, admin: who.admin, id: req.params.id });
+      if (!out.files) return fail(res, 404, "no such project");
+      ok(res, { files: out.files });
+    } catch (err) { fileError(res, err); }
+  }));
+  app.get("/api/v2/projects/:id/files/:fileId", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    const offset = Math.max(0, Number.parseInt(req.query.offset ?? "0", 10) || 0);
+    try {
+      const { readProjectFile } = await projectStore();
+      const out = await readProjectFile({ owner: who.owner, admin: who.admin, id: req.params.id, fileId: String(req.params.fileId), offset, limit: 20000 });
+      if (!out.file) return fail(res, 404, "no such file");
+      ok(res, { file: out.file });
+    } catch (err) { fileError(res, err); }
+  }));
+  app.patch("/api/v2/projects/:id/files/:fileId", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectWriter(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    try {
+      const { setProjectFileRole } = await projectStore();
+      const out = await setProjectFileRole({ owner: who.owner, admin: who.admin, id: req.params.id, fileId: String(req.params.fileId), role: String(req.body?.role ?? "") });
+      if (!out.file) return fail(res, 404, "no such file");
+      ok(res, { file: out.file });
+    } catch (err) { fileError(res, err); }
+  }));
+  app.delete("/api/v2/projects/:id/files/:fileId", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectWriter(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    try {
+      const { deleteProjectFile } = await projectStore();
+      const out = await deleteProjectFile({ owner: who.owner, admin: who.admin, id: req.params.id, fileId: String(req.params.fileId) });
+      if (!out.removed) return fail(res, 404, "no such file");
+      ok(res, {});
+    } catch (err) { fileError(res, err); }
+  }));
+
   app.post("/api/v2/projects/:id/assets",
     express.raw({ type: () => true, limit: ASSET_LIMITS.bytes + 1024 }),
     wrap(async (req, res) => {
