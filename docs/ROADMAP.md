@@ -257,14 +257,20 @@ Decisions taken with this list, so nobody re-litigates them:
     2026-11-16: the container image now carries `packages/` in both stages —
     neither had it, so the V2 image could not build its UI and its server
     would fail on the first V2 import; `test/docker-image.test.js` walks the
-    import graph and keeps the Dockerfile honest. Left, in order:
-    **F9a** build the image and run prompt → editor → export inside it
-    (heavy — when the machine is free); **F9b** the hosted compose on
-    Postgres by default (the `pg` profile is opt-in today; accounts stay in
-    SQLite on the volume — decide whether that is acceptable for one
-    instance); **F9c** the decks directory's lifetime once a generation has
-    become a project (previews regenerate on demand; the sweep exists);
-    **F9d** DEPLOY.md for V2 and the three named self-host profiles below.
+    import graph and keeps the Dockerfile honest. Done the same day:
+    **F9b** the hosted compose runs on Postgres by default (the `db`
+    service is always on; accounts stay in SQLite on the volume, which is
+    sound for one instance) and `npm run projects:to-postgres` moves an
+    install's projects across in one checked transaction — tested against
+    a real Postgres and on a copy of the sandbox database, with the API
+    then serving those projects from Postgres; **F9c** a project needs
+    nothing from its deck's directory once imported, so the retention
+    sweep is safe for projects (`test/v2-project-outlives-deck.test.js`);
+    **F9d** DEPLOY.md covers V2 (Postgres, backups, migration) and names
+    the three setups, with `compose.yaml` now configurable as a lab server.
+    Left: **F9a** build the image and run prompt → editor → export inside
+    it (heavy — when the machine is free), and run the lab-server setup
+    once end to end.
     PostgreSQL store
     as the hosted default, exports/previews on disk or object storage with
     expiry and regenerate-on-demand, idempotent cleanup, the container image

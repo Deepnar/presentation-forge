@@ -119,9 +119,15 @@ ARCHITECTURE has a finish-line section; README's editor section is current.
 F9 started: the image now ships `packages/` (it did not — V2 could not have
 run in Docker); the image itself has not been built.
 
-Next, in order: **F9** rest — F9a build and run the image, F9b Postgres
-hosted default, F9c the decks directory's lifetime, F9d DEPLOY.md and the
-self-host profiles (roadmap F9) — then **F5** (the redesign, starting with the study of Canva,
+Later on 2026-11-16: F9b–F9d landed — hosted compose on Postgres with
+`npm run projects:to-postgres`, projects proven to outlive their deck
+directories, DEPLOY.md for V2 with the three setups. Postgres testing used a
+throwaway `postgres:15-alpine` container on 127.0.0.1:55439, removed after;
+the machine's other Postgres containers belong to other projects — leave
+them alone.
+
+Next, in order: **F9a** (build the image and run prompt → editor → export in
+it, when the machine is free; run the lab-server setup once) — then **F5** (the redesign, starting with the study of Canva,
 Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
 Claude Design skill; the add-slide menu's discoverability is recorded
 there). Everything content-quality is blocked on a model: the gateway is
