@@ -1,6 +1,6 @@
 # V2-7 Frontend Architecture — unified workspace
 
-Updated: 2026-10-18. Accepted source and review are indexed in development-state.json.
+Updated: 2026-10-18. Accepted source and review are recorded in the roadmap and docs/history/
 V2-7C-2 discovery is independently accepted at `bf1bd8f`; see
 [decision](reviews/V2-7C-2-bf1bd8f.json). Parent V2-7 remains
 in progress. C3 control separation is independently accepted at `484875f`; see

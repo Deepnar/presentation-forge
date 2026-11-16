@@ -51,7 +51,7 @@ must not become a rigid limit on AI generation. See [V2-5K](history/V2-5K-EVAL.m
 
 V2-7A implements Workspace → Project → Editor, saved project cards, blank/layout
 creation, a shared editor shell, contextual inspector and history. Its validation
-and acceptance status are in [development-state.json](development-state.json).
+and acceptance status are recorded in the roadmap ([ROADMAP.md](ROADMAP.md)).
 The existing Assistant tab now implements default-off, scoped editing of saved
 projects, with freeform requests and explicit proposal approval. Its source and
 review status are indexed in [V2-8I-8-EVAL.md](history/V2-8I-8-EVAL.md). “Create with AI” enters legacy chat;
@@ -60,7 +60,7 @@ editor** action through the shared HTTP/headless conversion boundary. It creates
 or reopens a saved Layer-C project, preserves human edits on retry and retains
 original-deck access with explicit coverage/refusal gates. V2-7B-1 is independently
 accepted; V2-7B-2 is independently accepted for the bounded handoff, with its
-exact decision and validation state indexed in [development-state.json](development-state.json).
+exact decision and validation state recorded in the roadmap.
 V2-7C-1 adds first-saved-slide previews to the existing project grid, using the
 authoritative scene and canonical SVG renderer. Previews are disposable reads;
 their loading, failure or retry never creates another project document. Its
@@ -69,7 +69,7 @@ independently accepted source `f79ae07`, validation and review are indexed in
 C2 unifies generated originals and saved copies in one Projects catalog without
 merging documents or importing on reads. C3 separates standalone developer
 controls/diagnostics from normal saved-project editing; its current validation
-and independent-review state are indexed in development-state.json.
+and review state are recorded in the roadmap and docs/history/
 The headless tool/context foundation, durable run core, bounded provider exchanges
 and explicit preparation/queue boundary are independently accepted, including
 bounded host-instance tool conversations with correlated semantic read rounds.

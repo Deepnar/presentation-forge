@@ -177,7 +177,7 @@ vision, files and streaming are explicit unsupported features; there is no live
 provider loop, conversation persistence, Assistant UI, public transport, new key
 storage, search or provider qualification claim. Protocol fixtures exercise actual
 HTTP and canonical persistence on both backends. Current review/evidence is in
-[the evaluation](history/V2-8C-EVAL.md) and development-state.json.
+[the evaluation](history/V2-8C-EVAL.md).
 
 Normalized usage inputTokens includes reported cached input once. Anthropic's
 uncached/cache-read/cache-write fields are summed; Chat Completions prompt_tokens

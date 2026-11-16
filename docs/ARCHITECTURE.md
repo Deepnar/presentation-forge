@@ -242,6 +242,42 @@ Everything downstream (`chat`/`chatJSON`, generate, turn, pipeline, CLI, API)
 is backend-agnostic — only the role's provider changes. The default stays
 local; nothing calls a cloud endpoint unless a role opts in.
 
+### The Auto gateway, as its operator describes it
+
+Auto is the TCET CoE gateway, per the CoE AI Gateway Student Developer Guide
+v1.0 (Aug 2026) — worth knowing before tuning anything against it:
+
+- **Qwen3.6-35B-A3B**, a mixture-of-experts model with 3B active parameters,
+  4-bit NVFP4 with multi-token prediction, on an NVIDIA DGX Spark on campus.
+- **The `model` field is required and its value ignored** (§3): one model is
+  served and any string is accepted, so `qwen3.6` is a label for our pickers
+  and logs, not something callers must match.
+- **It reads images** (§5) — diagrams, screenshots, charts, handwriting; not
+  video. Hence `tcet-auto` declares `vision_models`.
+- **Thinking is off by default and taken per request** (§6) via
+  `chat_template_kwargs.enable_thinking` and an optional `reasoning_effort`
+  (`low` / `medium` / `xhigh`). Author and critic opt in at medium; research
+  and utility stay off (`supports_thinking` in `config/models.yaml`).
+- **Shared by roughly fifteen students** (§12): speed depends on who else is on
+  it, which is the reason not to default every role to `xhigh`.
+- Errors: 401 bad key, 400 malformed, **502 model server unavailable**, plus
+  timeouts when busy. The 524s seen in practice are Cloudflare in front of it.
+
+It fails looking healthy: `/v1/models` answers in under a second while
+`/v1/chat/completions` times out behind Cloudflare. `docs/LOCAL-MODEL.md`
+records serving the same weights locally under vLLM — abandoned on a 24 GB
+laptop GPU (PRODUCTION §5).
+
+**`FORGE_DEV_LOCAL_FALLBACK=1`** (`src/devfallback.js`) drops an unreachable
+gateway to local Ollama mid-request, because the failure is at request time
+and there is nothing to probe beforehand. Env only, never `config/`, so it
+takes shell access and cannot be flipped on a deployed box; off by default.
+It fires only on a real unreachability (timeout, 502/503/504/52x) — a 401 or
+400 still fails, since falling back on those hides a bad key. Armed, it warns
+at boot and per role, sets `devLocalFallback` on the response and says so in
+`roleAudit()`. A fallback run exercises the pipeline and says nothing about
+quality.
+
 ### Per-transport capability split
 
 A role's sampling, output and context settings are written for the LOCAL
@@ -527,6 +563,22 @@ not on themes, so a set carrying every value of every axis renders every branch.
 `src/coverage.js` holds that set and `test/coverage.test.js` fails when a theme
 introduces a value none of them carries. The alternative is 2,550 slides, which
 means the visual sweep does not happen.
+
+**Deleting a theme is a normal edit, with one check first.** The gallery is
+large on purpose and cutting a weak theme loses nothing — except coverage: a
+theme may be the last one selecting a frame, an opening or a list treatment,
+and deleting it fails nothing, it just means that branch is never rendered by
+any sweep again. `npm run coverage -- --without <names>` says whether that is
+about to happen. If an axis value really is unwanted, delete the branch from
+`src/composition.js` too — a value no theme selects is dead code.
+
+**`npm run deckscore <slug>` asks a different question**: not "is this broken"
+but "how does this run compare to the last". Five model-free components —
+intact, fits, grounded, varied, whole — so the same brief on Auto and on local,
+or a deck before and after a prompt change, give numbers that can be set side
+by side. Each component is necessary and none is sufficient; a high score is
+not a good deck. It exists so a defect somebody already found cannot quietly
+come back.
 
 ## Deck vs report asymmetry
 
@@ -1848,7 +1900,7 @@ search, alongside type filters. Independent read/error/retry states, request
 cancellation and the C1 session fence protect partial results and account changes.
 The sidebar has one Projects destination. Copy-scoped confirmations retain errors
 inside the modal and contain focus during pending deletion. Details and current
-validation/review status are in the frontend record and development-state.json.
+validation/review status are in the frontend record.
 
 C3 uses that same viewer's existing embedded/standalone boundary. The production
 project toolbar exposes document/edit/view actions; fixture switching, Live
@@ -1857,7 +1909,7 @@ compilation, the duplicate project harness and raw diagnostics remain on
 machine-facing hooks and canonical commands retain their identities. Embedded
 project switching uses the guarded workspace route; standalone switch guards and
 all existing error/recovery paths remain. No document, store, compiler or renderer
-was forked. Current validation/review status is indexed in development-state.json.
+was forked. Current validation/review status is recorded in the roadmap.
 
 ### V2-7B-1 generated-source creation
 
@@ -1897,6 +1949,73 @@ and thin authenticated cover route preserve both stores' ownership and revision
 contracts without adding document fields or persistent thumbnails. Near-visible
 requests and memory caching are bounded and canceled on view/account departure.
 See frontend architecture§9 and V2-7C-1-EVAL.md for exact behavior/evidence.
+
+## The project as the workspace (finish line, F1–F8)
+
+What the finish line added on top of the V2 slices, as built. Every piece
+keeps the layer rule: content is intent or a person's edit, and only the
+compiler writes geometry.
+
+**Every generation lands in a project (F1).** `finalizeDeck` creates the
+editor project in the same step as the deck; the deck → project converter
+(`src/projects/import-generated.js`, `legacy-conversion.js`) carries every
+slide type, identity, images (as `asset:<sha256>` project assets), speaker
+notes and citations. Re-importing a regenerated deck updates the same project
+and carries the person's edits (`carryEdits`), detached slides untouched.
+
+**The project keeps its structure (F3).** `v2_project_intents` holds the
+compiled `DeckIntent`, the chrome recipe and the style server-side — never
+sent to the browser — plus `added`: the intent of each slide the Assistant
+added or rewrote. From it:
+
+- *theme change* (`src/projects/retheme.js`) recompiles the whole project in
+  another theme or appearance as one revision, edits carried, a slide's
+  `layoutChoice` applied first;
+- *another layout* (`src/projects/slide-layouts.js`,
+  `packages/compiler/layout-choice.js`) compiles one slide's intent under each
+  layout choice, offers those that fit and differ, and returns scenes — read
+  only; the editor applies one as an undoable slide replacement;
+- *the Assistant's slide tools* — `add_slide`, `rewrite_slide`,
+  `change_layout` — are compiled by the trusted host (`slide-compile.js`) into
+  `insert_slide` / `replace_slide` plan steps, applied only on approval.
+
+**The Assistant runs on the account's provider (F2)** through
+`src/agent/account-host-policy.js`; up to ten tools reach the model
+(`packages/agent/provider.ts`).
+
+**Files are project material (F8).** `v2_project_files` keeps each added
+file's extracted text with a role (source, source-of-truth, dataset, …):
+PDF through `pdftotext`, Word and PowerPoint from their XML, text formats as
+UTF-8 (`file-extract.js`). The Assistant reads them through `list_files` /
+`read_file`; source-of-truth outranks every other source. A chart's data
+panel fills from a project CSV or pasted spreadsheet cells
+(`packages/editor/chart-table.js`) — into the draft, so Apply decides.
+
+**PowerPoint import (F8)** (`src/projects/pptx-import.js`) turns any `.pptx`
+into a project of detached, human-owned slides: text with insets and line
+spacing, shapes, pictures, lines, tables, charts, groups, grounds and notes,
+scaled to the 13.333 × 7.5 scene, with plain warnings for what it cannot
+carry.
+
+**The editor's working set (F4).** Notes, pictures, charts, tables, rules and
+icons; snapping and guides; clipboard, grouping, rotation (frame, handles,
+drag and resize follow the turn — `scene-arrange.js` `visualBox`/`toLocal`);
+a selection box that starts in the stage margin and outlines what it will
+take; text boxes and lines selectable anywhere (invisible hit areas in
+`scene-svg.js`); saved layouts (`v2_project_layouts`: a slide's arrangement
+without the theme's locked marks, inserted with fresh ids).
+
+**Report and script in the project (F7).** `src/projects/report.js` feeds the
+deck report's planner, section writer and donor renderer from the project —
+source-of-truth files first, then the slides and notes, then other files —
+and keeps the result in `v2_project_documents` as its spec, rendered to .docx
+on download. `script.js` writes each slide's spoken words with the deck
+script's writer and returns them for the editor to put in the notes in one
+undo, sparing notes the person wrote. `report-slides.js` turns chosen report
+sections back into compiled slides (lead sentences, references, tables), so
+deck, report and script derive from one another inside one project. Routes:
+`app/server/v2-documents-routes.js`; generation runs under the same Auto
+reservation and BYOK accounting as a deck's report.
 
 ## The web shell
 
@@ -2604,7 +2723,7 @@ is no second account to leak to and `decks/<topic>` is the name every sweep and
 | `config/identity.yaml` | no | the OPERATOR's install-wide identity default; per-account overrides sit above it. `identityStatus()` reports it as missing / template / incomplete / ok at boot and in Admin, because an unset default is wrong silently — the deck renders, under the wrong institution |
 | `config/identities/<hash>.yaml` | no | one account's identity overrides — institution, guide, brand paths |
 | `config/local.yaml` | no | the install-wide provider key + the fallback `routing.default`; per-account keys live encrypted in the DB |
-| `config/forge.db` | no | accounts, sessions, per-user BYOK keys (AES-GCM), routing, Auto usage, BYOK budgets/usage and cost-acceptance timestamps — and since V2-6A the `v2_projects` table: durable V2 project documents (versioned scene envelopes + save revision), the one store the editor persists through |
+| `config/forge.db` | no | accounts, sessions, per-user BYOK keys (AES-GCM), routing, Auto usage, BYOK budgets/usage and cost-acceptance timestamps — and since V2-6A the `v2_projects` table: durable V2 project documents (versioned scene envelopes + save revision), the one store the editor persists through — with its revisions, assets, sources, intents, files, saved layouts and documents (report specs) beside it; the same tables in Postgres when `FORGE_PROJECTS_BACKEND=postgres` |
 | `config/users.json`, `config/sessions.json` | no | local accounts (scrypt hashes) and their bearer-token sessions — the auth gate |
 | `config/presets/` | no | saved briefing formats, one file per user |
 | `config/uploads/` | no | staged briefing documents — upload-only research mode; short-lived (swept after the TTL), resolved by token at planning |
@@ -2626,22 +2745,12 @@ is no second account to leak to and `decks/<topic>` is the name every sweep and
 
 ## Repository development continuity
 
-`AGENTS.md` and `docs/CONTINUATION.md` are the entrypoints; no external master
-prompt or mandatory relay tool is required. `docs/DEVELOPMENT-PROTOCOL.md` defines
-planning, implementation, verification, separate review, acceptance/hold and
-handoff. The roadmap is the sole work registry. Product direction, common gates
-and recovered decisions have distinct linked documents rather than competing
-work lists.
-
-`docs/development-state.json` is a small schema-validated index to the accepted
-baseline, code implementation under evaluation, active task, required validation,
-blockers and unauthorized next candidate. The code SHA may precede subsequent
-documentation-only commits. `tools/dev-protocol-check.mjs` validates required
-files/references, JSON schema, local commit ancestry, evidence identity/output
-counts and review consistency. It runs via `npm run dev:protocol` and CI; negative
-cases are in `test/dev-protocol.test.js`. The checker never runs application tests,
-changes state or grants acceptance. It cannot authenticate reviewer identity or
-context independence; the committed review/human decision remains the authority.
+`AGENTS.md` is the one working agreement (`CLAUDE.md` imports it). The roadmap's
+Finish line is the order of work and the only work registry, commits are the
+record, and `docs/HANDOFF.md` is the current state. The gated protocol that
+used to sit here — contracts, evidence packets, review records, a state index
+and its checker — was removed at the start of the finish line (F0); its
+per-slice records are kept in `docs/history/` as explanation, not procedure.
 
 ### V2-8A headless tool/context foundation
 
@@ -2650,7 +2759,7 @@ the existing live command engine and compose bounded model input from filtered
 reads. No provider, Assistant UI, durable run or new document/store is introduced.
 [The as-built boundary](V2-8-AGENT-ARCHITECTURE.md) records schemas, authority,
 projection, preservation, error and budget contracts. Current validation/review
-state is indexed in development-state.json.
+state is recorded in the roadmap.
 
 ### V2-8B durable semantic execution
 
@@ -2661,7 +2770,7 @@ SQLite/PostgreSQL transaction. No browser lifetime, live provider or new UI owns
 execution. The [as-built contract](V2-8-AGENT-ARCHITECTURE.md#v2-8b-durable-run-core)
 describes distinct revisions, exact ownership, recovery and limits. Source1fb39ff
 is independently accepted; exact review/validation remain indexed in
-development-state.json.
+the roadmap.
 
 
 ### V2-8C provider exchange boundary
@@ -2963,7 +3072,7 @@ The narrow rail is a modal overlay with topmost-dialog Escape, focus return and
 mutually exclusive left/right rails. Inactive panels are hidden and cannot focus.
 No model, compiler, renderer, store schema/query or canonical H/I2/I5/I7 authority
 changed. Contract/evidence and independent review status are indexed in
-[V2-8I-8-EVAL.md](history/V2-8I-8-EVAL.md) and development-state.json.
+[V2-8I-8-EVAL.md](history/V2-8I-8-EVAL.md).
 
 ### V2-8J-1 granted headless web research (accepted at f161901)
 
@@ -3088,7 +3197,7 @@ a new deadline or cancellation guarantee. [Contract](history/V2-8J-3-PLAN.md),
 Independently [accepted](reviews/V2-8J-4-665cd04.json) at exact source
 `665cd0459b0f267b32e808a59046e3d0b914e74f`, after explicit bounded metadata/history
 and copy/export containment approval. Validation/review evidence is in
-[state](development-state.json) and [evaluation](history/V2-8J-4-EVAL.md).
+[evaluation](history/V2-8J-4-EVAL.md).
 
 Optional scene-owned `citations` contain versioned citation/target/source IDs,
 source generation, optional excerpt-relative UTF-8 byte ranges and a versioned
