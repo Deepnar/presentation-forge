@@ -1,241 +1,236 @@
 # Presentation Forge — working agreement
 
-Presentation Forge is becoming a unified presentation workspace: topic or raw
-material → themed, editable deck → human and AI editing → native PowerPoint.
-The active program is V2 on branch `v2`; the legacy generation/report pipeline
-remains supported. The hosted Auto tier is the reference for generated-content
-quality; local Ollama remains supported for local use and pipeline exercises.
+The one guide for any agent or person working here; `CLAUDE.md` imports it.
+It is the operational map and the rules. How the system is built, and why,
+is `docs/ARCHITECTURE.md`.
+
+Presentation Forge turns a topic or the user's own material into a themed,
+editable deck — and the report and speaker script that go with it — for
+academic submissions. Node 24, ESM. One core drives three surfaces: a CLI
+(`src/ai/pipeline.js`), an Express API (`app/server/`) and a Vite/React UI
+(`app/web/`). The active program is V2 on branch `v2`: a project is the
+workspace, the editor is where a deck lives, and the legacy deck pipeline
+still generates and feeds it.
+
+```
+brief → research → outline → HUMAN GATE → content → compile → editable project
+                                                   ↘ report · speaker script · .pptx/.docx
+```
 
 ## Start here
 
-Read this file, `docs/HANDOFF.md`, the "Finish line" section of
-`docs/ROADMAP.md`, `docs/TRAPS.md` and `docs/BLOCKED.md` before changing code.
-Inspect branch, HEAD, tracked changes and untracked files, and preserve
-unrelated work. `docs/PRODUCT-VISION.md` records direction; architecture records
-describe what is built. `docs/history/` holds the per-slice records of earlier
-V2 work — read one when you need why something is the way it is, never as a
-procedure to follow.
+Read `docs/HANDOFF.md`, the **Finish line** at the top of `docs/ROADMAP.md`,
+`docs/TRAPS.md` (before touching the renderer or fitter) and `docs/BLOCKED.md`
+(before deciding something is stuck). Check the branch, HEAD and untracked
+files, and leave unrelated work alone. `docs/history/` explains why earlier
+V2 slices are shaped as they are; it is not a procedure.
 
-## The one rule that governs everything
+## The rule that governs everything
 
-**The model never writes layout code.** V2 separates semantic intent,
-deterministic compilation and authoritative editable scenes:
+**The model never writes layout.** V2 keeps three layers strictly apart:
 
 | Layer | Owns | Written by |
 |---|---|---|
-| A — intent | meaning, content, semantic relationships | model-authored, schema-validated `DeckIntent` |
-| B — compiler | composition, geometry, typography, fit | deterministic `packages/compiler/` + normalized theme tokens |
-| C — scene | exact editable slide objects | validated `SlideScene`, mutated through the revisioned command engine |
+| intent | meaning, content, how blocks relate | the model, as schema-validated `DeckIntent` |
+| compiler | composition, geometry, type, fit | `packages/compiler/` over normalized theme tokens |
+| scene | exact editable slide objects | compiler output or human edits, through the revisioned command engine |
 
-A change that lets model-authored content specify coordinates, hex colours or
-font names is wrong. Layer C necessarily contains resolved geometry and styling;
-that is compiler output or validated human editing, never an intent escape hatch.
-Browser SVG and native PPTX consume the same scene. Do not introduce screenshot
-backgrounds with proxy editing boxes, renderer-owned layouts or a second document.
+A change that lets model-authored content carry a coordinate, a hex colour or
+a font name is wrong however convenient. If a slide needs a layout that does
+not exist, add a composition or slide *type*, never an escape hatch. A person's
+choice of layout is a change to intent (`layoutChoice`), not coordinates.
+Browser SVG and native PPTX read the same scene — no screenshot backgrounds
+with proxy boxes, no renderer-owned layouts, no second document.
 
-Keep the legacy chrome/theme/content boundary too: locked institutional furniture
-is in `src/chrome.js` with shared policy in `packages/core/chrome.ts`; themes are
-in `themes/*.yaml`; legacy model content is validated YAML. Extend the appropriate
-semantic/compiler vocabulary when a composition is missing. Manual layout
-templates are editable scene skeletons, separate from AI composition families.
-Preserve human modifications, ownership flags, tombstones and detached scenes
-during regeneration. Human and AI changes share validated commands, stale-revision checks and
-history. The Assistant proposes; the human approves; the command engine applies.
-Model-supplied fields never carry caller authority (ids, owners, revisions).
-Sources and citations stay owner-private, and nothing copies source text into a
-deck or an export without the owner's explicit consent.
+The legacy boundary still holds: locked institutional chrome in `src/chrome.js`
+(policy in `packages/core/chrome.ts`), human-authored themes in
+`themes/*.yaml`, model content as validated YAML. Themes split into `tokens`
+(exact values, read only by renderers) and `voice` (tone, read only by the
+model); a theme-contract test keeps them apart — the moment a model sees a hex
+value it starts inventing them.
 
-Themes are split into `tokens` (exact machine values, read only by the renderer)
-and `voice` (tone guidance, read only by the model). These must never overlap:
-the moment a model can see a hex value it will start inventing them.
+Human edits, ownership flags, tombstones and detached slides survive every
+recompile (`carryEdits`). The Assistant proposes, the person approves, the
+engine applies. Model-supplied fields never carry authority (ids, owners,
+revisions). Sources stay owner-private; nothing copies source text into a deck
+or export without the owner's consent.
 
-## Repository layout
+## Commands
 
-```
-packages/       V2 model, core, compiler, editor, projects, native renderers
-src/            pipeline, compatibility adapters, stores, preview (CLI/API share this)
-themes/         one YAML per design language
-schema/         deck.schema.json — the content contract
-config/         identity.yaml — remembered defaults, user-editable
-brand/logos/    raw source marks (any format)
-brand/generated/ normalised marks — produced, never hand-edited
-app/server/     Express; thin transport over shared domain logic
-app/web/        Vite + React workspace and legacy surfaces
-decks/<slug>/   deck.yaml, meta.yaml, out/
-reference/      the institutional templates output is checked against
-docs/           ROADMAP.md (all work), PRODUCTION, ECONOMICS, ARCHITECTURE, TRAPS
+```bash
+npm run dev                                 # API :5174 + UI :5173 (Vite proxies /api)
+npm run dev:mail                            # the same + an SMTP sink on :2525 (verify/reset flows)
+npm run render decks/<slug>/deck.yaml       # legacy content -> .pptx
+npm run preview decks/<slug>/out/deck.pptx  # .pptx -> PNGs + thumbs
+npm run forge -- new "<topic>" --research   # headless outline
+npm run forge -- generate <slug> --critic   # headless deck
+npm run fonts                               # install the 21 theme font families
+npm run brand | npm run landing | npm run searxng
+node tools/v2-types.mjs                     # regenerate types after a schema change
 ```
 
-`app/server` must stay a thin wrapper. Anything it can do, the CLI must also do,
-because the pipeline has to run headless.
+The API port is `FORGE_API_PORT`, deliberately not `PORT`. Every entry point
+loads a gitignored `.env` (`.env.example` is the template). The `forge-sandbox`
+launch in `.claude/launch.json` runs API 5374 / UI 5373 against `out/sandbox`
+— its own config, database and decks — for checking work in a browser.
 
-## Commit discipline
+**Tests run focused**: an explicit file list, `nice`, `--test-concurrency=1`.
+The owner runs other heavy work on this machine; a glob that matches nothing
+makes `node --test` run everything. Browser (`*chrome*`) suites share the Vite
+build — run them serially and never beside a build; screenshots go to
+`out/evidence/`. Postgres suites skip without a server — say so rather than
+calling them green.
 
-1. **Impersonal, factual messages.** Describe what changed and why, in the
-   repository's voice. Never narrate the session — no "the user said…",
-   "as requested…", "we decided…", "per our discussion". Subject ≤ ~70 chars;
-   the body explains the *why*, not the *what* (the diff shows the what).
-2. **Many small, focused commits.** Split by concern, not by session — one
-   logical change per commit (renderer / theme / docs / tests as separate
-   commits). Never one massive end-of-session commit. If a message needs bullets
-   to list unrelated changes, it should have been several commits.
-3. **Stage in logical chunks** — `git add <specific paths>` per commit, never
-   `git add -A` once.
-4. **No AI attribution.** No `Co-Authored-By` trailers, no "generated with", no
-   tool names anywhere in commit messages or code comments.
+## Verification that proves something
 
-## Working the roadmap
+A written `.pptx` proves the file parsed. **Rasterise and look** before saying a
+render works — text off the canvas and invisible-on-invisible colour both
+write fine. The checks answer four different questions, in order (detail:
+ARCHITECTURE → *Verification*):
 
-`docs/ROADMAP.md` is both the plan and the progress tracker. It is not a spec.
+1. Is the box on the slide? — the geometry watcher, inside every render
+2. Was the field drawn at all? — `npm run drawcheck`
+3. Does the text fit? — `npm run themematrix` (`-- --notes`), `node tools/capfit.mjs`
+4. Did it survive the render? — `npm run textcheck`
 
-**It is also the ONLY place future work is written down.** The moment a piece
-of work is discussed — a defect noticed in passing, a feature the user asks
-about, a direction agreed in conversation, an idea that came out of building
-something else — it gets an entry in `docs/ROADMAP.md` in that same session,
-before the session ends. Not in a handoff, not in a section of another doc, not
-only in the conversation.
+Also: `npm run capstress` (every type at its caps — then look), `npm run
+coverage` (before deleting a theme), `npm run deckscore <slug>` (compare runs),
+`tools/slideqa.mjs` and `tools/pixels.mjs` (contrast on painted pixels). All
+take `--deck decks/<slug>/deck.yaml`: audit real generated content, not the
+specimen, which is written to behave. Look at the eight `COVERING_THEMES`
+(`src/coverage.js`), not all 34 — layouts branch on composition axes, not
+themes. None of these replaces looking.
 
-This is a rule because it has already gone wrong: work items accumulated in
-`PRODUCTION.md` §4 and §5 in parallel with the roadmap, so there were two
-lists, and whichever was not being edited went stale. The other docs have their
-own jobs and none of them is holding work:
+## Where things are
 
-| file | answers |
-|---|---|
-| `docs/ROADMAP.md` | **what is to be done, what was done, and why** |
-| `docs/PRODUCTION.md` | what stops real users — launch readiness only |
-| `docs/ECONOMICS.md` | what it costs and what it can be sold for |
-| `docs/ARCHITECTURE.md` | how the system is built, as built |
-| `docs/TRAPS.md` | what has bitten before, cross-cutting |
-| `docs/BLOCKED.md` | what cannot be worked on, and who unblocks it |
-| `docs/HANDOFF.md` | the current state, for the next session; overwritten |
+```
+packages/model      intent, scene, project, tool schemas + generated types; the command engine
+packages/compiler   intent -> scenes; carryEdits; layout-choice
+packages/editor     SVG viewer/editor (scene-svg, scene-dom, scene-edit, scene-arrange)
+packages/renderer-pptx, renderer-docx   native exports
+packages/tools, agent, skill            the Assistant: tool session, provider runs, instructions
+src/projects/       stores (SQLite + Postgres), import, pptx-import, files, retheme,
+                    slide-compile, slide-layouts, report, script, report-slides
+src/ai/             legacy pipeline: research, generate, report, script, model client
+src/                render, layouts, fit, chrome, theme, plate, preview, checks
+app/server/         Express — a thin transport; anything it does the CLI can do
+app/web/            the React workspace and editor (SceneViewer.jsx is the editor shell)
+```
 
-When one of those files needs to mention future work, it LINKS to the roadmap
-entry rather than restating it. A pointer that goes stale is visible; a second
-copy that goes stale is not.
+Runtime dependencies that are easy to forget: **LibreOffice** (previews, report
+TOC), **Poppler** (PDF → PNG, PDF text), **headless Chrome** (`FORGE_CHROME`;
+plates, freeform), **installed fonts** (`npm run fonts`, user font dir — without
+them every server render uses substitutes and nothing says so), **Ollama**
+(local default), **SearXNG** (`SEARXNG_URL`), and a **donor `.docx`** in
+`reference/` (gitignored; `FORGE_REFERENCE_DIR`) for any report.
 
-**Keep it current, not just appended to.** An entry whose reality has changed
-is edited when it changes — including entries nobody is working on, when a
-neighbouring change makes them wrong. A roadmap that is only ever added to
-becomes an archive, and an archive is not a plan.
+State is env-overridable for a volume (`FORGE_DECKS_DIR`, `FORGE_CONFIG_DIR`,
+`FORGE_DB_PATH`, `FORGE_REFERENCE_DIR`, … in `src/paths.js`). Projects, their
+files, layouts, intents, documents, accounts and keys live in the database
+(`config/forge.db`, or Postgres via `FORGE_PROJECTS_BACKEND`); the full table is
+ARCHITECTURE → *Data locations*.
 
-- **Entries are intent + rationale, not specs.** When an item's turn comes,
-  work out the concrete design against the code as it is, not the entry text.
-- **No first versions.** Build the robust, thought-through version — real
-  algorithms, edge cases handled, end-state in mind. Not a throwaway MVP. If an
-  item is too large for one pass, split it into robust sub-items rather than
-  shipping something knowingly temporary.
-- **Look ahead before building.** Scan the roadmap for later items in the same
-  subsystem and design the current work to be forward-compatible — build on the
-  primitive those will need. If they genuinely conflict, decide explicitly
-  (do the later one first, or record the exact seam). Never implement something
-  a known-future item will have to tear out. Note the look-ahead result in the
-  completion entry.
-- **Earn the checkmark.** Mark an item done only after its full original scope
-  is implemented *and behaviourally validated* — a real run, not a syntax check.
-  Audit against the entry text, not memory of it. Before starting anything, spot
-  check that previously ticked items in the same area are genuinely done.
-- **Propagate on completion.** After finishing an item, scan the still-unchecked
-  items for any describing the *old* behaviour of what just changed, and update
-  them to the new reality and the new dependency. A shipped feature that leaves
-  later items describing the pre-change world silently misleads the next
-  session. Do this before ticking the box.
-- **Record what was learned.** Each completed item gets a `> **Learned.**` block
-  covering what was not obvious beforehand. Reusable failure modes go in
-  `docs/TRAPS.md` instead — the roadmap is per-feature, TRAPS is cross-cutting.
-- **Keep `docs/ARCHITECTURE.md` in sync.** A brand-new subsystem gets a new
-  section; a reworked one gets its existing section updated. The architecture
-  doc must keep describing the system as built, not as designed.
+## Hosted, local and tenancy
 
-## Development workflow
+`FORGE_HOSTED` is the one fork (`isHosted()`; `config/hosted.json` wins over the
+env). **Hosted**: Auto is the configured gateway only, Cloud is BYOK, no Ollama.
+**Local** (default): Auto falls back to Ollama. Tests that depend on the mode pin
+it with `setHostedForTest()`. `FORGE_DEV_LOCAL_FALLBACK=1` (env only) drops an
+unreachable gateway to Ollama for exercising the pipeline — never for judging.
 
-**Plan → build → verify → commit.** No separate contracts, direction gates,
-evidence packets, review records or acceptance files. The roadmap entry is the
-plan; the commit history is the record; `docs/HANDOFF.md` is the current state.
+Tenancy rules are load-bearing (`test/tenancy.test.js` is the contract):
+admin is `user.role === "admin"`, never an address; identity, brand marks and
+BYOK keys are per account; the account reaches the model client through
+`src/account.js`, not parameters; media routes accept the session cookie for
+GET/HEAD only and every state-changing route reads the bearer header only. A
+setting written to `config/` and not keyed by account is install-wide and must
+be admin-gated.
 
-- **Take the lead within the finish line.** The roadmap's "Finish line" section
-  is the agreed order of work. Pick the next item, build it fully and move on
-  without stopping for permission at each step.
-- **Build the real thing.** No throwaway first versions and no scope cuts to
-  finish faster — speed comes from less ceremony, not less product. When an
-  item is too big for one pass, split it into complete sub-items.
-- **Verify by running and looking.** Write tests for new behaviour, run the
-  tests for what changed and what it directly touches, and for anything visible
-  open it in the browser or rasterise it and look. Run the full suite before a
-  merge to `main`. A green typecheck or a written .pptx proves nothing on its own.
-- **Ask only for what is genuinely the owner's call:** new paid infrastructure
-  or accounts, spending real model budget beyond a few runs, production
-  deployment, destructive Git operations, and changes to how user data is
-  handled. Everything else, decide and record why in the commit or roadmap.
+The workload is not serverless: multi-minute streams, LibreOffice and Chrome,
+SQLite plus a deck tree. Deploy is `docker/` (fonts asserted with `fc-match`,
+donor uploaded at runtime) — `docs/DEPLOY.md`.
 
-Commit focused changes and push to `origin/v2`. Never push to `main` by habit.
+## Which model the product is judged by
 
-## Which model to judge the product by
-
-**The TCET CoE gateway — Auto — and nothing else.** Hosted is what ships, Auto
-is what a hosted user gets, so Auto's output IS the product's quality. Judge
-every content question against it:
+**Auto — the TCET CoE gateway** (Qwen3.6-35B-A3B; `model` field ignored; reads
+images; thinking per request; shared by ~15 students). Hosted is what ships, so
+Auto's output is the product's quality:
 
 ```bash
 FORGE_HOSTED=1 npm run forge -- new "<topic>" --max-slides 24 --density dense
 FORGE_HOSTED=1 npm run forge -- generate <slug>
 ```
 
-- **Do not evaluate content quality on a local Ollama model.** A deck that
-  reads well on a 30B local model and badly through the gateway is a deck that
-  reads badly, because nobody hosted is running the local one. Judging on
-  local answers a question nobody asked.
-- **Local support stays in the code** — `resolveRole`, the fallbacks, the model
-  picker. It is not being removed and it should not rot. It is simply not
-  where the effort goes, and not what "does this work?" means.
-- Generating spends the operator's gateway budget, so be economical: a few
-  real runs read closely beat a sweep nobody looks at.
+Never judge content quality on a local model; local exercises the pipeline
+only. The gateway fails looking healthy (`/v1/models` answers, chat times out
+behind Cloudflare). Say which backend every result came from (`roleAudit()`,
+Admin → System). Local model support stays and must not rot. Do not start local
+inference on this machine without asking.
 
-**When the gateway is down, local is for exercising, not for judging.** The
-TCET box goes out — `/v1/models` keeps answering while `/v1/chat/completions`
-times out behind Cloudflare, so it looks up and is not. Two different jobs, and
-only one of them can move to Ollama:
+## How work is done
 
-- *Does the pipeline run end to end — does research reach the page, does resume
-  work, does the report render?* Yes, run it on local. The plumbing is the same
-  code either way.
-- *Is the output any good?* No. That question only has an answer on Auto, and
-  a local answer to it is worse than no answer because it reads like one.
+**`docs/ROADMAP.md` is the only place future work is written** — a defect
+noticed in passing, a feature asked about, a direction agreed — in the same
+session. Other docs link to roadmap entries rather than restating them:
 
-Say which of the two a result came from. `roleAudit()` and the admin System tab
-both report the model actually used, so there is no excuse for a note that does
-not say.
+| file | answers |
+|---|---|
+| `docs/ROADMAP.md` | what is to be done, what was done, and why |
+| `docs/PRODUCTION.md` | what stops real users; every way it ships |
+| `docs/ECONOMICS.md` | what it costs, what it can be sold for |
+| `docs/ARCHITECTURE.md` | how it is built, as built — keep in sync |
+| `docs/TRAPS.md` | cross-cutting failure modes |
+| `docs/BLOCKED.md` | what cannot move, and who unblocks it |
+| `docs/HANDOFF.md` | current state for the next session; overwritten |
 
-## Ending a session
+- **Plan → build → verify → commit.** The roadmap entry is the plan, commits
+  are the record. Take the next Finish-line item and build it fully without
+  stopping for permission at each step.
+- **Build the real thing.** No throwaway first versions, no scope cuts. Too big
+  for one pass → split into complete sub-items.
+- **Look ahead** at later items in the same subsystem; build on the primitive
+  they need.
+- **Earn the checkmark**: full scope, behaviourally validated. Then propagate —
+  edit later entries that describe the old behaviour — and record a
+  `> **Learned.**` block. Reusable failure modes go to TRAPS.
+- **Core before the front end**: an editing behaviour that feels broken is core
+  and is fixed when found.
+- **Ask only for the owner's calls**: paid infrastructure or accounts, real
+  model spend beyond a few runs, production deploys, destructive Git
+  operations, changes to how user data is handled.
 
-Overwrite `docs/HANDOFF.md` with the current state and commit it. Git history
-preserves previous handoffs. The next session is told to read it first.
+## Commits
+
+Follow the global `git-workflow` skill. Push to `origin/v2`; never to `main` by
+habit.
+
+```
+<type>: <concise description>
+
+- concrete change
+- important behaviour or file affected
+
+Validated: <tests and checks actually run>
+```
+
+Types: feat, fix, refactor, test, docs, chore, perf, build, ci. Small,
+concern-focused commits staged by path (`git add <paths>`, never `-A`). Impersonal
+— no "the user asked", "we decided". **No AI attribution**: no `Co-Authored-By`,
+no "generated with", no tool names in messages or code comments.
 
 ## Conventions
 
-- ES modules throughout, Node 24. Existing V2 packages use strict TypeScript,
-  executed natively by Node; legacy code and React use JavaScript/JSX. Follow
-  the subsystem's language and package import boundaries. Generated schema types
-  are checked in and drift-tested; use `npm run types:generate` when appropriate.
-- Comments explain *why*, never *what*. No comment that restates the next line.
-- Never hardcode institution details in `src/` — they belong in `config/identity.yaml`.
+- ES modules, Node 24. V2 packages are strict TypeScript run natively by Node;
+  legacy code and React are JavaScript/JSX. Generated schema types are checked
+  in and drift-tested.
+- Comments explain *why*, never *what*.
+- Never hardcode institution details in `src/` — they belong in
+  `config/identity.yaml`.
 - Generated artefacts (`decks/*/out/`, `brand/generated/`, `brand/fonts/`) are
-  gitignored and must be reproducible from a clean checkout.
-- Before claiming a render works, rasterise it and look at the image. Valid YAML
-  and a written .pptx prove nothing about whether text fits on the slide.
+  gitignored and reproducible from a clean checkout.
 
-## Verification
+## Ending a session
 
-```
-npm run render decks/<slug>/deck.yaml     # content -> .pptx
-npm run preview decks/<slug>/out/deck.pptx # .pptx -> PNGs + thumbs
-npm run dev                                # API :5174 + UI :5173
-```
-
-`src/preview.js` exists so output can be *seen*. Use it.
-
-Browser suites share the Vite build output: run them serially
-(`node --test --test-concurrency=1 test/*chrome*.test.js`), never alongside a
-build. Their screenshots go to `out/evidence/`, which is not committed. If
-PostgreSQL is not running its suites skip — say so rather than calling them
-green. Leave unrelated processes and other projects' databases alone.
+Follow the global `session-closeout` skill: propagate outcomes to the roadmap,
+ARCHITECTURE and the other docs first, then overwrite `docs/HANDOFF.md` and
+commit it.
