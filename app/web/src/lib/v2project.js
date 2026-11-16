@@ -212,6 +212,13 @@ export async function apiImportPptx(file, fetchFn = fetch) {
 
 // Restyle a saved project in another theme or appearance, server-side,
 // keeping the person's edits. The caller saves first and reloads after.
+// A PowerPoint's look over the project's theme: read, take (restyles the
+// project as one revision), or remove.
+export const apiGetLook = (id, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/look`, {}, fetchFn).then((b) => b.look);
+export const apiTakeLook = (id, file, baseRevision, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/look`, {
+  method: "POST", headers: { "Content-Type": "application/octet-stream", "X-File-Name": encodeURIComponent(file.name ?? "presentation.pptx"), "X-Base-Revision": String(baseRevision) }, body: file }, fetchFn);
+export const apiRemoveLook = (id, baseRevision, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/look?baseRevision=${encodeURIComponent(baseRevision)}`, { method: "DELETE" }, fetchFn);
+
 export async function apiChangeTheme(id, { theme, mode, baseRevision }, fetchFn = fetch) {
   const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/theme`, {
     method: "POST",

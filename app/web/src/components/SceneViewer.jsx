@@ -20,7 +20,7 @@ import { chartFromText } from "../../../../packages/editor/chart-table.js";
 import { LAYOUT_CATEGORIES, listLayoutTemplates, buildLayoutScene } from "../../../../packages/editor/layout-templates.js";
 import { ensureDeckFonts } from "../fonts.js";
 import { createLiveDeckLoader } from "../lib/liveDeck.js";
-import { apiListFiles, apiReadFile, apiSlideLayouts, apiListLayouts, apiSaveLayout, apiRemoveLayout, apiChangeTheme, apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
+import { apiGetLook, apiTakeLook, apiRemoveLook, apiListFiles, apiReadFile, apiSlideLayouts, apiListLayouts, apiSaveLayout, apiRemoveLayout, apiChangeTheme, apiUploadAsset, apiList, apiCreate, apiCopy, capturedProjectFetch, apiLoad, apiSave, apiRename, apiRemove, apiListRevisions, apiGetRevision, apiRestore, readLastProject, writeLastProject, createAutosave } from "../lib/v2project.js";
 import { useNarrow } from "../lib/viewport.js";
 import SlideNotes from "./SlideNotes.jsx";
 import StageMenu from "./StageMenu.jsx";
@@ -1085,6 +1085,8 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   const [editOn, setEditOn] = useState(false);
   const [stageMenu, setStageMenu] = useState(null);
   const [iconsOpen, setIconsOpen] = useState(false);
+  // The PowerPoint look laid over the project's theme, if any.
+  const [look, setLook] = useState(null);
   // { at, slideId, load, basis } while the slide-layout picker is open.
   const [layoutPick, setLayoutPick] = useState(null);
   const imageInputRef = useRef(null);
@@ -1118,6 +1120,12 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   // engine revision confirmed by the last successful PUT; dirty means
   // the engine moved past it. Refs mirror state for async callbacks.
   const [project, setProject] = useState(null);
+  useEffect(() => {
+    if (!project?.id || project.recoverable) { setLook(null); return undefined; }
+    let live = true;
+    apiGetLook(project.id).then((l) => { if (live) setLook(l); }).catch(() => { if (live) setLook(null); });
+    return () => { live = false; };
+  }, [project?.id, project?.recoverable]);
   const [saveState, setSaveState] = useState("idle");
   const [saveError, setSaveError] = useState(null);
   const [projectsOpen, setProjectsOpen] = useState(false);
@@ -1561,7 +1569,10 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
   // Save what is on the page, restyle on the server, reload the result —
   // one new revision the person can take back from History.
   const [themeState, setThemeState] = useState({ busy: false, error: null });
-  async function applyTheme(name, mode) {
+  // Every whole-project restyle — a theme, a PowerPoint's look, removing
+  // it — saves pending edits first, runs on the server as one revision,
+  // then reloads the project.
+  async function restyle(change) {
     const proj = projectRef.current;
     if (!proj || proj.recoverable) return;
     setThemeState({ busy: true, error: null });
@@ -1573,13 +1584,17 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
       const saved = await saveNow();
       if (saved && saved.ok === false) throw new Error(saved.message ?? "Couldn't save your latest edits first.");
       const current = projectRef.current;
-      await apiChangeTheme(current.id, { theme: name, mode, baseRevision: current.revision });
+      await change(current);
       await attachLoadedProject(await apiLoad(current.id));
+      setLook(await apiGetLook(current.id).catch(() => null));
       setThemeState({ busy: false, error: null });
     } catch (err) {
       setThemeState({ busy: false, error: err.message });
     }
   }
+  const applyTheme = (name, mode) => restyle((p) => apiChangeTheme(p.id, { theme: name, mode, baseRevision: p.revision }));
+  const takeLook = (file) => restyle((p) => apiTakeLook(p.id, file, p.revision));
+  const removeLook = () => restyle((p) => apiRemoveLook(p.id, p.revision));
 
   async function loadLayouts() {
     const id = projectRef.current?.id;
@@ -2929,7 +2944,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                   <div><span className="text-fg-faint">Objects </span>{slideProps.elements}{slideProps.hidden > 0 ? ` (${slideProps.hidden} hidden)` : ""}{slideProps.locked > 0 ? ` (${slideProps.locked} locked)` : ""}</div>
                   {!editOn && <div className="text-fg-faint">Read-only — press Edit in the toolbar to change this slide.</div>}
                   {editOn && project && !project.recoverable && (
-                    <ThemePicker current={project.theme} busy={themeState.busy} error={themeState.error} onApply={applyTheme} />
+                    <ThemePicker current={project.theme} busy={themeState.busy} error={themeState.error} onApply={applyTheme} look={look} onTakeLook={takeLook} onRemoveLook={removeLook} />
                   )}
                   {editOn && project?.id && !project.recoverable && <ProjectFiles projectId={project.id} />}
                   {editOn && project?.id && !project.recoverable && <ProjectReport projectId={project.id} revision={project.revision} insertAt={() => ({ index: (snap?.slideIndex ?? -1) + 1, total: shownScenes.length })} onInsert={(scenes, at) => adapterRef.current?.insertScenes(scenes, at)} />}
