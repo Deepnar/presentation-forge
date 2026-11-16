@@ -136,8 +136,14 @@ look (F8 done in code). The pane's screenshots sometimes come back at the
 wrong scale or stale; read the canvas DOM (`[role=application]`) when they
 do.
 
-Next, in order: **F9a** (build the image and run prompt → editor → export
-in it, when the machine is free; run the lab-server setup once) — the last
+Also: a text box that hugs its text now shrinks back when widened again
+(owner's defect); F5 gained hideable notes, a bottom slide rail and
+dragging an object onto another slide's thumbnail. `.dockerignore` is a
+whitelist and lacked `packages/` — fixed, and the image test checks it.
+
+Next, in order: **F9a** (the V2 image build was started 2026-11-16 as
+`presentation-forge:v2-check`; then run it: boot, health, a project
+created and exported inside it; the lab-server setup once) — the last
 core item — then **F5** (the redesign, starting with the study of Canva,
 Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
 Claude Design skill; the add-slide menu's discoverability is recorded
