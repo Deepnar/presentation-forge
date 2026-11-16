@@ -243,139 +243,34 @@ layer holds no presentation logic, because the pipeline has to run headless.
 
 ---
 
+## The editor (V2, branch `v2`)
+
+Every finished generation opens as a saved, editable **project** — the same
+scene the browser draws is what exports to native PowerPoint. In the editor:
+
+- edit text, pictures, shapes, charts (fill one from a CSV or pasted cells),
+  tables, icons and speaker notes; snap, group, rotate, undo; Delete removes
+  the selection;
+- **Layout ▾** lays a slide out another way (steps, tiers, cards, side by
+  side…) keeping your edits; **Theme** restyles the whole project;
+- **+ Slide ▾** adds a blank slide, a gallery layout or one of **your layouts**
+  (any slide's menu → Save as layout);
+- **Import PowerPoint** turns any `.pptx` into an editable project;
+- **Files** adds PDFs, Word, PowerPoint, Markdown or CSV as material, with a
+  role — a *source of truth* outranks everything else;
+- **Report** writes the companion `.docx` from the project, **Speaker notes**
+  writes what to say on every slide, and a report's sections can come back as
+  slides;
+- the **Assistant** proposes edits, new slides, rewrites and layout changes;
+  nothing changes until you approve.
+
+Headless equivalents for scripted use: `npm run import-project -- <slug>`,
+`npm run export-project -- <id> --output <file.pptx>`,
+`npm run inspect-project-sources`, `npm run add-project-references`, and
+`npm run agent-run` for durable scripted edits. How each is built:
+[ARCHITECTURE](docs/ARCHITECTURE.md#the-project-as-the-workspace-finish-line-f1f8).
+
 ## Verification that proves something
-
-On branch `v2`, a completed source deck can be converted into a saved editable
-project through the shared import boundary:
-
-```sh
-npm run import-project -- <slug> --request-id <stable-request-id>
-```
-
-Use the same 8–64 character request id for retries; the service returns the
-current project and preserves later edits. Hosted calls require an existing
-session in `FORGE_IMPORT_TOKEN`; local operator calls admit ownerless sources
-only. A changed source requires an explicit new request. Unsupported content,
-identity/assets or readable-fit failures refuse the entire import with diagnostics.
-Completed presentation chats and the legacy deck page also offer **Open in
-editor**. It creates or reopens the saved editable copy through the same service,
-keeps human edits on retry and retains access to the original deck. Unsupported
-content refuses visibly; changed-source or deleted-target retries never replace
-edits or recreate a deleted project. See the exact
-[coverage and limits](docs/history/OPEN-IN-EDITOR-COVERAGE.md) and
-[browser validation/review status](docs/history/V2-7B-2-EVAL.md).
-
-Saved project cards show the first saved slide above their title and actions.
-Previews use the same scene renderer as the editor, refresh with saved revisions
-and remain optional: Open is available while a preview loads or fails. The
-[cover validation and review record](docs/history/V2-7C-1-EVAL.md) identifies the exact
-implementation and its acceptance status.
-
-The project editor's Inspector includes a collapsed **Sources** section. Opening
-it reads the saved slide or single selected object's references without saving
-pending edits. Complete retained titles/URLs stay plain owner-only text; separate
-target/content/source/range statuses never imply verified claim support. Reads
-are paged explicitly, and closing or changing scope/session clears the displayed
-rows. The same saved read is available headlessly:
-
-```sh
-npm run inspect-project-sources -- <project-id> --revision <N> --slide <slide-id>
-```
-
-Authenticated reads use the owner's session in `FORGE_PROJECT_TOKEN`. Full URLs
-may include private query values; the interface does not follow them or fetch
-their pages. See [scope, evidence and review status](docs/history/V2-8J-6-3-EVAL.md).
-
-An owner can preview an editable **References** appendix headlessly:
-
-```sh
-npm run add-project-references -- <project-id> [--theme <existing-theme>]
-```
-
-The preview returns counts, saved/source revisions, a design fingerprint and the
-disclosure. To append its pages, use those exact values in a separate command:
-
-```sh
-npm run add-project-references -- <project-id> --include-source-text \
-  --revision <project-revision> --source-generation <generation> \
-  --source-revision <source-revision> --design-fingerprint <fingerprint>
-```
-
-Repeat the same `--theme` choice if preview required one. Authenticated operations
-use `FORGE_PROJECT_TOKEN`. Complete titles/URLs, including private queries, become
-ordinary editable deck/history text with normal project/admin/copy/export access
-and possible later AI input through scoped scene reads. Source/chat clear does not
-remove those copies; history follows existing retention. Insertion uses no model.
-Reopen deliberately to load the appended pages; an already-open editor keeps its
-drafts and existing conflict handling. Long values continue across readable native
-pages; claim support remains unassessed. See [scope and review status](docs/history/V2-8J-6-4-EVAL.md).
-
-Saved projects with retained citations have an owner-only notes export on local
-POSIX filesystems:
-
-```sh
-npm run export-project -- <project-id> --output <new-path.pptx> --include-source-notes
-```
-
-Authenticated projects require the owner's existing session in `FORGE_PROJECT_TOKEN`.
-The flag explicitly consents **each time** to complete retained source titles and
-URLs, including private query values, in PowerPoint speaker notes. Downloaded notes
-survive source clear/project deletion; support remains not assessed and long notes
-may overflow printed pages. Output is private0600 and never replaces an existing
-file. Uncited projects can omit the flag. See the
-[accepted headless scope](docs/history/V2-8J-6-1-EVAL.md).
-
-The workspace/editor Export action now supports cited saved projects through a
-fresh **Export with source notes** confirmation. Finish editing and save first;
-Export preserves pending drafts and never saves them implicitly. Uncited saved
-projects download directly. Consent includes the same complete-title/URL,
-independent-retention and print limitations above. Generic/raw cited export still
-refuses; the new private notes transport is owner-only, with no admin source
-override. [Browser evidence and current review status](docs/history/V2-8J-6-2-EVAL.md)
-distinguish implementation from independent acceptance.
-
-V2 also provides a trusted headless CLI for bounded scripted edits to saved
-projects: `npm run agent-run -- start --project ID --plan FILE`, followed by
-`work`, `status` or `cancel` with `--project ID --run RUN_ID`. Start persists and
-exits; a separate worker resumes the durable run. Owner-bound projects additionally
-require the trusted operator's `--owner OWNER` on each call. See the
-[run-plan schema](packages/agent/run-plan.schema.json),
-[durable execution contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8b-durable-run-core)
-and [validation/review record](docs/history/V2-8B-EVAL.md).
-
-Internal, operator-configured adapters now support bounded text/tool exchanges
-through OpenAI-compatible Chat Completions and Anthropic Messages. They use explicit
-capabilities and injected credentials, validate semantic proposals and leave editing
-authority with the canonical tools. [The accepted exchange contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8c-provider-exchange-boundary)
-and [evidence](docs/history/V2-8C-EVAL.md) distinguish local protocol fixtures from live
-provider qualification. Hosted conversational integration and the Assistant remain
-in the [roadmap](docs/ROADMAP.md#v2-8-remaining).
-
-Trusted host callers can now prepare a single scoped provider turn against an exact
-saved project revision and explicitly queue its opaque edit proposal through the
-existing durable runtime. Read/text/refusal outcomes do not mutate project content;
-edit proposals preflight through canonical commands and retain owner/revision guards.
-A proposal belongs to one host instance; queued runs retain durable recovery. See
-the [preparation contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8d-provider-backed-run-preparation)
-and [independent validation](docs/history/V2-8D-EVAL.md). This internal boundary adds no new
-public route, credential setup or Assistant interface.
-
-The same runner also supports bounded `converse` invocations: canonical scoped
-reads return correlated semantic results to subsequent exchanges until text,
-refusal or one atomic edit proposal. Explicit enqueue retains the same authority;
-history and proposals remain ephemeral to one host instance. Exchange/tool/output
-budgets and cancellation bound the whole invocation. See the independently accepted
-[conversation contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8e-bounded-tool-conversation-preparation)
-and [V2-8E evidence](docs/history/V2-8E-EVAL.md).
-
-An internal shared-search boundary normalizes SearXNG results into project-scoped
-citation sources independently of the model provider. Operator configuration stays
-outside query arguments; transport, output and cancellation limits are explicit.
-Its independently accepted
-[contract](docs/V2-8-AGENT-ARCHITECTURE.md#v2-8f-shared-search-boundary) and
-[evidence](docs/history/V2-8F-EVAL.md) identify the exact scope and limitations. Legacy
-research retains its existing entry points; model search-tool integration remains
-in the [roadmap](docs/ROADMAP.md#v2-8-remaining).
 
 A written `.pptx` proves the file parsed and nothing else. `pres.writeFile()`
 succeeds for decks with text off the canvas and invisible-on-invisible colour

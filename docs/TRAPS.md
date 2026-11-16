@@ -2172,3 +2172,21 @@ editor reloads but miss Assistant decisions, allowing the test to exercise a dif
 stage than claimed. Install a stable instrumented function before mount and change
 its bounded one-shot gates later; assert the intended gate is reached before
 releasing other responses. Preserve the failed fixture evidence. J6-2 reproduced it.
+
+## linkedom's `getElementsByTagName("*")` finds nothing in XML
+
+Parsed as `text/xml`, linkedom answers a wildcard tag query with an empty
+list and no error, so a Word body walked that way extracts nothing from runs
+and keeps only the text that happened to sit at the top level — 889 of 8,750
+characters on a real report. Walk `children` and compare `tagName` directly
+(`paragraphText` in `src/projects/file-extract.js`). Named-tag queries
+(`getElementsByTagName("w:tr")`) do work.
+
+## A rotated element's preview lives in its own turned frame
+
+Rotated elements are drawn inside `<g transform="rotate(...)">`. A drag or
+resize preview applied inside that group moves along the turned axes, so the
+element drifts away from the pointer — a vertical text box "glitched" on an
+imported deck. Convert pointer deltas with `toLocal` before transforming, and
+measure frames, handles and snapping with `visualBox`, not the unturned box
+(`packages/editor/scene-arrange.js`).
