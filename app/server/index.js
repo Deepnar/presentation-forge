@@ -250,6 +250,14 @@ function startSSE(res) {
   const close = () => { if (!res.destroyed) res.end(); };
   return { send, done, close };
 }
+// The font families a person can pick in the editor: installed here, the
+// theme's own first when ?theme= names one.
+app.get("/api/fonts", wrap(async (req, res) => {
+  const { fontChoices } = await import("../../src/fonts.js");
+  const theme = typeof req.query.theme === "string" && /^[a-z0-9-]{1,60}$/.test(req.query.theme) ? req.query.theme : null;
+  ok(res, await fontChoices(theme));
+}));
+
 app.get("/api/themes", wrap(async (_req, res) => {
   const names = await listThemes();
   const themes = await Promise.all(names.map(async (name) => {

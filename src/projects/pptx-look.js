@@ -6,12 +6,10 @@
 // colour pair that would not read.
 import JSZip from "jszip";
 import { DOMParser } from "linkedom";
-import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { installedFamilies } from "../fonts.js";
 
 const refuse = (code, message) => Object.assign(new Error(message), { code });
-const MANIFEST = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "tools", "fonts.manifest.json");
 
 const hex = (v) => (typeof v === "string" && /^[0-9A-Fa-f]{6}$/.test(v) ? v.toUpperCase() : null);
 const rgb = (h) => [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
@@ -35,10 +33,7 @@ function schemeColour(slot) {
   return null;
 }
 
-async function installedFamilies() {
-  try { return new Set(Object.keys(JSON.parse(await readFile(MANIFEST, "utf8")).families ?? {})); }
-  catch { return new Set(); }
-}
+
 
 // The theme the first slide master uses, else theme1.
 async function themeXml(zip) {
@@ -91,7 +86,7 @@ export async function extractLook(bytes, filename = "presentation.pptx") {
     notes.push("its colour scheme is incomplete, so the theme's colours are kept");
   }
 
-  const installed = await installedFamilies();
+  const installed = new Set(await installedFamilies());
   const type = {};
   if (fonts.heading && installed.has(fonts.heading)) for (const role of ["display", "heading", "stat"]) type[role] = { family: fonts.heading };
   else if (fonts.heading) notes.push(`${fonts.heading} is not available here, so the theme's heading font is kept`);
