@@ -3,7 +3,8 @@
 // the UI build could not resolve the editor and the server's first V2 import
 // would fail — on a box where nobody runs the source tree to notice. This
 // walks the import graph from both entry points (static and dynamic string
-// imports) and checks each top-level directory is copied into its stage.
+// imports) and checks each top-level directory is let into the build
+// context by .dockerignore and copied into its stage.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -45,6 +46,11 @@ test("every directory the server and the UI build import is in the image", async
   const server = new Set([...(await reach(["app/server/index.js"]))].map(topDir));
   const ui = new Set([...(await reach(["app/web/src/main.jsx"]))].map(topDir));
   assert.ok(server.has("packages") && ui.has("packages"), "the walk reaches V2");
+  // The build context is a whitelist: a directory not let through never
+  // reaches the COPY, whatever the Dockerfile says.
+  const allowed = new Set((await readFile(path.join(ROOT, ".dockerignore"), "utf8")).split("\n")
+    .filter((l) => l.startsWith("!")).map((l) => l.slice(1).replace(/^\//, "").split("/")[0]));
+  for (const dir of new Set([...server, ...ui])) assert.ok(allowed.has(dir), `.dockerignore lets ${dir}/ into the build context`);
   for (const dir of server) {
     if (dir === "app") continue;
     assert.ok(runtime.has(dir), `the runtime stage copies ${dir}/ (the server imports it)`);
