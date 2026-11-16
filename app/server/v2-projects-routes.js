@@ -424,6 +424,65 @@ export function registerV2ProjectRoutes(app) {
     }
   }));
 
+  // A PowerPoint's look (colours and fonts) laid over the project's theme —
+  // src/projects/pptx-look.js reads it, retheme applies it as one revision.
+  // The file itself is not kept; only the look it yields.
+  app.get("/api/v2/projects/:id/look", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectOwner(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    const { intent } = await (await projectStore()).getProjectIntent({ owner: who.owner, admin: who.admin, id: req.params.id });
+    const look = intent?.look ?? null;
+    ok(res, { look: look ? { source: look.source, scheme: look.scheme, fonts: look.fonts, notes: look.notes } : null });
+  }));
+  app.post("/api/v2/projects/:id/look",
+    express.raw({ type: () => true, limit: 41 * 1024 * 1024 }),
+    wrap(async (req, res) => {
+      if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+      if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+      const who = await projectWriter(req);
+      if (who.denied) return fail(res, 401, "log in to use saved projects");
+      const baseRevision = Number.parseInt(String(req.get("X-Base-Revision") ?? ""), 10);
+      if (!Number.isInteger(baseRevision) || baseRevision < 0) return res.status(422).json({ ok: false, error: "X-Base-Revision must be the project's revision", code: "invalid-document" });
+      let name = "presentation.pptx";
+      try { name = decodeURIComponent(String(req.get("X-File-Name") ?? name)).slice(0, 200) || name; } catch { /* keep the default */ }
+      try {
+        const { extractLook } = await import("../../src/projects/pptx-look.js");
+        const look = await extractLook(Buffer.isBuffer(req.body) ? new Uint8Array(req.body) : new Uint8Array(), name);
+        const { getProject } = await projectStore();
+        const { doc } = await getProject({ owner: who.owner, admin: who.admin, id: req.params.id });
+        if (!doc) return fail(res, 404, "no such project");
+        const { changeProjectTheme } = await import("../../src/projects/retheme.js");
+        const out = await changeProjectTheme({ owner: who.owner, admin: who.admin, id: req.params.id, theme: doc.theme?.name ?? "warm-humanist", mode: doc.theme?.variant === "dark" ? "dark" : "light", baseRevision, look });
+        if (out.status === "stale") return res.status(409).json({ ok: false, error: "the project changed — try again", code: "stale-revision", expectedRevision: out.expected, actualRevision: out.actual });
+        ok(res, { project: out.doc, look: { source: look.source, scheme: look.scheme, fonts: look.fonts, notes: look.notes } });
+      } catch (err) {
+        if (["file-unreadable", "file-unsupported", "no-theme", "no-look"].includes(err?.code)) return res.status(422).json({ ok: false, error: err.message, code: err.code });
+        if (err?.code === "no-intent") return res.status(409).json({ ok: false, error: err.message, code: "no-intent" });
+        mapStoreError(res, err);
+      }
+    }));
+  app.delete("/api/v2/projects/:id/look", wrap(async (req, res) => {
+    if (!projectsAllowed()) return fail(res, 403, "project storage is disabled on this host");
+    if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
+    const who = await projectWriter(req);
+    if (who.denied) return fail(res, 401, "log in to use saved projects");
+    const baseRevision = Number.parseInt(String(req.query.baseRevision ?? ""), 10);
+    if (!Number.isInteger(baseRevision) || baseRevision < 0) return res.status(422).json({ ok: false, error: "baseRevision must be the project's revision", code: "invalid-document" });
+    try {
+      const { doc } = await (await projectStore()).getProject({ owner: who.owner, admin: who.admin, id: req.params.id });
+      if (!doc) return fail(res, 404, "no such project");
+      const { changeProjectTheme } = await import("../../src/projects/retheme.js");
+      const out = await changeProjectTheme({ owner: who.owner, admin: who.admin, id: req.params.id, theme: doc.theme?.name ?? "warm-humanist", mode: doc.theme?.variant === "dark" ? "dark" : "light", baseRevision, look: null });
+      if (out.status === "stale") return res.status(409).json({ ok: false, error: "the project changed — try again", code: "stale-revision" });
+      ok(res, { project: out.doc });
+    } catch (err) {
+      if (err?.code === "no-intent") return res.status(409).json({ ok: false, error: err.message, code: "no-intent" });
+      mapStoreError(res, err);
+    }
+  }));
+
   // Restyle a project in another theme or appearance, keeping the person's
   // edits — the work is src/projects/retheme.js; this only carries it.
   // Bearer only, like every state-changing route.

@@ -36,7 +36,7 @@ export async function compileInPlace({ doc, stored, slide, chrome, index, total 
   } : null;
   return compileSceneDeck({
     intent, theme: doc.theme?.name ?? "warm-humanist", style: stored?.style ?? null,
-    mode: doc.theme?.variant === "dark" ? "dark" : "light", chromeForDeck,
+    mode: doc.theme?.variant === "dark" ? "dark" : "light", chromeForDeck, look: stored?.look ?? null,
   });
 }
 

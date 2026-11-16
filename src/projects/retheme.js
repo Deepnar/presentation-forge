@@ -15,7 +15,9 @@ import { withLayoutChoice } from "../../packages/compiler/layout-choice.js";
 
 const refuse = (code, message) => Object.assign(new Error(message), { code });
 
-export async function changeProjectTheme({ owner = null, admin = false, id, theme, mode = "light", baseRevision }) {
+// `look`: undefined keeps the project's PowerPoint look (if any), null drops
+// it, an extracted look (src/projects/pptx-look.js) replaces it.
+export async function changeProjectTheme({ owner = null, admin = false, id, theme, mode = "light", baseRevision, look }) {
   const store = await projectStore();
   const { doc } = await store.getProject({ owner, admin, id });
   if (!doc) throw refuse("not-found", "no such project");
@@ -33,7 +35,8 @@ export async function changeProjectTheme({ owner = null, admin = false, id, them
   // A layout the person picked in the editor is part of the slide.
   const intent = { ...stored.deck, slides: kept.map((s) => withLayoutChoice(byId.get(s.id).slide, s.layoutChoice)) };
   const recipe = stored.chrome ? { ...stored.chrome, slides: kept.map((s) => byId.get(s.id).chrome) } : null;
-  const compiled = await compileSceneDeck({ intent, theme, style: stored.style ?? null, mode, chromeForDeck: recipe ? chromeFromRecipe(recipe) : null });
+  const nextLook = look === undefined ? stored.look ?? null : look;
+  const compiled = await compileSceneDeck({ intent, theme, style: stored.style ?? null, mode, look: nextLook, chromeForDeck: recipe ? chromeFromRecipe(recipe) : null });
   const freshById = new Map(compiled.scenes.map((s) => [s.id, s]));
   const ground = compiled.scenes.find((s) => s.recipeId !== "divider")?.background ?? compiled.scenes[0].background;
   const scenes = doc.scenes.map((prev) => {
@@ -45,11 +48,16 @@ export async function changeProjectTheme({ owner = null, admin = false, id, them
     return out;
   });
   for (const asset of await storePlates(scenes)) await store.putProjectAsset({ owner, admin, id, asset });
-  const label = `${theme}${mode === "dark" ? " (dark)" : ""}`;
+  const label = look ? `the look of ${look.source}` : look === null ? `${theme} without the PowerPoint look` : `${theme}${mode === "dark" ? " (dark)" : ""}`;
   const saved = await store.saveProject({
     owner, admin, id, baseRevision, title: doc.title, scenes,
     theme: { name: theme, variant: mode }, origin: doc.origin,
-    provenance: { actor: "human", summary: `Changed the theme to ${label}`, saveOrigin: "manual" },
+    provenance: { actor: "human", summary: look ? `Took ${label}` : `Changed the theme to ${label}`, saveOrigin: "manual" },
   });
+  // The look is kept with the structure only once the restyle has saved.
+  if (look !== undefined && saved.status === "saved") {
+    const { look: _old, ...rest } = stored;
+    await store.putProjectIntent({ owner, admin, id, intent: nextLook ? { ...rest, look: nextLook } : rest });
+  }
   return saved;
 }
