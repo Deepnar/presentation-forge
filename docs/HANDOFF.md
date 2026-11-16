@@ -104,9 +104,12 @@ what it will take; PRODUCTION.md §0 maps hosted (BYOK, provided model
 local clients) and self-hosting. **F7 started**: the project report
 backend (`src/projects/report.js`, generate/list/download/remove routes).
 
-Next, in order: **F7** rest — the editor's Report section, the speaker
-script into slide notes (`generateScript` still reads a deck directory;
-give it inputs like `generateReport` got), deck-from-report — then **F9** (hosted lifecycle —
+2026-11-16: the editor's Report section and Speaker notes → Write for all
+slides landed (F7). Do not press either in the sandbox: it is local mode,
+so they would start local model inference.
+
+Next, in order: **F7** rest — deck-from-report inside a project (a
+report's sections as slides through the host compile, no model) — then **F9** (hosted lifecycle —
 V2 state is already all in the database, so the work is the Postgres
 default for hosted, the decks directory's lifetime, the container and
 DEPLOY.md), then **F5** (the redesign, starting with the study of Canva,

@@ -219,10 +219,15 @@ Decisions taken with this list, so nobody re-litigates them:
    2026-11-14: a project writes its report from its own slides, speaker
    notes and files (source-of-truth first), keeps it
    (`v2_project_documents`) and renders it to .docx on the account's donor
-   (`src/projects/report.js`, `app/server/v2-documents-routes.js`). Left:
-   the editor's Report section (generate, list, download), the speaker
-   script written into each slide's notes, deck-from-report inside a
-   project, and the real-model read of what it writes. Generate the
+   (`src/projects/report.js`, `app/server/v2-documents-routes.js`). The
+   editor's slide panel has **Report** (write full or brief, earlier ones
+   listed with "slides changed since", download .docx — checked on the real
+   donor, pages rasterised) and **Speaker notes → Write for all slides**
+   (the script writer per slide from the project's research, applied to
+   the notes in one undo, the person's own notes kept unless they say
+   otherwise; `src/projects/script.js`). Left: deck-from-report inside a
+   project (a report's sections offered as slides, compiled by the host —
+   no model needed), and the real-model read of what both write. Generate the
    `.docx` report and the speaker script from a project, list them with its
    exports, sharing its sources. *Done when:* deck, report and script coexist
    and cross-derive in one project.
