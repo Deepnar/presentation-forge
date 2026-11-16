@@ -379,17 +379,41 @@ describe("group and ungroup", () => {
     assert.deepEqual(r.errors, []);
   });
 
-  it("grouping is one undo, and lines are refused plainly", async () => {
+  it("grouping is one undo, and a grouped line travels with its group", async () => {
     const line = { id: "l", kind: "line", x: 1, y: 5, w: 3, h: 0.01, z: 3, provenance: "human", line: { x2: 4, y2: 5, stroke: "333333", strokeWidth: 2 } };
     const r = await rig([slide("s", [box("a", 1, 1, 2, 1), box("b", 4, 3, 1, 1), line])]);
     r.viewer.api.selectMany(["a", "b"]);
     await r.editor.groupSelected();
     await r.editor.undo();
     assert.deepEqual(r.doc.snapshot().scenes[0].elements.map((e) => e.id), ["a", "b", "l"]);
+
     r.viewer.api.selectMany(["a", "l"]);
-    const refused = await r.editor.groupSelected();
-    assert.equal(refused.ok, false);
-    assert.match(refused.message, /Lines can't be grouped/);
+    const grouped = await r.editor.groupSelected();
+    assert.equal(grouped.ok, true, grouped.message);
+    const gid = grouped.id;
+    const lineIn = () => r.doc.snapshot().scenes[0].elements.find((e) => e.id === gid).group.children.find((c) => c.kind === "line");
+    assert.deepEqual([lineIn().line.x2, lineIn().line.y2], [4, 5], "the far end stays a slide point when grouped");
+    key(r.root, "ArrowRight", { shiftKey: true });
+    await r.editor.pending();
+    assert.deepEqual([lineIn().line.x2, lineIn().line.y2], [4.25, 5], "moving the group carries the line's far end");
+    await r.doc.undo();
+    assert.deepEqual([lineIn().line.x2, lineIn().line.y2], [4, 5], "undo carries it back");
+
+    r.viewer.api.select(gid);
+    await r.editor.copySelected();
+    const pasted = await r.editor.paste();
+    assert.equal(pasted.ok, true, JSON.stringify(pasted));
+    const copy = r.doc.snapshot().scenes[0].elements.find((e) => e.kind === "group" && e.id !== gid);
+    const g = r.doc.snapshot().scenes[0].elements.find((e) => e.id === gid);
+    const copyLine = copy.group.children.find((c) => c.kind === "line");
+    assert.equal(copyLine.line.x2 - 4, copy.x - g.x, "a pasted copy's line is offset with it");
+
+    r.viewer.api.select(gid);
+    key(r.root, "g", { ctrlKey: true, shiftKey: true });
+    await r.editor.pending();
+    const freed = r.doc.snapshot().scenes[0].elements.find((e) => e.id === "l");
+    assert.deepEqual([freed.x, freed.y, freed.line.x2, freed.line.y2], [1, 5, 4, 5], "ungrouped, the line is where it was drawn");
+    assert.deepEqual(r.errors, []);
   });
 
   it("moving a line carries its far end, so it moves instead of stretching", async () => {

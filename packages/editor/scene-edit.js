@@ -729,9 +729,6 @@ export function attachEditor(viewer, doc, opts = {}) {
     const { snap, els } = selectedTopLevel();
     if (els.length < 2) return report({ ok: false, code: "op-rejected", message: "Select two or more items to group them." });
     if (els.some((e) => e.locked)) return report({ ok: false, code: "locked", message: "Unlock the items before grouping them." });
-    if (els.some((e) => e.kind === "line" || (e.kind === "group" && JSON.stringify(e.group).includes('"kind":"line"')))) {
-      return report({ ok: false, code: "op-rejected", message: "Lines can't be grouped yet." });
-    }
     const group = groupElements(els, mintHumanId());
     const ops = [
       ...els.map((e) => ({ slideId: snap.slideId, op: { type: "element.delete", id: e.id } })),

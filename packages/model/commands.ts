@@ -264,6 +264,22 @@ function markStyleCustomized(scene: SlideScene, el: SceneElement): void {
   if (scene.layoutState === "managed") scene.layoutState = "customized";
 }
 
+// A line's far end is a slide point, not an offset, so when the element
+// that carries it moves — the line itself, or a group holding it at any
+// depth — the far end moves by the same delta, or the line would stretch.
+function carryLineEnds(el: SceneElement, dx: number, dy: number): void {
+  if (dx === 0 && dy === 0) return;
+  const r = (n: number) => Math.round(n * 1000) / 1000;
+  const walk = (e: SceneElement): void => {
+    if (e.kind === "line" && e.line) {
+      if (typeof e.line.x2 === "number") e.line.x2 = r(e.line.x2 + dx);
+      if (typeof e.line.y2 === "number") e.line.y2 = r(e.line.y2 + dy);
+    }
+    for (const c of e.group?.children ?? []) walk(c);
+  };
+  walk(el);
+}
+
 export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
   switch (cmd.type) {
     case "element.move": {
@@ -271,15 +287,8 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       if (!el) throw new Error(`unknown element ${cmd.id}`);
       assertEditable(el);
       const prev = { x: el.x, y: el.y };
-      // A line's far end is a slide point, not an offset: moving the line
-      // carries it by the same delta, or the line would stretch instead.
-      // The inverse move carries it back by the same rule.
-      if (el.kind === "line" && el.line) {
-        const dx = cmd.x - el.x, dy = cmd.y - el.y;
-        const r = (n: number) => Math.round(n * 1000) / 1000;
-        if (typeof el.line.x2 === "number") el.line.x2 = r(el.line.x2 + dx);
-        if (typeof el.line.y2 === "number") el.line.y2 = r(el.line.y2 + dy);
-      }
+      // The inverse move carries line ends back by the same rule.
+      carryLineEnds(el, cmd.x - el.x, cmd.y - el.y);
       el.x = cmd.x;
       el.y = cmd.y;
       markCustomized(scene, el);
@@ -300,6 +309,9 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       if (!el) throw new Error(`unknown element ${cmd.id}`);
       assertEditable(el);
       const prev = { x: el.x, y: el.y, w: el.w, h: el.h };
+      // A group's members sit relative to it; lines inside keep their far
+      // ends with them when its origin moves.
+      if (el.kind === "group") carryLineEnds(el, cmd.x - el.x, cmd.y - el.y);
       el.x = cmd.x;
       el.y = cmd.y;
       el.w = cmd.w;
