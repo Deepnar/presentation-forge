@@ -31,6 +31,32 @@ export function registerV2DocumentRoutes(app, { startSSE, isAutoRoute, reserveAu
     ok(res, { documents });
   }));
 
+  app.get("/api/v2/projects/:id/documents/:documentId", wrap(async (req, res) => {
+    const who = await gate(req, res);
+    if (!who) return;
+    const { document } = await (await projectStore()).getProjectDocument({ owner: who.owner, admin: who.admin, id: req.params.id, documentId: String(req.params.documentId) });
+    if (!document) return fail(res, 404, "no such document");
+    ok(res, { document });
+  }));
+
+  // Chosen report sections compiled as slides for the editor to insert —
+  // src/projects/report-slides.js; nothing is written to the deck here.
+  app.post("/api/v2/projects/:id/documents/:documentId/slides", wrap(async (req, res) => {
+    const who = await gate(req, res);
+    if (!who) return;
+    const { sections, index = 0, total = null } = req.body ?? {};
+    if (!Array.isArray(sections) || !sections.length || sections.length > 20 || sections.some((n) => typeof n !== "string")) return fail(res, 422, "choose up to 20 sections");
+    if (!Number.isInteger(index) || index < 0 || (total !== null && (!Number.isInteger(total) || total < index))) return fail(res, 422, "index and total must be slide positions");
+    const { reportSlides } = await import("../../src/projects/report-slides.js");
+    try {
+      ok(res, { scenes: await reportSlides({ owner: who.owner, admin: who.admin, id: req.params.id, documentId: String(req.params.documentId), sections, index, total }) });
+    } catch (err) {
+      if (err?.code === "not-found") return fail(res, 404, err.message);
+      if (err?.code === "empty") return fail(res, 422, err.message);
+      throw err;
+    }
+  }));
+
   app.get("/api/v2/projects/:id/documents/:documentId/docx", wrap(async (req, res) => {
     const who = await gate(req, res);
     if (!who) return;

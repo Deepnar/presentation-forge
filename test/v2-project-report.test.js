@@ -111,3 +111,28 @@ test("the speaker script is written per slide from the project's research, spari
   assert.deepEqual(all.map((s) => Boolean(s.words)), [true, true], "asked to, it writes over their notes too");
   await assert.rejects((async () => { for await (const _ of writeProjectScript({ owner: "other@example.test", id: doc.id, chat })) { /* none */ } })(), { code: "not-found" });
 });
+
+test("a report's sections come back as compiled slides: lead sentences, entries, and the table kept", async () => {
+  const { reportSlides, leadSentence, sectionSlide } = await import("../src/projects/report-slides.js");
+  const { validateScene } = await import("../packages/model/scene.ts");
+  assert.equal(leadSentence("Cells fail at the interface. Pressure helps."), "Cells fail at the interface.");
+  assert.ok(leadSentence("word ".repeat(80)).endsWith("…") && leadSentence("word ".repeat(80)).length <= 200);
+  const doc = await project();
+  const body = { title: "Solid-State Batteries", order: ["Introduction", "Application", "References", "Conclusion"], content: {
+    Introduction: { paragraphs: ["Dendrites grow where solid meets solid. More detail follows.", "Coatings keep contact. Again more."] },
+    Application: { paragraphs: ["Cells were cycled at 1C."], table: { caption: "Table 1: Retention.", header: ["Cell", "Retention"], rows: [["LFP", "95%"], ["NMC", "88%"]] } },
+    References: { entries: ["1. A. (2024). One.", "2. B. (2023). Two."] },
+    Conclusion: { paragraphs: [] },
+  } };
+  await store.putProjectDocument({ owner, id: doc.id, document: { id: "doc_slides", kind: "report", title: body.title, body, basisRevision: doc.revision } });
+  assert.equal(sectionSlide(body, "Conclusion"), null, "an empty section is not a slide");
+  const scenes = await reportSlides({ owner, id: doc.id, documentId: "doc_slides", sections: ["References", "Introduction", "Application", "Conclusion"], index: 2, total: 5 });
+  assert.equal(scenes.length, 3, "report order, empty section left out");
+  for (const sc of scenes) assert.ok((await validateScene(sc)).ok);
+  const texts = scenes.map((sc) => JSON.stringify(sc.elements));
+  assert.ok(texts[0].includes("Introduction") && texts[0].includes("Dendrites grow where solid meets solid.") && !texts[0].includes("More detail follows"));
+  assert.ok(scenes[1].elements.some((e) => e.kind === "table") && texts[1].includes("95%"));
+  assert.ok(texts[2].includes("References") && texts[2].includes("2. B. (2023). Two."));
+  await assert.rejects(reportSlides({ owner: "other@example.test", id: doc.id, documentId: "doc_slides", sections: ["Introduction"] }), { code: "not-found" });
+  await assert.rejects(reportSlides({ owner, id: doc.id, documentId: "doc_slides", sections: ["Conclusion"] }), { code: "empty" });
+});
