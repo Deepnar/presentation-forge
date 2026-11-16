@@ -155,17 +155,21 @@ const COMPILED_ONLY = ["semanticRef", "customized", "contentCustomized", "styleC
 export function copyElements(elements, newId, ox = 0, oy = 0) {
   const strip = (el, top) => {
     const out = structuredClone(el);
-    for (const k of COMPILED_ONLY) delete out[k];
+    // A member keeps its z: it is its order inside the group, which the
+    // schema requires; only a top-level copy is restacked by the caller.
+    for (const k of COMPILED_ONLY) if (top || k !== "z") delete out[k];
     out.id = newId();
     out.provenance = "human";
     if (top) {
       out.x = Math.round(((out.x ?? 0) + ox) * 1000) / 1000;
       out.y = Math.round(((out.y ?? 0) + oy) * 1000) / 1000;
-      if (out.kind === "line" && out.line) {
-        out.line = { ...out.line };
-        if (typeof out.line.x2 === "number") out.line.x2 = Math.round((out.line.x2 + ox) * 1000) / 1000;
-        if (typeof out.line.y2 === "number") out.line.y2 = Math.round((out.line.y2 + oy) * 1000) / 1000;
-      }
+    }
+    // A line's far end is a slide point at any depth, so a copy placed
+    // elsewhere carries it — inside a pasted group too.
+    if (out.kind === "line" && out.line) {
+      out.line = { ...out.line };
+      if (typeof out.line.x2 === "number") out.line.x2 = Math.round((out.line.x2 + ox) * 1000) / 1000;
+      if (typeof out.line.y2 === "number") out.line.y2 = Math.round((out.line.y2 + oy) * 1000) / 1000;
     }
     if (out.group?.children) out.group = { ...out.group, children: out.group.children.map((c) => strip(c, false)) };
     return out;
