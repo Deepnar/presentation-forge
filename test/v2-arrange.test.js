@@ -575,3 +575,18 @@ describe("saved layouts", () => {
     assert.equal(r.doc.snapshot().scenes.length, 2);
   });
 });
+
+describe("speaker script into notes", () => {
+  it("lands in every slide's notes as one undo, marked as written, and skips what is not a slide", async () => {
+    const r = await rig([slide("a", [box("x", 1, 1, 1, 1)]), { ...slide("b", [box("y", 1, 1, 1, 1)]), notes: "old", notesEdited: true }]);
+    const depth = r.doc.status().historyLength;
+    const out = await r.editor.setScriptNotes([{ slideId: "a", words: "Say this first." }, { slideId: "b", words: "Then this." }, { slideId: "gone", words: "x" }, { slideId: "a", words: "  " }]);
+    assert.equal(out.ok, true);
+    const [a, b] = r.doc.snapshot().scenes;
+    assert.deepEqual([a.notes, a.notesEdited, b.notes, b.notesEdited], ["Say this first.", undefined, "Then this.", undefined]);
+    assert.equal(r.doc.status().historyLength, depth + 1, "one undo");
+    await r.doc.undo();
+    const [a2, b2] = r.doc.snapshot().scenes;
+    assert.deepEqual([a2.notes, b2.notes, b2.notesEdited], [undefined, "old", true], "undo restores their own notes exactly");
+  });
+});

@@ -94,3 +94,20 @@ test("a generated report is kept with the project and renders to .docx on the do
   await store.deleteProject({ owner, id: doc.id });
   assert.equal((await store.listProjectDocuments({ owner, id: doc.id })).documents, null);
 });
+
+test("the speaker script is written per slide from the project's research, sparing the person's own notes", async () => {
+  const { writeProjectScript } = await import("../src/projects/script.js");
+  const doc = await project();
+  const prompts = [];
+  const chat = async ({ messages }) => { prompts.push(messages.at(-1).content); return { data: { words: `Here is what matters on this slide, said aloud ${prompts.length}.` } }; };
+  const mine = { ...doc.scenes[0], notes: "My own words.", notesEdited: true };
+  const scenes = [mine, doc.scenes[1]];
+  const out = [];
+  for await (const s of writeProjectScript({ owner, id: doc.id, scenes, chat })) out.push(s);
+  assert.deepEqual(out.map((s) => [s.slideId, Boolean(s.words), s.reason ?? null]), [["s1", false, "your own notes"], ["s2", true, null]]);
+  assert.ok(prompts[0].includes("What fixes it") && prompts[0].includes("91 percent"), "the slide and the source of truth reach the writer");
+  const all = [];
+  for await (const s of writeProjectScript({ owner, id: doc.id, scenes, overwrite: true, chat })) all.push(s);
+  assert.deepEqual(all.map((s) => Boolean(s.words)), [true, true], "asked to, it writes over their notes too");
+  await assert.rejects((async () => { for await (const _ of writeProjectScript({ owner: "other@example.test", id: doc.id, chat })) { /* none */ } })(), { code: "not-found" });
+});

@@ -71,7 +71,7 @@ function writerSystem() {
   ].join("\n");
 }
 
-async function writeSlideScript({
+export async function writeSlideScript({
   deck, plan, slide, index, presenter, research, model, signal, chat,
 }) {
   const isDivider = DIVIDER_TYPES.has(slide.type);

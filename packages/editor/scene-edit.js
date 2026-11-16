@@ -2175,6 +2175,20 @@ export function attachEditor(viewer, doc, opts = {}) {
     return result;
   }
 
+  // A written script into many slides' notes at once — one envelope, so a
+  // single undo takes the whole script back. Written notes are not the
+  // person's own (edited: false): a later regeneration may replace them.
+  async function setScriptNotes(entries) {
+    const known = new Set(doc.snapshot().scenes.map((sc) => sc.id));
+    const ops = (entries ?? []).filter((e) => known.has(e.slideId) && typeof e.words === "string" && e.words.trim())
+      .map((e) => ({ slideId: null, op: { type: "slide.setNotes", id: e.slideId, notes: e.words.slice(0, 20000), edited: false } }));
+    if (!ops.length) return { ok: true, noop: true };
+    const result = await doc.applyBatch({ id: newEditId(), baseRevision: doc.snapshot().revision, actor: "human", ops });
+    if (!result.ok) return report(result);
+    sync();
+    return result;
+  }
+
   // ——— V2-5J layer operations ———
   //
   // Draw order, user locks, and visibility over authoritative
@@ -2468,6 +2482,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     reorderSlide: (id, toIndex) => track(reorderSlide(id, toIndex)),
     detachSlide: (id = null) => track(detachSlide(id)),
     setNotes: (id, notes) => track(setNotes(id, notes)),
+    setScriptNotes: (entries) => track(setScriptNotes(entries)),
     detach() {
       if (drag) clearPreview();
       if (resize) cancelResize();

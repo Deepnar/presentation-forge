@@ -57,6 +57,49 @@ export function registerV2DocumentRoutes(app, { startSSE, isAutoRoute, reserveAu
     ok(res, {});
   }));
 
+  // The speaker script, one slide at a time as each is written; the editor
+  // puts the words into the slides' notes. `scenes` is the deck as the
+  // editor has it, so unsaved edits are what the script speaks to.
+  app.post("/api/v2/projects/:id/script", async (req, res) => {
+    const who = await gate(req, res);
+    if (!who) return;
+    const user = await resolveUser(req, { allowCookie: false }).catch(() => null);
+    if (user && !user.verified && verificationRequired()) return fail(res, 403, "confirm your email before writing a script");
+    const { scenes = null, overwrite = false, model } = req.body ?? {};
+    if (scenes !== null && (!Array.isArray(scenes) || scenes.length > 200 || scenes.some((sc) => !sc || typeof sc.id !== "string" || !Array.isArray(sc.elements)))) {
+      return fail(res, 422, "scenes must be the project's slides");
+    }
+    const sse = startSSE(res);
+    const ctrl = new AbortController();
+    sse.done.catch(() => ctrl.abort());
+    const email = user?.email ?? null;
+    const estimate = estimateTokens({ slides: scenes?.length ?? 12, depth: "brief" });
+    let reservation = null;
+    (async () => {
+      if (email && await isAutoRoute(model, email)) reservation = reserveAutoOrThrow(email, 0, estimate);
+      const { writeProjectScript } = await import("../../src/projects/script.js");
+      const write = async () => {
+        let written = 0, skipped = 0, index = 0;
+        const total = scenes?.length ?? null;
+        for await (const slide of writeProjectScript({ owner: who.owner, admin: who.admin, id: req.params.id, scenes, overwrite: overwrite === true, model, signal: ctrl.signal })) {
+          sse.send("status", { status: "script", index: index++, total });
+          sse.send("slide", slide);
+          if (slide.words) written++; else skipped++;
+        }
+        return { written, skipped };
+      };
+      const out = email
+        ? await withByokRun({ userId: getUserId(email), provider: "cloud", estimate, allowOverrun: req.body?.allowOverrun === true }, write)
+        : await write();
+      sse.send("result", out);
+      sse.close();
+    })().finally(() => settleRequest(req, reservation)).catch((err) => {
+      if (ctrl.signal.aborted) return;
+      sse.send("error", { error: err.message, code: err.code ?? null });
+      sse.close();
+    });
+  });
+
   app.post("/api/v2/projects/:id/report", async (req, res) => {
     const who = await gate(req, res);
     if (!who) return;
