@@ -101,6 +101,31 @@ describe("snapping arithmetic", () => {
     assert.equal(group.id, "g", "originals untouched");
   });
 
+  it("equal spacing: centred between two neighbours, or one existing gap on", () => {
+    // A row at y 1..2: A at 1..2 and C at 5..6; dragging a 1in box near 3.
+    const row = snapTargets(slide("s", [box("a", 1, 1, 1, 1), box("c", 5, 1, 1, 1)]), []);
+    const mid = snapMove({ x: 3, y: 1.3, w: 1, h: 0.5 }, 0.04, 0, row, 0.0625);
+    assert.ok(Math.abs(3 + mid.dx - 3) < 1e-9, "centred: one inch either side");
+    const gaps = mid.guides.filter((g) => g.kind === "gap");
+    assert.deepEqual(gaps.map((g) => +(g.to - g.from).toFixed(6)), [1, 1], "both gaps are marked");
+    // A and B already 1in apart; dragging C toward 1in after B.
+    const pair = snapTargets(slide("s", [box("a", 1, 3, 1, 1), box("b", 3, 3, 1, 1)]), []);
+    const next = snapMove({ x: 4.9, y: 3.2, w: 1, h: 0.5 }, 0.13, 0, pair, 0.0625);
+    assert.ok(Math.abs(4.9 + next.dx - 5) < 1e-9, "one gap on from the last of the row");
+    // Another row does not count, and out of reach nothing happens.
+    const off = snapMove({ x: 3, y: 5, w: 1, h: 0.5 }, 0.04, 0, row, 0.0625);
+    assert.equal(off.guides.some((g) => g.kind === "gap"), false);
+    assert.equal(snapMove({ x: 3, y: 1.3, w: 1, h: 0.5 }, 0.2, 0, row, 0.0625).guides.some((g) => g.kind === "gap"), false);
+  });
+
+  it("an alignment that is nearer keeps the axis", () => {
+    // B's left edge 0.01 from A's right edge + nothing else: alignment to 2.
+    const row = snapTargets(slide("s", [box("a", 1, 1, 1, 1), box("c", 5, 1, 1, 1), box("t", 2.01, 4, 1, 1)]), []);
+    const moved = snapMove({ x: 3, y: 1.3, w: 1, h: 0.5 }, -0.985, 0, row, 0.0625);
+    assert.ok(Math.abs(3 + moved.dx - 2.01) < 1e-9, "edge on t's left edge, not a spacing");
+    assert.equal(moved.guides.some((g) => g.kind === "gap"), false);
+  });
+
   it("the union box spans a selection", () => {
     assert.deepEqual(unionBox([box("a", 1, 1, 2, 1), box("b", 4, 3, 1, 1)]), { x: 1, y: 1, w: 4, h: 3 });
   });
@@ -126,6 +151,19 @@ describe("snapping in the editor", () => {
     ptr(r2.root, "pointerup", node(r2, "a"), { x: 192 + 445, y: 144 + 200, alt: true });
     await r2.editor.pending();
     assert.equal(el(r2, "a").x, Math.round((1 + 445 / 96) * 1000) / 1000, "Alt places it exactly");
+  });
+
+  it("a box dragged between two neighbours settles at equal gaps and marks them", async () => {
+    const r = await rig([slide("s", [box("a", 1, 1, 1, 1), box("c", 5, 1, 1, 1), box("b", 2.7, 1.25, 1, 0.5)])]);
+    r.viewer.api.select("b");
+    // 28 px = 0.2917in: b's left lands at 2.9917, 0.008 short of centred.
+    ptr(r.root, "pointerdown", node(r, "b"), { x: 300, y: 144 });
+    ptr(r.root, "pointermove", node(r, "b"), { x: 328, y: 144 });
+    assert.equal(r.root.querySelectorAll('[data-snap-guide="gap"]').length, 2, "both gaps marked while it holds");
+    ptr(r.root, "pointerup", node(r, "b"), { x: 328, y: 144 });
+    await r.editor.pending();
+    assert.equal(el(r, "b").x, 3, "an inch either side");
+    assert.equal(r.root.querySelector("[data-snap-guide]"), null);
   });
 
   it("Shift keeps a drag on the axis it travelled furthest", async () => {

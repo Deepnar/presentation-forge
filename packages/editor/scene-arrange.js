@@ -59,14 +59,56 @@ export function snapTargets(scene, excludeIds = []) {
   const H = scene?.height ?? 7.5;
   const xs = [0, W / 2, W];
   const ys = [0, H / 2, H];
+  const boxes = [];
   for (const el of scene?.elements ?? []) {
     if (skip.has(el.id) || el.hidden === true || el.kind === "line") continue;
     const b = boxOf(el);
     if (!(b.w > 0) || !(b.h > 0)) continue;
     xs.push(b.x, b.x + b.w / 2, b.x + b.w);
     ys.push(b.y, b.y + b.h / 2, b.y + b.h);
+    // Spacing reads neighbours, and a panel behind the whole slide is
+    // nobody's neighbour.
+    if (b.w < W * 0.9 || b.h < H * 0.9) boxes.push({ x: b.x, y: b.y, w: b.w, h: b.h });
   }
-  return { xs, ys };
+  return { xs, ys, boxes };
+}
+
+// Equal spacing on one axis, as Figma and PowerPoint offer it: the box
+// centred between its nearest neighbours in the same row (or column), or
+// set one gap away from a neighbour that already has that gap to its own
+// neighbour. Returns the nearest within `threshold` as { d, gaps } — the
+// correction and the equal gaps to mark — or null.
+function spacingPull(box, d, boxes, axis, threshold) {
+  const [p, s, q, t] = axis === "x" ? ["x", "w", "y", "h"] : ["y", "h", "x", "w"];
+  const at = box[p] + d;
+  const end = at + box[s];
+  // Neighbours share some of the box's span across the axis.
+  const row = (boxes ?? []).filter((o) => o[q] < box[q] + box[t] - 1e-6 && o[q] + o[t] > box[q] + 1e-6);
+  const cross = (o) => (Math.max(o[q], box[q]) + Math.min(o[q] + o[t], box[q] + box[t])) / 2;
+  const before = row.filter((o) => o[p] + o[s] <= at + threshold).sort((a, b) => (b[p] + b[s]) - (a[p] + a[s]));
+  const after = row.filter((o) => o[p] >= end - threshold).sort((a, b) => a[p] - b[p]);
+  const L = before[0], R = after[0];
+  const candidates = [];
+  if (L && R) {
+    const pos = (L[p] + L[s] + R[p] - box[s]) / 2;
+    if (pos >= L[p] + L[s] - 1e-6) candidates.push({ pos, gaps: [[L[p] + L[s], pos, cross(L)], [pos + box[s], R[p], cross(R)]] });
+  }
+  if (L) {
+    const LL = before.find((o) => o !== L && o[p] + o[s] <= L[p] + 1e-6);
+    const gap = LL ? L[p] - (LL[p] + LL[s]) : 0;
+    if (gap > 1e-6) candidates.push({ pos: L[p] + L[s] + gap, gaps: [[LL[p] + LL[s], L[p], cross(LL)], [L[p] + L[s], L[p] + L[s] + gap, cross(L)]] });
+  }
+  if (R) {
+    const RR = after.find((o) => o !== R && o[p] >= R[p] + R[s] - 1e-6);
+    const gap = RR ? RR[p] - (R[p] + R[s]) : 0;
+    if (gap > 1e-6) candidates.push({ pos: R[p] - gap - box[s], gaps: [[R[p] + R[s], RR[p], cross(RR)], [R[p] - gap, R[p], cross(R)]] });
+  }
+  let best = null;
+  for (const c of candidates) {
+    const corr = c.pos - at;
+    if (Math.abs(corr) <= threshold && (!best || Math.abs(corr) < Math.abs(best.d))) best = { d: corr, gaps: c.gaps };
+  }
+  return best;
 }
 
 // The nearest pull for one axis: each feature of the box (start, centre,
@@ -91,9 +133,18 @@ export function snapMove(box, dx, dy, targets, threshold) {
   const fy = (d) => [box.y + d, box.y + d + box.h / 2, box.y + d + box.h];
   const px = pull(fx(dx), targets.xs, threshold);
   const py = pull(fy(dy), targets.ys, threshold);
-  const ndx = px ? dx + px.d : dx;
-  const ndy = py ? dy + py.d : dy;
-  return { dx: ndx, dy: ndy, guides: guidesFor(fx(ndx), fy(ndy), targets, !!px, !!py) };
+  // Spacing wins an axis only when it is the nearer pull; alignment keeps
+  // a tie, since a shared edge is the stronger statement.
+  const gx = spacingPull(box, dx, targets.boxes, "x", threshold);
+  const gy = spacingPull({ ...box, x: box.x + dx }, dy, targets.boxes, "y", threshold);
+  const useGx = gx && (!px || Math.abs(gx.d) < Math.abs(px.d) - 1e-9);
+  const useGy = gy && (!py || Math.abs(gy.d) < Math.abs(py.d) - 1e-9);
+  const ndx = useGx ? dx + gx.d : px ? dx + px.d : dx;
+  const ndy = useGy ? dy + gy.d : py ? dy + py.d : dy;
+  const guides = guidesFor(fx(ndx), fy(ndy), targets, !!px && !useGx, !!py && !useGy);
+  if (useGx) for (const [from, to, at] of gx.gaps) guides.push({ axis: "x", kind: "gap", from, to, at });
+  if (useGy) for (const [from, to, at] of gy.gaps) guides.push({ axis: "y", kind: "gap", from, to, at });
+  return { dx: ndx, dy: ndy, guides };
 }
 
 // The moving edges of a resize, snapped the same way: only the edges the

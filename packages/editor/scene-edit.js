@@ -323,6 +323,17 @@ export function attachEditor(viewer, doc, opts = {}) {
     const slide = doc.snapshot().scenes.find((sc) => sc.id === api.snapshot().slideId);
     const W = (slide?.width ?? SCENE_W) * IN, H = (slide?.height ?? SCENE_H) * IN;
     for (const g of guides) {
+      if (g.kind === "gap") {
+        // An equal gap: a bar across it with end ticks, Figma's spacing mark.
+        const bar = docEl.createElement("div");
+        bar.setAttribute("data-snap-guide", "gap");
+        const len = Math.max(0, (g.to - g.from) * IN), tick = 6 / k;
+        Object.assign(bar.style, { position: "absolute", pointerEvents: "none", boxSizing: "border-box", borderColor: "#e0409a", borderStyle: "solid" });
+        if (g.axis === "x") Object.assign(bar.style, { left: `${(g.from * IN).toFixed(1)}px`, top: `${(g.at * IN - tick / 2).toFixed(1)}px`, width: `${len.toFixed(1)}px`, height: `${tick.toFixed(2)}px`, borderWidth: `0 ${t}`, background: `linear-gradient(#e0409a,#e0409a) center / 100% ${t} no-repeat` });
+        else Object.assign(bar.style, { top: `${(g.from * IN).toFixed(1)}px`, left: `${(g.at * IN - tick / 2).toFixed(1)}px`, height: `${len.toFixed(1)}px`, width: `${tick.toFixed(2)}px`, borderWidth: `${t} 0`, background: `linear-gradient(#e0409a,#e0409a) center / ${t} 100% no-repeat` });
+        handleLayer.appendChild(bar);
+        continue;
+      }
       const line = docEl.createElement("div");
       line.setAttribute("data-snap-guide", g.axis);
       line.style.position = "absolute";
