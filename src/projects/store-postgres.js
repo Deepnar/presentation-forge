@@ -155,6 +155,14 @@ const PROJECT_DDL = `
   CREATE INDEX IF NOT EXISTS idx_v2_revisions_project ON v2_project_revisions(project_id);
 `;
 
+// Every V2 table on a connection of the caller's — the SQLite → Postgres
+// copy (src/projects/copy-to-postgres.js) creates the target with it.
+export async function createV2Schema(client) {
+  const { RUN_DDL } = await import("../agent/schema.js");
+  await ensureSchema(client);
+  await client.query(RUN_DDL);
+}
+
 async function ensureSchema(clientOrPool) {
   await clientOrPool.query(PROJECT_DDL + sourceSchema("postgres") + assetSchema("postgres") + intentSchema("postgres") + fileSchema("postgres") + layoutSchema() + documentSchema());
 }

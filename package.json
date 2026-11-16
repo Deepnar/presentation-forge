@@ -34,6 +34,7 @@
     "typecheck": "tsc --noEmit",
     "types:generate": "node tools/v2-types.mjs",
     "agent-run": "node --env-file-if-exists=.env src/agent/cli.js",
+    "projects:to-postgres": "node --env-file-if-exists=.env tools/projects-to-postgres.mjs",
     "import-project": "node --env-file-if-exists=.env src/projects/import-cli.js",
     "copy-project": "node --env-file-if-exists=.env src/projects/copy-cli.js",
     "agent-chat": "node --env-file-if-exists=.env src/agent/turn-cli.js",
