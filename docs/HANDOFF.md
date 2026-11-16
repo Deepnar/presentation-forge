@@ -141,10 +141,14 @@ Also: a text box that hugs its text now shrinks back when widened again
 dragging an object onto another slide's thumbnail. `.dockerignore` is a
 whitelist and lacked `packages/` — fixed, and the image test checks it.
 
-Next, in order: **F9a** (the V2 image build was started 2026-11-16 as
-`presentation-forge:v2-check`; then run it: boot, health, a project
-created and exported inside it; the lab-server setup once) — the last
-core item — then **F5** (the redesign, starting with the study of Canva,
+F9 is done: the V2 image (`presentation-forge:v2-check`, kept locally)
+builds with `DOCKER_BUILDKIT=0` (no buildx here) and runs import, layouts,
+export, the look and a plate theme inside it.
+
+Next, in order: the **text basics, Canva's way** (roadmap, under the
+editor redesign entry): `family` and alignment in `element.setTextStyle`,
+styling a selected range of words, and the installed font list — core
+pieces done ahead of F5 — then **F5** (the redesign, starting with the study of Canva,
 Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
 Claude Design skill; the add-slide menu's discoverability is recorded
 there). Everything content-quality is blocked on a model: the gateway is

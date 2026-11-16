@@ -269,7 +269,7 @@ Decisions taken with this list, so nobody re-litigates them:
    PPTX, Markdown and CSV become project sources with roles; PPTX imports to an
    editable scene with explicit fallbacks. *Done when:* "use this report as
    truth and this PPTX as reference" makes a deck.
-10. **[~] F9 — Hosted lifecycle** (§12 V2-6/V2-7, re-scoped). Started
+10. **[x] F9 — Hosted lifecycle** (§12 V2-6/V2-7, re-scoped). Started
     2026-11-16: the container image now carries `packages/` in both stages —
     neither had it, so the V2 image could not build its UI and its server
     would fail on the first V2 import; `test/docker-image.test.js` walks the
@@ -284,9 +284,13 @@ Decisions taken with this list, so nobody re-litigates them:
     sweep is safe for projects (`test/v2-project-outlives-deck.test.js`);
     **F9d** DEPLOY.md covers V2 (Postgres, backups, migration) and names
     the three setups, with `compose.yaml` now configurable as a lab server.
-    Left: **F9a** build the image and run prompt → editor → export inside
-    it (heavy — when the machine is free), and run the lab-server setup
-    once end to end.
+    **F9a** done 2026-11-16: the V2 image builds (this machine needs
+    `DOCKER_BUILDKIT=0` — no buildx), boots healthy with fonts, LibreOffice,
+    Poppler and Chromium, and inside it a generated deck imports into a
+    21-slide project, a slide's layouts compile, a PPTX imports and
+    exports, a PowerPoint look applies and a plate theme renders through
+    the container's Chromium. Left: generation inside it (needs a model)
+    and the lab-server setup run once end to end.
     PostgreSQL store
     as the hosted default, exports/previews on disk or object storage with
     expiry and regenerate-on-demand, idempotent cleanup, the container image
@@ -359,6 +363,29 @@ It is the small "+ Slide ▾" at the top of the slide rail, under the
 Slides/Layers tabs, and only in edit mode. Adding a slide is the most common
 thing after typing; it needs the prominence Google Slides and PowerPoint
 give it (a clear New slide control, and a "+" after the last thumbnail).
+
+**The editor's final model is Canva's** (owner, 2026-11-16): "genuinely
+good and much, much better than any, and accessible" — that is the bar
+for how editing works, not only how it looks. First consequence: the text
+basics people reach for first are effectively missing. Today a text box's
+size, colour, bold and italic sit in the inspector as a per-paragraph form
+with an Apply button; there is no font choice, no alignment, nothing for
+the whole box at once and nothing for selected words. Canva's way:
+
+- a **contextual toolbar above the canvas** that appears for what is
+  selected — for text: font family, size with − / + steps, bold, italic,
+  underline, colour, alignment, list, spacing — applied live, one undo per
+  change, no Apply button;
+- **whole box or selected words**: with the box selected a change applies
+  to all of it; with words selected in the text, to those words;
+- **font families from the installed set**, the theme's own first, so
+  every choice renders the same in the browser, the export and previews.
+
+Core pieces this needs before the redesign draws it (engine and editor,
+not visuals): `family` (and alignment) in `element.setTextStyle`,
+styling a selected range of runs (splitting runs at the selection), and
+a font list served from the installed families. These belong with F4's
+working set and are done ahead of F5.
 
 Added 2026-11-16 by the owner, for the study of PowerPoint, Canva and
 the others to shape:
