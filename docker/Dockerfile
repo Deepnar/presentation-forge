@@ -34,6 +34,8 @@ RUN npm ci
 COPY tools/install-fonts.mjs tools/fonts.manifest.json ./tools/
 RUN node tools/install-fonts.mjs
 
+# The editor and scene viewer the UI bundles live in packages/ (V2).
+COPY packages ./packages
 COPY app ./app
 RUN npx vite build --config app/web/vite.config.js
 
@@ -68,6 +70,9 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 COPY src ./src
+# V2: model, compiler, editor, native renderers and the Assistant — the
+# server imports all of them (test/docker-image.test.js keeps this honest).
+COPY packages ./packages
 COPY schema ./schema
 COPY themes ./themes
 COPY styles ./styles
