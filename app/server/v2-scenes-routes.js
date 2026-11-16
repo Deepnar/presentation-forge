@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url";
 import { fail, ok } from "./http.js";
 import { isHosted } from "../../src/cloud.js";
 import { compileSceneDeck } from "../../src/v2-compile.js";
-import { benchmarkChrome } from "../../tools/v2-benchmark.mjs";
+import { benchmarkChrome } from "../../src/v2-sample-chrome.js";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const THEMES_DIR = path.join(HERE, "..", "..", "themes");
