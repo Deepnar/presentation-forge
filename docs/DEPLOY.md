@@ -21,6 +21,23 @@ BYOK output and retries, and estimates usage when the provider omits it. State
 this in the deployed Terms and keep telling users to set a monetary cap at the
 provider—the provider dashboard, not Forge, is the billing authority.
 
+## Your own install: three tested setups
+
+Every combination of install, model, storage, users and network runs the same
+code ([PRODUCTION §0.3](PRODUCTION.md)); these three are the ones named and
+tested. Anything else works the same way but is untested — say so if you hit
+something.
+
+| Setup | Compose file | What to set | State |
+|---|---|---|---|
+| **Solo laptop** — just you, your own models | root `compose.yaml` | nothing; Ollama on the host, or a BYOK key in Settings | released as v0.1.0 (V1); the V2 image build is pending (roadmap F9a) |
+| **Lab server** — a small group on one network | root `compose.yaml` | `FORGE_BIND=0.0.0.0`, `FORGE_LOCAL_MULTI_USER=1`, `FORGE_SMTP_*`; `FORGE_OLLAMA_HOST` for a LAN model server, or BYOK | configurable; not yet run end to end |
+| **Public self-host** — on the internet | `docker/docker-compose.app.yml` (this page) | everything below, with your own domain | the hosted path; image build pending (F9a) |
+
+A lab server stays on plain HTTP inside a trusted network; anything reachable
+from the internet uses the public setup, because session cookies are only
+marked Secure over HTTPS (see the end of this page).
+
 ## What the workload actually needs
 
 This is not a serverless application and no amount of rewriting makes it one.
@@ -29,7 +46,7 @@ This is not a serverless application and no amount of rewriting makes it one.
 |---|---|
 | A long-running container | Generation is a multi-minute SSE stream: plan, then one model call per slide, then critic, coherence, render and rasterise. |
 | ~2 GB RAM, 4 GB comfortable | LibreOffice and Chromium are the spikes. A 512 MB free tier cannot convert a deck. |
-| A writable persistent disk | `decks/<slug>/` trees and a SQLite file. A deck with previews is 5–15 MB. |
+| A writable persistent disk | `decks/<slug>/` trees, a SQLite file and (hosted) PostgreSQL. A deck with previews is 5–15 MB. |
 | Ability to run system binaries | `soffice`, `pdftoppm`, `chromium`. |
 
 Anything that gives you those runs this. Anything that does not, cannot —
@@ -94,8 +111,14 @@ Fill in `.env`. The three that are not optional:
 ```bash
 openssl rand -base64 48   # -> FORGE_KEY_PEPPER
 openssl rand -hex 32      # -> SEARXNG_SECRET
+openssl rand -hex 24      # -> FORGE_POSTGRES_PASSWORD (hex: it goes into a URL)
                           # -> FORGE_DOMAIN, your hostname
 ```
+
+Projects live in the compose file's PostgreSQL service (`db`); accounts,
+sessions and keys stay in SQLite on the `/data` volume. The app waits for the
+database to be healthy, and answers 503 on project routes rather than fall
+back to a file if it ever cannot reach it.
 
 `FORGE_KEY_PEPPER` is enforced: hosted mode refuses to start without it rather
 than fall back to the development constant, which is published in this
@@ -213,12 +236,31 @@ hosted mode refuses to store anything rather than pretend.
 docker exec forge_app du -sh /data/decks /data/plate-cache
 ```
 
-**Backups.** Everything that matters is in one volume:
+**Projects outlive their decks.** Once a generation has become a project, its
+pictures, structure and sources are in the database, so the sweep deleting a
+deck's directory (and its 5–15 MB of previews) leaves the project opening,
+restyling and exporting as before (`test/v2-project-outlives-deck.test.js`).
+
+**Backups.** Two things: the `/data` volume (accounts, keys, decks, brand
+marks, the donor) and the project database.
 
 ```bash
 docker run --rm -v docker_forge_data:/data -v "$PWD:/backup" \
   alpine tar czf /backup/forge-$(date +%F).tar.gz -C /data .
+docker exec forge_pg pg_dump -U forge -Fc forge > forge-projects-$(date +%F).dump
 ```
+
+**Moving an existing install's projects to PostgreSQL** (one that ran on
+SQLite before the hosted default changed): with the new database up, from the
+app container,
+
+```bash
+docker exec forge_app npm run projects:to-postgres            # dry run: what would move
+docker exec forge_app npm run projects:to-postgres -- --apply # one transaction
+```
+
+It copies every V2 table, refuses a database that already holds projects, and
+leaves the SQLite file in place — accounts stay there.
 
 **Updating.**
 

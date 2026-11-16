@@ -377,7 +377,11 @@ mode.
 
 [`docker/docker-compose.app.yml`](../docker/docker-compose.app.yml) is the
 separate internet-facing deployment: hosted mode, explicit `FORGE_KEY_PEPPER`,
-TLS/Caddy profile, mail and retention/operator controls. The image is shared;
+projects in its PostgreSQL service (accounts stay in SQLite on the volume;
+`npm run projects:to-postgres` moves an existing install's projects across),
+TLS/Caddy profile, mail and retention/operator controls. The private
+`compose.yaml` stays on SQLite and localhost; `FORGE_BIND`,
+`FORGE_LOCAL_MULTI_USER` and `FORGE_SMTP_*` turn it into the lab-server setup. The image is shared;
 the security posture is not. The final runtime image also copies
 `app/gallery`, because the API serves theme-picker thumbnails from there and a
 build-only copy left Docker users with a working app but no thumbnail assets.
