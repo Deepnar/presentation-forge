@@ -360,6 +360,17 @@ Slides/Layers tabs, and only in edit mode. Adding a slide is the most common
 thing after typing; it needs the prominence Google Slides and PowerPoint
 give it (a clear New slide control, and a "+" after the last thumbnail).
 
+Added 2026-11-16 by the owner, for the study of PowerPoint, Canva and
+the others to shape:
+
+- **Speaker notes can be put away.** The notes panel under the canvas is
+  always there today; it should be hideable so the slide gets the room.
+- **The slide rail can sit along the bottom** and scroll sideways, as in
+  Canva, for whoever prefers it to the left column.
+- **Drag an object onto another slide's thumbnail to move it there** —
+  the selected box dragged onto a blank slide in the rail lands on that
+  slide (one undo), as PowerPoint and Canva allow.
+
 Found 2026-11-14 by the owner: **light and dark mode differ in quality,
 each way round.** The landing page's moving spots read as stars in dark
 mode and look wrong in light mode; parts of the editor look right in light
