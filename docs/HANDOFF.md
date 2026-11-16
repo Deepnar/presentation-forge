@@ -126,7 +126,13 @@ throwaway `postgres:15-alpine` container on 127.0.0.1:55439, removed after;
 the machine's other Postgres containers belong to other projects — leave
 them alone.
 
-Next, in order: **F9a** (build the image and run prompt → editor → export in
+Also 2026-11-16: F3's run-of-slides proposal (`followedBy`) and F4b's lines
+in groups landed, with a fix for pasting any group. Checking the editor
+through the pane: the slide thumbnails reuse element ids, so scope queries
+to `[role=application]` or they hit the rail.
+
+Next, in order: F4b's equal-spacing guides; F8's PowerPoint look as a theme
+reference; **F9a** (build the image and run prompt → editor → export in
 it, when the machine is free; run the lab-server setup once) — then **F5** (the redesign, starting with the study of Canva,
 Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
 Claude Design skill; the add-slide menu's discoverability is recorded

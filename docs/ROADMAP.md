@@ -136,9 +136,10 @@ Decisions taken with this list, so nobody re-litigates them:
    one undo, and the choice rides on the scene (`layoutChoice`) so a theme
    change keeps it. The Assistant has the same as `change_layout`
    (`src/projects/slide-layouts.js`). Rewriting a slide's content or
-   regenerating the deck lays it out afresh. Left: several slides in one
-   proposal (parallel tool calls are off, so one slide per turn), and the
-   real-model check. Semantic proposals
+   regenerating the deck lays it out afresh. Several slides in one
+   proposal (2026-11-16): `add_slide` takes `followedBy` — up to five more
+   in order — so a run arrives in one call with parallel tool calls off,
+   and one approval inserts them all. Left: the real-model check. Semantic proposals
    for add slide(s), regenerate a slide, change a slide's composition and
    rewrite across the deck, compiled deterministically, preserving human edits,
    tombstones and detached slides (§12 "Canonical semantic creation and
@@ -199,8 +200,11 @@ Decisions taken with this list, so nobody re-litigates them:
      Ctrl+Shift+G group and ungroup; a rotate knob (15° with Shift, settles
      on right angles); lines now move instead of stretching. Done
      2026-11-14: a rotated element's frame, handles, drag and resize follow
-     its rotation. Left, small: lines cannot join a group (their far end
-     is a slide point); equal-spacing guides. Owner, 2026-11-14:
+     its rotation. Done 2026-11-16: lines join groups — moving a group
+     carries its lines' far ends (a slide point) and undo carries them
+     back; pasting or duplicating a group, or saving a layout that holds
+     one, failed validation because copies lost their members' order, and
+     now works. Left, small: equal-spacing guides. Owner, 2026-11-14:
      drag-to-select felt buggy and its box was hard to see in dark mode —
      fixed the same day: a sweep can start in the stage's margin (it could
      only start on empty slide, which dense slides barely have), a click
