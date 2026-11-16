@@ -10,7 +10,7 @@
 import { findElement, humanId } from "./scene.ts";
 import { remintCitationId } from "./citations.ts";
 import { isSystemChrome } from "./scene-constants.ts";
-import type { SlideScene, SceneElement, Paragraph } from "./scene.generated.ts";
+import type { SlideScene, SceneElement, Paragraph, TextRun } from "./scene.generated.ts";
 
 export type ElementMove = { type: "element.move"; id: string; x: number; y: number };
 export type ElementResize = { type: "element.resize"; id: string; w: number; h: number };
@@ -32,28 +32,90 @@ export type ElementSetStyle = {
   id: string;
   style: { fill?: StylePatchValue; stroke?: StylePatchValue; strokeWidth?: number | null };
 };
-// Narrow text-appearance update: color, size, bold, and italic over
-// whole addressable runs. Targeting is paragraph-scoped
-// (paragraphIndex) or whole-element (omitted) — never an arbitrary
-// substring, because runs are never split here. Only keys PRESENT
-// in the patch are touched; explicit null REMOVES the key
-// (restoring absence, which matters: bold:false differs from an
-// absent bold when weight >= 600). All other run keys (family,
-// weight, tracking, line, transform, role) ride along untouched.
-// The inverse restores prior paragraphs wholesale, so undo is exact
-// regardless of which keys were mentioned.
+// Text-appearance update, the way a slide editor's text toolbar works:
+// the whole element, one paragraph (paragraphIndex), or a range of
+// characters within one paragraph (paragraphIndex + range) — runs are
+// split at the range's edges so only those words change, and adjacent
+// runs left identical are merged back. Run keys: color, size, bold,
+// italic, underline, family; paragraph key: align. Only keys PRESENT in
+// the patch are touched; explicit null REMOVES the key (restoring
+// absence, which matters: bold:false differs from an absent bold when
+// weight >= 600). Other run keys (weight, tracking, line, transform,
+// role) ride along. The inverse restores prior paragraphs wholesale,
+// so undo is exact regardless of which keys were mentioned.
 export type TextStylePatch = {
   color?: string | null;
   size?: number | null;
   bold?: boolean | null;
   italic?: boolean | null;
+  underline?: boolean | null;
+  family?: string | null;
+  align?: "left" | "center" | "right" | null;
 };
 export type ElementSetTextStyle = {
   type: "element.setTextStyle";
   id: string;
   paragraphIndex?: number;
+  range?: { start: number; end: number };
   style: TextStylePatch;
 };
+
+export const RUN_STYLE_KEYS = ["color", "size", "bold", "italic", "underline", "family"] as const;
+
+// The paragraphs after a style patch — pure, shared by the command and by
+// the engine's "would this change anything" check.
+export function styleParagraphs(paras: Paragraph[], { paragraphIndex, range, style }: { paragraphIndex?: number; range?: { start: number; end: number }; style: TextStylePatch }): Paragraph[] {
+  const idxs = paragraphIndex !== undefined ? [paragraphIndex] : paras.map((_, i) => i);
+  const patchRun = (run: TextRun): TextRun => {
+    const out = { ...run } as Record<string, unknown>;
+    for (const k of RUN_STYLE_KEYS) {
+      const v = style[k];
+      if (v === undefined) continue;
+      if (v === null) delete out[k];
+      else out[k] = v;
+    }
+    return out as TextRun;
+  };
+  const same = (a: TextRun, b: TextRun): boolean => {
+    const { text: _a, ...ra } = a, { text: _b, ...rb } = b;
+    const ka = Object.keys(ra).sort(), kb = Object.keys(rb).sort();
+    return ka.length === kb.length && ka.every((k, i) => k === kb[i] && (ra as Record<string, unknown>)[k] === (rb as Record<string, unknown>)[k]);
+  };
+  const merge = (runs: TextRun[]): TextRun[] => runs.reduce<TextRun[]>((out, r) => {
+    const last = out[out.length - 1];
+    if (last && same(last, r)) out[out.length - 1] = { ...last, text: last.text + r.text };
+    else if (r.text !== "" || runs.length === 1) out.push(r);
+    return out;
+  }, []);
+  return paras.map((p, i) => {
+    if (!idxs.includes(i)) return p;
+    const runs = Array.isArray(p.runs) ? p.runs : [];
+    let next: TextRun[];
+    if (range) {
+      // Split each run at the range's edges, style what falls inside.
+      next = [];
+      let at = 0;
+      for (const run of runs) {
+        const text = run.text ?? "", a = at, b = at + text.length;
+        at = b;
+        const lo = Math.max(a, range.start), hi = Math.min(b, range.end);
+        if (hi <= lo) { next.push(run); continue; }
+        if (lo > a) next.push({ ...run, text: text.slice(0, lo - a) });
+        next.push(patchRun({ ...run, text: text.slice(lo - a, hi - a) }));
+        if (hi < b) next.push({ ...run, text: text.slice(hi - a) });
+      }
+      next = merge(next);
+    } else {
+      next = merge(runs.map(patchRun));
+    }
+    const out: Paragraph = { ...p, runs: next };
+    if (style.align !== undefined) {
+      if (style.align === null) delete (out as { align?: string }).align;
+      else out.align = style.align;
+    }
+    return out;
+  });
+}
 export type ElementSetTextStyleInverse = {
   type: "element.setTextStyle";
   id: string;
@@ -362,27 +424,15 @@ export function applyCommand(scene: SlideScene, cmd: DeckCommand): DeckCommand {
       }
       const forward = cmd as ElementSetTextStyle;
       const paras = el.paragraphs ?? [];
-      const idxs = forward.paragraphIndex !== undefined ? [forward.paragraphIndex] : paras.map((_, i) => i);
-      if (forward.paragraphIndex !== undefined && (idxs[0] < 0 || idxs[0] >= paras.length)) {
+      if (forward.paragraphIndex !== undefined && (forward.paragraphIndex < 0 || forward.paragraphIndex >= paras.length)) {
         throw new Error(`paragraph ${forward.paragraphIndex} out of range for element ${cmd.id}`);
       }
+      if (forward.range) {
+        const len = (paras[forward.paragraphIndex as number]?.runs ?? []).reduce((n, r) => n + (r.text ?? "").length, 0);
+        if (forward.range.end > len) throw new Error(`range ends past paragraph ${forward.paragraphIndex} of element ${cmd.id}`);
+      }
       const prev = el.paragraphs;
-      el.paragraphs = paras.map((p, i) => {
-        if (!idxs.includes(i)) return p;
-        // Formatting addresses whole runs only: a multi-run
-        // paragraph is refused rather than partially rewritten.
-        if (!Array.isArray(p.runs) || p.runs.length !== 1) {
-          throw new Error(`paragraph ${i} of element ${cmd.id} is not a single run`);
-        }
-        const run = { ...(p.runs[0] ?? {}) };
-        for (const k of ["color", "size", "bold", "italic"] as const) {
-          const v = forward.style[k];
-          if (v === undefined) continue;
-          if (v === null) delete run[k];
-          else (run[k] as unknown) = v;
-        }
-        return { ...p, runs: [run] };
-      });
+      el.paragraphs = styleParagraphs(paras, forward);
       markFormatCustomized(scene, el);
       return { type: "element.setTextStyle", id: cmd.id, paragraphs: prev };
     }

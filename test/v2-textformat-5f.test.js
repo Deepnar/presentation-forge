@@ -102,7 +102,8 @@ describe("v2-5f setTextStyle validation", () => {
     locked[0].elements[0].locked = true;
     const r2 = await rig(locked);
     assert.equal((await r2.editor.setTextStyle("s:list", null, { color: "FF0000" })).code, "locked");
-    // Multi-run paragraphs refuse formatting (whole runs only).
+    // A paragraph of several runs is styled across all of them, each keeping
+    // what the patch does not mention.
     const rich = [{
       id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
       elements: [{
@@ -111,9 +112,33 @@ describe("v2-5f setTextStyle validation", () => {
       }],
     }];
     const r3 = await rig(rich);
-    const refused = await r3.editor.setTextStyle("s:rich", null, { color: "FF0000" });
-    assert.equal(refused.ok, false);
-    assert.match(refused.message, /not a single run/);
+    assert.equal((await r3.editor.setTextStyle("s:rich", null, { color: "FF0000" })).ok, true);
+    assert.deepEqual(r3.doc.snapshot().scenes[0].elements[0].paragraphs[0].runs, [{ text: "a", size: 13, color: "FF0000" }, { text: "b", size: 13, bold: true, color: "FF0000" }]);
+  });
+
+  it("selected words, a font, underline and alignment — and undo is exact", async () => {
+    const scenes = [{
+      id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
+      elements: [{ id: "s:t", kind: "text", x: 1, y: 1, w: 8, h: 1, z: 0, provenance: "human",
+        paragraphs: [{ runs: [{ text: "Cells fail at the interface", size: 20, color: "111111" }] }] }],
+    }];
+    const r = await rig(scenes);
+    const runs = () => r.doc.snapshot().scenes[0].elements[0].paragraphs[0].runs;
+    const before = JSON.stringify(r.doc.snapshot().scenes[0]);
+    // "fail" is characters 6..10.
+    assert.equal((await r.editor.setTextStyle("s:t", 0, { bold: true, color: "C0392B" }, { start: 6, end: 10 })).ok, true);
+    assert.deepEqual(runs().map((x) => [x.text, x.bold ?? false]), [["Cells ", false], ["fail", true], [" at the interface", false]]);
+    // Styling the same words back merges the runs again.
+    assert.equal((await r.editor.setTextStyle("s:t", 0, { bold: null, color: "111111" }, { start: 6, end: 10 })).ok, true);
+    assert.equal(runs().length, 1, "identical neighbours merge");
+    assert.equal((await r.editor.setTextStyle("s:t", null, { family: "Playfair Display", underline: true, align: "center" })).ok, true);
+    const p = r.doc.snapshot().scenes[0].elements[0].paragraphs[0];
+    assert.deepEqual([p.align, p.runs[0].family, p.runs[0].underline], ["center", "Playfair Display", true]);
+    assert.equal((await r.editor.setTextStyle("s:t", 0, { align: "left" }, { start: 0, end: 3 })).ok, false, "alignment is per paragraph");
+    assert.equal((await r.editor.setTextStyle("s:t", 0, { bold: true }, { start: 3, end: 999 })).ok, false, "a range past the text is refused");
+    assert.equal((await r.editor.setTextStyle("s:t", null, { family: "<script>" })).ok, false);
+    while (r.doc.status().historyLength > 0) await r.doc.undo();
+    assert.equal(JSON.stringify(r.doc.snapshot().scenes[0]), before, "undo restores it exactly");
   });
 
   it("engine validation holds at the envelope boundary", async () => {

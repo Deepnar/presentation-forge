@@ -10,6 +10,7 @@
 // Selection ownership stays with the viewer at all times; the
 // adapter reads it, never stores its own copy.
 import { SCENE_W, SCENE_H, isSystemChrome } from "../model/scene-constants.ts";
+import { styleParagraphs } from "../model/commands.ts";
 import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements, alignMoves, distributeMoves, groupElements, ungroupElement, visualBox, toLocal, toWorld, rotatedResize, slideFromLayout } from "./scene-arrange.js";
 import {
   isEditableText,
@@ -1699,7 +1700,10 @@ export function attachEditor(viewer, doc, opts = {}) {
   // absence (bold:false differs from absent bold under weight >=
   // 600). Multi-run paragraphs are refused — formatting never
   // splits runs here. Genuine no-ops return without engine contact.
-  function setTextStyle(id, paragraphIndex, patch) {
+  // The text toolbar's one write: the whole box, a paragraph, or a range
+  // of characters in one paragraph (`range` { start, end }); keys color,
+  // size, bold, italic, underline, family and (whole paragraphs) align.
+  function setTextStyle(id, paragraphIndex, patch, range = null) {
     if (textSession) {
       return report({ ok: false, code: "op-rejected", message: "commit or cancel the open text edit first" });
     }
@@ -1715,20 +1719,12 @@ export function attachEditor(viewer, doc, opts = {}) {
       return report({ ok: false, code: "bad-envelope", message: "element.setTextStyle needs a style patch" });
     }
     const paras = el.paragraphs ?? [];
-    let idxs;
-    if (paragraphIndex === undefined || paragraphIndex === null) {
-      idxs = paras.map((_, i) => i);
-    } else {
-      if (!Number.isInteger(paragraphIndex) || paragraphIndex < 0 || paragraphIndex >= paras.length) {
-        return report({ ok: false, code: "bad-envelope", message: `paragraph ${paragraphIndex} out of range for element ${id}` });
-      }
-      idxs = [paragraphIndex];
+    const whole = paragraphIndex === undefined || paragraphIndex === null;
+    if (!whole && (!Number.isInteger(paragraphIndex) || paragraphIndex < 0 || paragraphIndex >= paras.length)) {
+      return report({ ok: false, code: "bad-envelope", message: `paragraph ${paragraphIndex} out of range for element ${id}` });
     }
-    for (const i of idxs) {
-      const runs = paras[i]?.runs;
-      if (!Array.isArray(runs) || runs.length !== 1) {
-        return report({ ok: false, code: "op-rejected", message: `paragraph ${i} of element ${id} is not a single run` });
-      }
+    if (range && (whole || !Number.isInteger(range.start) || !Number.isInteger(range.end) || range.start < 0 || range.end <= range.start)) {
+      return report({ ok: false, code: "bad-envelope", message: "a range needs a paragraph and integer start < end" });
     }
     const style = {};
     const hex = /^[0-9A-Fa-f]{6}$/;
@@ -1750,36 +1746,41 @@ export function attachEditor(viewer, doc, opts = {}) {
         style.size = n;
       }
     }
-    for (const k of ["bold", "italic"]) {
+    for (const k of ["bold", "italic", "underline"]) {
       if (patch[k] === undefined) continue;
       if (patch[k] === null) style[k] = null;
       else if (typeof patch[k] !== "boolean") {
         return report({ ok: false, code: "bad-envelope", message: `${k} must be a boolean` });
       } else style[k] = patch[k];
     }
+    if (patch.family !== undefined) {
+      if (patch.family !== null && (typeof patch.family !== "string" || !/^[A-Za-z0-9][A-Za-z0-9 .'-]{0,62}$/.test(patch.family))) {
+        return report({ ok: false, code: "bad-envelope", message: "family must be a font family name" });
+      }
+      style.family = patch.family;
+    }
+    if (patch.align !== undefined) {
+      if (range) return report({ ok: false, code: "bad-envelope", message: "alignment applies to whole paragraphs" });
+      if (patch.align !== null && !["left", "center", "right"].includes(patch.align)) {
+        return report({ ok: false, code: "bad-envelope", message: "align must be left, center or right" });
+      }
+      style.align = patch.align;
+    }
     if (Object.keys(style).length === 0) {
       return report({ ok: false, code: "bad-envelope", message: "element.setTextStyle needs at least one changed key" });
     }
-    const same = idxs.every((i) => {
-      const run = paras[i].runs[0] ?? {};
-      return Object.keys(style).every((k) => {
-        const have = run[k] === undefined ? null : run[k];
-        const want = style[k];
-        return k === "color" && typeof have === "string" && typeof want === "string"
-          ? have.toUpperCase() === want.toUpperCase()
-          : have === want;
-      });
-    });
-    if (same) return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
     const op = { type: "element.setTextStyle", id, style };
-    if (paragraphIndex !== undefined && paragraphIndex !== null) op.paragraphIndex = paragraphIndex;
+    if (!whole) op.paragraphIndex = paragraphIndex;
+    if (range) op.range = { start: range.start, end: range.end };
+    let styled;
+    try { styled = styleParagraphs(paras, op); }
+    catch (err) { return report({ ok: false, code: "bad-envelope", message: String(err?.message ?? err) }); }
+    if (JSON.stringify(styled) === JSON.stringify(paras)) return track(Promise.resolve({ ok: true, revision: doc.snapshot().revision, noop: true }));
     // The size a restyle leaves the runs at decides whether the box must
     // grow, so measure the paragraphs as they will be, not as they are.
-    const styled = paras.map((p, i) => (idxs.includes(i)
-      ? { ...p, runs: p.runs.map((r) => ({ ...r, ...(style.size != null ? { size: style.size } : {}), ...(style.bold != null ? { weight: style.bold ? 700 : 400 } : {}) })) }
-      : p));
+    const measured = styled.map((p) => ({ ...p, runs: p.runs.map((r) => (r.bold === undefined ? r : { ...r, weight: r.bold ? 700 : 400 })) }));
     return track((async () => {
-      const result = await submitOps(withGrowToFit(snap.slideId, el, styled, op), doc.snapshot().revision);
+      const result = await submitOps(withGrowToFit(snap.slideId, el, measured, op), doc.snapshot().revision);
       if (result.ok) {
         sync();
         noticeOverflow(snap.slideId, id);
@@ -2502,7 +2503,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     resizingId: () => resize?.id ?? null,
     handlesVisible: () => (handleLayer ? handleLayer.querySelectorAll("[data-resize-handle]").length : 0),
     setElementStyle: (id, patch) => setElementStyle(id, patch),
-    setTextStyle: (id, paragraphIndex, patch) => setTextStyle(id, paragraphIndex, patch),
+    setTextStyle: (id, paragraphIndex, patch, range = null) => setTextStyle(id, paragraphIndex, patch, range),
     setChartData: (id, payload) => setChartData(id, payload),
     setTableData: (id, rows) => setTableData(id, rows),
     reorderElement: (id, toIndex) => track(reorderElement(id, toIndex)),

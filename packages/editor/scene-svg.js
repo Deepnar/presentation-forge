@@ -82,6 +82,7 @@ function textSvg(el, opts = {}) {
     if (bold) attrs.push(' font-weight="bold"');
     else if (first.weight != null) attrs.push(` font-weight="${first.weight}"`);
     if (first.italic) attrs.push(' font-style="italic"');
+    if (first.underline) attrs.push(' text-decoration="underline"');
     if (first.tracking) attrs.push(` letter-spacing="${((first.tracking * 96) / 72).toFixed(2)}"`);
     // Interactive viewers need wrapped lines: split long chunks at
     // the contract width with the same heuristic the compiler

@@ -250,10 +250,10 @@ describe("v2-5f multi-paragraph editing", () => {
     assert.equal(r.editor.editingId(), null);
     assert.equal(JSON.stringify(r.doc.snapshot().scenes[0]), before, "no silent flattening");
     assert.equal(r.doc.status().historyLength, 0);
-    // Formatting a multi-run paragraph is refused too.
+    // Formatting a multi-run paragraph styles every run.
     const styled = await r.editor.setTextStyle("s:rich", 0, { color: "FF0000" });
-    assert.equal(styled.ok, false);
-    assert.match(styled.message, /not a single run/);
+    assert.equal(styled.ok, true);
+    assert.ok(r.doc.snapshot().scenes[0].elements[0].paragraphs[0].runs.every((x) => x.color === "FF0000"));
   });
 
   it("empty paragraph lists stay refused", async () => {

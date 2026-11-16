@@ -159,6 +159,7 @@ function addTextElement(slide: PptxSlide, el: SceneElement): void {
       const options: Record<string, unknown> = {
         bold: runBold(r),
         italic: r.italic,
+        ...(r.underline ? { underline: { style: "sng" } } : {}),
         fontSize: size,
         color: r.color,
         align: ri === 0 ? (p.align ?? "left") : undefined,

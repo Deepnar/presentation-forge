@@ -21,12 +21,13 @@ import {
   duplicateScene,
   reorderScene,
   setSlideLayoutState,
+  styleParagraphs,
   type DeckCommand,
 } from "./commands.ts";
 import { citationMetadataError, sameCitationValue, type Citation } from "./citations.ts";
 import { indexCitationTargets } from "./citation-targets.ts";
 import { validateScene, findElement } from "./scene.ts";
-import type { SlideScene, SceneElement } from "./scene.generated.ts";
+import type { SlideScene, SceneElement, Paragraph } from "./scene.generated.ts";
 
 export type SlideOp =
   | { type: "slide.insert"; scene: SlideScene; index?: number }
@@ -240,12 +241,29 @@ function checkOp(placed: unknown): string | null {
         return null;
       }
       if (!idStr(op.id) || !isRecord(op.style)) return "element.setTextStyle needs id and a style object";
-      const { color, size, bold, italic } = op.style as Record<string, unknown>;
+      const { color, size, bold, italic, underline, family, align } = op.style as Record<string, unknown>;
       if (op.paragraphIndex !== undefined && (!Number.isInteger(op.paragraphIndex) || (op.paragraphIndex as number) < 0)) {
         return "element.setTextStyle paragraphIndex must be a non-negative integer";
       }
-      if (color === undefined && size === undefined && bold === undefined && italic === undefined) {
-        return "element.setTextStyle needs at least one of color, size, bold, italic";
+      if (Object.keys(op.style as object).some((k) => !["color", "size", "bold", "italic", "underline", "family", "align"].includes(k))) {
+        return "element.setTextStyle style has unknown keys";
+      }
+      if ([color, size, bold, italic, underline, family, align].every((v) => v === undefined)) {
+        return "element.setTextStyle needs at least one of color, size, bold, italic, underline, family, align";
+      }
+      if (op.range !== undefined) {
+        const r = op.range as Record<string, unknown>;
+        if (op.paragraphIndex === undefined) return "element.setTextStyle range needs a paragraphIndex";
+        if (!isRecord(r) || !Number.isInteger(r.start) || !Number.isInteger(r.end) || (r.start as number) < 0 || (r.end as number) <= (r.start as number)) {
+          return "element.setTextStyle range needs integer start < end";
+        }
+        if (align !== undefined) return "element.setTextStyle align applies to whole paragraphs, not a range";
+      }
+      if (family !== undefined && family !== null && (typeof family !== "string" || !/^[A-Za-z0-9][A-Za-z0-9 .'-]{0,62}$/.test(family))) {
+        return "element.setTextStyle family must be a font family name or null";
+      }
+      if (align !== undefined && align !== null && !["left", "center", "right"].includes(align as string)) {
+        return "element.setTextStyle align must be left, center, right or null";
       }
       const hex = /^[0-9A-Fa-f]{6}$/;
       if (color !== undefined && color !== null && (typeof color !== "string" || !hex.test(color))) {
@@ -254,7 +272,7 @@ function checkOp(placed: unknown): string | null {
       if (size !== undefined && size !== null && (typeof size !== "number" || !Number.isFinite(size) || size <= 0)) {
         return "element.setTextStyle size must be a positive finite number or null";
       }
-      for (const [k, v] of [["bold", bold], ["italic", italic]] as const) {
+      for (const [k, v] of [["bold", bold], ["italic", italic], ["underline", underline]] as const) {
         if (v !== undefined && v !== null && typeof v !== "boolean") {
           return `element.setTextStyle ${k} must be a boolean or null`;
         }
@@ -547,25 +565,12 @@ function isEffectiveOp(scenes: SlideScene[], placed: PlacedOp): boolean {
       case "element.setTextStyle": {
         // Restore-shape inverses always run (audit/replay path).
         if ("paragraphs" in (op as Record<string, unknown>)) return true;
-        // Mentioned keys only; null clears, so it is effective
-        // exactly when the key is currently present. Absence vs
-        // explicit false matters (weight >= 600), so compare raw.
-        const { style, paragraphIndex } = op as {
-          style: { color?: string | null; size?: number | null; bold?: boolean | null; italic?: boolean | null };
-          paragraphIndex?: number;
-        };
-        const paras = (el as { paragraphs?: { runs?: { color?: string; size?: number; bold?: boolean; italic?: boolean }[] }[] }).paragraphs ?? [];
-        const idxs = paragraphIndex !== undefined ? [paragraphIndex] : paras.map((_, i) => i);
-        return idxs.some((i) => {
-          const run = paras[i]?.runs?.[0];
-          if (!run) return true;
-          return (["color", "size", "bold", "italic"] as const).some((k) => {
-            const v = style[k];
-            if (v === undefined) return false;
-            if (v === null) return run[k] !== undefined;
-            return run[k] !== v;
-          });
-        });
+        // Effective exactly when the patched paragraphs differ (absence
+        // vs explicit false matters, weight >= 600, so compare raw).
+        const paras = (el as { paragraphs?: Paragraph[] }).paragraphs ?? [];
+        try {
+          return JSON.stringify(styleParagraphs(paras, op as never)) !== JSON.stringify(paras);
+        } catch { return true; }
       }
       default:
         return true;

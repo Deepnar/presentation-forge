@@ -216,6 +216,7 @@ export interface TextRun {
   text: string;
   bold?: boolean;
   italic?: boolean;
+  underline?: boolean;
   size?: number;
   color?: string;
   role?: string;
