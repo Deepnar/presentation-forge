@@ -153,7 +153,7 @@ export type ToolRequest =
   | {
       tool: "add_slide";
       /**
-       * Propose a new slide, written as content only: the compiler lays it out in the project's theme. It is added only after the person approves.
+       * Propose new slides, written as content only: the compiler lays them out in the project's theme. `slide` goes after `afterSlideId`; `followedBy` adds up to five more in order after it, for a run of slides in one proposal. Nothing is added until the person approves.
        */
       args: {
         baseRevision: number;
@@ -193,6 +193,78 @@ export type ToolRequest =
             }[]
           ];
         };
+        /**
+         * More slides, in order, after `slide`.
+         *
+         * @minItems 1
+         * @maxItems 5
+         */
+        followedBy?: [
+          {
+            title: string;
+            purpose?: string;
+            /**
+             * @minItems 1
+             * @maxItems 8
+             */
+            blocks: [
+              {
+                kind: "text" | "list" | "stat" | "quote";
+                label?: string;
+                text?: string;
+                value?: string;
+                /**
+                 * @minItems 1
+                 * @maxItems 8
+                 */
+                items?: [string, ...string[]];
+              },
+              ...{
+                kind: "text" | "list" | "stat" | "quote";
+                label?: string;
+                text?: string;
+                value?: string;
+                /**
+                 * @minItems 1
+                 * @maxItems 8
+                 */
+                items?: [string, ...string[]];
+              }[]
+            ];
+          },
+          ...{
+            title: string;
+            purpose?: string;
+            /**
+             * @minItems 1
+             * @maxItems 8
+             */
+            blocks: [
+              {
+                kind: "text" | "list" | "stat" | "quote";
+                label?: string;
+                text?: string;
+                value?: string;
+                /**
+                 * @minItems 1
+                 * @maxItems 8
+                 */
+                items?: [string, ...string[]];
+              },
+              ...{
+                kind: "text" | "list" | "stat" | "quote";
+                label?: string;
+                text?: string;
+                value?: string;
+                /**
+                 * @minItems 1
+                 * @maxItems 8
+                 */
+                items?: [string, ...string[]];
+              }[]
+            ];
+          }[]
+        ];
       };
     }
   | {

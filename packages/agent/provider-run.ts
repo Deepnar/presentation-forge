@@ -265,6 +265,9 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
             if (adds.length) {
               if (!host?.compileSlide) return fail('tool-refused');
               const order = initial.scenes.map(sc => sc.id);
+              // Every slide this proposal adds, so each is numbered against
+              // the deck as it will stand.
+              const adding = adds.reduce((n, c) => n + (c.request.tool === 'add_slide' ? 1 + (c.request.args.followedBy?.length ?? 0) : 0), 0);
               for (const call of adds) {
                 if (call.request.tool === 'change_layout') {
                   // The slide's own content, laid out another way by the
@@ -306,19 +309,23 @@ export function createProviderRunner(backend: RuntimeBackend, provider: ModelPro
                 const args = call.request.args;
                 if (args.baseRevision !== context.revision) return fail('tool-refused');
                 if (args.afterSlideId !== null && !request.scope.readableSlides.includes(args.afterSlideId) && !order.slice(initial.scenes.length).includes(args.afterSlideId)) return fail('tool-refused');
-                const index = args.afterSlideId === null ? 0 : order.indexOf(args.afterSlideId) + 1;
+                let index = args.afterSlideId === null ? 0 : order.indexOf(args.afterSlideId) + 1;
                 if (args.afterSlideId !== null && index === 0) return fail('tool-refused');
-                let scene: Json | null;
-                try { scene = await host.compileSlide(trusted, { slide: structuredClone(args.slide), index, total: initial.scenes.length + adds.length }); }
-                catch { return fail('tool-refused'); }
-                if (signal?.aborted) return fail('cancelled');
-                const id = (scene as { id?: unknown } | null)?.id;
-                if (!scene || typeof id !== 'string' || order.includes(id)) return fail('tool-refused');
-                const step = validatedToolRequest({ tool: 'insert_slide', args: { baseRevision: context.revision, index, scene } }, 65536);
-                if (!step) return fail('result-too-large');
-                order.splice(index, 0, id);
-                steps.push(step);
-                slides.push({ position: index + 1, title: args.slide.title, replaces: false });
+                // The slide, then any that follow it, each after the last.
+                for (const slide of [args.slide, ...(args.followedBy ?? [])]) {
+                  let scene: Json | null;
+                  try { scene = await host.compileSlide(trusted, { slide: structuredClone(slide), index, total: initial.scenes.length + adding }); }
+                  catch { return fail('tool-refused'); }
+                  if (signal?.aborted) return fail('cancelled');
+                  const id = (scene as { id?: unknown } | null)?.id;
+                  if (!scene || typeof id !== 'string' || order.includes(id)) return fail('tool-refused');
+                  const step = validatedToolRequest({ tool: 'insert_slide', args: { baseRevision: context.revision, index, scene } }, 65536);
+                  if (!step) return fail('result-too-large');
+                  order.splice(index, 0, id);
+                  steps.push(step);
+                  slides.push({ position: index + 1, title: slide.title, replaces: false });
+                  index += 1;
+                }
               }
             }
             let plan: ReturnType<typeof parsePlan>;

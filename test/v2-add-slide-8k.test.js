@@ -136,3 +136,22 @@ check('a layout change the project cannot lay out is refused, nothing proposed',
   assert.deepEqual((await e.store.getProject(e.binding)).doc.scenes, e.doc.scenes);
   assert.ok(e.seen[0].body.tools.some(x => x.function.name === 'change_layout'), 'offered to the model');
 });
+
+check('a run of slides in one proposal lands in order on one approval', async t => {
+  const e = await scenario(t, (env) => ({ ...next(env), followedBy: [
+    { title: 'Measure the baseline', blocks: [{ kind: 'text', text: 'Record today\'s numbers first.' }] },
+    { title: 'Report back', blocks: [{ kind: 'list', items: ['What changed', 'What it cost', 'What next'] }] },
+  ] }));
+  const prepared = await e.run();
+  assert.equal(prepared.results[0].turnState, 'awaiting-decision', JSON.stringify(prepared));
+  const state = await e.service.read(e.binding);
+  assert.deepEqual(state.turns[0].proposal.slides.map(s => [s.position, s.title]), [[2, 'Next steps'], [3, 'Measure the baseline'], [4, 'Report back']]);
+  assert.deepEqual((await e.store.getProject(e.binding)).doc.scenes, e.doc.scenes, 'nothing changes before approval');
+  assert.equal((await e.service.decide(e.binding, decision(state, state.turns[0]))).ok, true);
+  assert.equal((await e.run()).results[0].runStatus, 'succeeded');
+  const after = (await e.store.getProject(e.binding)).doc;
+  assert.equal(after.scenes.length, e.doc.scenes.length + 3);
+  const titles = after.scenes.slice(1, 4).map(sc => JSON.stringify(sc.elements));
+  assert.ok(titles[0].includes('Next steps') && titles[1].includes('Measure the baseline') && titles[2].includes('Report back'), 'in the order proposed');
+  for (const sc of after.scenes.slice(1, 4)) assert.ok((await validateScene(sc)).ok);
+});
