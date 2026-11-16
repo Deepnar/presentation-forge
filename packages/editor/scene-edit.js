@@ -46,6 +46,8 @@ export const NUDGE_LARGE_STEP = 0.25; // inches with Shift held
 export const DRAG_THRESHOLD_PX = 4; // client px before a press becomes a drag
 export const MIN_RESIZE_IN = 0.1; // floor for resized extents, in scene inches
 export const SHRINK_FLOOR_PT = 9; // shrink-to-fit never sets text smaller than this
+// How much taller than its text a box may be and still count as hugging it.
+export const HUG_SLACK_IN = 0.06;
 const ROTATABLE_KINDS = new Set(["text", "shape", "image"]);
 // Resize-handle vocabulary: eight anchors with per-handle cursors.
 // Only the full set is ever rendered — every handle below has a
@@ -120,7 +122,9 @@ export function clientToSvgDelta(dxClient, dyClient, scales) {
 // Canva boxes do, rather than accepting a box its text spills out of.
 // `slideH` caps that floor at the slide edge so a box never grows off
 // the slide to seat text that cannot fit anyway.
-export function resizeGeometry(origin, handle, dxIn, dyIn, { floor, slideH, aspect } = {}) {
+// With `hug`, a sideways resize (e or w handle alone) sets the height to
+// what the text needs at the new width — down as well as up.
+export function resizeGeometry(origin, handle, dxIn, dyIn, { floor, slideH, aspect, hug } = {}) {
   for (const v of [origin.x, origin.y, origin.w, origin.h, dxIn, dyIn]) {
     if (!Number.isFinite(v)) throw new Error("scene-edit: non-finite resize geometry");
   }
@@ -155,6 +159,8 @@ export function resizeGeometry(origin, handle, dxIn, dyIn, { floor, slideH, aspe
     if (Number.isFinite(least) && h < least) {
       h = least;
       if (handle.includes("n")) y = origin.y + origin.h - least;
+    } else if (hug && (handle === "e" || handle === "w") && Number.isFinite(least) && least > 0) {
+      h = Math.max(least, MIN_RESIZE_IN);
     }
   }
   if (![x, y, w, h].every(Number.isFinite)) {
@@ -1512,6 +1518,14 @@ export function attachEditor(viewer, doc, opts = {}) {
         root.setPointerCapture?.(ev.pointerId);
       } catch { /* linkedom and some browsers lack capture */ }
     }
+    // A text box whose height is what its text needs hugs its text: made
+    // narrower it grows, made wider again it shrinks back, as PowerPoint
+    // and Canva boxes do. One made taller on purpose keeps its height.
+    function textLimits(el, slideId) {
+      const floor = (w) => measureText(el, w)?.height ?? 0;
+      const needed = floor(el.w);
+      return { floor, slideH: slideHeight(slideId), hug: needed > 0 && el.h <= needed + HUG_SLACK_IN };
+    }
     resize = {
       pointerId: ev.pointerId,
       startX: ev.clientX,
@@ -1523,9 +1537,7 @@ export function attachEditor(viewer, doc, opts = {}) {
       kind: target.el.kind,
       rotation: target.el.rotation ?? 0,
       targets: snapTargets(doc.snapshot().scenes.find((sc) => sc.id === target.snap.slideId), [id]),
-      limits: target.el.kind === "text"
-        ? { floor: (w) => measureText(target.el, w)?.height ?? 0, slideH: slideHeight(target.snap.slideId) }
-        : {},
+      limits: target.el.kind === "text" ? textLimits(target.el, target.snap.slideId) : {},
       moved: false,
     };
     return { ok: true, revision: doc.snapshot().revision, resizing: true };

@@ -402,6 +402,38 @@ describe("v2-5e resize handles", () => {
     assert.deepEqual(r.errors, []);
   });
 
+  it("a box that hugs its text shrinks back when widened again; a taller one keeps its height", async () => {
+    const need6 = (el) => measureText(el, 6).height;
+    const start = wordy(1)[0].elements[0];
+    const r = await rig(wordy(Math.ceil(need6(start) * 1000) / 1000));
+    stubLayout(r.root);
+    r.viewer.api.select("s:t");
+    const drag = async (handle, from, to) => {
+      ptr(r.root, "pointerdown", handleFor(r.root, "s:t", handle), { x: from, y: 300 });
+      ptr(r.root, "pointermove", handleFor(r.root, "s:t", handle), { x: to, y: 300 });
+      ptr(r.root, "pointerup", handleFor(r.root, "s:t", handle), { x: to, y: 300 });
+      await r.editor.pending();
+      stubLayout(r.root);
+      return r.doc.snapshot().scenes[0].elements[0];
+    };
+    const original = r.doc.snapshot().scenes[0].elements[0].h;
+    const narrow = await drag("e", 700, 700 - 96 * 3);
+    assert.ok(narrow.h > original + 0.2, "narrower, it grew to hold the text");
+    const wide = await drag("e", 400, 400 + 96 * 3);
+    assert.equal(wide.w, 6);
+    assert.ok(Math.abs(wide.h - original) < 0.002, `wider again, it hugs its text (${wide.h} vs ${original})`);
+
+    // A box made taller than its text on purpose keeps that height.
+    const r2 = await rig(wordy(4));
+    stubLayout(r2.root);
+    r2.viewer.api.select("s:t");
+    ptr(r2.root, "pointerdown", handleFor(r2.root, "s:t", "e"), { x: 700, y: 300 });
+    ptr(r2.root, "pointermove", handleFor(r2.root, "s:t", "e"), { x: 700 + 96, y: 300 });
+    ptr(r2.root, "pointerup", handleFor(r2.root, "s:t", "e"), { x: 700 + 96, y: 300 });
+    await r2.editor.pending();
+    assert.equal(r2.doc.snapshot().scenes[0].elements[0].h, 4, "its own height stands");
+  });
+
   it("a box that would run off the slide stops at the edge and says so, not as a failure", async () => {
     const r = await rig(wordy(2));
     stubLayout(r.root);
