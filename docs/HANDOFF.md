@@ -114,10 +114,14 @@ F7 is done in code (deck from report: Sections to slides…). From
 bullet body, `Validated:` line, no AI attribution — AGENTS.md already
 forbade the Co-Authored-By trailers earlier commits carried.
 
-Next, in order: **F9** (hosted lifecycle —
-V2 state is already all in the database, so the work is the Postgres
-default for hosted, the decks directory's lifetime, the container and
-DEPLOY.md), then **F5** (the redesign, starting with the study of Canva,
+Also 2026-11-16: AGENTS.md is now the one guide (CLAUDE.md imports it);
+ARCHITECTURE has a finish-line section; README's editor section is current.
+F9 started: the image now ships `packages/` (it did not — V2 could not have
+run in Docker); the image itself has not been built.
+
+Next, in order: **F9** rest — F9a build and run the image, F9b Postgres
+hosted default, F9c the decks directory's lifetime, F9d DEPLOY.md and the
+self-host profiles (roadmap F9) — then **F5** (the redesign, starting with the study of Canva,
 Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
 Claude Design skill; the add-slide menu's discoverability is recorded
 there). Everything content-quality is blocked on a model: the gateway is

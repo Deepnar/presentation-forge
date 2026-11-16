@@ -253,7 +253,19 @@ Decisions taken with this list, so nobody re-litigates them:
    PPTX, Markdown and CSV become project sources with roles; PPTX imports to an
    editable scene with explicit fallbacks. *Done when:* "use this report as
    truth and this PPTX as reference" makes a deck.
-10. **[ ] F9 — Hosted lifecycle** (§12 V2-6/V2-7, re-scoped). PostgreSQL store
+10. **[~] F9 — Hosted lifecycle** (§12 V2-6/V2-7, re-scoped). Started
+    2026-11-16: the container image now carries `packages/` in both stages —
+    neither had it, so the V2 image could not build its UI and its server
+    would fail on the first V2 import; `test/docker-image.test.js` walks the
+    import graph and keeps the Dockerfile honest. Left, in order:
+    **F9a** build the image and run prompt → editor → export inside it
+    (heavy — when the machine is free); **F9b** the hosted compose on
+    Postgres by default (the `pg` profile is opt-in today; accounts stay in
+    SQLite on the volume — decide whether that is acceptable for one
+    instance); **F9c** the decks directory's lifetime once a generation has
+    become a project (previews regenerate on demand; the sweep exists);
+    **F9d** DEPLOY.md for V2 and the three named self-host profiles below.
+    PostgreSQL store
     as the hosted default, exports/previews on disk or object storage with
     expiry and regenerate-on-demand, idempotent cleanup, the container image
     and `docs/DEPLOY.md` updated for V2. *Done when:* a fresh container plus
