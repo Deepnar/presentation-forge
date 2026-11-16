@@ -177,7 +177,7 @@ Decisions taken with this list, so nobody re-litigates them:
      it after the current slide as a detached, human-owned slide with fresh
      ids, removable with ×. Kept per project (`v2_project_layouts`, 40 per
      project). Left: layouts shared across a person's projects.
-   - **[~] F4b The editor behaves like a slide editor** (owner, 2026-11-11:
+   - **[x] F4b The editor behaves like a slide editor** (owner, 2026-11-11:
      "the editing things feel broken"). An edit that went through is never
      reported as a failure, and a gesture does what PowerPoint, Google Slides
      and Canva users expect. Done 2026-11-11:
@@ -204,7 +204,10 @@ Decisions taken with this list, so nobody re-litigates them:
      carries its lines' far ends (a slide point) and undo carries them
      back; pasting or duplicating a group, or saving a layout that holds
      one, failed validation because copies lost their members' order, and
-     now works. Left, small: equal-spacing guides. Owner, 2026-11-14:
+     now works. Equal spacing (2026-11-16): a dragged box settles centred
+     between its row or column neighbours, or one existing gap on, with
+     pink gap marks while it holds (`snapMove` in `scene-arrange.js`).
+     Nothing left in F4b's list. Owner, 2026-11-14:
      drag-to-select felt buggy and its box was hard to see in dark mode —
      fixed the same day: a sweep can start in the stage's margin (it could
      only start on empty slide, which dense slides barely have), a click
@@ -238,7 +241,17 @@ Decisions taken with this list, so nobody re-litigates them:
    `.docx` report and the speaker script from a project, list them with its
    exports, sharing its sources. *Done when:* deck, report and script coexist
    and cross-derive in one project.
-9. **[~] F8 — File intelligence and PPTX import** (§12 V2-9). Done
+9. **[x] F8 — File intelligence and PPTX import** (§12 V2-9). Done in code
+   2026-11-16 (the real-model check of "use this report as truth and this
+   PPTX as reference" is owed with every other content check). A PPTX's
+   look: Theme → **Use a PowerPoint's look…** reads the colour scheme and
+   fonts of the theme its first master uses (`src/projects/pptx-look.js`),
+   contrast-checked, fonts only when installed, and lays them over the
+   project's theme as one revision, kept by later theme changes and slide
+   compiles, removable. Known gaps: restoring an older revision from
+   History does not restore the look that went with it (the look lives
+   with the intent, not the revision), and re-importing a regenerated deck
+   compiles without it. Done
    2026-11-12: PPTX → editable project ("Import PowerPoint",
    `src/projects/pptx-import.js`): text, shapes, pictures, lines, tables,
    charts, groups, grounds and notes, warnings for the rest; round-trips the
@@ -251,8 +264,7 @@ Decisions taken with this list, so nobody re-litigates them:
    (`list_files`, `read_file`; source-of-truth outranks the rest). Data
    into charts (2026-11-14): a chart's data panel fills from a project CSV
    or cells pasted from a spreadsheet (`packages/editor/chart-table.js`),
-   naming any cell it cannot read. Left: a
-   PPTX's look (theme) taken as a visual reference, and the real-model check of "use this report as truth and this
+   naming any cell it cannot read. Left: the real-model check of "use this report as truth and this
    PPTX as reference, make a 12-slide deck". Original entry: Uploaded PDF, DOCX,
    PPTX, Markdown and CSV become project sources with roles; PPTX imports to an
    editable scene with explicit fallbacks. *Done when:* "use this report as

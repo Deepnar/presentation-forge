@@ -1999,13 +1999,19 @@ panel fills from a project CSV or pasted spreadsheet cells
 into a project of detached, human-owned slides: text with insets and line
 spacing, shapes, pictures, lines, tables, charts, groups, grounds and notes,
 scaled to the 13.333 × 7.5 scene, with plain warnings for what it cannot
-carry.
+carry. A PowerPoint can also lend the project its *look*: the colour
+scheme and fonts of the theme its first master uses, read by
+`src/projects/pptx-look.js` into a token overlay (contrast-checked; fonts
+only when installed), applied by `compileSceneDeck({ look })`, stored with
+the project's intent and kept by theme changes and slide compiles. The
+model never sees it.
 
 **The editor's working set (F4).** Notes, pictures, charts, tables, rules and
 icons; snapping and guides; clipboard, grouping, rotation (frame, handles,
 drag and resize follow the turn — `scene-arrange.js` `visualBox`/`toLocal`);
 a selection box that starts in the stage margin and outlines what it will
-take; text boxes and lines selectable anywhere (invisible hit areas in
+take; equal-spacing snaps with gap marks; lines inside groups (a group's
+move carries its lines' far ends, which are slide points); text boxes and lines selectable anywhere (invisible hit areas in
 `scene-svg.js`); saved layouts (`v2_project_layouts`: a slide's arrangement
 without the theme's locked marks, inserted with fresh ids).
 

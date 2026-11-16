@@ -131,9 +131,14 @@ in groups landed, with a fix for pasting any group. Checking the editor
 through the pane: the slide thumbnails reuse element ids, so scope queries
 to `[role=application]` or they hit the rail.
 
-Next, in order: F4b's equal-spacing guides; F8's PowerPoint look as a theme
-reference; **F9a** (build the image and run prompt → editor → export in
-it, when the machine is free; run the lab-server setup once) — then **F5** (the redesign, starting with the study of Canva,
+Later still: equal-spacing snaps (F4b done) and Theme → Use a PowerPoint's
+look (F8 done in code). The pane's screenshots sometimes come back at the
+wrong scale or stale; read the canvas DOM (`[role=application]`) when they
+do.
+
+Next, in order: **F9a** (build the image and run prompt → editor → export
+in it, when the machine is free; run the lab-server setup once) — the last
+core item — then **F5** (the redesign, starting with the study of Canva,
 Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
 Claude Design skill; the add-slide menu's discoverability is recorded
 there). Everything content-quality is blocked on a model: the gateway is
