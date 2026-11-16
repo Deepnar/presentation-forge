@@ -590,3 +590,14 @@ describe("speaker script into notes", () => {
     assert.deepEqual([a2.notes, b2.notes, b2.notesEdited], [undefined, "old", true], "undo restores their own notes exactly");
   });
 });
+
+describe("slides from elsewhere", () => {
+  it("insert together at a place, as one undo", async () => {
+    const r = await rig([slide("a", [box("x", 1, 1, 1, 1)]), slide("b", [box("y", 1, 1, 1, 1)])]);
+    const out = await r.editor.insertScenes([slide("n1", [box("p", 1, 1, 1, 1)]), slide("n2", [box("q", 1, 1, 1, 1)])], 1);
+    assert.equal(out.ok, true);
+    assert.deepEqual(r.doc.snapshot().scenes.map((s) => s.id), ["a", "n1", "n2", "b"]);
+    await r.doc.undo();
+    assert.deepEqual(r.doc.snapshot().scenes.map((s) => s.id), ["a", "b"]);
+  });
+});

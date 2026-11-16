@@ -3,7 +3,7 @@
 // first, so writing again never loses the one already read.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api.js";
-import { apiListDocuments, apiRemoveDocument, apiDownloadDocument } from "../lib/v2project.js";
+import { apiListDocuments, apiRemoveDocument, apiDownloadDocument, apiGetDocument, apiReportSlides } from "../lib/v2project.js";
 import { withBudgetRetry } from "../lib/budget.js";
 import { progressLabel } from "../lib/progress.js";
 
@@ -12,7 +12,58 @@ const when = (iso) => {
   return Number.isNaN(d.getTime()) ? "" : d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
 };
 
-export default function ProjectReport({ projectId, revision }) {
+// A report's sections to pick from and add after the current slide. Only
+// sections with something to show are offered; References last as written.
+function SectionPicker({ projectId, documentId, insertAt, onInsert, onClose }) {
+  const [sections, setSections] = useState(null);
+  const [chosen, setChosen] = useState([]);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    let live = true;
+    apiGetDocument(projectId, documentId).then((d) => {
+      if (!live) return;
+      const order = d.body.order ?? Object.keys(d.body.content ?? {});
+      const has = (sec) => sec && ((sec.paragraphs ?? []).some((p) => String(p).trim()) || (sec.entries ?? []).length || sec.table?.header?.length);
+      setSections(order.filter((n) => has(d.body.content?.[n])));
+    }).catch((e) => live && setError(e.message));
+    return () => { live = false; };
+  }, [projectId, documentId]);
+  async function add() {
+    setBusy(true); setError(null);
+    try {
+      const { index, total } = insertAt();
+      const scenes = await apiReportSlides(projectId, documentId, { sections: chosen, index, total: total + chosen.length });
+      const out = await onInsert(scenes, index);
+      if (out && out.ok === false) throw new Error(out.message ?? "the slides could not be added");
+      onClose();
+    } catch (e) { setError(e.message); } finally { setBusy(false); }
+  }
+  return (
+    <div data-report-sections className="flex flex-col gap-1 border-t border-line pt-1.5">
+      {!sections && !error && <span className="text-[12px] text-fg-muted">Reading the report…</span>}
+      {sections?.map((n) => (
+        <label key={n} className="flex items-center gap-1.5 text-[12.5px] text-fg">
+          <input type="checkbox" checked={chosen.includes(n)} onChange={(e) => setChosen((c) => (e.target.checked ? [...c, n] : c.filter((x) => x !== n)))} />
+          <span className="truncate">{n}</span>
+        </label>
+      ))}
+      {sections && (
+        <div className="flex items-center gap-1.5">
+          <button type="button" data-add-report-slides disabled={busy || !chosen.length} onClick={add}
+            className="rounded border border-line px-2 py-0.5 text-[12px] text-fg hover:bg-raised disabled:opacity-40">
+            {busy ? "Adding…" : chosen.length ? `Add ${chosen.length} slide${chosen.length > 1 ? "s" : ""}` : "Add as slides"}
+          </button>
+          <button type="button" onClick={onClose} className="text-[12px] text-fg-faint hover:text-fg">Cancel</button>
+        </div>
+      )}
+      {error && <div role="alert" className="text-[12px] text-danger">{error}</div>}
+    </div>
+  );
+}
+
+export default function ProjectReport({ projectId, revision, insertAt, onInsert }) {
+  const [picking, setPicking] = useState(null);
   const [documents, setDocuments] = useState(null);
   const [depth, setDepth] = useState("full");
   const [status, setStatus] = useState(null);
@@ -70,7 +121,8 @@ export default function ProjectReport({ projectId, revision }) {
       )}
       {notice && !busy && <div role="status" className="text-[12px] text-fg-muted">{notice}</div>}
       {documents?.map((d, i) => (
-        <div key={d.id} data-document={d.id} className="flex items-center justify-between gap-2 rounded border border-line px-2 py-1.5">
+        <div key={d.id} data-document={d.id} className="flex flex-col gap-1 rounded border border-line px-2 py-1.5">
+        <div className="flex items-center justify-between gap-2">
           <div className="min-w-0">
             <div className="truncate text-[12.5px] text-fg" title={d.title}>{d.title}</div>
             <div className="text-[11.5px] text-fg-faint">
@@ -83,6 +135,11 @@ export default function ProjectReport({ projectId, revision }) {
             <button type="button" aria-label={`Remove ${d.title}`} title="Remove" onClick={() => apiRemoveDocument(projectId, d.id).then(load).catch((e) => setError(e.message))}
               className="rounded px-1 text-[13px] text-fg-muted hover:bg-raised hover:text-fg">×</button>
           </div>
+        </div>
+        {onInsert && (picking === d.id
+          ? <SectionPicker projectId={projectId} documentId={d.id} insertAt={insertAt} onInsert={onInsert} onClose={() => setPicking(null)} />
+          : <button type="button" data-report-to-slides onClick={() => setPicking(d.id)} title="Add sections of this report as slides after the current one"
+              className="self-start text-[12px] text-fg-muted hover:text-fg">Sections to slides…</button>)}
         </div>
       ))}
       {error && <div role="alert" className="text-[12px] text-danger">{error}</div>}

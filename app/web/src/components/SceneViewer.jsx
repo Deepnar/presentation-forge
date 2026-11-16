@@ -2932,7 +2932,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                     <ThemePicker current={project.theme} busy={themeState.busy} error={themeState.error} onApply={applyTheme} />
                   )}
                   {editOn && project?.id && !project.recoverable && <ProjectFiles projectId={project.id} />}
-                  {editOn && project?.id && !project.recoverable && <ProjectReport projectId={project.id} revision={project.revision} />}
+                  {editOn && project?.id && !project.recoverable && <ProjectReport projectId={project.id} revision={project.revision} insertAt={() => ({ index: (snap?.slideIndex ?? -1) + 1, total: shownScenes.length })} onInsert={(scenes, at) => adapterRef.current?.insertScenes(scenes, at)} />}
                   {editOn && project?.id && !project.recoverable && <ProjectScript projectId={project.id} getScenes={() => shownScenes} onWritten={(entries) => adapterRef.current?.setScriptNotes(entries)} />}
                 </div>
               )}

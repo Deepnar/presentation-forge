@@ -173,6 +173,9 @@ export const apiRemoveFile = (id, fileId, fetchFn = fetch) => filesCall(`/api/v2
 export const apiSlideLayouts = (id, slideId, { scene, index, total }, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/slides/${encodeURIComponent(slideId)}/layouts`, {
   method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scene, index, total }) }, fetchFn);
 export const apiListDocuments = (id, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/documents`, {}, fetchFn).then((b) => b.documents);
+export const apiGetDocument = (id, documentId, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/documents/${encodeURIComponent(documentId)}`, {}, fetchFn).then((b) => b.document);
+export const apiReportSlides = (id, documentId, { sections, index, total }, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/documents/${encodeURIComponent(documentId)}/slides`, {
+  method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sections, index, total }) }, fetchFn).then((b) => b.scenes);
 export const apiRemoveDocument = (id, documentId, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/documents/${encodeURIComponent(documentId)}`, { method: "DELETE" }, fetchFn);
 // The .docx as a file the browser saves: fetched with the bearer header
 // (a plain link would need the cookie), then handed over as a blob.

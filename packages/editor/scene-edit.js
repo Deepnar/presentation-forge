@@ -2175,6 +2175,20 @@ export function attachEditor(viewer, doc, opts = {}) {
     return result;
   }
 
+  // Slides compiled elsewhere (a report's sections) inserted together from
+  // `at` on — one envelope, so one undo removes them all.
+  async function insertScenes(scenes, at) {
+    if (!Array.isArray(scenes) || !scenes.length) return { ok: true, noop: true };
+    const cur = doc.snapshot();
+    const start = Math.max(0, Math.min(Number.isInteger(at) ? at : cur.scenes.length, cur.scenes.length));
+    const ops = scenes.map((scene, i) => ({ slideId: null, op: { type: "slide.insert", scene: structuredClone(scene), index: start + i } }));
+    const result = await doc.applyBatch({ id: newEditId(), baseRevision: cur.revision, actor: "human", ops });
+    if (!result.ok) return report(result);
+    sync();
+    api.goTo?.(start);
+    return result;
+  }
+
   // A written script into many slides' notes at once — one envelope, so a
   // single undo takes the whole script back. Written notes are not the
   // person's own (edited: false): a later regeneration may replace them.
@@ -2483,6 +2497,7 @@ export function attachEditor(viewer, doc, opts = {}) {
     detachSlide: (id = null) => track(detachSlide(id)),
     setNotes: (id, notes) => track(setNotes(id, notes)),
     setScriptNotes: (entries) => track(setScriptNotes(entries)),
+    insertScenes: (scenes, at) => track(insertScenes(scenes, at)),
     detach() {
       if (drag) clearPreview();
       if (resize) cancelResize();
