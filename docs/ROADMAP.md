@@ -215,7 +215,9 @@ Decisions taken with this list, so nobody re-litigates them:
    upload-as-source and blank; the prompt path runs the briefing and generation
    and lands in the editor (F1). *Done when:* a new user never needs the chat
    page to make a deck.
-8. **[~] F7 — Reports and notes in the project** (§12 V2-10). Started
+8. **[x] F7 — Reports and notes in the project** (§12 V2-10). Done in code
+   2026-11-16 (the real-model read of what the report and script say is
+   still owed, with every other content-quality check). Started
    2026-11-14: a project writes its report from its own slides, speaker
    notes and files (source-of-truth first), keeps it
    (`v2_project_documents`) and renders it to .docx on the account's donor
@@ -225,9 +227,10 @@ Decisions taken with this list, so nobody re-litigates them:
    donor, pages rasterised) and **Speaker notes → Write for all slides**
    (the script writer per slide from the project's research, applied to
    the notes in one undo, the person's own notes kept unless they say
-   otherwise; `src/projects/script.js`). Left: deck-from-report inside a
-   project (a report's sections offered as slides, compiled by the host —
-   no model needed), and the real-model read of what both write. Generate the
+   otherwise; `src/projects/script.js`). Deck from report: a report row's
+   **Sections to slides…** compiles chosen sections as slides (lead
+   sentences, references, tables) and inserts them after the current slide
+   in one undo (`src/projects/report-slides.js`). Generate the
    `.docx` report and the speaker script from a project, list them with its
    exports, sharing its sources. *Done when:* deck, report and script coexist
    and cross-derive in one project.

@@ -108,8 +108,13 @@ backend (`src/projects/report.js`, generate/list/download/remove routes).
 slides landed (F7). Do not press either in the sandbox: it is local mode,
 so they would start local model inference.
 
-Next, in order: **F7** rest — deck-from-report inside a project (a
-report's sections as slides through the host compile, no model) — then **F9** (hosted lifecycle —
+F7 is done in code (deck from report: Sections to slides…). From
+2026-11-16 commits follow the owner's global `git-workflow` skill
+(`~/.claude/skills`, linked from `~/.agents/skills`): `type: subject`,
+bullet body, `Validated:` line, no AI attribution — AGENTS.md already
+forbade the Co-Authored-By trailers earlier commits carried.
+
+Next, in order: **F9** (hosted lifecycle —
 V2 state is already all in the database, so the work is the Postgres
 default for hosted, the decks directory's lifetime, the container and
 DEPLOY.md), then **F5** (the redesign, starting with the study of Canva,
