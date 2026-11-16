@@ -163,6 +163,8 @@ export const api = {
     call(`/api/decks/${slug}/report/render`, { method: "POST", body: JSON.stringify(opts) }),
   reportPreview: (slug) =>
     call(`/api/decks/${slug}/report/preview`, { method: "POST", body: JSON.stringify({}) }),
+  projectReport: (id, payload, handlers) =>
+    stream(`/api/v2/projects/${encodeURIComponent(id)}/report`, payload, handlers),
   generateReport: (slug, payload, handlers) =>
     stream(`/api/decks/${slug}/report/generate`, payload, handlers),
   createReport: (payload, handlers) => stream("/api/reports", payload, handlers),

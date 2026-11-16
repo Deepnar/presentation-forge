@@ -172,6 +172,24 @@ export const apiRemoveFile = (id, fileId, fetchFn = fetch) => filesCall(`/api/v2
 // Slide layouts saved in a project (F4c).
 export const apiSlideLayouts = (id, slideId, { scene, index, total }, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/slides/${encodeURIComponent(slideId)}/layouts`, {
   method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scene, index, total }) }, fetchFn);
+export const apiListDocuments = (id, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/documents`, {}, fetchFn).then((b) => b.documents);
+export const apiRemoveDocument = (id, documentId, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/documents/${encodeURIComponent(documentId)}`, { method: "DELETE" }, fetchFn);
+// The .docx as a file the browser saves: fetched with the bearer header
+// (a plain link would need the cookie), then handed over as a blob.
+export async function apiDownloadDocument(id, documentId, fetchFn = fetch) {
+  const res = await fetchFn(`/api/v2/projects/${encodeURIComponent(id)}/documents/${encodeURIComponent(documentId)}/docx`, { headers: authHeaders() });
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.error ?? `download failed (HTTP ${res.status})`);
+  }
+  const name = /filename="([^"]+)"/.exec(res.headers.get("Content-Disposition") ?? "")?.[1] ?? "report.docx";
+  const url = URL.createObjectURL(await res.blob());
+  const a = Object.assign(document.createElement("a"), { href: url, download: name });
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 export const apiListLayouts = (id, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/layouts`, {}, fetchFn).then((b) => b.layouts);
 export const apiSaveLayout = (id, name, scene, fetchFn = fetch) => filesCall(`/api/v2/projects/${encodeURIComponent(id)}/layouts`, {
   method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, scene }) }, fetchFn).then((b) => b.layout);

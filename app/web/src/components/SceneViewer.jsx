@@ -28,6 +28,7 @@ import ThemePicker from "./ThemePicker.jsx";
 import IconPicker from "./IconPicker.jsx";
 import LayoutPicker from "./LayoutPicker.jsx";
 import ProjectFiles from "./ProjectFiles.jsx";
+import ProjectReport from "./ProjectReport.jsx";
 
 // Restores focus to the opener when a dialog closes. Dialogs trap
 // nothing; they only borrow focus, and the opener (often a toolbar
@@ -2931,6 +2932,7 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
                     <ThemePicker current={project.theme} busy={themeState.busy} error={themeState.error} onApply={applyTheme} />
                   )}
                   {editOn && project?.id && !project.recoverable && <ProjectFiles projectId={project.id} />}
+                  {editOn && project?.id && !project.recoverable && <ProjectReport projectId={project.id} revision={project.revision} />}
                 </div>
               )}
             </div>
