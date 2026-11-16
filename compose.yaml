@@ -23,7 +23,9 @@ services:
     restart: unless-stopped
     ports:
       # 8090 avoids the 8080 collision with a common Open WebUI install.
-      - "127.0.0.1:${FORGE_PORT:-8090}:5174"
+      # FORGE_BIND=0.0.0.0 opens it to your local network (the lab-server
+      # setup in docs/DEPLOY.md); never to the internet without TLS.
+      - "${FORGE_BIND:-127.0.0.1}:${FORGE_PORT:-8090}:5174"
     environment:
       FORGE_HOSTED: "0"
       FORGE_DECKS_DIR: /data/decks
@@ -42,6 +44,15 @@ services:
       # Install-wide default; each owner can choose a lower or higher personal
       # ceiling in Profile without rebuilding the container.
       FORGE_BYOK_DAILY_TOKENS: "${FORGE_BYOK_DAILY_TOKENS:-180000}"
+      # A shared machine (a lab, a small group): more than one account, and
+      # with SMTP, address confirmation and password reset. Off by default.
+      FORGE_LOCAL_MULTI_USER: "${FORGE_LOCAL_MULTI_USER:-0}"
+      FORGE_SMTP_HOST: "${FORGE_SMTP_HOST:-}"
+      FORGE_SMTP_PORT: "${FORGE_SMTP_PORT:-587}"
+      FORGE_SMTP_USER: "${FORGE_SMTP_USER:-}"
+      FORGE_SMTP_PASS: "${FORGE_SMTP_PASS:-}"
+      FORGE_SMTP_FROM: "${FORGE_SMTP_FROM:-}"
+      FORGE_SMTP_SECURE: "${FORGE_SMTP_SECURE:-0}"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
