@@ -135,7 +135,7 @@ function textSvg(el, opts = {}) {
   // Text catches the pointer only on its letters' strokes; an invisible box
   // over the whole text box makes it selectable anywhere inside, as a slide
   // editor's text box is.
-  const hit = `<rect data-hit x="${(el.x * IN).toFixed(1)}" y="${(el.y * IN).toFixed(1)}" width="${Math.max(0, el.w * IN).toFixed(1)}" height="${Math.max(0, el.h * IN).toFixed(1)}" fill="none" pointer-events="all"/>`;
+  const hit = `<rect data-hit="" x="${(el.x * IN).toFixed(1)}" y="${(el.y * IN).toFixed(1)}" width="${Math.max(0, el.w * IN).toFixed(1)}" height="${Math.max(0, el.h * IN).toFixed(1)}" fill="none" pointer-events="all"/>`;
   return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}${opacity}>${hit}${lines.join("")}</g>`;
 }
 
@@ -201,7 +201,7 @@ function elementBodySvg(el, opts = {}) {
       // A thin line is hard to hit; an invisible wide stroke along it takes
       // the pointer, the visible one stays as drawn.
       const x2 = ((el.line?.x2 ?? el.x) * IN).toFixed(1), y2 = ((el.line?.y2 ?? el.y) * IN).toFixed(1);
-      return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}><line data-hit x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${x2}" y2="${y2}" stroke="transparent" stroke-width="12" pointer-events="stroke"/><line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${x2}" y2="${y2}" stroke="#${el.line?.stroke ?? "888888"}" stroke-width="${el.line?.strokeWidth ?? 1.5}"/></g>`;
+      return `<g data-el="${esc(el.id)}"${lockedAttr(el)}${refAttr(el)}><line data-hit="" x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${x2}" y2="${y2}" stroke="transparent" stroke-width="12" pointer-events="stroke"/><line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${x2}" y2="${y2}" stroke="#${el.line?.stroke ?? "888888"}" stroke-width="${el.line?.strokeWidth ?? 1.5}"/></g>`;
     }
     case "chart": {
       // Per-kind deterministic geometry lives in scene-chart.js
