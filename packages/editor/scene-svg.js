@@ -67,12 +67,84 @@ function wrapCell(text, widthPx, style) {
   return out;
 }
 
+// What makes two runs look different on the page. Runs equal on all of
+// these draw as one.
+const LOOK_KEYS = ["family", "size", "bold", "weight", "italic", "underline", "color", "tracking", "transform"];
+const uniform = (runs) => runs.every((r) => LOOK_KEYS.every((k) => r[k] === runs[0][k]));
+
+function runAttrs(r) {
+  const a = [` font-size="${pt2px(r.size).toFixed(1)}"`, ` fill="#${r.color ?? "111111"}"`];
+  if (r.family) a.push(` font-family="${esc(r.family)}"`);
+  if (runBold(r)) a.push(' font-weight="bold"');
+  else if (r.weight != null) a.push(` font-weight="${r.weight}"`);
+  if (r.italic) a.push(' font-style="italic"');
+  if (r.underline) a.push(' text-decoration="underline"');
+  if (r.tracking) a.push(` letter-spacing="${((r.tracking * 96) / 72).toFixed(2)}"`);
+  return a.join("");
+}
+
+// A paragraph whose runs differ — words someone styled — laid out run by
+// run: each word measured in its own run's type, lines broken greedily
+// the way wrapCell does, each line drawn as one <text> of <tspan>s.
+function mixedLines(p, widthPx, wrap) {
+  const widthIn = widthPx / IN;
+  const styleOf = (r) => ({ family: r.family || undefined, size: r.size ?? 13, weight: runBold(r) ? 700 : (r.weight ?? 400) });
+  const lines = [];
+  let line = [], lineW = 0;
+  const flush = () => { lines.push(line); line = []; lineW = 0; };
+  const push = (run, text) => {
+    const last = line[line.length - 1];
+    if (last && last.run === run) last.text += text;
+    else line.push({ run, text });
+  };
+  for (const run of p.runs) {
+    const parts = visibleText(run).split("\n");
+    parts.forEach((part, pi) => {
+      if (pi > 0) flush();
+      for (const token of part.split(/(\s+)/).filter((t) => t !== "")) {
+        const isSpace = /^\s+$/.test(token);
+        const w = measure(isSpace ? " " : token, styleOf(run));
+        if (isSpace) {
+          if (line.length) { push(run, " "); lineW += w; }
+          continue;
+        }
+        if (wrap && line.length && lineW + w > widthIn) {
+          // A space left at the end of the line does not take room.
+          const last = line[line.length - 1];
+          if (last) last.text = last.text.replace(/\s+$/, "");
+          flush();
+        }
+        push(run, token);
+        lineW += w;
+      }
+    });
+  }
+  if (line.length || !lines.length) flush();
+  return lines.map((segs) => {
+    const runs = segs.length ? segs.map((g) => g.run) : [p.runs[0] ?? {}];
+    const big = runs.reduce((m, r) => ((r.size ?? 13) > (m.size ?? 13) ? r : m), runs[0]);
+    return {
+      size: pt2px(big.size),
+      advance: pt2px(big.size) * (big.line ?? 1.35),
+      tspans: segs.map((g) => `<tspan${runAttrs(g.run)}>${esc(g.text)}</tspan>`).join(""),
+    };
+  });
+}
+
 function textSvg(el, opts = {}) {
   const valign = el.valign ?? "top";
   const chunks = [];
   for (const p of el.paragraphs ?? []) {
     const anchor = p.align === "center" ? "middle" : p.align === "right" ? "end" : "start";
     const tx = (p.align === "center" ? el.x + el.w / 2 : p.align === "right" ? el.x + el.w : el.x) * IN;
+    if ((p.runs ?? []).length > 1 && !uniform(p.runs)) {
+      const lines = mixedLines(p, Math.max(8, el.w * IN - 8), !!opts.wrapText);
+      lines.forEach((ln, li) => {
+        const bullet = p.bullet && li === 0 ? `<tspan${runAttrs(p.runs[0])}>• </tspan>` : "";
+        chunks.push({ tx, anchor, size: ln.size, attrs: [], tspans: bullet + ln.tspans, color: p.runs[0].color ?? "111111", advance: ln.advance });
+      });
+      continue;
+    }
     const words = p.runs.map((r) => visibleText(r)).join("");
     const first = p.runs[0] ?? {};
     const size = pt2px(first.size);
@@ -127,7 +199,12 @@ function textSvg(el, opts = {}) {
     y = el.y * IN + TEXT_INSET_PX;
   }
   const lines = chunks.map((c) => {
-    const s = `<text x="${c.tx.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${c.anchor}" font-size="${c.size.toFixed(1)}" fill="#${c.color}"${c.attrs.join("")}>${esc(c.text)}</text>`;
+    const s = c.tspans !== undefined
+      // Spaces at a style boundary sit at a span's edge, where XML
+      // whitespace handling drops them; the layout already made every gap
+      // one space, so keep them as written (SVG 1.1 and SVG 2 ways).
+      ? `<text x="${c.tx.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${c.anchor}" font-size="${c.size.toFixed(1)}" fill="#${c.color}" xml:space="preserve" style="white-space:pre">${c.tspans}</text>`
+      : `<text x="${c.tx.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${c.anchor}" font-size="${c.size.toFixed(1)}" fill="#${c.color}"${c.attrs.join("")}>${esc(c.text)}</text>`;
     y += c.advance;
     return s;
   });
