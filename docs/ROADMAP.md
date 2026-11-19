@@ -387,11 +387,12 @@ styling a selected range of runs (splitting runs at the selection), and
 a font list served from the installed families. These belong with F4's
 working set and are done ahead of F5. Done 2026-11-16/18: the engine
 pieces and `GET /api/fonts`; the editor draws styled words in their own
-style (`mixedLines` in `scene-svg.js`). Left: text editing keeps runs —
-a paragraph of several runs is read-only in the in-place editor today —
-and maps the selected text to a range; the editor's text measure
-(`measureText`, overflow and grow-to-fit) still reads a paragraph's first
-run, so mixed sizes are measured short.
+style (`mixedLines` in `scene-svg.js`). Done 2026-11-19: the editor's
+text measure counts bold and lays styled words out in their own type with
+a pitch per paragraph, and Shrink text to fit scales styled paragraphs in
+proportion. Left: text editing keeps runs — a paragraph of several runs
+is read-only in the in-place editor today — and maps the selected text to
+a range.
 
 Added 2026-11-16 by the owner, for the study of PowerPoint, Canva and
 the others to shape:

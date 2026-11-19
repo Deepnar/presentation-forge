@@ -149,9 +149,11 @@ Text basics, engine side, landed 2026-11-16: `element.setTextStyle` styles
 multi-run paragraphs, takes family/underline/align and a character range;
 `GET /api/fonts`. 2026-11-18: the SVG renderer draws each run in its own
 style; the editor's SVG is now well-formed XML (bare `data-hit` attributes
-broke rasterisers). Next, in order: **(3)** text editing keeps runs (rich
-text is read-only in the editor today), maps a selection to a range, and
-`measureText` measures every run — then **F5** (the redesign, starting with the study of Canva,
+broke rasterisers). 2026-11-19: `measureText`
+measures every run (bold counted, per-paragraph pitch) and shrink-to-fit
+handles styled paragraphs. Next, in order: **(3)** text editing keeps runs
+(rich text is read-only in the editor today) and maps a selection to a
+range — then **F5** (the redesign, starting with the study of Canva,
 Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
 Claude Design skill; the add-slide menu's discoverability is recorded
 there). Everything content-quality is blocked on a model: the gateway is
