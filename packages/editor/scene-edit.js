@@ -825,22 +825,38 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (el.locked) return report({ ok: false, code: "locked", message: "This text is locked." });
     if (overflowEstimate(el)?.fits !== false) return { ok: true, revision: doc.snapshot().revision, noop: true };
     const paras = el.paragraphs ?? [];
-    if (paras.some((p) => (p.runs ?? []).length !== 1)) {
-      return report({ ok: false, code: "op-rejected", message: "This text mixes formatting inside a paragraph, so it can't be shrunk evenly." });
-    }
-    const sizes = paras.map((p) => p.runs[0].size ?? 12);
-    const at = (k) => sizes.map((z) => Math.max(SHRINK_FLOOR_PT, Math.floor(z * k * 2) / 2));
-    const seated = (next) => (measureText(el, el.w, paras.map((p, i) => ({ ...p, runs: [{ ...p.runs[0], size: next[i] }] })))?.height ?? 0) <= el.h + 1e-6;
-    let next = at(SHRINK_FLOOR_PT / Math.max(...sizes));
+    // One factor for every run, so a styled word stays as much larger or
+    // smaller than its neighbours as it was; none below the readable floor.
+    const sizes = paras.map((p) => (p.runs ?? []).map((r) => r.size ?? 12));
+    const all = sizes.flat();
+    if (!all.length) return { ok: true, revision: doc.snapshot().revision, noop: true };
+    const at = (k) => sizes.map((row) => row.map((z) => Math.max(SHRINK_FLOOR_PT, Math.floor(z * k * 2) / 2)));
+    const sized = (next) => paras.map((p, i) => ({ ...p, runs: p.runs.map((r, j) => ({ ...r, size: next[i][j] })) }));
+    const seated = (next) => (measureText(el, el.w, sized(next))?.height ?? 0) <= el.h + 1e-6;
+    let next = at(SHRINK_FLOOR_PT / Math.max(...all));
     for (let k = 0.98; k > 0; k -= 0.02) {
       const tried = at(k);
       if (seated(tried)) { next = tried; break; }
-      if (tried.every((z) => z === SHRINK_FLOOR_PT)) break;
+      if (tried.flat().every((z) => z === SHRINK_FLOOR_PT)) break;
     }
-    const ops = next
-      .map((size, i) => ({ size, i }))
-      .filter(({ size, i }) => size !== sizes[i])
-      .map(({ size, i }) => ({ slideId: snap.slideId, op: { type: "element.setTextStyle", id: el.id, paragraphIndex: i, style: { size } } }));
+    // A one-run paragraph changes as a paragraph; a run among others by its
+    // character range (the text does not change, so ranges stay valid as
+    // earlier ops split and merge runs).
+    const ops = [];
+    paras.forEach((p, i) => {
+      if (p.runs.length === 1) {
+        if (next[i][0] !== sizes[i][0]) ops.push({ slideId: snap.slideId, op: { type: "element.setTextStyle", id: el.id, paragraphIndex: i, style: { size: next[i][0] } } });
+        return;
+      }
+      let at0 = 0;
+      p.runs.forEach((r, j) => {
+        const len = (r.text ?? "").length;
+        if (len > 0 && next[i][j] !== sizes[i][j]) {
+          ops.push({ slideId: snap.slideId, op: { type: "element.setTextStyle", id: el.id, paragraphIndex: i, range: { start: at0, end: at0 + len }, style: { size: next[i][j] } } });
+        }
+        at0 += len;
+      });
+    });
     if (ops.length === 0) return { ok: true, revision: doc.snapshot().revision, noop: true };
     const result = await submitOps(ops, doc.snapshot().revision);
     if (!result.ok) return report(result);

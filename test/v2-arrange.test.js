@@ -383,6 +383,30 @@ describe("shrink text to fit", () => {
     assert.deepEqual(el(r, "t").paragraphs.map((p) => p.runs[0].size), [28, 18]);
   });
 
+  it("a paragraph with styled words shrinks every run by the same factor", async () => {
+    const mixed = slide("s", [{
+      id: "t", kind: "text", x: 1, y: 1, w: 5, h: 1.2, z: 0, provenance: "human",
+      paragraphs: [{ runs: [
+        { text: "Body text that runs on for a while so that it wraps over several lines. ".repeat(2), size: 18, color: "111111" },
+        { text: "THIS MATTERS", size: 24, color: "C0392B", bold: true },
+        { text: " and then it goes on again for a little longer.", size: 18, color: "111111" },
+      ] }],
+    }]);
+    const r = await rig([mixed]);
+    r.viewer.api.select("t");
+    const result = await r.editor.shrinkTextToFit();
+    assert.equal(result.ok, true, result.message);
+    const runs = el(r, "t").paragraphs[0].runs;
+    assert.deepEqual(runs.map((x) => x.text.trim().slice(0, 11)), ["Body text t", "THIS MATTER", "and then it"], "still three runs, styling kept");
+    assert.ok(runs[0].size < 18 && runs[1].size < 24, `shrank (${runs.map((x) => x.size)})`);
+    assert.ok(runs[1].size > runs[0].size, "the larger word stays larger");
+    assert.equal(runs[0].size, runs[2].size);
+    const { overflowEstimate } = await import("../packages/editor/scene-text.js");
+    assert.equal(overflowEstimate(el(r, "t")).fits, true);
+    await r.doc.undo();
+    assert.deepEqual(el(r, "t").paragraphs[0].runs.map((x) => x.size), [18, 24, 18], "one undo");
+  });
+
   it("stops at the readable floor rather than going smaller", async () => {
     const r = await rig([text(0.3)]);
     r.viewer.api.select("t");
