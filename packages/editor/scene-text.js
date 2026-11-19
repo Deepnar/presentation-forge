@@ -10,7 +10,8 @@
 // as structured and blocked from plain-text editing until rich-run
 // editing exists. Plain-text flattening is never presented as a
 // fidelity-preserving transformation.
-import { lineCount } from "../core/fit.ts";
+import { lineCount, measure } from "../core/fit.ts";
+import { runBold } from "../core/text-run.ts";
 import { SCENE_W, SCENE_H } from "../model/scene-constants.ts";
 
 // Default geometry for human-inserted elements, in scene inches.
@@ -450,34 +451,65 @@ export function tableOverflowEstimate(el) {
 // The resize clamp, the grow-to-fit after an edit and the overflow
 // estimate all read this one measure, so the box the editor allows is
 // the box the estimate calls fitting.
+const LOOK = ["family", "size", "bold", "weight", "italic", "tracking", "transform"];
+const styleOf = (r) => ({
+  family: r.family || undefined,
+  size: r.size ?? 12,
+  // A run made bold from the toolbar carries bold, not a weight; it is
+  // still wider than regular text.
+  weight: runBold(r) ? Math.max(700, r.weight ?? 0) : (r.weight ?? 400),
+  tracking: r.tracking ?? 0,
+  ...(r.transform ? { transform: r.transform } : {}),
+});
+
+// Lines a paragraph of differently styled runs takes at width w, each word
+// measured in its own run's type and broken greedily — the same layout the
+// editor's SVG draws (mixedLines in scene-svg.js).
+function mixedLineCount(p, w) {
+  let lines = 0, lineW = 0, started = false;
+  for (const r of p.runs ?? []) {
+    const text = r.transform === "upper" ? String(r.text ?? "").toUpperCase() : String(r.text ?? "");
+    text.split("\n").forEach((part, pi) => {
+      if (pi > 0) { lines += 1; lineW = 0; started = false; }
+      for (const token of part.split(/(\s+)/).filter((t) => t !== "")) {
+        if (/^\s+$/.test(token)) { if (started) lineW += measure(" ", styleOf(r)); continue; }
+        const tw = measure(token, styleOf(r));
+        if (started && lineW + tw > w) { lines += 1; lineW = 0; }
+        lineW += tw;
+        started = true;
+      }
+    });
+  }
+  return lines + 1;
+}
+
+// The height a text box's paragraphs need at width w. A paragraph whose
+// runs all look alike is counted the compiler's way (lineCount), so the
+// editor breaks where the compiler counted; one with styled words is laid
+// out run by run. Each paragraph takes its own line pitch from its
+// largest run — 12pt only when no run says.
 export function measureText(el, w = el?.w, paragraphs = el?.paragraphs) {
   if (!el || el.kind !== "text" || !Array.isArray(paragraphs) || !w) return null;
-  let lines = 0;
-  // The largest run sets the line pitch; 12pt only stands in when no run
-  // says, so small text is not measured as if it were 12pt.
-  let size = 0;
-  let line = 1.35;
+  let lines = 0, height = 0, pitch = 0;
   for (const p of paragraphs) {
-    let best = null;
-    for (const r of p.runs ?? []) {
-      if (!best || (r.size ?? 0) > (best.size ?? 0)) best = r;
+    const runs = p.runs ?? [];
+    if (!runs.length) continue;
+    const best = runs.reduce((b, r) => ((r.size ?? 0) > (b.size ?? 0) ? r : b), runs[0]);
+    const lineH = ((best.size ?? 12) / 72) * (best.line ?? 1.35);
+    const uniform = runs.every((r) => LOOK.every((k) => r[k] === runs[0][k]));
+    let n = 0;
+    if (uniform) {
+      for (const segment of runs.map((r) => r.text ?? "").join("").split("\n")) {
+        n += Math.max(1, lineCount(segment, Math.max(0.1, w), styleOf(best)));
+      }
+    } else {
+      n = mixedLineCount(p, Math.max(0.1, w));
     }
-    if (!best) continue;
-    size = Math.max(size, best.size ?? 12);
-    line = best.line ?? line;
-    const style = {
-      family: best.family || undefined,
-      size: best.size ?? 12,
-      weight: best.weight ?? 400,
-      tracking: best.tracking ?? 0,
-      ...(best.transform ? { transform: best.transform } : {}),
-    };
-    for (const segment of (p.runs ?? []).map((r) => r.text ?? "").join("").split("\n")) {
-      lines += Math.max(1, lineCount(segment, Math.max(0.1, w), style));
-    }
+    lines += n;
+    height += n * lineH;
+    pitch = Math.max(pitch, lineH);
   }
-  const lineH = ((size || 12) / 72) * line;
-  return { lines, lineH, height: lines * lineH };
+  return { lines, lineH: pitch || (12 / 72) * 1.35, height };
 }
 
 // Whether committed paragraphs still fit their box. Advisory: text is
@@ -489,7 +521,8 @@ export function overflowEstimate(el, paragraphs = el?.paragraphs) {
   if (!m) return null;
   if (m.lines === 0) return { lines: 0, capacity: 0, fits: true, message: null };
   const capacity = Math.max(1, Math.floor(el.h / m.lineH + 1e-6));
-  const fits = m.lines <= capacity;
+  // Paragraphs can differ in pitch, so the height decides, not a count.
+  const fits = m.height <= el.h + 1e-6;
   return {
     lines: m.lines,
     capacity,
