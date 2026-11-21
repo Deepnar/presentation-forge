@@ -233,7 +233,7 @@ describe("v2-5f multi-paragraph editing", () => {
     assert.equal(verdict.ok, true);
   });
 
-  it("multi-run paragraphs stay refused with zero mutation", async () => {
+  it("multi-run paragraphs edit in place and keep their styled words", async () => {
     const scenes = [{
       id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
       elements: [{
@@ -245,11 +245,16 @@ describe("v2-5f multi-paragraph editing", () => {
     r.viewer.api.select("s:rich");
     const before = JSON.stringify(r.doc.snapshot().scenes[0]);
     const opened = r.editor.beginTextEdit("s:rich");
-    assert.equal(opened.ok, false);
-    assert.match(opened.message, /rich runs are read-only/);
-    assert.equal(r.editor.editingId(), null);
-    assert.equal(JSON.stringify(r.doc.snapshot().scenes[0]), before, "no silent flattening");
-    assert.equal(r.doc.status().historyLength, 0);
+    assert.equal(opened.ok, true, opened.message);
+    assert.equal(opened.draft, "plain bold");
+    typeInto(r, "s:rich", "plain bolder text");
+    const result = await r.editor.commitTextEdit();
+    assert.equal(result.ok, true, result.message);
+    const runs = r.doc.snapshot().scenes[0].elements[0].paragraphs[0].runs;
+    assert.deepEqual(runs.map((x) => [x.text, x.bold ?? false]), [["plain ", false], ["bolder text", true]], "typing on from the bold word stays bold");
+    assert.equal(r.doc.status().historyLength, 1, "one entry per session");
+    await r.doc.undo();
+    assert.equal(JSON.stringify(r.doc.snapshot().scenes[0]), before, "undo restores it exactly");
     // Formatting a multi-run paragraph styles every run.
     const styled = await r.editor.setTextStyle("s:rich", 0, { color: "FF0000" });
     assert.equal(styled.ok, true);

@@ -14,9 +14,9 @@ import { styleParagraphs } from "../model/commands.ts";
 import { SNAP_PX, PASTE_STEP, unionBox, snapTargets, snapMove, snapResize, constrainAxis, keepAspect, copyElements, alignMoves, distributeMoves, groupElements, ungroupElement, visualBox, toLocal, toWorld, rotatedResize, slideFromLayout } from "./scene-arrange.js";
 import {
   isEditableText,
-  describeStructure,
   paragraphsToDraft,
   buildUpdatedParagraphs,
+  buildRichParagraphs,
   defaultTextElement,
   defaultShapeElement, defaultImageElement, defaultIconElement,
   overflowEstimate,
@@ -996,13 +996,10 @@ export function attachEditor(viewer, doc, opts = {}) {
     if (el.hidden === true) {
       return report({ ok: false, code: "op-rejected", message: `element ${target} is hidden — re-show it first` });
     }
-    if (!isEditableText(el.paragraphs)) {
-      const d = describeStructure(el.paragraphs);
-      return report({
-        ok: false,
-        code: "op-rejected",
-        message: `rich runs are read-only in this slice (${d.paragraphs} paragraph(s), ${d.runs} run(s)) — editing would flatten their formatting`,
-      });
+    // Text with styled words edits too: the commit compares old and new
+    // text and keeps each character's run (buildRichParagraphs).
+    if (!Array.isArray(el.paragraphs) || !el.paragraphs.length || !el.paragraphs.every((p) => Array.isArray(p?.runs) && p.runs.length > 0)) {
+      return report({ ok: false, code: "op-rejected", message: "this text has no paragraphs to edit" });
     }
     const origParagraphs = structuredClone(el.paragraphs);
     textSession = {
@@ -1083,7 +1080,11 @@ export function attachEditor(viewer, doc, opts = {}) {
       notifyText({ error: gone.message });
       return track(Promise.resolve(report(gone)));
     }
-    const next = buildUpdatedParagraphs(s.origParagraphs, s.draft);
+    // One run per paragraph keeps the slot rule its tests pin down;
+    // styled words keep their runs character by character.
+    const next = isEditableText(s.origParagraphs)
+      ? buildUpdatedParagraphs(s.origParagraphs, s.draft)
+      : buildRichParagraphs(s.origParagraphs, s.draft);
     if (JSON.stringify(next) === JSON.stringify(s.origParagraphs)) {
       const rev = cur.revision;
       closeTextarea(s);

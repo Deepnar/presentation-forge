@@ -410,7 +410,7 @@ describe("v2-5d inline text editing", () => {
     }
   });
 
-  it("rich text is blocked without flattening", async () => {
+  it("rich text opens for editing, and a cancel leaves it untouched", async () => {
     const scenes = [{
       id: "s", width: 13.333, height: 7.5, background: { fill: "FFFFFF" }, layoutState: "managed",
       elements: [{
@@ -422,9 +422,9 @@ describe("v2-5d inline text editing", () => {
     r.viewer.api.select("s:rich");
     const before = JSON.stringify(r.doc.snapshot().scenes[0]);
     const opened = r.editor.beginTextEdit("s:rich");
-    assert.equal(opened.ok, false);
-    assert.match(opened.message, /read-only|rich text/);
-    assert.equal(r.editor.editingId(), null, "no session opened");
+    assert.equal(opened.ok, true, opened.message);
+    assert.equal(r.editor.editingId(), "s:rich");
+    r.editor.cancelTextEdit();
     assert.equal(JSON.stringify(r.doc.snapshot().scenes[0]), before, "no silent flattening");
     assert.equal(r.doc.status().historyLength, 0);
   });
