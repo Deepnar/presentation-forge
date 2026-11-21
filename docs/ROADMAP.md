@@ -390,9 +390,12 @@ pieces and `GET /api/fonts`; the editor draws styled words in their own
 style (`mixedLines` in `scene-svg.js`). Done 2026-11-19: the editor's
 text measure counts bold and lays styled words out in their own type with
 a pitch per paragraph, and Shrink text to fit scales styled paragraphs in
-proportion. Left: text editing keeps runs — a paragraph of several runs
-is read-only in the in-place editor today — and maps the selected text to
-a range.
+proportion. Done 2026-11-21: text with styled words edits in place and
+keeps its styling (`buildRichParagraphs`: unchanged characters keep their
+run, typed ones take the run before them). Left: map the text selected in
+the editor to a character range for the toolbar — it belongs with the
+toolbar itself, so it is built in F5, where the in-place editor may also
+move from a textarea to a styled editing surface.
 
 Added 2026-11-16 by the owner, for the study of PowerPoint, Canva and
 the others to shape:

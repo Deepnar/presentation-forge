@@ -151,9 +151,11 @@ multi-run paragraphs, takes family/underline/align and a character range;
 style; the editor's SVG is now well-formed XML (bare `data-hit` attributes
 broke rasterisers). 2026-11-19: `measureText`
 measures every run (bold counted, per-paragraph pitch) and shrink-to-fit
-handles styled paragraphs. Next, in order: **(3)** text editing keeps runs
-(rich text is read-only in the editor today) and maps a selection to a
-range — then **F5** (the redesign, starting with the study of Canva,
+handles styled paragraphs. 2026-11-21: rich text edits in place and keeps its
+styled words. The text basics' engine side is complete; mapping a
+selection to a range goes with the toolbar in F5. Next, in order: the
+remaining small gaps (the PowerPoint look on History restore and
+re-import; the lab-server run), then **F5** (the redesign, starting with the study of Canva,
 Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
 Claude Design skill; the add-slide menu's discoverability is recorded
 there). Everything content-quality is blocked on a model: the gateway is
