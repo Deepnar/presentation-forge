@@ -133,6 +133,82 @@ export function buildUpdatedParagraphs(template, draftText) {
   });
 }
 
+// Build the committed paragraphs from an edited draft of RICH text —
+// paragraphs whose runs differ — without losing that styling. The old and
+// new text are compared as one string: characters before and after the
+// edited stretch keep the run they had; typed characters take the run of
+// the character just before them in the same paragraph (so typing on from
+// a bold word stays bold, as in a word processor), or the one just after
+// at a paragraph's start. Each resulting paragraph keeps the alignment and
+// bullet of the paragraph its text came from; runs left identical merge.
+export function buildRichParagraphs(template, draftText) {
+  const tpl = Array.isArray(template) && template.length ? template : [{ runs: [{ text: "" }] }];
+  const styleOf = (run) => { const { text: _t, ...rest } = run ?? {}; return rest; };
+  // The old text, one entry per character, each pointing at its run's style.
+  const old = [];
+  tpl.forEach((para, pi) => {
+    const runs = para.runs?.length ? para.runs : [{ text: "" }];
+    for (const run of runs) {
+      const st = styleOf(run);
+      for (const ch of String(run.text ?? "")) old.push({ ch, st, pi });
+    }
+    // An empty paragraph still has a style to give what is typed into it.
+    if (!runs.some((r) => (r.text ?? "") !== "")) old.push({ ch: "", st: styleOf(runs[0]), pi, empty: true });
+    if (pi < tpl.length - 1) old.push({ ch: "\n", pi });
+  });
+  const oldChars = old.filter((c) => !c.empty);
+  const next = [...String(draftText ?? "")];
+  let pre = 0;
+  while (pre < oldChars.length && pre < next.length && oldChars[pre].ch === next[pre]) pre++;
+  let suf = 0;
+  while (suf < oldChars.length - pre && suf < next.length - pre && oldChars[oldChars.length - 1 - suf].ch === next[next.length - 1 - suf]) suf++;
+  // What typed characters inherit: the character before in the same
+  // paragraph, else the one after, else the paragraph's own first style.
+  const before = pre > 0 && oldChars[pre - 1].ch !== "\n" ? oldChars[pre - 1] : null;
+  const after = oldChars[oldChars.length - suf];
+  const firstOf = (pi) => old.find((c) => c.pi === pi && c.st) ?? old.find((c) => c.st);
+  const paraAt = before?.pi ?? (after && after.ch !== "\n" ? after.pi : null) ?? (pre > 0 ? oldChars[pre - 1].pi + (oldChars[pre - 1].ch === "\n" ? 1 : 0) : 0);
+  const inherit = before ?? (after && after.ch !== "\n" ? after : null) ?? firstOf(Math.min(paraAt, tpl.length - 1));
+  const marked = next.map((ch, i) => {
+    if (i < pre) return { ch, st: oldChars[i].st, pi: oldChars[i].pi };
+    if (i >= next.length - suf) { const o = oldChars[oldChars.length - (next.length - i)]; return { ch, st: o.st, pi: o.pi }; }
+    return { ch, st: inherit.st, pi: inherit.pi };
+  });
+  // Split into paragraphs at newlines and regroup characters into runs.
+  const paras = [];
+  let cur = [];
+  const close = (endPi) => {
+    const pi = Math.min(cur.find((c) => c.st)?.pi ?? endPi ?? inherit.pi ?? 0, tpl.length - 1);
+    const src = tpl[pi];
+    const runs = [];
+    for (const c of cur) {
+      const last = runs[runs.length - 1];
+      if (last && last.st === c.st) last.text += c.ch;
+      else runs.push({ st: c.st, text: c.ch });
+    }
+    const merged = runs.reduce((out, r) => {
+      const prev = out[out.length - 1];
+      if (prev && JSON.stringify(prev.st) === JSON.stringify(r.st)) prev.text += r.text;
+      else out.push({ ...r });
+      return out;
+    }, []);
+    const para = { runs: merged.length ? merged.map((r) => ({ ...r.st, text: r.text })) : [{ ...(firstOf(pi)?.st ?? {}), text: "" }] };
+    if (src?.align !== undefined) para.align = src.align;
+    if (src?.bullet !== undefined) para.bullet = src.bullet;
+    paras.push(para);
+    cur = [];
+  };
+  for (const c of marked) {
+    if (c.ch === "\n") close(c.pi);
+    else cur.push(c);
+  }
+  // The last paragraph: where its text came from, else the paragraph after
+  // the newline before it, else what typed text would inherit.
+  const last = marked[marked.length - 1];
+  close(!last ? inherit.pi : last.ch === "\n" ? last.pi + 1 : last.pi);
+  return paras;
+}
+
 // True when paragraphs carry visibly different styling — the
 // inspector's cue to show per-paragraph rows instead of a false
 // uniform display. Compares the appearance keys a user can change
