@@ -7,7 +7,7 @@
 // which the app keeps using for them.
 import { DatabaseSync } from "node:sqlite";
 import pg from "pg";
-import { createV2Schema } from "./store-postgres.js";
+import { _createV2Schema as createV2Schema } from "./store-postgres.js";
 
 // Foreign-key order: a child is copied after every table it references.
 export const V2_TABLES = [
