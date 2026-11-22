@@ -30,7 +30,20 @@
       "additionalProperties": false,
       "properties": {
         "name": { "type": "string", "minLength": 1, "maxLength": 80 },
-        "variant": { "type": "string", "minLength": 1, "maxLength": 24 }
+        "variant": { "type": "string", "minLength": 1, "maxLength": 24 },
+        "look": {
+          "type": "object",
+          "description": "A PowerPoint's colours and fonts laid over the theme (src/projects/pptx-look.js): token values read from a file the person chose, never seen by the model. Kept with the theme so a revision carries it and History restores it.",
+          "additionalProperties": false,
+          "required": ["source", "tokens"],
+          "properties": {
+            "source": { "type": "string", "minLength": 1, "maxLength": 200 },
+            "scheme": { "type": "object", "additionalProperties": { "type": ["string", "null"], "maxLength": 6 } },
+            "fonts": { "type": "object", "additionalProperties": { "type": ["string", "null"], "maxLength": 120 } },
+            "tokens": { "type": "object" },
+            "notes": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 300 } }
+          }
+        }
       }
     },
     "origin": {

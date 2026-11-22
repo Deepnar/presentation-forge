@@ -35,7 +35,10 @@ export async function changeProjectTheme({ owner = null, admin = false, id, them
   // A layout the person picked in the editor is part of the slide.
   const intent = { ...stored.deck, slides: kept.map((s) => withLayoutChoice(byId.get(s.id).slide, s.layoutChoice)) };
   const recipe = stored.chrome ? { ...stored.chrome, slides: kept.map((s) => byId.get(s.id).chrome) } : null;
-  const nextLook = look === undefined ? stored.look ?? null : look;
+  // The look lives in the project's theme record, so a revision carries
+  // it and History restores it; projects that took one before keep it in
+  // their stored intent.
+  const nextLook = look === undefined ? doc.theme?.look ?? stored.look ?? null : look;
   const compiled = await compileSceneDeck({ intent, theme, style: stored.style ?? null, mode, look: nextLook, chromeForDeck: recipe ? chromeFromRecipe(recipe) : null });
   const freshById = new Map(compiled.scenes.map((s) => [s.id, s]));
   const ground = compiled.scenes.find((s) => s.recipeId !== "divider")?.background ?? compiled.scenes[0].background;
@@ -51,13 +54,14 @@ export async function changeProjectTheme({ owner = null, admin = false, id, them
   const label = look ? `the look of ${look.source}` : look === null ? `${theme} without the PowerPoint look` : `${theme}${mode === "dark" ? " (dark)" : ""}`;
   const saved = await store.saveProject({
     owner, admin, id, baseRevision, title: doc.title, scenes,
-    theme: { name: theme, variant: mode }, origin: doc.origin,
+    theme: { name: theme, variant: mode, ...(nextLook ? { look: nextLook } : {}) }, origin: doc.origin,
     provenance: { actor: "human", summary: look ? `Took ${label}` : `Changed the theme to ${label}`, saveOrigin: "manual" },
   });
-  // The look is kept with the structure only once the restyle has saved.
-  if (look !== undefined && saved.status === "saved") {
+  // An older look kept in the intent is retired once the theme record
+  // holds the current one.
+  if (saved.status === "saved" && stored.look) {
     const { look: _old, ...rest } = stored;
-    await store.putProjectIntent({ owner, admin, id, intent: nextLook ? { ...rest, look: nextLook } : rest });
+    await store.putProjectIntent({ owner, admin, id, intent: rest });
   }
   return saved;
 }

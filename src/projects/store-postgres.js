@@ -910,10 +910,15 @@ export async function restoreRevision({ owner = null, id, admin = false, targetR
         err.code = "invalid-document";
         throw err;
       }
+      // The restored document carries the historical SCENES and the THEME
+      // they were drawn in (with any PowerPoint look); title and origin
+      // stay current — a restore does not clobber renames made since.
       const now = new Date().toISOString();
       const next = {
         ...structuredClone(stored),
         scenes: structuredClone(targetDoc.scenes),
+        // The slides come back in the theme they were drawn in.
+        ...(targetDoc.theme ? { theme: structuredClone(targetDoc.theme) } : {}),
         updatedAt: now,
         revision: stored.revision + 1,
       };

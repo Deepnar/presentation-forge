@@ -432,8 +432,10 @@ export function registerV2ProjectRoutes(app) {
     if (!validProjectId(req.params.id)) return fail(res, 400, "invalid project id");
     const who = await projectOwner(req);
     if (who.denied) return fail(res, 401, "log in to use saved projects");
-    const { intent } = await (await projectStore()).getProjectIntent({ owner: who.owner, admin: who.admin, id: req.params.id });
-    const look = intent?.look ?? null;
+    const store = await projectStore();
+    const { doc } = await store.getProject({ owner: who.owner, admin: who.admin, id: req.params.id });
+    if (!doc) return fail(res, 404, "no such project");
+    const look = doc.theme?.look ?? (await store.getProjectIntent({ owner: who.owner, admin: who.admin, id: req.params.id })).intent?.look ?? null;
     ok(res, { look: look ? { source: look.source, scheme: look.scheme, fonts: look.fonts, notes: look.notes } : null });
   }));
   app.post("/api/v2/projects/:id/look",

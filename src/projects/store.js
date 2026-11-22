@@ -878,13 +878,16 @@ async function restoreRevisionInner({ owner = null, id, admin = false, targetRev
       err.code = "invalid-document";
       throw err;
     }
-    // The restored document carries the historical SCENES; identity
-    // (title/theme/origin) stays current — a restore recovers content,
-    // it does not clobber renames made since.
+    // The restored document carries the historical SCENES and the THEME
+    // they were drawn in (with any PowerPoint look), so the project never
+    // names a theme its slides do not show; title and origin stay current
+    // — a restore does not clobber renames made since.
     const now = new Date().toISOString();
     const next = {
       ...structuredClone(stored),
       scenes: structuredClone(target.scenes),
+      // The slides come back in the theme they were drawn in.
+      ...(target.theme ? { theme: structuredClone(target.theme) } : {}),
       updatedAt: now,
       revision: stored.revision + 1,
     };

@@ -80,7 +80,7 @@ test("a look restyles the project, survives a theme change, and comes off again"
   assert.equal(took.status, "saved");
   assert.match(colours(took.doc), /1F2A44/i, "its ink is on the slide");
   assert.match(colours(took.doc), /FAF7F0/i, "and its ground");
-  assert.equal((await store.getProjectIntent({ owner, id: project.id })).intent.look.source, "Brand.pptx");
+  assert.equal(took.doc.theme.look.source, "Brand.pptx", "kept in the project's theme record");
   const history = await store.listRevisions({ owner, id: project.id });
   assert.ok(history.revisions.some((r) => /Took the look of Brand\.pptx/.test(r.summary ?? "")));
 
@@ -89,5 +89,29 @@ test("a look restyles the project, survives a theme change, and comes off again"
 
   const off = await changeProjectTheme({ owner, id: project.id, theme: "warm-humanist", mode: "light", baseRevision: other.doc.revision, look: null });
   assert.doesNotMatch(colours(off.doc), /1F2A44/i, "removed, the theme's own colours return");
-  assert.equal((await store.getProjectIntent({ owner, id: project.id })).intent.look, undefined);
+  assert.equal(off.doc.theme.look, undefined);
+
+  // History: restoring the revision that had the look brings back its
+  // slides, its theme and the look, so later compiles agree with them.
+  const back = await store.restoreRevision({ owner, id: project.id, targetRevision: took.doc.revision, baseRevision: off.doc.revision, provenance: { actor: "human" } });
+  assert.equal(back.status, "restored");
+  assert.deepEqual([back.doc.theme.name, back.doc.theme.look?.source], ["warm-humanist", "Brand.pptx"]);
+  assert.match(colours(back.doc), /1F2A44/i);
+  const after = await changeProjectTheme({ owner, id: project.id, theme: "editorial-magazine", mode: "light", baseRevision: back.doc.revision });
+  assert.match(colours(after.doc), /1F2A44/i, "a theme change after the restore keeps the restored look");
+});
+
+test("restoring an older revision brings back the theme its slides were drawn in", async () => {
+  const owner = "owner@example.test", slug = "themed", dir = path.join(process.env.FORGE_DECKS_DIR, slug);
+  await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, "deck.yaml"), YAML.stringify({ title: "Themed", theme: "warm-humanist", slides: [
+    { type: "title", headline: "Themed" },
+    { type: "bullets", headline: "Points", bullets: ["One point", "Two point", "Three point", "Four point"] },
+  ] }));
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify({ owner, status: "ready" }));
+  const { project } = await importGeneratedProject({ slug, requestId: "request-themed", principal: { email: owner } });
+  const dark = await changeProjectTheme({ owner, id: project.id, theme: "editorial-magazine", mode: "dark", baseRevision: project.revision });
+  const back = await store.restoreRevision({ owner, id: project.id, targetRevision: project.revision, baseRevision: dark.doc.revision, provenance: { actor: "human" } });
+  assert.deepEqual(back.doc.theme, project.theme, "the original theme with its slides");
+  assert.equal(back.doc.title, "Themed", "the title stays current");
 });
