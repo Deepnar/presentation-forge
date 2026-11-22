@@ -153,9 +153,11 @@ broke rasterisers). 2026-11-19: `measureText`
 measures every run (bold counted, per-paragraph pitch) and shrink-to-fit
 handles styled paragraphs. 2026-11-21: rich text edits in place and keeps its
 styled words. The text basics' engine side is complete; mapping a
-selection to a range goes with the toolbar in F5. Next, in order: the
-remaining small gaps (the PowerPoint look on History restore and
-re-import; the lab-server run), then **F5** (the redesign, starting with the study of Canva,
+selection to a range goes with the toolbar in F5. 2026-11-22: History restore brings back
+a revision's theme and PowerPoint look (the look now lives in the theme
+record); the store export-parity contract was broken by F9b's copy
+helper and is fixed. Next, in order: the remaining small gaps (the look on
+re-import of a regenerated deck; the lab-server run), then **F5** (the redesign, starting with the study of Canva,
 Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
 Claude Design skill; the add-slide menu's discoverability is recorded
 there). Everything content-quality is blocked on a model: the gateway is

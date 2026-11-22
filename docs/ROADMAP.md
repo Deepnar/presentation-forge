@@ -248,10 +248,10 @@ Decisions taken with this list, so nobody re-litigates them:
    fonts of the theme its first master uses (`src/projects/pptx-look.js`),
    contrast-checked, fonts only when installed, and lays them over the
    project's theme as one revision, kept by later theme changes and slide
-   compiles, removable. Known gaps: restoring an older revision from
-   History does not restore the look that went with it (the look lives
-   with the intent, not the revision), and re-importing a regenerated deck
-   compiles without it. Done
+   compiles, removable. History restore now brings back a
+   revision's theme and look with its slides (2026-11-22; before, a
+   restore kept the current theme under older slides). Known gap:
+   re-importing a regenerated deck compiles without the look. Done
    2026-11-12: PPTX → editable project ("Import PowerPoint",
    `src/projects/pptx-import.js`): text, shapes, pictures, lines, tables,
    charts, groups, grounds and notes, warnings for the rest; round-trips the
