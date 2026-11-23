@@ -161,7 +161,10 @@ export async function importGeneratedProject(args) {
   const assets = [...await resolveImages(intent, source), ...brand.assets];
   const compileStart = performance.now();
   const chrome = chromeRecipe(source.profile, source.deck, source.identity, brand);
-  const compiled = await compileSceneDeck({ intent, theme: source.theme, style: source.style, mode: source.mode, chromeForDeck: chromeFromRecipe(chrome) });
+  // A regenerated deck updating a project is drawn in that project's
+  // PowerPoint look, if it took one, like every other recompile of it.
+  const look = updating ? await projectLook(store, source.owner, updating) : null;
+  const compiled = await compileSceneDeck({ intent, theme: source.theme, style: source.style, mode: source.mode, look, chromeForDeck: chromeFromRecipe(chrome) });
   assertContent(intent, compiled.scenes);
   const analysis = await analyzeDeck(intent, compiled.design, compiled.chrome);
   // Fit findings restate the compiler's fit diagnostics, which become
@@ -176,7 +179,7 @@ export async function importGeneratedProject(args) {
   if (blocked.length || preflight.length) throw importError("unsupported-content", "source cannot export safely with accepted compiler primitives", [...blocked, ...preflight].map(f => ({ path: f.slideId ?? "scene", reason: f.message ?? f.reason ?? f.code ?? f.kind })));
   const compileMs = performance.now() - compileStart;
   assets.push(...await storePlates(compiled.scenes));
-  if (updating) return updateImportedProject({ store, source, compiled, chrome, assets, projectId: updating, analysis, dropped, start, compileMs });
+  if (updating) return updateImportedProject({ store, source, compiled, chrome, assets, projectId: updating, analysis, dropped, start, compileMs, look });
   const projectId = mintProjectId();
   const sources = cites.length ? await citeSources(projectId, cites, compiled.scenes) : null;
   await source.unchanged();
@@ -193,6 +196,14 @@ export async function importGeneratedProject(args) {
   return { project: result.doc, reused: result.reused, sourceDigest: source.digest, diagnostics: analysis.findings, dropped, fitWarnings, timings: { compileMs, persistMs: performance.now() - persistStart, totalMs: performance.now() - start } };
 }
 
+// The look a project carries: on its theme record, or (taken before looks
+// moved there) in its stored intent.
+async function projectLook(store, owner, id) {
+  const { doc } = await store.getProject({ owner, id });
+  if (doc?.theme?.look) return doc.theme.look;
+  return (await store.getProjectIntent({ owner, id })).intent?.look ?? null;
+}
+
 // A slide a person has touched: a layout they changed, anything they added,
 // or notes they wrote. Kept when a regeneration no longer has it.
 const touched = (scene) => scene.layoutState !== "managed" || scene.notesEdited === true || scene.elements.some((e) => e.provenance === "human");
@@ -206,7 +217,7 @@ const touched = (scene) => scene.layoutState !== "managed" || scene.notesEdited 
 // new deck so the next open replays instead of updating again.
 // Not yet: claim citations a regenerated deck adds are not added as
 // project sources; the slides it keeps keep their existing citations.
-async function updateImportedProject({ store, source, compiled, chrome, assets, projectId, analysis, dropped, start, compileMs }) {
+async function updateImportedProject({ store, source, compiled, chrome, assets, projectId, analysis, dropped, start, compileMs, look = null }) {
   const { doc: current } = await store.getProject({ owner: source.owner, id: projectId });
   if (!current) throw importError("import-target-deleted", "the imported project was deleted; use an explicit new import request");
   // A different theme or appearance is not a regenerated deck: re-theming a
@@ -232,7 +243,9 @@ async function updateImportedProject({ store, source, compiled, chrome, assets, 
   const persistStart = performance.now();
   const saved = await store.saveProject({
     owner: source.owner, id: projectId, baseRevision: current.revision, title: current.title, scenes,
-    theme: current.theme, origin: current.origin,
+    // The intent is rewritten below, so a look kept there moves onto the
+    // theme record rather than being lost.
+    theme: look && !current.theme?.look ? { ...current.theme, look } : current.theme, origin: current.origin,
     provenance: { actor: "agent", summary: "Updated from the regenerated deck, keeping your edits" },
   });
   if (saved.status === "stale") throw importError("import-busy", "the project changed while it was being updated; try again");

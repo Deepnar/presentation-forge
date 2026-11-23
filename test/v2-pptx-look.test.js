@@ -115,3 +115,25 @@ test("restoring an older revision brings back the theme its slides were drawn in
   assert.deepEqual(back.doc.theme, project.theme, "the original theme with its slides");
   assert.equal(back.doc.title, "Themed", "the title stays current");
 });
+
+test("a regenerated deck updating its project is drawn in the project's look", async () => {
+  const owner = "owner@example.test", slug = "relooked", dir = path.join(process.env.FORGE_DECKS_DIR, slug);
+  const deck = (point) => YAML.stringify({ title: "Relooked", theme: "warm-humanist", slides: [
+    { type: "title", headline: "Relooked" },
+    { type: "bullets", headline: "Points", bullets: [point, "Two point", "Three point", "Four point"] },
+  ] });
+  await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, "deck.yaml"), deck("One point"));
+  await writeFile(path.join(dir, "meta.yaml"), YAML.stringify({ owner, status: "ready" }));
+  const { project } = await importGeneratedProject({ slug, requestId: "request-relooked", principal: { email: owner } });
+  const look = await extractLook(await pptxWith(SCHEME), "Brand.pptx");
+  await changeProjectTheme({ owner, id: project.id, theme: "warm-humanist", mode: "light", baseRevision: project.revision, look });
+
+  await writeFile(path.join(dir, "deck.yaml"), deck("A regenerated point"));
+  const updated = await importGeneratedProject({ slug, requestId: "request-relooked", principal: { email: owner } });
+  assert.equal(updated.project.id, project.id, "the same project, updated");
+  const text = JSON.stringify(updated.project.scenes[1]);
+  assert.ok(text.includes("A regenerated point"), "the new content arrived");
+  assert.match(text, /1F2A44/i, "drawn in the project's look");
+  assert.equal(updated.project.theme.look?.source, "Brand.pptx", "and the look stays on the project");
+});
