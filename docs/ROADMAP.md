@@ -250,8 +250,9 @@ Decisions taken with this list, so nobody re-litigates them:
    project's theme as one revision, kept by later theme changes and slide
    compiles, removable. History restore now brings back a
    revision's theme and look with its slides (2026-11-22; before, a
-   restore kept the current theme under older slides). Known gap:
-   re-importing a regenerated deck compiles without the look. Done
+   restore kept the current theme under older slides), and a
+   regenerated deck re-imported into its project is drawn in the look
+   (2026-11-23). Done
    2026-11-12: PPTX → editable project ("Import PowerPoint",
    `src/projects/pptx-import.js`): text, shapes, pictures, lines, tables,
    charts, groups, grounds and notes, warnings for the rest; round-trips the
