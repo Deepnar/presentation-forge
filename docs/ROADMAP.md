@@ -290,8 +290,11 @@ Decisions taken with this list, so nobody re-litigates them:
     Poppler and Chromium, and inside it a generated deck imports into a
     21-slide project, a slide's layouts compile, a PPTX imports and
     exports, a PowerPoint look applies and a plate theme renders through
-    the container's Chromium. Left: generation inside it (needs a model)
-    and the lab-server setup run once end to end.
+    the container's Chromium. The lab-server setup ran end to end on
+    2026-11-24 and found two deployment bugs, fixed: confirmation and
+    reset links pointed at localhost because neither compose passed
+    `FORGE_PUBLIC_URL` into the container, and a lab server had no
+    administrator. Left: generation inside it (needs a model).
     PostgreSQL store
     as the hosted default, exports/previews on disk or object storage with
     expiry and regenerate-on-demand, idempotent cleanup, the container image

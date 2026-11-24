@@ -31,7 +31,7 @@ something.
 | Setup | Compose file | What to set | State |
 |---|---|---|---|
 | **Solo laptop** — just you, your own models | root `compose.yaml` | nothing; Ollama on the host, or a BYOK key in Settings | released as v0.1.0 (V1); the V2 image build is pending (roadmap F9a) |
-| **Lab server** — a small group on one network | root `compose.yaml` | `FORGE_BIND=0.0.0.0`, `FORGE_LOCAL_MULTI_USER=1`, `FORGE_SMTP_*`; `FORGE_OLLAMA_HOST` for a LAN model server, or BYOK | configurable; not yet run end to end |
+| **Lab server** — a small group on one network | root `compose.yaml` | `FORGE_BIND=0.0.0.0`, `FORGE_LOCAL_MULTI_USER=1`, `FORGE_SMTP_*`, `FORGE_PUBLIC_URL=http://<its address>:<port>`, `FORGE_ADMIN_EMAIL`; `FORGE_OLLAMA_HOST` for a LAN model server, or BYOK | run 2026-11-24: two accounts, confirmation and reset by mail with links to the configured address, the named owner promoted to admin |
 | **Public self-host** — on the internet | `docker/docker-compose.app.yml` (this page) | everything below, with your own domain | the hosted path; image build pending (F9a) |
 
 A lab server stays on plain HTTP inside a trusted network; anything reachable
