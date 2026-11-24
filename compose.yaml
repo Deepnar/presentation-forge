@@ -47,6 +47,10 @@ services:
       # A shared machine (a lab, a small group): more than one account, and
       # with SMTP, address confirmation and password reset. Off by default.
       FORGE_LOCAL_MULTI_USER: "${FORGE_LOCAL_MULTI_USER:-0}"
+      # With several accounts the first is not made administrator; name the
+      # one that is (promoted at boot, or created from the password).
+      FORGE_ADMIN_EMAIL: "${FORGE_ADMIN_EMAIL:-}"
+      FORGE_ADMIN_PASSWORD: "${FORGE_ADMIN_PASSWORD:-}"
       # Where confirmation and reset links point: this install's own port by
       # default; a lab server sets its address on the network.
       FORGE_PUBLIC_URL: "${FORGE_PUBLIC_URL:-http://localhost:${FORGE_PORT:-8090}}"

@@ -83,7 +83,9 @@ const server = createServer((socket) => {
   socket.on("error", () => { /* a client that hangs up mid-dialogue is fine */ });
 });
 
-server.listen(PORT, "127.0.0.1", () => {
-  console.log(`  mail  smtp://127.0.0.1:${PORT} (sink — accepts everything, delivers nothing)`);
+// FORGE_MAILSINK_HOST lets a container reach it (Docker's host gateway);
+// the default stays loopback-only.
+server.listen(PORT, process.env.FORGE_MAILSINK_HOST ?? "127.0.0.1", () => {
+  console.log(`  mail  smtp://${process.env.FORGE_MAILSINK_HOST ?? "127.0.0.1"}:${PORT} (sink — accepts everything, delivers nothing)`);
   console.log(`        messages: ${FILE}`);
 });
