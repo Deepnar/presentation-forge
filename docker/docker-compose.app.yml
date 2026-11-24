@@ -52,6 +52,9 @@ services:
       # Behind Caddy, so honour X-Forwarded-For and mark cookies Secure.
       FORGE_TRUST_PROXY: "1"
       FORGE_UI_ORIGIN: "${FORGE_UI_ORIGIN:-}"
+      # Where confirmation and reset links point. Setting it only in .env
+      # does nothing unless it is passed through here.
+      FORGE_PUBLIC_URL: "${FORGE_PUBLIC_URL:-https://${FORGE_DOMAIN:-localhost}}"
       FORGE_OPEN_REGISTRATION: "${FORGE_OPEN_REGISTRATION:-1}"
       FORGE_ADMIN_EMAIL: "${FORGE_ADMIN_EMAIL:-}"
       FORGE_ADMIN_PASSWORD: "${FORGE_ADMIN_PASSWORD:-}"
