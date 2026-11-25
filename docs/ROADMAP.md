@@ -368,6 +368,11 @@ Slides/Layers tabs, and only in edit mode. Adding a slide is the most common
 thing after typing; it needs the prominence Google Slides and PowerPoint
 give it (a clear New slide control, and a "+" after the last thumbnail).
 
+**The study** is written up in [`docs/design/editor-study.md`](design/editor-study.md):
+Canva and Google Slides done 2026-11-25 (contextual toolbar, ranges,
+keyboard reach and command search, hideable notes, drag onto a thumbnail,
+layers as a list); PowerPoint, Excalidraw, Gamma, Pitch and Figma next.
+
 **The editor's final model is Canva's** (owner, 2026-11-16): "genuinely
 good and much, much better than any, and accessible" — that is the bar
 for how editing works, not only how it looks. First consequence: the text

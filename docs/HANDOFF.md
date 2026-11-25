@@ -159,10 +159,11 @@ record); the store export-parity contract was broken by F9b's copy
 helper and is fixed. 2026-11-23: a re-imported regenerated deck is drawn in the
 project's look. 2026-11-24: the lab-server setup ran end to end (mail
 flows, admin) and fixed `FORGE_PUBLIC_URL` not reaching the container in
-either compose. Next, in order: **F5** (the redesign, starting with the study of Canva,
-Excalidraw, PowerPoint, Gamma, Google Slides, Pitch and Figma, with the
-Claude Design skill; the add-slide menu's discoverability is recorded
-there). Everything content-quality is blocked on a model: the gateway is
+either compose. 2026-11-25: F5 started — `docs/design/editor-study.md`
+covers Canva and Google Slides from their help pages. Next, in order: the
+rest of the study (PowerPoint, Excalidraw, Gamma, Pitch, Figma), then the
+Claude Design pass and the rest of **F5** (the add-slide menu's
+discoverability and the owner's layout notes are recorded there). Everything content-quality is blocked on a model: the gateway is
 down and local inference is off-limits while the owner's other work runs.
 
 Sandbox projects for checking: `p-304801890f356c9f861dac99` (imported
