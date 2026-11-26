@@ -371,7 +371,9 @@ give it (a clear New slide control, and a "+" after the last thumbnail).
 **The study** is written up in [`docs/design/editor-study.md`](design/editor-study.md):
 Canva and Google Slides done 2026-11-25 (contextual toolbar, ranges,
 keyboard reach and command search, hideable notes, drag onto a thumbnail,
-layers as a list); PowerPoint, Excalidraw, Gamma, Pitch and Figma next.
+layers as a list); PowerPoint and Excalidraw 2026-11-26 (New Slide and
+Layout always in view, a mini toolbar at the selection, the Selection
+pane, one key per tool, ? for shortcuts); Gamma, Pitch and Figma next.
 
 **The editor's final model is Canva's** (owner, 2026-11-16): "genuinely
 good and much, much better than any, and accessible" — that is the bar

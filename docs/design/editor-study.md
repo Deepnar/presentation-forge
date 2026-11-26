@@ -65,6 +65,55 @@ and on [customising it](https://support.google.com/docs/thread/277450946);
 - **Keyboard and search for commands.** Menu access keys (Alt+O for Format)
   and a tool finder (Alt+/) that searches every command by name.
 
+## PowerPoint (desktop and web)
+
+Sources: Microsoft Support —
+[PowerPoint for the web basics](https://support.microsoft.com/en-us/powerpoint/basic-tasks-in-powerpoint-for-the-web?ui=en-us&amp=&amp=&rs=en-us&ad=us),
+[Apply a slide layout](https://support.microsoft.com/en-us/powerpoint/training/apply-a-slide-layout),
+[Add, rearrange, duplicate and delete slides](https://support.microsoft.com/en-us/powerpoint/training/add-rearrange-duplicate-and-delete-slides-in-powerpoint),
+[Keyboard shortcuts](https://support.microsoft.com/en-us/accessibility/powerpoint/use-keyboard-shortcuts-to-create-powerpoint-presentations),
+[Mini toolbar](https://support.microsoft.com/en-gb/office/use-the-mini-toolbar-to-format-text-47012f83-b553-40a9-b7de-f038876f4db3),
+[Guides for arranging things](https://support.microsoft.com/en-au/powerpoint/training/guides-for-arranging-things-on-a-slide),
+[Align and arrange objects](https://support.microsoft.com/en-gb/office/align-and-arrange-objects-on-a-slide-5f961535-a2ae-4914-a24a-94c669903ae3),
+[Choose the right view](https://support.microsoft.com/en-us/office/choose-the-right-view-for-the-task-in-powerpoint-21332d8d-adbc-4717-a2c6-e25a697b40e9).
+
+- **New Slide and Layout sit side by side on the Home tab.** Home → New Slide
+  adds one (its drop-down picks a layout); Layout changes the current
+  slide's. Both are the first things on the tab — never hidden.
+- **A mini toolbar at the selection.** Selecting text with the mouse shows a
+  small toolbar beside it: font, alignment, colour, indent, bullets. It is
+  not customisable and can be turned off. The ribbon holds everything else.
+- **Smart guides** — red dashed lines while dragging — align to other objects
+  and slide edges and show **equal spacing** between objects; Align →
+  Distribute spaces three or more evenly.
+- **Selection pane** (Alt+F10 on desktop): every object on the slide as a
+  list, to select, reorder, rename and hide — PowerPoint's layers *(check by
+  hand: its place in the web app)*.
+- **Notes pane** under the slide, opened and closed with a Notes button.
+- **Search for any command**: Alt+Q moves to the ribbon's search box (Tell me);
+  the simplified ribbon on the web is a one-line version of the full one
+  (Alt+. Z R toggles them on Windows).
+
+## Excalidraw
+
+Sources: [How to start drawing](https://plus.excalidraw.com/how-to-start)
+(Excalidraw+), GitHub issues on
+[property shortcuts](https://github.com/excalidraw/excalidraw/issues/2649) and
+[shape shortcuts](https://github.com/excalidraw/excalidraw/issues/27), and a
+[discussion on property defaults](https://github.com/excalidraw/excalidraw/discussions/6563).
+The official docs did not come up; current behaviour *(check by hand: press ?
+in the app)*.
+
+- **One small tool bar, one key per tool.** R draws a rectangle; Tab cycles a
+  shape being drawn between rectangle, diamond and ellipse. The tools stay a
+  single short row — the opposite of a ribbon.
+- **Properties appear only for what is selected**, as a compact panel of
+  swatches and toggles (stroke, background, fill style, width, opacity); S
+  and G open the stroke and background colour pickers.
+- **? shows every shortcut; Ctrl+/ opens a command palette** to run any
+  action by name.
+- Not customisable (toolbar and properties panel), by design.
+
 ## What to take, for Forge
 
 1. **A contextual toolbar above the canvas** (Canva), changing with the
@@ -80,11 +129,19 @@ and on [customising it](https://support.google.com/docs/thread/277450946);
 5. **Drag an element onto a slide thumbnail to move it** (Canva), as already
    recorded for F5.
 6. **Layers as a simple draggable list with lock and hide**, not an
-   inspector of fields (Canva) — answers the owner's "could not understand the
-   inspector or the layers".
+   inspector of fields (Canva, and PowerPoint's Selection pane) — answers the
+   owner's "could not understand the inspector or the layers".
+7. **New Slide and Layout always in view**, side by side (PowerPoint's Home
+   tab) — the fix for the hard-to-find "+ Slide ▾".
+8. **Few tools, one key each** (Excalidraw): T text, R rectangle, O ellipse,
+   L line and so on, with grouped insert menus for the rest; **? opens the
+   shortcut sheet**, Ctrl+/ the command search (PowerPoint's Alt+Q,
+   Google's Alt+/).
+9. **Properties only for the selection**, as swatches and toggles rather than
+   form fields (Excalidraw); smart guides with equal spacing we already have
+   (F4b), matching PowerPoint's.
 
 ## Still to study
 
-PowerPoint (desktop and web), Excalidraw, Gamma, Pitch and Figma — the same
-questions: canvas, toolbar, insert, inspector, layers, slide rail, notes,
-keyboard, accessibility.
+Gamma, Pitch and Figma — the same questions: canvas, toolbar, insert,
+inspector, layers, slide rail, notes, keyboard, accessibility.
