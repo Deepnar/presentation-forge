@@ -7,46 +7,57 @@
    someone chooses light on a dark machine. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* The interface is achromatic; the decks are the colour.
-   Thirty-four themes carry every hue this product owns, so the shell stays
-   ink-on-paper and never competes with the thing it is rendering. The accent
-   is therefore near-black in light and near-white in dark — an inversion, not
-   a hue change — which is why every surface that paints ON the accent reads
-   --color-on-accent rather than hardcoding white. */
+/* Ember (docs/ROADMAP.md, F5): warm ink on paper, charcoal at night, and one
+   hot colour that means work. The decks are still the colour — thirty-four
+   themes carry every hue — so the shell stays ink-on-paper, warmed, and the
+   accent stays ink: near-black in light, near-paper in dark, an inversion
+   rather than a hue change, which is why every surface that paints ON the
+   accent reads --color-on-accent rather than hardcoding white.
+   Ember is not the accent. It is reserved for the one primary action on a
+   screen and for "Forge is working"; spread wider it stops meaning anything. */
 @theme {
   /* Surfaces: page → sunken → panel → raised. Light is the source of truth;
      [data-theme="dark"] below overrides the same names. */
-  --color-base: #FBFBFD;
-  --color-sunken: #F4F5F9;
-  --color-panel: #FFFFFF;
-  --color-raised: #FFFFFF;
-  --color-prompt: #FFFFFF;
-  --color-hover: #F1F3F9;
-  --color-field: #FFFFFF;
+  --color-base: #F5EFE6;
+  --color-sunken: #EDE5D8;
+  --color-panel: #FFFCF7;
+  --color-raised: #FFFCF7;
+  --color-prompt: #FFFCF7;
+  --color-hover: #EBE3D5;
+  --color-field: #FFFCF7;
 
-  /* Hairlines: subtle, cool. */
-  --color-line: #E7E8EF;
-  --color-line-strong: #D1D5E0;
+  /* Hairlines: subtle, warm. */
+  --color-line: #E3DACB;
+  --color-line-strong: #CFC3B0;
 
-  /* Text: slate, not warm paper.
+  /* Text: warm ink.
      Three levels, and all three clear 4.5:1 against every ground they are
      drawn on — including the sunken and hover surfaces, which are the worst
      case and the ones a ramp picked against white alone always fails. The old
      faint sat at 2.56:1 on a panel, which is not tertiary text, it is text
      that has to be guessed at. */
-  --color-fg: #0F172A;
-  --color-fg-muted: #475569;
-  --color-fg-faint: #616F86;
+  --color-fg: #1A1612;
+  --color-fg-muted: #544B42;
+  --color-fg-faint: #6A5F54;
 
-  /* Accent: slate ink. Inverts wholesale in dark. */
-  --color-accent: #0B0F1A;
-  --color-accent-hi: #1A2236;
-  --color-accent-dim: #E2E8F0;
-  --color-accent-tint: #F1F5F9;
-  --color-accent-glow: rgba(11, 15, 26, 0.08);
+  /* Accent: warm ink. Inverts wholesale in dark. */
+  --color-accent: #1A1612;
+  --color-accent-hi: #2E2721;
+  --color-accent-dim: #E3DACB;
+  --color-accent-tint: #EDE5D8;
+  --color-accent-glow: rgba(26, 22, 18, 0.08);
   /* The ink that sits ON the accent. Never assume white: in dark the accent
      IS white, and a white-on-white button is invisible rather than ugly. */
-  --color-on-accent: #FFFFFF;
+  --color-on-accent: #FFFCF7;
+
+  /* Ember. The fill is the same bright orange in both modes, with charcoal
+     on it (6.1:1); the text-grade ember is darker on paper, where the bright
+     one is 2.7:1, and clears 4.5:1 on every light ground. */
+  --color-ember: #FF5B1F;
+  --color-ember-hi: #FF7340;
+  --color-on-ember: #14110E;
+  --color-ember-ink: #AD3404;
+  --color-ember-glow: rgba(255, 91, 31, 0.18);
 
   /* Status colours are read as TEXT far more often than they are used as a
      fill — text-amber, text-danger, and /10 washes with the same token on top.
@@ -58,7 +69,7 @@
   --color-danger: #B91C1C;
   --color-success: #0A7350;
   --color-on-danger: #FFFFFF;
-  --color-overlay: rgba(15, 23, 42, 0.45);
+  --color-overlay: rgba(26, 22, 18, 0.45);
 
   --radius-card: 0.75rem;
   --radius-lg: 1rem;
@@ -72,7 +83,11 @@
   --text-body: 0.9375rem;
   --text-caption: 0.75rem;
 
-  --font-sans: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist Variable", Geist, ui-sans-serif, system-ui, sans-serif;
+  /* Display caps for the few headline moments, and one serif italic for the
+     accent phrase beside them. Never body, never controls. */
+  --font-display: Anton, "Arial Narrow", Impact, sans-serif;
+  --font-voice: "Instrument Serif", Georgia, serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
@@ -91,20 +106,20 @@
   --dur-scene: 900ms;
 
   --shadow-card:
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 4px 12px rgba(15, 23, 42, 0.06);
+    0 1px 2px rgba(40, 28, 16, 0.04),
+    0 4px 12px rgba(40, 28, 16, 0.06);
   --shadow-card-hover:
-    0 4px 16px rgba(15, 23, 42, 0.08),
-    0 8px 24px rgba(15, 23, 42, 0.08);
+    0 4px 16px rgba(40, 28, 16, 0.08),
+    0 8px 24px rgba(40, 28, 16, 0.08);
   --shadow-float:
-    0 8px 24px rgba(15, 23, 42, 0.10),
-    0 16px 48px rgba(15, 23, 42, 0.12);
+    0 8px 24px rgba(40, 28, 16, 0.10),
+    0 16px 48px rgba(40, 28, 16, 0.12);
   /* The lift under a rendered slide. Deep and soft — the slide should read as
      an object resting on the page, which is the whole trick of the hero. */
   --shadow-slide:
-    0 2px 4px rgba(15, 23, 42, 0.04),
-    0 12px 28px rgba(15, 23, 42, 0.10),
-    0 40px 80px -20px rgba(15, 23, 42, 0.18);
+    0 2px 4px rgba(40, 28, 16, 0.04),
+    0 12px 28px rgba(40, 28, 16, 0.10),
+    0 40px 80px -20px rgba(40, 28, 16, 0.18);
 
   --header-h: 3.5rem;
 }
@@ -114,32 +129,35 @@
    On a dark ground, elevation comes from a lighter surface and a hairline top
    highlight; the drop shadow only deepens the separation. */
 [data-theme="dark"] {
-  --color-base: #0A0A0C;
-  --color-sunken: #0F1013;
-  --color-panel: #141519;
-  --color-raised: #1A1B20;
-  --color-prompt: #141519;
-  --color-hover: #1D1E24;
-  --color-field: #101115;
+  --color-base: #14110E;
+  --color-sunken: #100E0B;
+  --color-panel: #1C1814;
+  --color-raised: #241F1A;
+  --color-prompt: #1C1814;
+  --color-hover: #2A241E;
+  --color-field: #120F0C;
 
-  --color-line: #26272E;
-  --color-line-strong: #3A3C45;
+  --color-line: #2E2822;
+  --color-line-strong: #433A31;
 
-  --color-fg: #F5F6F8;
-  --color-fg-muted: #A3A6B1;
-  --color-fg-faint: #858998;
+  --color-fg: #F3ECE2;
+  --color-fg-muted: #B9AFA2;
+  --color-fg-faint: #978C7F;
 
-  --color-accent: #F5F6F8;
-  --color-accent-hi: #FFFFFF;
-  --color-accent-dim: #2E3039;
-  --color-accent-tint: #1C1E25;
-  --color-accent-glow: rgba(245, 246, 248, 0.10);
-  --color-on-accent: #0A0A0C;
+  --color-accent: #F3ECE2;
+  --color-accent-hi: #FFFAF2;
+  --color-accent-dim: #3A322A;
+  --color-accent-tint: #2A241E;
+  --color-accent-glow: rgba(243, 236, 226, 0.10);
+  --color-on-accent: #14110E;
+
+  --color-ember-ink: #FF6A2E;
+  --color-ember-glow: rgba(255, 91, 31, 0.24);
 
   --color-amber: #FBBF24;
   --color-danger: #F87171;
   --color-success: #34D399;
-  --color-on-danger: #0A0A0C;
+  --color-on-danger: #14110E;
   --color-overlay: rgba(0, 0, 0, 0.65);
 
   --shadow-card:

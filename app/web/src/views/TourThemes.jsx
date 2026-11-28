@@ -26,7 +26,7 @@ export default function TourThemes({ onAuth, authed = false }) {
             {themes?.length ?? "\u2014"} design languages
           </div>
           <h1 className="mt-4 max-w-2xl text-[2.6rem] font-semibold leading-[0.95] tracking-[-0.03em] text-fg sm:text-[3.2rem]">
-            Every deck gets its own <span className="bg-gradient-to-r from-[#0B0F1A] to-black bg-clip-text text-transparent">design language.</span>
+            Every deck gets its own <span className="bg-gradient-to-r from-[#1A1612] to-black bg-clip-text text-transparent">design language.</span>
           </h1>
           <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-fg-muted">
             One YAML file per theme — <em className="text-fg">tokens</em> drive the renderer, <em className="text-fg">voice</em> steers the model. No overlap, no hex leaking into prompts. Each card below is drawn live from the theme’s own values.

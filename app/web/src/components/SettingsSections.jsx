@@ -61,8 +61,8 @@ export function AppearanceSection() {
 }
 
 function ModeSwatch({ mode }) {
-  const light = { page: "#FBFBFD", panel: "#FFFFFF", line: "#E7E8EF", ink: "#0B0F1A" };
-  const dark = { page: "#0A0A0C", panel: "#141519", line: "#26272E", ink: "#F5F6F8" };
+  const light = { page: "#F5EFE6", panel: "#FFFCF7", line: "#E3DACB", ink: "#1A1612" };
+  const dark = { page: "#14110E", panel: "#1C1814", line: "#2E2822", ink: "#F3ECE2" };
   const bar = (p, key) => (
     <span key={key} className="flex-1 overflow-hidden rounded-[3px]" style={{ background: p.page, boxShadow: `inset 0 0 0 1px ${p.line}` }}>
       <span className="block h-1/2 w-full" style={{ background: p.panel }} />
