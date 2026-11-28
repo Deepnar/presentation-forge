@@ -2807,7 +2807,10 @@ export default function SceneViewer({ initial = {}, projectId = null, autoOpenHi
           paint-only. Scene coordinates are untouched — the mount
           keeps SVG px and top-left origin, and overlay boxes ride
           the same transform. margin auto centers at fit. */}
-          <div style={{ width: slideW * scale, height: slideH * scale, flexShrink: 0, margin: "0 auto" }}>
+          {/* The edge is drawn here, outside the scaled mount, so it stays one
+              pixel at any zoom: a paper-coloured slide on the paper stage
+              has no edge of its own. */}
+          <div style={{ width: slideW * scale, height: slideH * scale, flexShrink: 0, margin: "0 auto", borderRadius: 4, boxShadow: "0 0 0 1px var(--color-line-strong), var(--shadow-card)" }}>
             <div
               ref={mountRef}
               tabIndex={0}
