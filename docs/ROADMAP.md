@@ -386,6 +386,43 @@ together, not one inverted from the other. The current mark, palette and
 landing effects (the dots, the slow fade) are inputs to judge, not
 constraints.
 
+**The direction is Ember** (owner, 2026-11-28; chosen over "Ink and paper"
+and "Blueprint"). Molten orange on charcoal, with light and dark designed
+as a pair: charcoal `#14110E` / paper `#F5EFE6`, ember `#FF5B1F` on dark
+and `#C23A07` for text on light (4.7:1 on paper; the bright orange is 2.7:1 there).
+Type is Anton for display, Instrument Serif italic for one accent phrase,
+and Geist for body and every control: three families, one scale. The
+forge metaphor is carried by **process, not pictures**:
+- **Orange means heat, and heat means work.** Orange is reserved for the
+  one primary action and for "Forge is working": a generating slide glows
+  and cools to its theme colours when done. Not for decoration. A
+  left-to-right cooling gradient is the only gradient in the brand.
+- **The mark is a slide, not a flame.** The candidates are a slide outline
+  with a glowing lower edge, an F of three slide strips, and a cooling 16:9
+  ingot. Each has to work as a 16px favicon. No flames, sparks, anvils or
+  hammers, which read as kitsch, gaming or barbecue.
+- **The words use it once.** "Forge a deck" is the verb, with no puns
+  elsewhere.
+- **The landing tells the process by scroll** (after landonorris.com's
+  motion, not its look):
+  - smooth weighted scrolling (Lenis);
+  - pinned, scrubbed scenes (GSAP ScrollTrigger);
+  - giant type lines sliding sideways;
+  - clip-path reveals;
+  - a self-drawing line.
+
+  The seven scenes are:
+  1. a typed topic splits into outline cards;
+  2. the outline pins and a check mark draws (the human gate);
+  3. the cards cast into slides that fan into a deck;
+  4. one slide re-themes through the eight covering themes as you scroll;
+  5. the view zooms into the editor;
+  6. the deck splits into `.pptx`, `.docx` and script;
+  7. a closing line.
+
+  The slides on the page are real compiler scenes as SVG, never screenshots,
+  and reduced motion gets the same story as still frames.
+
 **The editor's final model is Canva's** (owner, 2026-11-16): "genuinely
 good and much, much better than any, and accessible" — that is the bar
 for how editing works, not only how it looks. First consequence: the text
