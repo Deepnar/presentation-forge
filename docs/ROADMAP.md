@@ -375,6 +375,17 @@ layers as a list); PowerPoint and Excalidraw 2026-11-26 (New Slide and
 Layout always in view, a mini toolbar at the selection, the Selection
 pane, one key per tool, ? for shortcuts); Gamma, Pitch and Figma next.
 
+**A brand identity of our own** (owner, 2026-11-28): the design pass is
+free to change the entire look and feel — not restyle what is there, but
+give Presentation Forge a distinct, unique identity that is recognisably
+ours: name and mark, colour, type, the shape language of controls and
+cards, motion, and the voice of the few words left on screen. It is set
+once, with the Claude Design skill, before any page is rebuilt, and the
+landing page, workspace and editor all carry it — light and dark designed
+together, not one inverted from the other. The current mark, palette and
+landing effects (the dots, the slow fade) are inputs to judge, not
+constraints.
+
 **The editor's final model is Canva's** (owner, 2026-11-16): "genuinely
 good and much, much better than any, and accessible" — that is the bar
 for how editing works, not only how it looks. First consequence: the text
