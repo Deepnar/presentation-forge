@@ -50,4 +50,59 @@ What the numbers say:
   but the stats line under it is small grey text that says little at a
   glance.
 
-*(More to add from the screenshots of each page in both modes.)*
+## Seen, page by page (screenshots `01`–`09`)
+
+**Workspace** (`02`, `09`). Every project card carries five actions — Open,
+History, Rename, Export, Delete… — wrapping onto two lines, so the grid reads
+as rows of buttons. Each card says "Saved presentation" and "rev 34" (internal
+vocabulary). A manual Refresh button sits beside Create. The left sidebar is
+unlabelled icons. A generated deck with no thumbnail shows a bare letter.
+
+**Chat** (`03`). The calmest page: one question, one box, three suggestions.
+Still: a three-line explanation under the question, a header subtitle, and
+an "ON THIS MACHINE" badge in green monospace — a technical status, not
+something the person needs.
+
+**Editor** (`04`, `08`) — the clearest case of the clutter:
+- **two stacked bars of words**: the top bar (Workspace, Slides, title, Save,
+  "Saved · rev 34", Undo, Redo, History, Export, Present, Assistant,
+  Inspector) and a second one (Prev, Next, zoom, Fit, Done, Layout, + Text,
+  + Rect, + Round, + Ellipse, + Chart, + Table, + Line, + Image, …) that runs
+  off the right edge;
+- **the inspector is a stack of small text**: an instruction sentence, then
+  statistics ("Slide 1 of 22 · Layout Custom slide · Objects 3"), then Theme,
+  PowerPoint look, Files, Report and Speaker notes all at once, whatever is
+  selected;
+- **speaker notes are always open** under the slide;
+- **the slide gets about half the screen**; chrome takes the rest;
+- unexplained marks: a "▲ 2" badge in the rail, "rev 34", "Slide 1 · Custom".
+- In dark mode the light slide on the dark stage reads well; grey secondary
+  text gets fainter, and the disabled "Apply theme" all but disappears.
+
+**Themes** (`05`). The previews are good. Around them: an intro paragraph in
+engineering terms ("A design language is one YAML file, kept in two halves…")
+and five pieces of text on every card, including the internal id in
+monospace (`art-deco`) and the font pair.
+
+**Admin** (`06`). Sensible structure — four totals, two charts, recent decks
+— set almost entirely in small type, with tiny uppercase labels and heavy
+black bars; most of the screen is empty.
+
+**Landing** (`01`, `07`). The dots are a starfield in dark mode and dust in
+light; the hero is the best-composed screen on the site.
+
+## What this adds up to
+
+1. **Words where controls should be.** Toolbars are rows of "+ Word";
+   cards are rows of actions; the inspector is sentences and statistics.
+2. **Everything visible at once.** No progressive disclosure: the inspector,
+   notes, both toolbars and every card action show whatever the person is
+   doing (the study's lesson 10 — simple by default, more behind a switch).
+3. **Internal vocabulary on screen**: rev numbers, ids, "Managed by AI
+   layout", "ON THIS MACHINE", YAML.
+4. **No type scale**: small text as the default, 16 sizes on one page.
+5. **One effect, two modes**: the landing dots, the faint greys — designed
+   for dark and inverted for light.
+6. **No identity of its own**: a neutral sans, black buttons, grey borders —
+   competent and anonymous (the owner's "modern but somehow old"). The brand
+   pass (roadmap F5) starts here.
