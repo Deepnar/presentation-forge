@@ -334,7 +334,7 @@ export default function Workspace({ onOpen, onHistory, onCreateAI, onAuth, onOpe
                       <div className="mt-0.5 text-[12.5px] text-fg-faint">{metaLine(p)}</div>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-1.5">
-                      <Button size="sm" variant="primary" data-project-open={p.id} onClick={() => onOpen(p.id)}>Open</Button>
+                      <Button size="sm" variant="ink" data-project-open={p.id} onClick={() => onOpen(p.id)}>Open</Button>
                       <Button size="sm" data-project-history={p.id} title="Version history" onClick={() => onHistory(p.id)}>History</Button>
                       <Button size="sm" onClick={() => { setRenamingId(p.id); setRenameDraft(p.title); }}>Rename</Button>
                       <ProjectExportButton

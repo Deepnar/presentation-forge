@@ -18,17 +18,17 @@
 @theme {
   /* Surfaces: page → sunken → panel → raised. Light is the source of truth;
      [data-theme="dark"] below overrides the same names. */
-  --color-base: #F5EFE6;
-  --color-sunken: #EDE5D8;
-  --color-panel: #FFFCF7;
-  --color-raised: #FFFCF7;
-  --color-prompt: #FFFCF7;
-  --color-hover: #EBE3D5;
-  --color-field: #FFFCF7;
+  --color-base: #F7F3EC;
+  --color-sunken: #F0EBE2;
+  --color-panel: #FFFFFF;
+  --color-raised: #FFFFFF;
+  --color-prompt: #FFFFFF;
+  --color-hover: #F0EBE2;
+  --color-field: #FFFFFF;
 
   /* Hairlines: subtle, warm. */
-  --color-line: #E3DACB;
-  --color-line-strong: #CFC3B0;
+  --color-line: #E8E1D5;
+  --color-line-strong: #D5CBBB;
 
   /* Text: warm ink.
      Three levels, and all three clear 4.5:1 against every ground they are
@@ -43,12 +43,12 @@
   /* Accent: warm ink. Inverts wholesale in dark. */
   --color-accent: #1A1612;
   --color-accent-hi: #2E2721;
-  --color-accent-dim: #E3DACB;
-  --color-accent-tint: #EDE5D8;
+  --color-accent-dim: #E8E1D5;
+  --color-accent-tint: #F0EBE2;
   --color-accent-glow: rgba(26, 22, 18, 0.08);
   /* The ink that sits ON the accent. Never assume white: in dark the accent
      IS white, and a white-on-white button is invisible rather than ugly. */
-  --color-on-accent: #FFFCF7;
+  --color-on-accent: #FFFFFF;
 
   /* Ember. The fill is the same bright orange in both modes, with charcoal
      on it (6.1:1); the text-grade ember is darker on paper, where the bright

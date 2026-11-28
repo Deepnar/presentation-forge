@@ -75,7 +75,7 @@ export function CTA({ variant = "primary", className = "", ...props }) {
     "press inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3 text-[14px] font-medium transition-colors";
   const kind =
     variant === "primary"
-      ? "bg-accent text-on-accent hover:bg-accent-hi"
+      ? "bg-ember text-on-ember hover:bg-ember-hi"
       : "border border-line-strong bg-panel text-fg hover:bg-hover";
   return <button className={`${base} ${kind} ${className}`} {...props} />;
 }

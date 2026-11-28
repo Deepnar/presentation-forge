@@ -35,7 +35,7 @@ export function getTheme() {
 
 function paintChrome(theme) {
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", theme === "dark" ? "#14110E" : "#F5EFE6");
+  if (meta) meta.setAttribute("content", theme === "dark" ? "#14110E" : "#F7F3EC");
 }
 
 function apply() {

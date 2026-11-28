@@ -5,7 +5,6 @@ import { createGuardedHashRouter } from "./lib/guarded-hash-router.js";
 import { projectSessionKey } from './lib/v2project.js';
 import { useNarrow } from "./lib/viewport.js";
 import HeaderBar from "./components/HeaderBar.jsx";
-import ParticleField from "./components/ParticleField.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import AuthModal from "./components/AuthModal.jsx";
 import RecoveryScreen from "./components/RecoveryScreen.jsx";
@@ -433,7 +432,6 @@ function AppContent() {
     const tourExtra = ["privacy","terms","contact","docs","usage","tour-themes","themes","projects"].includes(tourView) ? tourView : null;
     return (
       <div className="relative min-h-screen bg-base">
-        <ParticleField boost={2.6} className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-50" />
         <div className="relative z-10 flex min-h-screen flex-col pt-14">
           <HeaderBar
             leftOpen={leftOpen}
@@ -477,7 +475,6 @@ function AppContent() {
 
   return (
     <div className={`relative bg-base ${isTourView ? "min-h-screen" : "h-screen overflow-hidden overflow-x-hidden"}`}>
-      <ParticleField boost={isTourView ? 2.6 : 1.4} className={`pointer-events-none fixed inset-0 z-0 h-full w-full ${isTourView ? "opacity-50" : "opacity-38"}`} />
 
       <div className={`relative z-10 flex ${isTourView ? "min-h-screen flex-col pt-14" : "h-full flex-col overflow-x-hidden"}`}>
         {/* An unconfirmed account can read everything and create nothing. The

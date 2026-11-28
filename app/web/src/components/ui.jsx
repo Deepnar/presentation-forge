@@ -9,7 +9,12 @@ export function Button({ variant = "ghost", size = "md", className = "", ...prop
     md: "px-3.5 py-2 text-sm",
   };
   const variants = {
+    // The screen's one main action, in the brand's colour.
     primary:
+      "bg-ember text-on-ember hover:bg-ember-hi active:bg-ember shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_10px_20px_-12px_var(--color-ember-glow)]",
+    // A strong action that repeats (Open on every card): ink, so the one
+    // ember button on the screen still stands out.
+    ink:
       "bg-accent text-on-accent hover:bg-accent-hi active:bg-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_10px_20px_-10px_rgba(0,0,0,0.7)]",
     ghost: "text-fg-muted hover:bg-hover hover:text-fg",
     outline: "border border-line text-fg-muted hover:border-line-strong hover:text-fg hover:shadow-[0_6px_14px_-10px_rgba(0,0,0,0.6)]",

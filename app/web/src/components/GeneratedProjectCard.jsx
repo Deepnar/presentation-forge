@@ -23,7 +23,7 @@ export default function GeneratedProjectCard({ project, onOpen, onDelete, disabl
     <div className="min-w-0 flex-1"><div className="truncate text-[15px] font-semibold" title={project.title}>{project.title}</div>
       <div className="mt-0.5 text-[12.5px] text-fg-faint">{project.deck ? `${project.slides ?? 0} slides · ` : ''}{relative(project.updated)}</div>
     </div>
-    <div className="mt-3 flex flex-wrap gap-1.5"><Button size="sm" variant="primary" data-generated-open={project.slug} onClick={() => onOpen(project)} disabled={disabled}>Open</Button>
+    <div className="mt-3 flex flex-wrap gap-1.5"><Button size="sm" variant="ink" data-generated-open={project.slug} onClick={() => onOpen(project)} disabled={disabled}>Open</Button>
       <Button size="sm" data-generated-delete={project.slug} onClick={() => onDelete(project)} disabled={disabled}>Delete…</Button></div>
   </Panel>;
 }
