@@ -388,8 +388,10 @@ constraints.
 
 **The direction is Ember** (owner, 2026-11-28; chosen over "Ink and paper"
 and "Blueprint"). Molten orange on charcoal, with light and dark designed
-as a pair: charcoal `#14110E` / paper `#F5EFE6`, ember `#FF5B1F` on dark
-and `#C23A07` for text on light (4.7:1 on paper; the bright orange is 2.7:1 there).
+as a pair: charcoal `#14110E` / paper `#F5EFE6`. Ember `#FF5B1F` is the fill
+in both modes, with charcoal on it (6.1:1). Text-grade ember is `#FF6A2E` on
+dark and `#AD3404` on light, which clears 4.5:1 on every light ground; the
+bright orange is 2.7:1 on paper.
 Type is Anton for display, Instrument Serif italic for one accent phrase,
 and Geist for body and every control: three families, one scale. The
 forge metaphor is carried by **process, not pictures**:
@@ -397,10 +399,11 @@ forge metaphor is carried by **process, not pictures**:
   one primary action and for "Forge is working": a generating slide glows
   and cools to its theme colours when done. Not for decoration. A
   left-to-right cooling gradient is the only gradient in the brand.
-- **The mark is a slide, not a flame.** The candidates are a slide outline
-  with a glowing lower edge, an F of three slide strips, and a cooling 16:9
-  ingot. Each has to work as a 16px favicon. No flames, sparks, anvils or
-  hammers, which read as kitsch, gaming or barbecue.
+- **The mark is a slide, not a flame**: a slide outline whose lower edge
+  still glows. It was chosen over an F of three slide strips (a letter, not
+  obviously slides) and a cooling ingot (a gradient blurs at 16px). No
+  flames, sparks, anvils or hammers, which read as kitsch, gaming or
+  barbecue.
 - **The words use it once.** "Forge a deck" is the verb, with no puns
   elsewhere.
 - **The landing tells the process by scroll** (after landonorris.com's
@@ -422,6 +425,25 @@ forge metaphor is carried by **process, not pictures**:
 
   The slides on the page are real compiler scenes as SVG, never screenshots,
   and reduced motion gets the same story as still frames.
+
+Landed 2026-11-28:
+- **The mark.** `app/web/public/logo.svg` and the favicons; two wordmarks
+  with FORGE outlined from Anton, so no installed font is needed; `og.png`.
+- **The shell tokens** (`app/web/src/styles.css`): warm grounds and ink, and
+  ember tokens (`ember`, `on-ember`, `ember-ink`, `ember-glow`). The accent
+  stays ink, because it is used in ~200 places (buttons, rings, selection)
+  and orange there would mean nothing.
+- **The fonts:** Geist for the interface, plus Anton and Instrument Serif.
+  Every text token clears 4.5:1 on every ground in both modes.
+
+Next: put ember on each page's one primary action as that page is rebuilt,
+starting with the landing, then the editor.
+
+> **Learned.** The old shell was cool slate against warm decks, and the hue
+> difference was what showed a slide's edge. On a warm stage a
+> paper-coloured slide vanished, so the editor now draws a one-pixel edge
+> on the unscaled frame. Any later stage colour must be checked with a
+> paper-coloured slide on it.
 
 **The editor's final model is Canva's** (owner, 2026-11-16): "genuinely
 good and much, much better than any, and accessible" — that is the bar

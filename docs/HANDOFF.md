@@ -164,9 +164,18 @@ covers all seven tools (finished 2026-11-28 with Gamma, Pitch, Figma),
 and `docs/design/before-audit.md` measures and describes Forge's own pages
 (screenshots in `out/evidence/f5-before/`, not committed). The owner asked
 for a brand identity of our own and is open to changing the whole look.
-Next, in order: the
-Claude Design pass and the rest of **F5** (the add-slide menu's
-discoverability and the owner's layout notes are recorded there). Everything content-quality is blocked on a model: the gateway is
+2026-11-28: the brand is **Ember** (roadmap F5 → "The direction is Ember"):
+the hot-edge slide mark, favicons and wordmarks are in `app/web/public/`,
+and the shell tokens and fonts are warm with ember reserved for the primary
+action and work in progress. The pages themselves are not rebuilt yet.
+A local sheet of the three directions and the marks is at
+`out/design/brand-directions.html` (not committed).
+
+Next, in order:
+1. The scroll-driven landing: seven scenes, GSAP ScrollTrigger and Lenis,
+   with real compiler scenes as SVG.
+2. The rest of **F5**: the editor first. The add-slide menu's
+   discoverability and the owner's layout notes are recorded there. Everything content-quality is blocked on a model: the gateway is
 down and local inference is off-limits while the owner's other work runs.
 
 Sandbox projects for checking: `p-304801890f356c9f861dac99` (imported
