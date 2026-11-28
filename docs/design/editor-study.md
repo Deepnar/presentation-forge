@@ -114,6 +114,64 @@ in the app)*.
   action by name.
 - Not customisable (toolbar and properties panel), by design.
 
+## Gamma
+
+Sources: Gamma Help —
+[Style slides and adjust layout](https://help.gamma.app/en/articles/11969695-how-do-i-style-slides-and-adjust-layout-settings-in-my-gamma),
+[What are cards](https://help.gamma.app/en/articles/11016396-what-are-cards-in-gamma-and-how-to-do-they-work);
+Gamma guides on [the card system](https://gamma.app/explore/content/guides/how-gamma-maps-content-directly-to-slides-using-its-card-system)
+and [layout customisation](https://gamma.app/explore/content/guides/gamma-ai-presentation-tool-flexible-layout-customization-guide).
+
+- **Type "/" to insert anything.** Every item in the Insert menu also has a
+  slash command — text, lists, images, charts, tables, callouts, embeds.
+- **Other layouts are previewed, not configured.** A Smart Layouts button
+  shows the current card in many layouts to pick from; right-clicking a
+  card's edge opens a quick menu (copy, restyle, notes, change layout).
+  This is our Layout ▾, and it confirms the thumbnail-picker approach.
+- **Card style in the toolbar for the selected card** (background colour or
+  image, image position, overlay); global look (roundness, stroke, shadow)
+  in a Theme Editor — the split between a slide's style and the theme's.
+
+## Pitch
+
+Sources: Pitch Help —
+[Find keyboard shortcuts](https://help.pitch.com/en/articles/4287527-find-keyboard-shortcuts),
+[Quick menu](https://help.pitch.com/en/articles/4287519-navigate-pitch-faster-using-the-quick-menu),
+[Add slides](https://help.pitch.com/en/articles/7003075-add-slides-to-your-deck),
+[Slide styles](https://help.pitch.com/en/articles/4063049-work-with-slide-styles),
+[Align blocks](https://help.pitch.com/en/articles/3748873-align-blocks),
+[Speaker notes](https://help.pitch.com/en/articles/4301460-add-speaker-notes),
+[Speaker view](https://help.pitch.com/en/articles/4056889-present-using-speaker-view).
+
+- **Single keys for the common inserts**: N new slide, H headline, I image,
+  S shape, L list; Cmd/Ctrl+K opens a quick menu to search everything; the
+  shortcut list sits behind the Help bubble with its own search.
+- **Add slide → Templates or Layouts tabs**: layouts are designed slide
+  types (timeline, image grid, diagram, quote…) that work with any template
+  — our gallery and "Your layouts", side by side.
+- **The Design panel shows slide styles only when nothing is selected** —
+  the panel follows the selection: a block selected shows the block,
+  nothing selected shows the slide.
+- Speaker notes per slide, shown in speaker view while presenting.
+
+## Figma (Figma Slides)
+
+Sources: Figma Help —
+[Explore Figma Slides](https://help.figma.com/hc/en-us/articles/24170630629911-Explore-Figma-Slides),
+[Select layers in a slide deck](https://help.figma.com/hc/en-us/articles/27330413404567-Select-layers-in-a-slide-deck),
+[Layer properties in the right sidebar](https://help.figma.com/hc/en-us/articles/360039832014-Design-prototype-and-explore-layer-properties-in-the-right-sidebar),
+[Use Figma with a keyboard](https://help.figma.com/hc/en-us/articles/360040328653-Use-Figma-products-with-a-keyboard),
+[Accessibility at Figma](https://help.figma.com/hc/en-us/articles/35063862380311-Accessibility-at-Figma).
+
+- **Simple by default, power behind a switch.** In Figma Slides the right
+  sidebar's Design tab holds the selected object's properties, and **the
+  layers panel is not shown by default** — a "design mode" toggle in the
+  toolbar unlocks layers, auto layout and advanced properties for those who
+  want them.
+- **Cmd/Ctrl+K for actions; Ctrl+Shift+? for the shortcut sheet**, which
+  opens along the bottom with tabs by category.
+- Full keyboard operation is documented as an accessibility commitment.
+
 ## What to take, for Forge
 
 1. **A contextual toolbar above the canvas** (Canva), changing with the
@@ -140,8 +198,19 @@ in the app)*.
 9. **Properties only for the selection**, as swatches and toggles rather than
    form fields (Excalidraw); smart guides with equal spacing we already have
    (F4b), matching PowerPoint's.
+10. **Simple by default, more behind a switch** (Figma Slides hides layers
+    until "design mode"): the everyday editor shows the toolbar and the
+    slide; layers, exact geometry and the rest open on request. The most
+    direct answer to "too much text everywhere".
+11. **The side panel follows the selection** (Pitch): an object selected
+    shows the object; nothing selected shows the slide — theme, layout,
+    notes.
+12. **Insert by typing** (Gamma's "/", Pitch's single keys, everyone's
+    Cmd/Ctrl+K): one search box that inserts, finds commands and jumps to
+    slides.
 
-## Still to study
+## Study complete
 
-Gamma, Pitch and Figma — the same questions: canvas, toolbar, insert,
-inspector, layers, slide rail, notes, keyboard, accessibility.
+All seven tools are covered (2026-11-25 to 28). Next: the before-audit of
+Forge's own pages (`before-audit.md`), then the design direction with the
+Claude Design skill.
