@@ -436,8 +436,24 @@ Landed 2026-11-28:
 - **The fonts:** Geist for the interface, plus Anton and Instrument Serif.
   Every text token clears 4.5:1 on every ground in both modes.
 
-Next: put ember on each page's one primary action as that page is rebuilt,
-starting with the landing, then the editor.
+Later the same day (owner: the app "looked brown" next to the sample):
+- **Grounds.** The light ground is one paper colour (`#F7F3EC`) with white
+  cards. Five stacked beige tones had turned muddy.
+- **The dot field is gone** from every page.
+- **Ember buttons.** `Button variant="primary"` and the landing CTA are
+  ember. A new `ink` variant keeps repeated actions dark, so the one ember
+  button on a screen stands out.
+
+What still separates the app from the sample is type and shape: small
+grey text and the old cards and toolbars. That is the page-by-page
+rebuild, starting with the landing, then the editor.
+
+> **Learned.** Warm grounds alone are not the brand. An ember-on-charcoal
+> shell was tried on 2026-08-14 and replaced a week later. Applying only
+> the neutrals of a direction, without its colour and type, reproduces
+> that failure. Change the palette, the one colour and the type together,
+> and check the result against the specimen, not only against contrast
+> numbers.
 
 > **Learned.** The old shell was cool slate against warm decks, and the hue
 > difference was what showed a slide's edge. On a warm stage a
